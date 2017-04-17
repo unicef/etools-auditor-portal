@@ -1,0 +1,79 @@
+<!--import [polymer, app-route/app-location, app-route, app-layout, paper-icon-button,
+             paper-toast, paper-material, iron-selector, iron-pages, iron-collapse, iron-icons, iron-icons/social-icons,
+             etools-loading/etools-loading-behavior, iron-icons/maps-icons]-->
+
+<!--import [etools-app-config, user-data, countries-data, side-bar-item, countries-dropdown]-->
+<!--import [shared-styles, page-layout-styles, app-theme]-->
+
+<dom-module id="app-shell">
+
+    <template>
+        <!-- inject styles './app-shell.scss'-->
+        <style include="shared-styles"></style>
+
+        <user-data></user-data>
+
+        <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="[[baseUrl]]:page"
+                data="{{routeData}}"
+                query-params="{{queryParams}}"
+                tail="{{subroute}}"></app-route>
+
+        <etools-loading id="global-loading"></etools-loading>
+
+        <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed>
+
+            <!-- Drawer content -->
+            <app-drawer id="drawer" transition-duration="350">
+
+                <div class="side-nav-wrapper">
+
+                    <app-toolbar class="header">
+                        <img id="etools-logo" src="/tpm/images/etools_logo.svg" alt="etools logo">
+                    </app-toolbar>
+
+                    <div class="nav-menu">
+                        <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item"
+                                       role="navigation">
+
+                            <!--<side-bar-item name="partners" icon="social:people" side-bar-link="partners/list"></side-bar-item>-->
+
+                        </iron-selector>
+                    </div>
+
+                    <div class="footer">
+                        <img id="unicef-logo" src="/tpm/images/UNICEF_logo.png" alt="UNICEF logo">
+                    </div>
+
+                </div>
+
+            </app-drawer>
+
+            <!-- Main content -->
+
+            <iron-pages id="pages"
+                        selected="[[page]]"
+                        attr-for-selected="name"
+                        fallback-selection="not-found"
+                        role="main">
+
+                <!--<partners-page-main name="partners"-->
+                                    <!--id="partners"-->
+                                    <!--route="{{subroute}}"-->
+                                    <!--query-params="{{queryParams}}"></partners-page-main>-->
+
+
+
+                <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
+            </iron-pages>
+
+        </app-drawer-layout>
+
+    </template>
+
+    <!-- inject scripts './app-shell.js'-->
+
+</dom-module>

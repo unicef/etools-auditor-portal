@@ -1,0 +1,83 @@
+<script type="application/javascript" src="/lib/scripts/pdfmake.min.js"></script>
+<script type="application/javascript" src="/lib/scripts/vfs_fonts.min.js"></script>
+
+<!--import [polymer]-->
+
+<dom-module id="pdf-make">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'pdf-make',
+
+      properties: {
+        content: {
+          type: Object,
+          value: function() {
+            return {text: 'PDF Maker polymer wrapper'};
+          }
+        },
+        styles: {
+          type: Object,
+          value: function() { return {}; }
+        },
+        images: {
+          type: Object,
+          value: function() { return {}; }
+        },
+        output: {
+          type: String,
+          value: 'open'
+        },
+        pageSize: {
+          type: String,
+          value: 'A4'
+        },
+        pageOrientation: {
+          type: String,
+          value: 'portrait'
+        },
+        pageMargins: {
+          type: Array,
+          value: function() { return [40, 40, 40, 40]; }
+        }
+      },
+      printPDF: function(content) {
+        var self = this;
+        var documentDefinition = {
+          pageSize: self.pageSize,
+          pageOrientation: self.pageOrientation,
+          pageMargins: self.pageMargins,
+          content: content || self.content,
+          images: self.images,
+          styles: self.styles,
+          pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+            if (currentNode.image === 'blackLine') {
+              return false;
+            }
+            return currentNode.startPosition.top >= 750;
+          }
+        };
+        switch (self.output) {
+          case 'open':
+            pdfMake.createPdf(documentDefinition).open();
+            break;
+          case 'print':
+            pdfMake.createPdf(documentDefinition).print();
+            break;
+          case 'download':
+            pdfMake.createPdf(documentDefinition).download();
+            break;
+        }
+      }
+
+    });
+  </script>
+</dom-module>

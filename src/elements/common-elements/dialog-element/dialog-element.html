@@ -1,0 +1,93 @@
+<!--import [polymer, iron-icon, paper-dialog]-->
+
+<dom-module id="dialog-element">
+    <template>
+        <style>
+            paper-dialog {
+                background-color: #ffffff;
+                border-radius: 4px;
+                width: 650px;
+            }
+
+            @media screen and (max-width: 767px) {
+                paper-dialog {
+                    width: calc(100vw - 30px);
+                }
+            }
+
+            @media screen and (max-width: 480px) {
+                paper-dialog {
+                    width: calc(100vw - 30px);
+                }
+            }
+
+            .buttons {
+                margin-top: 15px;
+
+            }
+
+            .btn-cancel {
+                color: var(--gray-mid);
+            }
+
+            .btn-confirm {
+                color: var(--module-primary);
+                font-weight: bold;
+            }
+
+            .dialog-title {
+                padding: 10px 24px !important;
+                min-height: 26px;
+            }
+
+            .close-btn {
+                position: absolute;
+                right: -5px;
+                margin-top: 14px !important;
+                color: var(--gray-mid-dark);
+                cursor: pointer;
+                transition: 0.15s;
+                z-index: 5;
+            }
+            .close-btn:hover { color: #000;}
+        </style>
+
+        <paper-dialog size="md" opened="{{opened}}"
+                      with-backdrop
+                      ok-btn-text="sync from vision">
+            <iron-icon icon="icons:close" class="close-btn" dialog-dismiss></iron-icon>
+            <h2 class="dialog-title">[[title]]</h2>
+            <slot></slot>
+            <div class="buttons">
+                <paper-button dialog-dismiss class="btn-cancel">[[cancelBtnText]]</paper-button>
+                <paper-button dialog-confirm autofocus class="btn-confirm">[[confirmBtnText]]</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        'use strict';
+
+        Polymer({
+            is: 'dialog-element',
+            properties: {
+                title: {
+                    type: String,
+                    value: 'Custom title'
+                },
+                cancelBtnText: {
+                    type: String,
+                    value: 'Cancel'
+                },
+                confirmBtnText: {
+                    type: String,
+                    value: 'Ok'
+                },
+                opened: {
+                    type: Boolean,
+                    notify: true
+                }
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,12 @@
+{
+  "entrypoint": "src/index.html",
+  "shell": "src/elements/core-elements/app-shell-element/app-shell.html",
+  "fragments": [
+    "src/elements/pages/not-found-page-view/not-found-page-view.html"
+  ],
+  "sourceGlobs": [
+    "src/assets/**/*",
+    "src/elements/**/*",
+    "src/*"
+  ]
+}

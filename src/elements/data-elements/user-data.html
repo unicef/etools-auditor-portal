@@ -1,0 +1,55 @@
+<!--import [polymer, etools-ajax, lodash]-->
+
+<dom-module id="user-data">
+
+    <template>
+
+        <etools-ajax endpoint="[[endpoint]]"
+                     caching-storage="custom"
+                     dexie-db-collection="profile"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'user-data',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+
+                user: {
+                    type: Object,
+                    readOnly: true,
+                    notify: true
+                }
+
+            },
+
+            ready: function () {
+                this.endpoint = this.getEndpoint('userProfile');
+            },
+
+            _handleResponse: function (data) {
+                // TODO: check response to make sure it contains a valid user
+                this._setUser(data.detail[0]);
+//                this._setPermissions(data.detail[0]);
+                this.fire('user-profile-loaded')
+            },
+
+            _handleError: function (rsp, err) {
+                // TODO: handle error response
+                console.log(rsp);
+                console.log(err);
+            },
+
+        });
+
+    </script>
+
+</dom-module>

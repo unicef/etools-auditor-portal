@@ -1,0 +1,73 @@
+<!--import [polymer, paper-input, paper-card, iron-icon, etools-searchable-multiselection-menu,
+            paper-menu-button, paper-button, paper-menu, paper-toggle-button,
+            shared-styles, module-styles, iron-flex-layout, query-params-controller]-->
+
+<dom-module id="search-and-filter">
+    <template>
+        <style include="shared-styles module-styles iron-flex"></style>
+         <!--inject styles './search-and-filter.scss'-->
+
+        <paper-card class="second-header horizontal layout center">
+
+            <div class="flex horizontal layout wrap">
+                <div class="layout horizontal search-input-container">
+                    <paper-input
+                            inline
+                            id="search-input"
+                            label="Search vendor # or name"
+                            on-keydown="searchKeyDown">
+
+                        <iron-icon icon="search" prefix></iron-icon>
+                    </paper-input>
+                </div>
+                <!-- FILTERS -->
+                <template is="dom-repeat" items="[[usedFilters]]">
+
+                    <div class="layout horizontal">
+
+                        <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+                                                               id="[[item.filterName]]"
+                                                               options="[[item.selection]]"
+                                                               on-value-change="changeFilterValue"
+                                                               placeholder="Select">
+                        </etools-searchable-multiselection-menu>
+
+                        <div class="filter-reset-button" on-click="removeFilter">×</div>
+                    </div>
+                </template>
+
+            </div>
+
+            <!-- ADD FILTERS -->
+            <div id="add-filter-container">
+
+                <paper-menu-button>
+
+                    <paper-button class="dropdown-trigger">
+                        <iron-icon icon="filter-list" class="filter-list-icon"></iron-icon>
+                        ADD FILTER
+                    </paper-button>
+
+                    <paper-menu class="dropdown-content">
+                        <template is="dom-repeat" items="[[availableFilters]]">
+                            <paper-item on-click="addFilter"><span class="add-filter--item-name">[[item.name]]</span></paper-item>
+                        </template>
+                    </paper-menu>
+                </paper-menu-button>
+            </div>
+
+            <div class="toggle-hidden-div horizontal layout center">
+                <span>Show hidden</span>
+                <paper-toggle-button
+                        id="show-hidden-toggle"
+                        checked="{{showHidden}}"
+                        on-change="_changeShowHidden"
+                        class="right-float">
+                </paper-toggle-button>
+            </div>
+        </paper-card>
+
+    </template>
+
+    <!-- inject scripts './search-and-filter.js'-->
+</dom-module>

@@ -1,0 +1,51 @@
+:host {
+    position: relative;
+    display: block;
+}
+.header-wrapper {
+    //box-shadow: inset 0 -1px rgba(0,0,0,0.26);
+    background-color: white;
+}
+.side-heading {
+    margin: 0;
+    height: 80px;
+    padding-right: 275px;
+    box-sizing: border-box;
+}
+.side-heading span.title {
+    font-size: 24px;
+    padding-left: 48px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.side-heading .grey-buttons {
+    color: var(--gray-mid);
+    font-weight: 500;
+    font-size: 14px;
+}
+.side-heading .grey-buttons iron-icon {
+    margin-right: 8px;
+}
+.side-heading  paper-button.add-btn {
+    background-color: var(--module-primary);
+    color: white;
+    height: 36px;
+    font-weight: 500;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+.side-heading  paper-button.add-btn span {
+    margin-left: 4px;
+}
+.side-heading  .add-btn {
+    margin-left: 18px;
+    background-color: var(--module-primary);
+}
+
+.side-heading-button-holder {
+    position: absolute;
+    right: 45px;
+    top: 10px;
+}

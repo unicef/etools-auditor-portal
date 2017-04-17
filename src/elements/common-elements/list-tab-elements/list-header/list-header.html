@@ -1,0 +1,30 @@
+<!--import [polymer, iron-icon, iron-flex-layout, shared-styles, module-styles]-->
+
+<dom-module id="list-header">
+    <template>
+        <style include="shared-styles module-styles"></style>
+        <!-- inject styles './list-header.scss'-->
+
+        <div class="heading-row-header clearfix">
+            <template is="dom-repeat" items="[[data]]">
+                <div  class$="local-headings w[[item.size]]" ordered$="{{item.ordered}}" on-tap="_changeOrder">
+                    <span class="textsec heading">[[item.label]]</span>
+
+                    <iron-icon class="down-icon"
+                               icon="icons:arrow-downward">
+                    </iron-icon>
+
+                    <iron-icon class="up-icon"
+                               icon="icons:arrow-upward">
+                    </iron-icon>
+
+                </div>
+            </template>
+        </div>
+
+
+
+    </template>
+
+    <!-- inject scripts './list-header.js'-->
+</dom-module>

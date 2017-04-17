@@ -1,0 +1,45 @@
+<!--import [polymer, shared-styles, app-main-header, page-layout-styles]-->
+
+<dom-module id="not-found-page-view">
+    <template>
+        <style include="shared-styles">
+
+            :host {
+                display: block;
+            }
+
+            a.link {
+                color: #40c4ff;
+            }
+
+        </style>
+        <style include="page-layout-styles shared-styles"></style>
+
+        <app-header-layout>
+
+            <app-header fixed shadow>
+                <app-main-header></app-main-header>
+
+            </app-header>
+
+            <div id="pageContent">
+                <paper-material elevation="1">
+                    404 <a href="/partners/list" class="link">Head back home.</a>
+                </paper-material>
+            </div>
+
+        </app-header-layout>
+    </template>
+
+    <script>
+        'use strict';
+
+        Polymer({
+            is: 'not-found-page-view',
+
+            openDrawer: function() {
+                this.fire('drawer');
+            }
+        });
+    </script>
+</dom-module>

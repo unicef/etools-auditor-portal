@@ -1,0 +1,51 @@
+<script>
+    'use strict';
+
+    window.APBehaviors = window.APBehaviors || {};
+    APBehaviors.QueryParamsController = {
+        parseQueries: function() {
+            let queriesOvj = {},
+                    queries = window.location.search
+                            .slice(1)
+                            .split('&');
+
+            if (queries[0] === '') return {};
+            queries.forEach((query) => {
+                let [key, value] = query.split('=');
+                queriesOvj[key] = value || true;
+            });
+
+            return queriesOvj;
+        },
+        getPath: function() {
+            let path = window.location.pathname;
+            if (~path.indexOf('/tpm')) { path = path.slice(4) }
+            return path.slice(1);
+        },
+        updateQueries: function (newQueries, path, noNotify) {
+            path = path || this.getPath();
+            let keys = Object.keys(newQueries);
+            if (!keys.length) return;
+
+            let queries = this.parseQueries();
+
+            keys.forEach((key) => {
+                if (newQueries[key] === undefined || newQueries[key] === false) delete queries[key];
+                else queries[key] = newQueries[key];
+            });
+
+            queries = Object.keys(queries).map((key) => {
+                let value = typeof queries[key] ===  'boolean' ? '' : `=${queries[key]}`;
+                return `${key}${value}`;
+            });
+
+            window.history.replaceState({}, '', `${path}?${queries.join('&')}`);
+            if (!noNotify) window.dispatchEvent(new CustomEvent('location-changed'));
+        },
+        clearQueries: function() {
+            window.history.replaceState({}, '', window.location.pathname);
+            window.dispatchEvent(new CustomEvent('location-changed'));
+        }
+
+    };
+</script>

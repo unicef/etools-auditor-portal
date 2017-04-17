@@ -1,0 +1,80 @@
+<!--
+App global configuration
+-->
+<!--import [polymer, etools-dexiejs, lodash]-->
+
+<script>
+    'use strict';
+
+
+    var etoolsCustomDexieDb = new Dexie('AP');
+    etoolsCustomDexieDb.version(1).stores({
+        collectionsList: '&name, expire',
+        partners: 'id, name, vendor_number, country',
+        trips: 'id, name, vendor_number, location, focal_point, status',
+        profile: 'id'
+    });
+
+
+    var etoolsAppConfig = {
+
+        // app endpoints
+        endpoints: {
+
+        },
+        localEndpoints: {
+            countries: {
+                url: '/data/countries.json',
+                exp: 6 * 60 * 60 * 1000, // 6h
+                cachingKey: 'countries'
+            },
+            userProfile: {
+                url: '/data/user-profile.json',
+//                exp: 30 * 60 * 1000, // 30min
+                cachingKey: 'userData'
+            }
+        },
+
+        globals: {
+            // globals
+
+
+            baseSite: window.location.origin,
+            basePath: (window.location.port === '8080') ? '/' : '/ap/',
+            serverBackend: (window.location.port !== '8080'),
+            epsPath: (window.location.port !== '8080') ? 'endpoints' : 'localEndpoints',
+
+            // dexie js
+            appDexieDb: etoolsCustomDexieDb,
+
+            getEndpoint: function (endpointName, data) {
+                var endpoint = etoolsAppConfig[etoolsAppConfig.globals.epsPath][endpointName];
+                if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
+                    endpoint.url = this.baseSite + _.template(endpoint.template)(data);
+                }
+                return _.clone(endpoint);
+            },
+
+            getPermissionsList: function (userType) {
+                return etoolsAppConfig.permissions[`${userType}Permissions`];
+            }
+        },
+
+        // permissions
+        permissions: {
+            superPermissions: [
+
+            ], //for testing
+            unicefUserPermissions: [
+
+            ],
+            unicefFpPermissions: [],
+            pmePermissions: [],
+            tpmPermissions: [
+
+            ]
+        }
+
+    };
+
+</script>

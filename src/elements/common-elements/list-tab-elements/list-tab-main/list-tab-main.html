@@ -1,0 +1,43 @@
+<!--import [polymer, paper-card, shared-styles, module-styles, iron-flex-layout,list-header,list-element, list-pagination, query-params-controller]-->
+
+<dom-module id="list-tab-main">
+    <template>
+        <style include="shared-styles module-styles iron-flex"></style>
+        <!-- inject styles './list-tab-main.scss'-->
+
+
+        <paper-card class="data-table">
+
+            <template is="dom-if" if="[[!withoutPagination]]" restamp>
+                <span class="textprim data-card-heading">{{showingResults}} {{headerTitle}}</span>
+            </template>
+            <template is="dom-if" if="[[withoutPagination]]" restamp>
+                <span class="textprim data-card-heading table-title">{{headerTitle}}</span>
+            </template>
+
+            <list-header id="list-header"
+                    data="[[headings]]"
+                    order-by="{{orderBy}}">
+            </list-header>
+
+            <template id="list-elements" is="dom-repeat" items="[[data]]" as="partner" initial-count="10"  on-dom-change="_listDataChanged">
+                <list-element class="list-element" data="[[partner]]" headings="[[headings]]" no-animation="[[noAnimation]]"></list-element>
+            </template>
+
+            <template is="dom-if" if="[[!withoutPagination]]" restamp>
+                <list-pagination
+                        id="list-pagination"
+                        page-size="{{queryParams.size}}"
+                        page-number="{{queryParams.page}}"
+                        datalength="[[listLength]]"
+                        page-marker="[[pageMarker]]"
+                        showing-results="{{showingResults}}">
+                </list-pagination>
+            </template>
+
+        </paper-card>
+
+    </template>
+
+    <!-- inject scripts './list-tab-main.js'-->
+</dom-module>

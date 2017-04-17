@@ -1,0 +1,155 @@
+<!--import [polymer]-->
+
+<dom-module id="module-styles">
+    <template>
+        <style>
+
+            :host {
+                --gray-lighter: rgba(0,0,0,.12);
+                --gray-light: rgba(0,0,0,.38);
+                --gray-mid: rgba(0,0,0,.54);
+                --gray-mid-dark: rgba(0,0,0,.70);
+                --gray-dark: rgba(0,0,0,.87);
+
+                /*--module-primary: #00AEEF;*/
+                --module-primary: #4893ff;
+                /*--module-primary-dark: #4893ff;*/
+
+                --module-sec-blue: #1E86BF;
+                --module-sec-green: #00A651;
+                --module-sec-lightgreen: #8DC63F;
+                --module-sec-gray: #43525A;
+
+                --module-error: #EA4022;
+                --module-error-2: #f1B8AE;
+                --module-warning: #FF9640;
+                --module-warning-2: #FFCA9E;
+                --module-success: #8DC63F;
+                --module-success-2: #C3E88B;
+                --module-info: #CEBC06;
+                --module-info-2: #FFF176;
+
+                --module-planned: rgba(250,237,119,.6);
+                --module-approved: rgba(141,198,63,.45);
+                --module-submitted: rgba(206,188,6,.6);
+                --module-sent: rgba(30,134,191,.45);
+                --module-completed: rgba(141,198,63,1);
+            }
+
+            *[hidden] {
+                display: none;
+            }
+
+            .readonly {
+                pointer-events: none;
+            }
+
+            /* TABS */
+            paper-tabs {
+                --paper-tabs-selection-bar-color: var(--module-primary);
+            }
+            paper-tab {
+                --paper-tab-content: {
+                    color: var(--module-primary);
+                    text-transform: none;
+                    font-size: 14px;
+                    font-weight: 500;
+                    width: 140px;
+                };
+                --paper-tab-content-unselected: {
+                    color: var(--gray-mid);
+                };
+            }
+
+            /* PAPER-TOGGLE-BUTTON */
+            paper-toggle-button {
+                --paper-toggle-button-checked-button-color: var(--module-primary);
+                --paper-toggle-button-checked-bar-color: rgba(0,174,239,.5);
+                --paper-toggle-button-unchecked-button-color: rgba(241,241,241,1);
+                --paper-toggle-button-unchecked-bar-color: rgba(31,31,31,.26);
+            }
+
+            /* CHECKBOX */
+            paper-checkbox {
+                --paper-checkbox-unchecked-color: var(--gray-mid);
+                --paper-checkbox-checked-color: var(--module-primary);
+                --paper-checkbox-label: {
+                    color: var(--gray-dark);
+                    font-size: 16px;
+                    padding-left: 0;
+                };
+                --paper-checkbox-margin: 12px 8px 12px 12px;
+            }
+
+            /* TEXTAREA, INPUT */
+            etools-searchable-multiselection-menu, paper-input, paper-textarea, paper-dropdown-menu {
+                outline: none!important;
+                --paper-input-container-color: var(--gray-light);
+                --paper-input-container-focus-color: var(--module-primary);
+                --paper-input-container-input: {
+                    color: var(--gray-dark);
+                };
+
+                --paper-input-container-invalid-color: var(--module-error);
+
+                --paper-input-container-disabled: {
+                    color: var(--gray-light);
+                    opacity: 1;
+                };
+                --paper-input-char-counter: {
+                    color: var(--gray-light);
+                };
+            }
+
+            paper-input.readonly, paper-textarea.readonly {
+                --paper-input-container-underline: {
+                    display: none;
+                };
+            }
+
+            paper-radio-button {
+                --paper-radio-button-unchecked-color: var(--gray-mid);
+                --paper-radio-button-checked-color: var(--module-primary);
+            }
+
+            /** /deep/ *[starred] /deep/ label::after {*/
+                /*content: " *";*/
+                /*font-weight: bold;*/
+                /*color: var(--module-error);*/
+            /*}*/
+
+            /** /deep/ *[starred] /deep/ .search-input /deep/ label::after {*/
+                /*content: "";*/
+            /*}*/
+
+            .f1 {
+                flex: 1; }
+
+            .f2 {
+                flex: 2; }
+
+            .f3 {
+                flex: 3; }
+
+            .f4 {
+                flex: 4; }
+
+            .f5 {
+                flex: 5; }
+
+            .f6 {
+                flex: 6; }
+
+            .f7 {
+                flex: 7; }
+
+            .f8 {
+                flex: 8; }
+
+            .w20 { width: 20%; }
+            .w25 { width: 25%; }
+            .w50 { width: 50%; }
+
+        </style>
+    </template>
+</dom-module>

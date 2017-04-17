@@ -1,0 +1,57 @@
+<!--import [polymer, iron-flex-layout, shared-styles, module-styles]-->
+
+<dom-module id="list-element">
+    <template>
+        <!-- inject styles './list-element.scss'-->
+        <style include="shared-styles module-styles iron-flex"></style>
+
+
+        <paper-material id="wrapper" elevation="0">
+            <div id="iconWrapper">
+                <iron-icon id="more" icon="expand-more" hidden$="[[detailsOpened]]"
+                           on-tap="_toggleRowDetails"></iron-icon>
+                <iron-icon id="less" icon="expand-less" hidden$="[[!detailsOpened]]"
+                           on-tap="_toggleRowDetails"></iron-icon>
+            </div>
+
+            <div class="partner-data">
+                <template is="dom-repeat" items="[[headings]]">
+
+                    <template is="dom-if" if="[[_isLink(item.link)]]">
+                        <a class$="col-data w[[item.size]] truncate"
+                           href$="[[_getLink(item.link)]]"
+                           title="[[_getValue(item.name)]]">
+                            [[_getValue(item.name, data)]]
+                        </a>
+                    </template>
+
+                    <template is="dom-if" if="[[!_isLink(item.link)]]">
+                        <span class$="col-data w[[item.size]] truncate">
+                            <span class="truncate">[[_getValue(item.name, data)]]</span>
+                        </span>
+                    </template>
+
+                </template>
+            </div>
+        </paper-material>
+
+        <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
+            <div id="collapse-wrapper">
+                <div class="partners-data-details">
+                    <div class="row-details-content">
+                        <span class="rdc-title">Email</span>
+                        <span class="data">[[_getDisplayValue(data.email)]]</span>
+                    </div>
+                    <div class="row-details-content">
+                        <span class="rdc-title">Phone</span>
+                        <span class="data">[[_getDisplayValue(data.phone_number)]]</span>
+                    </div>
+                </div>
+            </div>
+        </iron-collapse>
+
+
+    </template>
+
+    <!-- inject scripts './list-element.js'-->
+</dom-module>

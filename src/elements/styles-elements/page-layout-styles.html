@@ -1,0 +1,32 @@
+<!-- This file will be dedicated to page layout and related layout elements. -->
+
+<!--import [polymer, iron-flex-layout]-->
+
+<dom-module id="page-layout-styles">
+  <template>
+    <style>
+      app-header-layout {
+        position: inherit;
+      }
+
+      app-header {
+        background-color: var(--primary-background-color);
+      }
+
+      .page {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        padding: 25px;
+      }
+
+      #pageContent {
+        @apply(--layout-flex-9);
+      }
+
+      #sidebar {
+        @apply(--layout-flex-3);
+        padding-left: 25px;
+      }
+    </style>
+  </template>
+</dom-module>
