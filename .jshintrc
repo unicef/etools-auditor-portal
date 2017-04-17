@@ -21,7 +21,7 @@
     "etoolsAppConfig": true,
     "etoolsAjaxDefaultDexieDbPrefix": true,
     "DynamicCustomStyleBehavior": true,
-    "TPMBehaviors": true,
+    "APBehaviors": true,
     "etoolsBehaviors": true
   }
 }

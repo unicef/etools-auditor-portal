@@ -39,7 +39,7 @@
                         <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item"
                                        role="navigation">
 
-                            <!--<side-bar-item name="partners" icon="social:people" side-bar-link="partners/list"></side-bar-item>-->
+                            <side-bar-item name="engagements" icon="social:people" side-bar-link="engagements/list"></side-bar-item>
 
                         </iron-selector>
                     </div>
@@ -60,12 +60,10 @@
                         fallback-selection="not-found"
                         role="main">
 
-                <!--<partners-page-main name="partners"-->
-                                    <!--id="partners"-->
-                                    <!--route="{{subroute}}"-->
-                                    <!--query-params="{{queryParams}}"></partners-page-main>-->
-
-
+                <engagements-page-main name="engagements"
+                                       id="engagements"
+                                       route="{{subroute}}"
+                                       query-params="{{queryParams}}"></engagements-page-main>
 
                 <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
             </iron-pages>

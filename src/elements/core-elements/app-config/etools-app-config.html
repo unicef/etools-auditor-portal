@@ -10,9 +10,7 @@ App global configuration
     var etoolsCustomDexieDb = new Dexie('AP');
     etoolsCustomDexieDb.version(1).stores({
         collectionsList: '&name, expire',
-        partners: 'id, name, vendor_number, country',
-        trips: 'id, name, vendor_number, location, focal_point, status',
-        profile: 'id'
+        engagements: 'id, partner.name, agreement.order_number, type, status'
     });
 
 
@@ -32,6 +30,11 @@ App global configuration
                 url: '/data/user-profile.json',
 //                exp: 30 * 60 * 1000, // 30min
                 cachingKey: 'userData'
+            },
+            engagementsList: {
+                url: '/data/engagements-list.json',
+                exp: 6 * 60 * 60 * 1000, // 6h
+                cachingKey: 'engagements'
             }
         },
 

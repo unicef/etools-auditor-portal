@@ -3,7 +3,7 @@
 (function() {
     Polymer({
         is: 'search-and-filter',
-        behaviors: [TPMBehaviors.QueryParamsController],
+        behaviors: [APBehaviors.QueryParamsController],
         properties: {
             filters: Array,
             usedFilters: {

@@ -21,13 +21,13 @@
                         <a class$="col-data w[[item.size]] truncate"
                            href$="[[_getLink(item.link)]]"
                            title="[[_getValue(item.name)]]">
-                            [[_getValue(item.name, data)]]
+                            [[_getValue(item, data)]]
                         </a>
                     </template>
 
                     <template is="dom-if" if="[[!_isLink(item.link)]]">
                         <span class$="col-data w[[item.size]] truncate">
-                            <span class="truncate">[[_getValue(item.name, data)]]</span>
+                            <span class="truncate">[[_getValue(item, data)]]</span>
                         </span>
                     </template>
 

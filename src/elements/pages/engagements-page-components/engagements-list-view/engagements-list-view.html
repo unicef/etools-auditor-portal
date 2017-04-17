@@ -1,0 +1,54 @@
+<!--import [polymer, module-styles, page-layout-styles, shared-styles, app-main-header, list-tab-main,
+            search-and-filter, engagements-list-data, pages-header-element]-->
+
+<dom-module id="engagements-list-view">
+    <template>
+        <!-- inject styles './engagements-list-view.scss'-->
+
+        <style include="page-layout-styles shared-styles module-styles">
+            :host {
+                position: relative;
+                display: block;
+            }
+
+            paper-input.vendor-number-input {
+                max-width: 45%;
+                margin-top: 6px !important;
+            }
+
+            pages-header-element { box-shadow: 1px -3px 9px 0 #000000; }
+        </style>
+
+        <engagements-list-data
+                engagements-list="{{engagementsList}}"
+                list-length="{{listLength}}"
+                request-queries="[[requestQueries]]"
+                without-pagination="[[withoutPagination]]"></engagements-list-data>
+
+        <app-header-layout>
+
+
+            <app-header id="header" fixed shadow>
+                <app-main-header></app-main-header>
+            </app-header>
+
+            <pages-header-element show-export-button
+                                  show-add-button="{{_showAddButton()}}"
+                                  btn-text="Add New Engagement"
+                                  title="Engagements"></pages-header-element>
+
+            <search-and-filter></search-and-filter>
+
+            <list-tab-main header-title="results to show"
+                           data="[[engagementsList]]"
+                           list-length="[[listLength]]"
+                           headings="[[listHeadings]]"
+                           query-params="{{queryParams}}">
+            </list-tab-main>
+
+        </app-header-layout>
+
+    </template>
+
+    <!-- inject scripts './engagements-list-view.js'-->
+</dom-module>

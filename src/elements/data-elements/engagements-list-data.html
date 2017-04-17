@@ -1,0 +1,128 @@
+<!--import [polymer, etools-ajax, query-params-controller]-->
+
+<dom-module id="engagements-list-data">
+
+    <template>
+
+        <etools-ajax
+                endpoint="[[endpoint]]"
+                caching-storage="custom"
+                dexie-db-collection="engagements"
+                on-success="_engagementsLoaded"
+                on-fail="_responseError"></etools-ajax>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'engagements-list-data',
+            behaviors: [
+                etoolsAppConfig.globals,
+                APBehaviors.QueryParamsController
+            ],
+
+            properties: {
+                engagements: {
+                    type: Array,
+                    value: [],
+                    notify: true
+                },
+                engagementsList: {
+                    type: Array,
+                    readOnly: true,
+                    notify: true
+                },
+                requestQueries: {
+                    type: Object,
+                    observer: 'getPartnersList'
+                },
+                listLength: {
+                    type: Number,
+                    notify: true,
+                    computed: '_setListLength(engagements)'
+                },
+                indexObject: {
+                    type: Object,
+                    value: function() {
+                        return {
+                            order_number: 'agreement.order_number',
+                            name: 'partner.name',
+                            id: 'id',
+                            type: 'type',
+                            status: 'status'
+                        }
+                    }
+                }
+
+            },
+
+            ready: function () {
+                this.endpoint = this.getEndpoint('engagementsList');
+            },
+
+            _engagementsLoaded: function(data) {
+                this.engagements = data.detail;
+                if (this._validatePageQuery()) {
+                    this.getPartnersList();
+                }
+            },
+            _responseError: function() {},
+
+            getPartnersList: function() {
+                if (!this.engagements.length) return;
+                if (this.currentTransaction) {
+                    this.currentTransaction.abort();
+                }
+
+                this.appDexieDb.transaction('r', this.appDexieDb.engagements, () => {
+                    this.currentTransaction = Dexie.currentTransaction;
+
+
+                    let engagements = this.appDexieDb.engagements,
+                            params = this.requestQueries || {};
+
+                    if (params.ordered_by) {
+                        let [field, order] = params.ordered_by.split('.');
+                        engagements = engagements.orderBy(this.indexObject[field]);
+                        if (order === 'desc') { engagements = engagements.reverse(); }
+                    }
+                    if (!this.withoutPagination && params.size) {
+                        engagements
+                                .offset( ((params.page || 1) - 1) * params.size )
+                                .limit(+params.size)
+                    }
+
+
+
+                    return engagements.toArray();
+                }).then((result) => {
+                    this._setEngagementsList(result);
+                });
+            },
+
+            _validatePageQuery: function() {
+                if (!this.requestQueries) return;
+                if (!this.requestQueries.page || !this.requestQueries.size) return true;
+                let lastPage = this.engagements.length % this.requestQueries.size ?
+                        Math.floor(this.engagements.length / this.requestQueries.size + 1) :
+                this.engagements.length / this.requestQueries.size;
+
+                if (+this.requestQueries.page > lastPage) {
+                    //update page query
+                    this.updateQueries({page: `${lastPage}`})
+                } else {
+                    return true;
+                }
+            },
+
+            _setListLength: function(engagements) {
+                return engagements.length;
+            }
+
+        });
+
+    </script>
+
+</dom-module>

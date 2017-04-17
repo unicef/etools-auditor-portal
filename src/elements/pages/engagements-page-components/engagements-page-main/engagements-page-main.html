@@ -1,0 +1,39 @@
+<!--import [polymer]-->
+
+<!--import [page-layout-styles, shared-styles, module-styles, engagements-list-view,
+             new-engagement-view, query-params-controller]-->
+
+<dom-module id="engagements-page-main">
+    <template>
+
+        <style include="page-layout-styles shared-styles module-styles">
+            :host {
+                position: relative;
+                display: block;
+            }
+        </style>
+        <app-route
+                route="{{route}}"
+                pattern="/:view"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+
+        <iron-pages id="categoryPages"
+                    selected="{{view}}"
+                    attr-for-selected="name"
+                    role="main">
+
+            <engagements-list-view name="list"
+                                   query-params="{{queryParams}}"
+                                   request-queries="[[partnersListQueries]]"></engagements-list-view>
+
+            <new-engagements-view name="info"
+                                  route="{{subroute}}"
+                                  partner="{{partnerDetails}}"></new-engagements-view>
+
+        </iron-pages>
+
+    </template>
+
+    <!-- inject scripts './engagements-page-main.js'-->
+</dom-module>

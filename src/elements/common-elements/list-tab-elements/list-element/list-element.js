@@ -8,8 +8,19 @@ Polymer({
     _isLink: function(link) {
         return !!link;
     },
-    _getValue: function(fieldName) {
-        return fieldName === 'status' ? this._getStatus(this.data.vision_synced) : this.data[fieldName] || '--';
+    _getValue: function(item) {
+        if (!item.path) {
+            return this.data[item.name] || '--';
+        } else {
+            let fields = item.path.split('.'),
+                value = this.data;
+
+            while (fields.length && value) {
+                value = value[fields.shift()];
+            }
+
+            return value || '--';
+        }
     },
     _getStatus: function(synced) {
         if (synced) { return 'Synced from VISION'; }

@@ -2,7 +2,7 @@
 
 Polymer({
     is: 'list-tab-main',
-    behaviors: [TPMBehaviors.QueryParamsController],
+    behaviors: [APBehaviors.QueryParamsController],
     properties: {
         queryParams: {
             type: Object,
@@ -24,7 +24,8 @@ Polymer({
             notify: true
         },
         withoutPagination: {
-            type: Boolean
+            type: Boolean,
+            value: false
         }
     },
     _orderChanged: function(newOrder) {
