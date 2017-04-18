@@ -69,7 +69,7 @@
       <paper-icon-button id="menuButton" class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
       <div class="titlebar content-align">
         <app-selector id="selector"></app-selector>
-        <img src="../../../../images/etools_logo_icon.png">
+        <img src$="{{getAbsolutePath('images/etools_logo_icon.png')}}">
         eTools
       </div>
       <div class="content-align">
@@ -83,12 +83,15 @@
     (function() {
       Polymer({
         is: 'app-main-header',
+        behaviors: [
+          etoolsAppConfig.globals
+        ],
         properties: {
           countries: {
             type: Array
           },
           user: {
-            type: Object,
+            type: Object
           }
         },
         observers: [

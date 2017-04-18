@@ -74,6 +74,11 @@ App global configuration
 
             getPermissionsList: function (userType) {
                 return etoolsAppConfig.permissions[`${userType}Permissions`];
+            },
+
+            getAbsolutePath: function(path) {
+                path = path || '';
+                return this.basePath + path;
             }
         },
 
