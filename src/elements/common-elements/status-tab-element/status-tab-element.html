@@ -1,5 +1,5 @@
 <!--import [polymer, iron-icons, iron-icons/av-icons, iron-flex-layout, paper-button,
-            etools-content-panel, paper-button, paper-menu-button, paper-icon-button, paper-menu, paper-item]-->
+            etools-content-panel, paper-button, paper-menu-button, paper-icon-button, paper-menu, paper-item, moment-element/moment-import]-->
 
 <dom-module id="status-tab-element">
     <template>
@@ -9,7 +9,7 @@
         <etools-content-panel title="Status">
 
             <div class="status-list">
-                <div class$="status-container [[_getStatusContainerClass(status, 1)]]">
+                <div class$="status-container [[_getStatusState(1, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">1</span>
@@ -17,13 +17,14 @@
                     </span>
                     </div>
                     <div class="status">
-                        <span>Draft</span>
+                        <span>Partner Contacted</span>
+                        <span class="status-date">{{_getFormattedDate('partner_contracted_at', engagementData)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusContainerClass(status, 2)]]">
+                <div class$="status-container [[_getStatusState(2, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">2</span>
@@ -31,63 +32,82 @@
                     </span>
                     </div>
                     <div class="status">
-                        <span>Submitted</span>
+                        <span>Field Visit</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_field_visit', engagementData)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusContainerClass(status, 3)]]">
+                <div class$="status-container [[_getStatusState(3, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">3</span>
                         <iron-icon icon="check"></iron-icon>
                     </span>
                     </div>
-                    <div class="status">
-                        <span>TPM Accepted</span>
+                    <div class="status multi-line">
+                        <span>Draft Report <br> Issued to IP</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_ip', engagementData)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusContainerClass(status, 4)]]">
+                <div class$="status-container [[_getStatusState(4, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">4</span>
                         <iron-icon icon="check"></iron-icon>
                     </span>
                     </div>
-                    <div class="status">
-                        <span>Confirmed</span>
+                    <div class="status multi-line">
+                        <span>Comments <br> Received by IP</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_comments_by_ip', engagementData)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusContainerClass(status, 5)]]">
+                <div class$="status-container [[_getStatusState(5, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">5</span>
                         <iron-icon icon="check"></iron-icon>
                     </span>
                     </div>
-                    <div class="status">
-                        <span>TPM Reported</span>
+                    <div class="status multi-line">
+                        <span>Draft Report <br> Issued to UNICEF</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_unicef', engagementData)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusContainerClass(status, 6)]]">
+                <div class$="status-container [[_getStatusState(6, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">6</span>
                         <iron-icon icon="check"></iron-icon>
                     </span>
                     </div>
+                    <div class="status multi-line">
+                        <span>Comments <br> Received by UNICEF</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_comments_by_unicef', engagementData)}}</span>
+                    </div>
+                </div>
+
+                <div class="divider"><div class="status-divider"></div></div>
+
+                <div class$="status-container [[_getStatusState(7, engagementData)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">7</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
                     <div class="status">
-                        <span>Approved</span>
+                        <span>Final Report</span>
                     </div>
                 </div>
             </div>

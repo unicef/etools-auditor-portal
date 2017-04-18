@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [status-tab-element]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <status-tab-element id="element"></status-tab-element>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<status-tab-element>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        it('has several properties and methods', function () {
+            assert.isDefined(myEl.engagementData);
+            assert.isDefined(myEl._getStatusState);
+            assert.isDefined(myEl._getStatusNumber);
+            assert.isDefined(myEl.closeMenu);
+            assert.isDefined(myEl._getFormattedDate);
+        });
+
+        it('return status number', function () {
+            assert.equal(myEl._getStatusNumber('partner_contacted'), 1);
+            assert.equal(myEl._getStatusNumber('final'), 7);
+            assert.equal(myEl._getStatusNumber('test'), 0);
+        });
+
+        it('return status state', function () {
+            myEl.engagementData = {status: 'draft_issued_to_partner'};
+
+            assert.equal(myEl._getStatusState('partner_contacted'), 'completed');
+            assert.equal(myEl._getStatusState(1), 'completed');
+            assert.equal(myEl._getStatusState(3), 'active');
+            assert.equal(myEl._getStatusState(7), 'pending');
+        });
+
+        it('close menu', function () {
+            myEl.statusBtnMenuOpened = true;
+            myEl.closeMenu();
+            assert.isFalse(myEl.statusBtnMenuOpened);
+        });
+
+        it('return formatted date', function () {
+
+            myEl.engagementData = {'date_of_draft_report_to_ip': 'Tue Apr 18 2017 11:59:35 GMT+0300 (+03)'};
+            myEl._getFormattedDate('date_of_draft_report_to_ip');
+            assert.equal(myEl._getFormattedDate('date_of_draft_report_to_ip'), 'on 18 April, 2017');
+        });
+
+    });
+</script>
+
+</body>
+</html>

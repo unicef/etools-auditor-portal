@@ -51,6 +51,7 @@
     }
 
     .status-container {
+        position: relative;
         @apply(--layout-horizontal);
 
         .status-icon, .status {
@@ -95,6 +96,19 @@
             margin-bottom: 15px;
             text-transform: capitalize;
             color: var(--gray-mid);
+
+            .status-date {
+                color: var(--gray-mid);
+                font-size: 12px;
+                font-weight: 400;
+                white-space: nowrap;
+            }
+
+            &.multi-line .status-date {
+                position: absolute;
+                bottom: -18px;
+                left: 33px;
+            }
         }
 
         &.active {

@@ -18,7 +18,21 @@ App global configuration
 
         // app endpoints
         endpoints: {
-
+            countries: {
+                url: '/data/countries.json',
+                exp: 6 * 60 * 60 * 1000, // 6h
+                cachingKey: 'countries'
+            },
+            userProfile: {
+                url: '/data/user-profile.json',
+//                exp: 30 * 60 * 1000, // 30min
+                cachingKey: 'userData'
+            },
+            engagementsList: {
+                url: '/api/audit/engagements/',
+                exp: 10 * 60 * 1000, // 10min
+                cachingKey: 'engagements'
+            }
         },
         localEndpoints: {
             countries: {

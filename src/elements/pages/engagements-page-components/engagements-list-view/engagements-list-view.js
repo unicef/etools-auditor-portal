@@ -92,7 +92,7 @@
             },
             newBtnLink: {
                 type: String,
-                value: '/engagements/new'
+                value: '/engagements/new/overview'
             }
         },
         listeners: {},

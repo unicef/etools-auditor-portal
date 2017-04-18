@@ -1,0 +1,66 @@
+<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages]-->
+<!--import [shared-styles, module-styles, app-main-header, pages-header-element,
+            status-tab-element, engagement-staff-members-tab]-->
+
+<dom-module id="new-engagement-view">
+    <template>
+        <!-- inject styles './new-engagement-view.scss'-->
+        <style include="shared-styles module-styles">
+            .view-container {
+                display: flex;
+                padding: 15px;
+            }
+        </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:tab"
+                data="{{routeData}}"></app-route>
+
+        <app-header-layout>
+
+
+            <app-header id="header" fixed shadow>
+                <app-main-header></app-main-header>
+            </app-header>
+
+            <pages-header-element show-export-button
+                                  title="Add New Engagement"></pages-header-element>
+            <div class="tab-selector">
+                <paper-tabs attr-for-selected="name" noink="" bottom-item="" role="tablist" tabindex="0" selected="{{routeData.tab}}">
+                    <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
+                    <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
+                </paper-tabs>
+            </div>
+
+            <div class="view-container">
+                <div id="pageContent">
+                    <iron-pages id="info-tabs"
+                                selected="{{routeData.tab}}"
+                                attr-for-selected="name">
+
+                        <div name="overview">
+                            <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
+                                <engagement-staff-members-tab id="staff-members"  data-items="{{engagement.staff_members}}" edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
+                            </etools-content-panel>
+                        </div>
+
+                        <div name="attachments">
+                            <!--<file-attachments-tab title="Related Documents"></file-attachments-tab>-->
+                        </div>
+
+                    </iron-pages>
+
+                </div>
+
+                <div id="sidebar">
+                    <status-tab-element engagement-data="[[engagement]]"></status-tab-element>
+                </div>
+            </div>
+
+        </app-header-layout>
+
+    </template>
+
+    <!-- inject scripts './new-engagement-view.js'-->
+</dom-module>

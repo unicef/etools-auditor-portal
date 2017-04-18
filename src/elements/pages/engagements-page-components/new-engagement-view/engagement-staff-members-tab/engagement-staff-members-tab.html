@@ -1,0 +1,127 @@
+<!--import [polymer, paper-fab, paper-icon-button, paper-input, etools-checkable-input, iron-icons/communication-icons]-->
+<!--import [tab-inputs-styles, repeatable-data-sets-behavior, custom-validator]-->
+
+<dom-module id="engagement-staff-members-tab">
+    <template>
+        <!-- inject styles './engagement-staff-members-tab.scss'-->
+        <style include="tab-inputs-styles"></style>
+
+        <div hidden$="[[_emptyList(dataItems.length)]]">
+            <template is="dom-repeat" items="{{dataItems}}">
+
+
+                <div class="row-h repeatable-item-container">
+                    <div class="repeatable-item-actions">
+                        <div class="row-v actions">
+                            <paper-icon-button class="action delete"
+                                               on-tap="_openDeleteConfirmation"
+                                               data-args$="[[index]]"
+                                               disabled="[[!_canBeRemoved(index)]]"
+                                               hidden$="[[!editMode]]"
+                                               icon="cancel"></paper-icon-button>
+                        </div>
+                    </div>
+                    <div class="repeatable-item-content">
+                        <div class="row-h group">
+                            <div class="input-container" title="{{_getTitleValue(item.title)}}">
+                                <!-- Position -->
+                                <paper-input label="Position"
+                                             value="{{item.title}}"
+                                             placeholder="&#8212;"
+                                             disabled$="[[!editMode]]"
+                                             class$="disabled-as-readonly">
+                                </paper-input>
+                            </div>
+                            <div class="input-container" title="{{_getTitleValue(item.first_name)}}">
+                                <!-- First Name -->
+                                <paper-input label="First Name"
+                                             value="{{item.first_name}}"
+                                             placeholder="&#8212;"
+                                             disabled$="[[!editMode]]"
+                                             class="disabled-as-readonly validate-input"
+                                             required
+                                             error-message="First name is required">
+                                </paper-input>
+                            </div>
+                            <div class="input-container" title="{{_getTitleValue(item.last_name)}}">
+                                <!-- Last Name -->
+                                <paper-input label="Last Name"
+                                             value="{{item.last_name}}"
+                                             placeholder="&#8212;"
+                                             disabled$="[[!editMode]]"
+                                             class="disabled-as-readonly validate-input"
+                                             required
+                                             error-message="Last name is required">
+                                </paper-input>
+                            </div>
+                        </div>
+                        <div class="row-h group">
+                            <div class="input-container" title="{{_getTitleValue(item.phone)}}">
+                                <!-- Phone number -->
+                                <paper-input label="Phone number"
+                                             value="{{item.phone}}"
+                                             allowed-pattern="[\d]"
+                                             placeholder="&#8212;"
+                                             disabled$="[[!editMode]]"
+                                             class="disabled-as-readonly">
+                                    <iron-icon prefix icon="communication:phone"></iron-icon>
+                                </paper-input>
+                            </div>
+                            <div class="input-container" title="{{_getTitleValue(item.email)}}">
+                                <!-- Email address -->
+                                <paper-input label="E-mail address"
+                                             value="{{item.email}}"
+                                             placeholder="&#8212;"
+                                             disabled$="[[!editMode]]"
+                                             class="disabled-as-readonly validate-input"
+                                             validator="emailValidator"
+                                             error-message="A valid email address is required">
+                                    <iron-icon prefix icon="communication:email"></iron-icon>
+                                </paper-input>
+                            </div>
+
+                        </div>
+
+                        <div class="row-h group">
+                            <!-- Active? -->
+                            <div class="staff-check-box active-box input-container">
+                                <etools-checkable-input checked="{{item.active}}"
+                                                        label="Active staff member?"
+                                                        type="checkbox"
+                                                        label-alignment="right"
+                                                        readonly$="[[!editMode]]">
+                                </etools-checkable-input>
+                            </div>
+                            <!--receive notification-->
+                            <div class="staff-check-box notify-box input-container input-container-ms">
+                                <etools-checkable-input checked="{{item.notify}}"
+                                                        label="Receive notification on TPM tasks?"
+                                                        type="checkbox"
+                                                        label-alignment="right"
+                                                        readonly$="[[!editMode]]">
+                                </etools-checkable-input>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </template>
+        </div>
+
+        <custom-validator id="email-validator" validator-name="emailValidator"></custom-validator>
+
+        <div class="row-h" hidden$="[[!_emptyList(dataItems.length)]]">
+            <p>There are no assessments added.</p>
+        </div>
+
+        <div id="bottom-actions" class="row-h" hidden$="[[!editMode]]">
+            <paper-fab icon="add"
+                       on-tap="_addNewStaffMember"
+                       title="Add"></paper-fab>
+        </div>
+
+    </template>
+
+    <!-- inject scripts './engagement-staff-members-tab.js'-->
+</dom-module>
