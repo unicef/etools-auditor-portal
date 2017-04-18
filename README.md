@@ -1,5 +1,5 @@
-eTools Frontend Template
-====================================
+Etools Auditor Portal Front-End module
+======================================
 
 Installation
 ------------
