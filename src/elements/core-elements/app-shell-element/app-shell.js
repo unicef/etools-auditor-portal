@@ -105,6 +105,7 @@ Polymer({
             'Oops you hit a 404!';
 
         this.fire('toast', {text: message});
+        this.fire('global-loading', {type: 'initialisation'});
     },
     _profileLoaded: function() {
         if (this.routeData) { this.page = this.routeData.page || 'partners'; }

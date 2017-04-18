@@ -1,0 +1,114 @@
+<!--import [polymer, iron-icons, iron-icons/av-icons, iron-flex-layout, paper-button,
+            etools-content-panel, paper-button, paper-menu-button, paper-icon-button, paper-menu, paper-item]-->
+
+<dom-module id="status-tab-element">
+    <template>
+        <!-- inject styles './status-tab-element.scss'-->
+        <style include="module-styles"></style>
+
+        <etools-content-panel title="Status">
+
+            <div class="status-list">
+                <div class$="status-container [[_getStatusContainerClass(status, 1)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">1</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
+                    <div class="status">
+                        <span>Draft</span>
+                    </div>
+                </div>
+
+                <div class="divider"><div class="status-divider"></div></div>
+
+                <div class$="status-container [[_getStatusContainerClass(status, 2)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">2</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
+                    <div class="status">
+                        <span>Submitted</span>
+                    </div>
+                </div>
+
+                <div class="divider"><div class="status-divider"></div></div>
+
+                <div class$="status-container [[_getStatusContainerClass(status, 3)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">3</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
+                    <div class="status">
+                        <span>TPM Accepted</span>
+                    </div>
+                </div>
+
+                <div class="divider"><div class="status-divider"></div></div>
+
+                <div class$="status-container [[_getStatusContainerClass(status, 4)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">4</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
+                    <div class="status">
+                        <span>Confirmed</span>
+                    </div>
+                </div>
+
+                <div class="divider"><div class="status-divider"></div></div>
+
+                <div class$="status-container [[_getStatusContainerClass(status, 5)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">5</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
+                    <div class="status">
+                        <span>TPM Reported</span>
+                    </div>
+                </div>
+
+                <div class="divider"><div class="status-divider"></div></div>
+
+                <div class$="status-container [[_getStatusContainerClass(status, 6)]]">
+                    <div class="status-icon">
+                    <span class="icon-wrapper">
+                        <span class="status-nr">6</span>
+                        <iron-icon icon="check"></iron-icon>
+                    </span>
+                    </div>
+                    <div class="status">
+                        <span>Approved</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="status-buttons">
+                <paper-button raised>
+                    <span>Save</span>
+                    <paper-menu-button horizontal-align="right" opened="{{statusBtnMenuOpened}}">
+                        <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+                        <div class="dropdown-content">
+                            <div class="other-title">Other Actions</div>
+                            <div class="other-options" on-click="closeMenu">Draft</div>
+                        </div>
+                    </paper-menu-button>
+                </paper-button>
+            </div>
+
+        </etools-content-panel>
+
+    </template>
+
+    <!-- inject scripts './status-tab-element.js'-->
+</dom-module>

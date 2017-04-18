@@ -55,6 +55,6 @@
     "through2": "^2.0.3"
   },
   "scripts": {
-    "test": "./node_modules/.bin/wct ./build/tests/index.spec.html"
+    "test": "xvfb-run ./node_modules/.bin/wct ./build/tests/index.spec.html"
   }
 }

@@ -34,6 +34,10 @@ Polymer({
         exportType: {
             type: String
         },
+        link: {
+            type: String,
+            value: ''
+        },
         exportList: Array
     },
     behaviors: [etoolsAppConfig.globals],
@@ -58,7 +62,13 @@ Polymer({
         window.URL.revokeObjectURL(a.href);
         this.set('csvEndpoint', undefined);
     },
-    addNewVendor: function() {
-        this.fire('addNewVendor');
+    addNewTap: function() {
+        this.fire('add-new-tap');
+    },
+    _showLink: function(link) {
+        return !!link;
+    },
+    _showBtn: function(link) {
+        return !link;
     }
 });

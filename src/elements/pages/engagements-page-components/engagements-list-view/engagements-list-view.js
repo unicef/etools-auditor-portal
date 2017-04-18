@@ -89,6 +89,10 @@
             engagementsList: {
                 type: Array,
                 value: []
+            },
+            newBtnLink: {
+                type: String,
+                value: '/engagements/new'
             }
         },
         listeners: {},
