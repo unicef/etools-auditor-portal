@@ -51,7 +51,7 @@ Polymer({
     attached: function() {
         this.baseUrl = this.basePath;
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
-        if (this.route.path === '/' || this.route.path === '/tpm/') {
+        if (this.route.path === '/' || this.route.path === '/ap/') {
             let path = `${this.basePath}engagements/list`;
             this.set('route.path', path);
         }
@@ -108,7 +108,7 @@ Polymer({
         this.fire('global-loading', {type: 'initialisation'});
     },
     _profileLoaded: function() {
-        if (this.routeData) { this.page = this.routeData.page || 'partners'; }
+        if (this.routeData) { this.page = this.routeData.page || 'engagements'; }
     },
     _handleGlobalLoading: function(event) {
         if (!event.detail || !event.detail.type) {

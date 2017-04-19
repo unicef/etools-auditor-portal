@@ -27,7 +27,7 @@ function sendFileSafe(filePath, res) {
     if (filePath.indexOf('.') < 0) {
         filePath = '/index.html';
     }
-    if (filePath.indexOf('/tpm') === 0) {
+    if (filePath.indexOf('/tpm') === 0 || filePath.indexOf('/ap') === 0) {
         filePath = filePath.slice(4);
     }
 

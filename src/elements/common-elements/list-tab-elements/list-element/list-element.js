@@ -20,7 +20,7 @@ Polymer({
                     status: {
                         partner_contacted: 'Partner was Contacted'
                     }
-                }
+                };
             }
         }
     },
@@ -41,7 +41,7 @@ Polymer({
                 value = value[fields.shift()];
             }
         }
-        if (item.name === 'type' || item.name ==='status') {
+        if (item.name === 'type' || item.name === 'status') {
             value = this._refactorValue(item.name, value);
         }
 
