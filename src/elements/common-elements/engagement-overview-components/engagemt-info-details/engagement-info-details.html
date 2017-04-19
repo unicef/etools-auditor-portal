@@ -1,0 +1,156 @@
+<!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, etools-datepicker/etools-datepicker-button]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior]-->
+
+<dom-module id="engagement-info-details">
+    <template>
+        <style include="tab-inputs-styles module-styles">
+            :host {
+                position: relative;
+                display: block;
+                margin-bottom: 20px;
+            }
+        </style>
+
+
+        <etools-content-panel class="content-section clearfix" title="Engagement Overview">
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Purchase Order -->
+                    <paper-input label="Purchase Order"
+                                 value="{{data.engagement.order_number}}"
+                                 placeholder="&#8212;"
+                                 class="disabled-as-readonly"
+                                 disabled$="[[!editMode]]"></paper-input>
+                </div>
+                <div class="input-container">
+                    <!-- Contract Start Date -->
+                    <paper-input label="Contract Start Date"
+                                 class="disabled-as-readonly"
+                                 disabled
+                                 id="contractStartDateInput"
+                                 value="[[prettyDate(data.engagement.contract_start_date)]]"
+                                 on-down="openDatePicker"
+                                 data-selector="contractStartDate"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="contractStartDate"
+                                                  date="[[prettyDate(data.engagement.contract_start_date)]]"
+                                                  format="YYYY-MM-DD"
+                                                  pretty-date="{{prettyDate(data.engagement.contract_start_date)}}"
+
+                                                  no-init show-clear-btn></etools-datepicker-button>
+                    </paper-input>
+                </div>
+                <div class="input-container">
+                    <!-- Contract End Date -->
+                    <paper-input label="Contract End Date"
+                                 class="disabled-as-readonly"
+                                 disabled
+                                 id="contractEndDateInput"
+                                 value="[[prettyDate(data.engagement.contract_end_date)]]"
+                                 on-down="openDatePicker"
+                                 data-selector="contractEndDate"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="contractEndDate"
+                                                  date="[[prepareDate(data.engagement.contract_end_date)]]"
+                                                  format="YYYY-MM-DD"
+                                                  pretty-date="{{data.engagement.contract_end_date}}"
+                                                  no-init show-clear-btn></etools-datepicker-button>
+                    </paper-input>
+                </div>
+            </div>
+
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Partner -->
+                    <etools-searchable-multiselection-menu
+                            options="[[partners]]"
+                            class="disabled-as-readonly"
+                            readonly="[[!editMode]]"
+                            disabled="[[!editMode]]"
+                            label="Partner"
+                            placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                </div>
+                <div class="input-container">
+                    <!-- Date Partner Was Contacted -->
+                    <paper-input label="Date Partner Was Contacted"
+                                 class="disabled-as-readonly"
+                                 disabled$="[[!editMode]]"
+                                 id="contactedDateInput"
+                                 value="[[prettyDate(data.partner_contracted_at)]]"
+                                 on-down="openDatePicker"
+                                 data-selector="contactedDate"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="contactedDate"
+                                                  date="[[prepareDate(data.partner_contracted_at)]]"
+                                                  format="YYYY-MM-DD"
+                                                  pretty-date="{{data.partner_contracted_at}}"
+                                                  no-init show-clear-btn></etools-datepicker-button>
+                    </paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Audit Type -->
+                    <etools-searchable-multiselection-menu
+                            options="[[auditTypes]]"
+                            class="disabled-as-readonly"
+                            readonly="[[!editMode]]"
+                            disabled="[[!editMode]]"
+                            value="{{data.type}}"
+                            custom-object-options
+                            option-value="value"
+                            option-label="label"
+                            label="Audit Type"
+                            placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                </div>
+            </div>
+
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Period Start Date -->
+                    <paper-input label="Period Start Date"
+                                 class="disabled-as-readonly"
+                                 disabled$="[[!editMode]]"
+                                 id="periodStartDateInput"
+                                 value="[[prettyDate(data.start_date)]]"
+                                 on-down="openDatePicker"
+                                 data-selector="periodStartDate"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="periodStartDate"
+                                                  date="[[prepareDate(data.start_date)]]"
+                                                  format="YYYY-MM-DD"
+                                                  pretty-date="{{data.start_date}}"
+                                                  no-init show-clear-btn></etools-datepicker-button>
+                    </paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Period End Date -->
+                    <paper-input label="Period Start Date"
+                                 class="disabled-as-readonly"
+                                 disabled$="[[!editMode]]"
+                                 id="periodEndDateInput"
+                                 value="[[prettyDate(data.end_date)]]"
+                                 on-down="openDatePicker"
+                                 data-selector="periodEndDate"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="periodEndDate"
+                                                  date="[[prepareDate(data.end_date)]]"
+                                                  format="YYYY-MM-DD"
+                                                  pretty-date="{{data.end_date}}"
+                                                  no-init show-clear-btn></etools-datepicker-button>
+                    </paper-input>
+                </div>
+            </div>
+
+
+        </etools-content-panel>
+
+    </template>
+
+    <!-- inject scripts './engagement-info-details.js'-->
+</dom-module>
