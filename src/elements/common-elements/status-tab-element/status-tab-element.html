@@ -114,15 +114,24 @@
 
 
             <div class="status-buttons">
-                <paper-button raised on-tap="_mainAction">
-                    <span>Save</span>
-                    <paper-menu-button horizontal-align="right" opened="{{statusBtnMenuOpened}}">
-                        <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
-                        <div class="dropdown-content">
-                            <div class="other-title">Other Actions</div>
-                            <div class="other-options" on-click="closeMenu">Draft</div>
-                        </div>
-                    </paper-menu-button>
+                <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]">
+                    <span>[[mainActionText]]</span>
+                    <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
+
+                        <paper-menu-button horizontal-align="right" opened="{{statusBtnMenuOpened}}">
+                            <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+                            <div class="dropdown-content">
+                                <div class="other-title">Other Actions</div>
+
+                                <template is="dom-repeat" items="[[otherActions]]">
+                                    <div class="other-options" on-click="closeMenu" event-name$="[[item.event]]">{{item.name}}</div>
+                                </template>
+
+                            </div>
+                        </paper-menu-button>
+
+                    </template>
+
                 </paper-button>
             </div>
 

@@ -16,9 +16,9 @@
 
         paper-button {
             height: 35px;
-            padding-right: 0;
             color: #ffffff;
             background-color: var(--module-primary);
+            &.with-actions { padding-right: 0; }
 
             span { padding: 0 29px; }
         }
@@ -41,8 +41,8 @@
         .other-options {
             padding: 13px;
             color: var(--gray-dark);
-            background-color: rgba(0, 0, 0, 0.1);
             font-weight: bold;
+            &:hover { background-color: rgba(0, 0, 0, 0.1); }
         }
     }
 

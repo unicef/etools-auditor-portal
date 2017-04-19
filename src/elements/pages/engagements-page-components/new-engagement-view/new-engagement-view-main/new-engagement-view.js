@@ -14,7 +14,7 @@ Polymer({
             }
         }
     },
-    listeners: {'save-engagement': '_saveNewEngagement'},
+    listeners: {'main-action-activated': '_saveNewEngagement'},
     _allowEdit: function() {
         return true;
     },

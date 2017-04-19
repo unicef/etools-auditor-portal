@@ -8,6 +8,12 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        otherActions: {
+            type: Array,
+            value: function() {
+                return [];
+            }
         }
     },
     _getStatusState: function(statusNumber) {
@@ -32,7 +38,23 @@ Polymer({
 
         return moment.utc(date).format(format);
     },
-    _mainAction: function() {
-        this.fire('save-engagement')
+    _btnClicked: function(e) {
+        if (!e || !e.target) { return; }
+        let target = e.target,
+            isMainAction = !target.closest('paper-menu-button');
+
+        if (isMainAction) {
+            this.fire('main-action-activated');
+            return;
+        }
+        if (target.hasAttribute('event-name')) {
+            this.fire(target.getAttribute('event-name'))
+        }
+    },
+    _showOtherActions: function(actions) {
+        return !!actions.length;
+    },
+    _setBtnClass: function(actions) {
+        if (actions.length) return 'with-actions';
     }
 });
