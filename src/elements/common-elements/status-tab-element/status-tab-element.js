@@ -31,5 +31,8 @@ Polymer({
             format = 'on DD MMMM, YYYY';
 
         return moment.utc(date).format(format);
+    },
+    _mainAction: function() {
+        this.fire('save-engagement')
     }
 });
