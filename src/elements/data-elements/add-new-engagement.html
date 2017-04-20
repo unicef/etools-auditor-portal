@@ -33,7 +33,7 @@
                 this.fire('engagement-created', {success: true, data: data.detail});
                 this.fire('global-loading', {type: 'create-engagement'});
                 //Invalidate IDB
-                etoolsAppConfig.globals.appDexieDb.collectionsList.update('engagements', {expire: 0})
+                this.appDexieDb.collectionsList.update('engagements', {expire: 0});
             },
 
             _handleError: function () {

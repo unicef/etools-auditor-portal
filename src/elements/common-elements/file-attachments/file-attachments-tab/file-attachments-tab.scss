@@ -1,0 +1,11 @@
+:host {
+    position: relative;
+    display: block;
+
+
+    --ecp-content: #{'{
+        padding:  0
+    }'};
+
+    .no-attachments { padding: 16px 20px; }
+}

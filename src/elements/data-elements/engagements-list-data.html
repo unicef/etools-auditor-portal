@@ -4,7 +4,7 @@
 
     <template>
 
-        <etools-ajax
+        <etools-ajax logs
                 endpoint="[[endpoint]]"
                 caching-storage="custom"
                 dexie-db-collection="engagements"
@@ -63,6 +63,8 @@
             },
 
             _engagementsLoaded: function(data) {
+                this.updateListData = false;
+                this.set('endpoint', {url: null});
                 this.engagements = data.detail;
                 if (this._validatePageQuery()) {
                     this.getPartnersList();
@@ -71,7 +73,7 @@
             _responseError: function() {},
 
             getPartnersList: function() {
-                if (!this.engagements.length) return;
+                if (!this.engagements.length || this.updateListData) return;
                 if (this.currentTransaction) {
                     this.currentTransaction.abort();
                 }
@@ -119,6 +121,18 @@
 
             _setListLength: function(engagements) {
                 return engagements.length;
+            },
+
+            checkExpire: function() {
+                if (this.updateListData === undefined || this.updateListData) { return; }
+                this.appDexieDb.collectionsList
+                        .get('engagements')
+                        .then((data) => {
+                            if (data && +data.expire <= 0) {
+                                this.updateListData = true;
+                                this.endpoint = this.getEndpoint('engagementsList');
+                            }
+                        })
             }
 
         });

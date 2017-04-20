@@ -96,6 +96,9 @@
             }
         },
         listeners: {},
-        _showAddButton: function() { return true; }
+        _showAddButton: function() { return true; },
+        checkExpire: function() {
+            this.$.listData.checkExpire();
+        }
     });
 })();

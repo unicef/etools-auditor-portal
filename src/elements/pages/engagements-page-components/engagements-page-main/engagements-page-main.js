@@ -23,6 +23,7 @@ Polymer({
     _routeConfig: function(view) {
         if (!this.route || !~this.route.prefix.indexOf('/engagements')) { return; }
         if (view === 'list') {
+            this.$.listPage.checkExpire();
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
             this.view = 'list';

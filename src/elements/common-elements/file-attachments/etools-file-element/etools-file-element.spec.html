@@ -1,0 +1,732 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [etools-file-element]-->
+</head>
+<body>
+
+<test-fixture id="etools-file-element-fixture">
+    <template>
+        <etools-file-element></etools-file-element>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<etools-file-element>', function () {
+        var myEl;
+        beforeEach(function () {
+            myEl = fixture('etools-file-element-fixture');
+        });
+
+        describe('_showFileType', function () {
+            it('returns true when fileTypesLength > 0, readonly is false and activateFileTypes is true', function () {
+                myEl.activateFileTypes = true;
+
+                assert.equal(myEl._showFileType(1, false), true);
+            });
+
+            it('returns false when fileTypesLength = 0', function () {
+                myEl.activateFileTypes = true;
+
+                assert.equal(myEl._showFileType(0, false), false);
+            });
+
+            it('returns false when readonly is true', function () {
+                myEl.activateFileTypes = true;
+
+                assert.equal(myEl._showFileType(1, true), false);
+            });
+
+            it('returns false when activateFileTypes is false', function () {
+                myEl.activateFileTypes = false;
+
+                assert.equal(myEl._showFileType(1, false), false);
+            });
+        });
+
+        describe('_showReadonlyType', function () {
+            it('returns true when readonly and activateFileTypes is true', function () {
+                myEl.activateFileTypes = true;
+
+                assert.equal(myEl._showReadonlyType(true), true);
+            });
+
+            it('returns false when readonly is false', function () {
+                myEl.activateFileTypes = true;
+
+                assert.equal(myEl._showReadonlyType(false), false);
+            });
+
+            it('returns false when activateFileTypes is false', function () {
+                myEl.activateFileTypes = false;
+
+                assert.equal(myEl._showReadonlyType(true), false);
+            });
+        });
+
+        describe('_getFileTypeStr', function () {
+            beforeEach(function () {
+                var fileTypes = [
+                    {id: '1', name: 'Training materials'},
+                    {id: '2', name: 'ToRs'},
+                    {id: '3', name: 'Other'}
+                ];
+
+                myEl.fileTypes = fileTypes;
+            });
+
+            it('returns null when fileTypes Array is empty', function () {
+                myEl.fileTypes = [];
+
+                assert.isNull(myEl._getFileTypeStr('1'));
+            });
+
+            it('returns null when fileType is not found', function () {
+                assert.isNull(myEl._getFileTypeStr('4'));
+            });
+
+            it('returns type name', function () {
+                assert.equal(myEl._getFileTypeStr('3'), myEl.fileTypes[2].name);
+            });
+        });
+
+        describe('_showLabel', function () {
+            it('returns true when label is not empty String', function () {
+                assert.equal(myEl._showLabel('label'), true);
+            });
+
+            it('returns false when label is empty String', function () {
+                assert.equal(myEl._showLabel(''), false);
+            });
+
+            it('returns false when label is not String', function () {
+                assert.equal(myEl._showLabel(null), false);
+            });
+        });
+
+        describe('_showUploadBtn', function () {
+            it('returns true when readonly = false, multiple = true and filesLength >= 0', function () {
+                myEl.multiple = true;
+
+                assert.equal(myEl._showUploadBtn(0, false), true);
+                assert.equal(myEl._showUploadBtn(1, false), true);
+                assert.equal(myEl._showUploadBtn(2, false), true);
+            });
+
+            it('returns true when readonly = false, multiple = false and filesLength = 0', function () {
+                myEl.multiple = false;
+
+                assert.equal(myEl._showUploadBtn(0, false), true);
+            });
+
+            it('returns false when readonly = false, multiple = false and filesLength > 0', function () {
+                myEl.multiple = false;
+
+                assert.equal(myEl._showUploadBtn(1, false), false);
+            });
+
+            it('returns false when readonly = true', function () {
+                assert.equal(myEl._showUploadBtn(1, true), false);
+            });
+        });
+
+        describe('_showNoFileAttachedMsg', function () {
+            it('returns true when filesLength = 0 and readonly = true', function () {
+                assert.equal(myEl._showNoFileAttachedMsg(0, true), true);
+            });
+
+            it('returns false when filesLength != 0 or readonly = false', function () {
+                assert.equal(myEl._showNoFileAttachedMsg(0, false), false);
+                assert.equal(myEl._showNoFileAttachedMsg(1, false), false);
+                assert.equal(myEl._showNoFileAttachedMsg(1, true), false);
+            });
+        });
+
+        describe('_showDownloadBtn', function () {
+            it('returns true when file has an URL and allowDownload = true', function () {
+                var file = {file_name: 'name', type: '1', attachment_file: 'url'};
+
+                assert.equal(myEl._showDownloadBtn(file, true), true);
+            });
+
+            it('returns true when file has a File object and allowDownload = true', function () {
+                var file = {file_name: 'name'};
+
+                file.raw = new File([''], 'name');
+
+                assert.equal(myEl._showDownloadBtn(file, true), true);
+            });
+
+            it('returns false when allowDownload = false', function () {
+                var file = {file_name: 'name', type: '1', attachment_file: 'url'};
+
+                assert.equal(myEl._showDownloadBtn(file, false), false);
+            });
+
+            it('returns false when URL or File object is not defined', function () {
+                var file = {file_name: 'name', type: '1'};
+
+                assert.equal(myEl._showDownloadBtn(file, true), false);
+            });
+        });
+
+        describe('_showChangeBtn', function () {
+            it('returns true when file is defined, allowChange = true and readonly = false', function () {
+                assert.equal(myEl._showChangeBtn({}, true, false), true);
+            });
+
+            it('returns false when file is not defined', function () {
+                assert.equal(myEl._showChangeBtn(null, true, false), false);
+            });
+
+            it('returns false when allowChange = false', function () {
+                assert.equal(myEl._showChangeBtn({}, false, false), false);
+            });
+
+            it('returns false when readonly = true', function () {
+                assert.equal(myEl._showChangeBtn({}, true, true), false);
+            });
+        });
+
+        describe('_showDeleteBtn', function () {
+            it('returns true when file is defined, allowDelete = true and readonly = false', function () {
+                assert.equal(myEl._showDeleteBtn({}, true, false), true);
+            });
+
+            it('returns false when file is not defined', function () {
+                assert.equal(myEl._showDeleteBtn(null, true, false), false);
+            });
+
+            it('returns false when allowDelete = false', function () {
+                assert.equal(myEl._showDeleteBtn({}, false, false), false);
+            });
+
+            it('returns false when readonly = true', function () {
+                assert.equal(myEl._showDeleteBtn({}, true, true), false);
+            });
+        });
+
+        describe('_getFileSelectedClass', function () {
+            it('returns "" when file has an URL and allowDownload = true', function () {
+                var file = {file_name: 'name', type: '1', attachment_file: 'url'};
+
+                assert.equal(myEl._getFileSelectedClass(file, true), '');
+            });
+
+            it('returns "" when file has a File object and allowDownload = true', function () {
+                var file = {file_name: 'name'};
+
+                file.raw = new File([''], 'name');
+
+                assert.equal(myEl._getFileSelectedClass(file, true), '');
+            });
+
+            it('returns "only-selected" when allowDownload = false', function () {
+                var file = {file_name: 'name', type: '1', attachment_file: 'url'};
+
+                assert.equal(myEl._getFileSelectedClass(file, false), 'only-selected');
+            });
+
+            it('returns "only-selected" when URL or File object is not defined', function () {
+                var file = {file_name: 'name', type: '1'};
+
+                assert.equal(myEl._getFileSelectedClass(file, true), 'only-selected');
+            });
+        });
+
+        describe('_openFileChooser', function () {
+            it('triggers click event on the fileInput', function (done) {
+                myEl.$.fileInput.addEventListener('click', function (event) {
+                    assert.isDefined(event);
+                    done();
+                });
+
+                myEl._openFileChooser();
+            });
+        });
+
+        describe('_replaceFile', function () {
+            beforeEach(function () {
+                var files = [
+                    {file_name: 'name', type: '1', attachment_file: 'url'},
+                    {file_name: 'name2', type: '1', attachment_file: 'url2'}
+                ];
+
+                myEl.multiple = true;
+                myEl.files = files;
+            });
+
+            it('sets fileInput multiple attribute when element.multiple is true', function () {
+                var newFile = new File([''], 'newName');
+                var fileInput = myEl.$.fileInput;
+
+                myEl.multiple = true;
+                myEl.changeFileIndex = 1;
+                fileInput.removeAttribute('multiple');
+                myEl._replaceFile(newFile);
+
+                assert.equal(fileInput.getAttribute('multiple'), 'true');
+            });
+
+            it('returns false and resets changeFileIndex when changeFileIndex < 0', function () {
+                var newFile = new File([''], 'newName');
+
+                myEl.changeFileIndex = -1;
+
+                assert.equal(myEl._replaceFile(newFile), false);
+                assert.equal(myEl.changeFileIndex, -1);
+            });
+
+            it('returns true, resets changeFileIndex and fileInput.value when changeFileIndex is out of range', function () {
+                var newFile = new File([''], 'newName');
+                var fileInput = myEl.$.fileInput;
+
+                myEl.changeFileIndex = myEl.files.length + 1;
+
+                assert.equal(myEl._replaceFile(newFile), true);
+                assert.equal(myEl.changeFileIndex, -1);
+                assert.equal(fileInput.value, '');
+            });
+
+            it('returns false, resets changeFileIndex and fileInput.value when file with such name is already selected', function () {
+                var fileInput = myEl.$.fileInput;
+                var newFile;
+                var newName;
+
+                myEl.changeFileIndex = 0;
+                newName = myEl.files[myEl.changeFileIndex].file_name;
+                newFile = new File([''], newName);
+
+                assert.equal(myEl._replaceFile(newFile), false);
+                assert.equal(myEl.changeFileIndex, -1);
+                assert.equal(fileInput.value, '');
+            });
+
+
+            it('_displayAlreadySelectedWarning() method was called if file is already selected', function () {
+                var spy = sinon.spy(myEl, '_displayAlreadySelectedWarning');
+                var newFile;
+                var newName;
+
+                myEl.changeFileIndex = 0;
+                newName = myEl.files[myEl.changeFileIndex].file_name;
+                newFile = new File([''], newName);
+
+                assert.equal(myEl._replaceFile(newFile), false);
+                assert.equal(spy.calledOnce, true);
+            });
+
+            it('replaces file with newFile, resets changeFileIndex and fileInput.value, and returns true', function () {
+                var fileInput = myEl.$.fileInput;
+                var newFile = new File([''], 'newName');
+                var changeIndex = 0;
+
+                myEl.changeFileIndex = changeIndex;
+
+                assert.equal(myEl._replaceFile(newFile), true);
+                assert.equal(myEl.changeFileIndex, -1);
+                assert.equal(fileInput.value, '');
+
+                assert.equal(myEl.files[changeIndex].file_name, newFile.name);
+                assert.equal(myEl.files[changeIndex].raw, newFile);
+                assert.isNull(myEl.files[changeIndex].path);
+            });
+        });
+
+        describe('_addMultipleFiles', function () {
+            beforeEach(function () {
+                var files = [
+                    {file_name: 'name', type: '1', attachment_file: 'url'},
+                    {file_name: 'name2', type: '1', attachment_file: 'url2'}
+                ];
+
+                myEl.multiple = true;
+                myEl.files = files;
+            });
+
+            it('no changes in files when argument is not Array', function () {
+                myEl._addMultipleFiles({});
+
+                assert.equal(myEl.files.length, 2);
+            });
+
+            it('adds new files', function () {
+                var newFiles = [];
+
+                newFiles.push(new File([''], 'newFile'));
+                newFiles.push(new File([''], 'newFile2'));
+
+                assert.notEqual(myEl._addMultipleFiles(newFiles), false);
+                assert.equal(myEl.files.length, 4);
+            });
+
+            it('skips already selected files and displays warning', function () {
+                var newFiles = [];
+                var spy = sinon.spy(myEl, '_displayAlreadySelectedWarning');
+
+                newFiles.push(new File([''], 'newFile'));
+                newFiles.push(new File([''], 'name'));
+
+                assert.notEqual(myEl._addMultipleFiles(newFiles), false);
+                assert.equal(myEl.files.length, 3);
+                assert.equal(spy.calledOnce, true);
+            });
+
+            it('skips objects which type is not File', function () {
+                var newFiles = [];
+
+                newFiles.push(new File([''], 'newFile'));
+                newFiles.push({});
+
+                assert.notEqual(myEl._addMultipleFiles(newFiles), false);
+                assert.equal(myEl.files.length, 3);
+            });
+        });
+
+        describe('_checkFileAlreadySelected', function () {
+            beforeEach(function () {
+                var files = [
+                    {file_name: 'name', type: '1', attachment_file: 'url'},
+                    {file_name: 'name2', type: '1', attachment_file: 'url2'}
+                ];
+
+                myEl.multiple = true;
+                myEl.files = files;
+            });
+
+            it('returns empty Array', function () {
+                var file = new File([''], 'newFile');
+                var array = myEl._checkFileAlreadySelected(file);
+
+                assert.equal(array.length, 0);
+            });
+
+            it('returns Array with already selected files', function () {
+                var file = new File([''], 'name');
+                var array = myEl._checkFileAlreadySelected(file);
+
+                assert.equal(array.length, 1);
+                assert.equal(array[0], myEl.files[0]);
+            });
+        });
+
+        describe('_getFileModel', function () {
+            it('returns copy of fileModel object', function () {
+                myEl.fileModel = { foo: 'bar', bar: 'foo'};
+
+                assert.notEqual(myEl._getFileModel(), myEl.fileModel);
+                assert.deepEqual(myEl._getFileModel(), myEl.fileModel);
+            });
+
+            it('returns default object', function () {
+                assert.deepEqual(myEl._getFileModel(), {
+                    id: null,
+                    file_name: null,
+                    path: null,
+                    raw: null
+                });
+            });
+        });
+
+        describe('_addSingleFile', function () {
+            it('adds file when it is instance of File object and files.length = 0', function () {
+                assert.equal(myEl.files.length, 0);
+                myEl._addSingleFile(new File([''], 'newFile'));
+                assert.equal(myEl.files.length, 1);
+            });
+
+            it('no changes in array when file is not File object', function () {
+                assert.equal(myEl.files.length, 0);
+                myEl._addSingleFile({});
+                assert.equal(myEl.files.length, 0);
+            });
+
+            it('no changes in array when files.length > 0', function () {
+                assert.equal(myEl.files.length, 0);
+                myEl._addSingleFile(new File([''], 'newFile'));
+                assert.equal(myEl.files.length, 1);
+                myEl._addSingleFile(new File([''], 'newFile2'));
+                assert.equal(myEl.files.length, 1);
+            });
+        });
+
+        describe('_fileSelected', function () {
+            var e = {target: {files: []}};
+
+            it('calls _replaceFile() method', function () {
+                var file = new File([''], 'name');
+                var spyReplaceFile = sinon.spy(myEl, '_replaceFile');
+
+                e.target.files = [file];
+                myEl._fileSelected(e);
+
+                assert.equal(spyReplaceFile.calledOnce, true);
+            });
+
+            it('not calls _addMultipleFiles() and _addSingleFile() methods', function () {
+                var file = new File([''], 'name');
+                var spyAddMultiple = sinon.spy(myEl, '_addMultipleFiles');
+                var spyAddSingle = sinon.spy(myEl, '_addSingleFile');
+
+                sinon.stub(myEl, '_replaceFile').returns(true);
+
+                e.target.files = [file];
+                myEl._fileSelected(e);
+
+                assert.equal(spyAddMultiple.called, false);
+                assert.equal(spyAddSingle.called, false);
+            });
+
+            it('calls _addMultipleFiles() method', function () {
+                var file = new File([''], 'name');
+                var spyAddMultiple = sinon.spy(myEl, '_addMultipleFiles');
+
+                sinon.stub(myEl, '_replaceFile').returns(false);
+
+                e.target.files = [file];
+                myEl.multiple = true;
+                myEl._fileSelected(e);
+
+                assert.equal(spyAddMultiple.calledOnce, true);
+            });
+
+            it('calls _addSingleFile() method', function () {
+                var file = new File([''], 'name');
+                var spyAddSingle = sinon.spy(myEl, '_addSingleFile');
+
+                sinon.stub(myEl, '_replaceFile').returns(false);
+
+                e.target.files = [file];
+                myEl._fileSelected(e);
+
+                assert.equal(spyAddSingle.calledOnce, true);
+            });
+        });
+
+        describe('_changeFile', function () {
+            var e = {model: {index: 0}};
+
+            it('sets changeFileIndex property', function () {
+                myEl._changeFile(e);
+                assert.equal(myEl.changeFileIndex, e.model.index);
+            });
+
+            it('removes multiple attribute from fileInput', function () {
+                myEl._changeFile(e);
+                assert.isNull(myEl.$.fileInput.getAttribute('multiple'));
+            });
+
+            it('fires _openFileChooser() method', function () {
+                var spyFileChooser = sinon.spy(myEl, '_openFileChooser');
+
+                myEl._changeFile(e);
+                assert.equal(spyFileChooser.calledOnce, true);
+            });
+        });
+
+        describe('_deleteFile', function () {
+            var e = {model: {index: 0}};
+
+            beforeEach(function () {
+                var files = [
+                    {file_name: 'name', type: '1', attachment_file: 'url'},
+                    {file_name: 'name2', type: '1', attachment_file: 'url2'}
+                ];
+
+                myEl.multiple = true;
+                myEl.files = files;
+            });
+
+            it('fires "delete-file" event on element when useDeleteEvents = true', function (done) {
+                myEl.addEventListener('delete-file', function (e) {
+                    assert.isDefined(e);
+                    done();
+                });
+
+                myEl.useDeleteEvents = true;
+                myEl._deleteFile(e);
+            });
+
+            it('removes correct file when useDeleteEvents = false', function () {
+                assert.equal(myEl.files.length, 2);
+                myEl._deleteFile(e);
+                assert.equal(myEl.files.length, 1);
+                assert.equal(myEl.files[0].file_name, 'name2');
+            });
+        });
+
+        describe('_filesChange', function () {
+            var files = [
+                {file_name: 'name', type: '1', attachment_file: 'url'},
+                {file_name: 'name2', type: '1', attachment_file: 'url2'}
+            ];
+
+            it('sets showFilesContainer = true when files.length > 0', function () {
+                myEl.multiple = true;
+                myEl.files = files;
+
+                assert.equal(myEl.files.length, 2);
+                myEl._filesChange();
+                assert.equal(myEl.showFilesContainer, true);
+            });
+
+            it('sets showFilesContainer = false when files.length = 0', function () {
+                myEl.files = [];
+
+                assert.equal(myEl.files.length, 0);
+                myEl._filesChange();
+                assert.equal(myEl.showFilesContainer, false);
+            });
+
+            it('cuts off files array when multiple = false', function () {
+                myEl.multiple = true;
+                myEl.files = files;
+
+                assert.equal(myEl.files.length, 2);
+
+                myEl.multiple = false;
+                myEl._filesChange();
+
+                assert.equal(myEl.files.length, 1);
+            });
+        });
+
+        describe('_downloadFile', function () {
+            beforeEach(function () {
+                var files = [
+                    {file_name: 'name', type: '1', attachment_file: 'url'},
+                    {file_name: 'name2', type: '1', raw: new File([''], 'name2'),  attachment_file: 'url2'}
+                ];
+
+                myEl.multiple = true;
+                myEl.files = files;
+            });
+
+            it('downloads file from attachment_file property', function (done) {
+                var e = {model: {index: 0}};
+                let downloader = myEl.$.downloader;
+
+                downloader.addEventListener('click', function (e) {
+                    assert.isDefined(e);
+                    done();
+                });
+
+                myEl._downloadFile(e);
+                assert.equal(downloader.href, myEl.files[0].attachment_file);
+            });
+
+            it('downloads file from raw property', function (done) {
+                var e = {model: {index: 1}};
+                let downloader = myEl.$.downloader;
+
+                downloader.addEventListener('click', function (e) {
+                    assert.isDefined(e);
+                    done();
+                });
+
+                myEl._downloadFile(e);
+                assert.notEqual(downloader.href, myEl.files[1].attachment_file);
+            });
+        });
+
+        describe('_getMultipleClass', function () {
+            it('returns String "multiple"', function () {
+                assert.equal(myEl._getMultipleClass(true), 'multiple');
+            });
+
+            it('returns empty String', function () {
+                assert.equal(myEl._getMultipleClass(false), '');
+            });
+        });
+
+        describe('.files-wrapper', function () {
+            var files = [
+                {file_name: 'name.png', type: '1', attachment_file: 'url'},
+                {file_name: 'name2.png', type: '1', attachment_file: 'url2'}
+            ];
+
+            it('contains maximum 1 file without multiple attribute', function (done) {
+                myEl.files = files;
+
+                flush(function () {
+                    var fileAreas = Polymer.dom(myEl.root).querySelectorAll('.file-area');
+                    assert.equal(fileAreas.length, 1);
+                    done();
+                });
+            });
+
+            it('contains correct number of files with multiple attribute', function (done) {
+                myEl.multiple = true;
+                myEl.files = files;
+
+                flush(function () {
+                    var fileAreas = Polymer.dom(myEl.root).querySelectorAll('.file-area');
+                    assert.equal(fileAreas.length, 2);
+                    done();
+                });
+            });
+        });
+
+        describe('<paper-dropdown-menu>', function () {
+            it('has correct number of <paper-item>', function (done) {
+                myEl.activateFileTypes = true;
+                myEl.readonly = false;
+                myEl.fileTypes = [
+                    {id: '1', name: 'Training materials'},
+                    {id: '2', name: 'ToRs'},
+                    {id: '3', name: 'Other'}
+                ];
+                myEl.files = [
+                    {file_name: 'name.png', type: '1', attachment_file: 'url'}
+                ];
+
+                flush(function () {
+                    var paperDropdown = myEl.$$('paper-dropdown-menu');
+                    var paperItems = Polymer.dom(myEl.root).querySelectorAll('paper-item');
+                    assert.equal(paperItems.length, 3);
+                    done();
+                });
+            });
+        });
+
+        describe('.delete-button', function () {
+            it('removes file when clicked', function (done) {
+                myEl.allowDelete = true;
+                myEl.readonly = false;
+                myEl.files = [
+                    {file_name: 'name.png', type: '1', attachment_file: 'url'}
+                ];
+
+                flush(function () {
+                    var deleteBtn = myEl.$$('.delete-button');
+                    var fileAreas = Polymer.dom(myEl.root).querySelectorAll('.file-area');
+
+                    assert.equal(myEl.files.length, 1);
+                    assert.equal(fileAreas.length, 1);
+
+                    deleteBtn.addEventListener('click', function (event) {
+                        flush(function () {
+                            fileAreas = Polymer.dom(myEl.root).querySelectorAll('.file-area');
+
+                            assert.isDefined(event);
+                            assert.equal(myEl.files.length, 0);
+                            assert.equal(fileAreas.length, 0);
+                            done();
+                        });
+                    });
+
+                    deleteBtn.click();
+                });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

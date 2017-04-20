@@ -10,7 +10,8 @@ Polymer({
                 return {
                     status: 'partner_contacted',
                     staff_members: [],
-                    type: {}
+                    type: {},
+                    attachments: []
                 };
             }
         }
