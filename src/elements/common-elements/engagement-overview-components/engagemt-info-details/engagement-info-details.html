@@ -29,7 +29,7 @@
                 </div>
                 <div class="input-container">
                     <!-- Contract Start Date -->
-                    <paper-input label="Contract Start Date"
+                    <paper-input abel="Contract Start Date"
                                  class="disabled-as-readonly"
                                  disabled
                                  id="contractStartDateInput"
@@ -39,10 +39,9 @@
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="contractStartDate"
-                                                  date="[[prettyDate(data.engagement.contract_start_date)]]"
+                                                  date="[[prepareDate(data.engagement.contract_start_date)]]"
                                                   format="YYYY-MM-DD"
-                                                  pretty-date="{{prettyDate(data.engagement.contract_start_date)}}"
-
+                                                  pretty-date="{{data.engagement.contract_start_date}}"
                                                   no-init show-clear-btn></etools-datepicker-button>
                     </paper-input>
                 </div>

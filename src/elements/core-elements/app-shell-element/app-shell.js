@@ -111,7 +111,6 @@ Polymer({
     _initialDataLoaded: function(e) {
         if (e && e.type === 'user-profile-loaded') { this.profileLoaded = true; }
         if (e && e.type === 'static-data-loaded') { this.staticDataLoaded = true; }
-        console.log(e && e.type === 'static-data-loaded')
         if (this.routeData && this.profileLoaded && this.staticDataLoaded) { this.page = this.routeData.page || 'engagements'; }
     },
     _handleGlobalLoading: function(event) {
