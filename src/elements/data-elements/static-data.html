@@ -31,7 +31,8 @@
             },
 
             _partnersLoaded: function(data) {
-                this._setData('partners', data.detail)
+                this._setData('partners', data.detail);
+                this.fire('static-data-loaded');
             },
             _responseError: function() {}
 

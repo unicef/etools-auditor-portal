@@ -46,7 +46,8 @@ Polymer({
         'toast': 'queueToast',
         'drawer': 'toggleDrawer',
         '404': '_pageNotFound',
-        'user-profile-loaded': '_profileLoaded'
+        'user-profile-loaded': '_initialDataLoaded',
+        'static-data-loaded': '_initialDataLoaded'
     },
     attached: function() {
         this.baseUrl = this.basePath;
@@ -107,8 +108,11 @@ Polymer({
         this.fire('toast', {text: message});
         this.fire('global-loading', {type: 'initialisation'});
     },
-    _profileLoaded: function() {
-        if (this.routeData) { this.page = this.routeData.page || 'engagements'; }
+    _initialDataLoaded: function(e) {
+        if (e && e.type === 'user-profile-loaded') { this.profileLoaded = true; }
+        if (e && e.type === 'static-data-loaded') { this.staticDataLoaded = true; }
+        console.log(e && e.type === 'static-data-loaded')
+        if (this.routeData && this.profileLoaded && this.staticDataLoaded) { this.page = this.routeData.page || 'engagements'; }
     },
     _handleGlobalLoading: function(event) {
         if (!event.detail || !event.detail.type) {
