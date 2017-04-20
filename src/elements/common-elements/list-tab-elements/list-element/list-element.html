@@ -7,12 +7,14 @@
 
 
         <paper-material id="wrapper" elevation="0">
-            <div id="iconWrapper">
-                <iron-icon id="more" icon="expand-more" hidden$="[[detailsOpened]]"
-                           on-tap="_toggleRowDetails"></iron-icon>
-                <iron-icon id="less" icon="expand-less" hidden$="[[!detailsOpened]]"
-                           on-tap="_toggleRowDetails"></iron-icon>
-            </div>
+            <template is="dom-if" if="[[showCollapse]]">
+                <div id="iconWrapper">
+                    <iron-icon id="more" icon="expand-more" hidden$="[[detailsOpened]]"
+                               on-tap="_toggleRowDetails"></iron-icon>
+                    <iron-icon id="less" icon="expand-less" hidden$="[[!detailsOpened]]"
+                               on-tap="_toggleRowDetails"></iron-icon>
+                </div>
+            </template>
 
             <div class="partner-data">
                 <template is="dom-repeat" items="[[headings]]">
@@ -20,14 +22,14 @@
                     <template is="dom-if" if="[[_isLink(item.link)]]">
                         <a class$="col-data w[[item.size]] truncate"
                            href$="[[_getLink(item.link)]]"
-                           title="[[_getValue(item.name)]]">
-                            [[_getValue(item, data)]]
+                           title="[[_getValue(item)]]">
+                            [[_getValue(item)]]
                         </a>
                     </template>
 
                     <template is="dom-if" if="[[!_isLink(item.link)]]">
                         <span class$="col-data w[[item.size]] truncate">
-                            <span class="truncate">[[_getValue(item, data)]]</span>
+                            <span class="truncate">[[_getValue(item)]]</span>
                         </span>
                     </template>
 
@@ -35,20 +37,22 @@
             </div>
         </paper-material>
 
-        <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
-            <div id="collapse-wrapper">
-                <div class="partners-data-details">
-                    <div class="row-details-content">
-                        <span class="rdc-title">Email</span>
-                        <span class="data">[[_getDisplayValue(data.email)]]</span>
-                    </div>
-                    <div class="row-details-content">
-                        <span class="rdc-title">Phone</span>
-                        <span class="data">[[_getDisplayValue(data.phone_number)]]</span>
+        <template is="dom-if" if="[[showCollapse]]">
+            <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
+                <div id="collapse-wrapper">
+                    <div class="partners-data-details">
+                        <template is="dom-repeat" items="[[details]]">
+
+                            <div class="row-details-content">
+                                <span class="rdc-title">[[item.label]]</span>
+                                <span class="data">[[_getValue(item)]]</span>
+                            </div>
+
+                        </template>
                     </div>
                 </div>
-            </div>
-        </iron-collapse>
+            </iron-collapse>
+        </template>
 
 
     </template>
