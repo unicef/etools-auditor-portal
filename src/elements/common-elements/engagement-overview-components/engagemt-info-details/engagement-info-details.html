@@ -1,4 +1,5 @@
-<!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, etools-datepicker/etools-datepicker-button]-->
+<!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu,
+            etools-datepicker/etools-datepicker-button, etools-currency-amount-input]-->
 <!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior]-->
 
 <dom-module id="engagement-info-details">
@@ -158,6 +159,15 @@
                                                   pretty-date="{{data.end_date}}"
                                                   no-init show-clear-btn></etools-datepicker-button>
                     </paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Total Value of Selected FACE Forms -->
+                    <etools-currency-amount-input
+                            label="Total Value of Selected FACE Forms"
+                            currency="$"
+                            value="{{data.total_value}}"
+                            placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
             </div>
 

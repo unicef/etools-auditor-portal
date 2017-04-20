@@ -48,13 +48,13 @@ Polymer({
             return;
         }
         if (target.hasAttribute('event-name')) {
-            this.fire(target.getAttribute('event-name'))
+            this.fire(target.getAttribute('event-name'));
         }
     },
     _showOtherActions: function(actions) {
         return !!actions.length;
     },
     _setBtnClass: function(actions) {
-        if (actions.length) return 'with-actions';
+        if (actions.length) { return 'with-actions'; }
     }
 });
