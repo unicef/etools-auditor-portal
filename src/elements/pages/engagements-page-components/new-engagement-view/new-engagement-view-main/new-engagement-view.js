@@ -39,7 +39,8 @@ Polymer({
         let data = _.cloneDeep(this.engagement);
         data.partner = data.partner.id;
         //TODO: remove this after adding agreement data loading
-        data.agreement = 1;
+        //TODO: data.attachments = get files
+        data.agreement = 2;
 
         return {
             type: data.type.value,

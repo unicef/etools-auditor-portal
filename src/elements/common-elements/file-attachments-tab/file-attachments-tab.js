@@ -5,11 +5,15 @@ Polymer({
     properties: {
         fileTypes: {
             type: Array,
-            value: []
+            value: function() {
+                return [];
+            }
         },
         files: {
             type: Array,
-            value: []
+            value: function() {
+                return [];
+            }
         },
         title: {
             type: String,
