@@ -19,6 +19,8 @@ Polymer({
         return true;
     },
     _saveNewEngagement: function() {
+        this.$.staffMembers.validate();
+        this.$.engagementDetails.validate();
         console.log(this.engagement)
     }
 

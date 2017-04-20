@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, etools-datepicker/etools-datepicker-button]-->
-<!--import [tab-inputs-styles, module-styles, date-behavior]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior]-->
 
 <dom-module id="engagement-info-details">
     <template>
@@ -19,6 +19,10 @@
                     <paper-input label="Purchase Order"
                                  value="{{data.engagement.order_number}}"
                                  placeholder="&#8212;"
+                                 id="purchaseOrder"
+                                 allowed-pattern="[\d]"
+                                 error-message="Purchase order is required"
+                                 required
                                  class="disabled-as-readonly"
                                  disabled$="[[!editMode]]"></paper-input>
                 </div>
@@ -69,6 +73,12 @@
                             class="disabled-as-readonly"
                             readonly="[[!editMode]]"
                             disabled="[[!editMode]]"
+                            id="partner"
+                            error-message="Partner is required"
+                            required
+                            custom-object-options
+                            option-value="id"
+                            option-label="name"
                             label="Partner"
                             placeholder="&#8212;"></etools-searchable-multiselection-menu>
                 </div>
@@ -99,6 +109,9 @@
                             readonly="[[!editMode]]"
                             disabled="[[!editMode]]"
                             value="{{data.type}}"
+                            required
+                            id="auditType"
+                            error-message="Audit Type is required"
                             custom-object-options
                             option-value="value"
                             option-label="label"

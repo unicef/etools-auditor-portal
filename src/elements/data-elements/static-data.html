@@ -1,0 +1,43 @@
+<!--import [polymer, etools-ajax, static-data-behavior]-->
+
+<dom-module id="static-data">
+
+    <template>
+
+        <!--partners-->
+        <etools-ajax
+                endpoint="[[partnersEndpoint]]"
+                caching-storage="custom"
+                dexie-db-collection="partners"
+                on-success="_partnersLoaded"
+                on-fail="_partnersError"></etools-ajax>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'static-data',
+            behaviors: [
+                etoolsAppConfig.globals,
+                APBehaviors.StaticDataController
+            ],
+
+            properties: {},
+
+            ready: function () {
+                console.log('test')
+                this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
+            },
+
+            _partnersLoaded: function(data) {
+                this._setData('partners', data.detail)
+            },
+            _responseError: function() {}
+
+        });
+
+    </script>
+
+</dom-module>

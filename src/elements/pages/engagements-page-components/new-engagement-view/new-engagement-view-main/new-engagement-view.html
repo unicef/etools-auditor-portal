@@ -40,10 +40,10 @@
                                 attr-for-selected="name">
 
                         <div name="overview">
-                            <engagement-info-details data="{{engagement}}"></engagement-info-details>
+                            <engagement-info-details data="{{engagement}}" id="engagementDetails"></engagement-info-details>
 
                             <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
-                                <engagement-staff-members-tab id="staff-members"  data-items="{{engagement.staff_members}}" edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
+                                <engagement-staff-members-tab id="staffMembers"  data-items="{{engagement.staff_members}}" edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
                             </etools-content-panel>
                         </div>
 
