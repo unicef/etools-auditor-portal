@@ -31,7 +31,6 @@ Polymer({
     },
     ready: function() {
         this.set('partners', this.getData('partners'));
-        console.log(this.getData('partners'));
     },
     _editModeChanged: function() {
         this.updateStyles();

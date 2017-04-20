@@ -1,6 +1,6 @@
-<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages]-->
+<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-location, lodash]-->
 <!--import [shared-styles, module-styles, app-main-header, pages-header-element,
-            status-tab-element, engagement-staff-members-tab, engagement-info-details]-->
+            status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement]-->
 
 <dom-module id="new-engagement-view">
     <template>
@@ -12,10 +12,13 @@
             }
         </style>
 
+        <app-location path="{{path}}"></app-location>
         <app-route
                 route="{{route}}"
                 pattern="/:tab"
                 data="{{routeData}}"></app-route>
+
+        <add-new-engagement new-engagement-data="{{newEngagementData}}"></add-new-engagement>
 
         <app-header-layout>
 

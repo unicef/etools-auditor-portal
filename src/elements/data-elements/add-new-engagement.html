@@ -1,0 +1,57 @@
+<!--import [polymer, etools-ajax]-->
+
+<dom-module id="add-new-engagement">
+
+    <template>
+
+        <etools-ajax method="POST"
+                     url="{{url}}"
+                     body="{{postData}}"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'add-new-engagement',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+                newEngagementData: {
+                    type: Object,
+                    observer: '_newEngagementChanged'
+                }
+            },
+
+
+            _handleResponse: function (data) {
+                this.fire('engagement-created', {success: true, data: data.detail});
+                this.fire('global-loading', {type: 'create-engagement'});
+                //Invalidate IDB
+                etoolsAppConfig.globals.appDexieDb.collectionsList.update('engagements', {expire: 0})
+            },
+
+            _handleError: function () {
+                this.fire('engagement-created');
+                this.fire('global-loading', {type: 'create-engagement'});
+            },
+
+            _newEngagementChanged: function(engagement) {
+                if (!engagement) { return; }
+                let url = this.getEndpoint('createEngagement', {type: engagement.type}).url;
+
+                this.fire('global-loading', {type: 'create-engagement', active: true, message: 'Creating new engagement...'});
+                this.postData = engagement.data;
+                this.url = url;
+            }
+
+        });
+
+    </script>
+
+</dom-module>
