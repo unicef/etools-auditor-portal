@@ -16,9 +16,10 @@ Polymer({
             }
         }
     },
+    observers: ['_pageChanged(page)'],
     listeners: {
         'main-action-activated': '_saveNewEngagement',
-        'engagement-created': '_engagementCreated'
+        'engagement-created': '_engagementCreated',
     },
     _allowEdit: function() {
         return true;
@@ -57,6 +58,17 @@ Polymer({
                 staff_members: [],
                 type: {}
             }
+        }
+    },
+    _pageChanged: function(page) {
+        if (page === 'new') {
+            this.set('engagement', {
+                status: 'partner_contacted',
+                staff_members: [],
+                type: {},
+                attachments: []
+            });
+            this.$.engagementDetails.resetValidationErrors()
         }
     }
 

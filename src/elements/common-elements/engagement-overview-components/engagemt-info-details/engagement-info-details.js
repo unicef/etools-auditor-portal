@@ -44,5 +44,10 @@ Polymer({
             orderValid = this.$.purchaseOrder.validate();
 
         return typeValid && partnerValid && orderValid;
+    },
+    resetValidationErrors: function() {
+        this.$.auditType.invalid = false;
+        this.$.partner.invalid = false;
+        this.$.purchaseOrder.invalid = false;
     }
 });
