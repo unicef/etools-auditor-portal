@@ -2,7 +2,7 @@
 
 Polymer({
     is: 'list-tab-main',
-    behaviors: [TPMBehaviors.QueryParamsController],
+    behaviors: [APBehaviors.QueryParamsController],
     properties: {
         queryParams: {
             type: Object,
