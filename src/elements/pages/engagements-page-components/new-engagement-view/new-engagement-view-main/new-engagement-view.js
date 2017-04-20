@@ -57,7 +57,7 @@ Polymer({
                 status: 'partner_contacted',
                 staff_members: [],
                 type: {}
-            }
+            };
         }
     },
     _pageChanged: function(page) {
@@ -68,7 +68,7 @@ Polymer({
                 type: {},
                 attachments: []
             });
-            this.$.engagementDetails.resetValidationErrors()
+            this.$.engagementDetails.resetValidationErrors();
         }
     }
 
