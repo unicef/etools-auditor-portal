@@ -17,13 +17,16 @@ Polymer({
             value: function() {
                 return [{
                     label: 'Micro Assessment',
-                    value: 'micro-assessments'
+                    link: 'micro-assessments',
+                    value: 'ma'
                 }, {
                     label: 'Audit',
-                    value: 'audits'
+                    link: 'audits',
+                    value: 'a'
                 }, {
                     label: 'Spot Check',
-                    value: 'spot-checks'
+                    link: 'spot-checks',
+                    value: 'sc'
                 }];
             }
         },

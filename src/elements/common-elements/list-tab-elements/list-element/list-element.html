@@ -19,8 +19,8 @@
 
                     <template is="dom-if" if="[[_isLink(item.link)]]">
                         <a class$="col-data w[[item.size]] truncate"
-                           href$="[[_getLink(item.link)]]"
-                           title="[[_getValue(item.name)]]">
+                           href$="[[_getLink(item.link, data)]]"
+                           title="[[_getValue(item.name, data)]]">
                             [[_getValue(item, data)]]
                         </a>
                     </template>

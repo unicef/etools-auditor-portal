@@ -1,0 +1,78 @@
+<!--import [polymer, etools-ajax, lodash, last-created-behavior]-->
+
+<dom-module id="engagement-info-data">
+
+    <template>
+
+        <etools-ajax endpoint="[[endpoint]]"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+    </template>
+
+    <script>
+        'use strict';
+
+        Polymer({
+
+            is: 'engagement-info-data',
+
+            behaviors: [
+                etoolsAppConfig.globals,
+                APBehaviors.LastCreatedController
+            ],
+
+            properties: {
+                engagementId: {
+                    type: Number,
+                    notify: true,
+                    observer: '_idChanged'
+                },
+                engagementType: String,
+                engagementInfo: {
+                    type: Object,
+                    notify: true
+                },
+                lastId: Number
+            },
+
+
+            _handleResponse: function (data) {
+                if (data) { this.engagementInfo = data.detail; }
+                this.fire('global-loading', {type: 'engagement-info'});
+                this.fire('engagement-info-loaded');
+                this.engagementId = null;
+                this.lastError = false;
+            },
+
+            _handleError: function () {
+                this.fire('global-loading', {type: 'engagement-info'});
+                this.fire('404', {message: 'Partner not found!'});
+                this.engagementId = null;
+                this.lastError = true;
+            },
+
+            _idChanged: function(id) {
+                if (!id || isNaN(id) || !this.engagementType) { return; }
+                if (+id === this.lastId) {
+                    this.lastError ? this._handleError() : this._handleResponse();
+                    return;
+                }
+
+                this.lastId = id;
+                this.engagementInfo = {};
+
+                let lastCreated = this.getLastEngagementData(id);
+                if (lastCreated) {
+                    this._handleResponse({detail: lastCreated});
+                    return;
+                }
+
+                this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
+                this.endpoint = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType});
+            }
+
+        });
+
+    </script>
+
+</dom-module>

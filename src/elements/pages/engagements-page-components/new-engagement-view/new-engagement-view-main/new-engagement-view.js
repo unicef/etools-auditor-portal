@@ -2,7 +2,10 @@
 
 Polymer({
     is: 'new-engagement-view',
-    behaviors: [etoolsAppConfig.globals],
+    behaviors: [
+        etoolsAppConfig.globals,
+        APBehaviors.LastCreatedController
+    ],
     properties: {
         engagement: {
             type: Object,
@@ -42,17 +45,21 @@ Polymer({
         data.agreement = 1;
 
         return {
-            type: data.type.value,
+            type: data.type.link,
             data: data
         };
     },
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
         if (event.detail.success && event.detail.data) {
-            //TODO: save response data before redirecting
-            let path = `${this.engagement.type.value}/${event.detail.data.id}/overview`;
+            //save response data before redirecting
+            this._setLastEngagementData(event.detail.data);
+
+            //redirect
+            let path = `${this.engagement.type.link}/${event.detail.data.id}/overview`;
             this.set('path', this.getAbsolutePath(path));
 
+            //reset data
             this.engagement = {
                 status: 'partner_contacted',
                 staff_members: [],
