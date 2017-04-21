@@ -67,5 +67,8 @@ Polymer({
         } else {
             return value;
         }
+    },
+    _setAuditType: function(e, value) {
+        this.set('data.type', value.selectedValues);
     }
 });
