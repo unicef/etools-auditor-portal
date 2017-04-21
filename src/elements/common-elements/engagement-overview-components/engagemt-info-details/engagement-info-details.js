@@ -58,5 +58,14 @@ Polymer({
     },
     _resetFieldError: function(event) {
         event.target.invalid = false;
+    },
+    _processValue: function(value) {
+        if (typeof value === 'string') {
+            return this.auditTypes.filter((type) => {
+                return type.value === value;
+            })[0];
+        } else {
+            return value;
+        }
     }
 });
