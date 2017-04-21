@@ -24,7 +24,7 @@
                                  allowed-pattern="[\d]"
                                  error-message="Purchase order is required"
                                  required
-                                 class="disabled-as-readonly"
+                                 class$="disabled-as-readonly {{_setRequired(editMode)}}"
                                  disabled$="[[!editMode]]"></paper-input>
                 </div>
                 <div class="input-container">
@@ -70,7 +70,7 @@
                     <!-- Partner -->
                     <etools-searchable-multiselection-menu
                             options="[[partners]]"
-                            class="disabled-as-readonly"
+                            class$="disabled-as-readonly {{_setRequired(editMode)}}"
                             readonly="[[!editMode]]"
                             disabled="[[!editMode]]"
                             value="{{data.partner}}"
@@ -106,7 +106,7 @@
                     <!-- Audit Type -->
                     <etools-searchable-multiselection-menu
                             options="[[auditTypes]]"
-                            class="disabled-as-readonly"
+                            class$="disabled-as-readonly {{_setRequired(editMode)}}"
                             readonly="[[!editMode]]"
                             disabled="[[!editMode]]"
                             value="{{data.type}}"
@@ -165,6 +165,8 @@
                     <etools-currency-amount-input
                             label="Total Value of Selected FACE Forms"
                             currency="$"
+                            class="disabled-as-readonly"
+                            disabled="[[!editMode]]"
                             value="{{data.total_value}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>

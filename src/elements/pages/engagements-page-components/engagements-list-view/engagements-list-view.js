@@ -60,7 +60,7 @@
                         'size': 20,
                         'label': 'Purchase Order #',
                         'name': 'order_number',
-                        'link': '*engagement_type*/*data_id*/details',
+                        'link': '*engagement_type*/*data_id*/overview',
                         'ordered': false,
                         'path': 'agreement.order_number'
                     }, {

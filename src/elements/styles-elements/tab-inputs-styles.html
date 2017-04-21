@@ -86,7 +86,7 @@
             paper-textarea.required,
             paper-input.required {
                 --paper-input-container-label: #{"{
-                    background: url(/images/required.svg) no-repeat 99% 20%/8px;
+                    background: url(/ap/images/required.svg) no-repeat 99% 20%/8px;
                     width: auto !important;
                     right: initial;
                     padding-right: 15px;
@@ -100,7 +100,7 @@
             }
             etools-searchable-multiselection-menu.required {
                 --esmm-input-container-label: #{'{
-                    background: url(/images/required.svg) no-repeat 99% 20%/8px;
+                    background: url(/ap/images/required.svg) no-repeat 99% 20%/8px;
                     width: auto !important;
                     right: initial;
                     padding-right: 15px;
@@ -115,6 +115,19 @@
                 /*};*/
             /*}*/
 
+            /*TODO: Add following commented code to 'etools-currency-amount-input' element*/
+
+            /*paper-input {*/
+                /*--paper-input-container: {*/
+                    /*@apply(--etools-currency-container);*/
+                /*};*/
+            /*}*/
+
+            etools-currency-amount-input[disabled].disabled-as-readonly {
+                --etools-currency-container-underline-disabled: #{'{ border-bottom: 1px dashed rgba(0, 0, 0, 0.20); !important}'};
+                --etools-currency-container-label: #{'{ color: rgba(0, 0, 0, 0.38); }'};
+                --etools-currency-container: #{'{ opacity: 1 !important; }'};
+            }
 
             #bottom-actions {
                 display: -ms-flexbox;
@@ -230,6 +243,10 @@
             }
 
 
+            etools-currency-amount-input {
+                padding: 0 12px;
+                box-sizing: border-box;
+            }
 
 
         </style>

@@ -49,5 +49,8 @@ Polymer({
         this.$.auditType.invalid = false;
         this.$.partner.invalid = false;
         this.$.purchaseOrder.invalid = false;
+    },
+    _setRequired: function(editMode) {
+        if (editMode) { return 'required'; }
     }
 });
