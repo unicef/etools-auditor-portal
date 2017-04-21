@@ -53,7 +53,7 @@
                                                          edit-mode="[[_allowEdit()]]"></engagement-info-details>
 
                                 <etools-content-panel
-                                        title$="Auditor Staff Members ([[engagement.staff_members.length]])"
+                                        title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
                                         show-expand-btn>
                                     <engagement-staff-members-tab id="staffMembers"
                                                                   data-items="{{engagement.staff_members}}"

@@ -46,5 +46,8 @@ Polymer({
         }
 
         this.tab = tab;
+    },
+    _getMembersLength: function(length) {
+        return length || 0;
     }
 });
