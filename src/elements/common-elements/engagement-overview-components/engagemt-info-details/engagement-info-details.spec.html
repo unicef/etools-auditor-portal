@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [static-data-behavior, engagement-info-details]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <engagement-info-details id="element"></engagement-info-details>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<engagement-info-details>', function () {
+        var myEl, partnerInput, auditTypeInput;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        it('update styles', function () {
+            sinon.spy(myEl, "updateStyles");
+            myEl._editModeChanged();
+            assert.isTrue(myEl.updateStyles.called);
+            myEl.updateStyles.restore();
+        });
+
+        it('validate required inputs', function () {
+            var numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
+            partnerInput = Polymer.dom(myEl.root).querySelector('#partner');
+            auditTypeInput = Polymer.dom(myEl.root).querySelector('#auditType');
+            assert.isDefined(partnerInput.validate);
+//            sinon.spy(numberInput, "validate");
+            sinon.spy(partnerInput, "validate");
+//            sinon.spy(auditTypeInput, "validate");
+//
+//
+            myEl.validate();
+//
+//            assert.isTrue(numberInput.validate.called);
+//            assert.isTrue(partnerInput.validate.called);
+//            assert.isTrue(auditTypeInput.validate.called);
+//            numberInput.validate.restore();
+//            partnerInput.validate.restore();
+//            auditTypeInput.validate.restore();
+        });
+
+    });
+</script>
+
+</body>
+</html>

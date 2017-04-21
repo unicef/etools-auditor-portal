@@ -38,9 +38,6 @@ Polymer({
     _editModeChanged: function() {
         this.updateStyles();
     },
-    _partnerFieldChanged: function() {
-        if (this.partnershipDisabled) { this.partnershipDisabled = false; }
-    },
     validate: function() {
         let typeValid = this.$.auditType.validate(),
             partnerValid = this.$.partner.validate(),
