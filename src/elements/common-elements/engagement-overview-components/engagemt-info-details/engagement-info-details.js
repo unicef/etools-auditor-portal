@@ -55,5 +55,8 @@ Polymer({
     },
     _setRequired: function(editMode) {
         if (editMode) { return 'required'; }
+    },
+    _resetFieldError: function(event) {
+        event.target.invalid = false;
     }
 });

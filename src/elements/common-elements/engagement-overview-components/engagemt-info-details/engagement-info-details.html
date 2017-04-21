@@ -25,6 +25,7 @@
                                  error-message="Purchase order is required"
                                  required
                                  class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                                 on-focus="_resetFieldError"
                                  disabled$="[[!editMode]]"></paper-input>
                 </div>
                 <div class="input-container">
@@ -81,6 +82,7 @@
                             option-value="id"
                             option-label="name"
                             label="Partner"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-searchable-multiselection-menu>
                 </div>
                 <div class="input-container">
@@ -117,6 +119,7 @@
                             option-value="value"
                             option-label="label"
                             label="Audit Type"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-searchable-multiselection-menu>
                 </div>
             </div>
