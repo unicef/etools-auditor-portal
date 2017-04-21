@@ -11,7 +11,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    status: 'partner_contacted',
+                    status: '',
                     staff_members: [],
                     type: {},
                     attachments: []
@@ -61,7 +61,7 @@ Polymer({
 
             //reset data
             this.engagement = {
-                status: 'partner_contacted',
+                status: '',
                 staff_members: [],
                 type: {}
             };
@@ -70,7 +70,7 @@ Polymer({
     _pageChanged: function(page) {
         if (page === 'new') {
             this.set('engagement', {
-                status: 'partner_contacted',
+                status: '',
                 staff_members: [],
                 type: {},
                 attachments: []
