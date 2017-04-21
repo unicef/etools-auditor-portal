@@ -52,10 +52,6 @@ Polymer({
     attached: function() {
         this.baseUrl = this.basePath;
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
-        if (this.route.path === '/' || this.route.path === '/ap/') {
-            let path = `${this.basePath}engagements/list`;
-            this.set('route.path', path);
-        }
     },
     toggleDrawer: function() {
         this.$.drawer.toggle();
@@ -111,7 +107,9 @@ Polymer({
     _initialDataLoaded: function(e) {
         if (e && e.type === 'user-profile-loaded') { this.profileLoaded = true; }
         if (e && e.type === 'static-data-loaded') { this.staticDataLoaded = true; }
-        if (this.routeData && this.profileLoaded && this.staticDataLoaded) { this.page = this.routeData.page || 'engagements'; }
+        if (this.routeData && this.profileLoaded && this.staticDataLoaded) {
+            this.page = this.routeData.page || this._configPath();
+        }
     },
     _handleGlobalLoading: function(event) {
         if (!event.detail || !event.detail.type) {
@@ -132,6 +130,11 @@ Polymer({
                 this._handleGlobalLoading(this.globalLoadingQueue.shift());
             }
         }
+    },
+    _configPath: function() {
+        let path = `${this.basePath}engagements/list`;
+        this.set('route.path', path);
+        return 'engagements';
     }
 
 });

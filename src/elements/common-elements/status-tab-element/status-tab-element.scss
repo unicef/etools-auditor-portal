@@ -112,7 +112,7 @@
         }
 
         &.active {
-            .icon-wrapper { background-color: var(--module-primary);  }
+            .status-icon .icon-wrapper { background-color: var(--module-primary);  }
             .status {
                 color: inherit;
                 font-weight: bold;
@@ -120,7 +120,7 @@
         }
 
         &.completed {
-            .icon-wrapper {
+            .status-icon .icon-wrapper {
                 background: var(--module-success);
                 iron-icon {
                     --iron-icon-height: 100%;
