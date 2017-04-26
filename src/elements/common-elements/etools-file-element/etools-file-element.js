@@ -364,7 +364,7 @@
                 let reader = new FileReader();
                 let uploadedFile = {
                     name: fileModel.file_name,
-                    type: fileModel.type
+                    file_type: fileModel.type
                 };
 
                 reader.readAsDataURL(fileModel.raw);
@@ -380,7 +380,7 @@
             });
         },
 
-        uploadFiles: function() {
+        getFiles: function() {
             return new Promise((resolve, reject) => {
                 let promises = this.files.map((fileModel) => {
                     if (fileModel && fileModel.raw && fileModel.raw instanceof File) {

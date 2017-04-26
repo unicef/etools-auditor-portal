@@ -36,29 +36,31 @@ Polymer({
             this.fire('toast', {text: 'Fix invalid fields before saving'});
             return;
         }
-        this.newEngagementData = this._prepareData();
+
+        this._prepareData()
+            .then((data) => {
+                this.newEngagementData = data;
+            });
     },
     _prepareData: function() {
-        let data = _.cloneDeep(this.engagement);
-        let attachmentsTab = Polymer.dom(this.root).querySelector('file-attachments-tab');
-        let fileElement = Polymer.dom(attachmentsTab.root).querySelector('etools-file-element');
+        let data = _.cloneDeep(this.engagement),
+            attachmentsTab = this.$.attachments;
 
         data.partner = data.partner.id;
         //TODO: remove this after adding agreement data loading
-        data.agreement = 2;
+        data.agreement = 1;
 
-        fileElement.uploadFiles()
+        return attachmentsTab.getFiles()
             .then((files) => {
                 data.attachments = files;
+                return {
+                    type: data.type.link,
+                    data: data
+                };
             })
             .catch((error) => {
                 console.log(error);
             });
-
-        return {
-            type: data.type.link,
-            data: data
-        };
     },
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
