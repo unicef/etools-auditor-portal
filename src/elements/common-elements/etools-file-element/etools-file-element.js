@@ -18,6 +18,12 @@
                 },
                 notify: true
             },
+            deletedAttachments: {
+                type: Array,
+                value: function() {
+                    return [];
+                }
+            },
             multiple: {
                 type: Boolean,
                 value: false
@@ -148,7 +154,7 @@
         },
 
         _showDownloadBtn: function(file, allowDownload) {
-            let hasUrl = (typeof file.attachment_file === 'string' && file.attachment_file) || file.raw instanceof File;
+            let hasUrl = (file.file && typeof file.file === 'string') || file.raw instanceof File;
             return !!(allowDownload && file && hasUrl);
         },
         _showChangeBtn: function(file, allowChange, readonly) {
@@ -190,6 +196,12 @@
 
                     let oldFile = this.files[this.changeFileIndex];
                     let newFileObj = JSON.parse(JSON.stringify(oldFile));
+
+                    if (oldFile.file && oldFile.id) {
+                        this._deleteAttachedFile(oldFile);
+                        newFileObj.file = undefined;
+                        newFileObj.id = undefined;
+                    }
 
                     newFileObj.file_name = newFile.name;
                     newFileObj.raw = newFile;
@@ -310,10 +322,23 @@
                 return;
             }
 
+            let file = this.files[e.model.index];
+
             if (this.useDeleteEvents) {
-                this.fire('delete-file', {file: this.files[e.model.index], index: e.model.index});
+                this.fire('delete-file', {file: file, index: e.model.index});
             } else {
                 this.splice('files', e.model.index, 1);
+            }
+
+            if (file.file && file.id) {
+                this._deleteAttachedFile(file);
+            }
+        },
+
+        _deleteAttachedFile: function(file) {
+            if (file) {
+                file._deleted = true;
+                this.deletedAttachments.push(file);
             }
         },
 
@@ -324,11 +349,29 @@
                 this.set('showFilesContainer', false);
             }
 
+            this.files.forEach((file, index) => {
+                if (file.file && file.id && !file.file_name) {
+                    file.file_name = this._getFilenameFromUrl(file.file);
+                }
+
+                if (!file.file_name) {
+                    this.splice('files', index, 1);
+                }
+            });
+
             if (!this.multiple) {
                 if (this.files instanceof Array && this.files.length > 1) {
                     this.set('files', [this.files[0]]);
                 }
             }
+        },
+
+        _getFilenameFromUrl: function(url) {
+            if (typeof url !== 'string' || url === '') {
+                return;
+            }
+
+            return url.split('/').pop();
         },
 
         _downloadFile: function(e) {
@@ -339,8 +382,8 @@
                 if (file && file.raw) {
                     let blob = new Blob([file.raw]);
                     a.href = URL.createObjectURL(blob);
-                } else if (file && file.attachment_file) {
-                    a.href = file.attachment_file;
+                } else if (file && file.file) {
+                    a.href = file.file;
                 } else {
                     return;
                 }
@@ -363,7 +406,7 @@
             return new Promise((resolve, reject) => {
                 let reader = new FileReader();
                 let uploadedFile = {
-                    name: fileModel.file_name,
+                    file_name: fileModel.file_name,
                     file_type: fileModel.type
                 };
 
@@ -394,7 +437,7 @@
 
                 Promise.all(promises)
                     .then((uploadedFiles) => {
-                        resolve(uploadedFiles);
+                        resolve(uploadedFiles.concat(this.deletedAttachments));
                     })
                     .catch((error) => {
                         reject(error);
