@@ -26,30 +26,21 @@
                 request-queries="[[requestQueries]]"
                 without-pagination="[[withoutPagination]]"></engagements-list-data>
 
-        <app-header-layout>
+        <pages-header-element show-export-button
+                              hide-print-button
+                              link="{{newBtnLink}}"
+                              show-add-button="{{_showAddButton()}}"
+                              btn-text="Add New Engagement"
+                              title="Engagements"></pages-header-element>
 
+        <search-and-filter></search-and-filter>
 
-            <app-header id="header" fixed shadow>
-                <app-main-header></app-main-header>
-            </app-header>
-
-            <pages-header-element show-export-button
-                                  hide-print-button
-                                  link="{{newBtnLink}}"
-                                  show-add-button="{{_showAddButton()}}"
-                                  btn-text="Add New Engagement"
-                                  title="Engagements"></pages-header-element>
-
-            <search-and-filter></search-and-filter>
-
-            <list-tab-main header-title="results to show"
-                           data="[[engagementsList]]"
-                           list-length="[[listLength]]"
-                           headings="[[listHeadings]]"
-                           query-params="{{queryParams}}">
-            </list-tab-main>
-
-        </app-header-layout>
+        <list-tab-main header-title="results to show"
+                       data="[[engagementsList]]"
+                       list-length="[[listLength]]"
+                       headings="[[listHeadings]]"
+                       query-params="{{queryParams}}">
+        </list-tab-main>
 
     </template>
 
