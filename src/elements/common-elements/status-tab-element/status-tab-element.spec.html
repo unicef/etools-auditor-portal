@@ -56,12 +56,52 @@
         });
 
         it('return formatted date', function () {
-
             myEl.engagementData = {'date_of_draft_report_to_ip': 'Tue Apr 18 2017 11:59:35 GMT+0300 (+03)'};
             myEl._getFormattedDate('date_of_draft_report_to_ip');
             assert.equal(myEl._getFormattedDate('date_of_draft_report_to_ip'), 'on 18 April, 2017');
         });
 
+        it('return false if no other actions provided', function () {
+            assert.isFalse(myEl._showOtherActions([]));
+        });
+
+        it('return true if other actions provided', function () {
+            myEl.otherActions = [{}, {}];
+            assert.isTrue(myEl._showOtherActions(myEl.otherActions));
+        });
+
+        it('set btn class depending on other actions', function () {
+            myEl.otherActions = [{}, {}];
+            assert.equal(myEl._setBtnClass(myEl.otherActions), 'with-actions');
+            assert.isUndefined(myEl._setBtnClass([]));
+        });
+
+        it('fire submit event on main btn click', function (done) {
+            var btn = Polymer.dom(myEl.root).querySelector('.status-buttons paper-button');
+
+            myEl.addEventListener('main-action-activated', () => {
+                done();
+            });
+
+            assert.isTrue(!!btn);
+            btn.click();
+        });
+
+        it('fire specified event on other action btn click', function (done) {
+            myEl.set('otherActions', [{event: 'test-event', name: 'test'}]);
+
+            flush(function() {
+                var otherBtnsTemplate = Polymer.dom(myEl.root).querySelector('.other-btns-template');
+                otherBtnsTemplate.render();
+                var btn = Polymer.dom(myEl.root).querySelector('.status-buttons .other-options');
+                btn.click();
+            });
+
+
+            myEl.addEventListener('test-event', () => {
+                done();
+            });
+        });
     });
 </script>
 
