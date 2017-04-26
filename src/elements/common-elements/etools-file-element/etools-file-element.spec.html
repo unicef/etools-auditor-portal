@@ -325,6 +325,17 @@
                 assert.equal(myEl.files[changeIndex].raw, newFile);
                 assert.isNull(myEl.files[changeIndex].path);
             });
+
+            it('replaces attachment file and adds it to deletedAttachments Array', function () {
+                var newFile = new File([''], 'newName');
+
+                myEl.files.push({id: 1, file: 'path/file.name'});
+                myEl.changeFileIndex = 2;
+
+                assert.equal(myEl.deletedAttachments.length, 0);
+                assert.equal(myEl._replaceFile(newFile), true);
+                assert.equal(myEl.deletedAttachments.length, 1);
+            });
         });
 
         describe('_addMultipleFiles', function () {
@@ -547,6 +558,26 @@
                 assert.equal(myEl.files.length, 1);
                 assert.equal(myEl.files[0].file_name, 'name2');
             });
+
+            it('removes attachment file and adds it to deletedAttachments Array', function () {
+                e.model.index = 2;
+                myEl.files.push({id: 1, file: 'path/file.name'});
+
+                assert.equal(myEl.files.length, 3);
+                assert.equal(myEl.deletedAttachments.length, 0);
+                myEl._deleteFile(e);
+                assert.equal(myEl.files.length, 2);
+                assert.equal(myEl.deletedAttachments.length, 1);
+            });
+        });
+
+        describe('_deleteAttachedFile', function () {
+            it('adds provided file to the deletedAttachments Array and sets it property _deleted to true', function () {
+                assert.equal(myEl.deletedAttachments.length, 0);
+                myEl._deleteAttachedFile({id: 1, file: 'path/file.name'});
+                assert.equal(myEl.deletedAttachments.length, 1);
+                assert.equal(myEl.deletedAttachments[0]._deleted, true);
+            });
         });
 
         describe('_filesChange', function () {
@@ -582,6 +613,34 @@
                 myEl._filesChange();
 
                 assert.equal(myEl.files.length, 1);
+            });
+
+            it('removes files without file_name property', function () {
+                var newFile = new File([''], 'newFile');
+
+                myEl.files.push({raw: newFile, type: '1'});
+
+                assert.equal(myEl.files.length, 3);
+                myEl._filesChange();
+                assert.equal(myEl.files.length, 2);
+            });
+
+            it('removes files with incorrect file property', function () {
+                myEl.files.push({file: 'path.name', id: 1});
+
+                assert.equal(myEl.files.length, 3);
+                myEl._filesChange();
+                assert.equal(myEl.files.length, 2);
+            });
+        });
+
+        describe('_getFilenameFromUrl', function () {
+            it('returns filename', function () {
+                assert.equal(myEl._getFilenameFromUrl('path/to/file/filename'), 'filename');
+            });
+
+            it('returns undefined', function () {
+                assert.isUndefined(myEl._getFilenameFromUrl('path.to.file.filename'));
             });
         });
 
