@@ -1,0 +1,97 @@
+<!--import [polymer, etools-content-panel, etools-datepicker/etools-datepicker-button]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior]-->
+
+<dom-module id="assign-spot-check">
+    <template>
+        <style include="tab-inputs-styles module-styles">
+            :host {
+                position: relative;
+                display: block;
+            }
+        </style>
+
+        <etools-content-panel class="content-section clearfx" title="Assign Spot Check">
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Date of Field Visit -->
+                    <paper-input label="Date of Field Visit"
+                                 class="disabled-as-readonly"
+                                 id="dateVisitInput"
+                                 on-down="openDatePicker"
+                                 data-selector="dateVisit"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="dateVisit"
+                                                  format="YYYY-MM-DD"
+                                                  no-init show-clear-btn>
+                        </etools-datepicker-button>
+                    </paper-input>
+                </div>
+                <div class="input-container">
+                    <!-- Date of Field Visit -->
+                    <paper-input label="Draft Report Issued to IP"
+                                 class="disabled-as-readonly"
+                                 id="draftReportInput"
+                                 on-down="openDatePicker"
+                                 data-selector="draftReport"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="draftReport"
+                                                  format="YYYY-MM-DD"
+                                                  no-init show-clear-btn>
+                        </etools-datepicker-button>
+                    </paper-input>
+                </div>
+                <div class="input-container">
+                    <!-- Date of Field Visit -->
+                    <paper-input label="Comments Received by IP"
+                                 class="disabled-as-readonly"
+                                 id="commentsReceivedInput"
+                                 on-down="openDatePicker"
+                                 data-selector="commentsReceived"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="commentsReceived"
+                                                  format="YYYY-MM-DD"
+                                                  no-init show-clear-btn>
+                        </etools-datepicker-button>
+                    </paper-input>
+                </div>
+            </div>
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Date of Field Visit -->
+                    <paper-input label="Draft Report Issued to UNICEF"
+                                 class="disabled-as-readonly"
+                                 id="draftReportUnicefInput"
+                                 on-down="openDatePicker"
+                                 data-selector="draftReportUnicef"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="draftReportUnicef"
+                                                  format="YYYY-MM-DD"
+                                                  no-init show-clear-btn>
+                        </etools-datepicker-button>
+                    </paper-input>
+                </div>
+                <div class="input-container">
+                    <!-- Date of Field Visit -->
+                    <paper-input label="Comments Received by UNICEF"
+                                 class="disabled-as-readonly"
+                                 id="commentsReceivedUnicefInput"
+                                 on-down="openDatePicker"
+                                 data-selector="commentsReceivedUnicef"
+                                 placeholder="&#8212;">
+                        <etools-datepicker-button prefix
+                                                  id="commentsReceivedUnicef"
+                                                  format="YYYY-MM-DD"
+                                                  no-init show-clear-btn>
+                        </etools-datepicker-button>
+                    </paper-input>
+                </div>
+            </div>
+        </etools-content-panel>
+    </template>
+
+    <!-- inject scripts './assign-spot-check.js'-->
+</dom-module>

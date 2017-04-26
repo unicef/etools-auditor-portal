@@ -1,6 +1,6 @@
 <!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash]-->
 <!--import [shared-styles, module-styles, app-main-header, pages-header-element, file-attachments-tab,
-            status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement]-->
+            status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement, assign-spot-check]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
@@ -49,7 +49,9 @@
                             </etools-content-panel>
                         </div>
 
-                        <div name="report">Report</div>
+                        <div name="report">
+                            <assign-spot-check></assign-spot-check>
+                        </div>
 
                         <div name="questionnaire">Questionnaire</div>
 
