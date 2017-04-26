@@ -93,22 +93,6 @@
             newBtnLink: {
                 type: String,
                 value: '/engagements/new/overview'
-            },
-            hasCollapse: {
-                type: Boolean,
-                value: false
-            },
-            listDetails: {
-                type: Array,
-                value: function() {
-                    return [{
-                        'label': 'Email',
-                        'name': 'email'
-                    }, {
-                        'label': 'Phone #',
-                        'name': 'phone_number'
-                    }];
-                }
             }
         },
         listeners: {},

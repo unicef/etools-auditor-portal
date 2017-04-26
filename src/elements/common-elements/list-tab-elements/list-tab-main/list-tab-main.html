@@ -16,8 +16,8 @@
             </template>
 
             <list-header id="list-header"
-                    data="[[headings]]"
-                    order-by="{{orderBy}}">
+                         data="[[headings]]"
+                         order-by="{{orderBy}}">
             </list-header>
 
             <template id="list-elements" is="dom-repeat" items="[[data]]" as="partner" initial-count="10"  on-dom-change="_listDataChanged">

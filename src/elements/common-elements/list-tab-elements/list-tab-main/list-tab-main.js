@@ -24,7 +24,8 @@ Polymer({
             notify: true
         },
         withoutPagination: {
-            type: Boolean
+            type: Boolean,
+            value: false
         },
         hasCollapse: {
             type: Boolean,
@@ -35,7 +36,7 @@ Polymer({
             value: function() {
                 return [];
             }
-        },
+        }
     },
     _orderChanged: function(newOrder) {
         if (!newOrder) { return; }

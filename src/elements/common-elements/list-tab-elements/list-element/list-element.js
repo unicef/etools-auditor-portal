@@ -6,7 +6,21 @@ Polymer({
         itemValues: {
             type: Object,
             value: function() {
-                return {};
+                return {
+                    type: {
+                        ma: 'Micro Assessment',
+                        audit: 'Audit',
+                        sc: 'Spot Check'
+                    },
+                    link_type: {
+                        ma: 'micro-assessments',
+                        audit: 'audits',
+                        sc: 'spot-checks'
+                    },
+                    status: {
+                        partner_contacted: 'Partner was Contacted'
+                    }
+                };
             }
         },
         details: {
@@ -41,9 +55,9 @@ Polymer({
         } else {
             value = this.get('data.' + item.path);
         }
-        // if (item.name === 'type' || item.name ==='status') {
-        //     value = this._refactorValue(item.name, value);
-        // }
+        if (item.name === 'type' || item.name === 'status') {
+            value = this._refactorValue(item.name, value);
+        }
 
         return value || '--';
     },
@@ -56,6 +70,7 @@ Polymer({
     },
     _getLink: function(pattern) {
         return pattern
-            .replace('*data_id*', this.data.id);
+            .replace('*data_id*', this.data.id)
+            .replace('*engagement_type*', this._refactorValue('link_type', this.data.type));
     }
 });
