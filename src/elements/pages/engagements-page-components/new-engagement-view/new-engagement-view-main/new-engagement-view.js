@@ -40,9 +40,20 @@ Polymer({
     },
     _prepareData: function() {
         let data = _.cloneDeep(this.engagement);
+        let attachmentsTab = Polymer.dom(this.root).querySelector('file-attachments-tab');
+        let fileElement = Polymer.dom(attachmentsTab.root).querySelector('etools-file-element');
+
         data.partner = data.partner.id;
         //TODO: remove this after adding agreement data loading
-        data.agreement = 1;
+        data.agreement = 2;
+
+        fileElement.uploadFiles()
+            .then((files) => {
+                data.attachments = files;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
 
         return {
             type: data.type.link,
