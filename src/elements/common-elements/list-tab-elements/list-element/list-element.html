@@ -21,15 +21,15 @@
 
                     <template is="dom-if" if="[[_isLink(item.link)]]">
                         <a class$="col-data w[[item.size]] truncate"
-                           href$="[[_getLink(item.link)]]"
-                           title="[[_getValue(item)]]">
-                            [[_getValue(item)]]
+                           href$="[[_getLink(item.link, data)]]"
+                           title="[[_getValue(item, data)]]">
+                            [[_getValue(item, data)]]
                         </a>
                     </template>
 
                     <template is="dom-if" if="[[!_isLink(item.link)]]">
                         <span class$="col-data w[[item.size]] truncate">
-                            <span class="truncate">[[_getValue(item)]]</span>
+                            <span class="truncate">[[_getValue(item, data)]]</span>
                         </span>
                     </template>
 
@@ -45,7 +45,7 @@
 
                             <div class="row-details-content">
                                 <span class="rdc-title">[[item.label]]</span>
-                                <span class="data">[[_getValue(item)]]</span>
+                                <span class="data">[[_getValue(item, data)]]</span>
                             </div>
 
                         </template>
