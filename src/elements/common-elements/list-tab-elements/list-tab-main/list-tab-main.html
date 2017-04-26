@@ -21,7 +21,14 @@
             </list-header>
 
             <template id="list-elements" is="dom-repeat" items="[[data]]" as="partner" initial-count="10"  on-dom-change="_listDataChanged">
-                <list-element class="list-element" data="[[partner]]" headings="[[headings]]" no-animation="[[noAnimation]]"></list-element>
+                <list-element
+                        class="list-element"
+                        data="[[partner]]"
+                        headings="[[headings]]"
+                        details="[[details]]"
+                        has-collapse="[[hasCollapse]]"
+                        no-animation="[[noAnimation]]">
+                </list-element>
             </template>
 
             <template is="dom-if" if="[[!withoutPagination]]" restamp>

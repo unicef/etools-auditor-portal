@@ -22,7 +22,6 @@
 
         <app-header-layout>
 
-
             <app-header id="header" fixed shadow>
                 <app-main-header></app-main-header>
             </app-header>
@@ -52,8 +51,10 @@
 
                         <div name="attachments">
                             <file-attachments-tab title="Attachments"
-                                                  allow-download allow-delete
-                                                  files="{{engagement.attachments}}"></file-attachments-tab>
+                                                  files="[[engagement.attachments]]"
+                                                  allow-download
+                                                  allow-delete>
+                            </file-attachments-tab>
                         </div>
 
                     </iron-pages>

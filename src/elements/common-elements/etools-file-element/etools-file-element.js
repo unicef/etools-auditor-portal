@@ -50,10 +50,6 @@
                     return '';
                 }
             },
-            noFileAttachedMsg: {
-                type: String,
-                value: 'No file attached'
-            },
             fileModel: {
                 type: Object,
                 value: null
@@ -73,7 +69,9 @@
             },
             fileTypes: {
                 type: Array,
-                value: []
+                value: function() {
+                    return [];
+                }
             },
             fileTypesLabel: {
                 type: String,
@@ -149,9 +147,6 @@
             return true;
         },
 
-        _showNoFileAttachedMsg: function(filesLength, readonly) {
-            return filesLength === 0 && readonly === true;
-        },
         _showDownloadBtn: function(file, allowDownload) {
             let hasUrl = (typeof file.attachment_file === 'string' && file.attachment_file) || file.raw instanceof File;
             return !!(allowDownload && file && hasUrl);
@@ -362,6 +357,49 @@
                 return 'multiple';
             }
             return '';
+        },
+
+        _getUploadedFile: function(fileModel) {
+            return new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                let uploadedFile = {
+                    name: fileModel.file_name,
+                    type: fileModel.type
+                };
+
+                reader.readAsDataURL(fileModel.raw);
+
+                reader.onload = function() {
+                    uploadedFile.file = reader.result;
+                    resolve(uploadedFile);
+                };
+
+                reader.onerror = function(error) {
+                    reject(error);
+                };
+            });
+        },
+
+        uploadFiles: function() {
+            return new Promise((resolve, reject) => {
+                let promises = this.files.map((fileModel) => {
+                    if (fileModel && fileModel.raw && fileModel.raw instanceof File) {
+                        return this._getUploadedFile(fileModel);
+                    }
+                });
+
+                promises = promises.filter((promise) => {
+                    return promise !== undefined;
+                });
+
+                Promise.all(promises)
+                    .then((uploadedFiles) => {
+                        resolve(uploadedFiles);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            });
         }
 
     });
