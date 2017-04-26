@@ -47,8 +47,7 @@
     "etools-datepicker": "^1.0.10",
     "moment": "^2.18.1",
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#^1.0.1",
-    "etools-currency-amount-input": "^1.0.7",
-    "etools-app-selector": "^1.0.3"
+    "etools-currency-amount-input": "^1.0.7"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

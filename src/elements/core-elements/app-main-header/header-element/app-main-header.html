@@ -1,6 +1,6 @@
 <!--import [polymer, app-layout/app-toolbar/app-toolbar, paper-icon-button, iron-flex-layout, etools-page-refresh, etools-app-config]-->
 
-<!--import [etools-app-selector, countries-dropdown, shared-styles]-->
+<!--import [app-selector, countries-dropdown, shared-styles]-->
 
 <dom-module id="app-main-header">
 
@@ -68,7 +68,7 @@
     <app-toolbar sticky class="content-align">
       <paper-icon-button id="menuButton" class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
       <div class="titlebar content-align">
-        <etools-app-selector menu-options="[[menuOptions]]"></etools-app-selector>
+        <app-selector id="selector"></app-selector>
         <img src$="{{getAbsolutePath('images/etools_logo_icon.png')}}">
         eTools
       </div>
@@ -92,43 +92,6 @@
           },
           user: {
             type: Object
-          },
-          menuOptions: {
-            type: Array,
-            value: function () {
-              return [
-                {
-                  title: 'Dashboards',
-                  icon: 'app-selector-icons:dashIcon',
-                  url: 'dash'
-                },
-                {
-                  title: 'Partnership Management',
-                  icon: 'app-selector-icons:pmpIcon',
-                  url: 'pmp'
-                },
-                {
-                  title: 'Trip Management',
-                  icon: 'app-selector-icons:tripsIcon',
-                  url: 't2f'
-                },
-                {
-                  title: 'Admin (Permission Required)',
-                  icon: 'app-selector-icons:adminIcon',
-                  url: 'admin'
-                },
-                {
-                  title: 'Third Party Management',
-                  icon: 'account-box',
-                  url: 'tpm'
-                },
-                {
-                  title: 'Auditor Portal',
-                  icon: 'social:group',
-                  url: 'ap'
-                },
-              ];
-            }
           }
         },
         observers: [

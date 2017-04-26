@@ -1,4 +1,4 @@
-<!--import [polymer, app-route/app-location, app-route, app-layout, app-main-header, paper-icon-button,
+<!--import [polymer, app-route/app-location, app-route, app-layout, paper-icon-button,
              paper-toast, paper-material, iron-selector, iron-pages, iron-collapse, iron-icons, iron-icons/social-icons,
              etools-loading/etools-loading-behavior, iron-icons/av-icons]-->
 
@@ -9,7 +9,7 @@
 
     <template>
         <!-- inject styles './app-shell.scss'-->
-        <style include="page-layout-styles shared-styles"></style>
+        <style include="shared-styles"></style>
 
         <static-data></static-data>
         <user-data></user-data>
@@ -54,10 +54,6 @@
             </app-drawer>
 
             <!-- Main content -->
-
-            <app-header id="header" fixed shadow>
-                <app-main-header></app-main-header>
-            </app-header>
 
             <iron-pages id="pages"
                         selected="[[page]]"
