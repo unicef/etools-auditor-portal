@@ -1,4 +1,4 @@
-<!--import [polymer, module-styles, page-layout-styles, shared-styles, app-main-header, list-tab-main,
+<!--import [polymer, module-styles, page-layout-styles, shared-styles, list-tab-main,
             search-and-filter, engagements-list-data, pages-header-element]-->
 
 <dom-module id="engagements-list-view">
@@ -39,6 +39,8 @@
                        data="[[engagementsList]]"
                        list-length="[[listLength]]"
                        headings="[[listHeadings]]"
+                       details="[[listDetails]]"
+                       has-collapse="[[hasCollapse]]"
                        query-params="{{queryParams}}">
         </list-tab-main>
 
