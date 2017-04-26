@@ -6,44 +6,44 @@ Polymer({
         itemValues: {
             type: Object,
             value: function() {
-                return {};
+                return {
+                    type: {
+                        ma: 'Micro Assessment',
+                        audit: 'Audit',
+                        sc: 'Spot Check'
+                    },
+                    link_type: {
+                        ma: 'micro-assessments',
+                        audit: 'audits',
+                        sc: 'spot-checks'
+                    },
+                    status: {
+                        partner_contacted: 'Partner was Contacted'
+                    }
+                };
             }
-        },
-        details: {
-            type: Array,
-            value: function() {
-                return [];
-            }
-        },
-        hasCollapse: {
-            type: Boolean,
-            value: false
-        },
-        showCollapse: {
-            type: Boolean,
-            computed: '_computeShowCollapse(details, hasCollapse)'
         }
     },
-    _computeShowCollapse(details, hasCollapse) {
-        return details.length > 0 && hasCollapse;
-    },
     _toggleRowDetails: function() {
-        Polymer.dom(this.root).querySelector('#details').toggle();
+        this.$.details.toggle();
     },
     _isLink: function(link) {
         return !!link;
     },
     _getValue: function(item) {
-        let value;
-
+        let value = this.data;
         if (!item.path) {
-            value = this.get('data.' + item.name);
+            value = value[item.name] || '--';
         } else {
-            value = this.get('data.' + item.path);
+            let fields = item.path.split('.');
+
+            while (fields.length && value) {
+                value = value[fields.shift()];
+            }
         }
-        // if (item.name === 'type' || item.name ==='status') {
-        //     value = this._refactorValue(item.name, value);
-        // }
+        if (item.name === 'type' || item.name === 'status') {
+            value = this._refactorValue(item.name, value);
+        }
 
         return value || '--';
     },
@@ -54,8 +54,12 @@ Polymer({
     _getStatus: function(synced) {
         if (synced) { return 'Synced from VISION'; }
     },
+    _getDisplayValue: function(value) {
+        return value || '--';
+    },
     _getLink: function(pattern) {
         return pattern
-            .replace('*data_id*', this.data.id);
+            .replace('*data_id*', this.data.id)
+            .replace('*engagement_type*', this._refactorValue('link_type', this.data.type));
     }
 });

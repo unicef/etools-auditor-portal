@@ -24,18 +24,9 @@ Polymer({
             notify: true
         },
         withoutPagination: {
-            type: Boolean
-        },
-        hasCollapse: {
             type: Boolean,
             value: false
-        },
-        details: {
-            type: Array,
-            value: function() {
-                return [];
-            }
-        },
+        }
     },
     _orderChanged: function(newOrder) {
         if (!newOrder) { return; }
