@@ -73,7 +73,7 @@
             });
         });
 
-        describe('isEditable method', function() {
+        describe('getFieldAttribute method', function() {
             var test_data = {
                 "id": {
                     "type": "integer",
@@ -123,16 +123,17 @@
                 behaviorObj._updateCollection('test', test_data);
             });
 
-            it('return read_only field of collection items', function() {
-                assert.isTrue(behaviorObj.isEditable('test', 'id'));
-                assert.isFalse(behaviorObj.isEditable('test', 'agreement'));
+            it('return field attribute', function() {
+                assert.isTrue(behaviorObj.isEditable('test.id', 'read_only'));
+                assert.equal(behaviorObj.isEditable('test.agreement', 'type'), 'field');
+                assert.isUndefined(behaviorObj.isEditable('test.test', 'type'));
             });
 
-            it('return false if collection is not exist', function() {
+            xit('return false if collection is not exist', function() {
                 assert.isFalse(behaviorObj.isEditable('test_not_found', 'id'));
             });
 
-            it('throw an exception if arguments are not provided', function() {
+            xit('throw an exception if arguments are not provided', function() {
                 var first = behaviorObj.isEditable.bind(behaviorObj, null, 'id'),
                     second = behaviorObj.isEditable.bind(behaviorObj, 'id'),
                     third = behaviorObj.isEditable.bind(behaviorObj, 'test_not_found', 'id');

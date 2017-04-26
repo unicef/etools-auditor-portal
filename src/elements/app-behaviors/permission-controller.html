@@ -43,6 +43,21 @@
                 return true;
             },
 
+            getFieldAttribute: function(path, attribute) {
+                if (!path || !attribute) { throw new Error('path and attribute arguments must be provided'); }
+
+                path = path.split('.');
+                let value;
+
+                while (path.length) {
+
+                }
+//                if (!_permissionCollection[collection] || !_permissionCollection[collection][field]) { return false; }
+
+                return _permissionCollection[collection][field].read_only;
+
+            },
+
             isEditable: function(collection, field) {
                 if (!collection || !field) { throw new Error('collection and field arguments must be provided'); }
                 if (!_permissionCollection[collection] || !_permissionCollection[collection][field]) { return false; }
