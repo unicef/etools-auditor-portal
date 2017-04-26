@@ -615,22 +615,30 @@
                 assert.equal(myEl.files.length, 1);
             });
 
-            it('removes files without file_name property', function () {
+            it('removes files without file_name property', function (done) {
                 var newFile = new File([''], 'newFile');
 
                 myEl.files.push({raw: newFile, type: '1'});
 
-                assert.equal(myEl.files.length, 3);
+                assert.equal(myEl.files.length, 1);
                 myEl._filesChange();
-                assert.equal(myEl.files.length, 2);
+
+                flush(function () {
+                    assert.equal(myEl.files.length, 0);
+                    done();
+                });
             });
 
-            it('removes files with incorrect file property', function () {
-                myEl.files.push({file: 'path.name', id: 1});
+            it('removes files with incorrect file property', function (done) {
+                myEl.files.push({file: '', id: 1});
 
-                assert.equal(myEl.files.length, 3);
+                assert.equal(myEl.files.length, 1);
                 myEl._filesChange();
-                assert.equal(myEl.files.length, 2);
+
+                flush(function () {
+                    assert.equal(myEl.files.length, 0);
+                    done();
+                });
             });
         });
 
@@ -640,7 +648,7 @@
             });
 
             it('returns undefined', function () {
-                assert.isUndefined(myEl._getFilenameFromUrl('path.to.file.filename'));
+                assert.isUndefined(myEl._getFilenameFromUrl(''));
             });
         });
 
