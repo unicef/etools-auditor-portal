@@ -27,6 +27,7 @@
         .row-details-content {
             flex: 0 0 16.66666667%;
             max-width: 16%;
+            padding-right: 25px;
             vertical-align: top;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -74,6 +75,7 @@ paper-material ::slotted(*) {
 #iconWrapper {
     position: absolute;
     left: 0;
+    top: 0;
     height: 48px;
     line-height: 48px;
     padding: 0 24px;

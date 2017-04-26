@@ -136,18 +136,6 @@
             });
         });
 
-        describe('_showNoFileAttachedMsg', function () {
-            it('returns true when filesLength = 0 and readonly = true', function () {
-                assert.equal(myEl._showNoFileAttachedMsg(0, true), true);
-            });
-
-            it('returns false when filesLength != 0 or readonly = false', function () {
-                assert.equal(myEl._showNoFileAttachedMsg(0, false), false);
-                assert.equal(myEl._showNoFileAttachedMsg(1, false), false);
-                assert.equal(myEl._showNoFileAttachedMsg(1, true), false);
-            });
-        });
-
         describe('_showDownloadBtn', function () {
             it('returns true when file has an URL and allowDownload = true', function () {
                 var file = {file_name: 'name', type: '1', attachment_file: 'url'};
@@ -642,6 +630,55 @@
 
             it('returns empty String', function () {
                 assert.equal(myEl._getMultipleClass(false), '');
+            });
+        });
+
+        describe('_getUploadedFile', function () {
+            it('Promise resolves an Object', function () {
+                var fileModel = {
+                    file_name: 'name',
+                    raw: new File([''], 'name')
+                };
+
+                myEl._getUploadedFile(fileModel).then((resolved) => {
+                    assert.isObject(resolved);
+                });
+            });
+
+            it ('Promise rejected', function () {
+                var fileModel = {};
+
+                myEl._getUploadedFile(fileModel).catch((rejected) => {
+                    assert.isDefined(rejected);
+                });
+            });
+        });
+
+        describe('uploadFiles', function () {
+            beforeEach(function () {
+                myEl.files = [{
+                    file_name: 'name',
+                    raw: new File([''], 'name')
+                }];
+            });
+
+            it('Promise resolves an Array of Objects', function () {
+                myEl.uploadFiles().then((resolved) => {
+                    assert.isArray(resolved);
+                    assert.isObject(resolved[0]);
+                });
+            });
+
+            it ('Promise rejected', function () {
+                sinon.stub(myEl, '_getUploadedFile').returns(() => {
+                    return new Promise((resolve, reject) => {
+                        reject(new Error('Error!'));
+                    });
+                });
+
+                myEl.uploadFiles().catch((rejected) => {
+                    assert.isDefined(rejected);
+                });
             });
         });
 

@@ -26,6 +26,16 @@ Polymer({
         withoutPagination: {
             type: Boolean,
             value: false
+        },
+        hasCollapse: {
+            type: Boolean,
+            value: false
+        },
+        details: {
+            type: Array,
+            value: function() {
+                return [];
+            }
         }
     },
     _orderChanged: function(newOrder) {

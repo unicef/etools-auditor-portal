@@ -18,13 +18,14 @@
                 <div class="input-container">
                     <!-- Purchase Order -->
                     <paper-input label="Purchase Order"
-                                 value="{{data.engagement.order_number}}"
+                                 value="{{data.agreement.order_number}}"
                                  placeholder="&#8212;"
                                  id="purchaseOrder"
                                  allowed-pattern="[\d]"
                                  error-message="Purchase order is required"
                                  required
                                  class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                                 on-focus="_resetFieldError"
                                  disabled$="[[!editMode]]"></paper-input>
                 </div>
                 <div class="input-container">
@@ -33,7 +34,7 @@
                                  class="disabled-as-readonly"
                                  disabled
                                  id="contractStartDateInput"
-                                 value="[[prettyDate(data.engagement.contract_start_date)]]"
+                                 value="[[prettyDate(data.agreement.contract_start_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="contractStartDate"
                                  placeholder="&#8212;">
@@ -51,7 +52,7 @@
                                  class="disabled-as-readonly"
                                  disabled
                                  id="contractEndDateInput"
-                                 value="[[prettyDate(data.engagement.contract_end_date)]]"
+                                 value="[[prettyDate(data.agreement.contract_end_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="contractEndDate"
                                  placeholder="&#8212;">
@@ -81,6 +82,7 @@
                             option-value="id"
                             option-label="name"
                             label="Partner"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-searchable-multiselection-menu>
                 </div>
                 <div class="input-container">
@@ -109,14 +111,16 @@
                             class$="disabled-as-readonly {{_setRequired(editMode)}}"
                             readonly="[[!editMode]]"
                             disabled="[[!editMode]]"
-                            value="{{data.type}}"
+                            value="{{_processValue(data.type)}}"
                             required
                             id="auditType"
                             error-message="Audit Type is required"
                             custom-object-options
                             option-value="value"
                             option-label="label"
+                            on-value-change="_setAuditType"
                             label="Audit Type"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-searchable-multiselection-menu>
                 </div>
             </div>

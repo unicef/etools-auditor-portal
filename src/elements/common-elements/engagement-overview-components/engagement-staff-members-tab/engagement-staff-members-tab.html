@@ -29,7 +29,7 @@
                                              value="{{item.title}}"
                                              placeholder="&#8212;"
                                              disabled$="[[!editMode]]"
-                                             class$="disabled-as-readonly">
+                                             class="disabled-as-readonly">
                                 </paper-input>
                             </div>
                             <div class="input-container" title="{{_getTitleValue(item.first_name)}}">
@@ -38,8 +38,9 @@
                                              value="{{item.first_name}}"
                                              placeholder="&#8212;"
                                              disabled$="[[!editMode]]"
-                                             class="disabled-as-readonly validate-input"
+                                             class$="disabled-as-readonly validate-input {{_setRequired(editMode)}}"
                                              required
+                                             on-focus="_resetFieldError"
                                              error-message="First name is required">
                                 </paper-input>
                             </div>
@@ -49,8 +50,9 @@
                                              value="{{item.last_name}}"
                                              placeholder="&#8212;"
                                              disabled$="[[!editMode]]"
-                                             class="disabled-as-readonly validate-input"
+                                             class$="disabled-as-readonly validate-input {{_setRequired(editMode)}}"
                                              required
+                                             on-focus="_resetFieldError"
                                              error-message="Last name is required">
                                 </paper-input>
                             </div>
@@ -73,8 +75,9 @@
                                              value="{{item.email}}"
                                              placeholder="&#8212;"
                                              disabled$="[[!editMode]]"
-                                             class="disabled-as-readonly validate-input"
+                                             class$="disabled-as-readonly validate-input {{_setRequired(editMode)}}"
                                              validator="emailValidator"
+                                             on-focus="_resetFieldError"
                                              error-message="A valid email address is required">
                                     <iron-icon prefix icon="communication:email"></iron-icon>
                                 </paper-input>

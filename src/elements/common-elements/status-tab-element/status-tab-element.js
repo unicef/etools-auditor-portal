@@ -17,11 +17,11 @@ Polymer({
         }
     },
     _getStatusState: function(statusNumber) {
-        if (!this.engagementData || !this.engagementData.status) { return; }
+        if (!this.engagementData || this.engagementData.status === undefined) { return; }
 
         if (isNaN(statusNumber)) { statusNumber = this._getStatusNumber(statusNumber); }
         let currentStatusNumber = this._getStatusNumber(this.engagementData.status);
-        if (+statusNumber === currentStatusNumber) { return 'active'; } else if (+statusNumber < currentStatusNumber) { return 'completed'; } else { return 'pending'; }
+        if (+statusNumber === currentStatusNumber + 1) { return 'active'; } else if (+statusNumber <= currentStatusNumber) { return 'completed'; } else { return 'pending'; }
     },
     _getStatusNumber: function(status) {
         return ['partner_contacted', 'field_visit', 'draft_issued_to_partner',

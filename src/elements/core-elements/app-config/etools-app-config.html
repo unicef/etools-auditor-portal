@@ -34,6 +34,9 @@ App global configuration
                 exp: 10 * 60 * 1000, // 10min
                 cachingKey: 'engagements'
             },
+            engagementInfo: {
+                template: '/api/audit/<%=type%>/<%=id%>/'
+            },
             createEngagement: {
                 template: '/api/audit/<%=type%>/'
             },

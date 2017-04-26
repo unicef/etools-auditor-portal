@@ -2,13 +2,16 @@
 
 Polymer({
     is: 'new-engagement-view',
-    behaviors: [etoolsAppConfig.globals],
+    behaviors: [
+        etoolsAppConfig.globals,
+        APBehaviors.LastCreatedController
+    ],
     properties: {
         engagement: {
             type: Object,
             value: function() {
                 return {
-                    status: 'partner_contacted',
+                    status: '',
                     staff_members: [],
                     type: {},
                     attachments: []
@@ -33,28 +36,45 @@ Polymer({
             this.fire('toast', {text: 'Fix invalid fields before saving'});
             return;
         }
-        this.newEngagementData = this._prepareData();
+
+        this._prepareData()
+            .then((data) => {
+                this.newEngagementData = data;
+            });
     },
     _prepareData: function() {
-        let data = _.cloneDeep(this.engagement);
+        let data = _.cloneDeep(this.engagement),
+            attachmentsTab = this.$.attachments;
+
         data.partner = data.partner.id;
         //TODO: remove this after adding agreement data loading
         data.agreement = 1;
 
-        return {
-            type: data.type.value,
-            data: data
-        };
+        return attachmentsTab.getFiles()
+            .then((files) => {
+                data.attachments = files;
+                return {
+                    type: data.type.link,
+                    data: data
+                };
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     },
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
         if (event.detail.success && event.detail.data) {
-            //TODO: save response data before redirecting
-            let path = `${this.engagement.type.value}/${event.detail.data.id}/overview`;
+            //save response data before redirecting
+            this._setLastEngagementData(event.detail.data);
+
+            //redirect
+            let path = `${this.engagement.type.link}/${event.detail.data.id}/overview`;
             this.set('path', this.getAbsolutePath(path));
 
+            //reset data
             this.engagement = {
-                status: 'partner_contacted',
+                status: '',
                 staff_members: [],
                 type: {}
             };
@@ -63,7 +83,7 @@ Polymer({
     _pageChanged: function(page) {
         if (page === 'new') {
             this.set('engagement', {
-                status: 'partner_contacted',
+                status: '',
                 staff_members: [],
                 type: {},
                 attachments: []

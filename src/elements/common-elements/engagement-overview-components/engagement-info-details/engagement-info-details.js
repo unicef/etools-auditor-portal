@@ -17,13 +17,16 @@ Polymer({
             value: function() {
                 return [{
                     label: 'Micro Assessment',
-                    value: 'micro-assessments'
+                    link: 'micro-assessments',
+                    value: 'ma'
                 }, {
                     label: 'Audit',
-                    value: 'audits'
+                    link: 'audits',
+                    value: 'a'
                 }, {
                     label: 'Spot Check',
-                    value: 'spot-checks'
+                    link: 'spot-checks',
+                    value: 'sc'
                 }];
             }
         },
@@ -34,9 +37,6 @@ Polymer({
     },
     _editModeChanged: function() {
         this.updateStyles();
-    },
-    _partnerFieldChanged: function() {
-        if (this.partnershipDisabled) { this.partnershipDisabled = false; }
     },
     validate: function() {
         let typeValid = this.$.auditType.validate(),
@@ -52,5 +52,20 @@ Polymer({
     },
     _setRequired: function(editMode) {
         if (editMode) { return 'required'; }
+    },
+    _resetFieldError: function(event) {
+        event.target.invalid = false;
+    },
+    _processValue: function(value) {
+        if (typeof value === 'string') {
+            return this.auditTypes.filter((type) => {
+                return type.value === value;
+            })[0];
+        } else {
+            return value;
+        }
+    },
+    _setAuditType: function(e, value) {
+        this.set('data.type', value.selectedValues);
     }
 });

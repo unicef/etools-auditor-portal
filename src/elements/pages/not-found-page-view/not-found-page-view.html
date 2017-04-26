@@ -1,4 +1,4 @@
-<!--import [polymer, shared-styles, app-main-header, page-layout-styles]-->
+<!--import [polymer, shared-styles, page-layout-styles]-->
 
 <dom-module id="not-found-page-view">
     <template>
@@ -15,20 +15,12 @@
         </style>
         <style include="page-layout-styles shared-styles"></style>
 
-        <app-header-layout>
+        <div id="pageContent">
+            <paper-material elevation="1">
+                404 <a href="/partners/list" class="link">Head back home.</a>
+            </paper-material>
+        </div>
 
-            <app-header fixed shadow>
-                <app-main-header></app-main-header>
-
-            </app-header>
-
-            <div id="pageContent">
-                <paper-material elevation="1">
-                    404 <a href="/partners/list" class="link">Head back home.</a>
-                </paper-material>
-            </div>
-
-        </app-header-layout>
     </template>
 
     <script>

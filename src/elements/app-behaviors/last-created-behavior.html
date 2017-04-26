@@ -1,0 +1,28 @@
+<!--import [lodash]-->
+<script>
+    'use strict';
+    (function () {
+        var _engagementData;
+
+        window.APBehaviors = window.APBehaviors || {};
+        window.APBehaviors.LastCreatedController = {
+            _setLastEngagementData: function(data) {
+                if (!data || !data.id) { return false; }
+                _engagementData = data;
+                return true;
+            },
+
+            getLastEngagementData: function(id) {
+                if (!_engagementData) { return null; }
+
+                let data = _engagementData;
+                _engagementData = null;
+
+                return +data.id === +id ? data : null;
+            },
+
+        };
+    })()
+
+
+</script>

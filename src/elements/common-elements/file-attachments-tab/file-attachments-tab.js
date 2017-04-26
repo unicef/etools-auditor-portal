@@ -5,11 +5,15 @@ Polymer({
     properties: {
         fileTypes: {
             type: Array,
-            value: []
+            value: function() {
+                return [{name: 'test type', id: 8}];
+            }
         },
         files: {
             type: Array,
-            value: []
+            value: function() {
+                return [];
+            }
         },
         title: {
             type: String,
@@ -38,5 +42,8 @@ Polymer({
             type: String
         }
     },
-    _hideEmptyState: function(length) { return length > 0;}
+    _hideEmptyState: function(length) { return length > 0;},
+    getFiles: function() {
+        return this.$.filesElement.getFiles();
+    }
 });

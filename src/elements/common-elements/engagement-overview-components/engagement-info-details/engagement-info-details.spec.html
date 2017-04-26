@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [static-data-behavior, engagement-info-details]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <engagement-info-details id="element"></engagement-info-details>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<engagement-info-details>', function () {
+        var myEl, partnerInput, auditTypeInput, numberInput;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+            numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
+            partnerInput = Polymer.dom(myEl.root).querySelector('#partner');
+            auditTypeInput = Polymer.dom(myEl.root).querySelector('#auditType');
+        });
+
+        it('update styles', function () {
+            sinon.spy(myEl, "updateStyles");
+            myEl._editModeChanged();
+            assert.isTrue(myEl.updateStyles.called);
+            myEl.updateStyles.restore();
+        });
+
+        it('validate required inputs', function (done) {
+            assert.isDefined(partnerInput.validate);
+            sinon.spy(numberInput, "validate");
+            sinon.spy(partnerInput, "validate");
+            sinon.spy(auditTypeInput, "validate");
+
+            flush(function() {
+                myEl.validate();
+
+                assert.isTrue(numberInput.validate.called);
+                assert.isTrue(partnerInput.validate.called);
+                assert.isTrue(auditTypeInput.validate.called);
+
+                numberInput.validate.restore();
+                partnerInput.validate.restore();
+                auditTypeInput.validate.restore();
+                done();
+            });
+        });
+
+        it('reset validation errors', function () {
+            numberInput.invalid = true;
+            partnerInput.invalid = true;
+            auditTypeInput.invalid = true;
+
+            myEl.resetValidationErrors();
+
+            assert.isFalse(numberInput.invalid);
+            assert.isFalse(partnerInput.invalid);
+            assert.isFalse(auditTypeInput.invalid);
+        });
+
+        it('return required class if edit mode on', function () {
+            assert.equal(myEl._setRequired(true), 'required');
+            assert.isUndefined(myEl._setRequired());
+        });
+
+        it('get audit type dropdown object value', function () {
+            assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
+        });
+
+    });
+</script>
+
+</body>
+</html>

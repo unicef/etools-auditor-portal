@@ -35,6 +35,8 @@
             assert.isDefined(myEl.validate);
             assert.isDefined(myEl._addNewStaffMember);
             assert.isDefined(myEl._getTitleValue);
+            assert.isDefined(myEl._setRequired);
+            assert.isDefined(myEl._resetFieldError);
         });
 
         it('return title or empty string', function () {
@@ -105,6 +107,17 @@
             myEl.dataItems[0].first_name = 'test_name';
             myEl._addNewStaffMember();
             assert.equal(myEl.dataItems.length, 2);
+        });
+
+        it('return required class if edit mode is on', function () {
+            assert.equal(myEl._setRequired(true), 'required');
+            assert.equal(myEl._setRequired(), '')
+        });
+
+        it('reset field error', function () {
+            var test = {target: {invalid: true}};
+            myEl._resetFieldError(test);
+            assert.isFalse(test.target.invalid);
         });
 
     });

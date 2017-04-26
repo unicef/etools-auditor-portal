@@ -66,4 +66,16 @@ Polymer({
 
     _getTitleValue: function(value) { return value || ''; },
 
+    _setRequired: function(editMode) {
+        if (editMode) {
+            return 'required';
+        } else {
+            return '';
+        }
+    },
+
+    _resetFieldError: function(event) {
+        event.target.invalid = false;
+    }
+
 });

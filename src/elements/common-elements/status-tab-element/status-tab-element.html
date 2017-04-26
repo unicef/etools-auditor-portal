@@ -114,7 +114,7 @@
 
 
             <div class="status-buttons">
-                <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]">
+                <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]" class="status-tab-button">
                     <span>[[mainActionText]]</span>
                     <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
 
@@ -123,7 +123,7 @@
                             <div class="dropdown-content">
                                 <div class="other-title">Other Actions</div>
 
-                                <template is="dom-repeat" items="[[otherActions]]">
+                                <template is="dom-repeat" items="[[otherActions]]" class="other-btns-template">
                                     <div class="other-options" on-click="closeMenu" event-name$="[[item.event]]">{{item.name}}</div>
                                 </template>
 

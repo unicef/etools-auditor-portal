@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [last-created-behavior]-->
+</head>
+<body>
+
+<script>
+
+    describe('Last created data behavior element', function () {
+        var behaviorObj;
+
+        beforeEach(function () {
+            behaviorObj = APBehaviors.LastCreatedController;
+        });
+
+        it('has several properties and methods', function () {
+            assert.isDefined(behaviorObj._setLastEngagementData);
+            assert.isDefined(behaviorObj.getLastEngagementData);
+        });
+
+        it('set data to object only if data and data.id provided', function () {
+            assert.isFalse(behaviorObj._setLastEngagementData());
+            assert.isFalse(behaviorObj._setLastEngagementData({}));
+            assert.isTrue(behaviorObj._setLastEngagementData({id: 90}));
+        });
+
+        it('get data and clear data object', function () {
+            assert.isTrue(behaviorObj._setLastEngagementData({id: 90, data: 'test'}));
+            var data = behaviorObj.getLastEngagementData(90);
+
+            assert.equal(data.data, 'test');
+
+            assert.isNull(behaviorObj.getLastEngagementData({id: 90}));
+        });
+
+        it('get data and if id argument is equal ta data.id', function () {
+            assert.isTrue(behaviorObj._setLastEngagementData({id: 90, data: 'test'}));
+            var data = behaviorObj.getLastEngagementData(1);
+
+            assert.isNull(data);
+            assert.isNull(behaviorObj.getLastEngagementData({id: 90}));
+        });
+
+    });
+</script>
+
+</body>
+</html>

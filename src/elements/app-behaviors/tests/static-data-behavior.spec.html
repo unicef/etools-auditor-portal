@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [static-data-behavior]-->
+</head>
+<body>
+
+<script>
+
+    describe('Static data behavior element', function () {
+        var behaviorObj;
+
+        beforeEach(function () {
+            behaviorObj = APBehaviors.StaticDataController;
+        });
+
+        it('has several properties and methods', function () {
+            assert.isDefined(behaviorObj._setData);
+            assert.isDefined(behaviorObj.getData);
+            assert.isDefined(behaviorObj._updateData);
+        });
+
+        it('set data to object and return true', function () {
+            assert.isTrue(behaviorObj._setData('test_key', 'test_data'));
+        });
+
+        it('return false if no data or key attributes provided', function () {
+            assert.isFalse(behaviorObj._setData(null, 'test_data'));
+            assert.isFalse(behaviorObj._setData('test_key', null));
+            assert.isFalse(behaviorObj._setData());
+        });
+
+        it('return false if key is already used', function () {
+            assert.isTrue(behaviorObj._setData('single_key', 'test_data'));
+            assert.isFalse(behaviorObj._setData('single_key', 'other_data'));
+        });
+
+        it('return copy of data object', function () {
+            assert.isTrue(behaviorObj._setData('test_object', {test: true}));
+            var data = behaviorObj.getData('test_object');
+
+            assert.equal(data.test, true);
+
+            data.test = false;
+            assert.equal(behaviorObj.getData('test_object').test, true);
+        });
+
+        it('update data with _updateData method only if data exists', function () {
+            assert.isFalse(behaviorObj._updateData('my_data', {test: 'my_data'}));
+            assert.isTrue(behaviorObj._setData('my_data', {test: 'my_data'}));
+            assert.equal(behaviorObj.getData('my_data').test, 'my_data');
+            assert.isTrue(behaviorObj._updateData('my_data', {test: 'my_other_data'}));
+            assert.equal(behaviorObj.getData('my_data').test, 'my_other_data');
+        });
+
+    });
+</script>
+
+</body>
+</html>
