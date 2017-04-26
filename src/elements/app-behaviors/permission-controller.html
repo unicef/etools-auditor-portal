@@ -2,18 +2,53 @@
 <script>
     'use strict';
     (function () {
-        var _engagementData;
+        var _permissionCollection = {};
 
         window.APBehaviors = window.APBehaviors || {};
         window.APBehaviors.PermissionController = {
-            _setLastEngagementData: function() {
+            _addToCollection: function(collectionName, data) {
+                //check arguments
+                if (!collectionName || !data) {
+                    console.warn('collectionName and data arguments must be provided!');
+                    return false;
+                }
+                if (typeof collectionName !== 'string') {
+                    console.warn('collectionName must be a string');
+                    return false;
+                }
+                if (typeof data !== 'object' || typeof data.forEach === 'function') {
+                    console.warn('data must be an object');
+                    return false;
+                }
 
+                //check existance
+                if (_permissionCollection[collectionName]) { return false; }
+
+                _permissionCollection[collectionName] = data;
+
+                return true;
             },
 
-            getLastEngagementData: function() {
+            _updateCollection: function(collectionName, data) {
+                if (!_permissionCollection[collectionName]) {
+                    console.warn(`Collection ${collectionName} does not exist!`);
+                    return false;
+                }
+                if (typeof data !== 'object' || typeof data.forEach === 'function') {
+                    console.warn('data must be an object');
+                    return false;
+                }
 
+                _permissionCollection[collectionName] = data;
+                return true;
             },
 
+            isEditable: function(collection, field) {
+                if (!collection || !field) { throw new Error('collection and field arguments must be provided'); }
+                if (!_permissionCollection[collection] || !_permissionCollection[collection][field]) { return false; }
+
+                return _permissionCollection[collection][field].read_only;
+            }
         };
     })()
 
