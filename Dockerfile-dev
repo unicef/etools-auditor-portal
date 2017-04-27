@@ -3,6 +3,6 @@ RUN apk update
 
 RUN apk add git
 
-RUN mkdir /code/
-VOLUME ".:/code"
+RUN mkdir /code
 WORKDIR /code
+CMD npm rebuild node-sass && /code/node_modules/.bin/gulp server
