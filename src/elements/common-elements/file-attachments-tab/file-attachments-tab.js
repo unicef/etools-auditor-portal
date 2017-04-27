@@ -7,7 +7,7 @@ Polymer({
         fileTypes: {
             type: Array,
             value: function() {
-                return [{display_name: 'test type', value: 8}];
+                return [];
             }
         },
         files: {
@@ -44,7 +44,7 @@ Polymer({
         }
     },
     ready: function() {
-        // this.fileTypes = this.getData('attachments_types');
+        this.fileTypes = this.getData('attachments_types');
     },
     _hideEmptyState: function(length) { return length > 0;},
     getFiles: function() {
