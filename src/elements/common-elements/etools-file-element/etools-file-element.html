@@ -38,7 +38,7 @@
                                 <template is="dom-if" if="[[_showReadonlyType(readonly)]]">
                                     <div class="file-type-input-wrapper">
                                         <paper-input class="file-type-input disabled-as-readonly" label="[[fileTypesLabel]]"
-                                                     value$="[[_getFileTypeStr(file.type)]]"
+                                                     value$="[[_getFileTypeStr(file.file_type)]]"
                                                      placeholder="&#8212;" readonly disabled></paper-input>
                                     </div>
                                 </template>
@@ -83,7 +83,9 @@
                                 <div class="file-checkbox"
                                      disabled$="[[!fileCheckboxVisible]]"
                                      hidden$="[[!fileCheckboxVisible]]">
-                                    <div class="file-checkbox-title" hidden$="[[!fileCheckboxTitle]]">[[fileCheckboxTitle]]</div>
+                                    <template is="dom-if" if="[[fileCheckboxTitle]]">
+                                        <div class="file-checkbox-title">[[fileCheckboxTitle]]</div>
+                                    </template>
                                     <paper-checkbox checked$="{{file.selected}}">[[fileCheckboxLabel]]</paper-checkbox>
                                 </div>
                             </div>

@@ -406,7 +406,7 @@
                 let reader = new FileReader();
                 let uploadedFile = {
                     file_name: fileModel.file_name,
-                    file_type: fileModel.type
+                    file_type: fileModel.file_type
                 };
 
                 reader.readAsDataURL(fileModel.raw);
