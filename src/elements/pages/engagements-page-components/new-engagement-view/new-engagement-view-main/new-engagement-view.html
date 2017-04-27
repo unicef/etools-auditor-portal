@@ -1,5 +1,5 @@
-<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash]-->
-<!--import [shared-styles, module-styles, app-main-header, pages-header-element, file-attachments-tab, last-created-behavior,
+<!--import [polymer, app-route, paper-tabs, iron-pages, app-route/app-location, lodash]-->
+<!--import [shared-styles, module-styles, pages-header-element, file-attachments-tab, last-created-behavior,
             status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement]-->
 
 <dom-module id="new-engagement-view">
@@ -20,53 +20,46 @@
 
         <add-new-engagement new-engagement-data="{{newEngagementData}}"></add-new-engagement>
 
-        <app-header-layout>
+        <pages-header-element show-export-button
+                              title="Add New Engagement"></pages-header-element>
+        <div class="tab-selector">
+            <paper-tabs attr-for-selected="name" noink="" bottom-item="" role="tablist" tabindex="0" selected="{{routeData.tab}}">
+                <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
+                <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
+            </paper-tabs>
+        </div>
 
-            <app-header id="header" fixed shadow>
-                <app-main-header></app-main-header>
-            </app-header>
+        <div class="view-container">
+            <div id="pageContent">
+                <iron-pages id="info-tabs"
+                            selected="{{routeData.tab}}"
+                            attr-for-selected="name">
 
-            <pages-header-element show-export-button
-                                  title="Add New Engagement"></pages-header-element>
-            <div class="tab-selector">
-                <paper-tabs attr-for-selected="name" noink="" bottom-item="" role="tablist" tabindex="0" selected="{{routeData.tab}}">
-                    <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
-                    <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-                </paper-tabs>
+                    <div name="overview">
+                        <engagement-info-details data="{{engagement}}" id="engagementDetails"></engagement-info-details>
+
+                        <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
+                            <engagement-staff-members-tab id="staffMembers"  data-items="{{engagement.staff_members}}" edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
+                        </etools-content-panel>
+                    </div>
+
+                    <div name="attachments">
+                        <file-attachments-tab title="Attachments"
+                                              id="attachments"
+                                              files="[[engagement.attachments]]"
+                                              allow-download
+                                              allow-delete>
+                        </file-attachments-tab>
+                    </div>
+
+                </iron-pages>
+
             </div>
 
-            <div class="view-container">
-                <div id="pageContent">
-                    <iron-pages id="info-tabs"
-                                selected="{{routeData.tab}}"
-                                attr-for-selected="name">
-
-                        <div name="overview">
-                            <engagement-info-details data="{{engagement}}" id="engagementDetails"></engagement-info-details>
-
-                            <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
-                                <engagement-staff-members-tab id="staffMembers"  data-items="{{engagement.staff_members}}" edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
-                            </etools-content-panel>
-                        </div>
-
-                        <div name="attachments">
-                            <file-attachments-tab title="Attachments"
-                                                  files="[[engagement.attachments]]"
-                                                  allow-download
-                                                  allow-delete>
-                            </file-attachments-tab>
-                        </div>
-
-                    </iron-pages>
-
-                </div>
-
-                <div id="sidebar">
-                    <status-tab-element engagement-data="[[engagement]]" main-action-text="Save"></status-tab-element>
-                </div>
+            <div id="sidebar">
+                <status-tab-element engagement-data="[[engagement]]" main-action-text="Save"></status-tab-element>
             </div>
-
-        </app-header-layout>
+        </div>
 
     </template>
 

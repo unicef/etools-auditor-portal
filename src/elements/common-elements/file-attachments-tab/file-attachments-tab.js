@@ -6,7 +6,7 @@ Polymer({
         fileTypes: {
             type: Array,
             value: function() {
-                return [];
+                return [{name: 'test type', id: 8}];
             }
         },
         files: {
@@ -42,5 +42,8 @@ Polymer({
             type: String
         }
     },
-    _hideEmptyState: function(length) { return length > 0;}
+    _hideEmptyState: function(length) { return length > 0;},
+    getFiles: function() {
+        return this.$.filesElement.getFiles();
+    }
 });
