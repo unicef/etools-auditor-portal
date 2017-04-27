@@ -44,12 +44,14 @@
 
                         <div name="overview">
                             <engagement-info-details data="{{engagement}}" id="engagementDetails"
+                                                     base-permission-path="{{permissionBase}}"
                                                      edit-mode="[[_allowEdit()]]"></engagement-info-details>
 
                             <etools-content-panel
                                     title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
                                     show-expand-btn>
                                 <engagement-staff-members-tab id="staffMembers"
+                                                              base-permission-path="{{permissionBase}}"
                                                               data-items="{{engagement.staff_members}}"
                                                               edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
                             </etools-content-panel>

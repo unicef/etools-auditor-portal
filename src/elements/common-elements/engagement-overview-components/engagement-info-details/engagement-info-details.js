@@ -69,6 +69,8 @@ Polymer({
         this.set('data.type', value.selectedValues);
     },
     isReadOnly: function(field) {
+        if (!this.basePermissionPath) { return true; }
+
         let read_only = this.isReadonly(`${this.basePermissionPath}.${field}`);
         if (read_only === null) { read_only = true; }
 

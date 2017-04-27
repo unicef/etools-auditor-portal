@@ -18,7 +18,8 @@ Polymer({
     },
 
     observers: [
-        '_routeConfig(route)'
+        '_routeConfig(route)',
+        '_setPermissionBase(engagement.id)'
     ],
 
     listeners: {
@@ -49,5 +50,8 @@ Polymer({
     },
     _getMembersLength: function(length) {
         return length || 0;
+    },
+    _setPermissionBase: function(id) {
+        this.permissionBase = id ? `engagement_${id}` : null;
     }
 });
