@@ -25,7 +25,7 @@
                                  allowed-pattern="[\d]"
                                  error-message="Purchase order is required"
                                  required
-                                 class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                                 class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
                                  on-focus="_resetFieldError"
                                  disabled$="[[isReadOnly('agreement', basePermissionPath)]]"></paper-input>
                 </div>
@@ -72,13 +72,13 @@
                     <!-- Partner -->
                     <etools-searchable-multiselection-menu
                             options="[[partners]]"
-                            class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                            class$="disabled-as-readonly {{_setRequired('partner', basePermissionPath)}}"
                             readonly="[[isReadOnly('partner', basePermissionPath)]]"
                             disabled="[[isReadOnly('partner', basePermissionPath)]]"
                             value="{{data.partner}}"
                             id="partner"
                             error-message="Partner is required"
-                            required
+                            required="{{_setRequired('partner', basePermissionPath)}}"
                             custom-object-options
                             option-value="id"
                             option-label="name"
@@ -89,7 +89,8 @@
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
                     <paper-input label="Date Partner Was Contacted"
-                                 class="disabled-as-readonly"
+                                 class$="disabled-as-readonly {{_setRequired('partner_contracted_at', basePermissionPath)}}"
+                                 required="{{_setRequired('partner_contracted_at', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('partner_contracted_at', basePermissionPath)]]"
                                  id="contactedDateInput"
                                  value="[[prettyDate(data.partner_contracted_at)]]"
@@ -109,11 +110,11 @@
                     <!-- Audit Type -->
                     <etools-searchable-multiselection-menu
                             options="[[auditTypes]]"
-                            class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                            class$="disabled-as-readonly {{_setRequired('type', basePermissionPath)}}"
                             readonly="[[isReadOnly('type', basePermissionPath)]]"
                             disabled="[[isReadOnly('type', basePermissionPath)]]"
                             value="{{_processValue(data.type)}}"
-                            required
+                            required="{{_setRequired('type', basePermissionPath)}}"
                             id="auditType"
                             error-message="Audit Type is required"
                             custom-object-options
@@ -130,8 +131,9 @@
                 <div class="input-container">
                     <!-- Period Start Date -->
                     <paper-input label="Period Start Date"
-                                 class="disabled-as-readonly"
+                                 class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
+                                 required="{{_setRequired('start_date', basePermissionPath)}}"
                                  id="periodStartDateInput"
                                  value="[[prettyDate(data.start_date)]]"
                                  on-down="openDatePicker"
@@ -148,9 +150,10 @@
 
                 <div class="input-container">
                     <!-- Period End Date -->
-                    <paper-input label="Period Start Date"
-                                 class="disabled-as-readonly"
+                    <paper-input label="Period End Date"
+                                 class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
+                                 required="{{_setRequired('end_date', basePermissionPath)}}"
                                  id="periodEndDateInput"
                                  value="[[prettyDate(data.end_date)]]"
                                  on-down="openDatePicker"
@@ -170,8 +173,9 @@
                     <etools-currency-amount-input
                             label="Total Value of Selected FACE Forms"
                             currency="$"
-                            class="disabled-as-readonly"
+                            class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}}"
                             disabled="[[isReadOnly('total_value', basePermissionPath)]]"
+                            required="{{_setRequired('total_value', basePermissionPath)}}"
                             value="{{data.total_value}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>

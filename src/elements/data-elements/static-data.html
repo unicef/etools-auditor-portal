@@ -57,6 +57,7 @@
                 _handleNewEngagementResponse: function(data) {
                     if (data.detail.actions && data.detail.actions.POST) {
                         data.detail.actions.POST.type.read_only = false; //TODO: remove this line when using /engagement/ OPTIONS api
+                        data.detail.actions.POST.type.required = true; //TODO: remove this line when using /engagement/ OPTIONS api
                         this._addToCollection('new_engagement', data.detail.actions.POST);
                         let attachmentsTypes = this.getChoices('new_engagement.attachments.file_type');
                         if (!attachmentsTypes) {

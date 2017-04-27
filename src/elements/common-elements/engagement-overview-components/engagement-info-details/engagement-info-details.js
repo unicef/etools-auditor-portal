@@ -50,8 +50,12 @@ Polymer({
         this.$.partner.invalid = false;
         this.$.purchaseOrder.invalid = false;
     },
-    _setRequired: function(editMode) {
-        if (editMode) { return 'required'; }
+    _setRequired: function(field) {
+        if (!this.basePermissionPath) { return false; }
+
+        let required = this.isRequired(`${this.basePermissionPath}.${field}`);
+
+        return required ? 'required' : false;
     },
     _resetFieldError: function(event) {
         event.target.invalid = false;
