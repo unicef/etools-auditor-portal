@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, static-data-behavior]-->
+<!--import [polymer, etools-ajax, static-data-behavior, permission-controller]-->
 
 <dom-module id="static-data">
 
@@ -12,31 +12,71 @@
                 on-success="_partnersLoaded"
                 on-fail="_partnersError"></etools-ajax>
 
+        <etools-ajax method="OPTIONS"
+                     url="{{newEngagementPermissions}}"
+                     on-success="_handleNewEngagementResponse"
+                     on-fail="_handleError"></etools-ajax>
+
     </template>
 
     <script>
 
-        Polymer({
+        (function() {
+            'use strict';
 
-            is: 'static-data',
-            behaviors: [
-                etoolsAppConfig.globals,
-                APBehaviors.StaticDataController
-            ],
+            let dataLoaded = {};
 
-            properties: {},
+            Polymer({
 
-            ready: function () {
-                this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
-            },
+                is: 'static-data',
+                behaviors: [
+                    etoolsAppConfig.globals,
+                    APBehaviors.StaticDataController,
+                    APBehaviors.PermissionController
+                ],
 
-            _partnersLoaded: function(data) {
-                this._setData('partners', data.detail);
-                this.fire('static-data-loaded');
-            },
-            _responseError: function() {}
+                properties: {},
 
-        });
+                ready: function () {
+                    this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
+                    this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'micro-assessments'}).url;
+                },
+
+                _allDataLoaded: function() {
+                    if (dataLoaded.partners && dataLoaded.engagementOptions) {
+                        this.fire('static-data-loaded');
+                    }
+                },
+
+                _partnersLoaded: function(data) {
+                    this._setData('partners', data.detail);
+                    dataLoaded.partners = true;
+                    this._allDataLoaded();
+                },
+
+                _handleNewEngagementResponse: function(data) {
+                    if (data.detail.actions && data.detail.actions.POST) {
+                        this._addToCollection('new_engagement', data.detail.actions.POST);
+                        let attachmentsTypes = this.getChoices('new_engagement.attachments.file_type');
+                        if (!attachmentsTypes) {
+                            this._responseError();
+                            return;
+                        }
+                        this._setData('attachments_types', attachmentsTypes);
+                        dataLoaded.engagementOptions = true;
+                        this._allDataLoaded();
+                    } else {
+                        this._responseError();
+                    }
+                },
+
+                _responseError: function() {
+                    console.error('Can not load initial data');
+                }
+
+            });
+
+        })();
 
     </script>
 

@@ -2,11 +2,12 @@
 
 Polymer({
     is: 'file-attachments-tab',
+    behaviors: [APBehaviors.StaticDataController],
     properties: {
         fileTypes: {
             type: Array,
             value: function() {
-                return [{name: 'test type', id: 8}];
+                return [];
             }
         },
         files: {
@@ -41,6 +42,9 @@ Polymer({
         fileCheckboxLabel: {
             type: String
         }
+    },
+    ready: function() {
+        this.fileTypes = this.getData('attachments_types');
     },
     _hideEmptyState: function(length) { return length > 0;},
     getFiles: function() {

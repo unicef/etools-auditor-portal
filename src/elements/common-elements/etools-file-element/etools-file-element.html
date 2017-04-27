@@ -47,9 +47,9 @@
                                     <paper-dropdown-menu class="type-dropdown" label="[[fileTypesLabel]]" placeholder="&#8212;" noink>
                                         <paper-menu id$="typeDropdown_[[index]]" class="dropdown-content"
                                                     attr-for-selected="name"
-                                                    selected={{file.type}}>
+                                                    selected={{file.file_type}}>
                                             <template is="dom-repeat" items="[[fileTypes]]" as="fileType">
-                                                <paper-item name="[[fileType.id]]">[[fileType.name]]</paper-item>
+                                                <paper-item name="[[fileType.value]]">[[fileType.display_name]]</paper-item>
                                             </template>
                                         </paper-menu>
                                     </paper-dropdown-menu>

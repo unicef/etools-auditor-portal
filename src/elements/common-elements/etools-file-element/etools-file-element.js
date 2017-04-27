@@ -341,6 +341,7 @@
         },
 
         _filesChange: function() {
+            if (!this.files) { return; }
             if (this.files instanceof Array && this.files.length > 0) {
                 this.set('showFilesContainer', true);
             } else {
