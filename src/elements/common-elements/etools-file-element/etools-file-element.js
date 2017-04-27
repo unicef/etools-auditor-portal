@@ -126,10 +126,10 @@
         _getFileTypeStr: function(fileType) {
             if (this.fileTypes.length > 0) {
                 let type = this.fileTypes.filter(function(type) {
-                    return parseInt(type.id, 10) === parseInt(fileType, 10);
+                    return parseInt(type.value, 10) === parseInt(fileType, 10);
                 })[0];
                 if (type) {
-                    return type.name;
+                    return type.display_name;
                 }
                 return null;
             }
@@ -341,11 +341,11 @@
         },
 
         _filesChange: function() {
-            if (!this.files) { return; }
             if (this.files instanceof Array && this.files.length > 0) {
                 this.set('showFilesContainer', true);
             } else {
                 this.set('showFilesContainer', false);
+                return;
             }
 
             this.files.forEach((file, index) => {
