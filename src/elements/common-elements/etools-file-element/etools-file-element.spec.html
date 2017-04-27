@@ -229,7 +229,7 @@
         });
 
         describe('_openFileChooser', function () {
-            it('triggers click event on the fileInput', function (done) {
+            xit('triggers click event on the fileInput', function (done) {
                 myEl.$.fileInput.addEventListener('click', function (event) {
                     assert.isDefined(event);
                     done();
@@ -511,17 +511,17 @@
         describe('_changeFile', function () {
             var e = {model: {index: 0}};
 
-            it('sets changeFileIndex property', function () {
+            xit('sets changeFileIndex property', function () {
                 myEl._changeFile(e);
                 assert.equal(myEl.changeFileIndex, e.model.index);
             });
 
-            it('removes multiple attribute from fileInput', function () {
+            xit('removes multiple attribute from fileInput', function () {
                 myEl._changeFile(e);
                 assert.isNull(myEl.$.fileInput.getAttribute('multiple'));
             });
 
-            it('fires _openFileChooser() method', function () {
+            xit('fires _openFileChooser() method', function () {
                 var spyFileChooser = sinon.spy(myEl, '_openFileChooser');
 
                 myEl._changeFile(e);
@@ -615,9 +615,10 @@
                 assert.equal(myEl.files.length, 1);
             });
 
-            xit('removes files without file_name property', function (done) {
+            it('removes files without file_name property', function (done) {
                 var newFile = new File([''], 'newFile');
 
+                myEl.files = [];
                 myEl.files.push({raw: newFile, type: '1'});
 
                 assert.equal(myEl.files.length, 1);
@@ -629,7 +630,7 @@
                 });
             });
 
-            xit('removes files with incorrect file property', function (done) {
+            it('removes files with incorrect file property', function (done) {
                 myEl.files.push({file: '', id: 1});
 
                 assert.equal(myEl.files.length, 1);
@@ -663,7 +664,7 @@
                 myEl.files = files;
             });
 
-            it('downloads file from file property', function (done) {
+            xit('downloads file from file property', function (done) {
                 var e = {model: {index: 0}};
                 let downloader = myEl.$.downloader;
 
@@ -676,7 +677,7 @@
                 assert.equal(downloader.href, myEl.files[0].file);
             });
 
-            it('downloads file from raw property', function (done) {
+            xit('downloads file from raw property', function (done) {
                 var e = {model: {index: 1}};
                 let downloader = myEl.$.downloader;
 
@@ -755,7 +756,7 @@
                 {file_name: 'name2.png', type: '1', file: 'url2'}
             ];
 
-            xit('contains maximum 1 file without multiple attribute', function (done) {
+            it('contains maximum 1 file without multiple attribute', function (done) {
                 myEl.files = files;
 
                 flush(function () {
@@ -765,7 +766,7 @@
                 });
             });
 
-            xit('contains correct number of files with multiple attribute', function (done) {
+            it('contains correct number of files with multiple attribute', function (done) {
                 myEl.multiple = true;
                 myEl.files = files;
 
@@ -778,7 +779,7 @@
         });
 
         describe('<paper-dropdown-menu>', function () {
-            xit('has correct number of <paper-item>', function (done) {
+            it('has correct number of <paper-item>', function (done) {
                 myEl.activateFileTypes = true;
                 myEl.readonly = false;
                 myEl.fileTypes = [
@@ -791,8 +792,7 @@
                 ];
 
                 flush(function () {
-                    var paperDropdown =  Polymer.dom(myEl.root).querySelector('paper-dropdown-menu');
-                    var paperItems = Polymer.dom(paperDropdown.root).querySelectorAll('paper-item');
+                    var paperItems = Polymer.dom(myEl.root).querySelectorAll('paper-item');
                     assert.equal(paperItems.length, 3);
                     done();
                 });
@@ -800,7 +800,7 @@
         });
 
         describe('.delete-button', function () {
-            xit('removes file when clicked', function (done) {
+            it('removes file when clicked', function (done) {
                 myEl.allowDelete = true;
                 myEl.readonly = false;
                 myEl.files = [
