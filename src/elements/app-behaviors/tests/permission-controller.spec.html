@@ -15,6 +15,56 @@
 
     describe('Permission controller element', function () {
         var behaviorObj;
+        var test_data = {
+            "id": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "ID"
+            },
+            "agreement": {
+                "type": "field",
+                "required": true,
+                "read_only": false,
+                "label": "Agreement",
+                "choices": [
+                    {
+                        "display_name": "Partner Contacted",
+                        "value": "partner_contacted"
+                    },
+                    {
+                        "display_name": "Field Visit",
+                        "value": "field_visit"
+                    }
+                ]
+            },
+            "staff_members": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Staff members",
+                "child": {
+                    "type": "nested object",
+                    "required": false,
+                    "read_only": false,
+                    "children": {
+                        "id": {
+                            "type": "integer",
+                            "required": false,
+                            "read_only": true,
+                            "label": "ID"
+                        },
+                        "title": {
+                            "type": "string",
+                            "required": true,
+                            "read_only": false,
+                            "label": "Title",
+                            "max_length": 64
+                        }
+                    }
+                }
+            }
+        };
 
         beforeEach(function () {
             behaviorObj = APBehaviors.PermissionController;
@@ -74,47 +124,6 @@
         });
 
         describe('getFieldAttribute method', function() {
-            var test_data = {
-                "id": {
-                    "type": "integer",
-                    "required": false,
-                    "read_only": true,
-                    "label": "ID"
-                },
-                "agreement": {
-                    "type": "field",
-                    "required": true,
-                    "read_only": false,
-                    "label": "Agreement"
-                },
-                "staff_members": {
-                    "type": "field",
-                    "required": false,
-                    "read_only": false,
-                    "label": "Staff members",
-                    "child": {
-                        "type": "nested object",
-                        "required": false,
-                        "read_only": false,
-                        "children": {
-                            "id": {
-                                "type": "integer",
-                                "required": false,
-                                "read_only": true,
-                                "label": "ID"
-                            },
-                            "title": {
-                                "type": "string",
-                                "required": false,
-                                "read_only": false,
-                                "label": "Title",
-                                "max_length": 64
-                            }
-                        }
-                    }
-                }
-            };
-
             before(function () {
                 behaviorObj._addToCollection('test', test_data);
             });
@@ -124,27 +133,78 @@
             });
 
             it('return field attribute', function() {
-                assert.isTrue(behaviorObj.isEditable('test.id', 'read_only'));
-                assert.equal(behaviorObj.isEditable('test.agreement', 'type'), 'field');
-                assert.isUndefined(behaviorObj.isEditable('test.test', 'type'));
+                assert.isTrue(behaviorObj.getFieldAttribute('test.id', 'read_only'));
+                assert.equal(behaviorObj.getFieldAttribute('test.agreement', 'type'), 'field');
             });
 
-            xit('return false if collection is not exist', function() {
-                assert.isFalse(behaviorObj.isEditable('test_not_found', 'id'));
+            it('accept nested path', function() {
+                assert.equal(behaviorObj.getFieldAttribute('test.staff_members.child.children.id', 'type'), 'integer');
             });
 
-            xit('throw an exception if arguments are not provided', function() {
-                var first = behaviorObj.isEditable.bind(behaviorObj, null, 'id'),
-                    second = behaviorObj.isEditable.bind(behaviorObj, 'id'),
-                    third = behaviorObj.isEditable.bind(behaviorObj, 'test_not_found', 'id');
+            it('throw an exception if arguments are not provided', function() {
+                var first = behaviorObj.getFieldAttribute.bind(behaviorObj, undefined, 'id'),
+                    second = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id'),
+                    third = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id', 'read_only');
 
                 assert.throws(first);
                 assert.throws(second);
                 assert.doesNotThrow(third);
             });
+
+            it('return null if collection, field or attribute does not exists', function() {
+                assert.isNull(behaviorObj.getFieldAttribute('test_not_found', 'read_only'));
+                assert.isNull(behaviorObj.getFieldAttribute('test.id', 'not_found'));
+                assert.isNull(behaviorObj.getFieldAttribute('test.npt_found.id', 'read_only'));
+            });
+
+            it('accept only string arguments', function() {
+                var first = behaviorObj.getFieldAttribute.bind(behaviorObj, [], 'id'),
+                    second = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id', 23490),
+                    third = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id', {});
+
+                assert.throws(first);
+                assert.throws(second);
+                assert.throws(third);
+            });
+
+            it('look for fields in child objects if needed', function() {
+                assert.equal(behaviorObj.getFieldAttribute('test.staff_members.id', 'type'), 'integer');
+                assert.isTrue(behaviorObj.getFieldAttribute('test.staff_members.title', 'required'));
+                assert.isFalse(behaviorObj.getFieldAttribute('test.staff_members.title', 'read_only'));
+            });
         });
 
+        it('use isEditable method to check read_only attribute', function() {
+            behaviorObj._addToCollection('test', test_data);
+            behaviorObj._updateCollection('test', test_data);
 
+            assert.isFalse(behaviorObj.isEditable('test.staff_members.title'));
+            assert.isTrue(behaviorObj.isEditable('test.staff_members.id'));
+            assert.isFalse(behaviorObj.isEditable('test.agreement'));
+            assert.isNull(behaviorObj.isEditable('test.agreement.not_found'));
+        });
+
+        it('use isRequired method to check required attribute', function() {
+            behaviorObj._addToCollection('test', test_data);
+            behaviorObj._updateCollection('test', test_data);
+
+            assert.isTrue(behaviorObj.isRequired('test.staff_members.title'));
+            assert.isFalse(behaviorObj.isRequired('test.staff_members.id'));
+            assert.isTrue(behaviorObj.isRequired('test.agreement'));
+            assert.isNull(behaviorObj.isRequired('test.agreement.not_found'));
+        });
+
+        it('check existence of path fields with collectionExists method', function() {
+            assert.isFalse(behaviorObj.collectionExists('test.staff_members.id.test'));
+            assert.isTrue(behaviorObj.collectionExists('test.staff_members.title'));
+            assert.isTrue(behaviorObj.collectionExists('test'));
+            assert.isFalse(behaviorObj.collectionExists('test_not_found'));
+        });
+
+        it('get choices for fields using getChoices method', function() {
+            assert.deepEqual(behaviorObj.getChoices('test.agreement'), test_data.agreement.choices);
+            assert.isNull(behaviorObj.getChoices('test.not_found_choices'))
+        })
 
     });
 </script>

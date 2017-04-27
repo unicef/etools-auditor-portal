@@ -45,24 +45,54 @@
 
             getFieldAttribute: function(path, attribute) {
                 if (!path || !attribute) { throw new Error('path and attribute arguments must be provided'); }
+                if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
+                if (typeof attribute !== 'string') { throw new Error('attribute argument must be a string'); }
 
-                path = path.split('.');
-                let value;
+                let value = this._getCollection(path);
 
-                while (path.length) {
+                if (value) { value = value[attribute]; }
 
-                }
-//                if (!_permissionCollection[collection] || !_permissionCollection[collection][field]) { return false; }
-
-                return _permissionCollection[collection][field].read_only;
+                return value === undefined ? null : value;
 
             },
 
-            isEditable: function(collection, field) {
-                if (!collection || !field) { throw new Error('collection and field arguments must be provided'); }
-                if (!_permissionCollection[collection] || !_permissionCollection[collection][field]) { return false; }
+            isEditable: function(path) {
+                return this.getFieldAttribute(path, 'read_only');
+            },
 
-                return _permissionCollection[collection][field].read_only;
+            isRequired: function(path) {
+                return this.getFieldAttribute(path, 'required');
+            },
+
+            collectionExists: function(path) {
+                if (!path) { throw new Error('path argument must be provided'); }
+                if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
+
+                return this._getCollection(path) !== undefined;
+            },
+
+            getChoices: function(path) {
+                return this.getFieldAttribute(path, 'choices');
+            },
+
+            _getCollection: function(path) {
+                path = path.split('.');
+
+                let value = _permissionCollection;
+
+                while (path.length) {
+                    let key = path.shift();
+                    if (value[key]) {
+                        value = value[key];
+                    } else {
+                        value = value.child || value.children;
+                        path.unshift(key);
+                    }
+
+                    if (!value) { break; }
+                }
+
+                return value;
             }
         };
     })()
