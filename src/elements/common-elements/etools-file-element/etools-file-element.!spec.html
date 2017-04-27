@@ -73,9 +73,9 @@
         describe('_getFileTypeStr', function () {
             beforeEach(function () {
                 var fileTypes = [
-                    {id: '1', name: 'Training materials'},
-                    {id: '2', name: 'ToRs'},
-                    {id: '3', name: 'Other'}
+                    {value: 1, display_name: 'Training materials'},
+                    {value: 2, display_name: 'ToRs'},
+                    {value: 3, display_name: 'Other'}
                 ];
 
                 myEl.fileTypes = fileTypes;
@@ -92,7 +92,7 @@
             });
 
             it('returns type name', function () {
-                assert.equal(myEl._getFileTypeStr('3'), myEl.fileTypes[2].name);
+                assert.equal(myEl._getFileTypeStr('3'), myEl.fileTypes[2].display_name);
             });
         });
 

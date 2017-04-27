@@ -68,9 +68,7 @@
             },
             activateFileTypes: {
                 type: Boolean,
-                value: function() {
-                    return false;
-                },
+                value: false,
                 reflectToAttribute: true
             },
             fileTypes: {
@@ -128,10 +126,10 @@
         _getFileTypeStr: function(fileType) {
             if (this.fileTypes.length > 0) {
                 let type = this.fileTypes.filter(function(type) {
-                    return parseInt(type.id, 10) === parseInt(fileType, 10);
+                    return parseInt(type.value, 10) === parseInt(fileType, 10);
                 })[0];
                 if (type) {
-                    return type.name;
+                    return type.display_name;
                 }
                 return null;
             }
@@ -347,6 +345,7 @@
                 this.set('showFilesContainer', true);
             } else {
                 this.set('showFilesContainer', false);
+                return;
             }
 
             this.files.forEach((file, index) => {
@@ -407,7 +406,7 @@
                 let reader = new FileReader();
                 let uploadedFile = {
                     file_name: fileModel.file_name,
-                    file_type: fileModel.type
+                    file_type: fileModel.file_type
                 };
 
                 reader.readAsDataURL(fileModel.raw);

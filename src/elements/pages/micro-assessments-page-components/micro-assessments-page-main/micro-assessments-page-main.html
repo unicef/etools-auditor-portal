@@ -21,69 +21,62 @@
                               engagement-type="micro-assessments"
                               engagement-info="{{engagement}}"></engagement-info-data>
 
-        <app-header-layout>
+
+        <template is="dom-if" if="{{engagement.id}}" restamp>
+            <pages-header-element show-export-button
+                                  hide-print-button
+                                  title="Micro Assessment"></pages-header-element>
+            <div class="tab-selector">
+                <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
+                            selected="{{tab}}" id="pageTabs">
+                    <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
+                    <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
+                    <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>
+                    <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
+                </paper-tabs>
+            </div>
+
+            <div class="view-container">
+                <div id="pageContent">
+                    <iron-pages id="info-tabs"
+                                selected="{{tab}}"
+                                attr-for-selected="name">
+
+                        <div name="overview">
+                            <engagement-info-details data="{{engagement}}" id="engagementDetails"
+                                                     edit-mode="[[_allowEdit()]]"></engagement-info-details>
+
+                            <etools-content-panel
+                                    title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
+                                    show-expand-btn>
+                                <engagement-staff-members-tab id="staffMembers"
+                                                              data-items="{{engagement.staff_members}}"
+                                                              edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
+                            </etools-content-panel>
+                        </div>
+
+                        <div name="report">Report</div>
+
+                        <div name="questionnaire">Questionnaire</div>
 
 
-            <app-header id="header" fixed shadow>
-                <app-main-header></app-main-header>
-            </app-header>
+                        <div name="attachments">
+                            <file-attachments-tab title="Attachments"
+                                                  allow-download allow-delete
+                                                  files="{{engagement.attachments}}"></file-attachments-tab>
+                        </div>
 
-            <template is="dom-if" if="{{engagement.id}}" restamp>
-                <pages-header-element show-export-button
-                                      hide-print-button
-                                      title="Micro Assessment"></pages-header-element>
-                <div class="tab-selector">
-                    <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
-                                selected="{{tab}}" id="pageTabs">
-                        <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
-                        <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
-                        <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>
-                        <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-                    </paper-tabs>
+                    </iron-pages>
+
                 </div>
 
-                <div class="view-container">
-                    <div id="pageContent">
-                        <iron-pages id="info-tabs"
-                                    selected="{{tab}}"
-                                    attr-for-selected="name">
-
-                            <div name="overview">
-                                <engagement-info-details data="{{engagement}}" id="engagementDetails"
-                                                         edit-mode="[[_allowEdit()]]"></engagement-info-details>
-
-                                <etools-content-panel
-                                        title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
-                                        show-expand-btn>
-                                    <engagement-staff-members-tab id="staffMembers"
-                                                                  data-items="{{engagement.staff_members}}"
-                                                                  edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
-                                </etools-content-panel>
-                            </div>
-
-                            <div name="report">Report</div>
-
-                            <div name="questionnaire">Questionnaire</div>
-
-
-                            <div name="attachments">
-                                <file-attachments-tab title="Attachments"
-                                                      allow-download allow-delete
-                                                      files="{{engagement.attachments}}"></file-attachments-tab>
-                            </div>
-
-                        </iron-pages>
-
-                    </div>
-
-                    <div id="sidebar">
-                        <status-tab-element engagement-data="[[engagement]]" main-action-text="Submit"
-                                            other-actions="{{otherActions}}"></status-tab-element>
-                    </div>
+                <div id="sidebar">
+                    <status-tab-element engagement-data="[[engagement]]" main-action-text="Submit"
+                                        other-actions="{{otherActions}}"></status-tab-element>
                 </div>
-            </template>
+            </div>
+        </template>
 
-        </app-header-layout>
 
     </template>
 
