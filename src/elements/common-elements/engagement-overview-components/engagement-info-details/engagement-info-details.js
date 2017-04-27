@@ -4,13 +4,13 @@ Polymer({
     is: 'engagement-info-details',
     behaviors: [
         APBehaviors.DateBehavior,
-        APBehaviors.StaticDataController
+        APBehaviors.StaticDataController,
+        APBehaviors.PermissionController
     ],
     properties: {
-        editMode: {
-            type: Boolean,
-            value: true,
-            observer: '_editModeChanged'
+        basePermissionPath: {
+            type: String,
+            observer: '_basePathChanged'
         },
         auditTypes: {
             type: Array,
@@ -35,7 +35,7 @@ Polymer({
     ready: function() {
         this.set('partners', this.getData('partners'));
     },
-    _editModeChanged: function() {
+    _basePathChanged: function() {
         this.updateStyles();
     },
     validate: function() {
@@ -67,5 +67,11 @@ Polymer({
     },
     _setAuditType: function(e, value) {
         this.set('data.type', value.selectedValues);
+    },
+    isReadOnly: function(field) {
+        let read_only = this.isReadonly(`${this.basePermissionPath}.${field}`);
+        if (read_only === null) { read_only = true; }
+
+        return read_only;
     }
 });

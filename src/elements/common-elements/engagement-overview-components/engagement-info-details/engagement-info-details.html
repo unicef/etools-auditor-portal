@@ -1,6 +1,7 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu,
             etools-datepicker/etools-datepicker-button, etools-currency-amount-input]-->
-<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior]-->
+
+<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller]-->
 
 <dom-module id="engagement-info-details">
     <template>
@@ -26,7 +27,7 @@
                                  required
                                  class$="disabled-as-readonly {{_setRequired(editMode)}}"
                                  on-focus="_resetFieldError"
-                                 disabled$="[[!editMode]]"></paper-input>
+                                 disabled$="[[isReadOnly('agreement', basePermissionPath)]]"></paper-input>
                 </div>
                 <div class="input-container">
                     <!-- Contract Start Date -->
@@ -72,8 +73,8 @@
                     <etools-searchable-multiselection-menu
                             options="[[partners]]"
                             class$="disabled-as-readonly {{_setRequired(editMode)}}"
-                            readonly="[[!editMode]]"
-                            disabled="[[!editMode]]"
+                            readonly="[[isReadOnly('partner', basePermissionPath)]]"
+                            disabled="[[isReadOnly('partner', basePermissionPath)]]"
                             value="{{data.partner}}"
                             id="partner"
                             error-message="Partner is required"
@@ -89,7 +90,7 @@
                     <!-- Date Partner Was Contacted -->
                     <paper-input label="Date Partner Was Contacted"
                                  class="disabled-as-readonly"
-                                 disabled$="[[!editMode]]"
+                                 disabled$="[[isReadOnly('partner_contracted_at', basePermissionPath)]]"
                                  id="contactedDateInput"
                                  value="[[prettyDate(data.partner_contracted_at)]]"
                                  on-down="openDatePicker"
@@ -109,8 +110,8 @@
                     <etools-searchable-multiselection-menu
                             options="[[auditTypes]]"
                             class$="disabled-as-readonly {{_setRequired(editMode)}}"
-                            readonly="[[!editMode]]"
-                            disabled="[[!editMode]]"
+                            readonly="[[isReadOnly('type', basePermissionPath)]]"
+                            disabled="[[isReadOnly('type', basePermissionPath)]]"
                             value="{{_processValue(data.type)}}"
                             required
                             id="auditType"
@@ -130,7 +131,7 @@
                     <!-- Period Start Date -->
                     <paper-input label="Period Start Date"
                                  class="disabled-as-readonly"
-                                 disabled$="[[!editMode]]"
+                                 disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
                                  id="periodStartDateInput"
                                  value="[[prettyDate(data.start_date)]]"
                                  on-down="openDatePicker"
@@ -149,7 +150,7 @@
                     <!-- Period End Date -->
                     <paper-input label="Period Start Date"
                                  class="disabled-as-readonly"
-                                 disabled$="[[!editMode]]"
+                                 disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
                                  id="periodEndDateInput"
                                  value="[[prettyDate(data.end_date)]]"
                                  on-down="openDatePicker"
@@ -170,7 +171,7 @@
                             label="Total Value of Selected FACE Forms"
                             currency="$"
                             class="disabled-as-readonly"
-                            disabled="[[!editMode]]"
+                            disabled="[[isReadOnly('total_value', basePermissionPath)]]"
                             value="{{data.total_value}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>

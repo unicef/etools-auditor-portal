@@ -174,14 +174,14 @@
             });
         });
 
-        it('use isEditable method to check read_only attribute', function() {
+        it('use isReadonly method to check read_only attribute', function() {
             behaviorObj._addToCollection('test', test_data);
             behaviorObj._updateCollection('test', test_data);
 
-            assert.isFalse(behaviorObj.isEditable('test.staff_members.title'));
-            assert.isTrue(behaviorObj.isEditable('test.staff_members.id'));
-            assert.isFalse(behaviorObj.isEditable('test.agreement'));
-            assert.isNull(behaviorObj.isEditable('test.agreement.not_found'));
+            assert.isTrue(behaviorObj.isReadonly('test.staff_members.title'));
+            assert.isFalse(behaviorObj.isReadonly('test.staff_members.id'));
+            assert.isTrue(behaviorObj.isReadonly('test.agreement'));
+            assert.isNull(behaviorObj.isReadonly('test.agreement.not_found'));
         });
 
         it('use isRequired method to check required attribute', function() {

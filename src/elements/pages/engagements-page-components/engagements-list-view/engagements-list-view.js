@@ -47,7 +47,7 @@
 
     Polymer({
         is: 'engagements-list-view',
-        behaviors: [],
+        behaviors: [APBehaviors.PermissionController],
         properties: {
             queryParams: {
                 type: Object,
@@ -112,7 +112,9 @@
             }
         },
         listeners: {},
-        _showAddButton: function() { return true; },
+        _showAddButton: function() {
+            return this.collectionExists('new_engagement');
+        },
         checkExpire: function() {
             this.$.listData.checkExpire();
         }

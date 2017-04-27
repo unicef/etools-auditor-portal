@@ -3,7 +3,8 @@
 Polymer({
     is: 'engagements-page-main',
     behaviors: [
-        APBehaviors.QueryParamsController
+        APBehaviors.QueryParamsController,
+        APBehaviors.PermissionController
     ],
     properties: {
         queryParams: {
@@ -27,7 +28,7 @@ Polymer({
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
             this.view = 'list';
-        } else if (view === 'new') {
+        } else if (view === 'new' && this.collectionExists('new_engagement')) {
             this.clearQueries();
             this.view = 'new';
         } else {
