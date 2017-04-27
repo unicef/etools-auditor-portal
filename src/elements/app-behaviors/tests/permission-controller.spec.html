@@ -178,9 +178,9 @@
             behaviorObj._addToCollection('test', test_data);
             behaviorObj._updateCollection('test', test_data);
 
-            assert.isTrue(behaviorObj.isReadonly('test.staff_members.title'));
-            assert.isFalse(behaviorObj.isReadonly('test.staff_members.id'));
-            assert.isTrue(behaviorObj.isReadonly('test.agreement'));
+            assert.isFalse(behaviorObj.isReadonly('test.staff_members.title'));
+            assert.isTrue(behaviorObj.isReadonly('test.staff_members.id'));
+            assert.isFalse(behaviorObj.isReadonly('test.agreement'));
             assert.isNull(behaviorObj.isReadonly('test.agreement.not_found'));
         });
 

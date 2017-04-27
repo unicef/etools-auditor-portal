@@ -26,10 +26,10 @@ Polymer({
     _canBeRemoved: function() {
         if (!this.basePermissionPath) { return true; }
 
-        let read_only = this.isReadonly(`${this.basePermissionPath}.staff_members`);
-        if (read_only === null) { read_only = true; }
+        let readOnly = this.isReadonly(`${this.basePermissionPath}.staff_members`);
+        if (readOnly === null) { readOnly = true; }
 
-        return !read_only;
+        return !readOnly;
     },
 
     _validEmailAddress: function(emailAddress) {
@@ -85,10 +85,10 @@ Polymer({
     isReadOnly: function(field) {
         if (!this.basePermissionPath) { return true; }
 
-        let read_only = this.isReadonly(`${this.basePermissionPath}.staff_members.${field}`);
-        if (read_only === null) { read_only = true; }
+        let readOnly = this.isReadonly(`${this.basePermissionPath}.staff_members.${field}`);
+        if (readOnly === null) { readOnly = true; }
 
-        return read_only;
+        return readOnly;
     }
 
 });
