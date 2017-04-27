@@ -1,0 +1,24 @@
+machine:
+   services:
+     - docker
+
+dependencies:
+  cache_directories:
+    - "~/dockercache"
+
+  override:
+    - if [[ -e ~/dockercache/ap.tar ]]; then docker load -i ~/dockercache/ap.tar; fi
+    - docker-compose -f docker-compose.test.yml build
+    - mkdir -p ~/dockercache; docker save etoolsdev/etools-ap:dev > ~/dockercache/ap.tar
+
+
+test:
+   override:
+     - docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+#deployment:
+#   hub:
+#     branch: [develop, staging, master]
+#     commands:
+#       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+#       - docker push unicef/etools-ap
