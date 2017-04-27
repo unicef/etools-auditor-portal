@@ -68,9 +68,7 @@
             },
             activateFileTypes: {
                 type: Boolean,
-                value: function() {
-                    return false;
-                },
+                value: false,
                 reflectToAttribute: true
             },
             fileTypes: {
