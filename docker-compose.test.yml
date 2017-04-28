@@ -21,8 +21,6 @@ services:
       context: .
       dockerfile: ./Dockerfile
     image: etoolsdev/etools-ap:dev
-    volumes:
-      - ".:/code"
     command: ["sh", "./test.sh"]
     depends_on:
       - selenium-hub
