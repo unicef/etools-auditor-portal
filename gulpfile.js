@@ -62,7 +62,7 @@ gulp.task('watch', function () {
 
 gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower), runTests));
 gulp.task('start', function () { nodemon({ script: 'server.js' }) });
-gulp.task('build', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower), 'watch'));
+gulp.task('build', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower)));
 
 
 
