@@ -228,17 +228,6 @@
             });
         });
 
-        describe('_openFileChooser', function () {
-            xit('triggers click event on the fileInput', function (done) {
-                myEl.$.fileInput.addEventListener('click', function (event) {
-                    assert.isDefined(event);
-                    done();
-                });
-
-                myEl._openFileChooser();
-            });
-        });
-
         describe('_replaceFile', function () {
             beforeEach(function () {
                 var files = [
@@ -508,27 +497,6 @@
             });
         });
 
-        describe('_changeFile', function () {
-            var e = {model: {index: 0}};
-
-            xit('sets changeFileIndex property', function () {
-                myEl._changeFile(e);
-                assert.equal(myEl.changeFileIndex, e.model.index);
-            });
-
-            xit('removes multiple attribute from fileInput', function () {
-                myEl._changeFile(e);
-                assert.isNull(myEl.$.fileInput.getAttribute('multiple'));
-            });
-
-            xit('fires _openFileChooser() method', function () {
-                var spyFileChooser = sinon.spy(myEl, '_openFileChooser');
-
-                myEl._changeFile(e);
-                assert.equal(spyFileChooser.calledOnce, true);
-            });
-        });
-
         describe('_deleteFile', function () {
             var e = {model: {index: 0}};
 
@@ -650,44 +618,6 @@
 
             it('returns undefined', function () {
                 assert.isUndefined(myEl._getFilenameFromUrl(''));
-            });
-        });
-
-        describe('_downloadFile', function () {
-            beforeEach(function () {
-                var files = [
-                    {file_name: 'name', type: '1', file: 'url'},
-                    {file_name: 'name2', type: '1', raw: new File([''], 'name2'),  file: 'url2'}
-                ];
-
-                myEl.multiple = true;
-                myEl.files = files;
-            });
-
-            xit('downloads file from file property', function (done) {
-                var e = {model: {index: 0}};
-                let downloader = myEl.$.downloader;
-
-                downloader.addEventListener('click', function (e) {
-                    assert.isDefined(e);
-                    done();
-                });
-
-                myEl._downloadFile(e);
-                assert.equal(downloader.href, myEl.files[0].file);
-            });
-
-            xit('downloads file from raw property', function (done) {
-                var e = {model: {index: 1}};
-                let downloader = myEl.$.downloader;
-
-                downloader.addEventListener('click', function (e) {
-                    assert.isDefined(e);
-                    done();
-                });
-
-                myEl._downloadFile(e);
-                assert.notEqual(downloader.href, myEl.files[1].file);
             });
         });
 
