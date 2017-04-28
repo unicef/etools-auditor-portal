@@ -1,0 +1,291 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [engagement-behavior, lodash]-->
+</head>
+<body>
+
+<script>
+    describe('Engagement common behavior element', function () {
+        var behaviorObj, copy;
+        var testEngagement = {
+            "id": 35,
+            "agreement": {
+                "id": 1,
+                "order_number": "123",
+                "audit_organization": {
+                    "id": 1,
+                    "vendor_number": "42",
+                    "name": "first auditor organization",
+                    "street_address": null,
+                    "city": null,
+                    "postal_code": null,
+                    "country": null,
+                    "email": null,
+                    "phone_number": null,
+                    "staff_members": [
+                        {
+                            "id": 2,
+                            "title": null,
+                            "first_name": "john",
+                            "last_name": "doe",
+                            "email": "john@gmail.com",
+                            "phone": "",
+                            "active": true,
+                            "receive_audit_notifications": false
+                        }
+                    ]
+                },
+                "contract_start_date": null,
+                "contract_end_date": null
+            },
+            "partner": {
+                "id": 2,
+                "vendor_number": null,
+                "deleted_flag": false,
+                "blocked": false,
+                "name": "Adult Basic Community Org",
+                "short_name": "ABCD",
+                "partner_type": "Bilateral / Multilateral",
+                "cso_type": "International",
+                "rating": "high",
+                "shared_partner": "No",
+                "shared_with": null,
+                "email": "info@abcd.com",
+                "phone_number": "212445464",
+                "total_ct_cp": null,
+                "total_ct_cy": null,
+                "hidden": true
+            },
+            "type": "ma",
+            "total_value": "12314.00",
+            "staff_members": [],
+            "status": "partner_contacted",
+            "start_date": "2017-04-21",
+            "end_date": "2017-04-27",
+            "partner_contracted_at": "2017-04-10",
+            "date_of_field_visit": "2017-05-11",
+            "date_of_draft_report_to_ip": "2017-05-15",
+            "date_of_comments_by_ip": null,
+            "date_of_draft_report_to_unicef": null,
+            "date_of_comments_by_unicef": null,
+            "amount_refunded": null,
+            "additional_supporting_documentation_provided": null,
+            "justification_provided_and_accepted": null,
+            "write_off_required": null,
+            "pending_unsupported_amount": null,
+            "attachments": [],
+            "finding": "",
+            "recommendation": "",
+            "questionaire": {
+                "id": 1,
+                "header": "Micro Assesment Questionarie",
+                "type": "primary",
+                "code": "ma_questionaire",
+                "risk_rating": "na",
+                "risk_score": null,
+                "blueprints": [],
+                "children": [
+                    {
+                        "id": 11,
+                        "header": "Implementing Partner",
+                        "type": "default",
+                        "code": "ma_questionaire",
+                        "risk_rating": "na",
+                        "risk_score": null,
+                        "blueprints": [
+                            {
+                                "id": 1,
+                                "description": "Is the IP legally registered? If so, is it in compliance with registration requirements? Please note the legal status and date of registration of the entity.",
+                                "weight": 2,
+                                "is_key": true,
+                                "value": 0,
+                                "extra": "na"
+                            },
+                            {
+                                "id": 2,
+                                "description": "If the IP received United Nations resources in the past, were significant issues reported in managing the resources, including from previous assurance activities.",
+                                "weight": 2,
+                                "is_key": true,
+                                "value": 0,
+                                "extra": "na"
+                            }
+                        ],
+                        "children": [],
+                        "parent": 1
+                    }
+                ],
+                "parent": null
+            },
+            "test_subject_areas": {
+                "id": 2,
+                "header": "Tested Subject Areas",
+                "type": "primary",
+                "code": "ma_subject_areas",
+                "risk_rating": "na",
+                "risk_score": null,
+                "blueprints": [
+                    {
+                        "id": 97,
+                        "description": "Overall Risk Assessment",
+                        "weight": 1,
+                        "is_key": false,
+                        "value": 0,
+                        "extra": "na"
+                    },
+                    {
+                        "id": 98,
+                        "description": "Implementing partner",
+                        "weight": 0,
+                        "is_key": false,
+                        "value": 0,
+                        "extra": "na"
+                    }
+                ],
+                "children": [],
+                "parent": null
+            }
+        }
+
+        before(function() {
+            behaviorObj = APBehaviors.EngagementBehavior;
+            copy = _.cloneDeep(behaviorObj);
+        });
+
+        beforeEach(function () {
+            behaviorObj = _.cloneDeep(copy);
+        });
+
+        describe('method _routeConfig', function() {
+            it('fire event if engagement id is not provided or incorrect', function () {
+                behaviorObj.fire = sinon.spy();
+                behaviorObj.engagementPrefix = '/micro-assessments';
+                behaviorObj.route = {
+                    prefix: '/micro-assessments',
+                    path: '/not_found'
+                };
+
+                behaviorObj._routeConfig(behaviorObj.route);
+
+                assert.isTrue(behaviorObj.fire.called);
+            });
+
+            it('set engagementId if id is correct', function () {
+                behaviorObj.fire = sinon.spy();
+                behaviorObj.engagementPrefix = '/micro-assessments';
+                behaviorObj.route = {
+                    prefix: '/micro-assessments',
+                    path: '/26'
+                };
+
+                behaviorObj._routeConfig(behaviorObj.route);
+
+                assert.equal(behaviorObj.engagementId, 26);
+                assert.isFalse(behaviorObj.fire.called);
+            });
+
+            it('doesn\'t make any action if prefix is not correct', function () {
+                behaviorObj.fire = sinon.spy();
+                behaviorObj.engagementPrefix = '/micro-assessments';
+                behaviorObj.route = {
+                    prefix: '/not_correct',
+                    path: '/26'
+                };
+
+                behaviorObj._routeConfig(behaviorObj.route);
+
+                assert.isUndefined(behaviorObj.engagementId);
+                assert.isFalse(behaviorObj.fire.called);
+            });
+        });
+
+        describe('_infoLoaded method', function() {
+            it('set tab property equal to correct routeData.tab', function() {
+                behaviorObj.tabsList = ['overview'];
+                behaviorObj.routeData = {
+                    tab: 'overview'
+                };
+                behaviorObj.tab = undefined;
+
+                behaviorObj._infoLoaded();
+                assert.equal(behaviorObj.tab, 'overview')
+            });
+
+            it('get tab property from route object if routeData is not defined', function() {
+                behaviorObj.tabsList = ['overview'];
+                behaviorObj.routeData = undefined;
+                behaviorObj.tab = undefined;
+                behaviorObj.route = {path: '/23/overview', prefix: '/micro-assessments'};
+
+                behaviorObj._infoLoaded();
+                assert.equal(behaviorObj.tab, 'overview')
+            });
+
+            it('set routeData.tab to overview if it not provided or incorrect', function() {
+                behaviorObj.tabsList = ['overview'];
+                behaviorObj.routeData = {
+                    tab: ''
+                };
+                behaviorObj.tab = undefined;
+
+                behaviorObj._infoLoaded();
+                assert.equal(behaviorObj.routeData.tab, 'overview');
+                assert.isUndefined(behaviorObj.tab)
+            });
+        });
+
+        it('_getMembersLength method return length or 0', function() {
+            assert.equal(behaviorObj._getMembersLength(), 0);
+            assert.equal(behaviorObj._getMembersLength('test'), 0);
+            assert.equal(behaviorObj._getMembersLength(26), 26);
+        });
+
+
+        it('_setPermissionBase method return base path or null', function() {
+            behaviorObj._setPermissionBase();
+            assert.equal(behaviorObj.permissionBase, null);
+
+            behaviorObj._setPermissionBase('test');
+            assert.equal(behaviorObj.permissionBase, null);
+
+            behaviorObj._setPermissionBase(43);
+            assert.equal(behaviorObj.permissionBase, 'engagement_43');
+        });
+
+        describe('saving report', function() {
+
+            describe('method _saveProgress', function() {
+                it('call basic info validation method', function() {
+                    sinon.spy(behaviorObj, '_validateBasicInfo');
+                    behaviorObj._saveProgress();
+
+                    assert.isTrue(behaviorObj._validateBasicInfo.called);
+                    behaviorObj._validateBasicInfo.restore();
+                });
+
+
+            });
+
+
+            describe('method _prepareData', function() {
+                xit('return a Promise', function() {
+                    assert.isObject(behaviorObj._prepareData());
+                });
+            });
+
+        });
+
+
+
+
+    });
+</script>
+
+</body>
+</html>

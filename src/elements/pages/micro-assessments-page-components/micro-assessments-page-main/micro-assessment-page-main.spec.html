@@ -20,80 +20,32 @@
 
 <script>
     describe('<micro-assessments-page-main>', function () {
-        var myEl, partnerInput, auditTypeInput, numberInput;
-
-        before(function() {
-
-        });
+        var myEl;
 
         beforeEach(function () {
             myEl = fixture('element-fixture');
         });
 
-        describe('method _routeConfig', function() {
-            it('fire event if engagement id is not provided or incorrect', function (done) {
-               myEl.route = {
-                   prefix: '/micro-assessments',
-                   path: '/not_found'
-               };
+        describe('saving report', function() {
+            it('run _saveProgress method on second action event', function() {
+                sinon.spy(myEl, '_saveProgress');
+                myEl.fire(myEl.otherActions[0].event);
 
-               myEl.addEventListener('404', function() {
-                   done();
-               }, false);
-
-                myEl._routeConfig(myEl.route);
-            });
-        });
-
-        describe('_infoLoaded method', function() {
-            it('set tab property equal to correct routeData.tab', function() {
-                myEl.routeData = {
-                    tab: 'overview'
-                };
-                myEl.tab = undefined;
-
-                myEl._infoLoaded();
-                assert.equal(myEl.tab, 'overview')
+                assert.isTrue(myEl._saveProgress.called);
+                myEl._saveProgress.restore();
             });
 
-            it('get tab property from route object if routeData is not defined', function() {
-                myEl.routeData = undefined;
-                myEl.tab = undefined;
-                myEl.route = {path: '/23/overview', prefix: '/micro-assessments'};
+            it('run _submitReport method on main-action-activated event', function() {
+                sinon.spy(myEl, '_submitReport');
+                myEl.fire('main-action-activated');
 
-                myEl._infoLoaded();
-                assert.equal(myEl.tab, 'overview')
+                assert.isTrue(myEl._submitReport.called);
+                myEl._submitReport.restore();
             });
 
-            it('set routeData.tab to overview if it not provided or incorrect', function() {
-                myEl.routeData = {
-                    tab: ''
-                };
-                myEl.tab = undefined;
-
-                myEl._infoLoaded();
-                assert.equal(myEl.routeData.tab, 'overview');
-                assert.isUndefined(myEl.tab)
-            });
-        });
-
-        it('_getMembersLength method return length or 0', function() {
-            assert.equal(myEl._getMembersLength(), 0);
-            assert.equal(myEl._getMembersLength('test'), 0);
-            assert.equal(myEl._getMembersLength(26), 26);
         });
 
 
-        it('_setPermissionBase method return base path or null', function() {
-            myEl._setPermissionBase();
-            assert.equal(myEl.permissionBase, null);
-
-            myEl._setPermissionBase('test');
-            assert.equal(myEl.permissionBase, null);
-
-            myEl._setPermissionBase(43);
-            assert.equal(myEl.permissionBase, 'engagement_43');
-        });
 
 
     });
