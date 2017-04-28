@@ -30,14 +30,11 @@ Polymer({
         if (this.route && !~this.route.prefix.indexOf('/micro-assessments')) { return; }
 
         let id = this.routeData ? this.routeData.id : route.path.split('/')[1];
-        if (!isNaN(+id)) {
+        if (id && !isNaN(+id)) {
             this.engagementId = +id;
         } else {
             this.fire('404');
         }
-    },
-    _allowEdit: function() {
-        return false;
     },
     _infoLoaded: function() {
         let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
@@ -49,9 +46,14 @@ Polymer({
         this.tab = tab;
     },
     _getMembersLength: function(length) {
-        return length || 0;
+        if (isNaN(+length)) { length = 0; }
+        return +length || 0;
     },
     _setPermissionBase: function(id) {
-        this.permissionBase = id ? `engagement_${id}` : null;
+        if ( (!id && id !== 0 )|| isNaN(+id)) {
+            this.permissionBase = null;
+        } else {
+            this.permissionBase = `engagement_${id}`;
+        }
     }
 });

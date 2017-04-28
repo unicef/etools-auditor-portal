@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [micro-assessments-page-main]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <micro-assessments-page-main id="element"></micro-assessments-page-main>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<micro-assessments-page-main>', function () {
+        var myEl, partnerInput, auditTypeInput, numberInput;
+
+        before(function() {
+
+        });
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method _routeConfig', function() {
+            it('fire event if engagement id is not provided or incorrect', function (done) {
+               myEl.route = {
+                   prefix: '/micro-assessments',
+                   path: '/not_found'
+               };
+
+               myEl.addEventListener('404', function() {
+                   done();
+               }, false);
+
+                myEl._routeConfig(myEl.route);
+            });
+        });
+
+        describe('_infoLoaded method', function() {
+            it('set tab property equal to correct routeData.tab', function() {
+                myEl.routeData = {
+                    tab: 'overview'
+                };
+                myEl.tab = undefined;
+
+                myEl._infoLoaded();
+                assert.equal(myEl.tab, 'overview')
+            });
+
+            it('get tab property from route object if routeData is not defined', function() {
+                myEl.routeData = undefined;
+                myEl.tab = undefined;
+                myEl.route = {path: '/23/overview', prefix: '/micro-assessments'};
+
+                myEl._infoLoaded();
+                assert.equal(myEl.tab, 'overview')
+            });
+
+            it('set routeData.tab to overview if it not provided or incorrect', function() {
+                myEl.routeData = {
+                    tab: ''
+                };
+                myEl.tab = undefined;
+
+                myEl._infoLoaded();
+                assert.equal(myEl.routeData.tab, 'overview');
+                assert.isUndefined(myEl.tab)
+            });
+        });
+
+        it('_getMembersLength method return length or 0', function() {
+            assert.equal(myEl._getMembersLength(), 0);
+            assert.equal(myEl._getMembersLength('test'), 0);
+            assert.equal(myEl._getMembersLength(26), 26);
+        });
+
+
+        it('_setPermissionBase method return base path or null', function() {
+            myEl._setPermissionBase();
+            assert.equal(myEl.permissionBase, null);
+
+            myEl._setPermissionBase('test');
+            assert.equal(myEl.permissionBase, null);
+
+            myEl._setPermissionBase(43);
+            assert.equal(myEl.permissionBase, 'engagement_43');
+        });
+
+
+    });
+</script>
+
+</body>
+</html>
