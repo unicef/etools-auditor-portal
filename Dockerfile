@@ -7,14 +7,13 @@ RUN npm install -g bower gulp-cli
 
 RUN mkdir /code/
 ADD . /code/
-VOLUME /code/build/
-VOLUME /code/node_modules/
-VOLUME /code/src/bower_modules/
+RUN rm -r /code/build/
+RUN rm -r /code/node_modules/
+RUN rm -r /code/src/bower_modules/
 WORKDIR /code/
 
 RUN npm install
 RUN bower --allow-root install
-RUN npm rebuild node-sass
 RUN gulp build
 
 EXPOSE 8080
