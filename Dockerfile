@@ -7,9 +7,9 @@ RUN npm install -g bower gulp-cli
 
 RUN mkdir /code/
 ADD . /code/
-RUN rm -r /code/build/
-RUN rm -r /code/node_modules/
-RUN rm -r /code/src/bower_modules/
+RUN rm -rf /code/build/
+RUN rm -rf /code/node_modules/
+RUN rm -rf /code/src/bower_modules/
 WORKDIR /code/
 
 RUN npm install
