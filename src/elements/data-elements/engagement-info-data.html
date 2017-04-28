@@ -92,13 +92,14 @@
                 this.engagementInfo = {};
                 this.requestsCompleted = {};
 
+                this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
                 let lastCreated = this.getLastEngagementData(id);
                 if (lastCreated) {
-                    this._handleResponse({detail: lastCreated});
+                    this._handleDataResponse({detail: lastCreated});
+                    this.optionsUrl = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType}).url;
                     return;
                 }
 
-                this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
                 this.endpoint = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType});
 
                 if (this.collectionExists(`engagement_${id}`)) {

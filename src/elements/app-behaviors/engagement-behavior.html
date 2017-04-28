@@ -37,6 +37,12 @@
             this.tab = tab;
         },
 
+        _tabChanged: function(tab) {
+            if (tab && this.routeData && this.routeData.tab !== tab) {
+                this.set('routeData.tab', tab);
+            }
+        },
+
         _setPermissionBase: function(id) {
             if ( (!id && id !== 0 )|| isNaN(+id)) {
                 this.permissionBase = null;
@@ -54,7 +60,16 @@
                     });
         },
 
-        _prepareData: function(submit) {
+        _submitReport: function() {
+            if (!this._validateEngagement()) { return; }
+
+            this._prepareData(true)
+                    .then((data) => {
+                        this.updatedEngagement = data;
+                    });
+        },
+
+        _prepareData: function(submit, finalize) {
             let attachmentsTab = this.getElement('#attachments');
 
             if (!this.engagement || !attachmentsTab) { Promise.reject(); }
@@ -86,7 +101,8 @@
                             type: type,
                             id: data.id,
                             data: data,
-                            submit: submit ? 'submit/' : null
+                            submit: submit ? 'submit/' : null,
+                            finalize: finalize ? 'finalize/' : null
                         };
                     })
         },
@@ -98,6 +114,7 @@
 
             if (!staffMembersValid || !detailsValid) {
                 this.set('routeData.tab', 'overview');
+                this.set('tab', 'overview');
                 this.fire('toast', {text: 'Fix invalid fields before saving'});
                 return false;
             }

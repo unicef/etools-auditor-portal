@@ -30,7 +30,8 @@ Polymer({
 
     observers: [
         '_routeConfig(route)',
-        '_setPermissionBase(engagement.id)'
+        '_setPermissionBase(engagement.id)',
+        '_tabChanged(tab)'
     ],
 
     listeners: {
@@ -39,11 +40,17 @@ Polymer({
         'main-action-activated': '_submitReport'
     },
 
-    _submitReport: function() {
-        //TODO: ?replace this method to common engagement behavior?
-    },
-
     _validateEngagement: function() {
+        let basicInfoValid = this._validateBasicInfo(),
+            //TODO: add report vlidation
+            reportValid = true;
 
+        if (!basicInfoValid || !reportValid) {
+            this.set('routeData.tab', 'report');
+            this.set('tab', 'report');
+            this.fire('toast', {text: 'Fill report before submiting!'});
+            return false;
+        }
+        return true;
     }
 });
