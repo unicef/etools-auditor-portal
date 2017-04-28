@@ -14,7 +14,7 @@ WORKDIR /code/
 
 RUN npm install
 RUN bower --allow-root install
-RUN gulp build
+RUN /code/node_modules/.bin/gulp build
 
 EXPOSE 8080
-CMD ["gulp", "start"]
+CMD ["/code/node_modules/.bin/gulp", "start"]
