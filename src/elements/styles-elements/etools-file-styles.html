@@ -12,8 +12,16 @@
                 display: block;
                 width: 100%;
 
-                paper-input-container { padding: 0; margin-top: -20px; }
+                paper-input-container {
+                    overflow: hidden;
+                    padding: 0;
+                    margin-top: -20px;
+                }
 
+                paper-input-error {
+                    position: relative;
+                    margin: 0 0 10px 20px;
+                }
 
                 --paper-input-container-underline-focus: #{'{
                     display: none;

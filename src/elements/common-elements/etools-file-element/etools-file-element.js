@@ -77,6 +77,10 @@
                     return [];
                 }
             },
+            fileTypeRequired: {
+                type: Boolean,
+                value: false
+            },
             fileTypesLabel: {
                 type: String,
                 value: 'File Type'
@@ -109,6 +113,9 @@
         observers: [
             '_filesChange(files.*)'
         ],
+        listeners: {
+            'iron-activate': '_fileTypeChanged'
+        },
         ready: function() {
             if (this.multiple && this.label === 'File attachment') {
                 this.set('label', this.label + '(s)');
@@ -365,6 +372,12 @@
             }
         },
 
+        _fileTypeChanged: function() {
+            if (this.invalid) {
+                this.validate();
+            }
+        },
+
         _getFilenameFromUrl: function(url) {
             if (typeof url !== 'string' || url === '') {
                 return;
@@ -399,6 +412,10 @@
                 return 'multiple';
             }
             return '';
+        },
+
+        _getFileTypeRequiredClass: function() {
+            return this.fileTypeRequired ? 'required' : '';
         },
 
         _getUploadedFile: function(fileModel) {
@@ -442,6 +459,34 @@
                         reject(error);
                     });
             });
+        },
+
+        validate: function() {
+            if (!this.fileTypeRequired || (this.files  && this.files.length === 0)) {
+                this.invalid = false;
+                this.errorMessage = '';
+                return true;
+            }
+
+            if (!this.fileTypes || !this.fileTypes.length) {
+                this.invalid = true;
+                this.errorMessage = 'File type field is required but types are not defined';
+                return false;
+            }
+
+            let filesLength = this.files.length;
+
+            for (let i = 0; i < filesLength; i++) {
+                console.log(this.files[i]);
+                if (!this.files[i].file_type) {
+                    this.invalid = true;
+                    this.errorMessage = 'File type field is required';
+                    return false;
+                }
+            }
+
+            console.log('true');
+            return true;
         }
 
     });
