@@ -36,11 +36,13 @@
                 this.engagement = data.detail;
                 this.fire('engagement-updated', {success: true, data: data.detail});
                 this.fire('global-loading', {type: 'update-engagement'});
+                this.fire('toast', {text: 'Engagement data has been saved!'});
             },
 
             _handleError: function () {
                 this.fire('engagement-updated');
                 this.fire('global-loading', {type: 'create-engagement'});
+                this.fire('toast', {text: 'Can not save engagement data. Plees try again later!'});
             },
 
             _engagementChanged: function(engagement) {
