@@ -6,7 +6,7 @@
     <template>
 
         <template is="dom-repeat" items="{{questionnaire.children}}">
-            <risk-tab questionnaire="{{item}}" index="{{index}}"></risk-tab>
+            <risk-tab questionnaire="{{item}}" index="{{index}}" completed="{{_checkCompleted(item)}}" disabled="{{_checkDisabled(index)}}"></risk-tab>
         </template>
 
 

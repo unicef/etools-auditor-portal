@@ -7,10 +7,6 @@
         width: 100%;
         margin-bottom: 20px;
 
-        &[completed] {
-            min-height: 186px;
-        }
-
         .risk-result-container {
             position: absolute;
             top: 51px;
@@ -18,6 +14,10 @@
             width: 100%;
             background-color: #ffffff;
             box-shadow: 0 3px 11px -2px rgba(0, 0, 0, 0.4);
+            opacity: 1;
+            transition: 0.15s;
+
+            &[hidden_results] { opacity: 0; }
 
             .result-element {
                 padding: 21px 6%;
@@ -30,9 +30,17 @@
                     min-width: 125px;
                 }
 
+                .value { font-weight: 800; }
+                &.risk-rating .value { font-weight: 400; }
                 &.risk-rating { border-top: solid 1px #e8e8e8; }
             }
         }
+    }
+}
+
+:host([completed]) {
+    .tab-container {
+        min-height: 186px;
     }
 }
 

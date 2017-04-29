@@ -7,11 +7,16 @@
         <!-- inject styles './risk-tab.scss'-->
         <style include="tab-inputs-styles"></style>
 
-        <div class="tab-container" completed>
-            <etools-content-panel completed show-expand-btn title="{{index}}. {{questionnaire.header}}" open="{{open}}"></etools-content-panel>
-            <div class="risk-result-container">
-                <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">8</span></div>
-                <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class="value">Low</span></div>
+        <div class="tab-container">
+            <etools-content-panel completed$="[[completed]]"
+                                  show-expand-btn
+                                  is-disabled="[[disabled]]"
+                                  title="{{_setIndex(index)}}. {{questionnaire.header}}"
+                                  open="{{open}}"></etools-content-panel>
+
+            <div class="risk-result-container" hidden_results$="[[!showResults(completed, open)]]">
+                <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">[[getScore(questionnaire.risk_score)]]</span></div>
+                <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class="value">[[getScore(questionnaire.risk_rating)]]</span></div>
             </div>
         </div>
 

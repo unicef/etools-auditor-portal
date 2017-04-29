@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [questionnaire-page-main, lodash]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <questionnaire-page-main id="element"></questionnaire-page-main>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<questionnaire-page-main>', function () {
+        var myEl, testRisk, incompleteRisk;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+            testRisk = {
+                "id": 11,
+                "header": "Implementing Partner",
+                "type": "default",
+                "code": "ma_questionnaire",
+                "risk_rating": "na",
+                "risk_score": null,
+                "blueprints": [
+                    {
+                        "id": 1,
+                        "description": "Is the IP legally registered? If so, is it in compliance with registration requirements? Please note the legal status and date of registration of the entity.",
+                        "weight": 2,
+                        "is_key": true,
+                        "value": 0,
+                        "extra": "na"
+                    },
+                    {
+                        "id": 2,
+                        "description": "If the IP received United Nations resources in the past, were significant issues reported in managing the resources, including from previous assurance activities.",
+                        "weight": 2,
+                        "is_key": true,
+                        "value": 0,
+                        "extra": "na"
+                    },
+                    {
+                        "id": 3,
+                        "description": "Does the IP have statutory reporting requirements? If so, are they in compliance with such requirements in the prior three fiscal years?",
+                        "weight": 2,
+                        "is_key": true,
+                        "value": 0,
+                        "extra": "na"
+                    }
+                ],
+                "children": [],
+                "parent": 1
+            };
+            incompleteRisk = {
+                "id": 11,
+                "header": "Implementing Partner",
+                "type": "default",
+                "code": "ma_questionnaire",
+                "risk_rating": "na",
+                "risk_score": null,
+                "blueprints": [
+                    {
+                        "id": 1,
+                        "description": "Is the IP legally registered? If so, is it in compliance with registration requirements? Please note the legal status and date of registration of the entity.",
+                        "weight": 2,
+                        "is_key": true,
+                        "value": 0,
+                        "extra": "na"
+                    },
+                    {
+                        "id": 2,
+                        "description": "If the IP received United Nations resources in the past, were significant issues reported in managing the resources, including from previous assurance activities.",
+                        "weight": 2,
+                        "is_key": true,
+                        "value": 0,
+                        "extra": "na"
+                    },
+                    {
+                        "id": 3,
+                        "description": "Does the IP have statutory reporting requirements? If so, are they in compliance with such requirements in the prior three fiscal years?",
+                        "weight": 2,
+                        "is_key": true,
+                        "value": null,
+                        "extra": "na"
+                    }
+                ],
+                "children": [],
+                "parent": 1
+            };
+        });
+
+        describe('method _checkCompleted', function() {
+            it('return false if argument is not provided', function() {
+                assert.isFalse(myEl._checkCompleted());
+            });
+
+            it('return true if all risks are filled', function() {
+                assert.isTrue(myEl._checkCompleted(testRisk));
+            });
+
+            it('return false if any risks are not filled', function() {
+                assert.isFalse(myEl._checkCompleted(incompleteRisk));
+            });
+
+            it('check nested children objects', function() {
+                var test = {
+                    blueprints: [],
+                    children: [testRisk]
+                };
+                assert.isTrue(myEl._checkCompleted(test));
+
+                test.children.push(incompleteRisk);
+                assert.isFalse(myEl._checkCompleted(test));
+            });
+
+        });
+
+        describe('method _checkDisabled', function() {
+            it('return false if index is 0', function() {
+                assert.isFalse(myEl._checkDisabled(0));
+            });
+
+            it('return false if previous risk tab is completed', function() {
+                myEl.questionnaire = [testRisk, incompleteRisk];
+
+                assert.isFalse(myEl._checkDisabled(1));
+            });
+
+            it('return true if previous risk tab is not completed', function(done) {
+                myEl.set('questionnaire', { children: [testRisk, testRisk, testRisk, incompleteRisk, testRisk] });
+
+                flush(function() {
+                    assert.isFalse(myEl._checkDisabled(1));
+                    assert.isFalse(myEl._checkDisabled(3));
+                    assert.isTrue(myEl._checkDisabled(4));
+                    done();
+                })
+            });
+        });
+
+
+
+
+    });
+</script>
+
+</body>
+</html>
