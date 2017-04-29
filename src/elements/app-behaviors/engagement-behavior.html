@@ -110,12 +110,12 @@
         },
 
 
-        _validateBasicInfo: function() {
+        _validateBasicInfo: function(property) {
             let staffMembersValid = this.getElement('#staffMembers').validate(),
                 detailsValid = this.getElement('#engagementDetails').validate();
 
             if (!staffMembersValid || !detailsValid) {
-                this.set('tab', 'overview');
+                this.set(property || 'tab', 'overview');
                 this.fire('toast', {text: 'Fix invalid fields before saving'});
                 return false;
             }

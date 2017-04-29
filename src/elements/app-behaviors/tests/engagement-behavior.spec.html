@@ -357,7 +357,7 @@
                 });
 
                 it('return false if staffMembers or engagementDetails aren\'t valid', function() {
-                    var stub = sinon.stub(behaviorObj, 'getElement')
+                    var stub = sinon.stub(behaviorObj, 'getElement');
                     stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
                     stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
@@ -366,6 +366,18 @@
                     assert.isFalse(behaviorObj._validateBasicInfo());
                     assert.isTrue(behaviorObj.set.calledWith('tab', 'overview'));
                     assert.equal(behaviorObj.fire.args[0].length, 2);
+                });
+
+                it('can receive tab property name as argument to set if validation failed', function() {
+                    sinon.stub(behaviorObj, 'getElement').returns({validate: function() { return false; }});
+                    behaviorObj.set = sinon.spy();
+                    behaviorObj.fire = sinon.spy();
+
+                    behaviorObj._validateBasicInfo();
+                    assert.isTrue(behaviorObj.set.calledWith('tab', 'overview'));
+
+                    behaviorObj._validateBasicInfo('routeData.tab');
+                    assert.isTrue(behaviorObj.set.calledWith('routeData.tab', 'overview'));
                 });
             })
 
