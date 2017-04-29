@@ -1,0 +1,70 @@
+<!--import [polymer, etools-ajax]-->
+
+<dom-module id="update-engagement">
+
+    <template>
+
+        <etools-ajax method="{{method}}"
+                     url="{{url}}"
+                     body="{{postData}}"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'update-engagement',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+                updatedEngagementData: {
+                    type: Object,
+                    observer: '_engagementChanged'
+                },
+                engagement: {
+                    type: Object,
+                    notify: true
+                }
+            },
+
+            _handleResponse: function (data) {
+                this.engagement = data.detail;
+                this.fire('engagement-updated', {success: true, data: data.detail});
+                this.fire('global-loading', {type: 'update-engagement'});
+                this.fire('toast', {text: 'Engagement data has been saved!'});
+            },
+
+            _handleError: function () {
+                this.fire('engagement-updated');
+                this.fire('global-loading', {type: 'create-engagement'});
+                this.fire('toast', {text: 'Can not save engagement data. Plees try again later!'});
+            },
+
+            _engagementChanged: function(engagement) {
+                if (!engagement) { return; }
+                let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url;
+                if (engagement.submit) {
+                    url += engagement.submit;
+                    this.method = 'POST';
+                } else if (engagement.finalize) {
+                    url += engagement.finalize;
+                    this.method = 'POST';
+                } else {
+                    this.method = 'PATCH';
+                }
+
+                this.fire('global-loading', {type: 'update-engagement', active: true, message: 'Updating engagement data...'});
+                this.postData = engagement.data;
+                this.url = url;
+            }
+
+        });
+
+    </script>
+
+</dom-module>

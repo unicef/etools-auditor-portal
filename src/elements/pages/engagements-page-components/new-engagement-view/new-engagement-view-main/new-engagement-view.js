@@ -4,7 +4,8 @@ Polymer({
     is: 'new-engagement-view',
     behaviors: [
         etoolsAppConfig.globals,
-        APBehaviors.LastCreatedController
+        APBehaviors.LastCreatedController,
+        APBehaviors.EngagementBehavior
     ],
     properties: {
         engagement: {
@@ -28,14 +29,7 @@ Polymer({
         return true;
     },
     _saveNewEngagement: function() {
-        let staffMembersValid = this.$.staffMembers.validate(),
-            detailsValid = this.$.engagementDetails.validate();
-
-        if (!staffMembersValid || !detailsValid) {
-            this.set('routeData.tab', 'overview');
-            this.fire('toast', {text: 'Fix invalid fields before saving'});
-            return;
-        }
+        if (!this._validateBasicInfo('routeData.tab')) { return; }
 
         this._prepareData()
             .then((data) => {

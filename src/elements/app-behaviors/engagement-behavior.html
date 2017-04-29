@@ -1,0 +1,135 @@
+<!--import [polymer, lodash]-->
+
+<script>
+    'use strict';
+
+    window.APBehaviors = window.APBehaviors || {};
+    APBehaviors.EngagementBehavior = {
+        properties: {
+            tabsList: {
+                type: Array,
+                value: function() {
+                    return [];
+                }
+            },
+            engagementPrefix: {
+                type: String,
+                value: ''
+            }
+        },
+
+        _routeConfig: function(route) {
+            if (this.route && !~this.route.prefix.indexOf(this.engagementPrefix)) { return; }
+
+            let id = this.routeData ? this.routeData.id : route.path.split('/')[1];
+            if (id && !isNaN(+id)) {
+                this.engagementId = +id;
+            } else {
+                this.fire('404');
+            }
+        },
+
+        _infoLoaded: function() {
+            let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
+            if (!~this.tabsList.indexOf(tab)) {
+                this.routeData.tab = this.tabsList[0] || '';
+                return;
+            }
+
+            this.tab = tab;
+        },
+
+        _tabChanged: function(tab) {
+            if (tab && this.routeData && this.routeData.tab !== tab) {
+                this.set('routeData.tab', tab);
+            }
+        },
+
+        _setPermissionBase: function(id) {
+            if ( (!id && id !== 0 )|| isNaN(+id)) {
+                this.permissionBase = null;
+            } else {
+                this.permissionBase = `engagement_${id}`;
+            }
+        },
+
+        _saveProgress: function() {
+            if (!this._validateBasicInfo()) { return; }
+
+            return this._prepareData()
+                    .then((data) => {
+                        this.updatedEngagement = data;
+                    });
+        },
+
+        _submitReport: function() {
+            if (!this._validateEngagement()) { return; }
+
+            return this._prepareData(true)
+                    .then((data) => {
+                        this.updatedEngagement = data;
+                    });
+        },
+
+        _prepareData: function(submit, finalize) {
+            let attachmentsTab = this.getElement('#attachments');
+
+            if (!this.engagement || !attachmentsTab) {  return Promise.reject('You meed engagement object and attachments tab'); }
+
+            let data = _.cloneDeep(this.engagement);
+
+            data.partner = data.partner.id;
+            data.test_subject_areas = {};
+            //TODO: remove this after adding agreement data loading
+            data.agreement = 1;
+
+            let type;
+            switch (data.type) {
+                case 'ma':
+                    type = 'micro-assessments';
+                    break;
+                case 'sc':
+                    type = 'spot-checks';
+                    break;
+                case 'a':
+                    type = 'audits';
+                    break;
+            }
+
+            return attachmentsTab.getFiles()
+                    .then((files) => {
+                        data.attachments = files;
+                        return {
+                            type: type,
+                            id: data.id,
+                            data: data,
+                            submit: submit ? 'submit/' : null,
+                            finalize: finalize ? 'finalize/' : null
+                        };
+                    })
+        },
+
+
+        _validateBasicInfo: function(property) {
+            let staffMembersValid = this.getElement('#staffMembers').validate(),
+                detailsValid = this.getElement('#engagementDetails').validate();
+
+            if (!staffMembersValid || !detailsValid) {
+                this.set(property || 'tab', 'overview');
+                this.fire('toast', {text: 'Fix invalid fields before saving'});
+                return false;
+            }
+            return true;
+        },
+
+        _getMembersLength: function(length) {
+            if (isNaN(+length)) { length = 0; }
+            return +length || 0;
+        },
+
+        getElement: function(selector) {
+            return Polymer.dom(this.root).querySelector(selector);
+        }
+
+    };
+</script>
