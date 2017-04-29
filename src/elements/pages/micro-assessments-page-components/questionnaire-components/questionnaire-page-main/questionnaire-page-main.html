@@ -1,0 +1,16 @@
+<!--import [polymer]-->
+
+<!--import [risk-tab]-->
+
+<dom-module id="questionnaire-page-main">
+    <template>
+
+        <template is="dom-repeat" items="{{questionnaire.children}}">
+            <risk-tab questionnaire="{{item}}" index="{{index}}"></risk-tab>
+        </template>
+
+
+    </template>
+
+    <!-- inject scripts './questionnaire-page-main.js'-->
+</dom-module>

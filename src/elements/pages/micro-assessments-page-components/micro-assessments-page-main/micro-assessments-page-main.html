@@ -1,6 +1,8 @@
-<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash]-->
-<!--import [shared-styles, module-styles, app-main-header, pages-header-element, file-attachments-tab, update-engagement,
-            status-tab-element, engagement-staff-members-tab, engagement-info-details, engagement-info-data, engagement-behavior]-->
+<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash, etools-content-panel]-->
+
+<!--import [shared-styles, module-styles, app-main-header, pages-header-element, file-attachments-tab,
+            update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
+            engagement-info-data, engagement-behavior, questionnaire-page-main]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
@@ -60,7 +62,9 @@
 
                         <div name="report">Report</div>
 
-                        <div name="questionnaire">Questionnaire</div>
+                        <div name="questionnaire">
+                            <questionnaire-page-main questionnaire="{{engagement.questionaire}}"></questionnaire-page-main>
+                        </div>
 
 
                         <div name="attachments">

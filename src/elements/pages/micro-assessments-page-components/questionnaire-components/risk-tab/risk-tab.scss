@@ -1,0 +1,75 @@
+:host {
+    position: relative;
+    display: block;
+
+    .tab-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+
+        &[completed] {
+            min-height: 186px;
+        }
+
+        .risk-result-container {
+            position: absolute;
+            top: 51px;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 3px 11px -2px rgba(0, 0, 0, 0.4);
+
+            .result-element {
+                padding: 21px 6%;
+                box-sizing: border-box;
+                font-size: 17px;
+
+                .text {
+                    width: 27%;
+                    display: inline-block;
+                    min-width: 125px;
+                }
+
+                &.risk-rating { border-top: solid 1px #e8e8e8; }
+            }
+        }
+    }
+}
+
+etools-content-panel {
+    position: relative;
+    z-index: 1;
+
+    &[completed] {
+        --epc-toolbar: #{'{
+            height: 51px;
+            padding: 2px;
+            background: var(--module-success) url(/ap/images/icon-check.svg) no-repeat 21px center/32px;
+        }'};
+    }
+
+    --ecp-header-title: #{'{
+        font-weight: 500;
+        line-height: 51px;
+    }'};
+
+    --ecp-header-disabled: #{'{
+            opacity: 1 !important;
+            background-color: #d9d9d9;
+            color: #a8a8a8;
+        }'};
+
+    --epc-toolbar: #{'{
+        height: 51px;
+        padding: 2px;
+        background-color: var(--module-primary);
+    }'};
+
+    --ecp-expand-btn: #{"{
+        position: absolute;
+        right: 10px;
+        top: 2px;
+        width: 45px;
+        height: 45px;
+    }"}
+}
