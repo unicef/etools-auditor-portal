@@ -246,7 +246,6 @@
             assert.equal(behaviorObj._getMembersLength(26), 26);
         });
 
-
         it('_setPermissionBase method return base path or null', function() {
             behaviorObj._setPermissionBase();
             assert.equal(behaviorObj.permissionBase, null);
@@ -258,26 +257,117 @@
             assert.equal(behaviorObj.permissionBase, 'engagement_43');
         });
 
+        it('set routeData.tab equal to tab with _tabChanged method', function() {
+            behaviorObj.set = sinon.spy();
+
+            behaviorObj.routeData = {tab: ''};
+            behaviorObj._tabChanged('new_tab');
+            assert.isTrue(behaviorObj.set.calledWith('routeData.tab', 'new_tab'));
+            assert.isTrue(behaviorObj.set.calledOnce);
+
+            behaviorObj.routeData = {tab: 'test'};
+            behaviorObj._tabChanged('test');
+            assert.isFalse(behaviorObj.set.calledTwice);
+        });
+
         describe('saving report', function() {
 
             describe('method _saveProgress', function() {
                 it('call basic info validation method', function() {
-                    sinon.spy(behaviorObj, '_validateBasicInfo');
+                    sinon.stub(behaviorObj, '_validateBasicInfo');
                     behaviorObj._saveProgress();
 
                     assert.isTrue(behaviorObj._validateBasicInfo.called);
                     behaviorObj._validateBasicInfo.restore();
                 });
 
+                it('call _prepareData and save data to updatedEngagement if basic data is valid', function(done) {
+                    sinon.stub(behaviorObj, '_validateBasicInfo').returns(true);
+                    sinon.stub(behaviorObj, '_prepareData').returns(Promise.resolve({}));
+
+
+                    behaviorObj._saveProgress()
+                            .then(function() {
+                                assert.isTrue(behaviorObj._prepareData.called);
+                                assert.isObject(behaviorObj.updatedEngagement);
+
+                                behaviorObj._validateBasicInfo.restore();
+                                behaviorObj._prepareData.restore();
+                                done();
+                            });
+                });
 
             });
 
+            describe('method _submitReport', function() {
+                it('call engagement validation method', function() {
+                    behaviorObj._validateEngagement = sinon.stub();
+                    behaviorObj._submitReport();
+
+                    assert.isTrue(behaviorObj._validateEngagement.called);
+                });
+
+                it('call _prepareData and save data to updatedEngagement if engagement data is valid', function(done) {
+                    behaviorObj._validateEngagement = sinon.stub().returns(true);
+                    sinon.stub(behaviorObj, '_prepareData').returns(Promise.resolve({}));
+
+
+                    behaviorObj._submitReport()
+                            .then(function() {
+                                assert.isTrue(behaviorObj._prepareData.calledWith(true));
+                                assert.isObject(behaviorObj.updatedEngagement);
+
+                                behaviorObj._prepareData.restore();
+                                done();
+                            });
+                });
+
+            });
 
             describe('method _prepareData', function() {
-                xit('return a Promise', function() {
-                    assert.isObject(behaviorObj._prepareData());
+
+                it('reject if no engagement data or attachments tab', function(done) {
+                    behaviorObj._prepareData()
+                            .catch(function(info) {
+                                assert.equal(info, 'You meed engagement object and attachments tab');
+                                done();
+                            });
+                });
+
+                it('resolve promise with correct data if engagement data and attachment tab provided', function(done) {
+                    behaviorObj.engagement = testEngagement;
+                    sinon.stub(behaviorObj, 'getElement').returns({getFiles: function() { return Promise.resolve([]); }});
+
+                    behaviorObj._prepareData(true)
+                            .then(function(data) {
+                                assert.isObject(data);
+                                assert.equal(data.type, 'micro-assessments');
+                                assert.equal(data.id, '35');
+                                assert.equal(data.submit, 'submit/');
+                                assert.isObject(data.data);
+                                done();
+                            });
                 });
             });
+
+            describe('method _validateBasicInfo', function() {
+                it('return true if staffMembers and engagementDetails are valid', function() {
+                    sinon.stub(behaviorObj, 'getElement').returns({validate: function() { return true; }});
+                    assert.isTrue(behaviorObj._validateBasicInfo());
+                });
+
+                it('return false if staffMembers or engagementDetails aren\'t valid', function() {
+                    var stub = sinon.stub(behaviorObj, 'getElement')
+                    stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
+                    stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
+                    behaviorObj.set = sinon.spy();
+                    behaviorObj.fire = sinon.spy();
+
+                    assert.isFalse(behaviorObj._validateBasicInfo());
+                    assert.isTrue(behaviorObj.set.calledWith('tab', 'overview'));
+                    assert.equal(behaviorObj.fire.args[0].length, 2);
+                });
+            })
 
         });
 

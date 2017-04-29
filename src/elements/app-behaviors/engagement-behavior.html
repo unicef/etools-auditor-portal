@@ -1,3 +1,5 @@
+<!--import [polymer, lodash]-->
+
 <script>
     'use strict';
 
@@ -54,7 +56,7 @@
         _saveProgress: function() {
             if (!this._validateBasicInfo()) { return; }
 
-            this._prepareData()
+            return this._prepareData()
                     .then((data) => {
                         this.updatedEngagement = data;
                     });
@@ -63,7 +65,7 @@
         _submitReport: function() {
             if (!this._validateEngagement()) { return; }
 
-            this._prepareData(true)
+            return this._prepareData(true)
                     .then((data) => {
                         this.updatedEngagement = data;
                     });
@@ -72,7 +74,7 @@
         _prepareData: function(submit, finalize) {
             let attachmentsTab = this.getElement('#attachments');
 
-            if (!this.engagement || !attachmentsTab) { Promise.reject(); }
+            if (!this.engagement || !attachmentsTab) {  return Promise.reject('You meed engagement object and attachments tab'); }
 
             let data = _.cloneDeep(this.engagement);
 
@@ -113,7 +115,6 @@
                 detailsValid = this.getElement('#engagementDetails').validate();
 
             if (!staffMembersValid || !detailsValid) {
-                this.set('routeData.tab', 'overview');
                 this.set('tab', 'overview');
                 this.fire('toast', {text: 'Fix invalid fields before saving'});
                 return false;

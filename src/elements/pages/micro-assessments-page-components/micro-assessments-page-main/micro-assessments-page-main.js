@@ -43,10 +43,9 @@ Polymer({
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo(),
             //TODO: add report vlidation
-            reportValid = true;
+            reportValid = false;
 
         if (!basicInfoValid || !reportValid) {
-            this.set('routeData.tab', 'report');
             this.set('tab', 'report');
             this.fire('toast', {text: 'Fill report before submiting!'});
             return false;
