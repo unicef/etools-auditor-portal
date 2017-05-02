@@ -24,53 +24,20 @@
             myEl = fixture('etools-file-element-fixture');
         });
 
-        describe('_showFileType', function () {
-            it('returns true when fileTypesLength > 0, readonly is false and activateFileTypes is true', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showFileType(1, false), true);
-            });
-
-            it('returns false when fileTypesLength = 0', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showFileType(0, false), false);
-            });
-
-            it('returns false when readonly is true', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showFileType(1, true), false);
-            });
-
-            it('returns false when activateFileTypes is false', function () {
-                myEl.activateFileTypes = false;
-
-                assert.equal(myEl._showFileType(1, false), false);
-            });
-        });
-
         describe('_showReadonlyType', function () {
-            it('returns true when readonly and activateFileTypes is true', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showReadonlyType(true), true);
+            it('returns true when readonly is true or fileTypesLength <= 0', function () {
+                assert.equal(myEl._showReadonlyType(true, 1), true);
+                assert.equal(myEl._showReadonlyType(true, 0), true);
+                assert.equal(myEl._showReadonlyType(false, 0), true);
+                assert.equal(myEl._showReadonlyType(false, -1), true);
             });
 
-            it('returns false when readonly is false', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showReadonlyType(false), false);
-            });
-
-            it('returns false when activateFileTypes is false', function () {
-                myEl.activateFileTypes = false;
-
-                assert.equal(myEl._showReadonlyType(true), false);
+            it('returns false when readonly is false and fileTypesLength > 0', function () {
+                assert.equal(myEl._showReadonlyType(false, 1), false);
             });
         });
 
-        describe('_getFileTypeStr', function () {
+        describe('_getFileType', function () {
             beforeEach(function () {
                 var fileTypes = [
                     {value: 1, display_name: 'Training materials'},
@@ -84,29 +51,19 @@
             it('returns null when fileTypes Array is empty', function () {
                 myEl.fileTypes = [];
 
-                assert.isNull(myEl._getFileTypeStr('1'));
+                assert.isNull(myEl._getFileType('1'));
             });
 
             it('returns null when fileType is not found', function () {
-                assert.isNull(myEl._getFileTypeStr('4'));
+                assert.isNull(myEl._getFileType('4'));
             });
 
-            it('returns type name', function () {
-                assert.equal(myEl._getFileTypeStr('3'), myEl.fileTypes[2].display_name);
-            });
-        });
+            it('returns file type', function () {
+                var fileType = myEl._getFileType('3');
 
-        describe('_showLabel', function () {
-            it('returns true when label is not empty String', function () {
-                assert.equal(myEl._showLabel('label'), true);
-            });
-
-            it('returns false when label is empty String', function () {
-                assert.equal(myEl._showLabel(''), false);
-            });
-
-            it('returns false when label is not String', function () {
-                assert.equal(myEl._showLabel(null), false);
+                assert.isObject(fileType);
+                assert.equal(fileType.display_name, myEl.fileTypes[2].display_name);
+                assert.equal(fileType.value, myEl.fileTypes[2].value);
             });
         });
 

@@ -49,13 +49,12 @@ Polymer({
     },
     ready: function() {
         this.fileTypes = this.getData('attachments_types');
-        this.fileTypes = [{value: 1, display_name: 'demo type'}];
     },
     _hideEmptyState: function(length) { return length > 0;},
     getFiles: function() {
         return this.$.filesElement.getFiles();
     },
-    validate: function () {
+    validate: function() {
         return this.$.filesElement.validate();
     }
 });

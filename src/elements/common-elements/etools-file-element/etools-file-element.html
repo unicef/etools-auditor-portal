@@ -1,5 +1,5 @@
-<!--import [polymer, paper-toast, paper-input/paper-input-container, etools-searchable-multiselection-menu,
-            paper-input/paper-input-error, etools-file-styles, tab-inputs-styles]-->
+<!--import [polymer, paper-toast, etools-searchable-multiselection-menu,
+            etools-file-styles, tab-inputs-styles]-->
 
 <dom-module id="etools-file-element">
     <template>
@@ -19,10 +19,8 @@
                 } '};
             }
         </style>
-        <paper-input-container always-float-label disabled$="[[disabled]]" invalid$="[[invalid]]">
 
-            <label id="element-label" hidden$="[[!_showLabel(label)]]" aria-hidden="true">[[label]]</label>
-
+        <div>
             <div class$="files-container [[_getMultipleClass(multiple)]]">
                 <div class="files-wrapper" hidden$="[[!showFilesContainer]]">
                     <template is="dom-repeat" items="[[files]]" as="file">
@@ -54,20 +52,24 @@
                                         <!--</paper-menu>-->
                                     <!--</paper-dropdown-menu>-->
 
-                                <template is="dom-if" if="[[_showFileType(fileTypes.length, readonly)]]">
+                                <template is="dom-if" if="[[activateFileTypes]]">
                                     <etools-searchable-multiselection-menu
+                                                data-index$="[[index]]"
                                                 class$="type-dropdown disabled-as-readonly [[_getFileTypeRequiredClass()]]"
                                                 options="[[fileTypes]]"
-                                                readonly="[[!_showReadonlyType(readonly)]]"
-                                                disabled="[[!_showReadonlyType(readonly)]]"
-                                                error-message="[[fileTypesLabel]] is required"
+                                                readonly="[[_showReadonlyType(readonly, fileTypes.length)]]"
+                                                disabled="[[_showReadonlyType(readonly, fileTypes.length)]]"
                                                 required="[[fileTypeRequired]]"
+                                                error-message="Field is required"
                                                 custom-object-options
                                                 option-value="value"
                                                 option-label="display_name"
                                                 label="[[fileTypesLabel]]"
                                                 placeholder="&#8212;"
-                                                hide-search>
+                                                hide-search
+                                                on-focus="_resetFieldError"
+                                                value="[[_getFileType(file.file_type)]]"
+                                                on-value-change="_setFileType">
                                     </etools-searchable-multiselection-menu>
                                 </template>
                                     <!--</template>-->
@@ -117,8 +119,8 @@
                                   title="[[uploadLabel]]"
                                   disabled$="[[readonly]]"
                                   raised>
-                    <iron-icon icon="file-upload"></iron-icon>
-                    [[uploadLabel]]
+                        <iron-icon icon="file-upload"></iron-icon>
+                        [[uploadLabel]]
                     </paper-button>
                   </span>
                 </div>
@@ -139,7 +141,7 @@
 
             <a id="downloader" hidden></a>
 
-        </paper-input-container>
+        </div>
 
         <paper-toast id="fileAlreadySelectedToast" always-on-top></paper-toast>
 
