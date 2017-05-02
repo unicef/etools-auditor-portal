@@ -132,6 +132,13 @@ Polymer({
         } else {
             return '';
         }
+    },
 
+    validate: function() {
+        return this.$.riskAssessmentInput.validate();
+    },
+
+    _resetFieldError: function(event) {
+        event.target.invalid = false;
     }
 });

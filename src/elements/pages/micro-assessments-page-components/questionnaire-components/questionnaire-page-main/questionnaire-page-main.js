@@ -10,10 +10,6 @@ Polymer({
                 return {};
             },
             notify: true
-        },
-        basePermissionPath: {
-            type: String,
-            observer: '_basePathChanged'
         }
     },
     _checkCompleted: function(item) {
@@ -49,7 +45,20 @@ Polymer({
 
         return !readOnly;
     },
-    _basePathChanged: function() {
 
+    validate: function() {
+        if (!this.questionnaire.children.length) { return true; }
+
+        let elements = Polymer.dom(this.root).querySelectorAll('.validatable-tab'),
+            valid = true;
+
+        Array.prototype.forEach.call(elements, (element) => {
+            if (!element.validate()) {
+                element.opened = true;
+                valid = false;
+            }
+        });
+
+        return valid;
     }
 });

@@ -58,5 +58,18 @@ Polymer({
 
     _setOpen: function(disabled, completed) {
         this.set('opened', !disabled && !completed);
+    },
+
+    validate: function() {
+        if (!this.questionnaire.blueprints.length) { return true; }
+
+        let elements = Polymer.dom(this.root).querySelectorAll('.validatable-element'),
+            valid = true;
+
+        Array.prototype.forEach.call(elements, (element) => {
+            if (!element.validate()) { valid = false; }
+        });
+
+        return valid;
     }
 });

@@ -42,12 +42,19 @@ Polymer({
 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo(),
+            questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate(),
             //TODO: add report vlidation
             reportValid = false;
 
-        if (!basicInfoValid || !reportValid) {
+        if (!basicInfoValid) { return false; }
+        if (!reportValid) {
             this.set('tab', 'report');
             this.fire('toast', {text: 'Fill report before submiting!'});
+            return false;
+        }
+        if (!questionnaireValid) {
+            this.set('tab', 'questionnaire');
+            this.fire('toast', {text: 'Fill questionnaire before submiting!'});
             return false;
         }
         return true;

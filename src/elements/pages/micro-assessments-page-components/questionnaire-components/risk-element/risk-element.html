@@ -37,6 +37,7 @@
                     <div class="input-container input-container-s">
                         <!-- Risk Assessment -->
                         <etools-searchable-multiselection-menu
+                                id="riskAssessmentInput"
                                 options="[[riskOptions]]"
                                 class$="disabled-as-readonly {{_setRequired(editMode)}}"
                                 readonly="[[!editMode]]"
@@ -45,12 +46,10 @@
                                 value="{{_setRiskValue(blueprint.value, riskOptions)}}"
                                 id="partner"
                                 error-message="This field is required"
+                                on-focus="_resetFieldError"
                                 label="Risk Assessment"
                                 on-value-change="_setRiskAssessment"
                                 placeholder="&#8212;"></etools-searchable-multiselection-menu>
-                        <!--class$="disabled-as-readonly {{_setRequired('partner', basePermissionPath)}}"-->
-                        <!--required="{{_setRequired('partner', basePermissionPath)}}"-->
-                        <!--on-focus="_resetFieldError"-->
                     </div>
                 </div>
 
