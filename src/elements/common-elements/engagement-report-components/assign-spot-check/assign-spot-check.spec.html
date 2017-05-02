@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [static-data-behavior, assign-spot-check]-->
+</head>
+<body>
+
+<test-fixture id="assign-element-fixture">
+    <template>
+        <assign-spot-check id="element"></assign-spot-check>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<assign-spot-check>', function () {
+        let myEl;
+        let dateOfFieldVisitInput;
+        let draftReportToIpInput;
+        let commentsReceivedByIpInput;
+        let draftReportUnicefInput;
+        let commentsReceivedUnicefInput;
+
+        beforeEach(function () {
+            myEl = fixture('assign-element-fixture');
+            myEl.data = {};
+            dateOfFieldVisitInput = Polymer.dom(myEl.root).querySelector('#dateVisitInput');
+            draftReportToIpInput = Polymer.dom(myEl.root).querySelector('#draftReportToIpInput');
+            commentsReceivedByIpInput = Polymer.dom(myEl.root).querySelector('#commentsReceivedByIpInput');
+            draftReportUnicefInput = Polymer.dom(myEl.root).querySelector('#draftReportUnicefInput');
+            commentsReceivedUnicefInput = Polymer.dom(myEl.root).querySelector('#commentsReceivedUnicefInput');
+        });
+
+        it('Return true when Date of Field Visit is fill, Draft Report Issued to IP and Comments Received by IP are empty', function(done) {
+            myEl.data.date_of_field_visit = '2017-04-29';
+            dateOfFieldVisitInput.addEventListener('change', function(event) {
+                done();
+            });
+            assert.equal(dateOfFieldVisitInput.getAttribute('disabled'), false);
+            assert.equal(draftReportToIpInput.getAttribute('disabled'), false);
+            assert.equal(commentsReceivedByIpInput.getAttribute('disabled'), true);
+        });
+
+        it('Return true when Draft Report Issued is fill, Comments Received by IP and Draft Report Issued to UNICEF are empty', function(done) {
+            myEl.data.date_of_draft_report_to_ip = '2017-04-29';
+            dateOfFieldVisitInput.addEventListener('change', function(event) {
+                done();
+            });
+            assert.equal(draftReportToIpInput.getAttribute('disabled'), false);
+            assert.equal(commentsReceivedByIpInput.getAttribute('disabled'), false);
+            assert.equal(draftReportUnicefInput.getAttribute('disabled'), true);
+        });
+
+        it('Return true when all dates are fill', function(done) {
+            myEl.data.date_of_draft_report_to_unicef = '2017-04-29';
+            dateOfFieldVisitInput.addEventListener('change', function(event) {
+                done();
+            });
+            assert.equal(draftReportUnicefInput.getAttribute('disabled'), true);
+            assert.equal(commentsReceivedUnicefInput.getAttribute('disabled'), false);
+        })
+    });
+</script>
+
+</body>
+</html>

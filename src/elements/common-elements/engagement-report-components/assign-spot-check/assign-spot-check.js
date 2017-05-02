@@ -1,18 +1,18 @@
 'use strict';
 
 Polymer({
-   is: 'assign-spot-check',
+    is: 'assign-spot-check',
     behaviors: [
         APBehaviors.DateBehavior
     ],
     properties: {
-        editMode: {
-            type: Boolean,
-            value: true,
-            observer: '_editModeChanged'
-        }
+        disabledDateOfFieldVisit: Boolean,
+        disabledDateOfDraftReportToIp: Boolean,
+        disabledDateOfCommentsByIp: Boolean,
+        disabledDateOfDraftReportToUnicef: Boolean,
+        disabledDateOfCommentsByUnicef: Boolean
     },
-    _editModeChanged: function() {
-        this.updateStyles();
+    _isAvailable: function(prevDate, nextDate) {
+        return prevDate && !nextDate;
     }
 });

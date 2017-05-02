@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, etools-datepicker/etools-datepicker-button]-->
+<!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button]-->
 <!--import [tab-inputs-styles, module-styles, date-behavior]-->
 
 <dom-module id="assign-spot-check">
@@ -15,14 +15,17 @@
                 <div class="input-container">
                     <!-- Date of Field Visit -->
                     <paper-input label="Date of Field Visit"
-                                 class="disabled-as-readonly"
                                  id="dateVisitInput"
+                                 disabled$="[[!_isAvailable('true', data.date_of_draft_report_to_ip)]]"
+                                 value="[[prettyDate(data.date_of_field_visit)]]"
                                  on-down="openDatePicker"
                                  data-selector="dateVisit"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="dateVisit"
+                                                  date="[[prepareDate(data.date_of_field_visit)]]"
                                                   format="YYYY-MM-DD"
+                                                  pretty-date="{{data.date_of_field_visit}}"
                                                   no-init show-clear-btn>
                         </etools-datepicker-button>
                     </paper-input>
@@ -30,14 +33,17 @@
                 <div class="input-container">
                     <!-- Date of Field Visit -->
                     <paper-input label="Draft Report Issued to IP"
-                                 class="disabled-as-readonly"
-                                 id="draftReportInput"
+                                 id="draftReportToIpInput"
+                                 disabled$="[[!_isAvailable(data.date_of_field_visit, data.date_of_comments_by_ip)]]"
+                                 value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  on-down="openDatePicker"
-                                 data-selector="draftReport"
+                                 data-selector="draftReportToIp"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
-                                                  id="draftReport"
+                                                  id="draftReportToIp"
+                                                  date="[[prepareDate(data.date_of_draft_report_to_ip)]]"
                                                   format="YYYY-MM-DD"
+                                                  pretty-date="{{data.date_of_draft_report_to_ip}}"
                                                   no-init show-clear-btn>
                         </etools-datepicker-button>
                     </paper-input>
@@ -45,14 +51,17 @@
                 <div class="input-container">
                     <!-- Date of Field Visit -->
                     <paper-input label="Comments Received by IP"
-                                 class="disabled-as-readonly"
-                                 id="commentsReceivedInput"
+                                 id="commentsReceivedByIpInput"
+                                 disabled$="[[!_isAvailable(data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef)]]"
+                                 value="[[prettyDate(data.date_of_comments_by_ip)]]"
                                  on-down="openDatePicker"
-                                 data-selector="commentsReceived"
+                                 data-selector="commentsReceivedByIp"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
-                                                  id="commentsReceived"
+                                                  id="commentsReceivedByIp"
+                                                  date="[[prepareDate(data.date_of_comments_by_ip)]]"
                                                   format="YYYY-MM-DD"
+                                                  pretty-date="{{data.date_of_comments_by_ip}}"
                                                   no-init show-clear-btn>
                         </etools-datepicker-button>
                     </paper-input>
@@ -62,14 +71,17 @@
                 <div class="input-container">
                     <!-- Date of Field Visit -->
                     <paper-input label="Draft Report Issued to UNICEF"
-                                 class="disabled-as-readonly"
                                  id="draftReportUnicefInput"
+                                 disabled$="[[!_isAvailable(data.date_of_comments_by_ip, data.date_of_comments_by_unicef)]]"
+                                 value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
                                  on-down="openDatePicker"
                                  data-selector="draftReportUnicef"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="draftReportUnicef"
+                                                  date="[[prepareDate(data.date_of_draft_report_to_unicef)]]"
                                                   format="YYYY-MM-DD"
+                                                  pretty-date="{{data.date_of_draft_report_to_unicef}}"
                                                   no-init show-clear-btn>
                         </etools-datepicker-button>
                     </paper-input>
@@ -77,14 +89,17 @@
                 <div class="input-container">
                     <!-- Date of Field Visit -->
                     <paper-input label="Comments Received by UNICEF"
-                                 class="disabled-as-readonly"
                                  id="commentsReceivedUnicefInput"
+                                 disabled$="[[!_isAvailable(data.date_of_draft_report_to_unicef, '')]]"
+                                 value="[[prettyDate(data.date_of_comments_by_unicef)]]"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedUnicef"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="commentsReceivedUnicef"
+                                                  date="[[prepareDate(data.date_of_comments_by_unicef)]]"
                                                   format="YYYY-MM-DD"
+                                                  pretty-date="{{data.date_of_comments_by_unicef}}"
                                                   no-init show-clear-btn>
                         </etools-datepicker-button>
                     </paper-input>
