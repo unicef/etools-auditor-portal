@@ -46,8 +46,7 @@ Polymer({
     },
 
     observers: [
-        // ,
-        // '_setValues(extra)'
+        // '_setValues(blueprint.extra)'
     ],
 
     _setIndex: function(index) {
@@ -64,7 +63,6 @@ Polymer({
     },
 
     _setValues: function(values) {
-
         if (_.isUndefined(values) || _.isNull(values)) { return; }
 
         values = JSON.parse(values);
@@ -125,6 +123,15 @@ Polymer({
     },
 
     _setRiskAssessment: function(e, value) {
-        this.set('blueprint.value', value.selectedValues);
+        this.set('blueprint.value', value.selectedValues.value);
+    },
+
+    _setRequired: function(editMode) {
+        if (editMode) {
+            return 'required';
+        } else {
+            return '';
+        }
+
     }
 });

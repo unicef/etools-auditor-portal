@@ -29,16 +29,19 @@
 
                 <div class="row-h group">
                     <div class="input-container input-container-40 radio-btns-container">
-                        <etools-checkable-input type="radio" label="Yes" label-alignment="right" checked="{{answer_yes}}"></etools-checkable-input>
-                        <etools-checkable-input type="radio" label="No" label-alignment="right" checked="{{answer_no}}"></etools-checkable-input>
-                        <etools-checkable-input type="radio" label="N/A" label-alignment="right" checked="{{answer_na}}"></etools-checkable-input>
+                        <etools-checkable-input type="radio" label="Yes" label-alignment="right" checked="{{answer_yes}}" readonly="[[!editMode]]"></etools-checkable-input>
+                        <etools-checkable-input type="radio" label="No" label-alignment="right" checked="{{answer_no}}" readonly="[[!editMode]]"></etools-checkable-input>
+                        <etools-checkable-input type="radio" label="N/A" label-alignment="right" checked="{{answer_na}}" readonly="[[!editMode]]"></etools-checkable-input>
                     </div>
 
                     <div class="input-container input-container-s">
                         <!-- Risk Assessment -->
                         <etools-searchable-multiselection-menu
                                 options="[[riskOptions]]"
-                                class="disabled-as-readonly"
+                                class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                                readonly="[[!editMode]]"
+                                disabled="[[!editMode]]"
+                                required
                                 value="{{_setRiskValue(blueprint.value, riskOptions)}}"
                                 id="partner"
                                 error-message="This field is required"
@@ -46,8 +49,6 @@
                                 on-value-change="_setRiskAssessment"
                                 placeholder="&#8212;"></etools-searchable-multiselection-menu>
                         <!--class$="disabled-as-readonly {{_setRequired('partner', basePermissionPath)}}"-->
-                        <!--readonly="[[isReadOnly('partner', basePermissionPath)]]"-->
-                        <!--disabled="[[isReadOnly('partner', basePermissionPath)]]"-->
                         <!--required="{{_setRequired('partner', basePermissionPath)}}"-->
                         <!--on-focus="_resetFieldError"-->
                     </div>

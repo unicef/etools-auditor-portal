@@ -2,6 +2,7 @@
 
 Polymer({
     is: 'questionnaire-page-main',
+    behaviors: [APBehaviors.PermissionController],
     properties: {
         questionnaire: {
             type: Object,
@@ -9,6 +10,10 @@ Polymer({
                 return {};
             },
             notify: true
+        },
+        basePermissionPath: {
+            type: String,
+            observer: '_basePathChanged'
         }
     },
     _checkCompleted: function(item) {
@@ -35,5 +40,16 @@ Polymer({
         if (!this.questionnaire.children || index === 0) { return false; }
         let previous = this.questionnaire.children[index - 1];
         return !this._checkCompleted(previous);
+    },
+    _allowEdit: function(base) {
+        if (!base) { return false; }
+
+        let readOnly = this.isReadonly(`${base}.questionnaire`);
+        if (readOnly === null) { readOnly = true; }
+
+        return !readOnly;
+    },
+    _basePathChanged: function() {
+
     }
 });

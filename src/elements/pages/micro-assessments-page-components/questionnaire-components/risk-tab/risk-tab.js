@@ -11,7 +11,7 @@ Polymer({
             notify: true
         },
         index: Number,
-        open: {
+        opened: {
             type: Boolean,
             value: false
         },
@@ -23,24 +23,21 @@ Polymer({
             type: Boolean,
             reflectToAttribute: true
         },
-        riskOptions: {
+        riskRatingOptions: {
             type: Object,
             value: function() {
-                return [
-                    {label: 'N/A', value: 0},
-                    {label: 'Low', value: 1},
-                    {label: 'Medium', value: 2},
-                    {label: 'Significant', value: 3},
-                    {label: 'High', value: 4}
-                ];
+                return {
+                    'na': 'N/A',
+                    'low': 'Low',
+                    'medium': 'Medium',
+                    'significant': 'Significant',
+                    'high': 'High'
+                };
             }
         }
     },
-    observers: [
-        'radioBtns(answerYes, answerNo, answerNa)'
-        // ,
-        // '_setValues()'
-    ],
+
+    observers: ['_setOpen(disabled, completed, questionnaire)'],
 
     _setIndex: function(index) {
         return index + 1;
@@ -55,19 +52,11 @@ Polymer({
         return score || 0;
     },
 
-    _setRiskValue: function(value) {
-        if (!this.riskOptions || (!value && value !== 0)) { return value; }
-        if (typeof value !== 'object') {
-            return this.riskOptions[+value];
-        } else {
-            return value;
-        }
+    getRating: function(rating) {
+        return this.riskRatingOptions[rating] || rating;
     },
 
-    radioBtns: function(answerYes, answerNo, answerNa) {
-        console.log(answerNa);
-        this.answerYes = answerYes ? true : false;
-        this.answerNo = answerNo ? true : false;
-        this.answerNa = answerNa ? true : false;
+    _setOpen: function(disabled, completed) {
+        this.set('opened', !disabled && !completed);
     }
 });

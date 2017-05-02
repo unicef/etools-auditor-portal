@@ -1,12 +1,16 @@
 <!--import [polymer]-->
 
-<!--import [risk-tab]-->
+<!--import [risk-tab, permission-controller]-->
 
 <dom-module id="questionnaire-page-main">
     <template>
 
         <template is="dom-repeat" items="{{questionnaire.children}}">
-            <risk-tab questionnaire="{{item}}" index="{{index}}" completed="{{_checkCompleted(item)}}" disabled="{{_checkDisabled(index)}}"></risk-tab>
+            <risk-tab questionnaire="{{item}}"
+                      index="{{index}}"
+                      completed="{{_checkCompleted(item)}}"
+                      disabled="{{_checkDisabled(index)}}"
+                      edit-mode="[[_allowEdit(basePermissionPath)]]"></risk-tab>
         </template>
 
 
