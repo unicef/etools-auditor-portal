@@ -111,11 +111,14 @@
 
 
         _validateBasicInfo: function(property) {
-            let staffMembersValid = this.getElement('#staffMembers').validate(),
-                detailsValid = this.getElement('#engagementDetails').validate();
+            let staffMembersValid = this.getElement('#staffMembers').validate();
+            let detailsValid = this.getElement('#engagementDetails').validate();
+            let attachmentsValid = this.getElement('#attachments').validate();
 
-            if (!staffMembersValid || !detailsValid) {
-                this.set(property || 'tab', 'overview');
+            if (!staffMembersValid || !detailsValid || !attachmentsValid) {
+                let openTab = (staffMembersValid && detailsValid) ? 'attachments' : 'overview';
+
+                this.set(property || 'tab', openTab);
                 this.fire('toast', {text: 'Fix invalid fields before saving'});
                 return false;
             }
