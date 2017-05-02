@@ -1,18 +1,26 @@
 <!--import [polymer, etools-content-panel]-->
 
-<!--import [tab-inputs-styles]-->
+<!--import [module-styles, risk-element]-->
 
 <dom-module id="risk-tab">
     <template>
         <!-- inject styles './risk-tab.scss'-->
-        <style include="tab-inputs-styles"></style>
+        <style include="tab-inputs-styles module-styles"></style>
 
         <div class="tab-container">
             <etools-content-panel completed$="[[completed]]"
                                   show-expand-btn
                                   is-disabled="[[disabled]]"
-                                  title="{{_setIndex(index)}}. {{questionnaire.header}}"
-                                  open="{{open}}"></etools-content-panel>
+                                  title="{{questionnaire.header}}"
+                                  open="{{open}}">
+                <template is="dom-repeat" items="{{questionnaire.blueprints}}">
+
+                    <risk-element blueprint="{{item}}" index="{{index}}"></risk-element>
+
+                </template>
+
+
+            </etools-content-panel>
 
             <div class="risk-result-container" hidden_results$="[[!showResults(completed, open)]]">
                 <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">[[getScore(questionnaire.risk_score)]]</span></div>
