@@ -588,6 +588,21 @@
             });
         });
 
+        describe('_getFileTypeRequiredClass', function () {
+            it('returns String "required"', function () {
+                myEl.fileTypeRequired = true;
+
+                assert.equal(myEl._getFileTypeRequiredClass(), 'required');
+            });
+
+            it('returns empty String', function () {
+                myEl.fileTypeRequired = false;
+
+                assert.equal(myEl._getFileTypeRequiredClass(), '');
+            });
+        });
+
+
         describe('_getUploadedFile', function () {
             it('Promise resolves an Object', function () {
                 var fileModel = {
@@ -634,6 +649,47 @@
                 myEl.getFiles().catch((rejected) => {
                     assert.isDefined(rejected);
                 });
+            });
+        });
+
+        describe('validate', function () {
+            xit('', function () {
+                //TODO: add test
+            });
+        });
+
+        describe('_resetFieldError', function () {
+            it('sets target attribute invalid = false', function () {
+                var event = { target: { invalid: true }};
+
+                assert.equal(event.target.invalid, true);
+
+                myEl._resetFieldError(event);
+
+                assert.equal(event.target.invalid, false);
+            });
+        });
+
+        describe('_setFileType', function () {
+            it('sets file.file_type property', function () {
+                var e = {
+                    target: {
+                        getAttribute: function() { return 0; }
+                    }
+                };
+                var value = {
+                    selectedValues: {
+                        value: '1'
+                    }
+                };
+
+                myEl.files = [
+                    {file_name: 'name.png', file: 'url'}
+                ];
+
+                myEl._setFileType(e, value);
+
+                assert.equal(myEl.files[0].file_type, '1');
             });
         });
 
