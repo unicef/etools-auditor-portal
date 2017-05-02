@@ -653,8 +653,69 @@
         });
 
         describe('validate', function () {
-            xit('', function () {
-                //TODO: add test
+            it('returns true when fileTypeRequired = false', function () {
+                myEl.fileTypeRequired = false;
+
+                assert.isTrue(myEl.validate());
+                assert.isFalse(myEl.invalid);
+                assert.equal(myEl.errorMessage, '');
+            });
+
+            it('returns true when files.length = 0', function () {
+                myEl.fileTypeRequired = false;
+                myEl.files = [];
+
+                assert.isTrue(myEl.validate());
+                assert.isFalse(myEl.invalid);
+                assert.equal(myEl.errorMessage, '');
+            });
+
+            it('returns false when fileTypes is empty or undefined', function () {
+                myEl.fileTypeRequired = true;
+                myEl.files = [{
+                    file_name: 'name',
+                    raw: new File([''], 'name')
+                }];
+                myEl.fileTypes = [];
+                assert.isFalse(myEl.validate());
+
+                myEl.fileTypes = undefined;
+                assert.isFalse(myEl.validate());
+
+                assert.isTrue(myEl.invalid);
+                assert.notEqual(myEl.errorMessage, '');
+            });
+
+            describe('inner etools-searchable-multiselection-menu validation checks', function () {
+                beforeEach(function () {
+                    myEl.fileTypeRequired = true;
+                    myEl.activateFileTypes = true;
+                    myEl.fileTypes = [{value: 1, display_name: 'Training materials'}];
+                    myEl.files = [{
+                        file_name: 'name',
+                        raw: new File([''], 'name')
+                    }];
+                });
+
+                it('returns false when file type is required but not selected', function (done) {
+                    flush(function () {
+                        assert.equal(myEl.files.length, 1);
+                        assert.equal(myEl.fileTypes.length, 1);
+                        assert.isFalse(myEl.validate());
+                        done();
+                    });
+                });
+
+                it('returns true when all file types selected', function (done) {
+                    myEl.files[0].file_type = 1;
+
+                    flush(function () {
+                        assert.equal(myEl.files.length, 1);
+                        assert.equal(myEl.fileTypes.length, 1);
+                        assert.isTrue(myEl.validate());
+                        done();
+                    });
+                });
             });
         });
 
@@ -716,27 +777,6 @@
                 flush(function () {
                     var fileAreas = Polymer.dom(myEl.root).querySelectorAll('.file-area');
                     assert.equal(fileAreas.length, 2);
-                    done();
-                });
-            });
-        });
-
-        describe('<paper-dropdown-menu>', function () {
-            it('has correct number of <paper-item>', function (done) {
-                myEl.activateFileTypes = true;
-                myEl.readonly = false;
-                myEl.fileTypes = [
-                    {value: '1', display_name: 'Training materials'},
-                    {value: '2', display_name: 'ToRs'},
-                    {value: '3', display_name: 'Other'}
-                ];
-                myEl.files = [
-                    {file_name: 'name.png', type: '1', file: 'url'}
-                ];
-
-                flush(function () {
-                    var paperItems = Polymer.dom(myEl.root).querySelectorAll('paper-item');
-                    assert.equal(paperItems.length, 3);
                     done();
                 });
             });
