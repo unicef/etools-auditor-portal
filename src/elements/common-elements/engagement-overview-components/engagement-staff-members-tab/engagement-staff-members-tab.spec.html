@@ -147,8 +147,8 @@
         });
 
         it('validate return true if staffs are valid', function (done) {
-            myEl.push('dataItems', {first_name: 'Ted', last_name: 'Blosson', email: 'ted@gmail.com'});
-            myEl.push('dataItems', {first_name: 'Rob', last_name: 'Blosson', email: 'rob@gmail.com'});
+            myEl.push('dataItems', {user: {first_name: 'Ted', last_name: 'Blosson', email: 'ted@gmail.com'}});
+            myEl.push('dataItems', {user: {first_name: 'Rob', last_name: 'Blosson', email: 'rob@gmail.com'}});
 
             myEl.addEventListener('dom-change', function() {
                 assert.isTrue(myEl.validate());
