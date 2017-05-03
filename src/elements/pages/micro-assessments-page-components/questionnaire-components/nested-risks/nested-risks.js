@@ -12,9 +12,9 @@ Polymer({
         }
     },
     validate: function() {
-        if (!this.questionnaire.blueprints.length) { return true; }
+        if (!this.questionnaire.blueprints || !this.questionnaire.blueprints.length) { return true; }
 
-        let elements = Polymer.dom(this.root).querySelectorAll('.validatable-element'),
+        let elements = this.getElements('validatable-element'),
             valid = true;
 
         Array.prototype.forEach.call(elements, (element) => {
@@ -24,7 +24,7 @@ Polymer({
         return valid;
     },
     getData: function() {
-        let riskElements = Polymer.dom(this.root).querySelectorAll('.risk'),
+        let riskElements = this.getElements('risk'),
             risks = [];
 
         Array.prototype.forEach.call(riskElements, (element) => {
@@ -38,5 +38,8 @@ Polymer({
                 blueprints: risks
             };
         }
+    },
+    getElements: function(className) {
+        return Polymer.dom(this.root).querySelectorAll(`.${className}`);
     }
 });

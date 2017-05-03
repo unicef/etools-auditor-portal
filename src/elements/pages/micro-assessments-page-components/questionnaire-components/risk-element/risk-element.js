@@ -12,7 +12,7 @@ Polymer({
         },
         index: Number,
         riskOptions: {
-            type: Object,
+            type: Array,
             value: function() {
                 return [
                     {label: 'N/A', value: 0},
@@ -72,6 +72,7 @@ Polymer({
         if (values.answer) {
             this[`answer_${values.answer}`] = true;
         }
+        return true;
     },
 
     setYes: function(newV, oldV) {

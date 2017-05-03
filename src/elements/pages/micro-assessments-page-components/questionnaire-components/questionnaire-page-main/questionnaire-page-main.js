@@ -47,9 +47,9 @@ Polymer({
     },
 
     validate: function() {
-        if (!this.questionnaire.children.length) { return true; }
+        if (!this.questionnaire.children || !this.questionnaire.children.length) { return true; }
 
-        let elements = Polymer.dom(this.root).querySelectorAll('.validatable-tab'),
+        let elements = this.getElements('validatable-tab'),
             valid = true;
 
         Array.prototype.forEach.call(elements, (element) => {
@@ -63,7 +63,7 @@ Polymer({
     },
 
     getData: function() {
-        let elements = Polymer.dom(this.root).querySelectorAll('.risk-tab'),
+        let elements = this.getElements('risk-tab'),
             risks = [];
 
         Array.prototype.forEach.call(elements, (element) => {
@@ -76,6 +76,9 @@ Polymer({
                 children: risks
             };
         }
+    },
 
+    getElements: function(className) {
+        return Polymer.dom(this.root).querySelectorAll(`.${className}`);
     }
 });

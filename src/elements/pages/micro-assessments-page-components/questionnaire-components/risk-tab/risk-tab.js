@@ -61,10 +61,10 @@ Polymer({
     },
 
     validate: function() {
-        let elements = Polymer.dom(this.root).querySelectorAll('.validatable-element'),
+        let elements = this.getElements('validatable-element'),
             valid = true;
 
-        if (!elements.length) { return true; }
+        if (!elements || !elements.length) { return true; }
 
         Array.prototype.forEach.call(elements, (element) => {
             if (!element.validate()) { valid = false; }
@@ -74,7 +74,7 @@ Polymer({
     },
 
     getData: function() {
-        let riskElements = Polymer.dom(this.root).querySelectorAll('.risk'),
+        let riskElements = this.getElements('risk'),
             risks = [];
 
         Array.prototype.forEach.call(riskElements, (element) => {
@@ -82,7 +82,7 @@ Polymer({
             if (data) { risks.push(data); }
         });
 
-        let nestedRiskElements = Polymer.dom(this.root).querySelectorAll('.nested-risk'),
+        let nestedRiskElements = this.getElements('nested-risk'),
             nestedRisks = [];
 
         Array.prototype.forEach.call(nestedRiskElements, (element) => {
@@ -101,6 +101,9 @@ Polymer({
                 children: nestedRisks
             };
         }
+    },
 
+    getElements: function(className) {
+        return Polymer.dom(this.root).querySelectorAll(`.${className}`);
     }
 });
