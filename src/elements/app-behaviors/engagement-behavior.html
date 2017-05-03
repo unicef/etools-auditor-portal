@@ -76,7 +76,7 @@
 
             if (!this.engagement || !attachmentsTab) {  return Promise.reject('You meed engagement object and attachments tab'); }
 
-            let data = _.cloneDeep(this.engagement);
+            let data = _.clone(this.engagement);
 
             data.partner = data.partner.id;
             data.test_subject_areas = {};
@@ -95,6 +95,9 @@
                     type = 'audits';
                     break;
             }
+            if (this.customDataPrepare) {
+                data = this.customDataPrepare(data);
+            }
 
             return attachmentsTab.getFiles()
                     .then((files) => {
@@ -112,7 +115,7 @@
 
         _validateBasicInfo: function(property) {
             let staffMembersValid = this.getElement('#staffMembers').validate(),
-                detailsValid = this.getElement('#engagementDetails').validate();
+                    detailsValid = this.getElement('#engagementDetails').validate();
 
             if (!staffMembersValid || !detailsValid) {
                 this.set(property || 'tab', 'overview');

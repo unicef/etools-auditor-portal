@@ -61,15 +61,46 @@ Polymer({
     },
 
     validate: function() {
-        if (!this.questionnaire.blueprints.length) { return true; }
-
         let elements = Polymer.dom(this.root).querySelectorAll('.validatable-element'),
             valid = true;
+
+        if (!elements.length) { return true; }
 
         Array.prototype.forEach.call(elements, (element) => {
             if (!element.validate()) { valid = false; }
         });
 
         return valid;
+    },
+
+    getData: function() {
+        let riskElements = Polymer.dom(this.root).querySelectorAll('.risk'),
+            risks = [];
+
+        Array.prototype.forEach.call(riskElements, (element) => {
+            let data = element.getData();
+            if (data) { risks.push(data); }
+        });
+
+        let nestedRiskElements = Polymer.dom(this.root).querySelectorAll('.nested-risk'),
+            nestedRisks = [];
+
+        Array.prototype.forEach.call(nestedRiskElements, (element) => {
+            let data = element.getData();
+            if (data) { nestedRisks.push(data); }
+        });
+
+        if (risks.length || nestedRisks.length) {
+            let data = _.clone(this.questionnaire);
+            data.blueprints = risks;
+            data.children = nestedRisks;
+
+            return {
+                id: this.questionnaire.id,
+                blueprints: risks,
+                children: nestedRisks
+            };
+        }
+
     }
 });

@@ -19,11 +19,11 @@
                 <div class="row-h group">
                     <div class="input-container input-container-l">
                         <!-- Question -->
-                        <paper-input class="bold disabled-as-readonly"
-                                     value="[[blueprint.description]]"
-                                     readonly disabled
-                                     label="Question"
-                                     placeholder="&#8212;"></paper-input>
+                        <div class="question-container">
+                            <div class="label">Question</div>
+                            <div id="header">[[blueprint.header]]</div>
+                            <div id="description">[[blueprint.description]]</div>
+                        </div>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="row-h group">
-                    <div class="input-container input-container-l">
+                    <div class="input-container input-container-l comment-container">
                         <!-- Comments -->
                         <paper-textarea label="Comments"
                                         class="disabled-as-readonly"
@@ -65,8 +65,6 @@
                         </paper-textarea>
                     </div>
                 </div>
-
-                <type-of-site-item data-items="{{location.type_of_sites}}"></type-of-site-item>
 
             </div>
         </div>

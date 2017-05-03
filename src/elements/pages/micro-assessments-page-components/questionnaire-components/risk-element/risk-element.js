@@ -46,7 +46,8 @@ Polymer({
     },
 
     observers: [
-        // '_setValues(blueprint.extra)'
+        // '_setValues(blueprint.extra)',
+        '_setQuestionHeader(blueprint.header)'
     ],
 
     _setIndex: function(index) {
@@ -140,5 +141,16 @@ Polymer({
 
     _resetFieldError: function(event) {
         event.target.invalid = false;
+    },
+
+    _setQuestionHeader: function(question) {
+        if (!question) { return; }
+        this.$.header.innerHTML = question;
+    },
+
+    getData: function() {
+        if (!_.isNull(this.blueprint.value)) {
+            return _.clone(this.blueprint);
+        }
     }
 });

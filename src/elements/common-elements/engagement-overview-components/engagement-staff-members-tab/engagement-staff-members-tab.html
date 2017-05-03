@@ -23,61 +23,61 @@
                     </div>
                     <div class="repeatable-item-content">
                         <div class="row-h group">
-                            <div class="input-container" title="{{_getTitleValue(item.title)}}">
+                            <div class="input-container" title="{{_getTitleValue(item.user.profile.job_title)}}">
                                 <!-- Position -->
                                 <paper-input label="Position"
-                                             value="{{item.title}}"
+                                             value="{{item.user.profile.job_title}}"
                                              placeholder="&#8212;"
-                                             disabled$="[[isReadOnly('title', basePermissionPath)]]"
-                                             class$="disabled-as-readonly {{_setRequired('title', basePermissionPath)}}"
-                                             required="{{_setRequired('title', basePermissionPath)}}">
+                                             disabled$="[[isReadOnly('user.profile.job_title', basePermissionPath)]]"
+                                             class$="disabled-as-readonly {{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                             required="{{_setRequired('user.profile.job_title', basePermissionPath)}}">
                                 </paper-input>
                             </div>
-                            <div class="input-container" title="{{_getTitleValue(item.first_name)}}">
+                            <div class="input-container" title="{{_getTitleValue(item.user.first_name)}}">
                                 <!-- First Name -->
                                 <paper-input label="First Name"
-                                             value="{{item.first_name}}"
+                                             value="{{item.user.first_name}}"
                                              placeholder="&#8212;"
-                                             disabled$="[[isReadOnly('first_name', basePermissionPath)]]"
-                                             class$="disabled-as-readonly validate-input {{_setRequired('first_name', basePermissionPath)}}"
-                                             required="{{_setRequired('first_name', basePermissionPath)}}"
+                                             disabled$="[[isReadOnly('user.first_name', basePermissionPath)]]"
+                                             class$="disabled-as-readonly validate-input {{_setRequired('user.first_name', basePermissionPath)}}"
+                                             required="{{_setRequired('user.first_name', basePermissionPath)}}"
                                              on-focus="_resetFieldError"
                                              error-message="First name is required">
                                 </paper-input>
                             </div>
-                            <div class="input-container" title="{{_getTitleValue(item.last_name)}}">
+                            <div class="input-container" title="{{_getTitleValue(item.user.last_name)}}">
                                 <!-- Last Name -->
                                 <paper-input label="Last Name"
-                                             value="{{item.last_name}}"
+                                             value="{{item.user.last_name}}"
                                              placeholder="&#8212;"
-                                             disabled$="[[isReadOnly('last_name', basePermissionPath)]]"
-                                             class$="disabled-as-readonly validate-input {{_setRequired('last_name', basePermissionPath)}}"
-                                             required="{{_setRequired('first_name', basePermissionPath)}}"
+                                             disabled$="[[isReadOnly('user.last_name', basePermissionPath)]]"
+                                             class$="disabled-as-readonly validate-input {{_setRequired('user.last_name', basePermissionPath)}}"
+                                             required="{{_setRequired('user.last_name', basePermissionPath)}}"
                                              on-focus="_resetFieldError"
                                              error-message="Last name is required">
                                 </paper-input>
                             </div>
                         </div>
                         <div class="row-h group">
-                            <div class="input-container" title="{{_getTitleValue(item.phone)}}">
+                            <div class="input-container" title="{{_getTitleValue(item.user.profile.phone_number)}}">
                                 <!-- Phone number -->
                                 <paper-input label="Phone number"
-                                             value="{{item.phone}}"
+                                             value="{{item.user.profile.phone_number}}"
                                              allowed-pattern="[\d]"
                                              placeholder="&#8212;"
-                                             disabled$="[[isReadOnly('phone', basePermissionPath)]]"
-                                             class$="disabled-as-readonly {{_setRequired('phone', basePermissionPath)}}"
-                                             required="{{_setRequired('phone', basePermissionPath)}}">
+                                             disabled$="[[isReadOnly('user.profile.phone_number', basePermissionPath)]]"
+                                             class$="disabled-as-readonly {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
+                                             required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
                                     <iron-icon prefix icon="communication:phone"></iron-icon>
                                 </paper-input>
                             </div>
-                            <div class="input-container" title="{{_getTitleValue(item.email)}}">
+                            <div class="input-container" title="{{_getTitleValue(item.user.email)}}">
                                 <!-- Email address -->
                                 <paper-input label="E-mail address"
-                                             value="{{item.email}}"
+                                             value="{{item.user.email}}"
                                              placeholder="&#8212;"
-                                             disabled$="[[isReadOnly('email', basePermissionPath)]]"
-                                             class$="disabled-as-readonly validate-input {{_setRequired('email', basePermissionPath)}}"
+                                             disabled$="[[isReadOnly('user.email', basePermissionPath)]]"
+                                             class$="disabled-as-readonly validate-input {{_setRequired('user.email', basePermissionPath)}}"
                                              validator="emailValidator"
                                              on-focus="_resetFieldError"
                                              error-message="A valid email address is required">
@@ -90,11 +90,11 @@
                         <div class="row-h group">
                             <!-- Active? -->
                             <div class="staff-check-box active-box input-container">
-                                <etools-checkable-input checked="{{item.active}}"
+                                <etools-checkable-input checked="{{item.user.is_active}}"
                                                         label="Active staff member?"
                                                         type="checkbox"
                                                         label-alignment="right"
-                                                        readonly$="[[isReadOnly('active', basePermissionPath)]]">
+                                                        readonly$="[[isReadOnly('user.is_active', basePermissionPath)]]">
                                 </etools-checkable-input>
                             </div>
                             <!--receive notification-->

@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel]-->
 
-<!--import [module-styles, risk-element]-->
+<!--import [lodash, module-styles, risk-element, nested-risks]-->
 
 <dom-module id="risk-tab">
     <template>
@@ -13,13 +13,18 @@
                                   is-disabled="[[disabled]]"
                                   title="{{questionnaire.header}}"
                                   open="{{opened}}">
+
                 <template is="dom-repeat" items="{{questionnaire.blueprints}}">
 
-                    <risk-element class="validatable-element" blueprint="{{item}}" index="{{index}}" edit-mode="[[editMode]]"></risk-element>
+                    <risk-element class="validatable-element risk" blueprint="{{item}}" index="{{index}}" edit-mode="[[editMode]]"></risk-element>
 
                 </template>
 
+                <template is="dom-repeat" items="{{questionnaire.children}}">
 
+                    <nested-risks class="validatable-element nested-risk" questionnaire="{{item}}" edit-mode="[[editMode]]"></nested-risks>
+
+                </template>
             </etools-content-panel>
 
             <div class="risk-result-container" hidden_results$="[[!showResults(completed, opened)]]">

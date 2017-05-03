@@ -58,5 +58,16 @@ Polymer({
             return false;
         }
         return true;
+    },
+
+    customDataPrepare: function(data) {
+        let questionnaire = Polymer.dom(this.root).querySelector('#questionnaire').getData();
+        if (questionnaire) {
+            data.questionnaire = questionnaire;
+        } else {
+            delete data.questionnaire;
+        }
+
+        return data;
     }
 });

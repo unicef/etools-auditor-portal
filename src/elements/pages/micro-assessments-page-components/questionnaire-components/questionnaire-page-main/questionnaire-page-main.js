@@ -60,5 +60,22 @@ Polymer({
         });
 
         return valid;
+    },
+
+    getData: function() {
+        let elements = Polymer.dom(this.root).querySelectorAll('.risk-tab'),
+            risks = [];
+
+        Array.prototype.forEach.call(elements, (element) => {
+            let data = element.getData();
+            if (data) { risks.push(data); }
+        });
+
+        if (risks.length) {
+            return {
+                children: risks
+            };
+        }
+
     }
 });

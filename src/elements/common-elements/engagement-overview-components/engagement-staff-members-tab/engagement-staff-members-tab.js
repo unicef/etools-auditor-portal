@@ -10,14 +10,19 @@ Polymer({
     properties: {},
 
     ready: function() {
-        this.dataSetModel = {
-            title: '',
-            first_name: '',
-            last_name: '',
-            phone: '',
-            email: '',
-            active: true,
-            notify: false
+        this.dataSetModel =  {
+            id: "",
+            user: {
+                first_name: "",
+                last_name: "",
+                email: "",
+                is_active: true,
+                profile: {
+                    job_title: "",
+                    phone_number: ""
+                }
+            },
+            receive_audit_notifications: false
         };
 
         this.$['email-validator'].validate = this._validEmailAddress.bind(this);
