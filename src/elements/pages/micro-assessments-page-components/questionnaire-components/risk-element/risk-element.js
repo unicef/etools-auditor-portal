@@ -123,10 +123,6 @@ Polymer({
         this.blueprint.extra = JSON.stringify({comments: comments, answer: answer});
     },
 
-    _setRiskAssessment: function(e, value) {
-        this.set('blueprint.value', value.selectedValues.value);
-    },
-
     _setRequired: function(editMode) {
         if (editMode) {
             return 'required';
@@ -149,7 +145,9 @@ Polymer({
     },
 
     getData: function() {
-        if (!_.isNull(this.blueprint.value)) {
+        let selected = this.$.riskAssessmentInput.value;
+        if (selected && selected.value !== this.blueprint.value) {
+            this.blueprint.value = selected.value;
             return _.clone(this.blueprint);
         }
     }
