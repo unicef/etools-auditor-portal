@@ -22,6 +22,67 @@
     describe('<engagement-staff-members-tab>', function () {
         var myEl;
 
+        before(function() {
+            myEl = fixture('element-fixture');
+            myEl.basePermissionPath = 'test';
+            myEl._addToCollection('test', {
+                "staff_members": {
+                    "type": "field",
+                    "required": false,
+                    "read_only": false,
+                    "label": "Staff members",
+                    "child": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": false,
+                        "children": {
+                            "id": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": true,
+                                "label": "ID"
+                            },
+                            "title": {
+                                "type": "string",
+                                "required": true,
+                                "read_only": false,
+                                "label": "Title",
+                                "max_length": 64
+                            }
+                        }
+                    }
+                }
+            });
+            myEl._addToCollection('test2', {
+                "staff_members": {
+                    "type": "field",
+                    "required": false,
+                    "read_only": true,
+                    "label": "Staff members",
+                    "child": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": false,
+                        "children": {
+                            "id": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": true,
+                                "label": "ID"
+                            },
+                            "title": {
+                                "type": "string",
+                                "required": true,
+                                "read_only": false,
+                                "label": "Title",
+                                "max_length": 64
+                            }
+                        }
+                    }
+                }
+            })
+        });
+
         beforeEach(function () {
             myEl = fixture('element-fixture');
             myEl.dataItems = [];
@@ -51,12 +112,16 @@
             assert.isTrue(myEl._notEmpty('Hello'));
         });
 
-        it('return false editMode is false', function () {
-            myEl.editMode = false;
-            assert.isFalse(myEl._canBeRemoved());
+        describe(' _canBeRemoved method', function() {
+            it('return false if staff members readonly permission is true', function () {
+                myEl.basePermissionPath = 'test2';
+                assert.isFalse(myEl._canBeRemoved());
+            });
 
-            myEl.editMode = true;
-            assert.isTrue(myEl._canBeRemoved());
+            it('return true if staff members readonly permission is false', function () {
+                myEl.basePermissionPath = 'test';
+                assert.isTrue(myEl._canBeRemoved());
+            });
         });
 
         it('validate email', function () {
@@ -110,8 +175,10 @@
         });
 
         it('return required class if edit mode is on', function () {
-            assert.equal(myEl._setRequired(true), 'required');
-            assert.equal(myEl._setRequired(), '')
+            myEl.basePermissionPath = 'test';
+            assert.equal(myEl._setRequired('title'), 'required');
+            assert.equal(myEl._setRequired(), false);
+            assert.equal(myEl._setRequired('not_found'), false);
         });
 
         it('reset field error', function () {

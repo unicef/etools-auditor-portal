@@ -1,6 +1,6 @@
 <!--import [polymer, app-route, paper-tabs, iron-pages, app-route/app-location, lodash]-->
 <!--import [shared-styles, module-styles, pages-header-element, file-attachments-tab, last-created-behavior,
-            status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement]-->
+            status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement, engagement-behavior]-->
 
 <dom-module id="new-engagement-view">
     <template>
@@ -36,10 +36,12 @@
                             attr-for-selected="name">
 
                     <div name="overview">
-                        <engagement-info-details data="{{engagement}}" id="engagementDetails"></engagement-info-details>
+                        <engagement-info-details data="{{engagement}}" id="engagementDetails" base-permission-path="new_engagement"></engagement-info-details>
 
                         <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
-                            <engagement-staff-members-tab id="staffMembers"  data-items="{{engagement.staff_members}}" edit-mode="[[_allowEdit()]]"></engagement-staff-members-tab>
+                            <engagement-staff-members-tab id="staffMembers"
+                                                          base-permission-path="new_engagement"
+                                                          data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
                         </etools-content-panel>
                     </div>
 

@@ -1,0 +1,101 @@
+<!--import [lodash]-->
+<script>
+    'use strict';
+    (function () {
+        var _permissionCollection = {};
+
+        window.APBehaviors = window.APBehaviors || {};
+        window.APBehaviors.PermissionController = {
+            _addToCollection: function(collectionName, data) {
+                //check arguments
+                if (!collectionName || !data) {
+                    console.warn('collectionName and data arguments must be provided!');
+                    return false;
+                }
+                if (typeof collectionName !== 'string') {
+                    console.warn('collectionName must be a string');
+                    return false;
+                }
+                if (typeof data !== 'object' || typeof data.forEach === 'function') {
+                    console.warn('data must be an object');
+                    return false;
+                }
+
+                //check existance
+                if (_permissionCollection[collectionName]) { return false; }
+
+                _permissionCollection[collectionName] = data;
+
+                return true;
+            },
+
+            _updateCollection: function(collectionName, data) {
+                if (!_permissionCollection[collectionName]) {
+                    console.warn(`Collection ${collectionName} does not exist!`);
+                    return false;
+                }
+                if (typeof data !== 'object' || typeof data.forEach === 'function') {
+                    console.warn('data must be an object');
+                    return false;
+                }
+
+                _permissionCollection[collectionName] = data;
+                return true;
+            },
+
+            getFieldAttribute: function(path, attribute) {
+                if (!path || !attribute) { throw new Error('path and attribute arguments must be provided'); }
+                if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
+                if (typeof attribute !== 'string') { throw new Error('attribute argument must be a string'); }
+
+                let value = this._getCollection(path);
+
+                if (value) { value = value[attribute]; }
+
+                return value === undefined ? null : value;
+
+            },
+
+            isReadonly: function(path) {
+                return this.getFieldAttribute(path, 'read_only');
+            },
+
+            isRequired: function(path) {
+                return this.getFieldAttribute(path, 'required');
+            },
+
+            collectionExists: function(path) {
+                if (!path) { throw new Error('path argument must be provided'); }
+                if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
+
+                return this._getCollection(path) !== undefined;
+            },
+
+            getChoices: function(path) {
+                return this.getFieldAttribute(path, 'choices');
+            },
+
+            _getCollection: function(path) {
+                path = path.split('.');
+
+                let value = _permissionCollection;
+
+                while (path.length) {
+                    let key = path.shift();
+                    if (value[key]) {
+                        value = value[key];
+                    } else {
+                        value = value.child || value.children;
+                        path.unshift(key);
+                    }
+
+                    if (!value) { break; }
+                }
+
+                return value;
+            }
+        };
+    })()
+
+
+</script>

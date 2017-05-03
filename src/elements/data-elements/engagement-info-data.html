@@ -1,12 +1,19 @@
-<!--import [polymer, etools-ajax, lodash, last-created-behavior]-->
+<!--import [polymer, etools-ajax, lodash, last-created-behavior, permission-controller]-->
 
 <dom-module id="engagement-info-data">
 
     <template>
 
         <etools-ajax endpoint="[[endpoint]]"
-                     on-success="_handleResponse"
+                     on-success="_handleDataResponse"
                      on-fail="_handleError"></etools-ajax>
+
+        <etools-ajax method="OPTIONS"
+                     url="[[optionsUrl]]"
+                     on-success="_handleOptionsResponse"
+                     on-fail="_handleOptionsResponse"></etools-ajax>
+
+
     </template>
 
     <script>
@@ -18,7 +25,8 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
-                APBehaviors.LastCreatedController
+                APBehaviors.LastCreatedController,
+                APBehaviors.PermissionController
             ],
 
             properties: {
@@ -32,12 +40,34 @@
                     type: Object,
                     notify: true
                 },
-                lastId: Number
+                lastId: Number,
+                requestsCompleted: {
+                    type: Object,
+                    value: {}
+                }
             },
 
+            _handleDataResponse: function(data) {
+                this.responseData = data.detail;
+                this.requestsCompleted.data = true;
+                this._handleResponse(this.responseData);
+            },
+
+            _handleOptionsResponse: function(data) {
+                if (data.detail && data.detail.actions && data.detail.actions.PUT) {
+                    this._addToCollection(`engagement_${this.engagementId}`, data.detail.actions.PUT);
+                } else {
+                    console.error('Can not load permissions for engagement');
+                }
+
+                this.requestsCompleted.options = true;
+                this._handleResponse(this.responseData);
+            },
 
             _handleResponse: function (data) {
-                if (data) { this.engagementInfo = data.detail; }
+                if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
+
+                if (data) { this.engagementInfo = data; }
                 this.fire('global-loading', {type: 'engagement-info'});
                 this.fire('engagement-info-loaded');
                 this.engagementId = null;
@@ -60,15 +90,23 @@
 
                 this.lastId = id;
                 this.engagementInfo = {};
+                this.requestsCompleted = {};
 
+                this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
                 let lastCreated = this.getLastEngagementData(id);
                 if (lastCreated) {
-                    this._handleResponse({detail: lastCreated});
+                    this._handleDataResponse({detail: lastCreated});
+                    this.optionsUrl = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType}).url;
                     return;
                 }
 
-                this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
                 this.endpoint = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType});
+
+                if (this.collectionExists(`engagement_${id}`)) {
+                    this.requestsCompleted.options = true;
+                } else {
+                    this.optionsUrl = this.endpoint.url;
+                }
             }
 
         });

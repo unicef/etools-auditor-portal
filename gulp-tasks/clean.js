@@ -14,15 +14,28 @@ const del = require('del');
 
 // Returns a Promise to delete a directory
 function clean() {
-  return del(global.config.build.rootDirectory, {
-    force: true
-  });
+  return del(
+    [
+      global.config.build.rootDirectory + '/**',
+      '!' + global.config.build.rootDirectory
+    ],
+    {
+      force: true
+    }
+  );
 }
 
 function fullClean() {
-  return del([global.config.build.rootDirectory, global.config.build.templateDirectory], {
-    force: true
-  });
+  return del(
+    [
+      global.config.build.rootDirectory + '/**',
+      '!' + global.config.build.rootDirectory,
+      global.config.build.templateDirectory
+    ],
+    {
+      force: true
+    }
+  );
 }
 
 module.exports = {

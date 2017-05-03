@@ -22,6 +22,25 @@
     describe('<engagement-info-details>', function () {
         var myEl, partnerInput, auditTypeInput, numberInput;
 
+        before(function() {
+            myEl = fixture('element-fixture');
+            myEl.basePermissionPath = 'test';
+            myEl._addToCollection('test', {
+                "id": {
+                    "type": "integer",
+                    "required": false,
+                    "read_only": true,
+                    "label": "ID"
+                },
+                "agreement": {
+                    "type": "field",
+                    "required": true,
+                    "read_only": false,
+                    "label": "Agreement"
+                }
+            });
+        });
+
         beforeEach(function () {
             myEl = fixture('element-fixture');
             numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
@@ -31,7 +50,7 @@
 
         it('update styles', function () {
             sinon.spy(myEl, "updateStyles");
-            myEl._editModeChanged();
+            myEl._basePathChanged();
             assert.isTrue(myEl.updateStyles.called);
             myEl.updateStyles.restore();
         });
@@ -69,8 +88,11 @@
         });
 
         it('return required class if edit mode on', function () {
-            assert.equal(myEl._setRequired(true), 'required');
-            assert.isUndefined(myEl._setRequired());
+
+            myEl.basePermissionPath = 'test';
+            assert.equal(myEl._setRequired('agreement'), 'required');
+            assert.equal(myEl._setRequired(), false);
+            assert.equal(myEl._setRequired('not_found'), false);
         });
 
         it('get audit type dropdown object value', function () {

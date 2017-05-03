@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [permission-controller]-->
+</head>
+<body>
+
+<script>
+
+    describe('Permission controller element', function () {
+        var behaviorObj;
+        var test_data = {
+            "id": {
+                "type": "integer",
+                "required": false,
+                "read_only": true,
+                "label": "ID"
+            },
+            "agreement": {
+                "type": "field",
+                "required": true,
+                "read_only": false,
+                "label": "Agreement",
+                "choices": [
+                    {
+                        "display_name": "Partner Contacted",
+                        "value": "partner_contacted"
+                    },
+                    {
+                        "display_name": "Field Visit",
+                        "value": "field_visit"
+                    }
+                ]
+            },
+            "staff_members": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Staff members",
+                "child": {
+                    "type": "nested object",
+                    "required": false,
+                    "read_only": false,
+                    "children": {
+                        "id": {
+                            "type": "integer",
+                            "required": false,
+                            "read_only": true,
+                            "label": "ID"
+                        },
+                        "title": {
+                            "type": "string",
+                            "required": true,
+                            "read_only": false,
+                            "label": "Title",
+                            "max_length": 64
+                        }
+                    }
+                }
+            }
+        };
+
+        beforeEach(function () {
+            behaviorObj = APBehaviors.PermissionController;
+        });
+
+        describe('method _addToCollection', function() {
+            it('is defined', function () {
+                assert.isDefined(behaviorObj._addToCollection);
+            });
+
+            it('must have two arguments', function () {
+                assert.isFalse(behaviorObj._addToCollection('test'));
+                assert.isFalse(behaviorObj._addToCollection());
+                assert.isTrue(behaviorObj._addToCollection('two_arguments', {}));
+            });
+
+            it('accept only object as second argument', function() {
+                assert.isFalse(behaviorObj._addToCollection('only_object', []));
+                assert.isFalse(behaviorObj._addToCollection('only_object', ''));
+                assert.isTrue(behaviorObj._addToCollection('only_object', {}));
+            });
+
+            it('return false if first argument is not string or not provided', function() {
+                assert.isFalse(behaviorObj._addToCollection([], {}));
+                assert.isFalse(behaviorObj._addToCollection(undefined, {}));
+                assert.isFalse(behaviorObj._addToCollection(234, {}));
+                assert.isTrue(behaviorObj._addToCollection('only_string', {}));
+            });
+
+            it('add data to store', function() {
+                assert.isTrue(behaviorObj._addToCollection('first_test_data', {key: 'value'}));
+            });
+
+            it('do not add data if collection already exist', function() {
+                assert.isTrue(behaviorObj._addToCollection('single_data', {}));
+                assert.isFalse(behaviorObj._addToCollection('single_data', {}));
+            });
+        });
+
+        describe('_updateCollection method', function() {
+            it('update existed collection', function() {
+                assert.isTrue(behaviorObj._addToCollection('existed', {}));
+                assert.isTrue(behaviorObj._updateCollection('existed', {test: 'test'}));
+            });
+
+            it('return false if collection is not exist', function() {
+                assert.isFalse(behaviorObj._updateCollection('not_existed', {test: 'test'}));
+            });
+
+            it('accept only object as second argument', function() {
+                assert.isTrue(behaviorObj._addToCollection('update', {}));
+
+                assert.isFalse(behaviorObj._updateCollection('update', []));
+                assert.isFalse(behaviorObj._updateCollection('update', ''));
+                assert.isTrue(behaviorObj._updateCollection('update', {}));
+            });
+        });
+
+        describe('getFieldAttribute method', function() {
+            before(function () {
+                behaviorObj._addToCollection('test', test_data);
+            });
+
+            beforeEach(function () {
+                behaviorObj._updateCollection('test', test_data);
+            });
+
+            it('return field attribute', function() {
+                assert.isTrue(behaviorObj.getFieldAttribute('test.id', 'read_only'));
+                assert.equal(behaviorObj.getFieldAttribute('test.agreement', 'type'), 'field');
+            });
+
+            it('accept nested path', function() {
+                assert.equal(behaviorObj.getFieldAttribute('test.staff_members.child.children.id', 'type'), 'integer');
+            });
+
+            it('throw an exception if arguments are not provided', function() {
+                var first = behaviorObj.getFieldAttribute.bind(behaviorObj, undefined, 'id'),
+                    second = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id'),
+                    third = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id', 'read_only');
+
+                assert.throws(first);
+                assert.throws(second);
+                assert.doesNotThrow(third);
+            });
+
+            it('return null if collection, field or attribute does not exists', function() {
+                assert.isNull(behaviorObj.getFieldAttribute('test_not_found', 'read_only'));
+                assert.isNull(behaviorObj.getFieldAttribute('test.id', 'not_found'));
+                assert.isNull(behaviorObj.getFieldAttribute('test.npt_found.id', 'read_only'));
+            });
+
+            it('accept only string arguments', function() {
+                var first = behaviorObj.getFieldAttribute.bind(behaviorObj, [], 'id'),
+                    second = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id', 23490),
+                    third = behaviorObj.getFieldAttribute.bind(behaviorObj, 'test.id', {});
+
+                assert.throws(first);
+                assert.throws(second);
+                assert.throws(third);
+            });
+
+            it('look for fields in child objects if needed', function() {
+                assert.equal(behaviorObj.getFieldAttribute('test.staff_members.id', 'type'), 'integer');
+                assert.isTrue(behaviorObj.getFieldAttribute('test.staff_members.title', 'required'));
+                assert.isFalse(behaviorObj.getFieldAttribute('test.staff_members.title', 'read_only'));
+            });
+        });
+
+        it('use isReadonly method to check read_only attribute', function() {
+            behaviorObj._addToCollection('test', test_data);
+            behaviorObj._updateCollection('test', test_data);
+
+            assert.isFalse(behaviorObj.isReadonly('test.staff_members.title'));
+            assert.isTrue(behaviorObj.isReadonly('test.staff_members.id'));
+            assert.isFalse(behaviorObj.isReadonly('test.agreement'));
+            assert.isNull(behaviorObj.isReadonly('test.agreement.not_found'));
+        });
+
+        it('use isRequired method to check required attribute', function() {
+            behaviorObj._addToCollection('test', test_data);
+            behaviorObj._updateCollection('test', test_data);
+
+            assert.isTrue(behaviorObj.isRequired('test.staff_members.title'));
+            assert.isFalse(behaviorObj.isRequired('test.staff_members.id'));
+            assert.isTrue(behaviorObj.isRequired('test.agreement'));
+            assert.isNull(behaviorObj.isRequired('test.agreement.not_found'));
+        });
+
+        it('check existence of path fields with collectionExists method', function() {
+            assert.isFalse(behaviorObj.collectionExists('test.staff_members.id.test'));
+            assert.isTrue(behaviorObj.collectionExists('test.staff_members.title'));
+            assert.isTrue(behaviorObj.collectionExists('test'));
+            assert.isFalse(behaviorObj.collectionExists('test_not_found'));
+        });
+
+        it('get choices for fields using getChoices method', function() {
+            assert.deepEqual(behaviorObj.getChoices('test.agreement'), test_data.agreement.choices);
+            assert.isNull(behaviorObj.getChoices('test.not_found_choices'))
+        })
+
+    });
+</script>
+
+</body>
+</html>

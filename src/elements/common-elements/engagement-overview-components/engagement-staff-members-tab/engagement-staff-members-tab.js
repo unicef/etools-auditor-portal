@@ -4,7 +4,8 @@ Polymer({
     is: 'engagement-staff-members-tab',
 
     behaviors: [
-        APBehaviors.RepeatableDataSetsBehavior
+        APBehaviors.RepeatableDataSetsBehavior,
+        APBehaviors.PermissionController
     ],
     properties: {},
 
@@ -23,8 +24,12 @@ Polymer({
     },
 
     _canBeRemoved: function() {
-        return this.editMode;
+        if (!this.basePermissionPath) { return true; }
 
+        let readOnly = this.isReadonly(`${this.basePermissionPath}.staff_members`);
+        if (readOnly === null) { readOnly = true; }
+
+        return !readOnly;
     },
 
     _validEmailAddress: function(emailAddress) {
@@ -49,7 +54,7 @@ Polymer({
     },
 
     _addNewStaffMember: function() {
-        if (this.editMode) {
+        if (this._canBeRemoved()) {
             var lastStaffMemberAdded = this.dataItems[this.dataItems.length - 1];
             if (lastStaffMemberAdded &&
                 !this._notEmpty(lastStaffMemberAdded.title) &&
@@ -66,16 +71,24 @@ Polymer({
 
     _getTitleValue: function(value) { return value || ''; },
 
-    _setRequired: function(editMode) {
-        if (editMode) {
-            return 'required';
-        } else {
-            return '';
-        }
+    _setRequired: function(field) {
+        if (!this.basePermissionPath) { return false; }
+
+        let required = this.isRequired(`${this.basePermissionPath}.staff_members.${field}`);
+
+        return required ? 'required' : false;
     },
 
     _resetFieldError: function(event) {
         event.target.invalid = false;
+    },
+    isReadOnly: function(field) {
+        if (!this.basePermissionPath) { return true; }
+
+        let readOnly = this.isReadonly(`${this.basePermissionPath}.staff_members.${field}`);
+        if (readOnly === null) { readOnly = true; }
+
+        return readOnly;
     }
 
 });

@@ -26,7 +26,7 @@ Polymer({
     _getStatusNumber: function(status) {
         return ['partner_contacted', 'field_visit', 'draft_issued_to_partner',
                 'comments_received_by_partner', 'draft_issued_to_unicef',
-                'comments_received_by_unicef', 'final'].indexOf(status) + 1;
+                'comments_received_by_unicef', 'report_submitted', 'final'].indexOf(status) + 1;
     },
     closeMenu: function() {
         this.statusBtnMenuOpened = false;
