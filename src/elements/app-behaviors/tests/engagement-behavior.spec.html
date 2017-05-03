@@ -351,20 +351,34 @@
             });
 
             describe('method _validateBasicInfo', function() {
-                it('return true if staffMembers and engagementDetails are valid', function() {
+                it('return true if staffMembers, engagementDetails and attachments are valid', function() {
                     sinon.stub(behaviorObj, 'getElement').returns({validate: function() { return true; }});
                     assert.isTrue(behaviorObj._validateBasicInfo());
                 });
 
-                it('return false if staffMembers or engagementDetails aren\'t valid', function() {
+                it('return false if staffMembers, engagementDetails or attachments aren\'t valid', function() {
                     var stub = sinon.stub(behaviorObj, 'getElement');
                     stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
                     stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
+                    stub.withArgs('#attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
                     behaviorObj.fire = sinon.spy();
 
                     assert.isFalse(behaviorObj._validateBasicInfo());
                     assert.isTrue(behaviorObj.set.calledWith('tab', 'overview'));
+                    assert.equal(behaviorObj.fire.args[0].length, 2);
+                });
+
+                it('sets attachments tab if staffMembers and engagementDetails is valid but attachments aren\'t valid', function() {
+                    var stub = sinon.stub(behaviorObj, 'getElement');
+                    stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
+                    stub.withArgs('#engagementDetails').returns({validate: function() { return true; }});
+                    stub.withArgs('#attachments').returns({validate: function() { return false; }});
+                    behaviorObj.set = sinon.spy();
+                    behaviorObj.fire = sinon.spy();
+
+                    assert.isFalse(behaviorObj._validateBasicInfo());
+                    assert.isTrue(behaviorObj.set.calledWith('tab', 'attachments'));
                     assert.equal(behaviorObj.fire.args[0].length, 2);
                 });
 
