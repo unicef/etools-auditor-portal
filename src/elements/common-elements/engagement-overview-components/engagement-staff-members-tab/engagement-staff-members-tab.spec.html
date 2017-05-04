@@ -137,15 +137,6 @@
             assert.isTrue(myEl.validate());
         });
 
-        it('validate return false if staffs are not valid', function (done) {
-            myEl.push('dataItems', {});
-
-            myEl.addEventListener('dom-change', function() {
-                assert.isFalse(myEl.validate());
-                myEl.debounce('done', done, 0);
-            }, false);
-        });
-
         it('validate return true if staffs are valid', function (done) {
             myEl.push('dataItems', {user: {first_name: 'Ted', last_name: 'Blosson', email: 'ted@gmail.com'}});
             myEl.push('dataItems', {user: {first_name: 'Rob', last_name: 'Blosson', email: 'rob@gmail.com'}});
@@ -169,7 +160,7 @@
             myEl._addNewStaffMember();
             assert.equal(myEl.dataItems.length, 1);
 
-            myEl.dataItems[0].first_name = 'test_name';
+            myEl.dataItems[0].user.first_name = 'test_name';
             myEl._addNewStaffMember();
             assert.equal(myEl.dataItems.length, 2);
         });

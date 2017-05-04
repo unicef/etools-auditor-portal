@@ -22,7 +22,7 @@ Polymer({
                 }, {
                     label: 'Audit',
                     link: 'audits',
-                    value: 'a'
+                    value: 'audit'
                 }, {
                     label: 'Spot Check',
                     link: 'spot-checks',

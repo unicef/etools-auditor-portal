@@ -1,10 +1,84 @@
-<!--import [polymer]-->
+<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash, etools-content-panel]-->
+
+<!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
+            update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
+            engagement-info-data, engagement-behavior]-->
 
 <dom-module id="audits-page-main">
     <template>
-        <!-- inject styles './audits-page-main.scss'-->
+        <style include="shared-styles module-styles main-page-styles">
+            .view-container {
+                display: flex;
+                padding: 15px;
+            }
+        </style>
 
-        Audits Page
+        <app-route
+                route="{{route}}"
+                pattern="/:id/:tab"
+                data="{{routeData}}"></app-route>
+
+        <engagement-info-data engagement-id="{{engagementId}}"
+                              engagement-type="audits"
+                              engagement-info="{{engagement}}"></engagement-info-data>
+
+        <update-engagement updated-engagement-data="{{updatedEngagement}}" engagement="{{engagement}}"></update-engagement>
+
+
+        <template is="dom-if" if="{{engagement.id}}" restamp>
+            <pages-header-element show-export-button
+                                  hide-print-button
+                                  title="Audit"></pages-header-element>
+            <div class="tab-selector">
+                <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
+                            selected="{{tab}}" id="pageTabs">
+                    <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
+                    <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
+                    <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
+                </paper-tabs>
+            </div>
+
+            <div class="view-container">
+                <div id="pageContent">
+                    <iron-pages id="info-tabs"
+                                selected="{{tab}}"
+                                attr-for-selected="name">
+
+                        <div name="overview">
+                            <engagement-info-details data="{{engagement}}"
+                                                     id="engagementDetails"
+                                                     base-permission-path="{{permissionBase}}"></engagement-info-details>
+
+                            <etools-content-panel
+                                    title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
+                                    show-expand-btn>
+                                <engagement-staff-members-tab id="staffMembers"
+                                                              base-permission-path="{{permissionBase}}"
+                                                              data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
+                            </etools-content-panel>
+                        </div>
+
+                        <div name="report">Report</div>
+
+
+                        <div name="attachments">
+                            <file-attachments-tab title="Attachments"
+                                                  id="attachments"
+                                                  allow-download allow-delete file-type-required
+                                                  files="{{engagement.attachments}}"></file-attachments-tab>
+                        </div>
+
+                    </iron-pages>
+
+                </div>
+
+                <div id="sidebar">
+                    <status-tab-element engagement-data="[[engagement]]" main-action-text="Submit"
+                                        other-actions="{{otherActions}}"></status-tab-element>
+                </div>
+            </div>
+        </template>
+
     </template>
 
     <!-- inject scripts './audits-page-main.js'-->

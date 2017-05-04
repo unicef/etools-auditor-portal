@@ -79,6 +79,7 @@
                                              disabled$="[[isReadOnly('user.email', basePermissionPath)]]"
                                              class$="disabled-as-readonly validate-input {{_setRequired('user.email', basePermissionPath)}}"
                                              validator="emailValidator"
+                                             required="{{_setRequired('user.email', basePermissionPath)}}"
                                              on-focus="_resetFieldError"
                                              error-message="A valid email address is required">
                                     <iron-icon prefix icon="communication:email"></iron-icon>
