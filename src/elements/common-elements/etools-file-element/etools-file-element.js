@@ -7,10 +7,6 @@
         is: 'etools-file-element',
 
         properties: {
-            label: {
-                type: String,
-                value: 'File attachment'
-            },
             files: {
                 type: Object,
                 value: function() {
@@ -77,6 +73,10 @@
                     return [];
                 }
             },
+            fileTypeRequired: {
+                type: Boolean,
+                value: false
+            },
             fileTypesLabel: {
                 type: String,
                 value: 'File Type'
@@ -110,35 +110,26 @@
             '_filesChange(files.*)'
         ],
         ready: function() {
-            if (this.multiple && this.label === 'File attachment') {
-                this.set('label', this.label + '(s)');
-            }
             if (!Array.isArray(this.files)) {
                 this.files = [];
             }
         },
-        _showFileType: function(fileTypesLength, readonly) {
-            return this.activateFileTypes && fileTypesLength > 0 && readonly === false;
+        _showReadonlyType: function(readonly, fileTypesLength) {
+            return readonly || fileTypesLength <= 0;
         },
-        _showReadonlyType: function(readonly) {
-            return readonly && this.activateFileTypes;
-        },
-        _getFileTypeStr: function(fileType) {
+        _getFileType: function(fileType) {
             if (this.fileTypes.length > 0) {
                 let type = this.fileTypes.filter(function(type) {
                     return parseInt(type.value, 10) === parseInt(fileType, 10);
                 })[0];
                 if (type) {
-                    return type.display_name;
+                    return type;
                 }
                 return null;
             }
             return null;
         },
 
-        _showLabel: function(label) {
-            return typeof label === 'string' && label !== '';
-        },
         _showUploadBtn: function(filesLength, readonly) {
             if (readonly === true) {
                 return false;
@@ -401,6 +392,10 @@
             return '';
         },
 
+        _getFileTypeRequiredClass: function() {
+            return this.fileTypeRequired ? 'required' : '';
+        },
+
         _getUploadedFile: function(fileModel) {
             return new Promise((resolve, reject) => {
                 let reader = new FileReader();
@@ -442,6 +437,44 @@
                         reject(error);
                     });
             });
+        },
+
+        validate: function() {
+            if (!this.fileTypeRequired || (this.files  && this.files.length === 0)) {
+                this.invalid = false;
+                this.errorMessage = '';
+                return true;
+            }
+
+            if (!this.fileTypes || !this.fileTypes.length) {
+                this.invalid = true;
+                this.errorMessage = 'File type field is required but types are not defined';
+                return false;
+            }
+
+            let dropdowns = Polymer.dom(this.root).querySelectorAll('etools-searchable-multiselection-menu');
+            let dropdownsLength = dropdowns.length;
+            let isValid = true;
+
+            for (let i = 0; i < dropdownsLength; i++) {
+                if (!dropdowns[i].validate()) {
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        },
+
+        _resetFieldError: function(event) {
+            event.target.invalid = false;
+        },
+
+        _setFileType: function(e, value) {
+            let index = e.target.getAttribute('data-index');
+
+            if (value.selectedValues) {
+                this.set(`files.${index}.file_type`, value.selectedValues.value);
+            }
         }
 
     });

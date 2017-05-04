@@ -10,6 +10,10 @@ Polymer({
                 return [];
             }
         },
+        fileTypeRequired: {
+            type: Boolean,
+            value: false
+        },
         files: {
             type: Array,
             value: function() {
@@ -49,5 +53,8 @@ Polymer({
     _hideEmptyState: function(length) { return length > 0;},
     getFiles: function() {
         return this.$.filesElement.getFiles();
+    },
+    validate: function() {
+        return this.$.filesElement.validate();
     }
 });

@@ -24,53 +24,20 @@
             myEl = fixture('etools-file-element-fixture');
         });
 
-        describe('_showFileType', function () {
-            it('returns true when fileTypesLength > 0, readonly is false and activateFileTypes is true', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showFileType(1, false), true);
-            });
-
-            it('returns false when fileTypesLength = 0', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showFileType(0, false), false);
-            });
-
-            it('returns false when readonly is true', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showFileType(1, true), false);
-            });
-
-            it('returns false when activateFileTypes is false', function () {
-                myEl.activateFileTypes = false;
-
-                assert.equal(myEl._showFileType(1, false), false);
-            });
-        });
-
         describe('_showReadonlyType', function () {
-            it('returns true when readonly and activateFileTypes is true', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showReadonlyType(true), true);
+            it('returns true when readonly is true or fileTypesLength <= 0', function () {
+                assert.equal(myEl._showReadonlyType(true, 1), true);
+                assert.equal(myEl._showReadonlyType(true, 0), true);
+                assert.equal(myEl._showReadonlyType(false, 0), true);
+                assert.equal(myEl._showReadonlyType(false, -1), true);
             });
 
-            it('returns false when readonly is false', function () {
-                myEl.activateFileTypes = true;
-
-                assert.equal(myEl._showReadonlyType(false), false);
-            });
-
-            it('returns false when activateFileTypes is false', function () {
-                myEl.activateFileTypes = false;
-
-                assert.equal(myEl._showReadonlyType(true), false);
+            it('returns false when readonly is false and fileTypesLength > 0', function () {
+                assert.equal(myEl._showReadonlyType(false, 1), false);
             });
         });
 
-        describe('_getFileTypeStr', function () {
+        describe('_getFileType', function () {
             beforeEach(function () {
                 var fileTypes = [
                     {value: 1, display_name: 'Training materials'},
@@ -84,29 +51,19 @@
             it('returns null when fileTypes Array is empty', function () {
                 myEl.fileTypes = [];
 
-                assert.isNull(myEl._getFileTypeStr('1'));
+                assert.isNull(myEl._getFileType('1'));
             });
 
             it('returns null when fileType is not found', function () {
-                assert.isNull(myEl._getFileTypeStr('4'));
+                assert.isNull(myEl._getFileType('4'));
             });
 
-            it('returns type name', function () {
-                assert.equal(myEl._getFileTypeStr('3'), myEl.fileTypes[2].display_name);
-            });
-        });
+            it('returns file type', function () {
+                var fileType = myEl._getFileType('3');
 
-        describe('_showLabel', function () {
-            it('returns true when label is not empty String', function () {
-                assert.equal(myEl._showLabel('label'), true);
-            });
-
-            it('returns false when label is empty String', function () {
-                assert.equal(myEl._showLabel(''), false);
-            });
-
-            it('returns false when label is not String', function () {
-                assert.equal(myEl._showLabel(null), false);
+                assert.isObject(fileType);
+                assert.equal(fileType.display_name, myEl.fileTypes[2].display_name);
+                assert.equal(fileType.value, myEl.fileTypes[2].value);
             });
         });
 
@@ -631,6 +588,21 @@
             });
         });
 
+        describe('_getFileTypeRequiredClass', function () {
+            it('returns String "required"', function () {
+                myEl.fileTypeRequired = true;
+
+                assert.equal(myEl._getFileTypeRequiredClass(), 'required');
+            });
+
+            it('returns empty String', function () {
+                myEl.fileTypeRequired = false;
+
+                assert.equal(myEl._getFileTypeRequiredClass(), '');
+            });
+        });
+
+
         describe('_getUploadedFile', function () {
             it('Promise resolves an Object', function () {
                 var fileModel = {
@@ -680,6 +652,108 @@
             });
         });
 
+        describe('validate', function () {
+            it('returns true when fileTypeRequired = false', function () {
+                myEl.fileTypeRequired = false;
+
+                assert.isTrue(myEl.validate());
+                assert.isFalse(myEl.invalid);
+                assert.equal(myEl.errorMessage, '');
+            });
+
+            it('returns true when files.length = 0', function () {
+                myEl.fileTypeRequired = false;
+                myEl.files = [];
+
+                assert.isTrue(myEl.validate());
+                assert.isFalse(myEl.invalid);
+                assert.equal(myEl.errorMessage, '');
+            });
+
+            it('returns false when fileTypes is empty or undefined', function () {
+                myEl.fileTypeRequired = true;
+                myEl.files = [{
+                    file_name: 'name',
+                    raw: new File([''], 'name')
+                }];
+                myEl.fileTypes = [];
+                assert.isFalse(myEl.validate());
+
+                myEl.fileTypes = undefined;
+                assert.isFalse(myEl.validate());
+
+                assert.isTrue(myEl.invalid);
+                assert.notEqual(myEl.errorMessage, '');
+            });
+
+            describe('inner etools-searchable-multiselection-menu validation checks', function () {
+                beforeEach(function () {
+                    myEl.fileTypeRequired = true;
+                    myEl.activateFileTypes = true;
+                    myEl.fileTypes = [{value: 1, display_name: 'Training materials'}];
+                    myEl.files = [{
+                        file_name: 'name',
+                        raw: new File([''], 'name')
+                    }];
+                });
+
+                it('returns false when file type is required but not selected', function (done) {
+                    flush(function () {
+                        assert.equal(myEl.files.length, 1);
+                        assert.equal(myEl.fileTypes.length, 1);
+                        assert.isFalse(myEl.validate());
+                        done();
+                    });
+                });
+
+                it('returns true when all file types selected', function (done) {
+                    myEl.files[0].file_type = 1;
+
+                    flush(function () {
+                        assert.equal(myEl.files.length, 1);
+                        assert.equal(myEl.fileTypes.length, 1);
+                        assert.isTrue(myEl.validate());
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe('_resetFieldError', function () {
+            it('sets target attribute invalid = false', function () {
+                var event = { target: { invalid: true }};
+
+                assert.equal(event.target.invalid, true);
+
+                myEl._resetFieldError(event);
+
+                assert.equal(event.target.invalid, false);
+            });
+        });
+
+        describe('_setFileType', function () {
+            it('sets file.file_type property', function () {
+                var e = {
+                    target: {
+                        getAttribute: function() { return 0; }
+                    }
+                };
+                var value = {
+                    selectedValues: {
+                        value: '1'
+                    }
+                };
+
+                myEl.files = [
+                    {file_name: 'name.png', file: 'url'}
+                ];
+
+                myEl._setFileType(e, value);
+
+                assert.equal(myEl.files[0].file_type, '1');
+            });
+        });
+
         describe('.files-wrapper', function () {
             var files = [
                 {file_name: 'name.png', type: '1', file: 'url'},
@@ -703,27 +777,6 @@
                 flush(function () {
                     var fileAreas = Polymer.dom(myEl.root).querySelectorAll('.file-area');
                     assert.equal(fileAreas.length, 2);
-                    done();
-                });
-            });
-        });
-
-        describe('<paper-dropdown-menu>', function () {
-            it('has correct number of <paper-item>', function (done) {
-                myEl.activateFileTypes = true;
-                myEl.readonly = false;
-                myEl.fileTypes = [
-                    {value: '1', display_name: 'Training materials'},
-                    {value: '2', display_name: 'ToRs'},
-                    {value: '3', display_name: 'Other'}
-                ];
-                myEl.files = [
-                    {file_name: 'name.png', type: '1', file: 'url'}
-                ];
-
-                flush(function () {
-                    var paperItems = Polymer.dom(myEl.root).querySelectorAll('paper-item');
-                    assert.equal(paperItems.length, 3);
                     done();
                 });
             });
