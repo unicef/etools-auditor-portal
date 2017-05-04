@@ -326,8 +326,10 @@
 
         _deleteAttachedFile: function(file) {
             if (file) {
-                file._deleted = true;
-                this.deletedAttachments.push(file);
+                this.deletedAttachments.push({
+                    id: file.id,
+                    _delete: true
+                });
             }
         },
 

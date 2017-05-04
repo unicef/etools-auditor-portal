@@ -502,6 +502,7 @@
                 myEl._deleteAttachedFile({id: 1, file: 'path/file.name'});
                 assert.equal(myEl.deletedAttachments.length, 1);
                 assert.equal(myEl.deletedAttachments[0]._deleted, true);
+                assert.equal(myEl.deletedAttachments[0].id, 1);
             });
         });
 
