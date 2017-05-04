@@ -23,11 +23,6 @@ Polymer({
                 ];
             }
         },
-        extra: {
-            type: String,
-            value: '{"comments": "", "answer": "no"}',
-            observer: '_setValues'
-        },
         answer_yes: {
             type: Boolean,
             value: false,
@@ -46,7 +41,7 @@ Polymer({
     },
 
     observers: [
-        // '_setValues(blueprint.extra)',
+        '_setValues(blueprint.extra)',
         '_setQuestionHeader(blueprint.header)'
     ],
 
@@ -64,9 +59,17 @@ Polymer({
     },
 
     _setValues: function(values) {
-        if (_.isUndefined(values) || _.isNull(values)) { return; }
+        if (_.isUndefined(values) || _.isNull(values)) {
+            this.answer_na = true;
+            return;
+        }
 
-        values = JSON.parse(values);
+        try {
+            values = JSON.parse(values);
+        } catch (error) {
+            console.error(`Can not parse JSON: ${values}`);
+        }
+
 
         this.comments = values.comments || '';
         if (values.answer) {
@@ -121,7 +124,7 @@ Polymer({
         let comments = this.comments,
             answer = this._setRiskAnswer();
 
-        this.blueprint.extra = JSON.stringify({comments: comments, answer: answer});
+        this.extra = JSON.stringify({comments: comments, answer: answer});
     },
 
     _setRequired: function(editMode) {
@@ -132,8 +135,19 @@ Polymer({
         }
     },
 
-    validate: function() {
+    validate: function(forSave) {
+        if (forSave) { return this.validateForSave(); }
         return this.$.riskAssessmentInput.validate();
+    },
+
+    validateForSave: function() {
+        if (!this.comments && this.answer_na) {
+            this.riskAssessmentInvalid = false;
+            return true;
+        }
+
+        return this.$.riskAssessmentInput.validate();
+
     },
 
     _resetFieldError: function(event) {
@@ -147,9 +161,18 @@ Polymer({
 
     getData: function() {
         let selected = this.$.riskAssessmentInput.value;
-        if (selected && selected.value !== this.blueprint.value) {
-            this.blueprint.value = selected.value;
-            return _.clone(this.blueprint);
+        if (!selected) { return; }
+
+        let data = {id: this.blueprint.id};
+
+        if (this.extra && this.extra !== this.blueprint.extra) { data.extra = this.extra; }
+        if (!_.isEqual(selected.value, this.blueprint.value) || data.extra) {
+            data.value = selected.value;
+        } else {
+            return;
         }
+
+        return data;
+
     }
 });

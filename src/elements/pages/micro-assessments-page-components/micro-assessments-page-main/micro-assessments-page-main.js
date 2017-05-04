@@ -69,5 +69,16 @@ Polymer({
         }
 
         return data;
+    },
+
+    customBasicValidation: function() {
+        let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate('forSave');
+
+        if (!questionnaireValid) {
+            this.set('tab', 'questionnaire');
+            this.fire('toast', {text: 'Fix invalid fields before saving'});
+            return false;
+        }
+        return true;
     }
 });

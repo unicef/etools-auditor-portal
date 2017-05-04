@@ -4,15 +4,33 @@
 
 <dom-module id="questionnaire-page-main">
     <template>
+        <style>
+            etools-content-panel.totals {
+                margin-bottom: 50px;
+
+                --ecp-header-title: #{'{
+                    font-weight: 500;
+                    line-height: 51px;
+                }'};
+
+                --epc-toolbar: #{'{
+                    height: 51px;
+                    padding: 2px;
+                    background-color: var(--module-warning);
+                }'};
+            }
+        </style>
 
         <template is="dom-repeat" items="{{questionnaire.children}}">
             <risk-tab questionnaire="{{item}}"
                       class="validatable-tab risk-tab"
                       index="{{index}}"
                       completed="{{_checkCompleted(item)}}"
-                      disabled="{{_checkDisabled(index)}}"
+                      disabled="{{_checkDisabled(index, item)}}"
                       edit-mode="[[_allowEdit(basePermissionPath)]]"></risk-tab>
         </template>
+
+        <etools-content-panel class="totals" title="Totals" open></etools-content-panel>
 
 
     </template>

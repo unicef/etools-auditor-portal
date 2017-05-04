@@ -44,6 +44,18 @@
                 assert.isTrue(elements[1].validate.called);
             });
 
+            it('calls validate method with forSave arg for each risk element if argument forSave is provided', function() {
+                var elements = [{validate: sinon.spy()}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                myEl.validate('forSave');
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(!!elements[0].validate.args[0][0]);
+                assert.isTrue(elements[1].validate.called);
+                assert.isTrue(!!elements[1].validate.args[0][0]);
+            });
+
             it('return false if some of elements return false', function() {
                 var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
                 sinon.stub(myEl, 'getElements').returns(elements);
@@ -55,12 +67,34 @@
                 assert.isTrue(elements[1].validate.called);
             });
 
+            it('return false if some of elements return false (with forSave argument)', function() {
+                var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isFalse(myEl.validate('forSave'));
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
             it('return true if all elements returns true', function() {
                 var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
                 sinon.stub(myEl, 'getElements').returns(elements);
                 myEl.questionnaire.blueprints = [1, 2, 3];
 
                 assert.isTrue(myEl.validate());
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('return true if all elements returns true (with forSave argument)', function() {
+                var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isTrue(myEl.validate('forSave'));
 
                 assert.isTrue(elements[0].validate.called);
                 assert.isTrue(elements[1].validate.called);
@@ -135,6 +169,23 @@
             assert.equal(myEl.getRating('na'), 'N/A');
             assert.equal(myEl.getRating('significant'), 'Significant');
             assert.equal(myEl.getRating('test'), 'test');
+        });
+
+        it('method _updateStyles call updateStyles method', function() {
+            sinon.spy(myEl, 'updateStyles');
+            myEl._updateStyles();
+            assert.isTrue(myEl.updateStyles.called);
+        });
+
+        it('call _updateStyles method when completed property changed', function(done) {
+            flush(function() {
+                sinon.spy(myEl, '_updateStyles');
+                assert.isFalse(myEl._updateStyles.called);
+
+                myEl.completed = !myEl.completed;
+                assert.isTrue(myEl._updateStyles.called);
+                done();
+            });
         });
     });
 </script>

@@ -31,13 +31,21 @@ Polymer({
                     'low': 'Low',
                     'medium': 'Medium',
                     'significant': 'Significant',
-                    'high': 'High'
+                    'high': 'High',
+                    'moderate': 'Moderate'
                 };
             }
         }
     },
 
-    observers: ['_setOpen(disabled, completed, questionnaire)'],
+    observers: [
+        '_setOpen(disabled, completed, questionnaire)',
+        '_updateStyles(completed)'
+    ],
+
+    _updateStyles: function() {
+        this.updateStyles();
+    },
 
     _setIndex: function(index) {
         return index + 1;
@@ -60,14 +68,18 @@ Polymer({
         this.set('opened', !disabled && !completed);
     },
 
-    validate: function() {
+    validate: function(forSave) {
         let elements = this.getElements('validatable-element'),
             valid = true;
 
         if (!elements || !elements.length) { return true; }
 
         Array.prototype.forEach.call(elements, (element) => {
-            if (!element.validate()) { valid = false; }
+            if (forSave && !element.validate('forSave')) {
+                valid = false;
+            } else if (!forSave && !element.validate()) {
+                valid = false;
+            }
         });
 
         return valid;

@@ -12,6 +12,10 @@ Polymer({
             notify: true
         }
     },
+    observers: ['_updateStyles(questionnaire)'],
+    _updateStyles: function() {
+        this.updateStyles();
+    },
     _checkCompleted: function(item) {
         if (!item) { return false; }
         let completed = true;
@@ -46,14 +50,17 @@ Polymer({
         return !readOnly;
     },
 
-    validate: function() {
+    validate: function(forSave) {
         if (!this.questionnaire.children || !this.questionnaire.children.length) { return true; }
 
         let elements = this.getElements('validatable-tab'),
             valid = true;
 
         Array.prototype.forEach.call(elements, (element) => {
-            if (!element.validate()) {
+            if (forSave && !element.validate('forSave')) {
+                element.opened = true;
+                valid = false;
+            } else if (!forSave && !element.validate()) {
                 element.opened = true;
                 valid = false;
             }

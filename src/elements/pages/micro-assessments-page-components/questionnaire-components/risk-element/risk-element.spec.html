@@ -197,13 +197,13 @@
             });
         });
 
-        it('method setExtra set extra property to blueprint as JSON', function() {
+        it('method setExtra set extra property to element as JSON', function() {
             myEl.blueprint = {};
             myEl.answer_na = true;
             myEl.comments = 'test';
             myEl.setExtra();
 
-            assert.equal(myEl.blueprint.extra, '{"comments":"test","answer":"na"}');
+            assert.equal(myEl.extra, '{"comments":"test","answer":"na"}');
         });
 
         it('method _setQuestionHeader set header content', function(done) {
@@ -232,10 +232,86 @@
                     assert.equal(data.value, 2);
                     done();
                 });
-            })
-        })
+            });
 
+            it('return undefined if value is not changed', function(done) {
+                flush(function() {
+                    myEl.$.riskAssessmentInput.value = {label: 'test', value: 2};
+                    myEl.blueprint = {
+                        id: 0,
+                        value: 2,
+                        extra: myEl.extra
+                    };
+                    assert.isUndefined(myEl.getData());
+                    done();
+                });
+            });
 
+            it('return data if value is not changed and extra is changed', function(done) {
+                flush(function() {
+                    myEl.$.riskAssessmentInput.value = {label: 'test', value: 2};
+                    myEl.blueprint = {
+                        id: 0,
+                        value: 2
+                    };
+
+                    assert.isDefined(myEl.extra);
+
+                    var data = myEl.getData();
+                    assert.equal(data.id, 0);
+                    assert.equal(data.value, 2);
+                    assert.equal(data.extra, myEl.extra);
+                    done();
+                });
+            });
+        });
+
+        it('method validate run validateForSave method if first argument is provided', function() {
+            sinon.spy(myEl, 'validateForSave');
+            myEl.validate('forSave');
+            assert.isTrue(myEl.validateForSave.called);
+        });
+
+        it('method validate validate input and return validation value if first argument is not provided', function(done) {
+            flush(function() {
+                sinon.spy(myEl, 'validateForSave');
+                myEl.$.riskAssessmentInput.validate = sinon.stub().returns(true);
+
+                assert.isTrue(myEl.validate());
+                assert.isFalse(myEl.validateForSave.called);
+                assert.isTrue(myEl.$.riskAssessmentInput.validate.called);
+
+                myEl.$.riskAssessmentInput.validate.returns(false);
+                assert.isFalse(myEl.validate());
+                done();
+            });
+        });
+
+        describe('method validateForSave', function() {
+            it('return true and set riskAssessmentInvalid to false if there is no comments and answer_na property is true', function() {
+                myEl.comments = '';
+                myEl.answer_na = true;
+                myEl.riskAssessmentInvalid = true;
+
+                assert.isTrue(myEl.riskAssessmentInvalid);
+                assert.isTrue(myEl.validateForSave());
+                assert.isFalse(myEl.riskAssessmentInvalid);
+            });
+
+            it('validate input and return validation value in other cases', function(done) {
+                flush(function() {
+                    myEl.$.riskAssessmentInput.validate = sinon.stub().returns(true);
+                    myEl.comments = 'test';
+
+                    assert.isTrue(myEl.validateForSave());
+                    assert.isTrue(myEl.$.riskAssessmentInput.validate.called);
+
+                    myEl.$.riskAssessmentInput.validate.returns(false);
+                    assert.isFalse(myEl.validateForSave());
+                    done();
+                });
+            });
+        });
     });
 </script>
 

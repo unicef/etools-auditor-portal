@@ -11,14 +11,18 @@ Polymer({
             notify: true
         }
     },
-    validate: function() {
+    validate: function(forSave) {
         if (!this.questionnaire.blueprints || !this.questionnaire.blueprints.length) { return true; }
 
         let elements = this.getElements('validatable-element'),
             valid = true;
 
         Array.prototype.forEach.call(elements, (element) => {
-            if (!element.validate()) { valid = false; }
+            if (forSave && !element.validateForSave()) {
+                valid = false;
+            } else if (!forSave && !element.validate()) {
+                valid = false;
+            }
         });
 
         return valid;

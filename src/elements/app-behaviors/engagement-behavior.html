@@ -55,6 +55,7 @@
 
         _saveProgress: function() {
             if (!this._validateBasicInfo()) { return; }
+            if (this.customBasicValidation && !this.customBasicValidation()) { return; }
 
             return this._prepareData()
                     .then((data) => {

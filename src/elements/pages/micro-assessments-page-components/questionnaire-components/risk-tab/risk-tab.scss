@@ -15,9 +15,9 @@
             background-color: #ffffff;
             box-shadow: 0 3px 11px -2px rgba(0, 0, 0, 0.4);
             opacity: 1;
-            transition: 0.15s;
+            transition: 0.25s;
 
-            &[hidden_results] { opacity: 0; }
+            &[hidden_results] { opacity: 0;  z-index: -1; }
 
             .result-element {
                 padding: 21px 6%;
@@ -46,7 +46,6 @@
 
 etools-content-panel {
     position: relative;
-    z-index: 1;
 
     &[completed] {
         --epc-toolbar: #{'{
