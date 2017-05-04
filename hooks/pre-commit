@@ -1,4 +1,3 @@
-+#!/bin/sh
-+
-+./node_modules/.bin/gulp precommit --pc
-+exit $?
+#!/bin/sh
+
+exit $?
