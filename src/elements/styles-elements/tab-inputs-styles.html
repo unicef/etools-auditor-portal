@@ -33,6 +33,8 @@
 
             .input-container.input-container-s { width: 30%; }
 
+            .input-container.input-container-40 { width: 35%; }
+
             .input-container.input-container-m { width: 65%; }
 
             .input-container.input-container-ms { width: 50%; }
@@ -45,6 +47,7 @@
             }
 
 
+            paper-textarea,
             paper-input {
                 padding: 0 12px;
                 color: var(--gray-mid);
@@ -105,6 +108,29 @@
                     right: initial;
                     padding-right: 15px;
                  }'};
+            }
+
+            paper-input.bold {
+                --paper-input-container-input: #{'{
+                    font-weight: 500;
+                }'};
+
+                --paper-input-container-underline-focus: #{"{
+                    display: none !important;
+                }"};
+                --paper-input-container-underline-disabled: #{"{
+                    display: none !important;
+                }"};
+
+                --paper-input-container-underline: #{'{
+                    display: none !important;
+                }'};
+            }
+
+            paper-input.deleted {
+                --paper-input-container-input: #{'{
+                    color: #b0b0b0;
+                }'};
             }
 
             /*TODO: Add following commented code to 'etools-searchable-multiselection-menu' element*/

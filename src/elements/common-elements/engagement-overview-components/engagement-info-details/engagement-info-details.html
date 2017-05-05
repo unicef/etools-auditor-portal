@@ -1,7 +1,7 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu,
-            etools-datepicker/etools-datepicker-button, etools-currency-amount-input]-->
+            etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
 
-<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data]-->
 
 <dom-module id="engagement-info-details">
     <template>
@@ -11,23 +11,35 @@
                 display: block;
                 margin-bottom: 20px;
             }
+
+            .po-loading {
+                position: absolute;
+                right: -32px;
+                top: 25px;
+                left: initial;
+            }
         </style>
 
+        <get-agreement-data agreement="{{data.agreement}}" order-number="{{orderNumber}}"></get-agreement-data>
 
         <etools-content-panel class="content-section clearfix" title="Engagement Overview">
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Purchase Order -->
                     <paper-input label="Purchase Order"
-                                 value="{{data.agreement.order_number}}"
-                                 placeholder="&#8212;"
                                  id="purchaseOrder"
-                                 allowed-pattern="[\d]"
-                                 error-message="Purchase order is required"
-                                 required
                                  class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
+                                 value="{{data.agreement.order_number}}"
+                                 allowed-pattern="[\d]"
+                                 placeholder="&#8212;"
+                                 invalid="{{orderInputInvalid}}"
+                                 error-message="{{orderNumberErrorText}}"
+                                 required="{{_setRequired('agreement', basePermissionPath)}}"
+                                 disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
+                                 readonly="{{requestInProcess}}"
                                  on-focus="_resetFieldError"
-                                 disabled$="[[isReadOnly('agreement', basePermissionPath)]]"></paper-input>
+                                 on-blur="_requestAgreement"></paper-input>
+                    <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="po-loading"></etools-loading>
                 </div>
                 <div class="input-container">
                     <!-- Contract Start Date -->
@@ -117,7 +129,7 @@
                             required="{{_setRequired('type', basePermissionPath)}}"
                             id="auditType"
                             error-message="Audit Type is required"
-                            custom-object-options
+                            custom-object-options hide-search
                             option-value="value"
                             option-label="label"
                             on-value-change="_setAuditType"

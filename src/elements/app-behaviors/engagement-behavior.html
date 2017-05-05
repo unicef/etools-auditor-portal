@@ -55,6 +55,7 @@
 
         _saveProgress: function() {
             if (!this._validateBasicInfo()) { return; }
+            if (this.customBasicValidation && !this.customBasicValidation()) { return; }
 
             return this._prepareData()
                     .then((data) => {
@@ -76,12 +77,11 @@
 
             if (!this.engagement || !attachmentsTab) {  return Promise.reject('You meed engagement object and attachments tab'); }
 
-            let data = _.cloneDeep(this.engagement);
+            let data = _.clone(this.engagement);
 
             data.partner = data.partner.id;
             data.test_subject_areas = {};
-            //TODO: remove this after adding agreement data loading
-            data.agreement = 1;
+            data.agreement = data.agreement.id;
 
             let type;
             switch (data.type) {
@@ -94,6 +94,9 @@
                 case 'a':
                     type = 'audits';
                     break;
+            }
+            if (this.customDataPrepare) {
+                data = this.customDataPrepare(data);
             }
 
             return attachmentsTab.getFiles()
@@ -111,9 +114,9 @@
 
 
         _validateBasicInfo: function(property) {
-            let staffMembersValid = this.getElement('#staffMembers').validate();
-            let detailsValid = this.getElement('#engagementDetails').validate();
-            let attachmentsValid = this.getElement('#attachments').validate();
+            let staffMembersValid = this.getElement('#staffMembers').validate(),
+                detailsValid = this.getElement('#engagementDetails').validate(),
+                attachmentsValid = this.getElement('#attachments').validate();
 
             if (!staffMembersValid || !detailsValid || !attachmentsValid) {
                 let openTab = (staffMembersValid && detailsValid) ? 'attachments' : 'overview';

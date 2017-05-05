@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [nested-risks]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <nested-risks id="element"></nested-risks>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<nested-risks>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+
+        describe('method validate', function() {
+            it('return true if there are no questionnaire children', function() {
+                assert.isUndefined(myEl.questionnaire.blueprints);
+                assert.isTrue(myEl.validate());
+
+                myEl.questionnaire.blueprints = [];
+                assert.isTrue(myEl.validate());
+            });
+
+            it('calls validate method for each risk element', function() {
+                var elements = [{validate: sinon.spy()}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                myEl.validate();
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('calls validateForSave method for each risk element if argument forSave is provided', function() {
+                var elements = [{validateForSave: sinon.spy()}, {validateForSave: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                myEl.validate('forSave');
+                assert.isTrue(elements[0].validateForSave.called);
+                assert.isTrue(elements[1].validateForSave.called);
+            });
+
+            it('return false if some of elements return false', function() {
+                var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isFalse(myEl.validate());
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('return false if some of elements return false (with forSave argument)', function() {
+                var elements = [{validateForSave: sinon.stub().returns(false)}, {validateForSave: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isFalse(myEl.validate('forSave'));
+
+                assert.isTrue(elements[0].validateForSave.called);
+                assert.isTrue(elements[1].validateForSave.called);
+            });
+
+            it('return true if all elements returns true', function() {
+                var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isTrue(myEl.validate());
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('return true if all elements returns true (with forSave argument)', function() {
+                var elements = [{validateForSave: sinon.stub().returns(true)}, {validateForSave: sinon.stub().returns(true)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isTrue(myEl.validate('forSave'));
+
+                assert.isTrue(elements[0].validateForSave.called);
+                assert.isTrue(elements[1].validateForSave.called);
+            });
+        });
+
+        describe('method getData', function() {
+            it('calls getData method for each risk element', function() {
+                var elements = [{getData: sinon.spy()}, {getData: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+
+                myEl.getData();
+                assert.isTrue(elements[0].getData.called);
+                assert.isTrue(elements[1].getData.called);
+            });
+
+            it('returns undefined if all elements returns undefined', function() {
+                var elements = [{getData: sinon.stub().returns(undefined)}, {getData: sinon.stub().returns(undefined)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+
+                assert.isUndefined(myEl.getData());
+                assert.isTrue(elements[0].getData.called);
+                assert.isTrue(elements[1].getData.called);
+            });
+
+            it('returns data containing data returned by elements', function() {
+                var elements = [{getData: sinon.stub().returns('1')}, {getData: sinon.stub().returns('2')}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.id = 120;
+
+                assert.deepEqual(myEl.getData(), {id: 120, blueprints:['1', '2']});
+                assert.isTrue(elements[0].getData.called);
+                assert.isTrue(elements[1].getData.called);
+            });
+        })
+
+
+    });
+</script>
+
+</body>
+</html>

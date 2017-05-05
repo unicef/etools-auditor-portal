@@ -1,0 +1,51 @@
+:host {
+    position: relative;
+    display: block;
+
+    .input-container.radio-btns-container {
+        padding: 30px 12px 0;
+    }
+
+
+    .comment-container {
+        margin-bottom: 20px;
+    }
+
+    .question-container {
+        padding: 0 12px;
+        box-sizing: border-box;
+
+        .label {
+            font-size: 12px;
+            line-height: 18px;
+            color: rgba(0, 0, 0, 0.38);
+            margin-bottom: 3px;
+        }
+
+        #header {
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.87);
+            font-weight: 500;
+        }
+
+        #description {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.87);
+            font-weight: 400;
+            font-style: italic;
+        }
+    }
+}
+
+etools-checkable-input {
+    width: 30%;
+    min-width: 65px;
+    margin-right: 5%;
+    float: left;
+    margin-bottom: 15px;
+    vertical-align: top;
+    --etools-checkable-input-size: 18px;
+    --etools-checkable-input-font-size: 18px !important;
+
+    &:last-child { margin-right: 0; }
+}

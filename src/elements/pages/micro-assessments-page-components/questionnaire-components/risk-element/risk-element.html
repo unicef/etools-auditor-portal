@@ -1,0 +1,75 @@
+<!--import [polymer, paper-input, paper-input/paper-textarea, etools-checkable-input]-->
+
+<!--import [tab-inputs-styles, module-styles, lodash]-->
+
+<dom-module id="risk-element">
+    <template>
+        <!-- inject styles './risk-element.scss'-->
+        <style include="tab-inputs-styles module-styles"></style>
+
+
+        <div class="row-h repeatable-item-container">
+
+            <div class="repeatable-item-content">
+
+                <div class="repeatable-item-index">
+                    <div class="item-index">[[_setIndex(index)]]</div>
+                </div>
+
+                <div class="row-h group">
+                    <div class="input-container input-container-l">
+                        <!-- Question -->
+                        <div class="question-container">
+                            <div class="label">Question</div>
+                            <div id="header">[[blueprint.header]]</div>
+                            <div id="description">[[blueprint.description]]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-h group">
+                    <div class="input-container input-container-40 radio-btns-container">
+                        <etools-checkable-input type="radio" label="Yes" label-alignment="right" checked="{{answer_yes}}" readonly="[[!editMode]]"></etools-checkable-input>
+                        <etools-checkable-input type="radio" label="No" label-alignment="right" checked="{{answer_no}}" readonly="[[!editMode]]"></etools-checkable-input>
+                        <etools-checkable-input type="radio" label="N/A" label-alignment="right" checked="{{answer_na}}" readonly="[[!editMode]]"></etools-checkable-input>
+                    </div>
+
+                    <div class="input-container input-container-s">
+                        <!-- Risk Assessment -->
+                        <etools-searchable-multiselection-menu
+                                id="riskAssessmentInput"
+                                options="[[riskOptions]]"
+                                class$="disabled-as-readonly {{_setRequired(editMode)}}"
+                                readonly="[[!editMode]]"
+                                disabled="[[!editMode]]"
+                                required hide-search
+                                value="{{_setRiskValue(blueprint.value, riskOptions)}}"
+                                id="partner"
+                                error-message="This field is required"
+                                invalid="{{riskAssessmentInvalid}}"
+                                on-focus="_resetFieldError"
+                                label="Risk Assessment"
+                                placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                    </div>
+                </div>
+
+                <div class="row-h group">
+                    <div class="input-container input-container-l comment-container">
+                        <!-- Comments -->
+                        <paper-textarea label="Comments"
+                                        class="disabled-as-readonly"
+                                        value="{{comments}}"
+                                        placeholder="&#8212;"
+                                        on-input="setExtra"
+                                        disabled$="[[!editMode]]">
+                        </paper-textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </template>
+
+    <!-- inject scripts './risk-element.js'-->
+</dom-module>

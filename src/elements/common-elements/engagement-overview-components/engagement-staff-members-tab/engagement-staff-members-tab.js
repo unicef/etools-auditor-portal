@@ -10,14 +10,18 @@ Polymer({
     properties: {},
 
     ready: function() {
-        this.dataSetModel = {
-            title: '',
-            first_name: '',
-            last_name: '',
-            phone: '',
-            email: '',
-            active: true,
-            notify: false
+        this.dataSetModel =  {
+            user: {
+                first_name: "",
+                last_name: "",
+                email: "",
+                is_active: true,
+                profile: {
+                    job_title: "",
+                    phone_number: ""
+                }
+            },
+            receive_audit_notifications: false
         };
 
         this.$['email-validator'].validate = this._validEmailAddress.bind(this);
@@ -46,8 +50,10 @@ Polymer({
 
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-input'),
             valid = true;
+
         Array.prototype.forEach.call(elements, (element) => {
-            if (!element.validate()) { valid = false; }
+            //TODO: improve validation
+            if (element.required && !element.validate()) { valid = false; }
         });
 
         return valid;
@@ -57,11 +63,11 @@ Polymer({
         if (this._canBeRemoved()) {
             var lastStaffMemberAdded = this.dataItems[this.dataItems.length - 1];
             if (lastStaffMemberAdded &&
-                !this._notEmpty(lastStaffMemberAdded.title) &&
-                !this._notEmpty(lastStaffMemberAdded.first_name) &&
-                !this._notEmpty(lastStaffMemberAdded.last_name) &&
-                !this._notEmpty(lastStaffMemberAdded.phone) &&
-                !this._notEmpty(lastStaffMemberAdded.email)) {
+                !this._notEmpty(lastStaffMemberAdded.user.profile.job_title) &&
+                !this._notEmpty(lastStaffMemberAdded.user.first_name) &&
+                !this._notEmpty(lastStaffMemberAdded.user.last_name) &&
+                !this._notEmpty(lastStaffMemberAdded.user.profile.phone_number) &&
+                !this._notEmpty(lastStaffMemberAdded.user.email)) {
                 this.fire('toast', {text: 'Last staff member fields are empty!', showCloseBtn: true});
             } else {
                 this._addElement();

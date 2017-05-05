@@ -22,7 +22,7 @@ Polymer({
                 }, {
                     label: 'Audit',
                     link: 'audits',
-                    value: 'a'
+                    value: 'audit'
                 }, {
                     label: 'Spot Check',
                     link: 'spot-checks',
@@ -30,10 +30,18 @@ Polymer({
                 }];
             }
         },
-        partners: Array
+        partners: Array,
+        data: {
+            type: Object,
+            notify: true
+        }
+    },
+    listeners: {
+        'agreement-loaded': '_agreementLoaded'
     },
     ready: function() {
         this.set('partners', this.getData('partners'));
+        this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
     _basePathChanged: function() {
         this.updateStyles();
@@ -79,5 +87,46 @@ Polymer({
         if (readOnly === null) { readOnly = true; }
 
         return readOnly;
+    },
+    _requestAgreement: function(event) {
+        if (this.requestInProcess) { return; }
+
+        let input = event && event.target,
+            value = input && +input.value;
+
+        this.resetAgreement();
+
+        if (!value) { return; }
+
+        this.requestInProcess = true;
+        this.orderNumber = value;
+        return true;
+    },
+    _agreementLoaded: function() {
+        this.requestInProcess = false;
+        this.$.purchaseOrder.validate();
+    },
+    resetAgreement: function() {
+        this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
+    },
+    _validatePurchaseOrder: function(orderInput) {
+        if (this.requestInProcess) {
+            this.orderInputInvalid = true;
+            this.orderNumberErrorText = 'Please, wait until Purchase Order loaded';
+            return false;
+        }
+        let value = orderInput && orderInput.value;
+        if (!value && orderInput && orderInput.required) {
+            this.orderInputInvalid = true;
+            this.orderNumberErrorText = 'Purchase order is required';
+            return false;
+        }
+        if (!this.data || !this.data.agreement || !this.data.agreement.id) {
+            this.orderNumberErrorText = 'Purchase order not found';
+            this.orderInputInvalid = true;
+            return false;
+        }
+        this.orderInputInvalid = false;
+        return true;
     }
 });

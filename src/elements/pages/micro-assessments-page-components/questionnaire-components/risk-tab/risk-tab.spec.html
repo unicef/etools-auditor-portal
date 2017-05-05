@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [risk-tab]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <risk-tab id="element"></risk-tab>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<risk-tab>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+
+        describe('method validate', function() {
+            it('return true if no elements found', function() {
+                sinon.stub(myEl, 'getElements').returns(null);
+
+                assert.isTrue(myEl.validate());
+            });
+
+            it('calls validate method for each risk element', function() {
+                var elements = [{validate: sinon.spy()}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                myEl.validate();
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('calls validate method with forSave arg for each risk element if argument forSave is provided', function() {
+                var elements = [{validate: sinon.spy()}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                myEl.validate('forSave');
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(!!elements[0].validate.args[0][0]);
+                assert.isTrue(elements[1].validate.called);
+                assert.isTrue(!!elements[1].validate.args[0][0]);
+            });
+
+            it('return false if some of elements return false', function() {
+                var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isFalse(myEl.validate());
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('return false if some of elements return false (with forSave argument)', function() {
+                var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isFalse(myEl.validate('forSave'));
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('return true if all elements returns true', function() {
+                var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isTrue(myEl.validate());
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+
+            it('return true if all elements returns true (with forSave argument)', function() {
+                var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.blueprints = [1, 2, 3];
+
+                assert.isTrue(myEl.validate('forSave'));
+
+                assert.isTrue(elements[0].validate.called);
+                assert.isTrue(elements[1].validate.called);
+            });
+        });
+
+        describe('method getData', function() {
+            it('calls getData method for each risk element', function() {
+                var elements = [{getData: sinon.spy()}, {getData: sinon.spy()}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+
+                myEl.getData();
+                assert.isTrue(elements[0].getData.called);
+                assert.isTrue(elements[1].getData.called);
+            });
+
+            it('returns undefined if all elements returns undefined', function() {
+                var elements = [{getData: sinon.stub().returns(undefined)}, {getData: sinon.stub().returns(undefined)}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+
+                assert.isUndefined(myEl.getData());
+                assert.isTrue(elements[0].getData.called);
+                assert.isTrue(elements[1].getData.called);
+            });
+
+            it('returns data containing data returned by elements', function() {
+                var elements = [{getData: sinon.stub().returns('1')}, {getData: sinon.stub().returns('2')}];
+                sinon.stub(myEl, 'getElements').returns(elements);
+                myEl.questionnaire.id = 120;
+
+                assert.deepEqual(myEl.getData(), {id: 120, blueprints:['1', '2'], children: ['1', '2']});
+                assert.isTrue(elements[0].getData.called);
+                assert.isTrue(elements[1].getData.called);
+            });
+        });
+
+        it('method _setOpen set open property to true if all args are false', function() {
+            myEl._setOpen(false, false);
+            assert.isTrue(myEl.opened);
+
+            myEl._setOpen(true, true);
+            assert.isFalse(myEl.opened);
+
+            myEl._setOpen(false, true);
+            assert.isFalse(myEl.opened);
+
+            myEl._setOpen(true, false);
+            assert.isFalse(myEl.opened);
+        });
+
+        it('method _setIndex return correct order number', function() {
+            assert.equal(myEl._setIndex(0), 1);
+            assert.equal(myEl._setIndex(14), 15);
+            assert.equal(myEl._setIndex(23), 24);
+        });
+
+        it('method getScore return argument or 0', function() {
+            assert.equal(myEl.getScore(24), 24);
+            assert.equal(myEl.getScore('test'), 'test');
+            assert.equal(myEl.getScore(), 0);
+        });
+
+        it('method showResults return true only if first argument is true and second is false', function() {
+            assert.isFalse(myEl.showResults(true, true));
+            assert.isFalse(myEl.showResults(false, true));
+            assert.isFalse(myEl.showResults(false, false));
+
+            assert.isTrue(myEl.showResults(true, false));
+        });
+
+        it('method getRating return label from riskRatingOptions or argument', function() {
+            assert.equal(myEl.getRating('na'), 'N/A');
+            assert.equal(myEl.getRating('significant'), 'Significant');
+            assert.equal(myEl.getRating('test'), 'test');
+        });
+
+        it('method _updateStyles call updateStyles method', function() {
+            sinon.spy(myEl, 'updateStyles');
+            myEl._updateStyles();
+            assert.isTrue(myEl.updateStyles.called);
+        });
+
+        it('call _updateStyles method when completed property changed', function(done) {
+            flush(function() {
+                sinon.spy(myEl, '_updateStyles');
+                assert.isFalse(myEl._updateStyles.called);
+
+                myEl.completed = !myEl.completed;
+                assert.isTrue(myEl._updateStyles.called);
+                done();
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,11 +1,12 @@
-<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash]-->
-<!--import [shared-styles, module-styles, app-main-header, pages-header-element, file-attachments-tab, update-engagement,
-            status-tab-element, engagement-staff-members-tab, engagement-info-details, engagement-info-data, engagement-behavior, assign-spot-check]-->
+<!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash, etools-content-panel]-->
+
+<!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
+            update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
+            engagement-info-data, engagement-behavior, questionnaire-page-main, assign-spot-check]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
-        <!-- inject styles './micro-assessments-page-main.scss'-->
-        <style include="shared-styles module-styles">
+        <style include="shared-styles module-styles main-page-styles">
             .view-container {
                 display: flex;
                 padding: 15px;
@@ -64,13 +65,17 @@
                                                id="assignSpotCheck"></assign-spot-check>
                         </div>
 
-                        <div name="questionnaire">Questionnaire</div>
+                        <div name="questionnaire">
+                            <questionnaire-page-main id="questionnaire"
+                                                     questionnaire="{{engagement.questionnaire}}"
+                                                     base-permission-path="{{permissionBase}}"></questionnaire-page-main>
+                        </div>
 
 
                         <div name="attachments">
                             <file-attachments-tab title="Attachments"
                                                   id="attachments"
-                                                  allow-download allow-delete
+                                                  allow-download allow-delete file-type-required
                                                   files="{{engagement.attachments}}"></file-attachments-tab>
                         </div>
 

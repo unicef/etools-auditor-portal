@@ -42,12 +42,41 @@ Polymer({
 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo(),
+            questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate(),
             //TODO: add report vlidation
             reportValid = false;
 
-        if (!basicInfoValid || !reportValid) {
+        if (!basicInfoValid) { return false; }
+        if (!reportValid) {
             this.set('tab', 'report');
             this.fire('toast', {text: 'Fill report before submiting!'});
+            return false;
+        }
+        if (!questionnaireValid) {
+            this.set('tab', 'questionnaire');
+            this.fire('toast', {text: 'Fill questionnaire before submiting!'});
+            return false;
+        }
+        return true;
+    },
+
+    customDataPrepare: function(data) {
+        let questionnaire = Polymer.dom(this.root).querySelector('#questionnaire').getData();
+        if (questionnaire) {
+            data.questionnaire = questionnaire;
+        } else {
+            delete data.questionnaire;
+        }
+
+        return data;
+    },
+
+    customBasicValidation: function() {
+        let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate('forSave');
+
+        if (!questionnaireValid) {
+            this.set('tab', 'questionnaire');
+            this.fire('toast', {text: 'Fix invalid fields before saving'});
             return false;
         }
         return true;

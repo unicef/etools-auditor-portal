@@ -1,0 +1,39 @@
+<!--import [polymer, etools-content-panel]-->
+
+<!--import [lodash, module-styles, risk-element, nested-risks]-->
+
+<dom-module id="risk-tab">
+    <template>
+        <!-- inject styles './risk-tab.scss'-->
+        <style include="tab-inputs-styles module-styles"></style>
+
+        <div class="tab-container">
+            <etools-content-panel completed$="[[completed]]"
+                                  show-expand-btn
+                                  is-disabled="[[disabled]]"
+                                  title="{{questionnaire.header}}"
+                                  open="{{opened}}">
+
+                <template is="dom-repeat" items="{{questionnaire.blueprints}}">
+
+                    <risk-element class="validatable-element risk" blueprint="{{item}}" index="{{index}}" edit-mode="[[editMode]]"></risk-element>
+
+                </template>
+
+                <template is="dom-repeat" items="{{questionnaire.children}}">
+
+                    <nested-risks class="validatable-element nested-risk" questionnaire="{{item}}" edit-mode="[[editMode]]"></nested-risks>
+
+                </template>
+            </etools-content-panel>
+
+            <div class="risk-result-container" hidden_results$="[[!showResults(completed, opened)]]">
+                <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">[[getScore(questionnaire.risk_score)]]</span></div>
+                <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class="value">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>
+            </div>
+        </div>
+
+    </template>
+
+    <!-- inject scripts './risk-tab.js'-->
+</dom-module>
