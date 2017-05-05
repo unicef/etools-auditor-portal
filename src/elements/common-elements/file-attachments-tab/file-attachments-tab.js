@@ -24,28 +24,16 @@ Polymer({
             type: String,
             value: 'Attachments'
         },
-        readonly: {
-            type: Boolean
-        },
-        allowDownload: {
-            type: Boolean
-        },
-        allowChange: {
-            type: Boolean
-        },
-        allowDelete: {
-            type: Boolean
-        },
+        readonly: Boolean,
+        allowDownload: Boolean,
+        allowChange: Boolean,
+        allowDelete: Boolean,
         fileCheckboxVisible: {
             type: Boolean,
             value: false
         },
-        fileCheckboxTitle: {
-            type: String
-        },
-        fileCheckboxLabel: {
-            type: String
-        }
+        fileCheckboxTitle: String,
+        fileCheckboxLabel: String
     },
     ready: function() {
         this.fileTypes = this.getData('attachments_types');

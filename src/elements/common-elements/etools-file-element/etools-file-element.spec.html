@@ -497,11 +497,12 @@
         });
 
         describe('_deleteAttachedFile', function () {
-            it('adds provided file to the deletedAttachments Array and sets it property _deleted to true', function () {
+            it('adds provided file to the deletedAttachments Array and sets it property _delete to true', function () {
                 assert.equal(myEl.deletedAttachments.length, 0);
                 myEl._deleteAttachedFile({id: 1, file: 'path/file.name'});
                 assert.equal(myEl.deletedAttachments.length, 1);
-                assert.equal(myEl.deletedAttachments[0]._deleted, true);
+                assert.equal(myEl.deletedAttachments[0]._delete, true);
+                assert.equal(myEl.deletedAttachments[0].id, 1);
             });
         });
 
