@@ -74,6 +74,7 @@
 
                 _responseError: function() {
                     console.error('Can not load initial data');
+                    this.fire('static-data-loaded');
                 }
 
             });
