@@ -1,0 +1,67 @@
+'use strict';
+
+Polymer({
+    is: 'assign-engagement',
+    behaviors: [
+        APBehaviors.DateBehavior,
+        APBehaviors.PermissionController
+    ],
+    properties: {
+        basePermissionPath: {
+            type: String,
+            observer: '_updateStyles'
+        }
+    },
+    observers: [
+        '_updateStyles(data.date_of_field_visit)',
+        '_updateStyles(data.date_of_draft_report_to_ip)',
+        '_updateStyles(data.date_of_comments_by_ip)',
+        '_updateStyles(data.date_of_draft_report_to_unicef)',
+        '_updateStyles(data.date_of_comments_by_unicef)'
+    ],
+    ready: function() {
+        this.$['date-validator'].validate = this._validDate.bind(this);
+    },
+    _validDate: function(date) {
+        console.log('date validate!');
+        return !!(date);
+    },
+    _updateStyles: function() {
+        this.updateStyles();
+    },
+    _resetFieldError: function(event) {
+        event.target.invalid = false;
+    },
+    _isReadOnly: function(field, prevDate, nextDate) {
+        if (!this.basePermissionPath) { return true; }
+
+        let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
+        if (readOnly === null) { readOnly = true; }
+
+        return readOnly || !(prevDate && !nextDate);
+    },
+    validate: function() {
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');
+        let valid = true;
+        elements.reduce((previousElement, currentElement) => {
+            let previousDate = Date.parse(previousElement.value);
+            let currentDate = Date.parse(currentElement.value);
+            if (currentElement.required && !currentElement.validate()) {
+                valid = false;
+            }
+            if (previousDate > currentDate) {
+                currentElement.invalid = true;
+                currentElement.errorMessage = 'This date should be after previous date';
+                valid = false;
+            }
+            if (previousDate > Date.now()) {
+                previousElement.invalid = true;
+                previousElement.errorMessage = 'This date should be before today';
+                valid = false;
+            }
+            return currentElement;
+        });
+
+        return valid;
+    },
+});

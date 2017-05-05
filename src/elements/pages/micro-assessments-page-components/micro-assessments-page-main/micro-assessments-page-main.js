@@ -41,10 +41,9 @@ Polymer({
     },
 
     _validateEngagement: function() {
-        let basicInfoValid = this._validateBasicInfo(),
-            questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate(),
-            //TODO: add report vlidation
-            reportValid = false;
+        let basicInfoValid = this._validateBasicInfo();
+        let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate();
+        let reportValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate();
 
         if (!basicInfoValid) { return false; }
         if (!reportValid) {

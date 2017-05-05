@@ -2,7 +2,7 @@
 
 <!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
             update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior, questionnaire-page-main, assign-spot-check]-->
+            engagement-info-data, engagement-behavior, questionnaire-page-main, assign-engagement]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
@@ -60,9 +60,9 @@
                         </div>
 
                         <div name="report">
-                            <assign-spot-check data="{{engagement}}"
+                            <assign-engagement data="{{engagement}}"
                                                base-permission-path="{{permissionBase}}"
-                                               id="assignSpotCheck"></assign-spot-check>
+                                               id="assignEngagement"></assign-engagement>
                         </div>
 
                         <div name="questionnaire">
