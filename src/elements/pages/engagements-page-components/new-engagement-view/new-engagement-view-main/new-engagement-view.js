@@ -15,7 +15,8 @@ Polymer({
                     status: '',
                     staff_members: [],
                     type: {},
-                    attachments: []
+                    attachments: [],
+                    agreement: {}
                 };
             }
         }
@@ -80,7 +81,8 @@ Polymer({
                 status: '',
                 staff_members: [],
                 type: {},
-                attachments: []
+                attachments: [],
+                agreement: {}
             });
             this.$.engagementDetails.resetValidationErrors();
         }

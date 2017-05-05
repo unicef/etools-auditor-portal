@@ -1,0 +1,65 @@
+<!--import [polymer, etools-ajax, lodash, etools-app-config]-->
+
+<dom-module id="get-agreement-data">
+
+    <template>
+
+        <etools-ajax url="[[url]]"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'get-agreement-data',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+
+                orderNumber: {
+                    type: Number,
+                    notify: true,
+                    observer: '_orderNumberChanged'
+                },
+                agreement: {
+                    type: Object,
+                    notify: true
+                }
+
+            },
+
+            _handleResponse: function (data) {
+                this.lastData = _.clone(data.detail);
+                this.agreement = data.detail;
+                this.fire('agreement-loaded', {success: true});
+            },
+
+            _handleError: function () {
+                this.lastError = true;
+                this.fire('agreement-loaded');
+            },
+
+            _orderNumberChanged: function(orderNumber) {
+                if (!orderNumber) { return; }
+                if (orderNumber === this.lastNumber) {
+                    this.orderNumber = null;
+                    this.lastError ? this._handleError() : this._handleResponse({detail: _.clone(this.lastData)});
+                    return;
+                }
+
+                this.lastError = false;
+                this.lastNumber = orderNumber;
+                this.url = this.getEndpoint('agreementData', {id: orderNumber}).url;
+                this.orderNumber = null;
+            }
+
+        });
+
+    </script>
+
+</dom-module>

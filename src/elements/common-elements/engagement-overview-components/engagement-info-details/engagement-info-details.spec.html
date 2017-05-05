@@ -56,6 +56,7 @@
         });
 
         it('validate required inputs', function (done) {
+            myEl.data = {agreement: {}};
             assert.isDefined(partnerInput.validate);
             sinon.spy(numberInput, "validate");
             sinon.spy(partnerInput, "validate");
@@ -88,7 +89,6 @@
         });
 
         it('return required class if edit mode on', function () {
-
             myEl.basePermissionPath = 'test';
             assert.equal(myEl._setRequired('agreement'), 'required');
             assert.equal(myEl._setRequired(), false);
@@ -98,6 +98,138 @@
         it('get audit type dropdown object value', function () {
             assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
         });
+
+        describe('method isReadOnly', function() {
+            it('return true if there is no basePermissionPath property', function() {
+                assert.isUndefined(myEl.basePermissionPath);
+                assert.isTrue(myEl.isReadOnly());
+            });
+
+            it('calls isReadonly method', function() {
+                sinon.spy(myEl, 'isReadonly');
+                myEl.basePermissionPath = 'test';
+
+                myEl.isReadOnly();
+                assert.isTrue(myEl.isReadonly.called);
+            });
+
+            it('returns read_only status', function() {
+                var stub = sinon.stub(myEl, 'isReadonly').returns(true);
+                myEl.basePermissionPath = 'test';
+
+                assert.isTrue(myEl.isReadOnly());
+
+                stub.returns(false);
+                assert.isFalse(myEl.isReadOnly());
+            });
+
+            it('returns true if read_only status is null', function() {
+                var stub = sinon.stub(myEl, 'isReadonly').returns(null);
+                myEl.basePermissionPath = 'test';
+
+                assert.isTrue(myEl.isReadOnly());
+            });
+        });
+
+        describe('method _requestAgreement', function() {
+            it('returns undefined if requestInProcess property is true', function() {
+                myEl.requestInProcess = true;
+                assert.isTrue(myEl.requestInProcess);
+                assert.isUndefined(myEl._requestAgreement());
+            });
+
+            it('calls resetAgreement method', function() {
+                myEl.requestInProcess = false;
+                sinon.spy(myEl, 'resetAgreement');
+
+                myEl._requestAgreement();
+                assert.isTrue(myEl.resetAgreement.called);
+            });
+
+            it('returns undefined if there is no event proprty or value, or value is NaN', function() {
+                myEl.requestInProcess = false;
+                var event;
+                assert.isUndefined(myEl._requestAgreement(event));
+
+                event = {target: {value: ''}};
+                assert.isUndefined(myEl._requestAgreement(event));
+
+                event.target.value = NaN;
+                assert.isUndefined(myEl._requestAgreement(event));
+            });
+
+            it('returns true and sets requestInProcess property if there is value', function() {
+                myEl.requestInProcess = false;
+                var event = {target: {value: 26}};
+
+                assert.isTrue(myEl._requestAgreement(event));
+                assert.isTrue(myEl.requestInProcess);
+            });
+        });
+
+        it('method _agreementLoaded sets requestInProcess to false and validate orderNumber input', function(done) {
+           flush(function() {
+               myEl.requestInProcess = true;
+               myEl.$.purchaseOrder.validate = sinon.spy();
+               myEl._agreementLoaded();
+
+               assert.isTrue(myEl.$.purchaseOrder.validate.called);
+               assert.isFalse(myEl.requestInProcess);
+               done();
+           });
+        });
+
+        describe('method _validatePurchaseOrder', function() {
+            it('returns false, sets orderInputInvalid and orderNumberErrorText if requestInProcess', function() {
+                myEl.requestInProcess = true;
+                assert.isFalse(myEl.orderInputInvalid);
+                assert.isUndefined(myEl.orderNumberErrorText);
+
+                assert.isFalse(myEl._validatePurchaseOrder());
+                assert.isTrue(myEl.orderInputInvalid);
+                assert.isDefined(myEl.orderNumberErrorText)
+            });
+
+            it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no value and orderInput is required', function() {
+                myEl.requestInProcess = false;
+                myEl.orderInputInvalid = false;
+                myEl.orderNumberErrorText = undefined;
+
+                var orderInput = {required: true};
+
+                assert.isFalse(myEl._validatePurchaseOrder(orderInput));
+                assert.isTrue(myEl.orderInputInvalid);
+                assert.isDefined(myEl.orderNumberErrorText)
+            });
+
+            it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no agreement.id', function() {
+                myEl.requestInProcess = false;
+                myEl.orderInputInvalid = false;
+                myEl.orderNumberErrorText = undefined;
+
+                var orderInput = {value: '123123', required: true};
+
+                assert.isFalse(myEl._validatePurchaseOrder(orderInput));
+                assert.isTrue(myEl.orderInputInvalid);
+                assert.isDefined(myEl.orderNumberErrorText)
+            });
+
+            it('returns true, sets orderInputInvalid to false', function() {
+                myEl.requestInProcess = false;
+                myEl.orderInputInvalid = true;
+                myEl.data = {
+                    agreement: {
+                        id: '123123'
+                    }
+                };
+
+                var orderInput = {value: '123123', required: true};
+
+                assert.isTrue(myEl._validatePurchaseOrder(orderInput));
+                assert.isFalse(myEl.orderInputInvalid);
+                assert.isUndefined(myEl.orderNumberErrorText)
+            });
+        })
 
     });
 </script>
