@@ -128,5 +128,8 @@ Polymer({
         }
         this.orderInputInvalid = false;
         return true;
+    },
+    resetType: function() {
+        this.$.auditType.value = '';
     }
 });

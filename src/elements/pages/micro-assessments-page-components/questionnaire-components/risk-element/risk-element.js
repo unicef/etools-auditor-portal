@@ -70,7 +70,6 @@ Polymer({
             console.error(`Can not parse JSON: ${values}`);
         }
 
-
         this.comments = values.comments || '';
         if (values.answer) {
             this[`answer_${values.answer}`] = true;

@@ -85,6 +85,7 @@ Polymer({
                 agreement: {}
             });
             this.$.engagementDetails.resetValidationErrors();
+            this.$.engagementDetails.resetType();
         }
     }
 
