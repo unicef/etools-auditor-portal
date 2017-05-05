@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button]-->
-<!--import [tab-inputs-styles, module-styles, date-behavior]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, permission-controller]-->
 
 <dom-module id="assign-spot-check">
     <template>
@@ -16,10 +16,12 @@
                     <!-- Date of Field Visit -->
                     <paper-input label="Date of Field Visit"
                                  id="dateVisitInput"
-                                 disabled$="[[!_isAvailable('true', data.date_of_draft_report_to_ip)]]"
+                                 class="disabled-as-readonly required"
+                                 disabled$="[[_isReadOnly('date_of_field_visit', 'true', data.date_of_draft_report_to_ip)]]"
                                  value="[[prettyDate(data.date_of_field_visit)]]"
                                  on-down="openDatePicker"
                                  data-selector="dateVisit"
+                                 required="required"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="dateVisit"
@@ -34,10 +36,12 @@
                     <!-- Date of Field Visit -->
                     <paper-input label="Draft Report Issued to IP"
                                  id="draftReportToIpInput"
-                                 disabled$="[[!_isAvailable(data.date_of_field_visit, data.date_of_comments_by_ip)]]"
+                                 class="disabled-as-readonly required"
+                                 disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  on-down="openDatePicker"
                                  data-selector="draftReportToIp"
+                                 required="required"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="draftReportToIp"
@@ -52,10 +56,12 @@
                     <!-- Date of Field Visit -->
                     <paper-input label="Comments Received by IP"
                                  id="commentsReceivedByIpInput"
-                                 disabled$="[[!_isAvailable(data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef)]]"
+                                 class="disabled-as-readonly required"
+                                 disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef)]]"
                                  value="[[prettyDate(data.date_of_comments_by_ip)]]"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedByIp"
+                                 required="required"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="commentsReceivedByIp"
@@ -72,10 +78,12 @@
                     <!-- Date of Field Visit -->
                     <paper-input label="Draft Report Issued to UNICEF"
                                  id="draftReportUnicefInput"
-                                 disabled$="[[!_isAvailable(data.date_of_comments_by_ip, data.date_of_comments_by_unicef)]]"
+                                 class="disabled-as-readonly required"
+                                 disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
                                  on-down="openDatePicker"
                                  data-selector="draftReportUnicef"
+                                 required="required"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="draftReportUnicef"
@@ -90,10 +98,12 @@
                     <!-- Date of Field Visit -->
                     <paper-input label="Comments Received by UNICEF"
                                  id="commentsReceivedUnicefInput"
-                                 disabled$="[[!_isAvailable(data.date_of_draft_report_to_unicef, '')]]"
+                                 class="disabled-as-readonly required"
+                                 disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '')]]"
                                  value="[[prettyDate(data.date_of_comments_by_unicef)]]"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedUnicef"
+                                 required="required"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="commentsReceivedUnicef"

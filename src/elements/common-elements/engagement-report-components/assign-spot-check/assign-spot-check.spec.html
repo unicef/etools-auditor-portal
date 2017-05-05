@@ -37,33 +37,30 @@
             commentsReceivedUnicefInput = Polymer.dom(myEl.root).querySelector('#commentsReceivedUnicefInput');
         });
 
-        it('Return true when Date of Field Visit is fill, Draft Report Issued to IP and Comments Received by IP are empty', function(done) {
+        it('Return true when Date of Field Visit is fill, Draft Report Issued to IP and Comments Received by IP are empty', function() {
             myEl.data.date_of_field_visit = '2017-04-29';
-            dateOfFieldVisitInput.addEventListener('change', function(event) {
-                done();
+            flush(function() {
+                assert.equal(dateOfFieldVisitInput.getAttribute('aria-disabled'), 'false');
+                assert.equal(draftReportToIpInput.getAttribute('aria-disabled'), 'false');
+                assert.equal(commentsReceivedByIpInput.getAttribute('aria-disabled'), 'true');
             });
-            assert.equal(dateOfFieldVisitInput.getAttribute('disabled'), false);
-            assert.equal(draftReportToIpInput.getAttribute('disabled'), false);
-            assert.equal(commentsReceivedByIpInput.getAttribute('disabled'), true);
         });
 
-        it('Return true when Draft Report Issued is fill, Comments Received by IP and Draft Report Issued to UNICEF are empty', function(done) {
+        it('Return true when Draft Report Issued is fill, Comments Received by IP and Draft Report Issued to UNICEF are empty', function() {
             myEl.data.date_of_draft_report_to_ip = '2017-04-29';
-            dateOfFieldVisitInput.addEventListener('change', function(event) {
-                done();
+            flush(function() {
+                assert.equal(draftReportToIpInput.getAttribute('aria-disabled'), 'false');
+                assert.equal(commentsReceivedByIpInput.getAttribute('aria-disabled'), 'false');
+                assert.equal(draftReportUnicefInput.getAttribute('aria-disabled'), 'true');
             });
-            assert.equal(draftReportToIpInput.getAttribute('disabled'), false);
-            assert.equal(commentsReceivedByIpInput.getAttribute('disabled'), false);
-            assert.equal(draftReportUnicefInput.getAttribute('disabled'), true);
         });
 
-        it('Return true when all dates are fill', function(done) {
+        it('Return true when all dates are fill', function() {
             myEl.data.date_of_draft_report_to_unicef = '2017-04-29';
-            dateOfFieldVisitInput.addEventListener('change', function(event) {
-                done();
+            flush(function() {
+                assert.equal(draftReportUnicefInput.getAttribute('aria-disabled'), 'true');
+                assert.equal(commentsReceivedUnicefInput.getAttribute('aria-disabled'), 'false');
             });
-            assert.equal(draftReportUnicefInput.getAttribute('disabled'), true);
-            assert.equal(commentsReceivedUnicefInput.getAttribute('disabled'), false);
         })
     });
 </script>
