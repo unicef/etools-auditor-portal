@@ -12,13 +12,13 @@ Polymer({
     ready: function() {
         this.dataSetModel =  {
             user: {
-                first_name: "",
-                last_name: "",
-                email: "",
+                first_name: '',
+                last_name: '',
+                email: '',
                 is_active: true,
                 profile: {
-                    job_title: "",
-                    phone_number: ""
+                    job_title: '',
+                    phone_number: ''
                 }
             },
             receive_audit_notifications: false

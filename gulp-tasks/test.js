@@ -1,4 +1,5 @@
 const spawn = require('child_process').spawn;
+const argv = require('yargs').argv;
 
 module.exports = function testElements(done) {
     let tests = spawn('npm', ['test']);
@@ -10,7 +11,11 @@ module.exports = function testElements(done) {
     });
 
     tests.stderr.on('data', (data) => {
-        console.log(`${data}`);
+        if (!argv.pc) {
+            console.log(`${data}`);
+        } else {
+            process.exit(1);
+        }
     });
 
     tests.on('close', (code) => {
