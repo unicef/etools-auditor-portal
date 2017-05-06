@@ -61,7 +61,27 @@
                 assert.equal(draftReportUnicefInput.getAttribute('aria-disabled'), 'true');
                 assert.equal(commentsReceivedUnicefInput.getAttribute('aria-disabled'), 'false');
             });
-        })
+        });
+
+        describe('method checkDateValues', function() {
+            it('set date property to null if it is undefined or empty string', function() {
+                myEl.data.date_of_field_visit = '2017-04-29';
+                myEl.data.date_of_draft_report_to_ip = '';
+                myEl.data.date_of_comments_by_unicef = undefined;
+
+                myEl.checkDateValues();
+
+                assert.isNull(myEl.data.date_of_draft_report_to_ip);
+                assert.isNull(myEl.data.date_of_comments_by_unicef);
+                assert.equal(myEl.data.date_of_field_visit, '2017-04-29');
+            });
+
+            it('do nothing if there is no data property', function() {
+                myEl.data = undefined;
+                myEl.checkDateValues();
+                assert.isUndefined(myEl.data);
+            });
+        });
     });
 </script>
 

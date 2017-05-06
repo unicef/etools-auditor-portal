@@ -28,6 +28,7 @@ Polymer({
     },
     _updateStyles: function() {
         this.updateStyles();
+        this.checkDateValues();
     },
     _resetFieldError: function(event) {
         event.target.invalid = false;
@@ -64,4 +65,12 @@ Polymer({
 
         return valid;
     },
+    checkDateValues: function() {
+        if (!this.data) { return; }
+        if (!this.data.date_of_field_visit) { this.data.date_of_field_visit = null; }
+        if (!this.data.date_of_draft_report_to_ip) { this.data.date_of_draft_report_to_ip = null; }
+        if (!this.data.date_of_comments_by_ip) { this.data.date_of_comments_by_ip = null; }
+        if (!this.data.date_of_draft_report_to_unicef) { this.data.date_of_draft_report_to_unicef = null; }
+        if (!this.data.date_of_comments_by_unicef) { this.data.date_of_comments_by_unicef = null; }
+    }
 });
