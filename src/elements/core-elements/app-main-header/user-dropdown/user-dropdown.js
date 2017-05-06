@@ -1,0 +1,43 @@
+Polymer({
+
+    is: 'user-dropdown',
+
+    properties: {
+        opened: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+        },
+        isAdmin: {
+            type: Boolean,
+            value: false
+        }
+    },
+
+    listeners: {
+        'paper-dropdown-close': '_toggleOpened',
+        'paper-dropdown-open': '_toggleOpened'
+    },
+
+    _toggleOpened: function() {
+        this.$.dropdownMenu.select(null);
+        this.set('opened', this.$.dropdown.opened);
+    },
+
+    _openUserProfile: function() {
+
+    },
+
+    _changeLocation: function(path) {
+        window.location.href = window.location.origin + '/' + path + '/';
+    },
+
+    _navigateToAdminPAge: function() {
+        this._changeLocation('admin');
+    },
+
+    _logout: function() {
+        this._changeLocation('tpm/logout');
+    }
+
+});

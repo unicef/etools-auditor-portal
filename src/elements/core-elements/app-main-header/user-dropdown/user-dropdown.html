@@ -1,0 +1,49 @@
+<!--import [paper-menu-button, paper-button, iron-icon, paper-menu, paper-item]-->
+
+<dom-module id="user-dropdown">
+    <template>
+        <!-- inject styles './../header-styles.scss'-->
+
+        <paper-menu-button id="dropdown" vertical-align="top"
+                           vertical-offset="56"
+                           horizontal-align="right">
+
+            <paper-button class="dropdown-trigger" on-tap="_toggleOpened">
+                <template is="dom-if" if="[[!isAdmin]]" restamp>
+                    <iron-icon icon="social:person"></iron-icon>
+                </template>
+
+                <template is="dom-if" if="[[isAdmin]]" restamp>
+                    <iron-icon class="mr-8" icon="icons:account-circle"></iron-icon>
+                    <span class="dropdown-text">Admin</span>
+                </template>
+
+                <iron-icon class="arrow-down" icon="icons:arrow-drop-down"></iron-icon>
+                <iron-icon class="arrow-up" icon="icons:arrow-drop-up"></iron-icon>
+            </paper-button>
+
+            <paper-menu id="dropdownMenu" class="dropdown-content no-focus mw-160">
+                <paper-item on-tap="_openUserProfile">
+                    <iron-icon icon="icons:account-circle"></iron-icon>
+                    Profile
+                </paper-item>
+
+                <template is="dom-if" if="[[isAdmin]]" restamp>
+                    <paper-item on-tap="_navigateToAdminPAge">
+                        <iron-icon icon="icons:settings-applications"></iron-icon>
+                        Admin
+                    </paper-item>
+                </template>
+
+                <paper-item on-tap="_logout">
+                    <iron-icon icon="icons:power-settings-new"></iron-icon>
+                    Logout
+                </paper-item>
+            </paper-menu>
+
+        </paper-menu-button>
+    </template>
+
+    <!-- inject scripts './user-dropdown.js'-->
+
+</dom-module>
