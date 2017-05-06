@@ -91,6 +91,8 @@ App global configuration
             resetOldUserData: function() {
                 console.log('resetOldUserData()');
                 etoolsCustomDexieDb.profile.clear();
+                etoolsCustomDexieDb.engagements.clear();
+                etoolsCustomDexieDb.partners.clear();
             },
 
             getAbsolutePath: function(path) {
