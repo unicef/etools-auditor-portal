@@ -41,13 +41,13 @@ Polymer({
 
         return readOnly || !(prevDate && !nextDate);
     },
-    validate: function() {
+    validate: function(forSave) {
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');
         let valid = true;
         elements.reduce((previousElement, currentElement) => {
             let previousDate = Date.parse(previousElement.value);
             let currentDate = Date.parse(currentElement.value);
-            if (currentElement.required && !currentElement.validate()) {
+            if (!forSave && currentElement.required && !currentElement.validate()) {
                 valid = false;
             }
             if (previousDate > currentDate) {
