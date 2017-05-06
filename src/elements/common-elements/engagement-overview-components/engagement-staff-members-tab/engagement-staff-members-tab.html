@@ -101,7 +101,7 @@
                             <!--receive notification-->
                             <div class="staff-check-box notify-box input-container input-container-ms">
                                 <etools-checkable-input checked="{{item.receive_audit_notifications}}"
-                                                        label="Receive notification on TPM tasks?"
+                                                        label="Receive notification?"
                                                         type="checkbox"
                                                         label-alignment="right"
                                                         readonly$="[[isReadOnly('receive_audit_notifications', basePermissionPath)]]">
@@ -121,7 +121,7 @@
             <p>There are no assessments added.</p>
         </div>
 
-        <div id="bottom-actions" class="row-h" hidden$="[[!_canBeRemoved()]]">
+        <div id="bottom-actions" class="row-h" hidden$="[[!_canBeRemoved(basePermissionPath)]]">
             <paper-fab icon="add"
                        on-tap="_addNewStaffMember"
                        title="Add"></paper-fab>
