@@ -75,7 +75,7 @@
         _prepareData: function(submit, finalize) {
             let attachmentsTab = this.getElement('#attachments');
 
-            if (!this.engagement || !attachmentsTab) {  return Promise.reject('You meed engagement object and attachments tab'); }
+            if (!this.engagement || !attachmentsTab) {  return Promise.reject('You need engagement object and attachments tab'); }
 
             let data = _.clone(this.engagement);
 
@@ -94,6 +94,8 @@
                 case 'a':
                     type = 'audits';
                     break;
+                default:
+                    type = data.type.link
             }
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);

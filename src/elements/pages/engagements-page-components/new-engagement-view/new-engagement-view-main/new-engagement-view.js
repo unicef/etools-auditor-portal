@@ -37,26 +37,6 @@ Polymer({
                 this.newEngagementData = data;
             });
     },
-    _prepareData: function() {
-        let data = _.cloneDeep(this.engagement),
-            attachmentsTab = this.$.attachments;
-
-        data.partner = data.partner.id;
-        //TODO: remove this after adding agreement data loading
-        data.agreement = 1;
-
-        return attachmentsTab.getFiles()
-            .then((files) => {
-                data.attachments = files;
-                return {
-                    type: data.type.link,
-                    data: data
-                };
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    },
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
         if (event.detail.success && event.detail.data) {
