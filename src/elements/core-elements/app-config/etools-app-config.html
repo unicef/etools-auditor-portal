@@ -11,7 +11,8 @@ App global configuration
     etoolsCustomDexieDb.version(1).stores({
         collectionsList: '&name, expire',
         engagements: 'id, partner.name, agreement.order_number, type, status',
-        partners: 'id'
+        partners: 'id',
+        profile: 'id'
     });
 
 
@@ -25,9 +26,7 @@ App global configuration
                 cachingKey: 'countries'
             },
             userProfile: {
-                url: '/ap/data/user-profile.json',
-//                exp: 30 * 60 * 1000, // 30min
-                cachingKey: 'userData'
+                url: '/users/api/profile/'
             },
             engagementsList: {
                 url: '/api/audit/engagements/',
@@ -56,9 +55,7 @@ App global configuration
                 cachingKey: 'countries'
             },
             userProfile: {
-                url: '/data/user-profile.json',
-//                exp: 30 * 60 * 1000, // 30min
-                cachingKey: 'userData'
+                url: '/data/user-profile.json'
             },
             engagementsList: {
                 url: '/data/engagements-list.json',
@@ -89,6 +86,11 @@ App global configuration
 
             getPermissionsList: function (userType) {
                 return etoolsAppConfig.permissions[`${userType}Permissions`];
+            },
+
+            resetOldUserData: function() {
+                console.log('resetOldUserData()');
+                etoolsCustomDexieDb.profile.clear();
             },
 
             getAbsolutePath: function(path) {

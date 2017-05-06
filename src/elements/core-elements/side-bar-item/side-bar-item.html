@@ -5,7 +5,6 @@
 
   <template>
     <style include="module-styles">
-
       :host {
         display: block;
         font-size: 14px;
@@ -16,12 +15,24 @@
         display: none;
       }
 
-      iron-collapse {
-        display: none;
-      }
-
       :host([nested-nav]) iron-collapse {
         display: block;
+      }
+
+      :host(.iron-selected) #main {
+        background-color: #e8e8e8;
+      }
+
+      :host(.iron-selected) #main:active {
+        background-color: var(--dark-divider-color);
+      }
+
+      :host(.iron-selected:not([nested-nav])) #main > * {
+        color: var(--module-primary);
+      }
+
+      :host(.lighter-item:not([nested-nav])) #main > * {
+        color: var(--dark-secondary-text-color);
       }
 
       #main {
@@ -35,30 +46,23 @@
         text-transform: capitalize;
       }
 
-      #name {
-        margin-left: 16px;
-        color: var(--dark-primary-text-color);
+      #main:active {
+        background-color: var(--dark-hover-color);
       }
 
       iron-icon {
         margin: 0 16px;
         color: var(--dark-icon-color);
+        min-width: 24px;
       }
 
-      :host(.iron-selected) #main {
-        background-color: #e8e8e8;
+      #name {
+        margin-left: 16px;
+        color: var(--dark-primary-text-color);
       }
 
-      :host(.iron-selected:not([nested-nav])) #main > * {
-        color: var(--module-primary);
-      }
-
-      #main:active {
-        background-color: var(--dark-hover-color);
-      }
-
-      :host(.iron-selected) #main:active {
-        background-color: var(--dark-divider-color);
+      iron-collapse {
+        display: none;
       }
 
       .content-wrapper {
@@ -74,7 +78,6 @@
         white-space: nowrap;
         padding: 8px 24px 8px 72px;
       }
-
     </style>
 
     <a id="main" href$="[[sideBarLink]]" on-tap="_handleMainTap">

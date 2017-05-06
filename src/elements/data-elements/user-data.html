@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax, lodash, permission-controller]-->
 
 <dom-module id="user-data">
 
@@ -18,17 +18,19 @@
             is: 'user-data',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                APBehaviors.PermissionController
             ],
 
             properties: {
-
                 user: {
                     type: Object,
                     readOnly: true,
-                    notify: true
+                    notify: true,
+                    value: function() {
+                        return {};
+                    }
                 }
-
             },
 
             ready: function () {
@@ -36,16 +38,31 @@
             },
 
             _handleResponse: function (data) {
-                // TODO: check response to make sure it contains a valid user
-                this._setUser(data.detail[0]);
-//                this._setPermissions(data.detail[0]);
-                this.fire('user-profile-loaded')
+                let user = data.detail;
+                this._setUser(user);
+//                this._setPermissions(user);
+
+                //get old profile data
+                etoolsCustomDexieDb.profile.get(user.id)
+                    .then((previousUser) => {
+                        if (!previousUser) {
+                            this.resetOldUserData();
+
+                            //update user
+                            etoolsCustomDexieDb.profile.put(user);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+
+                        this.resetOldUserData();
+                    });
+
+                this.fire('user-profile-loaded');
             },
 
             _handleError: function (rsp, err) {
-                // TODO: handle error response
-                console.log(rsp);
-                console.log(err);
+                console.error('Can\'t load user data');
             },
 
         });
