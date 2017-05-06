@@ -1,10 +1,11 @@
-<!--import [polymer, app-layout/app-toolbar/app-toolbar, paper-icon-button, iron-flex-layout, etools-page-refresh, etools-app-config]-->
+<!--import [polymer, app-layout/app-toolbar/app-toolbar, paper-icon-button, iron-flex-layout, etools-page-refresh]-->
 
-<!--import [etools-app-selector, countries-dropdown, shared-styles]-->
+<!--import [etools-app-config, etools-app-selector, countries-dropdown, user-dropdown, shared-styles]-->
 
 <dom-module id="app-main-header">
 
   <template>
+
     <style include="shared-styles">
 
       app-toolbar {
@@ -14,7 +15,7 @@
 
       div[main-title] {
         position: relative;
-      bottom: 1px;
+        bottom: 1px;
         margin-left: 24px;
         min-height: 30px;
         background: url('../../../images/etools_logo_icon.png') no-repeat center left;
@@ -26,10 +27,6 @@
 
       etools-page-refresh {
         color: #BCC1C6;
-      }
-
-      #menuButton {
-        display: block;
       }
 
       .right-side {
@@ -56,27 +53,34 @@
         @apply(--layout-center);
       }
 
-      @media (min-width: 850px) {
-        #menuButton {
-          display: none;
-        }
+      @media (min-width: 851px) {
         div[main-title] {
           margin-left: 32px;
         }
       }
     </style>
+
+    <countries-data countries="{{countries}}"></countries-data>
+
     <app-toolbar sticky class="content-align">
-      <paper-icon-button id="menuButton" class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
       <div class="titlebar content-align">
         <etools-app-selector menu-options="[[menuOptions]]"></etools-app-selector>
-        <img src$="{{getAbsolutePath('images/etools_logo_icon.png')}}">
+        <img src="../../../../images/etools_logo_icon.png">
         eTools
       </div>
+
       <div class="content-align">
-        <countries-dropdown id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dropdown>
+        <!--<countries-dd-old id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dd-old>-->
+        <countries-dropdown id="countries"></countries-dropdown>
+
+        <user-dropdown is-admin="[[user.is_superuser]]"></user-dropdown>
+        <!--<user-dropdown is-admin></user-dropdown>-->
+
         <etools-page-refresh id="refresh"></etools-page-refresh>
       </div>
+
     </app-toolbar>
+
   </template>
 
   <script>
@@ -88,7 +92,10 @@
         ],
         properties: {
           countries: {
-            type: Array
+            type: Array,
+            value: function() {
+              return [];
+            }
           },
           user: {
             type: Object
@@ -132,7 +139,7 @@
           }
         },
         observers: [
-          '_updateCountriesList(user.profile.countries_available)'
+          '_updateCountriesList(user.profile.countries_available, countries)'
         ],
         listeners: {
           'main_refresh': '_refresh_page'
@@ -144,26 +151,22 @@
           event.stopImmediatePropagation();
           this.$.refresh._refresh();
         },
-        _getFlagIconClass: function(id) {
-          var flagIdMap = {
-            '0': 'us',
-            '234R': 'syxb',
-            '2490': 'lb',
-            '4020': 'su',
-            '4140': 'sy',
-            '2070': 'in'
-          };
-          return 'flag-icon ' + 'flag-icon-' + flagIdMap[id];
-        },
-        _updateCountriesList: function(countries) {
-          var arrayObj = countries.map(function(arrayItem) {
-            return {
-              id: arrayItem.id,
-              name: arrayItem.name,
-              imgClass: this._getFlagIconClass(arrayItem.business_area_code)
-            };
-          }.bind(this));
-          this.set('countries', arrayObj);
+        _updateCountriesList: function(countriesAvailable, countries) {
+          if (!countriesAvailable) {
+            return;
+          }
+
+          let filteredCountries = countries.filter((country) => {
+              return !!countriesAvailable.find((countryAvailable) => {
+                  return countryAvailable.id === country.id;
+              });
+          });
+          let userCountryIndex = filteredCountries.findIndex((country) => {
+              return country.id === this.user.profile.country;
+          });
+
+          this.$.countries.set('countries', filteredCountries);
+          this.$.countries.set('current', userCountryIndex);
         }
       });
     })();
