@@ -81,7 +81,6 @@
                 this.appDexieDb.transaction('r', this.appDexieDb.engagements, () => {
                     this.currentTransaction = Dexie.currentTransaction;
 
-
                     let engagements = this.appDexieDb.engagements,
                             params = this.requestQueries || {};
 
@@ -95,8 +94,6 @@
                                 .offset( ((params.page || 1) - 1) * params.size )
                                 .limit(+params.size)
                     }
-
-
 
                     return engagements.toArray();
                 }).then((result) => {
