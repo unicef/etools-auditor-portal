@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, query-params-controller]-->
+<!--import [polymer, etools-ajax, query-params-controller, lodash]-->
 
 <dom-module id="engagements-list-data">
 
@@ -47,11 +47,35 @@
                     type: Object,
                     value: function() {
                         return {
-                            order_number: 'agreement.order_number',
-                            name: 'partner.name',
-                            id: 'id',
-                            type: 'type',
-                            status: 'status'
+                            f_auditor: {
+                                type: 'number',
+                                path: 'agreement.audit_organization.id'
+                            },
+                            f_partner_id: {
+                                type: 'number',
+                                path: 'partner.id'
+                            },
+                            f_type: {
+                                path: 'type'
+                            },
+                            f_status: {
+                                path: 'status'
+                            },
+                            type: {
+                                path: 'type'
+                            },
+                            status: {
+                                path: 'status'
+                            },
+                            partner: {
+                                path: 'partner.name'
+                            },
+                            po: {
+                                path: 'agreement.order_number'
+                            },
+                            auditor: {
+                                path: 'agreement.audit_organization.name'
+                            },
                         }
                     }
                 }
@@ -78,29 +102,67 @@
                     this.currentTransaction.abort();
                 }
 
+                let params = this.requestQueries || {};
+                let filters = Object.keys(params).filter((key) => {
+                    return key.startsWith('f_');
+                });
+
                 this.appDexieDb.transaction('r', this.appDexieDb.engagements, () => {
                     this.currentTransaction = Dexie.currentTransaction;
 
+                    let table = this.appDexieDb.engagements;
+                    let searchFields = ['partner', 'po', 'auditor'];
+                    let searchString = params['search'];
 
-                    let engagements = this.appDexieDb.engagements,
-                            params = this.requestQueries || {};
-
+                    //sort
                     if (params.ordered_by) {
                         let [field, order] = params.ordered_by.split('.');
-                        engagements = engagements.orderBy(this.indexObject[field]);
-                        if (order === 'desc') { engagements = engagements.reverse(); }
+                        table = table.orderBy(this.indexObject[field].path);
+
+                        if (order === 'desc') {
+                            table = table.reverse();
+                        }
                     }
+
+                    //filters
+                    filters.forEach((key) => {
+                        let value = params[key];
+                        let type = this.indexObject[key].type;
+                        let path = this.indexObject[key].path;
+
+                        if (type === 'number') {
+                            value = parseInt(value);
+                        }
+
+                        table = table.filter((engagement) => {
+                            return _.get(engagement, path) === value;
+                        });
+                    });
+
+                    //search
+                    if (typeof searchString === 'string' && searchString) {
+                        searchString = searchString.toLowerCase();
+
+                        table = table.filter((engagement) => {
+                            let foundIndex = searchFields.findIndex((key) => {
+                                let path = this.indexObject[key].path;
+                                let value = _.get(engagement, path) || '';
+
+                                return value.toLowerCase().indexOf(searchString) !== -1;
+                            });
+
+                            return foundIndex !== -1;
+                        });
+                    }
+
                     if (!this.withoutPagination && params.size) {
-                        engagements
-                                .offset( ((params.page || 1) - 1) * params.size )
-                                .limit(+params.size)
+                        table.offset( ((params.page || 1) - 1) * params.size )
+                            .limit(+params.size);
                     }
 
-
-
-                    return engagements.toArray();
-                }).then((result) => {
-                    this._setEngagementsList(result);
+                    return table.toArray();
+                }).then((engagementsList) => {
+                    this._setEngagementsList(engagementsList);
                 });
             },
 

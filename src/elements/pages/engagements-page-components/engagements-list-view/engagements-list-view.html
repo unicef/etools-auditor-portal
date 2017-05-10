@@ -22,6 +22,7 @@
         <engagements-list-data
                 id="listData"
                 engagements-list="{{engagementsList}}"
+                engagements="[[engagements]]"
                 list-length="{{listLength}}"
                 request-queries="[[requestQueries]]"
                 without-pagination="[[withoutPagination]]"></engagements-list-data>
@@ -33,7 +34,12 @@
                               btn-text="Add New Engagement"
                               title="Engagements"></pages-header-element>
 
-        <search-and-filter></search-and-filter>
+        <search-and-filter id="filters"
+                           search-label="Search partner, PO or auditor"
+                           filters="[[filters]]"
+                           query-params="{{queryParams}}"
+                           search-params="[[searchParams]]">
+        </search-and-filter>
 
         <list-tab-main header-title="results to show"
                        data="[[engagementsList]]"
