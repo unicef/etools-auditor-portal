@@ -19,9 +19,14 @@
             },
             usedFilters: {
                 type: Array,
-                value: [],
+                value: function() {
+                    return [];
+                }
             },
-            availableFilters: Array,
+            availableFilters: {
+                type: Array,
+                value: []
+            },
             queryParams: {
                 type: Object,
                 notify: true
@@ -53,7 +58,7 @@
             this.push('usedFilters', newFilter);
         },
         removeFilter: function(e) {
-            let query = (typeof e === 'string') ? e : e.model.item.query;
+            let query = e.model.item.query;
             let pristineFilter = this.filters.find((filter) => {
                 return filter.query === query;
             });
@@ -85,20 +90,28 @@
             });
         },
         _setFilterValue: function(filter) {
-            let queryValue = this.get(`queryParams.${filter.query}`);
+            if (!filter) {
+                return;
+            }
 
-            if (queryValue !== undefined) {
-                filter.value = this._getFilterValue(queryValue, filter);
+            let filterValue = this.get(`queryParams.${filter.query}`);
+
+            if (filterValue !== undefined) {
+                filter.value = this._getFilterValue(filterValue, filter);
             }
         },
-        _getFilterValue: function(queryValue, filter) {
+        _getFilterValue: function(filterValue, filter) {
+            if (!filter || !filter.selection || filterValue === undefined) {
+                return;
+            }
+
             let optionValue = filter.optionValue;
 
             return filter.selection.find((selectionItem) => {
-                return selectionItem[optionValue].toString() === queryValue;
+                return selectionItem[optionValue] === filterValue;
             });
         },
-        _getFilterSettings: function(query) {
+        _getFilter: function(query) {
             let filterIndex = this.filters.findIndex((filter) => {
                 return filter.query === query;
             });
@@ -110,12 +123,16 @@
             }
         },
         _changeFilterValue: function(e, detail) {
-            let queryObject = {};
+            if (!e || !detail) {
+                return;
+            }
+
             let query = e.path[0].id;
 
             if (detail.selectedValues && query) {
-                let filterSettings = this._getFilterSettings(query);
-                let optionValue = filterSettings.optionValue || 'value';
+                let filter = this._getFilter(query);
+                let optionValue = filter.optionValue || 'value';
+                let queryObject = {};
 
                 queryObject[query] = detail.selectedValues[optionValue];
                 this.updateQueries(queryObject);

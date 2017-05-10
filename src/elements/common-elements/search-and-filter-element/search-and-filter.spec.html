@@ -1,0 +1,354 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [query-params-controller, search-and-filter, lodash]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <search-and-filter id="element"></search-and-filter>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<search-and-filter>', function () {
+        var filters = [
+            {
+                name: 'auditor',
+                query: 'f_auditor',
+                optionValue: 'id',
+                optionLabel: 'name',
+                selection: []
+            },
+            {
+                name: 'partner',
+                query: 'f_partner_id',
+                optionValue: 'id',
+                optionLabel: 'name',
+                selection: []
+            },
+            {
+                name: 'audit type',
+                query: 'f_type',
+                hideSearch: true,
+                optionValue: 'value',
+                optionLabel: 'label',
+                selection: [{
+                    label: 'Micro Assessment',
+                    value: 'ma'
+                }, {
+                    label: 'Audit',
+                    value: 'audit'
+                }, {
+                    label: 'Spot Check',
+                    value: 'sc'
+                }]
+            },
+            {
+                name: 'status',
+                query: 'f_status',
+                hideSearch: true,
+                optionValue: 'value',
+                optionLabel: 'label',
+                selection: [
+                    {
+                        label: 'Partner was Contacted',
+                        value: 'partner_contacted'
+                    },
+                    {
+                        label: 'Field Visit',
+                        value: 'field_visit'
+                    },
+                    {
+                        label: 'Draft Report Issued To IP',
+                        value: 'draft_issued_to_partner'
+                    },
+                    {
+                        label: 'Comments Received By IP',
+                        value: 'comments_received_by_partner'
+                    },
+                    {
+                        label: 'Draft Report Issued To UNICEF',
+                        value: 'draft_issued_to_unicef'
+                    },
+                    {
+                        label: 'Comments Received By UNICEF',
+                        value: 'comments_received_by_unicef'
+                    },
+                    {
+                        label: 'Report Submitted',
+                        value: 'report_submitted'
+                    },
+                    {
+                        label: 'Final Report',
+                        value: 'final'
+                    }
+                ]
+            }
+        ];
+        var myEl;
+
+        beforeEach(function() {
+            myEl = fixture('element-fixture');
+            myEl.filters = _.map(filters, _.clone);
+        });
+
+        describe('ready()', function () {
+            it('sets availableFilters property', function () {
+                assert.equal(myEl.availableFilters.length, 0);
+
+                myEl.ready();
+                assert.equal(myEl.availableFilters.length, filters.length);
+            });
+        });
+
+        describe('searchKeyDown()', function () {
+            this.timeout(400);
+
+            it('updates "search" query param after 300ms delay', function (done) {
+                var queryParams = myEl.parseQueries();
+                var searchString = 'search';
+
+                assert.isUndefined(queryParams.search);
+
+                myEl.searchString = searchString;
+                myEl.searchKeyDown();
+                queryParams = myEl.parseQueries();
+                assert.isUndefined(queryParams.search);
+
+                setTimeout(function () {
+                    queryParams = myEl.parseQueries();
+                    assert.equal(queryParams.search, searchString);
+                    done();
+                }, 300);
+            });
+        });
+
+        describe('addFilter(e)', function () {
+            var query = filters[0].query;
+
+            it('adds new filter when "e" is string', function (done) {
+                sinon.spy(myEl, '_setFilterValue');
+                myEl.ready();
+
+                assert.equal(myEl.availableFilters.length, filters.length);
+                assert.equal(myEl.usedFilters.length, 0);
+
+                myEl.addFilter(query);
+                flush(function () {
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isTrue(myEl._setFilterValue.calledOnce);
+                    done();
+                });
+            });
+
+            it('adds new filter when "e" is Object', function (done) {
+                var e = {model: {item: {query: query}}};
+                sinon.spy(myEl, '_setFilterValue');
+                myEl.ready();
+
+                assert.equal(myEl.availableFilters.length, filters.length);
+                assert.equal(myEl.usedFilters.length, 0);
+
+                myEl.addFilter(e);
+                flush(function () {
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isTrue(myEl._setFilterValue.calledOnce);
+                    done();
+                });
+            });
+        });
+
+        describe('removeFilter(e)', function () {
+            var e = {model: {item: _.clone(filters[0])}};
+
+            beforeEach(function () {
+                myEl.ready();
+                myEl.addFilter(e);
+            });
+
+            it('removes filter and updates queries', function (done) {
+                sinon.spy(myEl, 'updateQueries');
+                assert.equal(myEl.availableFilters.length, filters.length - 1);
+                assert.equal(myEl.usedFilters.length, 1);
+
+                myEl.removeFilter(e);
+                flush(function () {
+                    var args = {};
+                    args[e.query] = undefined;
+                    assert.equal(myEl.availableFilters.length, filters.length);
+                    assert.equal(myEl.usedFilters.length, 0);
+                    assert.isTrue(myEl.updateQueries.calledOnce);
+                    assert.isTrue(myEl.updateQueries.calledWithMatch(args));
+                    done();
+                });
+            });
+        });
+
+        describe('_restoreFilters()', function () {
+            beforeEach(function () {
+                myEl.queryParams = {};
+            });
+
+            it('restores searchString', function (done) {
+                var searchString = 'search';
+                myEl.queryParams.search = searchString;
+                myEl._restoreFilters();
+
+                flush(function () {
+                    assert.equal(myEl.searchString, searchString);
+                    done();
+                });
+            });
+
+            it('restores filters', function (done) {
+                var filter = myEl.filters[2];
+                var query = filter.query;
+                var queryParamsValue = filter.selection[0][filter.optionValue];
+
+                sinon.spy(myEl, 'addFilter');
+                myEl.ready();
+                myEl.queryParams[query] = queryParamsValue;
+                myEl._restoreFilters();
+
+                flush(function () {
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isTrue(myEl.addFilter.calledOnce);
+                    assert.isTrue(myEl.addFilter.calledWith(query));
+                    done();
+                });
+            });
+        });
+
+        describe('_getFilterIndex(query)', function () {
+            it('returns filter index in filters array', function () {
+                var index = 0;
+                var query = filters[0].query;
+
+                assert.equal(myEl._getFilterIndex(query), index);
+            });
+
+            it('returns -1 if filter is not found', function () {
+                assert.equal(myEl._getFilterIndex(undefined), -1);
+            });
+        });
+
+        describe('_setFilterValue(filter)', function () {
+            it('restores previous selected filter value from queryParams', function () {
+                var filter = myEl.filters[2];
+                var query = filter.query;
+                var filterValue = filter.selection[0][filter.optionValue];
+
+                sinon.spy(myEl, '_getFilterValue');
+                myEl.queryParams = {};
+                myEl.queryParams[query] = filterValue;
+                assert.isUndefined(filter.value);
+
+                myEl._setFilterValue(filter);
+                assert.isDefined(filter.value);
+                assert.deepEqual(filter.value, _.clone(filter.selection[0]));
+                assert.isTrue(myEl._getFilterValue.calledOnce);
+                assert.isTrue(myEl._getFilterValue.calledWithMatch(filterValue, filter));
+            });
+        });
+
+        describe('_getFilterValue(filterValue, filter)', function () {
+            it('returns undefined when filterValue is not exist', function () {
+                assert.isUndefined(myEl._getFilterValue('not exist', myEl.filters[2]));
+            });
+
+            it('returns undefined when filter, filter.selection or filterValue are undefined', function () {
+                assert.isUndefined(myEl._getFilterValue(myEl.filters[2].selection[0].value, undefined));
+                assert.isUndefined(myEl._getFilterValue(myEl.filters[2].selection[0].value, {}));
+                assert.isUndefined(myEl._getFilterValue(undefined, myEl.filters[2]));
+            });
+
+            it('returns correct selection item ', function () {
+                var filter = myEl.filters[2];
+                var selectionItem = _.clone(filter.selection[0]);
+                var filterValue = selectionItem[filter.optionValue];
+
+                assert.deepEqual(myEl._getFilterValue(filterValue, filter), selectionItem);
+            });
+        });
+
+        it('_getFilter(query)', function () {
+            it('returns filter', function () {
+                var filter = myEl.filters[0];
+                var query = filter.query;
+
+                assert.deepEqual(myEl._getFIlter(query), filter);
+            });
+
+            it('returns empty object', function () {
+                assert.deepEqual(myEl._getFIlter(undefined), {});
+            });
+        });
+
+        describe('_changeFilterValue(e, detail)', function () {
+            it('calls updateQueries() method when filter value changed', function () {
+                var filter = myEl.filters[2];
+                var filterId = filter.query;
+                var e = {path: [{id: filterId}]};
+                var filterValue = myEl.filters[2].selection[filter.optionValue];
+                var detail = {selectedValues: {}};
+                var args = {};
+                detail.selectedValues[filter.optionValue] = filterValue;
+                args[filterId] = filterValue;
+                sinon.spy(myEl, 'updateQueries');
+
+                assert.isFalse(myEl.updateQueries.called);
+
+                myEl._changeFilterValue(e, detail);
+                assert.isTrue(myEl.updateQueries.calledOnce);
+                assert.isTrue(myEl.updateQueries.calledWithMatch(args));
+            });
+        });
+
+        describe('_changeShowHidden()', function () {
+            it('calls updateQueries() with show_hidden="true"', function () {
+                sinon.spy(myEl, 'updateQueries');
+                myEl.showHidden = true;
+                myEl._changeShowHidden();
+                assert.isTrue(myEl.updateQueries.calledOnce);
+                assert.isTrue(myEl.updateQueries.calledWithMatch({show_hidden: 'true'}));
+            });
+
+            it('calls updateQueries() with show_hidden=false', function () {
+                sinon.spy(myEl, 'updateQueries');
+                myEl.showHidden = false;
+                myEl._changeShowHidden();
+                assert.isTrue(myEl.updateQueries.calledOnce);
+                assert.isTrue(myEl.updateQueries.calledWithMatch({show_hidden: false}));
+            });
+        });
+
+        describe('hiddenOn(on)', function () {
+            it('sets showHidden=true if on=true && showHidden=false', function () {
+                myEl.showHidden = false;
+                myEl.hiddenOn(true);
+                assert.isTrue(myEl.showHidden);
+            });
+
+            it('sets showHidden=false if on=false && showHidden=true', function () {
+                myEl.showHidden = true;
+                myEl.hiddenOn(false);
+                assert.isFalse(myEl.showHidden);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
