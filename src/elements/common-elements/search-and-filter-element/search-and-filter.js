@@ -36,9 +36,6 @@
             'hiddenOn(queryParams.show_hidden)',
             '_restoreFilters(filters.*)'
         ],
-        ready: function() {
-            this.availableFilters = this.filters;
-        },
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
                 this.updateQueries({search: this.searchString});
@@ -74,6 +71,9 @@
             this.splice('usedFilters', indexToRemove, 1);
         },
         _restoreFilters: function() {
+            this.availableFilters = this.filters;
+            this.usedFilters = [];
+
             if (this.queryParams && this.queryParams.search) {
                 this.set('searchString', this.queryParams.search);
             }
@@ -108,7 +108,7 @@
             let optionValue = filter.optionValue;
 
             return filter.selection.find((selectionItem) => {
-                return selectionItem[optionValue] === filterValue;
+                return selectionItem[optionValue].toString() === filterValue;
             });
         },
         _getFilter: function(query) {

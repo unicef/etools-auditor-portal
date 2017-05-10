@@ -101,15 +101,6 @@
             myEl.filters = _.cloneDeep(filters);
         });
 
-        describe('ready()', function () {
-            it('sets availableFilters property', function () {
-                assert.equal(myEl.availableFilters.length, 0);
-
-                myEl.ready();
-                assert.equal(myEl.availableFilters.length, filters.length);
-            });
-        });
-
         describe('searchKeyDown()', function () {
             this.timeout(400);
 
@@ -228,6 +219,12 @@
                     assert.isTrue(myEl.addFilter.calledWith(query));
                     done();
                 });
+            });
+
+            it('resets availableFilters and usedFilters to initial state', function () {
+                myEl._restoreFilters();
+                assert.deepEqual(myEl.availableFilters, myEl.filters);
+                assert.deepEqual(myEl.usedFilters, []);
             });
         });
 
