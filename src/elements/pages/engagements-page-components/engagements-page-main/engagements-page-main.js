@@ -40,7 +40,7 @@ Polymer({
             queries = this.parseQueries();
 
         if (!queries.size) { queriesUpdates.size = '10'; }
-        if (!queries.ordered_by) { queriesUpdates.ordered_by = 'order_number.asc'; }
+        if (!queries.ordered_by) { queriesUpdates.ordered_by = 'po.asc'; }
 
         if (queries.page) {
             let page = +queries.page;
