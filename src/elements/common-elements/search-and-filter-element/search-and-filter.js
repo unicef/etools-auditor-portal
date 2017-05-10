@@ -11,15 +11,11 @@
                     return [];
                 }
             },
-            searchParams: {
-                type: Array,
-                value: function() {
-                    return [];
-                }
-            },
             searchLabel: {
-                type: String,
-                computed: '_computeSearchLabel(searchParams)'
+                type: String
+            },
+            searchString: {
+                type: String
             },
             usedFilters: {
                 type: Array,
@@ -39,7 +35,9 @@
             this.availableFilters = this.filters;
         },
         searchKeyDown: function() {
-            //    search logic
+            this.debounce('searchKeyDown', () => {
+                this.updateQueries({search: this.searchString});
+            }, 300);
         },
         addFilter: function(e) {
             let query = (typeof e === 'string') ? e : e.model.item.query;
@@ -71,7 +69,10 @@
             this.splice('usedFilters', indexToRemove, 1);
         },
         _restoreFilters: function() {
-            //TODO: retrieve search
+            if (this.queryParams && this.queryParams.search) {
+                this.set('searchString', this.queryParams.search);
+            }
+
             this.filters.forEach((filter) => {
                 if (this.queryParams && this.queryParams[filter.query] !== undefined) {
                     this.addFilter(filter.query);
@@ -126,21 +127,6 @@
             } else {
                 this.updateQueries({show_hidden: false});
             }
-        },
-        _computeSearchLabel: function(searchParams) {
-            let length = searchParams.length;
-            let labels = searchParams.map((param) => {
-                return param.label;
-            });
-            let resultString = 'Search ';
-
-            resultString += labels.slice(0, length - 2).join(', ');
-            if (length > 2) {
-                resultString += ', ';
-            }
-            resultString += labels.slice(-2).join(' or ');
-
-            return resultString;
         },
         hiddenOn: function(on) {
             if (on && !this.showHidden) {

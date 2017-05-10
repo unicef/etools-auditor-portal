@@ -34,7 +34,13 @@
                               btn-text="Add New Engagement"
                               title="Engagements"></pages-header-element>
 
-        <search-and-filter id="filters" filters="[[filters]]" query-params="{{queryParams}}" search-params="[[searchParams]]"></search-and-filter>
+        <search-and-filter id="filters"
+                           search-label="Search partner, PO or auditor"
+                           filters="[[filters]]"
+                           query-params="{{queryParams}}"
+                           search-params="[[searchParams]]">
+
+        </search-and-filter>
 
         <list-tab-main header-title="results to show"
                        data="[[engagementsList]]"

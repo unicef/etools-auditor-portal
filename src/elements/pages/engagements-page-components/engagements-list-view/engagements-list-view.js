@@ -5,20 +5,20 @@
         {
             name: 'auditor',
             query: 'f_auditor',
-            optionValue: 'value',
-            optionLabel: 'label',
+            optionValue: 'id',
+            optionLabel: 'name',
             selection: []
         },
         {
             name: 'partner',
-            query: 'partner_id',
+            query: 'f_partner_id',
             optionValue: 'id',
             optionLabel: 'name',
             selection: []
         },
         {
             name: 'audit type',
-            query: 'type',
+            query: 'f_type',
             hideSearch: true,
             optionValue: 'value',
             optionLabel: 'label',
@@ -35,7 +35,7 @@
         },
         {
             name: 'status',
-            query: 'status',
+            query: 'f_status',
             hideSearch: true,
             optionValue: 'value',
             optionLabel: 'label',
@@ -76,21 +76,6 @@
         }
     ];
 
-    let searchParams = [
-        {
-            label: 'partner',
-            query: 'partner_id'
-        },
-        {
-            label: 'PO',
-            query: 'id'
-        },
-        {
-            label: 'auditor',
-            query: 'f_auditor'
-        }
-    ];
-
     Polymer({
         is: 'engagements-list-view',
         behaviors: [
@@ -108,14 +93,14 @@
                     return [{
                         'size': 20,
                         'label': 'Purchase Order #',
-                        'name': 'order_number',
+                        'name': 'po',
                         'link': '*engagement_type*/*data_id*/overview',
                         'ordered': false,
                         'path': 'agreement.order_number'
                     }, {
                         'size': 40,
                         'label': 'Partner Name',
-                        'name': 'name',
+                        'name': 'partner',
                         'ordered': false,
                         'path': 'partner.name'
                     }, {
@@ -134,10 +119,6 @@
             filters: {
                 type: Array,
                 value: filters
-            },
-            searchParams: {
-                type: Array,
-                value: searchParams
             },
             engagementsList: {
                 type: Array,
@@ -182,10 +163,15 @@
             return this.$.filters._getFilterIndex(query);
         },
         setFiltersSelections: function() {
-            let partnersFilterIndex = this._getFilterIndex('partner_id');
+            let partnersFilterIndex = this._getFilterIndex('f_partner_id');
+            let auditorsFilterIndex = this._getFilterIndex('f_auditor');
 
             if (partnersFilterIndex !== -1) {
                 this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners'));
+            }
+
+            if (auditorsFilterIndex !== -1) {
+                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors'));
             }
         }
     });

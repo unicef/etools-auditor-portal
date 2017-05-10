@@ -10,17 +10,16 @@
         <paper-card class="second-header horizontal layout center">
 
             <div class="flex horizontal layout wrap">
-                <template is="dom-if" if="[[searchParams.length]]">
-                    <div class="layout horizontal search-input-container">
-                        <paper-input
-                                inline
-                                label="[[searchLabel]]"
-                                on-keydown="searchKeyDown">
+                <div class="layout horizontal search-input-container">
+                    <paper-input
+                            inline
+                            label="[[searchLabel]]"
+                            value="{{searchString}}"
+                            on-keydown="searchKeyDown">
 
-                            <iron-icon icon="search" prefix></iron-icon>
-                        </paper-input>
-                    </div>
-                </template>
+                        <iron-icon icon="search" prefix></iron-icon>
+                    </paper-input>
+                </div>
                 <!-- FILTERS -->
                 <template is="dom-repeat" items="[[usedFilters]]">
 
