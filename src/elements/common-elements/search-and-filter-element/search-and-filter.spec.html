@@ -98,7 +98,7 @@
 
         beforeEach(function() {
             myEl = fixture('element-fixture');
-            myEl.filters = _.map(filters, _.clone);
+            myEl.filters = _.cloneDeep(filters);
         });
 
         describe('ready()', function () {
