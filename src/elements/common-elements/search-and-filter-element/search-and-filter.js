@@ -35,35 +35,43 @@
         observers: [
             '_restoreFilters(queryParams.*)'
         ],
+        ready: function() {
+            this.pageReloaded = true;
+        },
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
-                this.updateQueries({search: this.searchString || undefined});
+                this.updateQueries({search: this.searchString || undefined, filters_changed: 'true'});
             }, 300);
         },
         addFilter: function(e) {
             let query = (typeof e === 'string') ? e : e.model.item.query;
-            let newFilter = this.filters.find((filter) => {
+            let alreadySelected = this.usedFilters.findIndex((filter) => {
                 return filter.query === query;
             });
 
-            this.set('availableFilters', this.availableFilters.filter((filter) => {
-                return filter.query !== newFilter.query;
-            }));
+            if (alreadySelected === -1) {
+                let newFilter = this.filters.find((filter) => {
+                    return filter.query === query;
+                });
 
-            this._setFilterValue(newFilter);
-            this.push('usedFilters', newFilter);
+                this.set('availableFilters', this.availableFilters.filter((filter) => {
+                    return filter.query !== newFilter.query;
+                }));
+
+                this._setFilterValue(newFilter);
+                this.push('usedFilters', newFilter);
+            }
         },
         removeFilter: function(e) {
             let query = e.model.item.query;
-            let pristineFilter = this.filters.find((filter) => {
+            let removedFilter = this.filters.find((filter) => {
                 return filter.query === query;
             });
 
-            this.push('availableFilters', pristineFilter);
+            this.push('availableFilters', removedFilter);
 
             let indexToRemove = this.usedFilters.indexOf(e.model.item);
-            let queryObject = {};
-
+            let queryObject = {filters_changed: 'true'};
             queryObject[query] = undefined;
 
             this.updateQueries(queryObject);
@@ -71,15 +79,26 @@
         },
         _restoreFilters: function() {
             this.debounce('_restoreFilters', () => {
-                this.availableFilters = this.filters;
-                this.usedFilters = [];
+                let queryParams = this.queryParams;
 
-                if (this.queryParams && this.queryParams.search) {
-                    this.set('searchString', this.queryParams.search);
+                if (!queryParams) {
+                    return;
+                }
+
+                if (!queryParams.filters_changed || this.pageReloaded) {
+                    this.availableFilters = this.filters;
+                    this.usedFilters = [];
+                    this.pageReloaded = false;
+                }
+
+                if (queryParams.search) {
+                    this.set('searchString', queryParams.search);
+                } else {
+                    this.set('searchString', '');
                 }
 
                 this.filters.forEach((filter) => {
-                    if (this.queryParams && this.queryParams[filter.query] !== undefined) {
+                    if (queryParams[filter.query] !== undefined) {
                         this.addFilter(filter.query);
                     }
                 });
@@ -135,7 +154,7 @@
             if (detail.selectedValues && query) {
                 let filter = this._getFilter(query);
                 let optionValue = filter.optionValue || 'value';
-                let queryObject = {};
+                let queryObject = {filters_changed: 'true'};
 
                 queryObject[query] = detail.selectedValues[optionValue];
                 this.updateQueries(queryObject);
