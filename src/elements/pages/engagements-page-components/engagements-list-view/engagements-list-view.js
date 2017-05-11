@@ -118,7 +118,11 @@
                         'size': 30,
                         'label': 'Status',
                         'name': 'status',
-                        'ordered': false
+                        'ordered': false,
+                        'additional': {
+                            'type': 'date',
+                            'path': 'status_date'
+                        }
                     }];
                 }
             },
