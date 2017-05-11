@@ -19,8 +19,9 @@
                 caching-storage="custom"
                 dexie-db-collection="auditors"
                 on-success="_auditorsLoaded"
-                on-fail="_auditorsError"></etools-ajax>
+                on-fail="_responseError"></etools-ajax>
 
+        <!--engagement creation-->
         <etools-ajax method="OPTIONS"
                      url="{{newEngagementPermissions}}"
                      on-success="_handleNewEngagementResponse"
@@ -49,8 +50,7 @@
                 ready: function () {
                     //TODO: CHANGE after engagements options api will works
                     this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
-                    this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'micro-assessments'}).url;
-//                    this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'engagements'}).url;
+                    this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'engagements'}).url;
                 },
 
                 _allDataLoaded: function() {
@@ -72,14 +72,14 @@
                 },
 
                 _handleNewEngagementResponse: function(data) {
-                    let actions = data && data.detal && data.detail.actions;
+                    let actions = data && data.detail && data.detail.actions;
                     if (!actions) { this._responseError(); }
 
-                    if (actions.POST) {
-                        data.detail.actions.POST.type.read_only = false; //TODO: remove this line when using /engagement/ OPTIONS api
-                        data.detail.actions.POST.type.required = true; //TODO: remove this line when using /engagement/ OPTIONS api
+                    if (actions.POST || actions.GET) {
+//                        data.detail.actions.POST.type.read_only = false; //TODO: remove this line when using /engagement/ OPTIONS api
+//                        data.detail.actions.POST.type.required = true; //TODO: remove this line when using /engagement/ OPTIONS api
 
-                        this._addToCollection('new_engagement', data.detail.actions.POST);
+                        this._addToCollection('new_engagement', data.detail.actions);
                         this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
 
                         //TODO: move this logic to GET actions
@@ -92,15 +92,6 @@
                     } else {
                         dataLoaded.partners = true;
                     }
-
-//                    if (actions.GET) {
-//                        let attachmentsTypes = this.getChoices('new_engagement.attachments.file_type');
-//                        if (!attachmentsTypes) {
-//                            this._responseError();
-//                            return;
-//                        }
-//                        this._setData('attachments_types', attachmentsTypes);
-//                    }
 
                     dataLoaded.engagementOptions = true;
                     this._allDataLoaded();

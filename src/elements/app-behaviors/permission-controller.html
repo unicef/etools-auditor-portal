@@ -85,7 +85,7 @@
                     if (value[key]) {
                         value = value[key];
                     } else {
-                        value = value.child || value.children;
+                        value = value.POST || value.PUT || value.GET || value.child || value.children;
                         path.unshift(key);
                     }
 

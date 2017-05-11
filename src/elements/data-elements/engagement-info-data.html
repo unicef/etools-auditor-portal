@@ -55,7 +55,7 @@
 
             _handleOptionsResponse: function(data) {
                 if (data.detail && data.detail.actions && data.detail.actions) {
-                    this._addToCollection(`engagement_${this.engagementId}`, data.detail.actions.PUT);
+                    this._addToCollection(`engagement_${this.engagementId}`, data.detail.actions);
                 } else {
                     console.error('Can not load permissions for engagement');
                 }
