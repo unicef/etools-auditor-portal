@@ -3,51 +3,85 @@
 (function() {
     let filters = [
         {
-            name: 'Status',
-            filterName: 'f_status',
+            name: 'auditor',
+            query: 'f_auditor',
+            optionValue: 'id',
+            optionLabel: 'name',
+            selection: []
+        },
+        {
+            name: 'partner',
+            query: 'f_partner_id',
+            optionValue: 'id',
+            optionLabel: 'name',
+            selection: []
+        },
+        {
+            name: 'audit type',
+            query: 'f_type',
+            hideSearch: true,
+            optionValue: 'value',
+            optionLabel: 'label',
+            selection: [{
+                label: 'Micro Assessment',
+                value: 'ma'
+            }, {
+                label: 'Audit',
+                value: 'audit'
+            }, {
+                label: 'Spot Check',
+                value: 'sc'
+            }]
+        },
+        {
+            name: 'status',
+            query: 'f_status',
+            hideSearch: true,
+            optionValue: 'value',
+            optionLabel: 'label',
             selection: [
                 {
-                    label: 'Planned',
-                    value: 0,
-                    apiValue: 'planned'
+                    label: 'Partner was Contacted',
+                    value: 'partner_contacted'
                 },
                 {
-                    label: 'Submitted',
-                    value: 1,
-                    apiValue: 'submitted'
+                    label: 'Field Visit',
+                    value: 'field_visit'
                 },
                 {
-                    label: 'Rejected',
-                    value: 2,
-                    apiValue: 'rejected'
+                    label: 'Draft Report Issued To IP',
+                    value: 'draft_issued_to_partner'
                 },
                 {
-                    label: 'Approved',
-                    value: 3,
-                    apiValue: 'approved'
+                    label: 'Comments Received By IP',
+                    value: 'comments_received_by_partner'
+                },
+                {
+                    label: 'Draft Report Issued To UNICEF',
+                    value: 'draft_issued_to_unicef'
+                },
+                {
+                    label: 'Comments Received By UNICEF',
+                    value: 'comments_received_by_unicef'
+                },
+                {
+                    label: 'Report Submitted',
+                    value: 'report_submitted'
+                },
+                {
+                    label: 'Final Report',
+                    value: 'final'
                 }
             ]
-        },
-        {
-            name: 'Implementing Partner',
-            filterName: 'f_impl_partner',
-            selection: []
-        },
-        {
-            name: 'Location',
-            filterName: 'f_location',
-            selection: []
-        },
-        {
-            name: 'UNICEF Focal Point',
-            filterName: 'f_focal_point',
-            selection: []
         }
     ];
 
     Polymer({
         is: 'engagements-list-view',
-        behaviors: [APBehaviors.PermissionController],
+        behaviors: [
+            APBehaviors.PermissionController,
+            APBehaviors.StaticDataController
+        ],
         properties: {
             queryParams: {
                 type: Object,
@@ -59,14 +93,14 @@
                     return [{
                         'size': 20,
                         'label': 'Purchase Order #',
-                        'name': 'order_number',
+                        'name': 'po',
                         'link': '*engagement_type*/*data_id*/overview',
                         'ordered': false,
                         'path': 'agreement.order_number'
                     }, {
                         'size': 40,
                         'label': 'Partner Name',
-                        'name': 'name',
+                        'name': 'partner',
                         'ordered': false,
                         'path': 'partner.name'
                     }, {
@@ -87,6 +121,10 @@
                 value: filters
             },
             engagementsList: {
+                type: Array,
+                value: []
+            },
+            engagements: {
                 type: Array,
                 value: []
             },
@@ -112,11 +150,29 @@
             }
         },
         listeners: {},
+        observers: [
+            'setFiltersSelections(engagements.*)'
+        ],
         _showAddButton: function() {
             return this.collectionExists('new_engagement');
         },
         checkExpire: function() {
             this.$.listData.checkExpire();
+        },
+        _getFilterIndex: function(query) {
+            return this.$.filters._getFilterIndex(query);
+        },
+        setFiltersSelections: function() {
+            let partnersFilterIndex = this._getFilterIndex('f_partner_id');
+            let auditorsFilterIndex = this._getFilterIndex('f_auditor');
+
+            if (partnersFilterIndex !== -1) {
+                this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners'));
+            }
+
+            if (auditorsFilterIndex !== -1) {
+                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors'));
+            }
         }
     });
 })();

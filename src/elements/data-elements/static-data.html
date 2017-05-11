@@ -13,6 +13,14 @@
                 on-forbidden="_responseError"
                 on-fail="_responseError"></etools-ajax>
 
+        <!--auditors-->
+        <etools-ajax
+                endpoint="[[auditorsEndpoint]]"
+                caching-storage="custom"
+                dexie-db-collection="auditors"
+                on-success="_auditorsLoaded"
+                on-fail="_auditorsError"></etools-ajax>
+
         <etools-ajax method="OPTIONS"
                      url="{{newEngagementPermissions}}"
                      on-success="_handleNewEngagementResponse"
@@ -40,12 +48,13 @@
 
                 ready: function () {
                     //TODO: CHANGE after engagements options api will works
+                    this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
                     this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'micro-assessments'}).url;
 //                    this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'engagements'}).url;
                 },
 
                 _allDataLoaded: function() {
-                    if (dataLoaded.partners && dataLoaded.engagementOptions) {
+                    if (dataLoaded.partners && dataLoaded.auditors && dataLoaded.engagementOptions) {
                         this.fire('static-data-loaded');
                     }
                 },
@@ -53,6 +62,12 @@
                 _partnersLoaded: function(data) {
                     this._setData('partners', data.detail);
                     dataLoaded.partners = true;
+                    this._allDataLoaded();
+                },
+
+                _auditorsLoaded: function(data) {
+                    this._setData('auditors', data.detail);
+                    dataLoaded.auditors = true;
                     this._allDataLoaded();
                 },
 
