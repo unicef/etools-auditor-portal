@@ -91,25 +91,31 @@
                 type: Array,
                 value: function() {
                     return [{
-                        'size': 20,
+                        'size': 15,
                         'label': 'Purchase Order #',
                         'name': 'po',
                         'link': '*engagement_type*/*data_id*/overview',
                         'ordered': false,
                         'path': 'agreement.order_number'
                     }, {
-                        'size': 40,
+                        'size': 20,
                         'label': 'Partner Name',
                         'name': 'partner',
                         'ordered': false,
                         'path': 'partner.name'
                     }, {
                         'size': 20,
+                        'label': 'Auditor',
+                        'name': 'auditor',
+                        'ordered': false,
+                        'path': 'agreement.audit_organization.name'
+                    }, {
+                        'size': 15,
                         'label': 'Audit Type',
                         'name': 'type',
                         'ordered': false
                     }, {
-                        'size': 20,
+                        'size': 30,
                         'label': 'Status',
                         'name': 'status',
                         'ordered': false
@@ -140,11 +146,14 @@
                 type: Array,
                 value: function() {
                     return [{
-                        'label': 'Email',
-                        'name': 'email'
+                        'label': 'Partner Email',
+                        'path': 'partner.email'
                     }, {
-                        'label': 'Phone #',
-                        'name': 'phone_number'
+                        'label': 'Partner Phone #',
+                        'path': 'partner.phone_number'
+                    }, {
+                        'label': 'Partner Type',
+                        'path': 'partner.partner_type'
                     }];
                 }
             }
