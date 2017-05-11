@@ -16,55 +16,121 @@
     describe('Permission controller element', function () {
         var behaviorObj;
         var test_data = {
-            "id": {
-                "type": "integer",
-                "required": false,
-                "read_only": true,
-                "label": "ID"
-            },
-            "agreement": {
-                "type": "field",
-                "required": true,
-                "read_only": false,
-                "label": "Agreement",
-                "choices": [
-                    {
-                        "display_name": "Partner Contacted",
-                        "value": "partner_contacted"
-                    },
-                    {
-                        "display_name": "Field Visit",
-                        "value": "field_visit"
-                    }
-                ]
-            },
-            "staff_members": {
-                "type": "field",
-                "required": false,
-                "read_only": false,
-                "label": "Staff members",
-                "child": {
-                    "type": "nested object",
+            GET: {
+                "id": {
+                    "type": "integer",
+                    "required": false,
+                    "read_only": true,
+                    "label": "ID"
+                },
+                "agreement": {
+                    "type": "field",
+                    "required": true,
+                    "read_only": false,
+                    "label": "Agreement",
+                    "choices": [
+                        {
+                            "display_name": "Partner Contacted",
+                            "value": "partner_contacted"
+                        },
+                        {
+                            "display_name": "Field Visit",
+                            "value": "field_visit"
+                        }
+                    ]
+                },
+                "staff_members": {
+                    "type": "field",
                     "required": false,
                     "read_only": false,
-                    "children": {
-                        "id": {
-                            "type": "integer",
-                            "required": false,
-                            "read_only": true,
-                            "label": "ID"
+                    "label": "Staff members",
+                    "child": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": false,
+                        "children": {
+                            "id": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": true,
+                                "label": "ID"
+                            },
+                            "title": {
+                                "type": "string",
+                                "required": true,
+                                "read_only": false,
+                                "label": "Title",
+                                "max_length": 64
+                            }
+                        }
+                    }
+                },
+                "attachments": {
+                    "required": false,
+                    "read_only": true
+                }
+            },
+            PUT: {
+                "id": {
+                    "type": "integer",
+                    "required": false,
+                    "read_only": true,
+                    "label": "ID"
+                },
+                "agreement": {
+                    "type": "field",
+                    "required": true,
+                    "read_only": false,
+                    "label": "Agreement",
+                    "choices": [
+                        {
+                            "display_name": "Partner Contacted",
+                            "value": "partner_contacted"
                         },
-                        "title": {
-                            "type": "string",
-                            "required": true,
-                            "read_only": false,
-                            "label": "Title",
-                            "max_length": 64
+                        {
+                            "display_name": "Field Visit",
+                            "value": "field_visit"
+                        }
+                    ]
+                },
+                "staff_members": {
+                    "type": "field",
+                    "required": false,
+                    "read_only": false,
+                    "label": "Staff members",
+                    "child": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": false,
+                        "children": {
+                            "id": {
+                                "type": "integer",
+                                "required": false,
+                                "read_only": true,
+                                "label": "ID"
+                            },
+                            "title": {
+                                "type": "string",
+                                "required": true,
+                                "read_only": false,
+                                "label": "Title",
+                                "max_length": 64
+                            }
                         }
                     }
                 }
+            },
+            allowed_actions: ['saveEngagement', 'createEngagement']
+        };
+        var test_data2 = {
+            GET: {
+                "attachments": {
+                    "required": false,
+                    "read_only": true
+                }
             }
         };
+
 
         beforeEach(function () {
             behaviorObj = APBehaviors.PermissionController;
@@ -174,14 +240,51 @@
             });
         });
 
-        it('use isReadonly method to check read_only attribute', function() {
-            behaviorObj._addToCollection('test', test_data);
-            behaviorObj._updateCollection('test', test_data);
+        describe('method _getCollection', function() {
+            before(function () {
+                behaviorObj._addToCollection('test', test_data);
+            });
 
-            assert.isFalse(behaviorObj.isReadonly('test.staff_members.title'));
-            assert.isTrue(behaviorObj.isReadonly('test.staff_members.id'));
-            assert.isFalse(behaviorObj.isReadonly('test.agreement'));
-            assert.isNull(behaviorObj.isReadonly('test.agreement.not_found'));
+            beforeEach(function () {
+                behaviorObj._updateCollection('test', test_data);
+            });
+
+            it('return attributes for provided path', function() {
+                let idAttributes = behaviorObj._getCollection('test.id');
+                assert.deepEqual(idAttributes, test_data.PUT.id);
+            });
+
+            it('return undefined if collection does not exists', function() {
+                assert.isUndefined(behaviorObj._getCollection('test.not_found'))
+            });
+
+            it('can receive action argument in which must property exist', function() {
+                behaviorObj._addToCollection('test2', test_data2);
+                assert.isUndefined(behaviorObj._getCollection('test2.attachments', 'PUT'));
+                assert.isDefined(behaviorObj._getCollection('test2.attachments'));
+            });
+        });
+
+        describe('method collectionExists', function() {
+            it('throws if path argument is not provided or incorrect', function() {
+                assert.throws(behaviorObj.collectionExists);
+
+                var first = behaviorObj.collectionExists.bind(behaviorObj, []);
+                assert.throws(first);
+            });
+
+            it('runs _getCollection method', function() {
+                sinon.spy(behaviorObj, '_getCollection');
+                behaviorObj.collectionExists('test.staff_members');
+                assert.isTrue(behaviorObj._getCollection.called);
+            });
+
+            it('return true if collection exists', function() {
+                assert.isFalse(behaviorObj.collectionExists('test.staff_members.id.test'));
+                assert.isTrue(behaviorObj.collectionExists('test.staff_members.title'));
+                assert.isTrue(behaviorObj.collectionExists('test'));
+                assert.isFalse(behaviorObj.collectionExists('test_not_found'));
+            });
         });
 
         it('use isRequired method to check required attribute', function() {
@@ -194,6 +297,15 @@
             assert.isNull(behaviorObj.isRequired('test.agreement.not_found'));
         });
 
+        it('use isReadonly method to check existence of collection in PUT or POST actions', function() {
+            behaviorObj._addToCollection('test2', test_data2);
+            behaviorObj._updateCollection('test2', test_data2);
+
+            assert.isFalse(behaviorObj.isReadonly('test.staff_members.title'));
+            assert.isFalse(behaviorObj.isReadonly('test.agreement'));
+            assert.isTrue(behaviorObj.isReadonly('test2.attachments'));
+        });
+
         it('check existence of path fields with collectionExists method', function() {
             assert.isFalse(behaviorObj.collectionExists('test.staff_members.id.test'));
             assert.isTrue(behaviorObj.collectionExists('test.staff_members.title'));
@@ -202,8 +314,27 @@
         });
 
         it('get choices for fields using getChoices method', function() {
-            assert.deepEqual(behaviorObj.getChoices('test.agreement'), test_data.agreement.choices);
+            assert.deepEqual(behaviorObj.getChoices('test.agreement'), test_data.PUT.agreement.choices);
             assert.isNull(behaviorObj.getChoices('test.not_found_choices'))
+        });
+
+        describe('method isValidCollection', function() {
+            it('return collection if it exists and is not empty', function() {
+                assert.isObject(behaviorObj.isValidCollection({key: 'value'}));
+            });
+
+            it('return false if colection does not exists or empty', function() {
+                assert.isFalse(behaviorObj.isValidCollection({}));
+                assert.isFalse(behaviorObj.isValidCollection());
+            })
+        });
+
+        it('check allowed actions with actionAllowed method', function() {
+            assert.isTrue(behaviorObj.actionAllowed('test', 'saveEngagement'));
+            assert.isTrue(behaviorObj.actionAllowed('test', 'createEngagement'));
+            assert.isFalse(behaviorObj.actionAllowed('test', 'submit'));
+            assert.isFalse(behaviorObj.actionAllowed('test2', 'submit'));
+            assert.isFalse(behaviorObj.actionAllowed('test3', 'submit'));
         })
 
     });

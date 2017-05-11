@@ -26,56 +26,60 @@
             myEl = fixture('element-fixture');
             myEl.basePermissionPath = 'test';
             myEl._addToCollection('test', {
-                "staff_members": {
-                    "type": "field",
-                    "required": false,
-                    "read_only": false,
-                    "label": "Staff members",
-                    "child": {
-                        "type": "nested object",
+                PUT: {
+                    "staff_members": {
+                        "type": "field",
                         "required": false,
                         "read_only": false,
-                        "children": {
-                            "id": {
-                                "type": "integer",
-                                "required": false,
-                                "read_only": true,
-                                "label": "ID"
-                            },
-                            "title": {
-                                "type": "string",
-                                "required": true,
-                                "read_only": false,
-                                "label": "Title",
-                                "max_length": 64
+                        "label": "Staff members",
+                        "child": {
+                            "type": "nested object",
+                            "required": false,
+                            "read_only": false,
+                            "children": {
+                                "id": {
+                                    "type": "integer",
+                                    "required": false,
+                                    "read_only": true,
+                                    "label": "ID"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "required": true,
+                                    "read_only": false,
+                                    "label": "Title",
+                                    "max_length": 64
+                                }
                             }
                         }
                     }
                 }
             });
             myEl._addToCollection('test2', {
-                "staff_members": {
-                    "type": "field",
-                    "required": false,
-                    "read_only": true,
-                    "label": "Staff members",
-                    "child": {
-                        "type": "nested object",
+                GET: {
+                    "staff_members": {
+                        "type": "field",
                         "required": false,
-                        "read_only": false,
-                        "children": {
-                            "id": {
-                                "type": "integer",
-                                "required": false,
-                                "read_only": true,
-                                "label": "ID"
-                            },
-                            "title": {
-                                "type": "string",
-                                "required": true,
-                                "read_only": false,
-                                "label": "Title",
-                                "max_length": 64
+                        "read_only": true,
+                        "label": "Staff members",
+                        "child": {
+                            "type": "nested object",
+                            "required": false,
+                            "read_only": false,
+                            "children": {
+                                "id": {
+                                    "type": "integer",
+                                    "required": false,
+                                    "read_only": true,
+                                    "label": "ID"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "required": true,
+                                    "read_only": false,
+                                    "label": "Title",
+                                    "max_length": 64
+                                }
                             }
                         }
                     }

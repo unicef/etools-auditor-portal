@@ -57,25 +57,25 @@
             },
 
             isReadonly: function(path) {
-                return this.getFieldAttribute(path, 'read_only');
+                return !this.collectionExists(path, 'POST') && !this.collectionExists(path, 'PUT');
             },
 
             isRequired: function(path) {
                 return this.getFieldAttribute(path, 'required');
             },
 
-            collectionExists: function(path) {
+            collectionExists: function(path, actionType) {
                 if (!path) { throw new Error('path argument must be provided'); }
                 if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
 
-                return this._getCollection(path) !== undefined;
+                return !!this._getCollection(path, actionType);
             },
 
             getChoices: function(path) {
                 return this.getFieldAttribute(path, 'choices');
             },
 
-            _getCollection: function(path) {
+            _getCollection: function(path, actionType) {
                 path = path.split('.');
 
                 let value = _permissionCollection;
@@ -85,7 +85,11 @@
                     if (value[key]) {
                         value = value[key];
                     } else {
-                        value = value.POST || value.PUT || value.GET || value.child || value.children;
+                        let action = actionType ? value[actionType] : this.isValidCollection(value.POST) ||
+                                                                        this.isValidCollection(value.PUT) ||
+                                                                        this.isValidCollection(value.GET);
+
+                        value = action || value.child || value.children;
                         path.unshift(key);
                     }
 
@@ -93,6 +97,24 @@
                 }
 
                 return value;
+            },
+
+            isValidCollection: function(collection) {
+                if (collection && Object.keys(collection).length) {
+                    return collection;
+                } else {
+                    return false;
+                }
+            },
+
+            actionAllowed: function(collection, action) {
+                if (!action || !collection) { return false; }
+                if (typeof collection !== 'string') { throw new Error('collection argument must be a string'); }
+                if (typeof action !== 'string') { throw new Error('action argument must be a string'); }
+
+                collection = _permissionCollection[collection];
+
+                return !!(collection && collection.allowed_actions && ~collection.allowed_actions.indexOf(action));
             }
         };
     })()
