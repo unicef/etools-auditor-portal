@@ -28,11 +28,16 @@
                                    query-params="{{queryParams}}"
                                    request-queries="[[partnersListQueries]]"></engagements-list-view>
 
-            <new-engagement-view name="new"
-                                 id="creationPage"
-                                 page="{{routeData.view}}"
-                                 route="{{subroute}}"
-                                 partner="{{partnerDetails}}"></new-engagement-view>
+            <template is="dom-if" if="{{actionAllowed('new_engagement', 'createEngagement')}}" restamp>
+
+                <new-engagement-view name="new"
+                                     id="creationPage"
+                                     page="{{routeData.view}}"
+                                     route="{{subroute}}"
+                                     partner="{{partnerDetails}}"></new-engagement-view>
+
+            </template>
+
 
         </iron-pages>
 

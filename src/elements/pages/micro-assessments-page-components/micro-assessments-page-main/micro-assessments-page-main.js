@@ -66,6 +66,7 @@ Polymer({
         } else {
             delete data.questionnaire;
         }
+        data.test_subject_areas = {};
 
         return data;
     },

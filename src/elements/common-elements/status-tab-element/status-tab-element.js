@@ -61,7 +61,7 @@ Polymer({
         if (actions.length) { return 'with-actions'; }
     },
     _showActionButtons: function(engagementData) {
-        let collectionName = `engagement_${engagementData.id}`;
+        let collectionName = engagementData.id ? `engagement_${engagementData.id}` : 'new_engagement';
         return this.actionAllowed(collectionName, 'createEngagement') ||
             this.actionAllowed(collectionName, 'submit') ||
             this.actionAllowed(collectionName, 'finalize');

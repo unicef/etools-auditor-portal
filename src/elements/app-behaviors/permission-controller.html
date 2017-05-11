@@ -111,7 +111,6 @@
                 if (!action || !collection) { return false; }
                 if (typeof collection !== 'string') { throw new Error('collection argument must be a string'); }
                 if (typeof action !== 'string') { throw new Error('action argument must be a string'); }
-
                 collection = _permissionCollection[collection];
 
                 return !!(collection && collection.allowed_actions && ~collection.allowed_actions.indexOf(action));

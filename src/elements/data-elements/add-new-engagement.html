@@ -43,7 +43,7 @@
 
             _newEngagementChanged: function(engagement) {
                 if (!engagement) { return; }
-                let url = this.getEndpoint('createEngagement', {type: engagement.type}).url;
+                let url = this.getEndpoint('createEngagement').url;
 
                 this.fire('global-loading', {type: 'create-engagement', active: true, message: 'Creating new engagement...'});
                 this.postData = engagement.data;

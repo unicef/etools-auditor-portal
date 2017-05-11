@@ -101,19 +101,19 @@
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
                     <paper-input label="Date Partner Was Contacted"
-                                 class$="disabled-as-readonly {{_setRequired('partner_contracted_at', basePermissionPath)}}"
-                                 required="{{_setRequired('partner_contracted_at', basePermissionPath)}}"
-                                 disabled$="[[isReadOnly('partner_contracted_at', basePermissionPath)]]"
+                                 class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}}"
+                                 required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
+                                 disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
                                  id="contactedDateInput"
-                                 value="[[prettyDate(data.partner_contracted_at)]]"
+                                 value="[[prettyDate(data.partner_contacted_at)]]"
                                  on-down="openDatePicker"
                                  data-selector="contactedDate"
                                  placeholder="&#8212;">
                         <etools-datepicker-button prefix
                                                   id="contactedDate"
-                                                  date="[[prepareDate(data.partner_contracted_at)]]"
+                                                  date="[[prepareDate(data.partner_contacted_at)]]"
                                                   format="YYYY-MM-DD"
-                                                  pretty-date="{{data.partner_contracted_at}}"
+                                                  pretty-date="{{data.partner_contacted_at}}"
                                                   no-init show-clear-btn></etools-datepicker-button>
                     </paper-input>
                 </div>

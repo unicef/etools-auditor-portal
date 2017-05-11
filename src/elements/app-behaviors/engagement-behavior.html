@@ -80,7 +80,6 @@
             let data = _.clone(this.engagement);
 
             data.partner = data.partner.id;
-            data.test_subject_areas = {};
             data.agreement = data.agreement.id;
 
             let type;
@@ -95,7 +94,8 @@
                     type = 'audits';
                     break;
                 default:
-                    type = data.type.link
+                    type = data.type.link;
+                    data.type = data.type.value;
             }
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);

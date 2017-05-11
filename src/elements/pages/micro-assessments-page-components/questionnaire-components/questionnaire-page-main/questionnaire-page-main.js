@@ -58,10 +58,10 @@ Polymer({
 
         Array.prototype.forEach.call(elements, (element) => {
             if (forSave && !element.validate('forSave')) {
-                element.opened = true;
+                element.opened = !element.disabled;
                 valid = false;
             } else if (!forSave && !element.validate()) {
-                element.opened = true;
+                element.opened = !element.disabled;
                 valid = false;
             }
         });

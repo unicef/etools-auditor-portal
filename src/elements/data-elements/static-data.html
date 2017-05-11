@@ -50,7 +50,7 @@
                 ready: function () {
                     //TODO: CHANGE after engagements options api will works
                     this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
-                    this.newEngagementPermissions = this.getEndpoint('createEngagement', {type: 'engagements'}).url;
+                    this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
                 },
 
                 _allDataLoaded: function() {
@@ -77,7 +77,7 @@
 
                     if (this.isValidCollection(actions.POST)) {
                         this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
-                        actions.allowed_action = ['createEngagement'].concat(actions.allowed_FSM_transitions || []);
+                        actions.allowed_actions = ['createEngagement'].concat(actions.allowed_FSM_transitions || []);
                     } else {
                         dataLoaded.partners = true;
                     }
