@@ -145,10 +145,13 @@
         describe('addFilter(e)', function () {
             var query = filters[0].query;
 
+            beforeEach(function () {
+                myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
+            });
+
             it('adds new filter when "e" is string', function (done) {
                 sinon.spy(myEl, '_setFilterValue');
-                myEl.ready();
-
                 assert.equal(myEl.availableFilters.length, filters.length);
                 assert.equal(myEl.usedFilters.length, 0);
 
@@ -164,7 +167,6 @@
             it('adds new filter when "e" is Object', function (done) {
                 var e = {model: {item: {query: query}}};
                 sinon.spy(myEl, '_setFilterValue');
-                myEl.ready();
 
                 assert.equal(myEl.availableFilters.length, filters.length);
                 assert.equal(myEl.usedFilters.length, 0);
@@ -183,7 +185,8 @@
             var e = {model: {item: _.clone(filters[0])}};
 
             beforeEach(function () {
-                myEl.ready();
+                myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
                 myEl.addFilter(e);
             });
 
@@ -214,6 +217,7 @@
                 var searchString = 'search';
                 myEl.queryParams.search = searchString;
                 myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
 
                 flush(function () {
                     assert.equal(myEl.searchString, searchString);
@@ -227,9 +231,9 @@
                 var queryParamsValue = filter.selection[0][filter.optionValue];
 
                 sinon.spy(myEl, 'addFilter');
-                myEl.ready();
                 myEl.queryParams[query] = queryParamsValue;
                 myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
 
                 flush(function () {
                     assert.equal(myEl.availableFilters.length, filters.length - 1);
@@ -242,6 +246,8 @@
 
             it('resets availableFilters and usedFilters to initial state', function () {
                 myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
+
                 assert.deepEqual(myEl.availableFilters, myEl.filters);
                 assert.deepEqual(myEl.usedFilters, []);
             });
@@ -276,6 +282,17 @@
                 assert.deepEqual(filter.value, _.clone(filter.selection[0]));
                 assert.isTrue(myEl._getFilterValue.calledOnce);
                 assert.isTrue(myEl._getFilterValue.calledWithMatch(filterValue, filter));
+            });
+
+            it('sets filter value to undefined when queryParams value is undefined', function () {
+                var filter = myEl.filters[2];
+                myEl.queryParams = {};
+                myEl.queryParams[filter.query] = undefined;
+                filter.value = _.cloneDeep(filter.selection[0]);
+
+                assert.isDefined(filter.value);
+                myEl._setFilterValue(filter);
+                assert.isUndefined(filter.value);
             });
         });
 

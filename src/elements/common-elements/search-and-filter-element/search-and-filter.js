@@ -33,7 +33,7 @@
             }
         },
         observers: [
-            '_restoreFilters(filters.*)'
+            '_restoreFilters(queryParams.*)'
         ],
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
@@ -70,18 +70,20 @@
             this.splice('usedFilters', indexToRemove, 1);
         },
         _restoreFilters: function() {
-            this.availableFilters = this.filters;
-            this.usedFilters = [];
+            this.debounce('_restoreFilters', () => {
+                this.availableFilters = this.filters;
+                this.usedFilters = [];
 
-            if (this.queryParams && this.queryParams.search) {
-                this.set('searchString', this.queryParams.search);
-            }
-
-            this.filters.forEach((filter) => {
-                if (this.queryParams && this.queryParams[filter.query] !== undefined) {
-                    this.addFilter(filter.query);
+                if (this.queryParams && this.queryParams.search) {
+                    this.set('searchString', this.queryParams.search);
                 }
-            });
+
+                this.filters.forEach((filter) => {
+                    if (this.queryParams && this.queryParams[filter.query] !== undefined) {
+                        this.addFilter(filter.query);
+                    }
+                });
+            }, 50);
         },
         _getFilterIndex: function(query) {
             return this.filters.findIndex((filter) => {
@@ -97,6 +99,8 @@
 
             if (filterValue !== undefined) {
                 filter.value = this._getFilterValue(filterValue, filter);
+            } else {
+                filter.value = undefined;
             }
         },
         _getFilterValue: function(filterValue, filter) {
