@@ -18,6 +18,10 @@
             padding-right: 25px;
             box-sizing: border-box;
             .truncate { white-space: nowrap; }
+            .additional {
+                color: var(--dark-secondary-text-color);
+                font-size: 11px;
+            }
         }
         a.col-data { color: #40c4ff; }
     }

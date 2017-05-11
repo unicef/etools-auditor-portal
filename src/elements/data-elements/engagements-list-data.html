@@ -36,12 +36,11 @@
                 },
                 requestQueries: {
                     type: Object,
-                    observer: 'getPartnersList'
+                    observer: 'getEngagementsList'
                 },
                 listLength: {
                     type: Number,
-                    notify: true,
-                    computed: '_setListLength(engagements)'
+                    notify: true
                 },
                 indexObject: {
                     type: Object,
@@ -82,6 +81,10 @@
 
             },
 
+            observers: [
+                '_setListLength(engagements)'
+            ],
+
             ready: function () {
                 this.endpoint = this.getEndpoint('engagementsList');
             },
@@ -91,12 +94,12 @@
                 this.set('endpoint', {url: null});
                 this.engagements = data.detail;
                 if (this._validatePageQuery()) {
-                    this.getPartnersList();
+                    this.getEngagementsList();
                 }
             },
             _responseError: function() {},
 
-            getPartnersList: function() {
+            getEngagementsList: function() {
                 if (!this.engagements.length || this.updateListData) return;
                 if (this.currentTransaction) {
                     this.currentTransaction.abort();
@@ -155,12 +158,16 @@
                         });
                     }
 
-                    if (!this.withoutPagination && params.size) {
-                        table.offset( ((params.page || 1) - 1) * params.size )
-                            .limit(+params.size);
-                    }
+                    return table.count().then((listLength) => {
+                        this.set('listLength', listLength);
 
-                    return table.toArray();
+                        if (!this.withoutPagination && params.size) {
+                            table.offset( ((params.page || 1) - 1) * params.size )
+                                .limit(+params.size);
+                        }
+
+                        return table.toArray();
+                    });
                 }).then((engagementsList) => {
                     this._setEngagementsList(engagementsList);
                 });
