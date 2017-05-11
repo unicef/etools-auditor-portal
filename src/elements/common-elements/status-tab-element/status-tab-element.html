@@ -1,5 +1,5 @@
 <!--import [polymer, iron-icons, iron-icons/av-icons, iron-flex-layout, paper-button,
-            etools-content-panel, paper-button, paper-menu-button, paper-icon-button, paper-menu, paper-item, moment-element/moment-import]-->
+            etools-content-panel, paper-button, paper-menu-button, paper-icon-button, paper-menu, paper-item, moment-element/moment-import, permission-controller]-->
 
 <dom-module id="status-tab-element">
     <template>
@@ -113,27 +113,32 @@
             </div>
 
 
-            <div class="status-buttons">
-                <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]" class="status-tab-button">
-                    <span>[[mainActionText]]</span>
-                    <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
+            <template is="dom-if" if="{{_showActionButtons(engagementData)}}">
 
-                        <paper-menu-button horizontal-align="right" opened="{{statusBtnMenuOpened}}">
-                            <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
-                            <div class="dropdown-content">
-                                <div class="other-title">Other Actions</div>
+                <div class="status-buttons">
+                    <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]" class="status-tab-button">
+                        <span>[[mainActionText]]</span>
+                        <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
 
-                                <template is="dom-repeat" items="[[otherActions]]" class="other-btns-template">
-                                    <div class="other-options" on-click="closeMenu" event-name$="[[item.event]]">{{item.name}}</div>
-                                </template>
+                            <paper-menu-button horizontal-align="right" opened="{{statusBtnMenuOpened}}">
+                                <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+                                <div class="dropdown-content">
+                                    <div class="other-title">Other Actions</div>
 
-                            </div>
-                        </paper-menu-button>
+                                    <template is="dom-repeat" items="[[otherActions]]" class="other-btns-template">
+                                        <div class="other-options" on-click="closeMenu" event-name$="[[item.event]]">{{item.name}}</div>
+                                    </template>
 
-                    </template>
+                                </div>
+                            </paper-menu-button>
 
-                </paper-button>
-            </div>
+                        </template>
+
+                    </paper-button>
+                </div>
+
+            </template>
+
 
         </etools-content-panel>
 

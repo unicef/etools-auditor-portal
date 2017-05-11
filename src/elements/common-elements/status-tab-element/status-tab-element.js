@@ -2,6 +2,9 @@
 
 Polymer({
     is: 'status-tab-element',
+    behaviors: [
+        APBehaviors.PermissionController
+    ],
     properties: {
         engagementData: {
             type: Object,
@@ -56,5 +59,11 @@ Polymer({
     },
     _setBtnClass: function(actions) {
         if (actions.length) { return 'with-actions'; }
+    },
+    _showActionButtons: function(engagementData) {
+        let collectionName = `engagement_${engagementData.id}`;
+        return this.actionAllowed(collectionName, 'createEngagement') ||
+            this.actionAllowed(collectionName, 'submit') ||
+            this.actionAllowed(collectionName, 'finalize');
     }
 });

@@ -154,7 +154,7 @@
             'setFiltersSelections(engagements.*)'
         ],
         _showAddButton: function() {
-            return this.collectionExists('new_engagement');
+            return this.actionAllowed('new_engagement', 'createEngagement');
         },
         checkExpire: function() {
             this.$.listData.checkExpire();

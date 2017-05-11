@@ -28,10 +28,11 @@ Polymer({
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
             this.view = 'list';
-        } else if (view === 'new' && this.collectionExists('new_engagement')) {
+        } else if (view === 'new' && this.actionAllowed('new_engagement', 'createEngagement')) {
             this.clearQueries();
             this.view = 'new';
         } else {
+            this.clearQueries();
             this.fire('404');
         }
     },

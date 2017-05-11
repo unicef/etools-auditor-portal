@@ -77,17 +77,25 @@
         });
 
         it('fire submit event on main btn click', function (done) {
-            var btn = Polymer.dom(myEl.root).querySelector('.status-buttons paper-button');
+            sinon.stub(myEl, '_showActionButtons').returns(true);
+            myEl.engagementData = {};
 
-            myEl.addEventListener('main-action-activated', () => {
-                done();
+            flush(function() {
+                var btn = Polymer.dom(myEl.root).querySelector('.status-buttons paper-button');
+                myEl.addEventListener('main-action-activated', () => {
+                    myEl._showActionButtons.restore();
+                    done();
+                });
+
+                assert.isTrue(!!btn);
+                btn.click();
             });
 
-            assert.isTrue(!!btn);
-            btn.click();
         });
 
         it('fire specified event on other action btn click', function (done) {
+            sinon.stub(myEl, '_showActionButtons').returns(true);
+            myEl.engagementData = {};
             myEl.set('otherActions', [{event: 'test-event', name: 'test'}]);
 
             flush(function() {
@@ -99,6 +107,7 @@
 
 
             myEl.addEventListener('test-event', () => {
+                myEl._showActionButtons.restore();
                 done();
             });
         });
