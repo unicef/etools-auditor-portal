@@ -121,6 +121,25 @@
                     done();
                 }, 300);
             });
+
+            it('removes "search" query param when searchString is empty', function (done) {
+                var searchString = 'search';
+                var queryParams;
+                myEl.updateQueries({search: searchString});
+                queryParams = myEl.parseQueries();
+                assert.equal(queryParams.search, searchString);
+
+                myEl.searchString = '';
+                myEl.searchKeyDown();
+                queryParams = myEl.parseQueries();
+                assert.equal(queryParams.search, searchString);
+
+                setTimeout(function () {
+                    queryParams = myEl.parseQueries();
+                    assert.isUndefined(queryParams.search);
+                    done();
+                }, 300);
+            });
         });
 
         describe('addFilter(e)', function () {

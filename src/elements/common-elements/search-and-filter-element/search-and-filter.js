@@ -37,7 +37,7 @@
         ],
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
-                this.updateQueries({search: this.searchString});
+                this.updateQueries({search: this.searchString || undefined});
             }, 300);
         },
         addFilter: function(e) {
