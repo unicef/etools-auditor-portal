@@ -33,7 +33,6 @@
             }
         },
         observers: [
-            'hiddenOn(queryParams.show_hidden)',
             '_restoreFilters(filters.*)'
         ],
         searchKeyDown: function() {
@@ -136,20 +135,6 @@
 
                 queryObject[query] = detail.selectedValues[optionValue];
                 this.updateQueries(queryObject);
-            }
-        },
-        _changeShowHidden: function() {
-            if (this.showHidden) {
-                this.updateQueries({show_hidden: 'true'});
-            } else {
-                this.updateQueries({show_hidden: false});
-            }
-        },
-        hiddenOn: function(on) {
-            if (on && !this.showHidden) {
-                this.showHidden = true;
-            } else if (!on && this.showHidden) {
-                this.showHidden = false;
             }
         }
     });

@@ -312,38 +312,6 @@
                 assert.isTrue(myEl.updateQueries.calledWithMatch(args));
             });
         });
-
-        describe('_changeShowHidden()', function () {
-            it('calls updateQueries() with show_hidden="true"', function () {
-                sinon.spy(myEl, 'updateQueries');
-                myEl.showHidden = true;
-                myEl._changeShowHidden();
-                assert.isTrue(myEl.updateQueries.calledOnce);
-                assert.isTrue(myEl.updateQueries.calledWithMatch({show_hidden: 'true'}));
-            });
-
-            it('calls updateQueries() with show_hidden=false', function () {
-                sinon.spy(myEl, 'updateQueries');
-                myEl.showHidden = false;
-                myEl._changeShowHidden();
-                assert.isTrue(myEl.updateQueries.calledOnce);
-                assert.isTrue(myEl.updateQueries.calledWithMatch({show_hidden: false}));
-            });
-        });
-
-        describe('hiddenOn(on)', function () {
-            it('sets showHidden=true if on=true && showHidden=false', function () {
-                myEl.showHidden = false;
-                myEl.hiddenOn(true);
-                assert.isTrue(myEl.showHidden);
-            });
-
-            it('sets showHidden=false if on=false && showHidden=true', function () {
-                myEl.showHidden = true;
-                myEl.hiddenOn(false);
-                assert.isFalse(myEl.showHidden);
-            });
-        });
     });
 </script>
 
