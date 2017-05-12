@@ -80,6 +80,8 @@
                     action = 'saved';
                 }
                 this.fire('toast', {text: `Engagement data has been ${action}!`});
+
+                this.appDexieDb.collectionsList.update('engagements', {expire: 0});
             },
 
             _finishPostResponse: function() {

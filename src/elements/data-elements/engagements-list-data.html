@@ -4,7 +4,7 @@
 
     <template>
 
-        <etools-ajax
+        <etools-ajax logs
                 endpoint="[[endpoint]]"
                 caching-storage="custom"
                 dexie-db-collection="engagements"
@@ -92,7 +92,7 @@
             _engagementsLoaded: function(data) {
                 this.updateListData = false;
                 this.set('endpoint', {url: null});
-                this.engagements = data.detail;
+                this.engagements = data && data.detail;
                 if (this._validatePageQuery()) {
                     this.getEngagementsList();
                 }
