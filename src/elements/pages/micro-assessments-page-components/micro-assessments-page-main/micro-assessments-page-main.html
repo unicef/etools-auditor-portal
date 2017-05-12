@@ -2,7 +2,7 @@
 
 <!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
             update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior, questionnaire-page-main, assign-engagement]-->
+            engagement-info-data, engagement-behavior, questionnaire-page-main, ma-report-page-main]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
@@ -60,10 +60,9 @@
                         </div>
 
                         <div name="report">
-                            <assign-engagement data="{{engagement}}"
-                                               audit-type="Micro Assessment"
-                                               base-permission-path="{{permissionBase}}"
-                                               id="assignEngagement"></assign-engagement>
+                            <ma-report-page-main id="report"
+                                                 engagement="{{engagement}}"
+                                                 permission-base="{{permissionBase}}"></ma-report-page-main>
                         </div>
 
                         <div name="questionnaire">

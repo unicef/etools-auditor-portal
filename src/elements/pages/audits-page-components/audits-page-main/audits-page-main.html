@@ -2,7 +2,7 @@
 
 <!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
             update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior]-->
+            engagement-info-data, engagement-behavior, audit-report-page-main]-->
 
 <dom-module id="audits-page-main">
     <template>
@@ -58,7 +58,11 @@
                             </etools-content-panel>
                         </div>
 
-                        <div name="report">Report</div>
+                        <div name="report">
+                            <audit-report-page-main id="report"
+                                                    engagement="{{engagement}}"
+                                                    permission-base="{{permissionBase}}"></audit-report-page-main>
+                        </div>
 
 
                         <div name="attachments">

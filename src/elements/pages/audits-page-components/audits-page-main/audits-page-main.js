@@ -42,8 +42,7 @@ Polymer({
 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo(),
-            //TODO: add report vlidation
-            reportValid = false;
+            reportValid = Polymer.dom(this.root).querySelector('#report').validate();
 
         if (!basicInfoValid) { return false; }
         if (!reportValid) {
@@ -55,6 +54,7 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
+        data.key_internal_weakness = {};
         return data;
     },
 

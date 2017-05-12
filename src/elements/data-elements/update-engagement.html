@@ -123,7 +123,7 @@
                     this.actionUrl = url + engagement.submit;
                     this.method = 'PATCH';
                     this._saveEngagement(engagement.data, url);
-                } else if (~this.actionUrl.indexOf('submit')) {
+                } else if (this.actionUrl && ~this.actionUrl.indexOf('submit')) {
                     //Finish data updating, run submitting if submit url has been saved
                     this.method = 'POST';
                     this.fire('global-loading', {type: 'submit-engagement', active: true, message: 'Submiting engagement...'});
@@ -138,6 +138,7 @@
                     this.url = url;
                 } else {
                     //Simple engagement data updating
+                    let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url;
                     this.method = 'PATCH';
                     this._saveEngagement(engagement.data, url);
                 }

@@ -43,7 +43,7 @@ Polymer({
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo();
         let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate();
-        let reportValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate();
+        let reportValid = Polymer.dom(this.root).querySelector('#report').validate();
 
         if (!basicInfoValid) { return false; }
         if (!reportValid) {
