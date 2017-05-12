@@ -13,7 +13,7 @@
         <etools-ajax method="OPTIONS"
                      url="[[optionsUrl]]"
                      on-success="_handleOptionsResponse"
-                     on-fail="_handleOptionsResponse"></etools-ajax>
+                     on-fail="_handleOptionsError"></etools-ajax>
     </template>
 
     <script>
@@ -70,7 +70,16 @@
                 this.fire('engagement-updated', {success: true, data: data.detail});
                 this.fire('global-loading', {type: 'update-engagement'});
                 this.fire('global-loading', {type: 'update-permissions'});
-                this.fire('toast', {text: 'Engagement data has been saved!'});
+
+                let action;
+                if (data.detail.status === 'report_submitted') {
+                    action = 'submitted';
+                } else if (data.detail.status === 'final') {
+                    action = 'finalized';
+                } else {
+                    action = 'saved';
+                }
+                this.fire('toast', {text: `Engagement data has been ${action}!`});
             },
 
             _finishPostResponse: function() {
@@ -85,9 +94,23 @@
             },
 
             _handleError: function () {
+                this.actionUrl = '';
+                if (this.method === 'PATCH') {
+                    this.fire('global-loading', {type: 'update-engagement'});
+                } else if (this.method === 'POST' && ~this.actionUrl.indexOf('submit')) {
+                    this.fire('global-loading', {type: 'submit-engagement'});
+                } else if (this.method === 'POST' && ~this.actionUrl.indexOf('finalize')) {
+                    this.fire('global-loading', {type: 'finalize-engagement'});
+                }
                 this.fire('engagement-updated');
-                this.fire('global-loading', {type: 'create-engagement'});
-                this.fire('toast', {text: 'Can not save engagement data. Plees try again later!'});
+                this.fire('toast', {text: 'Can not save engagement data. Please try again later!'});
+            },
+
+            _handleOptionsError: function() {
+                this.optionsUrl = '';
+                this.basePermissionPath = 'not_found';
+                this.finishResponse(this.lastData);
+                this.fire('toast', {text: 'Can not update permissions data. Please reload the page!'});
             },
 
             _engagementChanged: function(engagement) {
