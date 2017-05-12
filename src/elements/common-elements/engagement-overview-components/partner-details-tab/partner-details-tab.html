@@ -1,0 +1,94 @@
+<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles]-->
+
+<dom-module id="partner-details-tab">
+    <template>
+        <style include="tab-inputs-styles">
+            etools-content-panel {
+                margin-bottom: 20px;
+            }
+        </style>
+
+
+        <etools-content-panel class="content-section clearfix" title="Partner Details" show-expand-btn>
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Partner -->
+                    <paper-input label="Partner"
+                                 class$="disabled-as-readonly"
+                                 value="{{partner.name}}"
+                                 placeholder="&#8212;"
+                                 disabled readonly></paper-input>
+                </div>
+                <div class="input-container input-container-m">
+                    <!-- Partner Address -->
+                    <paper-input label="Partner Address"
+                                 class="disabled-as-readonly"
+                                 disabled readonly
+                                 value="[[partner.street_address]]"
+                                 placeholder="&#8212;">
+                    </paper-input>
+                </div>
+            </div>
+
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Partner Postal Code -->
+                    <paper-input label="Partner Postal Code"
+                                 class$="disabled-as-readonly"
+                                 value="{{partner.postal_code}}"
+                                 placeholder="&#8212;"
+                                 disabled readonly></paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Partner City -->
+                    <paper-input label="Partner City"
+                                 class$="disabled-as-readonly"
+                                 value="{{partner.city}}"
+                                 placeholder="&#8212;"
+                                 disabled readonly></paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Partner Country -->
+                    <paper-input label="Partner Country"
+                                 class$="disabled-as-readonly"
+                                 value="{{partner.country}}"
+                                 placeholder="&#8212;"
+                                 disabled readonly></paper-input>
+                </div>
+            </div>
+
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Partner Phone Number -->
+                    <paper-input label="Partner Phone Number"
+                                 class$="disabled-as-readonly"
+                                 value="{{partner.phone_number}}"
+                                 placeholder="&#8212;"
+                                 disabled readonly></paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Partner E-mail Address -->
+                    <paper-input label="Partner E-mail Address"
+                                 class$="disabled-as-readonly"
+                                 value="{{partner.email}}"
+                                 placeholder="&#8212;"
+                                 disabled readonly></paper-input>
+                </div>
+            </div>
+
+
+        </etools-content-panel>
+
+    </template>
+
+    <script>
+        'use strict';
+
+        Polymer({
+            is: 'partner-details-tab'
+        });
+    </script>
+</dom-module>

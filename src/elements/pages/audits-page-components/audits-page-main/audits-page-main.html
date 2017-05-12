@@ -2,7 +2,7 @@
 
 <!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
             update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior, audit-report-page-main]-->
+            engagement-info-data, engagement-behavior, audit-report-page-main, partner-details-tab]-->
 
 <dom-module id="audits-page-main">
     <template>
@@ -48,6 +48,8 @@
                             <engagement-info-details data="{{engagement}}"
                                                      id="engagementDetails"
                                                      base-permission-path="{{permissionBase}}"></engagement-info-details>
+
+                            <partner-details-tab partner="[[engagement.partner]]"></partner-details-tab>
 
                             <etools-content-panel
                                     title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
