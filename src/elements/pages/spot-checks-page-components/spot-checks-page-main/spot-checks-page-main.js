@@ -13,7 +13,7 @@ Polymer({
         otherActions: {
             type: Array,
             value: function() {
-                return [{name: 'save', event: 'save-progress'}];
+                return [];
             }
         },
         tabsList: {
@@ -31,13 +31,14 @@ Polymer({
     observers: [
         '_routeConfig(route)',
         '_setPermissionBase(engagement.id)',
-        '_tabChanged(tab)'
+        '_tabChanged(tab)',
+        '_configButtonsData(engagement.type)'
     ],
 
     listeners: {
         'engagement-info-loaded': '_infoLoaded',
         'save-progress': '_saveProgress',
-        'main-action-activated': '_submitReport'
+        'main-action-activated': '_mainActionActivated'
     },
 
     _validateEngagement: function() {
