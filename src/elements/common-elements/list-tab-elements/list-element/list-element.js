@@ -62,6 +62,7 @@ Polymer({
         } else {
             value = this.get('data.' + item.path);
         }
+
         if (item.name === 'type' || item.name === 'status') {
             value = this._refactorValue(item.name, value);
         }
@@ -71,6 +72,23 @@ Polymer({
     _refactorValue: function(type, value) {
         let values = this.itemValues[type];
         if (values) { return values[value]; }
+    },
+    _getAdditionalValue: function(item) {
+        if (!item.additional) { return; }
+
+        let additional = item.additional;
+        let value = this._getValue(additional);
+        let type = additional.type;
+        let format = 'DD MMM YYYY';
+
+        if (type === 'date') {
+            let date = new Date(value);
+            if (date.toString() !== 'Invalid Date') {
+                return moment.utc(date).format(format);
+            }
+        }
+
+        return '--';
     },
     _getStatus: function(synced) {
         if (synced) { return 'Synced from VISION'; }
