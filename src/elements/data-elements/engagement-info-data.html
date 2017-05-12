@@ -25,6 +25,7 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
+                APBehaviors.StaticDataController,
                 APBehaviors.LastCreatedController,
                 APBehaviors.PermissionController
             ],
@@ -69,7 +70,15 @@
             _handleResponse: function (data) {
                 if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
 
+                let auditOpinions = this.getChoices(`engagement_${this.engagementId}.audit_opinion`);
+                if (!auditOpinions) {
+                    this._handleError();
+                    return;
+                }
+                this._setData('audit_opinions', auditOpinions);
+
                 if (data) { this.engagementInfo = data; }
+
                 this.fire('global-loading', {type: 'engagement-info'});
                 this.fire('engagement-info-loaded');
                 this.engagementId = null;
