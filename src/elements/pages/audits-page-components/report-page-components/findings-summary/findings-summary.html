@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
 <!--import [list-header, list-element]-->
-<!--import [tab-inputs-styles, module-styles, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, permission-controller, static-data-behavior]-->
 
 <dom-module id="findings-summary">
     <template>
@@ -8,12 +8,6 @@
             :host {
                 position: relative;
                 display: block;
-            }
-
-            etools-content-panel {
-                --ecp-content: #{'{
-                    padding: 0 0 15px;
-                }'};
             }
 
             .edit-icon { color: var(--module-primary); }

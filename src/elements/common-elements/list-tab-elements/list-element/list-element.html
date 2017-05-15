@@ -74,7 +74,7 @@
                     <div class="partners-data-details">
                         <template is="dom-repeat" items="[[details]]">
 
-                            <div class="row-details-content">
+                            <div class$="row-details-content w[[item.size]]">
                                 <span class="rdc-title">[[item.label]]</span>
                                 <span class="data">[[_getValue(item, data)]]</span>
                             </div>

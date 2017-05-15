@@ -63,19 +63,20 @@
                     console.error('Can not load permissions for engagement');
                 }
 
+                let auditOpinions = this.getChoices(`engagement_${this.engagementId}.audit_opinion`);
+                if (!auditOpinions) {
+                    auditOpinions = [];
+//                    this._handleError();
+                    return;
+                }
+                this._setData('audit_opinions', auditOpinions);
+
                 this.requestsCompleted.options = true;
                 this._handleResponse(this.responseData);
             },
 
             _handleResponse: function (data) {
                 if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
-
-                let auditOpinions = this.getChoices(`engagement_${this.engagementId}.audit_opinion`);
-                if (!auditOpinions) {
-                    this._handleError();
-                    return;
-                }
-                this._setData('audit_opinions', auditOpinions);
 
                 if (data) { this.engagementInfo = data; }
 

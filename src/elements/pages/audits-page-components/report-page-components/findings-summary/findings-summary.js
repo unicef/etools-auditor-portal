@@ -28,12 +28,12 @@ Polymer({
                 'path': 'partner.name'
             }, {
                 'size': 10,
-                'label': 'Audited expenditure ',
+                'label': 'Audited expenditure USD',
                 'path': 'audited_expenditure',
                 'align': 'right'
             }, {
                 'size': 10,
-                'label': 'Financial findings ',
+                'label': 'Financial findings USD',
                 'path': 'financial_findings',
                 'align': 'right'
             }, {
