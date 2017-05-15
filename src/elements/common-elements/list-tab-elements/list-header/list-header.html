@@ -7,7 +7,7 @@
 
         <div class="heading-row-header clearfix">
             <template is="dom-repeat" items="[[data]]">
-                <div  class$="local-headings w[[item.size]]" ordered$="{{item.ordered}}" on-tap="_changeOrder">
+                <div  class$="local-headings w[[item.size]] [[item.align]]" ordered$="{{item.ordered}}" on-tap="_changeOrder">
                     <span class="textsec heading">[[item.label]]</span>
 
                     <iron-icon class="down-icon"

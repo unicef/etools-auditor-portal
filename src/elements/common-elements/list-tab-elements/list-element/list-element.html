@@ -20,7 +20,7 @@
                 <template is="dom-repeat" items="[[headings]]">
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
-                        <a class$="col-data w[[item.size]] truncate"
+                        <a class$="col-data w[[item.size]] [[item.align]] truncate"
                            href$="[[_getLink(item.link, data)]]"
                            title="[[_getValue(item, data)]]">
                             [[_getValue(item, data)]]
@@ -28,7 +28,7 @@
                     </template>
 
                     <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon')]]" restamp>
-                        <span class$="col-data w[[item.size]] truncate">
+                        <span class$="col-data w[[item.size]] [[item.align]] truncate">
                             <span class="truncate">
                                 [[_getValue(item, data)]]
 
@@ -40,7 +40,7 @@
                     </template>
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
-                        <span class$="col-data w[[item.size]]">
+                        <span class$="col-data w[[item.size]] [[item.align]]">
                             <template is="dom-if" if="{{_emtyObj(data)}}">
                                  <paper-checkbox checked="{{_getValue(item, data, 'bool')}}"
                                                  label=""></paper-checkbox>
@@ -52,7 +52,7 @@
                     </template>
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
-                        <span class$="col-data w[[item.size]]">
+                        <span class$="col-data w[[item.size]] [[item.align]]">
                             <template is="dom-if" if="{{_emtyObj(data)}}">
                                 <slot name="icon">
 

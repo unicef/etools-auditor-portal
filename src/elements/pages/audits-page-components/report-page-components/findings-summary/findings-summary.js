@@ -19,6 +19,59 @@ Polymer({
         data: {
             type: Object,
             notify: true
+        },
+        headings: {
+            type: Array,
+            value: [{
+                'size': 20,
+                'label': 'Implementing partner name',
+                'path': 'partner.name'
+            }, {
+                'size': 10,
+                'label': 'Audited expenditure ',
+                'path': 'audited_expenditure',
+                'align': 'right'
+            }, {
+                'size': 10,
+                'label': 'Financial findings ',
+                'path': 'financial_findings',
+                'align': 'right'
+            }, {
+                'size': 10,
+                'label': '% of audited expenditure',
+                'path': 'percent_of_audited_expenditure',
+                'align': 'right'
+            }, {
+                'size': 15,
+                'label': 'Audit opinion',
+                'path': 'audit_opinion',
+                'align': 'center'
+            }, {
+                'size': 7,
+                'label': 'No. of FFs',
+                'path': '',
+                'align': 'center'
+            }, {
+                'size': 7,
+                'label': 'No. of MCFs',
+                'path': '',
+                'align': 'center'
+            }, {
+                'size': 7,
+                'label': 'No. of CFs',
+                'path': '',
+                'align': 'center'
+            }, {
+                'size': 7,
+                'label': 'No. of OFs',
+                'path': '',
+                'align': 'center'
+            }, {
+                'size': 7,
+                'label': 'Edit',
+                'align': 'center',
+                'icon': true
+            }]
         }
     },
     ready: function() {

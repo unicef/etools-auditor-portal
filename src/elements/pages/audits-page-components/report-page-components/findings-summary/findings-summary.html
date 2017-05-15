@@ -1,4 +1,5 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
+<!--import [list-header, list-element]-->
 <!--import [tab-inputs-styles, module-styles, permission-controller]-->
 
 <dom-module id="findings-summary">
@@ -8,7 +9,33 @@
                 position: relative;
                 display: block;
             }
+
+            etools-content-panel {
+                --ecp-content: #{'{
+                    padding: 0 0 15px;
+                }'};
+            }
+
+            .edit-icon { color: var(--module-primary); }
         </style>
+
+        <etools-content-panel class="content-section clearfix" title="Summary of audit findings">
+            <list-header id="list-header"
+                         no-additional
+                         no-ordered
+                         data="[[headings]]">
+            </list-header>
+
+            <list-element
+                    class="list-element"
+                    no-additional
+                    data="[[data]]"
+                    headings="[[headings]]">
+                <div slot="icon">
+                    <paper-icon-button icon="icons:create" class="edit-icon"></paper-icon-button>
+                </div>
+            </list-element>
+        </etools-content-panel>
 
         <etools-content-panel class="content-section clearfix" title="Summary of audit findings">
             <div class="row-h group">
