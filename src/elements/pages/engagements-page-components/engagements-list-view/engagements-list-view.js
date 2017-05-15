@@ -118,11 +118,7 @@
                         'size': 30,
                         'label': 'Status',
                         'name': 'status',
-                        'ordered': false,
-                        'additional': {
-                            'type': 'date',
-                            'path': 'status_date'
-                        }
+                        'ordered': false
                     }];
                 }
             },
@@ -150,14 +146,9 @@
                 type: Array,
                 value: function() {
                     return [{
-                        'label': 'Partner Email',
-                        'path': 'partner.email'
-                    }, {
-                        'label': 'Partner Phone #',
-                        'path': 'partner.phone_number'
-                    }, {
-                        'label': 'Partner Type',
-                        'path': 'partner.partner_type'
+                        'label': 'Date of status',
+                        'name': 'date',
+                        'path': 'status_date'
                     }];
                 }
             }
