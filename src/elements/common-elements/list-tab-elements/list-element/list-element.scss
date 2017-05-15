@@ -17,6 +17,8 @@
             text-overflow: ellipsis;
             padding-right: 25px;
             box-sizing: border-box;
+
+            &:not(.truncate) { padding-right: 0; }
             .truncate { white-space: nowrap; }
             .additional {
                 color: var(--dark-secondary-text-color);
@@ -68,6 +70,12 @@ paper-material {
     box-sizing: border-box;
 }
 
+:host([no-additional]) {
+    paper-material {
+        padding: 0 1% !important;
+    }
+}
+
 paper-material ::slotted(*) {
     overflow: hidden;
     white-space: nowrap;
@@ -93,4 +101,8 @@ iron-icon {
     background-color: #EEEEEE;
     /* TODO: replace with app-theme var */
     border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
+}
+
+paper-checkbox, .without-checkbox {
+    margin-left: 24%;
 }

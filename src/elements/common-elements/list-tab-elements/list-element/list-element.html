@@ -1,4 +1,4 @@
-<!--import [polymer, iron-flex-layout, shared-styles, module-styles, moment-element/moment-import]-->
+<!--import [polymer, iron-flex-layout, shared-styles, module-styles, moment-element/moment-import, paper-checkbox]-->
 
 <dom-module id="list-element">
     <template>
@@ -19,7 +19,7 @@
             <div class="partner-data">
                 <template is="dom-repeat" items="[[headings]]">
 
-                    <template is="dom-if" if="[[_isLink(item.link)]]">
+                    <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
                         <a class$="col-data w[[item.size]] truncate"
                            href$="[[_getLink(item.link, data)]]"
                            title="[[_getValue(item, data)]]">
@@ -27,7 +27,7 @@
                         </a>
                     </template>
 
-                    <template is="dom-if" if="[[!_isLink(item.link)]]">
+                    <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon')]]" restamp>
                         <span class$="col-data w[[item.size]] truncate">
                             <span class="truncate">
                                 [[_getValue(item, data)]]
@@ -36,6 +36,31 @@
                                     <span class="additional">([[_getAdditionalValue(item, data)]])</span>
                                 </template>
                             </span>
+                        </span>
+                    </template>
+
+                    <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
+                        <span class$="col-data w[[item.size]]">
+                            <template is="dom-if" if="{{_emtyObj(data)}}">
+                                 <paper-checkbox checked="{{_getValue(item, data, 'bool')}}"
+                                                 label=""></paper-checkbox>
+                            </template>
+                            <template is="dom-if" if="{{!_emtyObj(data)}}">
+                                <span class="">--</span>
+                            </template>
+                        </span>
+                    </template>
+
+                    <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
+                        <span class$="col-data w[[item.size]]">
+                            <template is="dom-if" if="{{_emtyObj(data)}}">
+                                <slot name="icon">
+
+                                </slot>
+                            </template>
+                            <template is="dom-if" if="{{!_emtyObj(data)}}">
+                                <span class="">--</span>
+                            </template>
                         </span>
                     </template>
 
