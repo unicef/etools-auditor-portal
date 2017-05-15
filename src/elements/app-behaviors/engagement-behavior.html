@@ -72,6 +72,15 @@
                     });
         },
 
+        _finalizeReport: function() {
+            if (!this._validateEngagement()) { return; }
+
+            return this._prepareData(false, true)
+                    .then((data) => {
+                        this.updatedEngagement = data;
+                    });
+        },
+
         _prepareData: function(submit, finalize) {
             let attachmentsTab = this.getElement('#attachments');
 
@@ -145,6 +154,26 @@
 
         getElement: function(selector) {
             return Polymer.dom(this.root).querySelector(selector);
+        },
+
+        _configButtonsData: function() {
+            if (!this.engagement) { return; }
+            if (this.engagement.status === 'report_submitted') {
+                this.otherActions = [];
+                this.mainBtnText = 'Finalize';
+            } else {
+                this.otherActions = [{name: 'save', event: 'save-progress'}];
+                this.mainBtnText = 'Submit';
+            }
+        },
+
+        _mainActionActivated: function() {
+            if (!this.engagement) { return; }
+            if (this.engagement.status === 'report_submitted') {
+                this._finalizeReport();
+            } else {
+                this._submitReport();
+            }
         }
 
     };

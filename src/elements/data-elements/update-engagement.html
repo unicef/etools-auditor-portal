@@ -138,6 +138,7 @@
                     this.method = 'POST';
                     this.actionUrl = url;
                     this.url = url;
+                    this.postData = engagement.data;
                 } else {
                     //Simple engagement data updating
                     let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url;

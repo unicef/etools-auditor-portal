@@ -17,7 +17,8 @@ Polymer({
         '_updateStyles(data.date_of_draft_report_to_ip)',
         '_updateStyles(data.date_of_comments_by_ip)',
         '_updateStyles(data.date_of_draft_report_to_unicef)',
-        '_updateStyles(data.date_of_comments_by_unicef)'
+        '_updateStyles(data.date_of_comments_by_unicef)',
+        '_updateStyles(basePermissionPath)'
     ],
     ready: function() {
         this.$['date-validator'].validate = this._validDate.bind(this);
@@ -40,6 +41,11 @@ Polymer({
         if (readOnly === null) { readOnly = true; }
 
         return readOnly || !(prevDate && !nextDate);
+    },
+    _isRequired: function(field) {
+        if (!this.basePermissionPath) { return false; }
+
+        return this.isRequired(`${this.basePermissionPath}.${field}`) ? 'required' : '';
     },
     validate: function(forSave) {
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');

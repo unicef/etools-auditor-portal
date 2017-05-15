@@ -2,6 +2,9 @@
     display: block;
     padding: 0;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .heading-row-header {
         height: 56px;
@@ -15,10 +18,14 @@
         .local-headings {
             display: block;
             box-sizing: border-box;
+            padding: 0 5px 0 0;
             float: left;
             font-weight: 500;
             cursor: pointer;
             color: var(--gray-mid);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             &:hover, &[ordered="asc"] {
                 .heading { color: var(--gray-dark); }
@@ -49,3 +56,15 @@
         }
     }
 }
+
+:host([no-ordered]) {
+    iron-icon {
+        display: none !important;
+    }
+}
+
+:host([no-additional]) {
+    .heading-row-header {
+        padding: 0 1%;
+     }
+ }
