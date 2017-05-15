@@ -41,11 +41,10 @@
 
                         <partner-details-tab partner="[[engagement.partner]]"></partner-details-tab>
 
-                        <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
-                            <engagement-staff-members-tab id="staffMembers"
-                                                          base-permission-path="new_engagement"
-                                                          data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
-                        </etools-content-panel>
+                        <engagement-staff-members-tab id="staffMembers"
+                                                      base-permission-path="new_engagement"
+                                                      data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
+
                     </div>
 
                     <div name="attachments">

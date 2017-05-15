@@ -7,7 +7,48 @@ Polymer({
         APBehaviors.RepeatableDataSetsBehavior,
         APBehaviors.PermissionController
     ],
-    properties: {},
+    properties: {
+        columns: {
+            type: Array,
+            value: function() {
+                return [
+                    {
+                        'size': 16,
+                        'label': 'Position',
+                        'name': 'user.profile.job_title'
+                    }, {
+                        'size': 16,
+                        'label': 'First Name',
+                        'name': 'user.first_name'
+                    }, {
+                        'size': 16,
+                        'label': 'Last Name',
+                        'name': 'user.last_name'
+                    }, {
+                        'size': 16,
+                        'label': 'Phone Number',
+                        'name': 'user.profile.phone_number'
+                    }, {
+                        'size': 16,
+                        'label': 'E-mail Address',
+                        'name': 'user.email'
+                    },
+                    {
+                        'size': 16,
+                        'label': 'Notif. on Audit Tasks',
+                        'name': 'user.is_active',
+                        'checkbox': true
+                    },
+                    {
+                        'size': 4,
+                        'label': 'Edit',
+                        'name': '',
+                        'icon': true
+                    }
+                ];
+            }
+        }
+    },
 
     ready: function() {
         this.dataSetModel =  {
@@ -23,8 +64,22 @@ Polymer({
             },
             receive_audit_notifications: false
         };
+        // this.test = [{
+        //     "id": 2,
+        //     "user": {
+        //         "first_name": "john",
+        //         "last_name": "doe",
+        //         "email": "john@gmail.com",
+        //         "is_active": true,
+        //         "profile": {
+        //             "job_title": null,
+        //             "phone_number": ""
+        //         }
+        //     },
+        //     "receive_audit_notifications": false
+        // }];
 
-        this.$['email-validator'].validate = this._validEmailAddress.bind(this);
+        // this.$['email-validator'].validate = this._validEmailAddress.bind(this);
     },
 
     _canBeRemoved: function() {
