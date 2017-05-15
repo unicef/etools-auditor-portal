@@ -39,24 +39,16 @@
 
             _handleResponse: function (data) {
                 let user = data.detail;
+                let previousUserId = JSON.parse(localStorage.getItem('userId'));
+
                 this._setUser(user);
 //                this._setPermissions(user);
 
-                //get old profile data
-                etoolsCustomDexieDb.profile.get(user.id)
-                    .then((previousUser) => {
-                        if (!previousUser) {
-                            this.resetOldUserData();
+                if (!previousUserId || previousUserId !== user.id) {
+                    this.resetOldUserData();
+                }
 
-                            //update user
-                            etoolsCustomDexieDb.profile.put(user);
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-
-                        this.resetOldUserData();
-                    });
+                localStorage.setItem('userId', user.id);
 
                 this.fire('user-profile-loaded');
             },

@@ -13,8 +13,7 @@ App global configuration
         engagements: `id, partner.name, partner.id, type, status,
             agreement.order_number, agreement.audit_organization.name, agreement.audit_organization.id`,
         partners: 'id',
-        auditors: 'id',
-        profile: 'id'
+        auditors: 'id'
     });
 
 
@@ -97,9 +96,13 @@ App global configuration
 
             resetOldUserData: function() {
                 console.log('resetOldUserData()');
-                etoolsCustomDexieDb.profile.clear();
+
+                localStorage.removeItem('userId');
+
+                etoolsCustomDexieDb.collectionsList.clear();
                 etoolsCustomDexieDb.engagements.clear();
                 etoolsCustomDexieDb.partners.clear();
+                etoolsCustomDexieDb.auditors.clear();
             },
 
             getAbsolutePath: function(path) {

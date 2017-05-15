@@ -44,6 +44,7 @@ function lint() {
         .pipe(jshint.reporter('default'))
         .pipe(jscs.reporter())
         .pipe(gulpIf(argv.pc, jshint.reporter('fail')))
+        .pipe(gulpIf(argv.pc, jscs.reporter('fail')))
         .on('end', function() {
             if (!fs.existsSync('build')) {
                 fs.mkdirSync('build');
