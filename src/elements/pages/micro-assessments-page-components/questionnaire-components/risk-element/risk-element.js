@@ -159,7 +159,7 @@ Polymer({
         if (this.extra && this.extra !== this.blueprint.extra) {
             data.extra = this.extra;
         }
-        if (this.blueprint.value) {
+        if (this.blueprint.value || data.extra) {
             data.value = this.blueprint.value;
         } else {
             return;
