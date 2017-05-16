@@ -1,144 +1,23 @@
-<!--import [polymer, paper-fab, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, iron-icons/communication-icons,
-            etools-data-table]-->
+<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icons, iron-icons/communication-icons]-->
 
-<!--import [tab-inputs-styles, repeatable-data-sets-behavior, custom-validator, permission-controller, list-header]-->
+<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, dialog-element, lodash]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
         <!-- inject styles './engagement-staff-members-tab.scss'-->
-        <style include="tab-inputs-styles"></style>
+        <style include="tab-inputs-styles module-styles"></style>
 
-        <!--<div hidden$="[[_emptyList(dataItems.length)]]">-->
-            <!--<template is="dom-repeat" items="{{dataItems}}">-->
-
-
-                <!--<div class="row-h repeatable-item-container">-->
-                    <!--<div class="repeatable-item-actions">-->
-                        <!--<div class="row-v actions">-->
-                            <!--<paper-icon-button class="action delete"-->
-                                               <!--on-tap="_openDeleteConfirmation"-->
-                                               <!--data-args$="[[index]]"-->
-                                               <!--disabled="[[!_canBeRemoved(index)]]"-->
-                                               <!--hidden$="[[!_canBeRemoved(index)]]"-->
-                                               <!--icon="cancel"></paper-icon-button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="repeatable-item-content">-->
-                        <!--<div class="row-h group">-->
-                            <!--<div class="input-container" title="{{_getTitleValue(item.user.profile.job_title)}}">-->
-                                <!--&lt;!&ndash; Position &ndash;&gt;-->
-                                <!--<paper-input label="Position"-->
-                                             <!--value="{{item.user.profile.job_title}}"-->
-                                             <!--placeholder="&#8212;"-->
-                                             <!--disabled$="[[isReadOnly('user.profile.job_title', basePermissionPath)]]"-->
-                                             <!--class$="disabled-as-readonly {{_setRequired('user.profile.job_title', basePermissionPath)}}"-->
-                                             <!--required="{{_setRequired('user.profile.job_title', basePermissionPath)}}">-->
-                                <!--</paper-input>-->
-                            <!--</div>-->
-                            <!--<div class="input-container" title="{{_getTitleValue(item.user.first_name)}}">-->
-                                <!--&lt;!&ndash; First Name &ndash;&gt;-->
-                                <!--<paper-input label="First Name"-->
-                                             <!--value="{{item.user.first_name}}"-->
-                                             <!--placeholder="&#8212;"-->
-                                             <!--disabled$="[[isReadOnly('user.first_name', basePermissionPath)]]"-->
-                                             <!--class$="disabled-as-readonly validate-input {{_setRequired('user.first_name', basePermissionPath)}}"-->
-                                             <!--required="{{_setRequired('user.first_name', basePermissionPath)}}"-->
-                                             <!--on-focus="_resetFieldError"-->
-                                             <!--error-message="First name is required">-->
-                                <!--</paper-input>-->
-                            <!--</div>-->
-                            <!--<div class="input-container" title="{{_getTitleValue(item.user.last_name)}}">-->
-                                <!--&lt;!&ndash; Last Name &ndash;&gt;-->
-                                <!--<paper-input label="Last Name"-->
-                                             <!--value="{{item.user.last_name}}"-->
-                                             <!--placeholder="&#8212;"-->
-                                             <!--disabled$="[[isReadOnly('user.last_name', basePermissionPath)]]"-->
-                                             <!--class$="disabled-as-readonly validate-input {{_setRequired('user.last_name', basePermissionPath)}}"-->
-                                             <!--required="{{_setRequired('user.last_name', basePermissionPath)}}"-->
-                                             <!--on-focus="_resetFieldError"-->
-                                             <!--error-message="Last name is required">-->
-                                <!--</paper-input>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="row-h group">-->
-                            <!--<div class="input-container" title="{{_getTitleValue(item.user.profile.phone_number)}}">-->
-                                <!--&lt;!&ndash; Phone number &ndash;&gt;-->
-                                <!--<paper-input label="Phone number"-->
-                                             <!--value="{{item.user.profile.phone_number}}"-->
-                                             <!--allowed-pattern="[\d]"-->
-                                             <!--placeholder="&#8212;"-->
-                                             <!--disabled$="[[isReadOnly('user.profile.phone_number', basePermissionPath)]]"-->
-                                             <!--class$="disabled-as-readonly {{_setRequired('user.profile.phone_number', basePermissionPath)}}"-->
-                                             <!--required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">-->
-                                    <!--<iron-icon prefix icon="communication:phone"></iron-icon>-->
-                                <!--</paper-input>-->
-                            <!--</div>-->
-                            <!--<div class="input-container" title="{{_getTitleValue(item.user.email)}}">-->
-                                <!--&lt;!&ndash; Email address &ndash;&gt;-->
-                                <!--<paper-input label="E-mail address"-->
-                                             <!--value="{{item.user.email}}"-->
-                                             <!--placeholder="&#8212;"-->
-                                             <!--disabled$="[[isReadOnly('user.email', basePermissionPath)]]"-->
-                                             <!--class$="disabled-as-readonly validate-input {{_setRequired('user.email', basePermissionPath)}}"-->
-                                             <!--validator="emailValidator"-->
-                                             <!--required="{{_setRequired('user.email', basePermissionPath)}}"-->
-                                             <!--on-focus="_resetFieldError"-->
-                                             <!--error-message="A valid email address is required">-->
-                                    <!--<iron-icon prefix icon="communication:email"></iron-icon>-->
-                                <!--</paper-input>-->
-                            <!--</div>-->
-
-                        <!--</div>-->
-
-                        <!--<div class="row-h group">-->
-                            <!--&lt;!&ndash; Active? &ndash;&gt;-->
-                            <!--<div class="staff-check-box active-box input-container">-->
-                                <!--<etools-checkable-input checked="{{item.user.is_active}}"-->
-                                                        <!--label="Active staff member?"-->
-                                                        <!--type="checkbox"-->
-                                                        <!--label-alignment="right"-->
-                                                        <!--readonly$="[[isReadOnly('user.is_active', basePermissionPath)]]">-->
-                                <!--</etools-checkable-input>-->
-                            <!--</div>-->
-                            <!--&lt;!&ndash;receive notification&ndash;&gt;-->
-                            <!--<div class="staff-check-box notify-box input-container input-container-ms">-->
-                                <!--<etools-checkable-input checked="{{item.receive_audit_notifications}}"-->
-                                                        <!--label="Receive notification?"-->
-                                                        <!--type="checkbox"-->
-                                                        <!--label-alignment="right"-->
-                                                        <!--readonly$="[[isReadOnly('receive_audit_notifications', basePermissionPath)]]">-->
-                                <!--</etools-checkable-input>-->
-                            <!--</div>-->
-                        <!--</div>-->
-
-                    <!--</div>-->
-                <!--</div>-->
-
-            <!--</template>-->
-        <!--</div>-->
-
-        <!--<custom-validator id="email-validator" validator-name="emailValidator"></custom-validator>-->
-
-        <!--<div class="row-h" hidden$="[[!_emptyList(dataItems.length)]]">-->
-            <!--<p>There are no assessments added.</p>-->
-        <!--</div>-->
-
-        <!--<div id="bottom-actions" class="row-h" hidden$="[[!_canBeRemoved(basePermissionPath)]]">-->
-            <!--<paper-fab icon="add"-->
-                       <!--on-tap="_addNewStaffMember"-->
-                       <!--title="Add"></paper-fab>-->
-        <!--</div>-->
-
-        <paper-icon-button hidden$="[[!_canBeRemoved(basePermissionPath)]]"
+        <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
                            title="Add"
+                           on-tap="openAddDialog"
                            class="add-button"
                            icon="add"></paper-icon-button>
 
-        <etools-content-panel title$="Auditor Staff Members ([[test.length]])" show-expand-btn>
+        <etools-content-panel title$="Auditor Staff Members ([[dataItems.length]])" show-expand-btn>
 
             <list-header no-additional no-ordered data="[[columns]]"></list-header>
 
-            <template is="dom-repeat" items="[[test]]">
+            <template is="dom-repeat" items="[[dataItems]]">
                 <list-element
                         class="list-element"
                         data="[[item]]"
@@ -146,14 +25,124 @@
                         headings="[[columns]]"
                         no-animation>
                     <div slot="icon">
-                        <paper-icon-button icon="create" class="edit-icon"></paper-icon-button>
+                        <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                     </div>
                 </list-element>
+            </template>
+
+            <template is="dom-if" if="[[!dataItems.length]]">
+                <list-element
+                        class="list-element"
+                        data="[[emptyObj]]"
+                        no-additional
+                        headings="[[columns]]"
+                        no-animation></list-element>
             </template>
 
 
         </etools-content-panel>
 
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
+
+            <div class="form-title">
+                <div class="text">Auditor Staff Member</div>
+            </div>
+
+            <div class="row-h repeatable-item-container">
+
+                <div class="repeatable-item-actions">
+                    <div class="row-v actions">
+                        <paper-icon-button class="action delete"
+                                           on-tap="_openDeleteConfirmation"
+                                           data-args$="[[index]]"
+                                           disabled="[[!canBeRemoved]]"
+                                           hidden$="[[!canBeRemoved]]"
+                                           icon="cancel"></paper-icon-button>
+                    </div>
+                </div>
+
+                <div class="repeatable-item-content">
+                    <div class="row-h group">
+                        <div class="input-container" title="{{_getTitleValue(staffMember.user.profile.job_title)}}">
+                            <!-- Position -->
+                            <paper-input label="Position"
+                                         value="{{staffMember.user.profile.job_title}}"
+                                         placeholder="Enter Position"
+                                         on-focus="_resetFieldError"
+                                         class$="validate-input {{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                         required="{{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                         error-message="Position is required">
+                            </paper-input>
+                        </div>
+                        <div class="input-container" title="{{_getTitleValue(staffMember.user.first_name)}}">
+                            <!-- First Name -->
+                            <paper-input label="First Name"
+                                         value="{{staffMember.user.first_name}}"
+                                         placeholder="Enter First Name"
+                                         class$="validate-input {{_setRequired('user.first_name', basePermissionPath)}}"
+                                         required="{{_setRequired('user.first_name', basePermissionPath)}}"
+                                         on-focus="_resetFieldError"
+                                         error-message="First name is required">
+                            </paper-input>
+                        </div>
+                        <div class="input-container" title="{{_getTitleValue(staffMember.user.last_name)}}">
+                            <!-- Last Name -->
+                            <paper-input label="Last Name"
+                                         value="{{staffMember.user.last_name}}"
+                                         placeholder="Enter Last Name"
+                                         class$="validate-input {{_setRequired('user.last_name', basePermissionPath)}}"
+                                         required="{{_setRequired('user.last_name', basePermissionPath)}}"
+                                         on-focus="_resetFieldError"
+                                         error-message="Last name is required">
+                            </paper-input>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container" title="{{_getTitleValue(staffMember.user.profile.phone_number)}}">
+                            <!-- Phone number -->
+                            <paper-input label="Phone number"
+                                         value="{{staffMember.user.profile.phone_number}}"
+                                         allowed-pattern="[\d\s]"
+                                         placeholder="Enter Phone number"
+                                         class$="validate-input {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
+                                         required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
+                                <iron-icon prefix icon="communication:phone"></iron-icon>
+                            </paper-input>
+                        </div>
+                        <div class="input-container" title="{{_getTitleValue(staffMember.user.email)}}">
+                            <!-- Email address -->
+                            <paper-input label="E-mail address"
+                                         value="{{staffMember.user.email}}"
+                                         placeholder="Enter E-mail address"
+                                         class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
+                                         required="{{_setRequired('user.email', basePermissionPath)}}"
+                                         on-focus="_resetFieldError"
+                                         id="emailInput"
+                                         error-message="A valid email address is required">
+                                <iron-icon prefix icon="communication:email"></iron-icon>
+                            </paper-input>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row-h group">
+                        <!--receive notification-->
+                        <div class="staff-check-box notify-box input-container input-container-l">
+                            <etools-checkable-input checked="{{staffMember.receive_audit_notifications}}"
+                                                    label="Receive Notifications on Audit Tasks?"
+                                                    type="checkbox"
+                                                    label-alignment="right"
+                                                    readonly$="[[isReadOnly('receive_audit_notifications', basePermissionPath)]]">
+                            </etools-checkable-input>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="line"></div>
+        </dialog-element>
     </template>
 
     <!-- inject scripts './engagement-staff-members-tab.js'-->

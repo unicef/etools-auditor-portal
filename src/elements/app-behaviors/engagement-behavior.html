@@ -125,12 +125,13 @@
 
 
         _validateBasicInfo: function(property) {
-            let staffMembersValid = this.getElement('#staffMembers').validate(),
-                detailsValid = this.getElement('#engagementDetails').validate(),
+            let detailsValid = this.getElement('#engagementDetails').validate(),
+                    //TODO: don't validate staff members in tabular view
+//                staffMembersValid = this.getElement('#staffMembers').validate(),
                 attachmentsValid = this.getElement('#attachments').validate();
 
-            if (!staffMembersValid || !detailsValid || !attachmentsValid) {
-                let openTab = (staffMembersValid && detailsValid) ? 'attachments' : 'overview';
+            if (/*!staffMembersValid ||*/ !detailsValid || !attachmentsValid) {
+                let openTab = (/*staffMembersValid && */detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);
                 this.fire('toast', {text: 'Fix invalid fields before saving'});

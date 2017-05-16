@@ -4,10 +4,34 @@ Polymer({
     is: 'engagement-staff-members-tab',
 
     behaviors: [
-        APBehaviors.RepeatableDataSetsBehavior,
         APBehaviors.PermissionController
     ],
     properties: {
+        emptyObj: {
+            type: Object,
+            value: function() {
+                return {empty: true};
+            }
+        },
+        userModel: {
+            type: Object,
+            value: function() {
+                return {
+                    user: {
+                        first_name: '',
+                        last_name: '',
+                        email: '',
+                        is_active: true,
+                        profile: {
+                            job_title: '',
+                            phone_number: ''
+                        }
+                    },
+                    receive_audit_notifications: false
+                };
+            }
+        },
+        staffMember: Object,
         columns: {
             type: Array,
             value: function() {
@@ -42,7 +66,7 @@ Polymer({
                     {
                         'size': 4,
                         'label': 'Edit',
-                        'name': '',
+                        'name': 'edit',
                         'icon': true
                     }
                 ];
@@ -50,39 +74,21 @@ Polymer({
         }
     },
 
-    ready: function() {
-        this.dataSetModel =  {
-            user: {
-                first_name: '',
-                last_name: '',
-                email: '',
-                is_active: true,
-                profile: {
-                    job_title: '',
-                    phone_number: ''
-                }
-            },
-            receive_audit_notifications: false
-        };
-        // this.test = [{
-        //     "id": 2,
-        //     "user": {
-        //         "first_name": "john",
-        //         "last_name": "doe",
-        //         "email": "john@gmail.com",
-        //         "is_active": true,
-        //         "profile": {
-        //             "job_title": null,
-        //             "phone_number": ""
-        //         }
-        //     },
-        //     "receive_audit_notifications": false
-        // }];
-
-        // this.$['email-validator'].validate = this._validEmailAddress.bind(this);
+    listeners: {
+        'dialog-confirmed': '_addStaffFromDialog'
     },
 
-    _canBeRemoved: function() {
+    observers: [
+        'resetDialog(dialogOpened)',
+        'changePermission(basePermissionPath)'
+    ],
+
+    ready: function() {
+        this.$.emailInput.validate = this._validEmailAddress.bind(this, this.$.emailInput);
+        this.staffMember = _.cloneDeep(this.userModel);
+    },
+
+    _canBeChanged: function() {
         if (!this.basePermissionPath) { return true; }
 
         let readOnly = this.isReadonly(`${this.basePermissionPath}.staff_members`);
@@ -91,9 +97,31 @@ Polymer({
         return !readOnly;
     },
 
-    _validEmailAddress: function(emailAddress) {
+    changePermission: function(basePermissionPath) {
+        if (!basePermissionPath) { return; }
+        if (this._canBeChanged() && this.columns[this.columns.length - 1].name !== 'edit') {
+            this.push('columns', {'size': 4,'label': 'Edit','name': 'edit','icon': true});
+        } else if (!this._canBeChanged() && this.columns[this.columns.length - 1].name === 'edit') {
+            this.pop('columns');
+        }
+    },
+
+    _validEmailAddress: function(emailInput) {
+        let value = emailInput.value,
+            required = emailInput.required;
+
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return !!(emailAddress && re.test(emailAddress));
+
+        if (required && !value) {
+            emailInput.invalid = true;
+            return false;
+        }
+        if (value && !re.test(value)) {
+            emailInput.invalid = true;
+            return false;
+        }
+
+        return true;
     },
 
     _notEmpty: function(value) {
@@ -101,8 +129,6 @@ Polymer({
     },
 
     validate: function() {
-        if (!this.dataItems.length) { return true; }
-
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-input'),
             valid = true;
 
@@ -112,22 +138,6 @@ Polymer({
         });
 
         return valid;
-    },
-
-    _addNewStaffMember: function() {
-        if (this._canBeRemoved()) {
-            var lastStaffMemberAdded = this.dataItems[this.dataItems.length - 1];
-            if (lastStaffMemberAdded &&
-                !this._notEmpty(lastStaffMemberAdded.user.profile.job_title) &&
-                !this._notEmpty(lastStaffMemberAdded.user.first_name) &&
-                !this._notEmpty(lastStaffMemberAdded.user.last_name) &&
-                !this._notEmpty(lastStaffMemberAdded.user.profile.phone_number) &&
-                !this._notEmpty(lastStaffMemberAdded.user.email)) {
-                this.fire('toast', {text: 'Last staff member fields are empty!', showCloseBtn: true});
-            } else {
-                this._addElement();
-            }
-        }
     },
 
     _getTitleValue: function(value) { return value || ''; },
@@ -150,6 +160,56 @@ Polymer({
         if (readOnly === null) { readOnly = true; }
 
         return readOnly;
+    },
+    openAddDialog: function() {
+        this.dialogTitle = 'Add new Staff Member';
+        this.confirmBtnText = 'Add';
+        this.canBeRemoved = false;
+        this.dialogOpened = true;
+    },
+
+    openEditDialog: function(event) {
+        let model = event && event.model,
+            index = model && model.index;
+
+        if (!index && index !== 0) { console.error('Can not find user data'); return; }
+
+        this.staffMember = _.cloneDeep(this.dataItems[index]);
+        this.dialogTitle = 'Edit Staff Member';
+        this.confirmBtnText = 'Save';
+        this.canBeRemoved = true;
+        this.editedIndex = index;
+        this.dialogOpened = true;
+    },
+
+    _addStaffFromDialog: function() {
+        if (!this.validate()) { return; }
+
+        let user = _.cloneDeep(this.staffMember);
+        if (this.canBeRemoved && !isNaN(this.editedIndex)) {
+            //if is edit popup
+            this.splice('dataItems', this.editedIndex, 1, user);
+        } else {
+            //if is creation popup
+            this.push('dataItems', user);
+        }
+
+        this.dialogOpened = false;
+        this.resetDialog();
+    },
+
+    resetDialog: function(opened) {
+        if (opened) { return; }
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-input');
+
+        Array.prototype.forEach.call(elements, element => {
+            element.invalid = false;
+            element.value = '';
+        });
+
+        this.dialogTitle = '';
+        this.confirmBtnText = '';
+        this.staffMember = _.cloneDeep(this.userModel);
     }
 
 });

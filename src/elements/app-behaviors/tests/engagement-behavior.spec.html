@@ -356,9 +356,8 @@
                     assert.isTrue(behaviorObj._validateBasicInfo());
                 });
 
-                it('return false if staffMembers, engagementDetails or attachments aren\'t valid', function() {
+                it('return false if engagementDetails or attachments aren\'t valid', function() {
                     var stub = sinon.stub(behaviorObj, 'getElement');
-                    stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
                     stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
                     stub.withArgs('#attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
@@ -369,9 +368,8 @@
                     assert.equal(behaviorObj.fire.args[0].length, 2);
                 });
 
-                it('sets attachments tab if staffMembers and engagementDetails is valid but attachments aren\'t valid', function() {
+                it('sets attachments tab if engagementDetails is valid but attachments aren\'t valid', function() {
                     var stub = sinon.stub(behaviorObj, 'getElement');
-                    stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
                     stub.withArgs('#engagementDetails').returns({validate: function() { return true; }});
                     stub.withArgs('#attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();

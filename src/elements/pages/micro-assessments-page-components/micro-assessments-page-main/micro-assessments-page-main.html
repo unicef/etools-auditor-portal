@@ -52,13 +52,10 @@
 
                             <partner-details-tab partner="[[engagement.partner]]"></partner-details-tab>
 
-                            <etools-content-panel
-                                    title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
-                                    show-expand-btn>
+
                                 <engagement-staff-members-tab id="staffMembers"
                                                               base-permission-path="{{permissionBase}}"
                                                               data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
-                            </etools-content-panel>
                         </div>
 
                         <div name="report">
