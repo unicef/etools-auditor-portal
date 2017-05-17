@@ -1,0 +1,93 @@
+<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icons]-->
+<!--import [tab-inputs-styles, permission-controller, list-header, list-element, dialog-element, lodash]-->
+
+<dom-module id="control-findings-tab">
+    <template>
+        <!-- inject styles './control-findings-tab.scss'-->
+        <style include="tab-inputs-styles module-styles"></style>
+
+
+        <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                           title="Add"
+                           on-tap="openAddDialog"
+                           class="add-button"
+                           icon="add"></paper-icon-button>
+
+        <etools-content-panel title="Detailed Internal Control Findings and Recomendations">
+
+            <list-header no-ordered data="[[columns]]"></list-header>
+
+            <template is="dom-repeat" items="[[findings]]">
+                <list-element
+                        class="list-element"
+                        data="[[item]]"
+                        headings="[[columns]]"
+                        details="[[details]]"
+                        has-collapse
+                        no-animation>
+                    <div slot="icon">
+                        <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                    </div>
+                </list-element>
+            </template>
+
+            <template is="dom-if" if="[[!findings.length]]">
+                <list-element
+                        class="list-element"
+                        data="[[emptyObj]]"
+                        headings="[[columns]]"
+                        no-animation></list-element>
+            </template>
+
+
+        </etools-content-panel>
+
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
+
+            <div class="row-h repeatable-item-container">
+
+                <div class="repeatable-item-actions">
+                    <div class="row-v actions">
+                        <paper-icon-button class="action delete"
+                                           on-tap="_openDeleteConfirmation"
+                                           data-args$="[[index]]"
+                                           disabled="[[!canBeRemoved]]"
+                                           hidden$="[[!canBeRemoved]]"
+                                           icon="cancel"></paper-icon-button>
+                    </div>
+                </div>
+
+                <div class="repeatable-item-content">
+                    <div class="row-h group">
+                        <div class="input-container input-container-ms">
+                            <!-- Finding -->
+                            <paper-input label="Finding"
+                                         value="{{controlFinding.finding}}"
+                                         placeholder="Enter finding"
+                                         on-focus="_resetFieldError"
+                                         class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
+                                         required="{{_setRequired('finding', basePermissionPath)}}"
+                                         error-message="Finding is required">
+                            </paper-input>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Recommendation -->
+                            <paper-textarea label="Recommendation"
+                                            value="{{controlFinding.recommendation}}"
+                                            allowed-pattern="[\d\s]"
+                                            placeholder="Enter recommendation"
+                                            class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"
+                                            required="{{_setRequired('recommendation', basePermissionPath)}}">
+                            </paper-textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog-element>
+
+    </template>
+
+    <!-- inject scripts './control-findings-tab.js'-->
+</dom-module>

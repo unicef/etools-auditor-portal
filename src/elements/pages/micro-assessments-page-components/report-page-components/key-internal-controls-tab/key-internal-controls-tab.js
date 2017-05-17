@@ -37,7 +37,7 @@ Polymer({
                     'size': 100
                 }];
             }
-        },
+        }
     },
 
     listeners: {
