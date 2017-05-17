@@ -1,5 +1,5 @@
 <!--import [polymer]-->
-<!--import [assign-engagement, key-internal-controls-tab]-->
+<!--import [assign-engagement, key-internal-controls-tab, control-findings-tab]-->
 
 <dom-module id="ma-report-page-main">
     <template>
@@ -13,6 +13,10 @@
         <key-internal-controls-tab subject-areas="[[engagement.test_subject_areas]]"
                                    id="internalControls"
                                    base-permission-path="{{permissionBase}}"></key-internal-controls-tab>
+
+        <control-findings-tab findings="{{engagement.findings}}"
+                              id="controlFindings"
+                              base-permission-path="{{permissionBase}}"></control-findings-tab>
 
     </template>
 
