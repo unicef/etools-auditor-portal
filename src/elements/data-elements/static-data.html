@@ -92,20 +92,23 @@
 
                     this._addToCollection('new_engagement', data.detail.actions);
 
-                    let attachmentsTypes = this.getChoices('new_engagement.attachments.file_type');
-                    if (!attachmentsTypes) {
-                        this._responseError();
-                        return;
+                    let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type'),
+                        reportAttachmentsTypes = this.getChoices('new_engagement.report_attachments.file_type');
+
+                    if (!engagementAttachmentsTypes || !reportAttachmentsTypes) {
+                        this._responseError('Can not load attachments types');
                     }
-                    this._setData('attachments_types', attachmentsTypes);
+                    this._setData('engagement_attachments_types', engagementAttachmentsTypes);
+                    this._setData('report_attachments_types', reportAttachmentsTypes);
                     this._setData('riskOptions', riskOptions);
 
                     dataLoaded.engagementOptions = true;
                     this._allDataLoaded();
                 },
 
-                _responseError: function() {
+                _responseError: function(message) {
                     console.error('Can not load initial data');
+                    if (message) { console.error(message); }
                     this.fire('static-data-loaded');
                 }
 
