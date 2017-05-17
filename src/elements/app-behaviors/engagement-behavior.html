@@ -140,11 +140,16 @@
 
 
         _validateBasicInfo: function(property) {
-            let detailsValid = this.getElement('#engagementDetails').validate(),
+            let detailsValid = this.getElement('#engagementDetails').validate();
                     //TODO: don't validate staff members in tabular view
-                    //staffMembersValid = this.getElement('#staffMembers').validate(),
-                engagementAttachmentsValid = this.getElement('#engagement_attachments').validate(),
-                reportAttachmentsValid = this.getElement('#report_attachments').validate();
+                    //staffMembersValid = this.getElement('#staffMembers').validate();
+
+            let engagementAttachments = this.getElement('#engagement_attachments'),
+                    reportAttachments = this.getElement('#report_attachments');
+
+            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
+                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
+
 
             if (/*!staffMembersValid || */!detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid) {
                 let openTab = (/*staffMembersValid && */detailsValid) ? 'attachments' : 'overview';
