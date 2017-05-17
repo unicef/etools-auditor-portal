@@ -42,6 +42,7 @@
             }
 
             this.tab = tab;
+            if (this.infoLoaded) { this.infoLoaded(); }
         },
 
         _tabChanged: function(tab) {
