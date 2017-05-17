@@ -51,7 +51,9 @@
                     <div name="attachments">
                         <file-attachments-tab title="Attachments"
                                               id="attachments"
-                                              files="[[engagement.attachments]]"
+                                              files="[[engagement.engagement_attachments]]"
+                                              file-types="[[fileTypes]]"
+                                              readonly="[[_attachmentsReadonly()]]"
                                               file-type-required
                                               allow-download
                                               allow-delete>
