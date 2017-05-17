@@ -91,9 +91,10 @@
             let engagementAttachmentsTab = this.getElement('#engagement_attachments'),
                 reportAttachmentsTab = this.getElement('#report_attachments');
 
-            if (!this.engagement || !engagementAttachmentsTab || !reportAttachmentsTab) {
+            if (!this.engagement) {
                 return Promise.reject('You need engagement object and attachments tabs');
             }
+
 
             let data = _.clone(this.engagement);
 
@@ -118,16 +119,14 @@
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
             }
-
-            let promises = [
-                engagementAttachmentsTab.getFiles(),
-                reportAttachmentsTab.getFiles()
-            ];
+            let promises = [];
+            if (engagementAttachmentsTab) { promises.push(engagementAttachmentsTab.getFiles()); }
+            if (reportAttachmentsTab) { promises.push(reportAttachmentsTab.getFiles()); }
 
             return Promise.all(promises)
                     .then((uploadedFiles) => {
-                        data.engagement_attachments = uploadedFiles[0];
-                        data.report_attachments = uploadedFiles[1];
+                        data.engagement_attachments = uploadedFiles ? uploadedFiles[0] : undefined;
+                        data.report_attachments = uploadedFiles ? uploadedFiles[1] : undefined;
                         return {
                             type: type,
                             id: data.id,
