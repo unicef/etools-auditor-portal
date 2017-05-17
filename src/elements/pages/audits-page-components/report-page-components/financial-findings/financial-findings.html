@@ -1,0 +1,39 @@
+<!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
+<!--import [list-header, list-element]-->
+<!--import [tab-inputs-styles, module-styles, permission-controller, static-data-behavior]-->
+
+<dom-module id="financial-findings">
+    <template>
+        <style include="tab-inputs-styles module-styles">
+            :host {
+                position: relative;
+                display: block;
+            }
+
+            .edit-icon { color: var(--module-primary); }
+        </style>
+
+        <etools-content-panel class="content-section clearfix" title="Financial findings">
+            <list-header id="list-header"
+                         no-ordered
+                         data="[[headings]]">
+            </list-header>
+
+            <template is="dom-repeat" items="[[data.financial_finding_set]]">
+                <list-element
+                        class="list-element"
+                        data="[[item]]"
+                        headings="[[headings]]"
+                        details="[[details]]"
+                        has-collapse
+                        no-animation>
+                    <div slot="icon">
+                        <paper-icon-button icon="icons:create" class="edit-icon"></paper-icon-button>
+                    </div>
+                </list-element>
+            </template>
+        </etools-content-panel>
+    </template>
+
+    <!-- inject scripts './financial-findings.js'-->
+</dom-module>

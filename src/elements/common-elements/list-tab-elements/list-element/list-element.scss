@@ -15,7 +15,7 @@
             line-height: 48px;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 25px;
+            padding-right: 10px;
             box-sizing: border-box;
 
             &:not(.truncate) { padding-right: 0; }
@@ -24,6 +24,9 @@
                 color: var(--dark-secondary-text-color);
                 font-size: 11px;
             }
+
+            &.right { text-align: right; }
+            &.center { text-align: center; }
         }
         a.col-data { color: #40c4ff; }
     }
