@@ -6,7 +6,6 @@
             paper-dialog {
                 background-color: #ffffff;
                 border-radius: 4px;
-                width: 650px;
             }
 
             @media screen and (max-width: 767px) {
@@ -21,13 +20,16 @@
                 }
             }
 
-            .buttons {
-                margin-top: 15px;
+            #buttons {
+                padding: 18px 8px 17px 24px;
 
             }
 
             .btn-cancel {
-                color: var(--gray-mid);
+                /*color: var(--gray-mid);*/
+                color: var(--module-error);
+                font-weight: 500;
+
             }
 
             .btn-confirm {
@@ -56,11 +58,11 @@
                       with-backdrop
                       ok-btn-text="sync from vision">
             <iron-icon icon="icons:close" class="close-btn" dialog-dismiss></iron-icon>
-            <h2 class="dialog-title">[[title]]</h2>
+            <h2 class="dialog-title">[[dialogTitle]]</h2>
             <slot></slot>
-            <div class="buttons">
+            <div class="buttons" id="buttons">
                 <paper-button dialog-dismiss class="btn-cancel">[[cancelBtnText]]</paper-button>
-                <paper-button dialog-confirm autofocus class="btn-confirm">[[confirmBtnText]]</paper-button>
+                <paper-button autofocus class="btn-confirm" on-tap="confirmDialog">[[confirmBtnText]]</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -71,7 +73,7 @@
         Polymer({
             is: 'dialog-element',
             properties: {
-                title: {
+                dialogTitle: {
                     type: String,
                     value: 'Custom title'
                 },
@@ -87,6 +89,9 @@
                     type: Boolean,
                     notify: true
                 }
+            },
+            confirmDialog: function() {
+                this.fire('dialog-confirmed');
             }
         });
     </script>

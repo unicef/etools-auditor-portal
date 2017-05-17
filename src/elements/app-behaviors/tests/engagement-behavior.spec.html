@@ -154,7 +154,7 @@
         };
 
         before(function() {
-            behaviorObj = APBehaviors.EngagementBehavior;
+            behaviorObj = APBehaviors.EngagementBehaviorImpl;
             copy = _.cloneDeep(behaviorObj);
         });
 
@@ -329,7 +329,7 @@
                 it('reject if no engagement data or attachments tab', function(done) {
                     behaviorObj._prepareData()
                             .catch(function(info) {
-                                assert.equal(info, 'You need engagement object and attachments tab');
+                                assert.equal(info, 'You need engagement object and attachments tabs');
                                 done();
                             });
                 });
@@ -360,7 +360,8 @@
                     var stub = sinon.stub(behaviorObj, 'getElement');
                     stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
                     stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
-                    stub.withArgs('#attachments').returns({validate: function() { return false; }});
+                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
+                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
                     behaviorObj.fire = sinon.spy();
 
@@ -373,7 +374,8 @@
                     var stub = sinon.stub(behaviorObj, 'getElement');
                     stub.withArgs('#staffMembers').returns({validate: function() { return true; }});
                     stub.withArgs('#engagementDetails').returns({validate: function() { return true; }});
-                    stub.withArgs('#attachments').returns({validate: function() { return false; }});
+                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
+                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
                     behaviorObj.fire = sinon.spy();
 
@@ -435,6 +437,19 @@
             behaviorObj._mainActionActivated();
 
             assert.isTrue(behaviorObj._submitReport.called);
+        });
+
+        it('method _attachmentsReadonly run isReadonly method and return readonly status', function() {
+            behaviorObj.isReadonly = sinon.stub().returns(true);
+
+            assert.isTrue(behaviorObj._attachmentsReadonly());
+            assert.isTrue(behaviorObj.isReadonly.called);
+
+            behaviorObj.isReadonly.returns(null);
+            assert.isTrue(behaviorObj._attachmentsReadonly());
+
+            behaviorObj.isReadonly.returns(false);
+            assert.isFalse(behaviorObj._attachmentsReadonly());
         })
 
     });

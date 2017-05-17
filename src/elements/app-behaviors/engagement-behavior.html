@@ -4,7 +4,7 @@
     'use strict';
 
     window.APBehaviors = window.APBehaviors || {};
-    APBehaviors.EngagementBehavior = {
+    APBehaviors.EngagementBehaviorImpl = {
         properties: {
             tabsList: {
                 type: Array,
@@ -16,6 +16,11 @@
                 type: String,
                 value: ''
             }
+        },
+
+        ready: function() {
+            this.engagementFileTypes = this.getData('engagement_attachments_types');
+            this.reportFileTypes = this.getData('report_attachments_types');
         },
 
         _routeConfig: function(route) {
@@ -82,9 +87,12 @@
         },
 
         _prepareData: function(submit, finalize) {
-            let attachmentsTab = this.getElement('#attachments');
+            let engagementAttachmentsTab = this.getElement('#engagement_attachments'),
+                reportAttachmentsTab = this.getElement('#report_attachments');
 
-            if (!this.engagement || !attachmentsTab) {  return Promise.reject('You need engagement object and attachments tab'); }
+            if (!this.engagement || !engagementAttachmentsTab || !reportAttachmentsTab) {
+                return Promise.reject('You need engagement object and attachments tabs');
+            }
 
             let data = _.clone(this.engagement);
 
@@ -110,9 +118,15 @@
                 data = this.customDataPrepare(data);
             }
 
-            return attachmentsTab.getFiles()
-                    .then((files) => {
-                        data.attachments = files;
+            let promises = [
+                engagementAttachmentsTab.getFiles(),
+                reportAttachmentsTab.getFiles()
+            ];
+
+            return Promise.all(promises)
+                    .then((uploadedFiles) => {
+                        data.engagement_attachments = uploadedFiles[0];
+                        data.report_attachments = uploadedFiles[1];
                         return {
                             type: type,
                             id: data.id,
@@ -120,16 +134,17 @@
                             submit: submit ? 'submit/' : null,
                             finalize: finalize ? 'finalize/' : null
                         };
-                    })
+                    });
         },
 
 
         _validateBasicInfo: function(property) {
             let staffMembersValid = this.getElement('#staffMembers').validate(),
                 detailsValid = this.getElement('#engagementDetails').validate(),
-                attachmentsValid = this.getElement('#attachments').validate();
+                engagementAttachmentsValid = this.getElement('#engagement_attachments').validate(),
+                reportAttachmentsValid = this.getElement('#report_attachments').validate();
 
-            if (!staffMembersValid || !detailsValid || !attachmentsValid) {
+            if (!staffMembersValid || !detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid) {
                 let openTab = (staffMembersValid && detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);
@@ -174,7 +189,20 @@
             } else {
                 this._submitReport();
             }
+        },
+
+        _attachmentsReadonly: function(base, type) {
+            let readOnly = this.isReadonly(`${base}.${type}`);
+            if (readOnly === null) { readOnly = true; }
+            return readOnly;
         }
 
     };
+
+    APBehaviors.EngagementBehavior = [
+        APBehaviors.EngagementBehaviorImpl,
+        APBehaviors.PermissionController,
+        APBehaviors.StaticDataController
+    ];
+
 </script>
