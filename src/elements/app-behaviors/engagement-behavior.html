@@ -140,9 +140,13 @@
 
         _validateBasicInfo: function(property) {
             let staffMembersValid = this.getElement('#staffMembers').validate(),
-                detailsValid = this.getElement('#engagementDetails').validate(),
-                engagementAttachmentsValid = this.getElement('#engagement_attachments').validate(),
-                reportAttachmentsValid = this.getElement('#report_attachments').validate();
+                detailsValid = this.getElement('#engagementDetails').validate();
+
+            let engagementAttachments = this.getElement('#engagement_attachments'),
+                    reportAttachments = this.getElement('#report_attachments');
+
+            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
+                reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
 
             if (!staffMembersValid || !detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid) {
                 let openTab = (staffMembersValid && detailsValid) ? 'attachments' : 'overview';
