@@ -2,6 +2,9 @@
     display: block;
     padding: 0;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .heading-row-header {
         height: 56px;
@@ -15,10 +18,15 @@
         .local-headings {
             display: block;
             box-sizing: border-box;
+            padding: 0 5px 0 0;
             float: left;
             font-weight: 500;
             cursor: pointer;
             color: var(--gray-mid);
+            overflow: hidden;
+            height: 56px;
+            line-height: 56px;
+            white-space: normal;
 
             &:hover, &[ordered="asc"] {
                 .heading { color: var(--gray-dark); }
@@ -36,8 +44,13 @@
                 iron-icon.up-icon { display: none; }
             }
 
+            &.right { text-align: right; }
+            &.center { text-align: center; }
+
             .heading {
-                line-height: 56px;
+                display: inline-block;
+                vertical-align: middle;
+                line-height: normal;
                 font-size: 12px;
             }
 
@@ -49,3 +62,15 @@
         }
     }
 }
+
+:host([no-ordered]) {
+    iron-icon {
+        display: none !important;
+    }
+}
+
+:host([no-additional]) {
+    .heading-row-header {
+        padding: 0 1%;
+     }
+ }

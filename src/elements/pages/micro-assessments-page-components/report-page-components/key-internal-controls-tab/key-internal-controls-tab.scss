@@ -1,24 +1,18 @@
 :host {
     position: relative;
     display: block;
-
-    .add-button {
-        position: absolute;
-        right: 15px;
-        top: 4px;
-        width: 40px;
-        height: 40px;
-        color: #ffffff;
-        z-index: 10;
+    margin: 20px 0;
+    * {
+        box-sizing: border-box;
     }
 
-    .edit-icon {
-        padding: 5px;
-        width: 30px;
-        height: 30px;
-        color: var(--module-primary);
+    .repeatable-item-container .repeatable-item-content {
+        margin-left: 25px;
     }
 
+    .container {
+        min-width: 600px;
+    }
 
     .form-title {
         position: relative;
@@ -45,16 +39,11 @@
         margin-bottom: 0 !important;
         border-bottom: 1px solid var(--gray-border);
     }
-
-    .notify-box {
-        margin-bottom: 20px;
-    }
-
 }
 
 etools-content-panel {
-     --ecp-content: #{'{
+    --ecp-content: #{'{
             padding: 0;
-            padding-bottom: 15px;
+            padding-bottom: 7px;
         }'};
- }
+}

@@ -148,7 +148,8 @@
                     return [{
                         'label': 'Date of status',
                         'name': 'date',
-                        'path': 'status_date'
+                        'path': 'status_date',
+                        'size': 16
                     }];
                 }
             }

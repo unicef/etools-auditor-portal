@@ -1,0 +1,23 @@
+<!--import [polymer, list-element, lodash]-->
+
+<dom-module id="subject-area-element">
+    <template>
+        <!-- inject styles './subject-area-element.scss'-->
+
+        <list-element class="list-element"
+                      id="listElement"
+                      data="{{areaData}}"
+                      headings="[[headings]]"
+                      details="[[details]]"
+                      has-collapse
+                      no-animation>
+            <div slot="icon">
+                <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+            </div>
+        </list-element>
+
+
+    </template>
+
+    <!-- inject scripts './subject-area-element.js'-->
+</dom-module>

@@ -15,22 +15,29 @@
             line-height: 48px;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 25px;
+            padding-right: 10px;
             box-sizing: border-box;
+
+            &:not(.truncate) { padding-right: 0; }
             .truncate { white-space: nowrap; }
             .additional {
                 color: var(--dark-secondary-text-color);
                 font-size: 11px;
             }
+
+            &.right { text-align: right; }
+            &.center { text-align: center; }
         }
         a.col-data { color: #40c4ff; }
     }
 
     .partners-data-details {
-        display: flex;
+        position: relative;
+        display: block;
+        width: 100%;
+
         .row-details-content {
-            flex: 0 0 16.66666667%;
-            max-width: 16%;
+            float: left;
             padding-right: 25px;
             vertical-align: top;
             overflow: hidden;
@@ -40,7 +47,8 @@
                 display: inline-block;
                 width: 100%;
                 color: rgba(0, 0, 0, 0.54);
-                font-weight: bold;
+                font-weight: 500;
+                font-size: 13px;
                 margin-bottom: 10px;
             }
 
@@ -68,6 +76,12 @@ paper-material {
     box-sizing: border-box;
 }
 
+:host([no-additional]) {
+    paper-material {
+        padding: 0 1% !important;
+    }
+}
+
 paper-material ::slotted(*) {
     overflow: hidden;
     white-space: nowrap;
@@ -93,4 +107,8 @@ iron-icon {
     background-color: #EEEEEE;
     /* TODO: replace with app-theme var */
     border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
+}
+
+paper-checkbox, .without-checkbox {
+    margin-left: 24%;
 }

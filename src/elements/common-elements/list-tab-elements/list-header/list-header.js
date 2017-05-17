@@ -6,9 +6,13 @@ Polymer({
         orderBy: {
             type: String,
             notify: true
-        }
+        },
+        noOrdered: Boolean,
+        noAdditional: Boolean
     },
     _changeOrder: function(event) {
+        if (this.noOrdered) { return; }
+
         let newOrderBy = event.model.item.name,
             [currentOrderName, direction] = this.orderBy.split('.');
 
