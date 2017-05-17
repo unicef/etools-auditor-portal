@@ -1,0 +1,69 @@
+<!--import [polymer, etools-content-panel, paper-dropdown-menu, paper-listbox, paper-item, etools-searchable-multiselection-menu]-->
+<!--import [list-header, list-element, subject-area-element, dialog-element, tab-inputs-styles, module-styles, lodash]-->
+
+<dom-module id="key-internal-controls-tab">
+    <template>
+        <!-- inject styles './key-internal-controls-tab.scss'-->
+        <style include="tab-inputs-styles module-styles"></style>
+        <etools-content-panel title$="[[subjectAreas.header]]">
+            <list-header no-ordered data="[[columns]]"></list-header>
+
+            <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
+                <subject-area-element class="area-element"
+                                      area="{{item}}"
+                                      details="[[details]]"
+                                      index="[[index]]"
+                                      headings="[[columns]]"></subject-area-element>
+
+            </template>
+        </etools-content-panel>
+
+        <dialog-element opened="{{dialogOpened}}" dialog-title="Edit Subject Area" confirm-btn-text="Save">
+
+            <div class="form-title">
+                <div class="text">[[editedArea.header]]</div>
+            </div>
+
+            <div class="container">
+
+                <div class="row-h repeatable-item-container">
+                    <div class="repeatable-item-content">
+                        <div class="row-h group">
+                            <div class="input-container input-container-ms">
+                                <!-- Risk Assessment -->
+
+                                <etools-searchable-multiselection-menu
+                                        id="riskAssessmentInput"
+                                        class="validate-input"
+                                        options="[[riskOptions]]"
+                                        required hide-search
+                                        value="{{editedArea.value}}"
+                                        error-message="This field is required"
+                                        on-focus="_resetFieldError"
+                                        label="Risk Assessment"
+                                        placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                            </div>
+                        </div>
+
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                <!-- Brief Justification -->
+                                <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
+                                                class="disabled-as-readonly validate-input"
+                                                value="{{editedArea.extra}}"
+                                                placeholder="&#8212;">
+                                </paper-textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </dialog-element>
+
+
+    </template>
+
+    <!-- inject scripts './key-internal-controls-tab.js'-->
+</dom-module>

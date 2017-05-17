@@ -67,7 +67,8 @@ Polymer({
         } else {
             delete data.questionnaire;
         }
-        data.test_subject_areas = {};
+        let subjectAreas = Polymer.dom(this.root).querySelector('#report').getRisksData();
+        data.test_subject_areas = subjectAreas || {};
 
         return data;
     },
