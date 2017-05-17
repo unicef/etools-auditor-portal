@@ -43,6 +43,10 @@ Polymer({
         showCollapse: {
             type: Boolean,
             computed: '_computeShowCollapse(details, hasCollapse)'
+        },
+        data: {
+            type: Object,
+            notify: true
         }
     },
     _computeShowCollapse(details, hasCollapse) {

@@ -34,6 +34,14 @@
         (function() {
             'use strict';
 
+            let riskOptions = [
+                {label: 'N/A', value: 0},
+                {label: 'Low', value: 1},
+                {label: 'Medium', value: 2},
+                {label: 'Significant', value: 3},
+                {label: 'High', value: 4}
+            ];
+
             let dataLoaded = {};
 
             Polymer({
@@ -90,6 +98,7 @@
                         return;
                     }
                     this._setData('attachments_types', attachmentsTypes);
+                    this._setData('riskOptions', riskOptions);
 
                     dataLoaded.engagementOptions = true;
                     this._allDataLoaded();

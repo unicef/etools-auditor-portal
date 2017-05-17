@@ -29,10 +29,12 @@
     }
 
     .partners-data-details {
-        display: flex;
+        position: relative;
+        display: block;
+        width: 100%;
+
         .row-details-content {
-            flex: 0 0 16.66666667%;
-            max-width: 16%;
+            float: left;
             padding-right: 25px;
             vertical-align: top;
             overflow: hidden;
@@ -42,7 +44,8 @@
                 display: inline-block;
                 width: 100%;
                 color: rgba(0, 0, 0, 0.54);
-                font-weight: bold;
+                font-weight: 500;
+                font-size: 13px;
                 margin-bottom: 10px;
             }
 
