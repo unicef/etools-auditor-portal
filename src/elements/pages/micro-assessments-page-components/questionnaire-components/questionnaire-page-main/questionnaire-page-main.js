@@ -10,6 +10,19 @@ Polymer({
                 return {};
             },
             notify: true
+        },
+        riskRatingOptions: {
+            type: Object,
+            value: function() {
+                return {
+                    'na': 'N/A',
+                    'low': 'Low',
+                    'medium': 'Medium',
+                    'significant': 'Significant',
+                    'high': 'High',
+                    'moderate': 'Moderate'
+                };
+            }
         }
     },
     observers: ['_updateStyles(questionnaire)'],
@@ -87,5 +100,12 @@ Polymer({
 
     getElements: function(className) {
         return Polymer.dom(this.root).querySelectorAll(`.${className}`);
+    },
+    getScore: function(score) {
+        return score || 0;
+    },
+
+    getRating: function(rating) {
+        return this.riskRatingOptions[rating] || rating;
     }
 });

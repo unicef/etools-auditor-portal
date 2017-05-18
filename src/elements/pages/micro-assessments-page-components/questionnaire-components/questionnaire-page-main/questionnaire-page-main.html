@@ -18,6 +18,24 @@
                     padding: 2px;
                     background-color: var(--module-warning);
                 }'};
+                --ecp-content: #{'{
+                    padding: 0;
+                }'};
+            }
+            .result-element {
+                padding: 21px 6%;
+                box-sizing: border-box;
+                font-size: 17px;
+
+                .text {
+                    width: 27%;
+                    display: inline-block;
+                    min-width: 125px;
+                }
+
+                .value { font-weight: 800; }
+                &.risk-rating .value { font-weight: 400; }
+                &.risk-rating { border-top: solid 1px #e8e8e8; }
             }
         </style>
 
@@ -30,7 +48,10 @@
                       edit-mode="[[_allowEdit(basePermissionPath)]]"></risk-tab>
         </template>
 
-        <etools-content-panel class="totals" title="Totals" open></etools-content-panel>
+        <etools-content-panel class="totals" title="Totals" open>
+            <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">[[getScore(questionnaire.risk_score)]]</span></div>
+            <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class="value">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>
+        </etools-content-panel>
 
 
     </template>
