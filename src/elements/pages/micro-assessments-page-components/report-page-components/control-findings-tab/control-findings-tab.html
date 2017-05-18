@@ -17,7 +17,7 @@
 
             <list-header no-ordered data="[[columns]]"></list-header>
 
-            <template is="dom-repeat" items="[[dataItems]]">
+            <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
                 <list-element
                         class="list-element"
                         data="[[item]]"
@@ -50,8 +50,6 @@
                     <div class="row-v actions">
                         <paper-icon-button class="action delete"
                                            on-tap="_openDeleteConfirmation"
-                                           data-args$="[[index]]"
-                                           disabled="[[!canBeRemoved]]"
                                            hidden$="[[!canBeRemoved]]"
                                            icon="cancel"></paper-icon-button>
                     </div>
@@ -85,6 +83,11 @@
                     </div>
                 </div>
             </div>
+        </dialog-element>
+
+        <div class="confirm-backdrop"  opened$="{{confirmDialogOpened}}"></div>
+        <dialog-element dialog-name="deleteConfirm" opened="{{confirmDialogOpened}}" dialog-title="Remove Finding" confirm-btn-text="Ok">
+            <div class="confirm-text">Do you want to remove this finding?</div>
         </dialog-element>
 
     </template>

@@ -88,10 +88,11 @@
                 opened: {
                     type: Boolean,
                     notify: true
-                }
+                },
+                dialogName: String
             },
             confirmDialog: function() {
-                this.fire('dialog-confirmed');
+                this.fire('dialog-confirmed', {dialogName: this.dialogName});
             }
         });
     </script>

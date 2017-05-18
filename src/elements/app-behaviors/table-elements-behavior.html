@@ -26,7 +26,6 @@
         },
 
         ready: function() {
-            window.ttt = this;
             this.editedItem = _.cloneDeep(this.itemModel);
         },
 
@@ -98,7 +97,7 @@
 
         openEditDialog: function(event) {
             let model = event && event.model,
-                    index = model && model.index;
+                    index = this.dataItems.indexOf(model.item);
 
             if (!index && index !== 0) { console.error('Can not find user data'); return; }
 
@@ -110,7 +109,12 @@
             this.dialogOpened = true;
         },
 
-        _addItemFromDialog: function() {
+        _addItemFromDialog: function(event) {
+            if(event && event.detail && event.detail.dialogName === 'deleteConfirm') {
+                this.removeItem();
+                return;
+            }
+
             if (!this.validate()) { return; }
 
             let item = _.cloneDeep(this.editedItem);
@@ -140,7 +144,28 @@
             this.editedItem = _.cloneDeep(this.itemModel);
         },
 
-        _getTitleValue: function(value) { return value || ''; }
+        _getTitleValue: function(value) { return value || ''; },
+
+        removeItem: function() {
+            if (this.editedItem.id) {
+                this.set('editedItem._delete', true);
+                this._addItemFromDialog();
+            } else {
+                this.splice('dataItems', this.editedIndex, 1);
+                this.dialogOpened = false;
+                this.resetDialog();
+            }
+            this.confirmDialogOpened = false;
+            this.dialogOpened = false;
+        },
+
+        _showItems: function(item) {
+            return !item._delete;
+        },
+
+        _openDeleteConfirmation: function() {
+            this.confirmDialogOpened = true;
+        }
 
     };
 
