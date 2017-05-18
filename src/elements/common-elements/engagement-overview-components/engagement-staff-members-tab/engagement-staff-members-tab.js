@@ -57,8 +57,9 @@ Polymer({
                     {
                         'size': 16,
                         'label': 'Notif. on Audit Tasks',
-                        'name': 'user.is_active',
-                        'checkbox': true
+                        'name': 'receive_audit_notifications',
+                        'property': 'receive_audit_notifications',
+                        'custom': true
                     },
                     {
                         'size': 4,

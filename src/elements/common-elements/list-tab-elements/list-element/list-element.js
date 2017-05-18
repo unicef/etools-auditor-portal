@@ -122,5 +122,8 @@ Polymer({
     },
     _emtyObj: function(data) {
         return data && !data.empty;
+    },
+    _hasProperty: function(data, property) {
+        return data && property && this.get('data.' + property);
     }
 });

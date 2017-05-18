@@ -27,7 +27,7 @@
                         </a>
                     </template>
 
-                    <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon')]]" restamp>
+                    <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom')]]" restamp>
                         <span class$="col-data w[[item.size]] [[item.align]] truncate">
                             <span class="truncate">
                                 [[_getValue(item, data)]]
@@ -59,6 +59,19 @@
                                 </slot>
                             </template>
                             <template is="dom-if" if="{{!_emtyObj(data)}}">
+                                <span class="">--</span>
+                            </template>
+                        </span>
+                    </template>
+
+                    <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
+                        <span class$="col-data w[[item.size]] [[item.align]]">
+                            <template is="dom-if" if="{{_hasProperty(data, item.property)}}" restamp>
+                                <slot name="custom">
+
+                                </slot>
+                            </template>
+                            <template is="dom-if" if="{{!_hasProperty(data, item.property)}}">
                                 <span class="">--</span>
                             </template>
                         </span>
