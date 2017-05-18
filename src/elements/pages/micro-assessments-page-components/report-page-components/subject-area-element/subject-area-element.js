@@ -15,7 +15,7 @@ Polymer({
     },
     _setData: function(data) {
         if (!data) { return; }
-        if (!this.originalData) {
+        if (!data.changed) {
             this.originalData = _.clone(data);
         }
         if (data.value && typeof data.value !== 'object') {

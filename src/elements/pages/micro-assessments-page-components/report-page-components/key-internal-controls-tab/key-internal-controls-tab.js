@@ -51,7 +51,6 @@ Polymer({
     ],
 
     ready: function() {
-        window.ttt = this;
         this.riskOptions = this.getData('riskOptions');
     },
 
@@ -113,7 +112,9 @@ Polymer({
     },
 
     _saveEditedArea: function() {
-        this.splice('subjectAreas.blueprints', this.editedAreaIndex, 1, _.clone(this.editedArea));
+        let data = _.clone(this.editedArea);
+        data.changed = true;
+        this.splice('subjectAreas.blueprints', this.editedAreaIndex, 1, data);
         this.dialogOpened = false;
     },
 

@@ -1,5 +1,5 @@
 <!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icons]-->
-<!--import [tab-inputs-styles, permission-controller, list-header, list-element, dialog-element, lodash]-->
+<!--import [tab-inputs-styles, permission-controller, list-header, list-element, dialog-element, lodash, table-elements-behavior]-->
 
 <dom-module id="control-findings-tab">
     <template>
@@ -17,7 +17,7 @@
 
             <list-header no-ordered data="[[columns]]"></list-header>
 
-            <template is="dom-repeat" items="[[findings]]">
+            <template is="dom-repeat" items="[[dataItems]]">
                 <list-element
                         class="list-element"
                         data="[[item]]"
@@ -31,7 +31,7 @@
                 </list-element>
             </template>
 
-            <template is="dom-if" if="[[!findings.length]]">
+            <template is="dom-if" if="[[!dataItems.length]]">
                 <list-element
                         class="list-element"
                         data="[[emptyObj]]"
@@ -62,7 +62,7 @@
                         <div class="input-container input-container-ms">
                             <!-- Finding -->
                             <paper-input label="Finding"
-                                         value="{{controlFinding.finding}}"
+                                         value="{{editedItem.finding}}"
                                          placeholder="Enter finding"
                                          on-focus="_resetFieldError"
                                          class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
@@ -75,7 +75,7 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea label="Recommendation"
-                                            value="{{controlFinding.recommendation}}"
+                                            value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter recommendation"
                                             class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"

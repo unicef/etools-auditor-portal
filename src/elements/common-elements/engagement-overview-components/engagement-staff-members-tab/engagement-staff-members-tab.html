@@ -1,6 +1,6 @@
 <!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icons, iron-icons/communication-icons]-->
 
-<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, dialog-element, lodash]-->
+<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, dialog-element, lodash, table-elements-behavior]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
@@ -63,10 +63,10 @@
 
                 <div class="repeatable-item-content">
                     <div class="row-h group">
-                        <div class="input-container" title="{{_getTitleValue(staffMember.user.profile.job_title)}}">
+                        <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.job_title)}}">
                             <!-- Position -->
                             <paper-input label="Position"
-                                         value="{{staffMember.user.profile.job_title}}"
+                                         value="{{editedItem.user.profile.job_title}}"
                                          placeholder="Enter Position"
                                          on-focus="_resetFieldError"
                                          class$="validate-input {{_setRequired('user.profile.job_title', basePermissionPath)}}"
@@ -74,10 +74,10 @@
                                          error-message="Position is required">
                             </paper-input>
                         </div>
-                        <div class="input-container" title="{{_getTitleValue(staffMember.user.first_name)}}">
+                        <div class="input-container" title="{{_getTitleValue(editedItem.user.first_name)}}">
                             <!-- First Name -->
                             <paper-input label="First Name"
-                                         value="{{staffMember.user.first_name}}"
+                                         value="{{editedItem.user.first_name}}"
                                          placeholder="Enter First Name"
                                          class$="validate-input {{_setRequired('user.first_name', basePermissionPath)}}"
                                          required="{{_setRequired('user.first_name', basePermissionPath)}}"
@@ -85,10 +85,10 @@
                                          error-message="First name is required">
                             </paper-input>
                         </div>
-                        <div class="input-container" title="{{_getTitleValue(staffMember.user.last_name)}}">
+                        <div class="input-container" title="{{_getTitleValue(editedItem.user.last_name)}}">
                             <!-- Last Name -->
                             <paper-input label="Last Name"
-                                         value="{{staffMember.user.last_name}}"
+                                         value="{{editedItem.user.last_name}}"
                                          placeholder="Enter Last Name"
                                          class$="validate-input {{_setRequired('user.last_name', basePermissionPath)}}"
                                          required="{{_setRequired('user.last_name', basePermissionPath)}}"
@@ -98,21 +98,21 @@
                         </div>
                     </div>
                     <div class="row-h group">
-                        <div class="input-container" title="{{_getTitleValue(staffMember.user.profile.phone_number)}}">
+                        <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.phone_number)}}">
                             <!-- Phone number -->
                             <paper-input label="Phone number"
-                                         value="{{staffMember.user.profile.phone_number}}"
-                                         allowed-pattern="[\d\s]"
+                                         value="{{editedItem.user.profile.phone_number}}"
+                                         allowed-pattern="[\d\s-]"
                                          placeholder="Enter Phone number"
                                          class$="validate-input {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
                                          required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
                         </div>
-                        <div class="input-container" title="{{_getTitleValue(staffMember.user.email)}}">
+                        <div class="input-container" title="{{_getTitleValue(editedItem.user.email)}}">
                             <!-- Email address -->
                             <paper-input label="E-mail address"
-                                         value="{{staffMember.user.email}}"
+                                         value="{{editedItem.user.email}}"
                                          placeholder="Enter E-mail address"
                                          class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
                                          required="{{_setRequired('user.email', basePermissionPath)}}"
@@ -129,11 +129,10 @@
                     <div class="row-h group">
                         <!--receive notification-->
                         <div class="staff-check-box notify-box input-container input-container-l">
-                            <etools-checkable-input checked="{{staffMember.receive_audit_notifications}}"
+                            <etools-checkable-input checked="{{editedItem.receive_audit_notifications}}"
                                                     label="Receive Notifications on Audit Tasks?"
                                                     type="checkbox"
-                                                    label-alignment="right"
-                                                    readonly$="[[isReadOnly('receive_audit_notifications', basePermissionPath)]]">
+                                                    label-alignment="right">
                             </etools-checkable-input>
                         </div>
                     </div>
