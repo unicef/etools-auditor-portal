@@ -30,7 +30,6 @@ Polymer({
                 }];
             }
         },
-        partners: Array,
         data: {
             type: Object,
             notify: true
@@ -40,7 +39,6 @@ Polymer({
         'agreement-loaded': '_agreementLoaded'
     },
     ready: function() {
-        this.set('partners', this.getData('partners'));
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
     _basePathChanged: function() {
@@ -48,14 +46,12 @@ Polymer({
     },
     validate: function() {
         let typeValid = this.$.auditType.validate(),
-            partnerValid = this.$.partner.validate(),
             orderValid = this.$.purchaseOrder.validate();
 
-        return typeValid && partnerValid && orderValid;
+        return typeValid && orderValid;
     },
     resetValidationErrors: function() {
         this.$.auditType.invalid = false;
-        this.$.partner.invalid = false;
         this.$.purchaseOrder.invalid = false;
     },
     _setRequired: function(field) {

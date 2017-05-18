@@ -139,7 +139,8 @@
 
 
         _validateBasicInfo: function(property) {
-            let detailsValid = this.getElement('#engagementDetails').validate();
+            let detailsValid = this.getElement('#engagementDetails').validate(),
+                    partnerDetailsValid = this.getElement('#partnerDetails').validate();
                     //TODO: don't validate staff members in tabular view
                     //staffMembersValid = this.getElement('#staffMembers').validate();
 

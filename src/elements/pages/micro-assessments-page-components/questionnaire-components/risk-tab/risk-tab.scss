@@ -51,7 +51,7 @@ etools-content-panel {
         --epc-toolbar: #{'{
             height: 51px;
             padding: 2px;
-            background: var(--module-success) url(/ap/images/icon-check.svg) no-repeat 21px center/32px;
+            background: var(--module-success) url(/ap/images/icon-check.svg) no-repeat right 21px center/32px;
         }'};
     }
 
@@ -72,11 +72,5 @@ etools-content-panel {
         background-color: var(--module-primary);
     }'};
 
-    --ecp-expand-btn: #{"{
-        position: absolute;
-        right: 10px;
-        top: 2px;
-        width: 45px;
-        height: 45px;
-    }"}
+
 }

@@ -57,20 +57,16 @@
 
         it('validate required inputs', function (done) {
             myEl.data = {agreement: {}};
-            assert.isDefined(partnerInput.validate);
             sinon.spy(numberInput, "validate");
-            sinon.spy(partnerInput, "validate");
             sinon.spy(auditTypeInput, "validate");
 
             flush(function() {
                 myEl.validate();
 
                 assert.isTrue(numberInput.validate.called);
-                assert.isTrue(partnerInput.validate.called);
                 assert.isTrue(auditTypeInput.validate.called);
 
                 numberInput.validate.restore();
-                partnerInput.validate.restore();
                 auditTypeInput.validate.restore();
                 done();
             });
@@ -78,13 +74,11 @@
 
         it('reset validation errors', function () {
             numberInput.invalid = true;
-            partnerInput.invalid = true;
             auditTypeInput.invalid = true;
 
             myEl.resetValidationErrors();
 
             assert.isFalse(numberInput.invalid);
-            assert.isFalse(partnerInput.invalid);
             assert.isFalse(auditTypeInput.invalid);
         });
 

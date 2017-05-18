@@ -7,7 +7,9 @@
             :host {
                 --gray-06: rgba(0,0,0,.06);
                 --gray-lighter: rgba(0,0,0,.12);
+                --gray-20: rgba(0,0,0,.20);
                 --gray-light: rgba(0,0,0,.38);
+                --gray-50: rgba(0,0,0,.50);
                 --gray-mid: rgba(0,0,0,.54);
                 --gray-mid-dark: rgba(0,0,0,.70);
                 --gray-dark: rgba(0,0,0,.87);
@@ -84,31 +86,7 @@
                 --paper-checkbox-margin: 0;
             }
 
-            /* TEXTAREA, INPUT */
-            etools-searchable-multiselection-menu, paper-input, paper-textarea, paper-dropdown-menu {
-                outline: none!important;
-                --paper-input-container-color: var(--gray-light);
-                --paper-input-container-focus-color: var(--module-primary);
-                --paper-input-container-input: {
-                    color: var(--gray-dark);
-                };
 
-                --paper-input-container-invalid-color: var(--module-error);
-
-                --paper-input-container-disabled: {
-                    color: var(--gray-light);
-                    opacity: 1;
-                };
-                --paper-input-char-counter: {
-                    color: var(--gray-light);
-                };
-            }
-
-            paper-input.readonly, paper-textarea.readonly {
-                --paper-input-container-underline: {
-                    display: none;
-                };
-            }
 
             paper-radio-button {
                 --paper-radio-button-unchecked-color: var(--gray-mid);
@@ -124,6 +102,20 @@
             /** /deep/ *[starred] /deep/ .search-input /deep/ label::after {*/
                 /*content: "";*/
             /*}*/
+
+            etools-content-panel {
+                position: relative;
+
+
+
+            --ecp-expand-btn: #{"{
+                    position: absolute;
+                    top: 3px;
+                    left: 13px;
+                    width: 45px;
+                    height: 45px;
+                }"}
+            }
 
             .f1 {
                 flex: 1; }

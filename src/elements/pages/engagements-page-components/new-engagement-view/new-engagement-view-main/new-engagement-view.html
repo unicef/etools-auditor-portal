@@ -39,7 +39,7 @@
                     <div name="overview">
                         <engagement-info-details data="{{engagement}}" id="engagementDetails" base-permission-path="new_engagement"></engagement-info-details>
 
-                        <partner-details-tab partner="[[engagement.partner]]"></partner-details-tab>
+                        <partner-details-tab id="partnerDetails" engagement="{{engagement}}" base-permission-path="new_engagement"></partner-details-tab>
 
                         <engagement-staff-members-tab id="staffMembers"
                                                       base-permission-path="new_engagement"

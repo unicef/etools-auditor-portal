@@ -1,8 +1,8 @@
-<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles]-->
+<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles, module-styles]-->
 
 <dom-module id="partner-details-tab">
     <template>
-        <style include="tab-inputs-styles">
+        <style include="tab-inputs-styles module-styles">
             etools-content-panel {
                 margin-bottom: 20px;
             }
@@ -13,68 +13,80 @@
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Partner -->
-                    <paper-input label="Partner"
-                                 class$="disabled-as-readonly"
-                                 value="{{partner.name}}"
-                                 placeholder="&#8212;"
-                                 disabled readonly></paper-input>
-                </div>
-                <div class="input-container input-container-m">
-                    <!-- Partner Address -->
-                    <paper-input label="Partner Address"
-                                 class="disabled-as-readonly"
-                                 disabled readonly
-                                 value="[[partner.street_address]]"
-                                 placeholder="&#8212;">
-                    </paper-input>
-                </div>
-            </div>
-
-            <div class="row-h group">
-                <div class="input-container">
-                    <!-- Partner Postal Code -->
-                    <paper-input label="Partner Postal Code"
-                                 class$="disabled-as-readonly"
-                                 value="{{partner.postal_code}}"
-                                 placeholder="&#8212;"
-                                 disabled readonly></paper-input>
+                    <etools-searchable-multiselection-menu
+                            options="[[partners]]"
+                            class$="disabled-as-readonly {{_setRequired('partner', basePermissionPath)}}"
+                            readonly="[[isReadOnly('partner', basePermissionPath)]]"
+                            disabled="[[isReadOnly('partner', basePermissionPath)]]"
+                            value="{{engagement.partner}}"
+                            id="partner"
+                            error-message="Partner is required"
+                            required="{{_setRequired('partner', basePermissionPath)}}"
+                            custom-object-options
+                            option-value="id"
+                            option-label="name"
+                            label="Partner"
+                            on-focus="_resetFieldError"
+                            placeholder="Select Partner"></etools-searchable-multiselection-menu>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner City -->
                     <paper-input label="Partner City"
-                                 class$="disabled-as-readonly"
-                                 value="{{partner.city}}"
-                                 placeholder="&#8212;"
+                                 class="without-border"
+                                 value="{{engagement.partner.city}}"
+                                 placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner Country -->
                     <paper-input label="Partner Country"
-                                 class$="disabled-as-readonly"
-                                 value="{{partner.country}}"
-                                 placeholder="&#8212;"
+                                 class="without-border"
+                                 value="{{engagement.partner.country}}"
+                                 placeholder="Empty Field"
+                                 disabled readonly></paper-input>
+                </div>
+
+            </div>
+
+            <div class="row-h group">
+                <div class="input-container">
+                    <!-- Partner Address -->
+                    <paper-input label="Partner Address"
+                                 class="without-border"
+                                 disabled readonly
+                                 value="[[engagement.partner.street_address]]"
+                                 placeholder="Empty Field">
+                    </paper-input>
+                </div>
+                <div class="input-container">
+                    <!-- Partner Postal Code -->
+                    <paper-input label="Partner Postal Code"
+                                 class="without-border"
+                                 value="{{engagement.partner.postal_code}}"
+                                 placeholder="Empty Field"
+                                 disabled readonly></paper-input>
+                </div>
+
+                <div class="input-container">
+                    <!-- Partner Phone Number -->
+                    <paper-input label="Partner Phone Number"
+                                 class="without-border"
+                                 value="{{engagement.partner.phone_number}}"
+                                 placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
             </div>
 
             <div class="row-h group">
-                <div class="input-container">
-                    <!-- Partner Phone Number -->
-                    <paper-input label="Partner Phone Number"
-                                 class$="disabled-as-readonly"
-                                 value="{{partner.phone_number}}"
-                                 placeholder="&#8212;"
-                                 disabled readonly></paper-input>
-                </div>
 
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
                     <paper-input label="Partner E-mail Address"
-                                 class$="disabled-as-readonly"
-                                 value="{{partner.email}}"
-                                 placeholder="&#8212;"
+                                 class="without-border"
+                                 value="{{engagement.partner.email}}"
+                                 placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
             </div>
@@ -88,7 +100,48 @@
         'use strict';
 
         Polymer({
-            is: 'partner-details-tab'
+            is: 'partner-details-tab',
+            behaviors: [
+                APBehaviors.StaticDataController,
+                APBehaviors.PermissionController
+            ],
+            properties: {
+                basePermissionPath: {
+                    type: String,
+                    observer: '_basePathChanged'
+                },
+                partners: Array
+            },
+            ready: function() {
+                this.set('partners', this.getData('partners'));
+            },
+            _basePathChanged: function() {
+                this.updateStyles();
+            },
+            validate: function() {
+                return this.$.partner.validate();
+            },
+            resetValidationErrors: function() {
+                 this.$.partner.invalid = false;
+            },
+            _setRequired: function(field) {
+                if (!this.basePermissionPath) { return false; }
+
+                let required = this.isRequired(`${this.basePermissionPath}.${field}`);
+
+                return required ? 'required' : false;
+            },
+            _resetFieldError: function(event) {
+                event.target.invalid = false;
+            },
+            isReadOnly: function(field) {
+                if (!this.basePermissionPath) { return true; }
+
+                let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
+                if (readOnly === null) { readOnly = true; }
+
+                return readOnly;
+            },
         });
     </script>
 </dom-module>

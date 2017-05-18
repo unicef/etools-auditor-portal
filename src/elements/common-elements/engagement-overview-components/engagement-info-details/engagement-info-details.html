@@ -34,7 +34,7 @@
                                  placeholder="&#8212;"
                                  invalid="{{orderInputInvalid}}"
                                  error-message="{{orderNumberErrorText}}"
-                                 required="{{_setRequired('agreement', basePermissionPath)}}"
+                                 required$="{{_setRequired('agreement', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
                                  readonly="{{requestInProcess}}"
                                  on-focus="_resetFieldError"
@@ -80,23 +80,16 @@
             </div>
 
             <div class="row-h group">
+
                 <div class="input-container">
-                    <!-- Partner -->
-                    <etools-searchable-multiselection-menu
-                            options="[[partners]]"
-                            class$="disabled-as-readonly {{_setRequired('partner', basePermissionPath)}}"
-                            readonly="[[isReadOnly('partner', basePermissionPath)]]"
-                            disabled="[[isReadOnly('partner', basePermissionPath)]]"
-                            value="{{data.partner}}"
-                            id="partner"
-                            error-message="Partner is required"
-                            required="{{_setRequired('partner', basePermissionPath)}}"
-                            custom-object-options
-                            option-value="id"
-                            option-label="name"
-                            label="Partner"
-                            on-focus="_resetFieldError"
-                            placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                    <!-- Auditor -->
+                    <paper-input label="Auditor"
+                                 class="disabled-as-readonly"
+                                 disabled
+                                 id="auditorInput"
+                                 value="[[data.agreement.audit_organization.name]]"
+                                 placeholder="&#8212;">
+                    </paper-input>
                 </div>
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
