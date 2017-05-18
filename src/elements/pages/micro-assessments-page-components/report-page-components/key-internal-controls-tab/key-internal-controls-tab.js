@@ -79,6 +79,12 @@ Polymer({
         return riskData.length ? riskData : null;
     },
 
+    validateEditFields: function() {
+        let valueValid = this.$.riskAssessmentInput.validate(),
+            extraValid = this.$.briefJustification.validate();
+        return valueValid && extraValid;
+    },
+
     validate: function() {
         if (!this.basePermissionPath) { return true; }
         let required = this.isRequired(`${this.basePermissionPath}.test_subject_areas`);
@@ -112,6 +118,7 @@ Polymer({
     },
 
     _saveEditedArea: function() {
+        if (!this.validateEditFields()) { return; }
         let data = _.clone(this.editedArea);
         data.changed = true;
         this.splice('subjectAreas.blueprints', this.editedAreaIndex, 1, data);

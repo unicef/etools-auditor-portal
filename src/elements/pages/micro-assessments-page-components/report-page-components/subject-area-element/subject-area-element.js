@@ -40,6 +40,6 @@ Polymer({
         return data;
     },
     validate: function() {
-        return !!this.area.value;
+        return !!this.area.value && this.area.extra !== null;
     }
 });

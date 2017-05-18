@@ -68,6 +68,12 @@
                 }'};
             }
 
+            paper-textarea {
+                --paper-input-container-input: #{'{
+                    white-space: normal;
+                }'};
+            }
+
             paper-textarea[readonly], paper-textarea[disabled].disabled-as-readonly,
             paper-input[readonly], paper-input[disabled].disabled-as-readonly {
                 --paper-input-container: #{'{
@@ -179,22 +185,19 @@
 
             .repeatable-item-container {
                 position: relative;
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: row;
-                -webkit-flex-direction: row;
-                flex-direction: row;
+                display: block;
+                min-width: 500px;
                 width: 100%;
                 box-sizing: border-box;
+                padding: 0 8% !important;
 
                 .repeatable-item-actions {
-                    display: -ms-flexbox;
-                    display: -webkit-flex;
                     display: flex;
-                    -ms-flex-direction: row;
-                    -webkit-flex-direction: row;
-                    flex-direction: row;
+                    position: absolute;
+                    top: 0;
+                    left: 8px;
+                    width: 8%;
+                    height: 100%;
 
                     .actions {
                         display: -ms-flexbox;
@@ -209,6 +212,8 @@
                         -ms-flex-wrap: wrap;
                         -webkit-flex-wrap: wrap;
                         flex-wrap: wrap;
+                        align-items: center;
+                        width: 100%;
 
                         .action {
                             width: 36px;
@@ -223,18 +228,14 @@
                     position: relative;
                     display: -ms-flexbox;
                     display: -webkit-flex;
-                    display: flex;
-                    -ms-flex-direction: column;
-                    -webkit-flex-direction: column;
-                    flex-direction: column;
-                    -ms-flex: 1 1 0.000000001px;
-                    -webkit-flex: 1;
-                    flex: 1;
-                    -webkit-flex-basis: 0.000000001px;
-                    flex-basis: 0.000000001px;
+                    display: inline-block;
+                    vertical-align: top;
                     margin-left: 10px;
-                    padding-left: 25px;
+                    padding-left: 20px;
+                    padding-bottom: 8px;
                     border-left: 1px solid var(--gray-border);
+                    width: 100%;
+                    box-sizing: border-box;
 
                     .staff-check-box { margin-top: 10px; }
 

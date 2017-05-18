@@ -44,10 +44,6 @@
 
         <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
 
-            <div class="form-title">
-                <div class="text">Auditor Staff Member</div>
-            </div>
-
             <div class="row-h repeatable-item-container">
 
                 <div class="repeatable-item-actions">
@@ -101,7 +97,7 @@
                             <paper-input label="Phone number"
                                          value="{{editedItem.user.profile.phone_number}}"
                                          allowed-pattern="[\d\s-]"
-                                         placeholder="Enter Phone number"
+                                         placeholder="Enter Phone"
                                          class$="validate-input {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
                                          required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
@@ -111,7 +107,7 @@
                             <!-- Email address -->
                             <paper-input label="E-mail address"
                                          value="{{editedItem.user.email}}"
-                                         placeholder="Enter E-mail address"
+                                         placeholder="Enter E-mail"
                                          class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
                                          required="{{_setRequired('user.email', basePermissionPath)}}"
                                          on-focus="_resetFieldError"
@@ -137,8 +133,6 @@
 
                 </div>
             </div>
-
-            <div class="line"></div>
         </dialog-element>
 
         <div class="confirm-backdrop"  opened$="{{confirmDialogOpened}}"></div>
