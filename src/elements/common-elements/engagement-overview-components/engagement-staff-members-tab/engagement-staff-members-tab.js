@@ -34,35 +34,35 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 16,
+                        'size': 17,
                         'label': 'Position',
                         'name': 'user.profile.job_title'
                     }, {
-                        'size': 16,
+                        'size': 17,
                         'label': 'First Name',
                         'name': 'user.first_name'
                     }, {
-                        'size': 16,
+                        'size': 17,
                         'label': 'Last Name',
                         'name': 'user.last_name'
                     }, {
-                        'size': 16,
+                        'size': 17,
                         'label': 'Phone Number',
                         'name': 'user.profile.phone_number'
                     }, {
-                        'size': 16,
+                        'size': 17,
                         'label': 'E-mail Address',
                         'name': 'user.email'
                     },
                     {
-                        'size': 16,
-                        'label': 'Notif. on Audit Tasks',
+                        'size': 8,
+                        'label': 'Notify',
                         'name': 'receive_audit_notifications',
                         'property': 'receive_audit_notifications',
                         'custom': true
                     },
                     {
-                        'size': 4,
+                        'size': 7,
                         'label': 'Edit',
                         'name': 'edit',
                         'icon': true

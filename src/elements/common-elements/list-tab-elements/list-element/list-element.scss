@@ -16,6 +16,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             padding-right: 10px;
+            padding-left: 1px;
             box-sizing: border-box;
 
             &:not(.truncate) { padding-right: 0; }
@@ -78,7 +79,7 @@ paper-material {
 
 :host([no-additional]) {
     paper-material {
-        padding: 0 1% !important;
+        padding: 0 0 0 3% !important;
     }
 }
 

@@ -1,6 +1,8 @@
-<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icons, iron-icons/communication-icons]-->
+<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icon,
+            iron-icons, iron-icons/communication-icons]-->
 
-<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, dialog-element, lodash, table-elements-behavior]-->
+<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, dialog-element,
+            lodash, table-elements-behavior]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
@@ -28,7 +30,7 @@
                         <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                     </div>
                     <div slot="custom">
-                        <paper-icon-button icon="check" class="edit-icon check-icon"></paper-icon-button>
+                        <iron-icon icon="check" class="edit-icon check-icon"></iron-icon>
                     </div>
                 </list-element>
             </template>

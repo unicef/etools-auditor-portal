@@ -31,7 +31,7 @@
                                  class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
                                  value="{{data.agreement.order_number}}"
                                  allowed-pattern="[\d]"
-                                 placeholder="&#8212;"
+                                 placeholder="Enter Order number"
                                  invalid="{{orderInputInvalid}}"
                                  error-message="{{orderNumberErrorText}}"
                                  required$="{{_setRequired('agreement', basePermissionPath)}}"
@@ -101,7 +101,7 @@
                                  value="[[prettyDate(data.partner_contacted_at)]]"
                                  on-down="openDatePicker"
                                  data-selector="contactedDate"
-                                 placeholder="&#8212;">
+                                 placeholder="Select Contacted Date">
                         <etools-datepicker-button prefix
                                                   id="contactedDate"
                                                   date="[[prepareDate(data.partner_contacted_at)]]"
@@ -128,7 +128,7 @@
                             on-value-change="_setAuditType"
                             label="Audit Type"
                             on-focus="_resetFieldError"
-                            placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                            placeholder="Select Audit Type"></etools-searchable-multiselection-menu>
                 </div>
             </div>
 
@@ -143,7 +143,7 @@
                                  value="[[prettyDate(data.start_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="periodStartDate"
-                                 placeholder="&#8212;">
+                                 placeholder="Select Start Date">
                         <etools-datepicker-button prefix
                                                   id="periodStartDate"
                                                   date="[[prepareDate(data.start_date)]]"
@@ -163,7 +163,7 @@
                                  value="[[prettyDate(data.end_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="periodEndDate"
-                                 placeholder="&#8212;">
+                                 placeholder="Select End Date">
                         <etools-datepicker-button prefix
                                                   id="periodEndDate"
                                                   date="[[prepareDate(data.end_date)]]"
@@ -182,7 +182,7 @@
                             disabled="[[isReadOnly('total_value', basePermissionPath)]]"
                             required="{{_setRequired('total_value', basePermissionPath)}}"
                             value="{{data.total_value}}"
-                            placeholder="&#8212;"></etools-currency-amount-input>
+                            placeholder="Enter Total Value"></etools-currency-amount-input>
                 </div>
             </div>
 
