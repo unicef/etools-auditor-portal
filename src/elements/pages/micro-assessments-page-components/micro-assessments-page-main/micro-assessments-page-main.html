@@ -28,7 +28,7 @@
         <template is="dom-if" if="{{engagement.id}}" restamp>
             <pages-header-element show-export-button
                                   hide-print-button
-                                  title="Micro Assessment"></pages-header-element>
+                                  title$="[[engagement.partner.name]] - Micro Assessment"></pages-header-element>
             <div class="tab-selector">
                 <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
                             selected="{{tab}}" id="pageTabs">
