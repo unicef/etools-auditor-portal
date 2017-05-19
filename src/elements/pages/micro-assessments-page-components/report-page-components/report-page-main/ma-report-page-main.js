@@ -2,11 +2,18 @@
 
 Polymer({
     is: 'ma-report-page-main',
+    behaviors: [
+        APBehaviors.StaticDataController,
+        APBehaviors.PermissionController
+    ],
     properties: {
         engagement: {
             type: Object,
             notify: true
         }
+    },
+    ready: function() {
+        this.riskOptions = this.getData('riskOptions');
     },
     validate: function() {
         let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate(),
