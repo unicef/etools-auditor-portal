@@ -34,6 +34,7 @@
         },
 
         getTabData: function() {
+            if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
             if (!this.originalData.length && !this.dataItems.length) { return null; }
             let data = [];
 
@@ -57,9 +58,10 @@
 
         changePermission: function(basePermissionPath) {
             if (!basePermissionPath) { return; }
-            if (this._canBeChanged() && this.columns[this.columns.length - 1].name !== 'edit') {
+            let editObj = this.columns && this.columns[this.columns.length - 1];
+            if (this._canBeChanged() && editObj && editObj.name !== 'edit') {
                 this.push('columns', {'size': 4,'label': 'Edit','name': 'edit','icon': true});
-            } else if (!this._canBeChanged() && this.columns[this.columns.length - 1].name === 'edit') {
+            } else if (!this._canBeChanged() && editObj && editObj.name === 'edit') {
                 this.pop('columns');
             }
         },
@@ -96,10 +98,10 @@
         },
 
         openEditDialog: function(event) {
-            let model = event && event.model,
-                    index = this.dataItems.indexOf(model.item);
+            let item = event && event.model && event.model.item,
+                    index = this.dataItems && this.dataItems.indexOf(item);
 
-            if (!index && index !== 0) { console.error('Can not find user data'); return; }
+            if ((!index && index !== 0) || index < 0) { throw Error('Can not find user data'); }
 
             this.editedItem = _.cloneDeep(this.dataItems[index]);
             this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
@@ -147,12 +149,11 @@
         _getTitleValue: function(value) { return value || ''; },
 
         removeItem: function() {
-            if (this.editedItem.id) {
+            if (this.editedItem && this.editedItem.id !== undefined) {
                 this.set('editedItem._delete', true);
                 this._addItemFromDialog();
             } else {
                 this.splice('dataItems', this.editedIndex, 1);
-                this.dialogOpened = false;
                 this.resetDialog();
             }
             this.confirmDialogOpened = false;
@@ -160,7 +161,7 @@
         },
 
         _showItems: function(item) {
-            return !item._delete;
+            return item && !item._delete;
         },
 
         _openDeleteConfirmation: function() {
