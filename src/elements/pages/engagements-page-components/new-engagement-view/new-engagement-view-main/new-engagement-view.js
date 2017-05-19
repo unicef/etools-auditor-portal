@@ -71,7 +71,9 @@ Polymer({
                 engagement_attachments: [],
                 agreement: {}
             });
+
             this.$.engagementDetails.resetValidationErrors();
+            this.$.partnerDetails.resetValidationErrors();
             this.$.engagementDetails.resetType();
         }
     }

@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles, module-styles]-->
+<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles, module-styles, get-partner-data]-->
 
 <dom-module id="partner-details-tab">
     <template>
@@ -6,8 +6,16 @@
             etools-content-panel {
                 margin-bottom: 20px;
             }
+
+            .partner-loading {
+                position: absolute;
+                right: -32px;
+                top: 28px;
+                left: initial;
+            }
         </style>
 
+        <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
 
         <etools-content-panel class="content-section clearfix" title="Partner Details" show-expand-btn>
             <div class="row-h group">
@@ -15,26 +23,29 @@
                     <!-- Partner -->
                     <etools-searchable-multiselection-menu
                             options="[[partners]]"
-                            class$="disabled-as-readonly {{_setRequired('partner', basePermissionPath)}}"
-                            readonly="[[isReadOnly('partner', basePermissionPath)]]"
+                            class$="disabled-as-readonly [[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess)]]"
+                            readonly="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
                             disabled="[[isReadOnly('partner', basePermissionPath)]]"
                             value="{{engagement.partner}}"
                             id="partner"
-                            error-message="Partner is required"
+                            error-message="[[partnerErrorText]]"
                             required="{{_setRequired('partner', basePermissionPath)}}"
                             custom-object-options
                             option-value="id"
                             option-label="name"
                             label="Partner"
                             on-focus="_resetFieldError"
+                            on-value-change="_requestPartner"
                             placeholder="Select Partner"></etools-searchable-multiselection-menu>
+
+                    <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner City -->
                     <paper-input label="Partner City"
                                  class="without-border"
-                                 value="{{engagement.partner.city}}"
+                                 value="{{partner.city}}"
                                  placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
@@ -43,7 +54,7 @@
                     <!-- Partner Country -->
                     <paper-input label="Partner Country"
                                  class="without-border"
-                                 value="{{engagement.partner.country}}"
+                                 value="{{partner.country}}"
                                  placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
@@ -56,7 +67,7 @@
                     <paper-input label="Partner Address"
                                  class="without-border"
                                  disabled readonly
-                                 value="[[engagement.partner.street_address]]"
+                                 value="[[partner.address]]"
                                  placeholder="Empty Field">
                     </paper-input>
                 </div>
@@ -64,7 +75,7 @@
                     <!-- Partner Postal Code -->
                     <paper-input label="Partner Postal Code"
                                  class="without-border"
-                                 value="{{engagement.partner.postal_code}}"
+                                 value="{{partner.postal_code}}"
                                  placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
@@ -73,7 +84,7 @@
                     <!-- Partner Phone Number -->
                     <paper-input label="Partner Phone Number"
                                  class="without-border"
-                                 value="{{engagement.partner.phone_number}}"
+                                 value="{{partner.phone_number}}"
                                  placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
@@ -85,7 +96,7 @@
                     <!-- Partner E-mail Address -->
                     <paper-input label="Partner E-mail Address"
                                  class="without-border"
-                                 value="{{engagement.partner.email}}"
+                                 value="{{partner.email}}"
                                  placeholder="Empty Field"
                                  disabled readonly></paper-input>
                 </div>
@@ -96,52 +107,5 @@
 
     </template>
 
-    <script>
-        'use strict';
-
-        Polymer({
-            is: 'partner-details-tab',
-            behaviors: [
-                APBehaviors.StaticDataController,
-                APBehaviors.PermissionController
-            ],
-            properties: {
-                basePermissionPath: {
-                    type: String,
-                    observer: '_basePathChanged'
-                },
-                partners: Array
-            },
-            ready: function() {
-                this.set('partners', this.getData('partners'));
-            },
-            _basePathChanged: function() {
-                this.updateStyles();
-            },
-            validate: function() {
-                return this.$.partner.validate();
-            },
-            resetValidationErrors: function() {
-                 this.$.partner.invalid = false;
-            },
-            _setRequired: function(field) {
-                if (!this.basePermissionPath) { return false; }
-
-                let required = this.isRequired(`${this.basePermissionPath}.${field}`);
-
-                return required ? 'required' : false;
-            },
-            _resetFieldError: function(event) {
-                event.target.invalid = false;
-            },
-            isReadOnly: function(field) {
-                if (!this.basePermissionPath) { return true; }
-
-                let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
-                if (readOnly === null) { readOnly = true; }
-
-                return readOnly;
-            },
-        });
-    </script>
+    <!-- inject scripts './partner-details-tab.js'-->
 </dom-module>
