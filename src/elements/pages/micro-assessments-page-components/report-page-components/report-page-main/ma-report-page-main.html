@@ -3,7 +3,7 @@
 
 <dom-module id="ma-report-page-main">
     <template>
-        <style >
+        <style include="tab-inputs-styles module-styles">
             etools-content-panel.overal-risks {
                 margin: 20px 0;
 
@@ -18,14 +18,6 @@
                     background-color: var(--module-warning);
                 }'};
 
-            }
-
-            etools-searchable-multiselection-menu,
-            paper-textarea {
-                --paper-input-container-color: var(--gray-20);
-                --paper-input-container-input: #{'{
-                    white-space: normal;
-                }'};
             }
         </style>
 

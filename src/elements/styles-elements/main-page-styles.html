@@ -7,6 +7,13 @@
                 position: relative;
                 display: block;
 
+                .view-container {
+                    position: relative;
+                    width: 100%;
+                    display: flex;
+                    padding: 15px 265px 15px 15px;
+                    box-sizing: border-box;
+                }
                 .tab-selector {
                     display: -ms-flexbox;
                     display: -webkit-flex;
@@ -41,14 +48,16 @@
                 }'};
 
                 #pageContent {
-                    flex: 10;
+                    position: relative;
+                    width: 100%;
                 }
 
                 #sidebar {
-                    flex: 2;
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
                     padding-left: 25px;
-                    min-width: 215px;
-                    max-width: 230px;
+                    width: 230px;
                 }
 
                 --ecp-header-bg: var(--module-primary);
