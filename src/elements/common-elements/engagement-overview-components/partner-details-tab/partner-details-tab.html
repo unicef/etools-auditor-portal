@@ -23,12 +23,12 @@
                     <!-- Partner -->
                     <etools-searchable-multiselection-menu
                             options="[[partners]]"
-                            class$="disabled-as-readonly [[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess)]]"
+                            class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
                             readonly="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
                             disabled="[[isReadOnly('partner', basePermissionPath)]]"
                             value="{{engagement.partner}}"
                             id="partner"
-                            error-message="[[partnerErrorText]]"
+                            error-message="[[]]"
                             required="{{_setRequired('partner', basePermissionPath)}}"
                             custom-object-options
                             option-value="id"

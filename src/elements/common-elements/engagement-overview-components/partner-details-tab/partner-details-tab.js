@@ -62,8 +62,12 @@ Polymer({
 
         return readOnly;
     },
-    _setReadonlyClass: function(inProcess) {
-        return inProcess ? 'readonly' : '';
+    _setReadonlyClass: function(inProcess, basePermissionPath) {
+        if (this.isReadOnly('partner', basePermissionPath)) {
+            return 'disabled-as-readonly';
+        } else {
+            return inProcess ? 'readonly' : '';
+        }
     },
     _requestPartner: function(event) {
         if (this.requestInProcess) { return; }

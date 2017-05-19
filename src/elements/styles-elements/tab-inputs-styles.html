@@ -163,14 +163,23 @@
                 }"};
             }
 
-            etools-searchable-multiselection-menu, etools-searchable-multiselection-menu.disabled-as-readonly {
+             etools-searchable-multiselection-menu.disabled-as-readonly {
                 --esmm-readonly-input-container-underline: #{'{ border-bottom: 1px dashed rgba(0, 0, 0, 0.20); }'};
+                --esmm-readonly-input-container: #{'{ opacity: 1 !important;  }'};
+                --esmm-input-container-label: #{'{
+                    color: var(--gray-50);
+                 }'};
+            }
+
+            etools-searchable-multiselection-menu.readonly {
+                --esmm-readonly-input-container-underline: #{'{ border-bottom: 1px solid var(--gray-50) !important; }'};
                 --esmm-readonly-input-container: #{'{ opacity: 1 !important;  }'};
                 --esmm-input-container-label: #{'{
                     color: var(--gray-50);
                  }'};
 
             }
+
             etools-searchable-multiselection-menu.required {
                 --esmm-input-container-label: #{'{
                     background: url(/ap/images/required.svg) no-repeat 99% 20%/8px;
