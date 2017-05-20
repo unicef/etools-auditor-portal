@@ -2,7 +2,10 @@
 
 Polymer({
     is: 'spot-checks-page-main',
-    behaviors: [APBehaviors.EngagementBehavior],
+    behaviors: [
+        APBehaviors.EngagementBehavior,
+        APBehaviors.StaticDataController
+    ],
     properties: {
         engagement: {
             type: Object,
@@ -60,5 +63,18 @@ Polymer({
 
     customBasicValidation: function() {
         return true;
+    },
+
+    infoLoaded: function() {
+        this.loadChoices('category_of_observation');
+    },
+    loadChoices: function(property) {
+        if (this.getData(property)) { return; }
+        let choices = this.getChoices(`engagement_${this.engagement.id}.findings.${property}`);
+        if (!choices) {
+            choices = [];
+            return;
+        }
+        this._setData(property, choices);
     }
 });

@@ -3,6 +3,21 @@
 Polymer({
     is: 'sc-report-page-main',
     properties: {
+        priorities: {
+            type: Object,
+            value: function() {
+                return {
+                    low: {
+                        display_name: 'Low',
+                        value: 'low'
+                    },
+                    high: {
+                        display_name: 'High',
+                        value: 'high'
+                    }
+                };
+            }
+        },
         engagement: {
             type: Object,
             notify: true

@@ -1,0 +1,33 @@
+<!--import [polymer, etools-content-panel, paper-input]-->
+
+<!--import [tab-inputs-styles, module-styles, permission-controller]-->
+
+<dom-module id="internal-controls">
+    <template>
+        <style include="tab-inputs-styles module-styles">
+            :host {
+                position: relative;
+                display: block;
+                margin-bottom: 20px;
+            }
+        </style>
+        <etools-content-panel class="content-section clearfx" title="Internal Controls">
+            <div class="row-h">
+                Inquire of IP management whether there have been any changes to internal controls since the prior
+                micro assessment from the current programme cycle.<br>
+                Inquire whether the high priority recommendations
+                from the micro assessment and previous assurance activities have been implemented. Document any
+                changes identified
+            </div>
+            <paper-input label="Document any changes identified"
+                         value="{{data.internal_controls}}"
+                         on-focus="_resetFieldError"
+                         class$="{{_setRequired('internalControls', basePermissionPath)}}"
+                         required="{{_setRequired('internalControls', basePermissionPath)}}"
+                         error-message="Document any changes identified is required">
+            </paper-input>
+        </etools-content-panel>
+    </template>
+
+    <!-- inject scripts './internal-controls.js'-->
+</dom-module>
