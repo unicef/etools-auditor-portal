@@ -2,30 +2,29 @@
 
 Polymer({
     is: 'ma-report-page-main',
-    behaviors: [
-        APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
-    ],
     properties: {
         engagement: {
             type: Object,
             notify: true
+        },
+        primaryArea: {
+            type: Object
         }
     },
-    ready: function() {
-        this.riskOptions = this.getData('riskOptions');
-    },
-    validate: function() {
-        let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate(),
-            internalControlsValid = this.$.internalControls.validate();
+    validate: function(forSave) {
+        let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate(forSave),
+            primaryValid = this.$.primaryRisk.validate(forSave),
+            internalControlsValid = this.$.internalControls.validate(forSave);
 
-        return assignTabValid && internalControlsValid;
+        return assignTabValid && primaryValid && internalControlsValid;
     },
     getRisksData: function() {
-        let element = this.$.internalControls;
-        if (!element) { return null; }
+        let internalControls = this.$.internalControls,
+            primaryRisk = this.$.primaryRisk;
 
-        let data = element.getRiskData();
-        return data ? {blueprints: data} : null;
+        let data = internalControls && internalControls.getRiskData() || [];
+        let primaryRiskData = primaryRisk && primaryRisk.getRiskData();
+        if (primaryRiskData) { data.unshift(primaryRiskData); }
+        return data.length ? {children: data} : null;
     }
 });

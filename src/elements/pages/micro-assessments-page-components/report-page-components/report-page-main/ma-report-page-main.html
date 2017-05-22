@@ -1,68 +1,16 @@
 <!--import [polymer]-->
-<!--import [assign-engagement, key-internal-controls-tab, control-findings-tab]-->
+<!--import [assign-engagement, key-internal-controls-tab, control-findings-tab, primary-risk-element]-->
 
 <dom-module id="ma-report-page-main">
     <template>
-        <style include="tab-inputs-styles module-styles">
-            etools-content-panel.overal-risks {
-                margin: 20px 0;
-
-                --ecp-header-title: #{'{
-                    font-weight: 500;
-                    line-height: 51px;
-                }'};
-
-                --epc-toolbar: #{'{
-                    height: 51px;
-                    padding: 2px;
-                    background-color: var(--module-warning);
-                }'};
-
-            }
-        </style>
-
         <assign-engagement data="{{engagement}}"
                            audit-type="Micro Assessment"
                            base-permission-path="{{permissionBase}}"
                            id="assignEngagement"></assign-engagement>
 
-        <etools-content-panel title="Overal Risk Assessment" class="overal-risks">
-
-                <div class="repeatable-item-content">
-                    <div class="row-h group">
-                        <div class="input-container">
-                            <!-- Risk Assessment -->
-
-                            <etools-searchable-multiselection-menu
-                                    id="riskAssessmentInput"
-                                    class="validate-input"
-                                    options="[[riskOptions]]"
-                                    required hide-search
-                                    value="{{editedArea.value}}"
-                                    error-message="This field is required"
-                                    on-focus="_resetFieldError"
-                                    label="Risk Assessment"
-                                    placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
-                        </div>
-                    </div>
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
-                            <!-- Brief Justification -->
-                            <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
-                                            required
-                                            error-message="This field is required"
-                                            id="briefJustification"
-                                            class="disabled-as-readonly validate-input"
-                                            value="{{editedArea.extra}}"
-                                            placeholder="Enter Brief Justification">
-                            </paper-textarea>
-                        </div>
-                    </div>
-
-                </div>
-
-        </etools-content-panel>
+        <primary-risk-element risk-data="[[engagement.test_subject_areas.children.0]]"
+                              id="primaryRisk"
+                              base-permission-path="{{permissionBase}}"></primary-risk-element>
 
         <key-internal-controls-tab subject-areas="[[engagement.test_subject_areas]]"
                                    id="internalControls"

@@ -8,11 +8,10 @@
         <etools-content-panel title$="[[subjectAreas.header]]">
             <list-header no-ordered data="[[columns]]"></list-header>
 
-            <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
+            <template is="dom-repeat" items="[[subjectAreas.children]]" filter="_showRisk">
                 <subject-area-element class="area-element"
                                       area="{{item}}"
                                       details="[[details]]"
-                                      index="[[index]]"
                                       headings="[[columns]]"></subject-area-element>
 
             </template>
@@ -37,7 +36,7 @@
                                         class="validate-input"
                                         options="[[riskOptions]]"
                                         required hide-search
-                                        value="{{editedArea.value}}"
+                                        value="{{editedArea.blueprints.0.value}}"
                                         error-message="This field is required"
                                         on-focus="_resetFieldError"
                                         label="Risk Assessment"
@@ -53,7 +52,7 @@
                                                 error-message="This field is required"
                                                 id="briefJustification"
                                                 class="disabled-as-readonly validate-input"
-                                                value="{{editedArea.extra}}"
+                                                value="{{editedArea.blueprints.0.extra}}"
                                                 placeholder="&#8212;">
                                 </paper-textarea>
                             </div>

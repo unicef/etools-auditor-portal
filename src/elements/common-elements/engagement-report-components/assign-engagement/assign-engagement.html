@@ -18,7 +18,7 @@
                     <paper-input label="Date of Field Visit"
                                  id="dateVisitInput"
                                  class$="disabled-as-readonly [[_isRequired('date_of_field_visit', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_field_visit', 'true', data.date_of_draft_report_to_ip)]]"
+                                 disabled$="[[_isReadOnly('date_of_field_visit', 'true', data.date_of_draft_report_to_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_field_visit)]]"
                                  on-down="openDatePicker"
                                  data-selector="dateVisit"

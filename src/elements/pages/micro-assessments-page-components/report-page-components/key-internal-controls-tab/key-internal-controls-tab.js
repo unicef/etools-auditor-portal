@@ -85,8 +85,8 @@ Polymer({
         return valueValid && extraValid;
     },
 
-    validate: function() {
-        if (!this.basePermissionPath) { return true; }
+    validate: function(forSave) {
+        if (!this.basePermissionPath || forSave) { return true; }
         let required = this.isRequired(`${this.basePermissionPath}.test_subject_areas`);
         if (!required) { return true; }
 
@@ -101,14 +101,14 @@ Polymer({
     },
 
     openEditDialog: function(event) {
-        let index = event && event.detail && event.detail.index;
-        if (!index && index !== 0) {
+        let index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
+        if ((!index && index !== 0) || !~index) {
             console.error('Can not find data');
             return;
         }
 
-        let data = this.subjectAreas.blueprints[index];
-        this.editedArea = _.clone(data);
+        let data = this.subjectAreas.children[index];
+        this.editedArea = _.cloneDeep(data);
         this.editedAreaIndex = index;
         this.dialogOpened = true;
     },
@@ -119,9 +119,9 @@ Polymer({
 
     _saveEditedArea: function() {
         if (!this.validateEditFields()) { return; }
-        let data = _.clone(this.editedArea);
+        let data = _.cloneDeep(this.editedArea);
         data.changed = true;
-        this.splice('subjectAreas.blueprints', this.editedAreaIndex, 1, data);
+        this.splice('subjectAreas.children', this.editedAreaIndex, 1, data);
         this.dialogOpened = false;
     },
 
@@ -134,5 +134,8 @@ Polymer({
             element.value = '';
         });
 
+    },
+    _showRisk: function(risk) {
+        return risk && risk.type === 'default';
     }
 });

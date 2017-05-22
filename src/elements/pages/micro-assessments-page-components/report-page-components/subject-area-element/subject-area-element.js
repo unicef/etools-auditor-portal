@@ -16,30 +16,36 @@ Polymer({
     _setData: function(data) {
         if (!data) { return; }
         if (!data.changed) {
-            this.originalData = _.clone(data);
+            this.originalData = _.cloneDeep(data);
         }
-        if (data.value && typeof data.value !== 'object') {
-            this.area.value = this.riskOptions[this.area.value];
+
+        if (data.blueprints[0].value && typeof data.blueprints[0].value !== 'object') {
+            this.area.blueprints[0].value = this.riskOptions[this.area.blueprints[0].value];
         }
-        this.areaData = _.clone(this.area);
+
+        this.areaData = _.clone(this.area.blueprints[0]);
     },
     openEditDialog: function() {
-        this.fire('open-edit-dialog', {index: this.index, data: this.areaData});
+        this.fire('open-edit-dialog', {data: this.area});
         this.$.listElement.detailsOpened = true;
     },
     getRiskData: function() {
-        if (!this.area.value) { return null; }
-        if (this.area.value.value === this.originalData.value && this.area.extra === this.originalData.extra) { return null; }
+        if (!this.area.blueprints[0].value) { return null; }
+        if (this.area.blueprints[0].value.value === this.originalData.blueprints[0].value &&
+            this.area.blueprints[0].extra === this.originalData.blueprints[0].extra) { return null; }
 
-        let data = {
-            id: this.area.id,
-            extra: this.area.extra,
-            value: this.area.value.value
+        let blueprint = {
+            id: this.area.blueprints[0].id,
+            extra: this.area.blueprints[0].extra,
+            value: this.area.blueprints[0].value.value
         };
 
-        return data;
+        return {
+            id: this.area.id,
+            blueprints: [blueprint]
+        };
     },
     validate: function() {
-        return !!this.area.value && this.area.extra !== null;
+        return !!this.area.blueprints[0].value && this.area.blueprints[0].extra !== null;
     }
 });
