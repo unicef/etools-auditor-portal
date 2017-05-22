@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input]-->
+<!--import [polymer, etools-content-panel, paper-input/paper-textarea]-->
 
 <!--import [tab-inputs-styles, module-styles, permission-controller]-->
 
@@ -19,13 +19,13 @@
                 from the micro assessment and previous assurance activities have been implemented. Document any
                 changes identified
             </div>
-            <paper-input label="Document any changes identified"
+            <paper-textarea label="Document any changes identified"
                          value="{{data.internal_controls}}"
                          on-focus="_resetFieldError"
                          class$="{{_setRequired('internalControls', basePermissionPath)}}"
                          required="{{_setRequired('internalControls', basePermissionPath)}}"
                          error-message="Document any changes identified is required">
-            </paper-input>
+            </paper-textarea>
         </etools-content-panel>
     </template>
 
