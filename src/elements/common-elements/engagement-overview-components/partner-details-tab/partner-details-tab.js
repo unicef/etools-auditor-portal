@@ -17,6 +17,9 @@ Polymer({
             value: false
         }
     },
+    observers: [
+        '_engagementChanged(engagement.partner)'
+    ],
     listeners: {
         'partner-loaded': '_partnerLoaded'
     },
@@ -69,12 +72,12 @@ Polymer({
             return inProcess ? 'readonly' : '';
         }
     },
-    _requestPartner: function(event) {
+    _requestPartner: function(event, id) {
         if (this.requestInProcess) { return; }
 
         this.set('partner', {});
 
-        let partnerId = event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id;
+        let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || id;
         if (!partnerId) { return; }
 
         this.requestInProcess = true;
@@ -84,5 +87,12 @@ Polymer({
     _partnerLoaded: function() {
         this.requestInProcess = false;
         this.validate();
+    },
+    _engagementChanged: function(partner) {
+        if (!partner) {
+            this.set('partner', {});
+        } else {
+            this._requestPartner(null, partner.id);
+        }
     }
 });
