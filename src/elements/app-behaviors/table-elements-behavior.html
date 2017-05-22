@@ -1,0 +1,178 @@
+<!--import [polymer, lodash]-->
+
+<script>
+    'use strict';
+
+    window.APBehaviors = window.APBehaviors || {};
+    APBehaviors.TableElementsBehaviorImpl = {
+        properties: {
+            dataItems: {
+                type: Array,
+                observer: '_dataItemsChanged'
+            },
+            emptyObj: {
+                type: Object,
+                value: function() {
+                    return {empty: true};
+                }
+            },
+            editedItem: Object,
+            itemModel: {
+                type: Object,
+                value: function() {
+                    return {};
+                }
+            }
+        },
+
+        ready: function() {
+            this.editedItem = _.cloneDeep(this.itemModel);
+        },
+
+        _dataItemsChanged: function(data) {
+            this.originalData = _.cloneDeep(data);
+        },
+
+        getTabData: function() {
+            if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
+            if (!this.originalData.length && !this.dataItems.length) { return null; }
+            let data = [];
+
+            _.each(this.dataItems, (item, index) => {
+                if (!_.isEqual(item, this.originalData[index])) {
+                    data.push(item);
+                }
+            });
+
+            return data.length ? data : null;
+        },
+
+        _canBeChanged: function() {
+            if (!this.basePermissionPath) { return true; }
+
+            let readOnly = this.isReadonly(`${this.basePermissionPath}.${this.mainProperty}`);
+            if (readOnly === null) { readOnly = true; }
+
+            return !readOnly;
+        },
+
+        changePermission: function(basePermissionPath) {
+            if (!basePermissionPath) { return; }
+            let editObj = this.columns && this.columns[this.columns.length - 1];
+            if (this._canBeChanged() && editObj && editObj.name !== 'edit') {
+                this.push('columns', {'size': 4,'label': 'Edit','name': 'edit','icon': true});
+            } else if (!this._canBeChanged() && editObj && editObj.name === 'edit') {
+                this.pop('columns');
+            }
+        },
+
+        validate: function() {
+            let elements = Polymer.dom(this.root).querySelectorAll('.validate-input'),
+                    valid = true;
+
+            Array.prototype.forEach.call(elements, (element) => {
+                //TODO: improve validation
+                if (element.required && !element.validate()) { valid = false; }
+            });
+
+            return valid;
+        },
+
+        _setRequired: function(field) {
+            if (!this.basePermissionPath) { return false; }
+
+            let required = this.isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
+
+            return required ? 'required' : false;
+        },
+
+        _resetFieldError: function(event) {
+            event.target.invalid = false;
+        },
+
+        openAddDialog: function() {
+            this.dialogTitle = (this.addDialogTexts && this.addDialogTexts.title) || 'Add new Item';
+            this.confirmBtnText = (this.addDialogTexts && this.addDialogTexts.confirmBtn) || 'Add';
+            this.canBeRemoved = false;
+            this.dialogOpened = true;
+        },
+
+        openEditDialog: function(event) {
+            let item = event && event.model && event.model.item,
+                    index = this.dataItems && this.dataItems.indexOf(item);
+
+            if ((!index && index !== 0) || index < 0) { throw Error('Can not find user data'); }
+
+            this.editedItem = _.cloneDeep(this.dataItems[index]);
+            this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
+            this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
+            this.canBeRemoved = true;
+            this.editedIndex = index;
+            this.dialogOpened = true;
+        },
+
+        _addItemFromDialog: function(event) {
+            if(event && event.detail && event.detail.dialogName === 'deleteConfirm') {
+                this.removeItem();
+                return;
+            }
+
+            if (!this.validate()) { return; }
+
+            let item = _.cloneDeep(this.editedItem);
+            if (this.canBeRemoved && !isNaN(this.editedIndex)) {
+                //if is edit popup
+                this.splice('dataItems', this.editedIndex, 1, item);
+            } else {
+                //if is creation popup
+                this.push('dataItems', item);
+            }
+
+            this.dialogOpened = false;
+            this.resetDialog();
+        },
+
+        resetDialog: function(opened) {
+            if (opened) { return; }
+            let elements = Polymer.dom(this.root).querySelectorAll('.validate-input');
+
+            Array.prototype.forEach.call(elements, element => {
+                element.invalid = false;
+                element.value = '';
+            });
+
+            this.dialogTitle = '';
+            this.confirmBtnText = '';
+            this.editedItem = _.cloneDeep(this.itemModel);
+        },
+
+        _getTitleValue: function(value) { return value || ''; },
+
+        removeItem: function() {
+            if (this.editedItem && this.editedItem.id !== undefined) {
+                this.set('editedItem._delete', true);
+                this._addItemFromDialog();
+            } else {
+                this.splice('dataItems', this.editedIndex, 1);
+                this.resetDialog();
+            }
+            this.confirmDialogOpened = false;
+            this.dialogOpened = false;
+        },
+
+        _showItems: function(item) {
+            return item && !item._delete;
+        },
+
+        _openDeleteConfirmation: function() {
+            this.confirmDialogOpened = true;
+        }
+
+    };
+
+    APBehaviors.TableElementsBehavior = [
+        APBehaviors.TableElementsBehaviorImpl,
+        APBehaviors.PermissionController
+    ];
+
+</script>

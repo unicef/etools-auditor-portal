@@ -43,6 +43,10 @@ Polymer({
         showCollapse: {
             type: Boolean,
             computed: '_computeShowCollapse(details, hasCollapse)'
+        },
+        data: {
+            type: Object,
+            notify: true
         }
     },
     _computeShowCollapse(details, hasCollapse) {
@@ -51,10 +55,16 @@ Polymer({
     _toggleRowDetails: function() {
         Polymer.dom(this.root).querySelector('#details').toggle();
     },
-    _isLink: function(link) {
-        return !!link;
+    _isOneOfType: function(item) {
+        if (!item) { return false; }
+
+        let types = Array.prototype.slice.call(arguments, 1) || [];
+
+        return !!types.filter(type => {
+            return !!item[type];
+        }).length;
     },
-    _getValue: function(item) {
+    _getValue: function(item, data, bool) {
         let value;
 
         if (!item.path) {
@@ -69,7 +79,13 @@ Polymer({
             value = this._refactorTime(value);
         }
 
-        return value || '--';
+        if (bool) {
+            value = !!value;
+        } else if (!value) {
+            value = '--';
+        }
+
+        return value;
     },
     _refactorValue: function(type, value) {
         let values = this.itemValues[type];
@@ -103,5 +119,11 @@ Polymer({
         return pattern
             .replace('*data_id*', this.data.id)
             .replace('*engagement_type*', this._refactorValue('link_type', this.data.type));
+    },
+    _emtyObj: function(data) {
+        return data && !data.empty;
+    },
+    _hasProperty: function(data, property) {
+        return data && property && this.get('data.' + property);
     }
 });

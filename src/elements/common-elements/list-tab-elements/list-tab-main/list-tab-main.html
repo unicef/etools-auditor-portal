@@ -20,10 +20,10 @@
                          order-by="{{orderBy}}">
             </list-header>
 
-            <template id="list-elements" is="dom-repeat" items="[[data]]" as="partner" initial-count="10"  on-dom-change="_listDataChanged">
+            <template id="list-elements" is="dom-repeat" items="[[data]]" initial-count="10"  on-dom-change="_listDataChanged">
                 <list-element
                         class="list-element"
-                        data="[[partner]]"
+                        data="[[item]]"
                         headings="[[headings]]"
                         details="[[details]]"
                         has-collapse="[[hasCollapse]]"

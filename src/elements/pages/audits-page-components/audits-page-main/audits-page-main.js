@@ -2,7 +2,10 @@
 
 Polymer({
     is: 'audits-page-main',
-    behaviors: [APBehaviors.EngagementBehavior],
+    behaviors: [
+        APBehaviors.EngagementBehavior,
+        APBehaviors.StaticDataController
+    ],
     properties: {
         engagement: {
             type: Object,
@@ -61,5 +64,15 @@ Polymer({
 
     customBasicValidation: function() {
         return true;
+    },
+
+    infoLoaded: function() {
+        if (this.getData('audit_opinions')) { return; }
+        let auditOpinions = this.getChoices(`engagement_${this.engagement.id}.audit_opinion`);
+        if (!auditOpinions) {
+            auditOpinions = [];
+            return;
+        }
+        this._setData('audit_opinions', auditOpinions);
     }
 });

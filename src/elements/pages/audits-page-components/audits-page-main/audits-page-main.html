@@ -6,12 +6,7 @@
 
 <dom-module id="audits-page-main">
     <template>
-        <style include="shared-styles module-styles main-page-styles">
-            .view-container {
-                display: flex;
-                padding: 15px;
-            }
-        </style>
+        <style include="shared-styles module-styles main-page-styles"></style>
 
         <app-route
                 route="{{route}}"
@@ -28,7 +23,7 @@
         <template is="dom-if" if="{{engagement.id}}" restamp>
             <pages-header-element show-export-button
                                   hide-print-button
-                                  title="Audit"></pages-header-element>
+                                  title$="[[engagement.partner.name]] - Audit"></pages-header-element>
             <div class="tab-selector">
                 <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
                             selected="{{tab}}" id="pageTabs">
@@ -49,15 +44,12 @@
                                                      id="engagementDetails"
                                                      base-permission-path="{{permissionBase}}"></engagement-info-details>
 
-                            <partner-details-tab partner="[[engagement.partner]]"></partner-details-tab>
+                            <partner-details-tab id="partnerDetails" engagement="{{engagement}}" base-permission-path="{{permissionBase}}"></partner-details-tab>
 
-                            <etools-content-panel
-                                    title$="Auditor Staff Members ([[_getMembersLength(engagement.staff_members.length)]])"
-                                    show-expand-btn>
+
                                 <engagement-staff-members-tab id="staffMembers"
                                                               base-permission-path="{{permissionBase}}"
                                                               data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
-                            </etools-content-panel>
                         </div>
 
                         <div name="report">
@@ -68,10 +60,19 @@
 
 
                         <div name="attachments">
-                            <file-attachments-tab title="Attachments"
-                                                  id="attachments"
+                            <file-attachments-tab title$="Engagement Attachments"
+                                                  id="engagement_attachments"
                                                   allow-download allow-delete file-type-required
-                                                  files="{{engagement.attachments}}"></file-attachments-tab>
+                                                  files="[[engagement.engagement_attachments]]"
+                                                  file-types="[[engagementFileTypes]]"
+                                                  readonly="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"></file-attachments-tab>
+
+                            <file-attachments-tab title="Report Attachments"
+                                                  id="report_attachments"
+                                                  allow-download allow-delete file-type-required
+                                                  files="[[engagement.report_attachments]]"
+                                                  file-types="[[reportFileTypes]]"
+                                                  readonly="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"></file-attachments-tab>
                         </div>
 
                     </iron-pages>

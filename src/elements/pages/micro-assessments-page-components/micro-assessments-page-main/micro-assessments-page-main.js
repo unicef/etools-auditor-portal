@@ -67,14 +67,21 @@ Polymer({
         } else {
             delete data.questionnaire;
         }
-        data.test_subject_areas = {};
+        let subjectAreas = Polymer.dom(this.root).querySelector('#report').getRisksData();
+        data.test_subject_areas = subjectAreas || {};
 
         return data;
     },
 
     customBasicValidation: function() {
-        let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate('forSave');
+        let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validate('forSave'),
+            reportValid = Polymer.dom(this.root).querySelector('#report').validate('forSave');
 
+        if (!reportValid) {
+            this.set('tab', 'report');
+            this.fire('toast', {text: 'Fix invalid fields before saving'});
+            return false;
+        }
         if (!questionnaireValid) {
             this.set('tab', 'questionnaire');
             this.fire('toast', {text: 'Fix invalid fields before saving'});

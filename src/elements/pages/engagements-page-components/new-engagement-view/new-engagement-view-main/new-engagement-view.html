@@ -39,19 +39,20 @@
                     <div name="overview">
                         <engagement-info-details data="{{engagement}}" id="engagementDetails" base-permission-path="new_engagement"></engagement-info-details>
 
-                        <partner-details-tab partner="[[engagement.partner]]"></partner-details-tab>
+                        <partner-details-tab id="partnerDetails" engagement="{{engagement}}" base-permission-path="new_engagement"></partner-details-tab>
 
-                        <etools-content-panel title$="Auditor Staff Members ([[engagement.staff_members.length]])" show-expand-btn>
-                            <engagement-staff-members-tab id="staffMembers"
-                                                          base-permission-path="new_engagement"
-                                                          data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
-                        </etools-content-panel>
+                        <engagement-staff-members-tab id="staffMembers"
+                                                      base-permission-path="new_engagement"
+                                                      data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
+
                     </div>
 
                     <div name="attachments">
                         <file-attachments-tab title="Attachments"
-                                              id="attachments"
-                                              files="[[engagement.attachments]]"
+                                              id="engagement_attachments"
+                                              files="[[engagement.engagement_attachments]]"
+                                              file-types="[[fileTypes]]"
+                                              readonly="[[_attachmentsReadonly()]]"
                                               file-type-required
                                               allow-download
                                               allow-delete>

@@ -1,0 +1,67 @@
+<!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea, lodash]-->
+
+<dom-module id="primary-risk-element">
+    <template>
+        <style include="tab-inputs-styles module-styles">
+            etools-content-panel.overal-risks {
+                margin: 20px 0;
+
+                --ecp-header-title: #{'{
+                    font-weight: 500;
+                    line-height: 51px;
+                }'};
+
+                --epc-toolbar: #{'{
+                    height: 51px;
+                    padding: 2px;
+                    background-color: var(--module-warning);
+                }'};
+
+            }
+        </style>
+
+        <etools-content-panel title="{{riskData.header}}" class="overal-risks">
+
+            <div class="repeatable-item-content">
+                <div class="row-h group">
+                    <div class="input-container">
+                        <!-- Risk Assessment -->
+
+                        <etools-searchable-multiselection-menu
+                                id="riskAssessmentInput"
+                                class="validate-input disabled-as-readonly"
+                                options="[[riskOptions]]"
+                                required hide-search
+                                readonly="[[isReadOnly(basePermissionPath)]]"
+                                disabled="[[isReadOnly(basePermissionPath)]]"
+                                value="{{primaryArea.value}}"
+                                error-message="This field is required"
+                                on-focus="_resetFieldError"
+                                label="Risk Assessment"
+                                placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
+                    </div>
+                </div>
+
+                <div class="row-h group">
+                    <div class="input-container input-container-l">
+                        <!-- Brief Justification -->
+                        <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
+                                        required
+                                        error-message="This field is required"
+                                        id="briefJustification"
+                                        class="disabled-as-readonly validate-input"
+                                        value="{{primaryArea.extra}}"
+                                        disabled="[[isReadOnly(basePermissionPath)]]"
+                                        placeholder="Enter Brief Justification">
+                        </paper-textarea>
+                    </div>
+                </div>
+
+            </div>
+
+        </etools-content-panel>
+
+    </template>
+
+    <!-- inject scripts './primary-risk-element.js'-->
+</dom-module>

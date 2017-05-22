@@ -4,7 +4,7 @@
     'use strict';
 
     window.APBehaviors = window.APBehaviors || {};
-    APBehaviors.EngagementBehavior = {
+    APBehaviors.EngagementBehaviorImpl = {
         properties: {
             tabsList: {
                 type: Array,
@@ -16,6 +16,11 @@
                 type: String,
                 value: ''
             }
+        },
+
+        ready: function() {
+            this.engagementFileTypes = this.getData('engagement_attachments_types');
+            this.reportFileTypes = this.getData('report_attachments_types');
         },
 
         _routeConfig: function(route) {
@@ -37,6 +42,7 @@
             }
 
             this.tab = tab;
+            if (this.infoLoaded) { this.infoLoaded(); }
         },
 
         _tabChanged: function(tab) {
@@ -82,9 +88,13 @@
         },
 
         _prepareData: function(submit, finalize) {
-            let attachmentsTab = this.getElement('#attachments');
+            let engagementAttachmentsTab = this.getElement('#engagement_attachments'),
+                reportAttachmentsTab = this.getElement('#report_attachments');
 
-            if (!this.engagement || !attachmentsTab) {  return Promise.reject('You need engagement object and attachments tab'); }
+            if (!this.engagement) {
+                return Promise.reject('You need engagement object and attachments tabs');
+            }
+
 
             let data = _.clone(this.engagement);
 
@@ -109,10 +119,14 @@
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
             }
+            let promises = [];
+            if (engagementAttachmentsTab) { promises.push(engagementAttachmentsTab.getFiles()); }
+            if (reportAttachmentsTab) { promises.push(reportAttachmentsTab.getFiles()); }
 
-            return attachmentsTab.getFiles()
-                    .then((files) => {
-                        data.attachments = files;
+            return Promise.all(promises)
+                    .then((uploadedFiles) => {
+                        data.engagement_attachments = uploadedFiles ? uploadedFiles[0] : undefined;
+                        data.report_attachments = uploadedFiles ? uploadedFiles[1] : undefined;
                         return {
                             type: type,
                             id: data.id,
@@ -120,17 +134,25 @@
                             submit: submit ? 'submit/' : null,
                             finalize: finalize ? 'finalize/' : null
                         };
-                    })
+                    });
         },
 
 
         _validateBasicInfo: function(property) {
-            let staffMembersValid = this.getElement('#staffMembers').validate(),
-                detailsValid = this.getElement('#engagementDetails').validate(),
-                attachmentsValid = this.getElement('#attachments').validate();
+            let detailsValid = this.getElement('#engagementDetails').validate(),
+                    partnerDetailsValid = this.getElement('#partnerDetails').validate();
+                    //TODO: don't validate staff members in tabular view
+                    //staffMembersValid = this.getElement('#staffMembers').validate();
 
-            if (!staffMembersValid || !detailsValid || !attachmentsValid) {
-                let openTab = (staffMembersValid && detailsValid) ? 'attachments' : 'overview';
+            let engagementAttachments = this.getElement('#engagement_attachments'),
+                    reportAttachments = this.getElement('#report_attachments');
+
+            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
+                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
+
+
+            if (/*!staffMembersValid || */!detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid) {
+                let openTab = (/*staffMembersValid && */detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);
                 this.fire('toast', {text: 'Fix invalid fields before saving'});
@@ -174,7 +196,20 @@
             } else {
                 this._submitReport();
             }
+        },
+
+        _attachmentsReadonly: function(base, type) {
+            let readOnly = this.isReadonly(`${base}.${type}`);
+            if (readOnly === null) { readOnly = true; }
+            return readOnly;
         }
 
     };
+
+    APBehaviors.EngagementBehavior = [
+        APBehaviors.EngagementBehaviorImpl,
+        APBehaviors.PermissionController,
+        APBehaviors.StaticDataController
+    ];
+
 </script>

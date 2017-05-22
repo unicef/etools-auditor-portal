@@ -70,6 +70,7 @@
                 if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
 
                 if (data) { this.engagementInfo = data; }
+
                 this.fire('global-loading', {type: 'engagement-info'});
                 this.fire('engagement-info-loaded');
                 this.engagementId = null;

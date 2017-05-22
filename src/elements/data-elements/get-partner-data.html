@@ -1,0 +1,65 @@
+<!--import [polymer, etools-ajax, lodash, etools-app-config]-->
+
+<dom-module id="get-partner-data">
+
+    <template>
+
+        <etools-ajax url="[[url]]"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'get-partner-data',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+
+                partnerId: {
+                    type: Number,
+                    notify: true,
+                    observer: '_partnerIdChanged'
+                },
+                partner: {
+                    type: Object,
+                    notify: true
+                }
+
+            },
+
+            _handleResponse: function (data, detail) {
+                this.lastData = _.clone(detail);
+                this.partner = detail;
+                this.fire('partner-loaded', {success: true});
+            },
+
+            _handleError: function () {
+                this.lastError = true;
+                this.fire('partner-loaded');
+            },
+
+            _partnerIdChanged: function(partnerId) {
+                if (!partnerId) { return; }
+                if (partnerId === this.lastNumber) {
+                    this.partnerId = null;
+                    this.lastError ? this._handleError() : this._handleResponse({detail: _.clone(this.lastData)});
+                    return;
+                }
+
+                this.lastError = false;
+                this.lastNumber = partnerId;
+                this.url = this.getEndpoint('partnerOrganisations', {id: partnerId}).url + `${partnerId}/`;
+                this.partnerId = null;
+            }
+
+        });
+
+    </script>
+
+</dom-module>

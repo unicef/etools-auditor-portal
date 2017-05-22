@@ -1,9 +1,9 @@
-<!--import [polymer, iron-flex-layout, shared-styles, module-styles, moment-element/moment-import]-->
+<!--import [polymer, iron-flex-layout, shared-styles, tab-inputs-styles, module-styles, moment-element/moment-import, paper-checkbox]-->
 
 <dom-module id="list-element">
     <template>
         <!-- inject styles './list-element.scss'-->
-        <style include="shared-styles module-styles iron-flex"></style>
+        <style include="shared-styles module-styles iron-flex tab-inputs-styles"></style>
 
 
         <paper-material id="wrapper" elevation="0">
@@ -19,16 +19,16 @@
             <div class="partner-data">
                 <template is="dom-repeat" items="[[headings]]">
 
-                    <template is="dom-if" if="[[_isLink(item.link)]]">
-                        <a class$="col-data w[[item.size]] truncate"
+                    <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
+                        <a class$="col-data w[[item.size]] [[item.align]] truncate"
                            href$="[[_getLink(item.link, data)]]"
                            title="[[_getValue(item, data)]]">
                             [[_getValue(item, data)]]
                         </a>
                     </template>
 
-                    <template is="dom-if" if="[[!_isLink(item.link)]]">
-                        <span class$="col-data w[[item.size]] truncate">
+                    <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom')]]" restamp>
+                        <span class$="col-data w[[item.size]] [[item.align]] truncate">
                             <span class="truncate">
                                 [[_getValue(item, data)]]
 
@@ -39,6 +39,44 @@
                         </span>
                     </template>
 
+                    <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
+                        <span class$="col-data w[[item.size]] [[item.align]]">
+                            <template is="dom-if" if="{{_emtyObj(data)}}">
+                                 <paper-checkbox checked="{{_getValue(item, data, 'bool')}}"
+                                                 label=""></paper-checkbox>
+                            </template>
+                            <template is="dom-if" if="{{!_emtyObj(data)}}">
+                                <span class="">--</span>
+                            </template>
+                        </span>
+                    </template>
+
+                    <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
+                        <span class$="col-data w[[item.size]] [[item.align]]">
+                            <template is="dom-if" if="{{_emtyObj(data)}}">
+                                <slot name="icon">
+
+                                </slot>
+                            </template>
+                            <template is="dom-if" if="{{!_emtyObj(data)}}">
+                                <span class="">--</span>
+                            </template>
+                        </span>
+                    </template>
+
+                    <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
+                        <span class$="col-data w[[item.size]] [[item.align]]">
+                            <template is="dom-if" if="{{_hasProperty(data, item.property)}}" restamp>
+                                <slot name="custom">
+
+                                </slot>
+                            </template>
+                            <template is="dom-if" if="{{!_hasProperty(data, item.property)}}">
+                                <span class="">--</span>
+                            </template>
+                        </span>
+                    </template>
+
                 </template>
             </div>
         </paper-material>
@@ -46,10 +84,10 @@
         <template is="dom-if" if="[[showCollapse]]">
             <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
                 <div id="collapse-wrapper">
-                    <div class="partners-data-details">
+                    <div class="partners-data-details group">
                         <template is="dom-repeat" items="[[details]]">
 
-                            <div class="row-details-content">
+                            <div class$="row-details-content w[[item.size]]">
                                 <span class="rdc-title">[[item.label]]</span>
                                 <span class="data">[[_getValue(item, data)]]</span>
                             </div>

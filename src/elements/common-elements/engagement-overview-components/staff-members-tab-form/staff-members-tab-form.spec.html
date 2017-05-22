@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [staff-members-tab-form]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <staff-members-tab-form id="element"></staff-members-tab-form>
+    </template>
+</test-fixture>
+
+
+<script>
+    xdescribe('<engagement-staff-members-tab>', function () {
+        var myEl;
+
+        before(function() {
+            myEl = fixture('element-fixture');
+            myEl.basePermissionPath = 'test';
+            myEl._addToCollection('test', {
+                PUT: {
+                    "staff_members": {
+                        "type": "field",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Staff members",
+                        "child": {
+                            "type": "nested object",
+                            "required": false,
+                            "read_only": false,
+                            "children": {
+                                "id": {
+                                    "type": "integer",
+                                    "required": false,
+                                    "read_only": true,
+                                    "label": "ID"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "required": true,
+                                    "read_only": false,
+                                    "label": "Title",
+                                    "max_length": 64
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            myEl._addToCollection('test2', {
+                GET: {
+                    "staff_members": {
+                        "type": "field",
+                        "required": false,
+                        "read_only": true,
+                        "label": "Staff members",
+                        "child": {
+                            "type": "nested object",
+                            "required": false,
+                            "read_only": false,
+                            "children": {
+                                "id": {
+                                    "type": "integer",
+                                    "required": false,
+                                    "read_only": true,
+                                    "label": "ID"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "required": true,
+                                    "read_only": false,
+                                    "label": "Title",
+                                    "max_length": 64
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        });
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+            myEl.dataItems = [];
+        });
+
+        it('has several properties and methods', function () {
+            assert.isDefined(myEl.dataSetModel);
+            assert.isDefined(myEl._canBeRemoved);
+            assert.isDefined(myEl._validEmailAddress);
+            assert.isDefined(myEl._notEmpty);
+            assert.isDefined(myEl.validate);
+            assert.isDefined(myEl._addNewStaffMember);
+            assert.isDefined(myEl._getTitleValue);
+            assert.isDefined(myEl._setRequired);
+            assert.isDefined(myEl._resetFieldError);
+        });
+
+        it('return title or empty string', function () {
+            assert.equal(myEl._getTitleValue(), '');
+            assert.equal(myEl._getTitleValue('Hello'), 'Hello');
+        });
+
+        it('return false if value is undefined or null or empty', function () {
+            assert.isFalse(myEl._notEmpty());
+            assert.isFalse(myEl._notEmpty(null));
+            assert.isFalse(myEl._notEmpty(''));
+            assert.isTrue(myEl._notEmpty('Hello'));
+        });
+
+        describe(' _canBeRemoved method', function() {
+            it('return false if staff members readonly permission is true', function () {
+                myEl.basePermissionPath = 'test2';
+                assert.isFalse(myEl._canBeRemoved());
+            });
+
+            it('return true if staff members readonly permission is false', function () {
+                myEl.basePermissionPath = 'test';
+                assert.isTrue(myEl._canBeRemoved());
+            });
+        });
+
+        it('validate email', function () {
+            assert.isFalse(myEl._validEmailAddress());
+            assert.isFalse(myEl._validEmailAddress(''));
+            assert.isFalse(myEl._validEmailAddress('invalid.mail'));
+            assert.isTrue(myEl._validEmailAddress('valid.mail@gmail.com'));
+        });
+
+
+        it('validate return true if no staffs added', function () {
+            assert.equal(myEl.dataItems.length, 0);
+            assert.isTrue(myEl.validate());
+        });
+
+        it('validate return true if staffs are valid', function (done) {
+            myEl.push('dataItems', {user: {first_name: 'Ted', last_name: 'Blosson', email: 'ted@gmail.com'}});
+            myEl.push('dataItems', {user: {first_name: 'Rob', last_name: 'Blosson', email: 'rob@gmail.com'}});
+
+            myEl.addEventListener('dom-change', function() {
+                assert.isTrue(myEl.validate());
+                myEl.debounce('done', done, 0);
+            }, false);
+        });
+
+
+        it('doesn\'t add blank staff if previous staff inputs are empty', function () {
+            myEl.editMode = false;
+            myEl._addNewStaffMember();
+            assert.equal(myEl.dataItems.length, 0);
+
+            myEl.editMode = true;
+            myEl._addNewStaffMember();
+            assert.equal(myEl.dataItems.length, 1);
+
+            myEl._addNewStaffMember();
+            assert.equal(myEl.dataItems.length, 1);
+
+            myEl.dataItems[0].user.first_name = 'test_name';
+            myEl._addNewStaffMember();
+            assert.equal(myEl.dataItems.length, 2);
+        });
+
+        it('return required class if edit mode is on', function () {
+            myEl.basePermissionPath = 'test';
+            assert.equal(myEl._setRequired('title'), 'required');
+            assert.equal(myEl._setRequired(), false);
+            assert.equal(myEl._setRequired('not_found'), false);
+        });
+
+        it('reset field error', function () {
+            var test = {target: {invalid: true}};
+            myEl._resetFieldError(test);
+            assert.isFalse(test.target.invalid);
+        });
+
+    });
+</script>
+
+</body>
+</html>
