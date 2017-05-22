@@ -32,6 +32,8 @@
                                 class="validate-input disabled-as-readonly"
                                 options="[[riskOptions]]"
                                 required hide-search
+                                readonly="[[isReadOnly(basePermissionPath)]]"
+                                disabled="[[isReadOnly(basePermissionPath)]]"
                                 value="{{primaryArea.value}}"
                                 error-message="This field is required"
                                 on-focus="_resetFieldError"
@@ -49,6 +51,7 @@
                                         id="briefJustification"
                                         class="disabled-as-readonly validate-input"
                                         value="{{primaryArea.extra}}"
+                                        disabled="[[isReadOnly(basePermissionPath)]]"
                                         placeholder="Enter Brief Justification">
                         </paper-textarea>
                     </div>

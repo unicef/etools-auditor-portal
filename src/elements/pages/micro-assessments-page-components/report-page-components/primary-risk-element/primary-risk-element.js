@@ -59,5 +59,13 @@ Polymer({
             id: this.riskData.id,
             blueprints: [blueprint]
         };
+    },
+    isReadOnly: function(path) {
+        if (!path) { return true; }
+
+        let readOnly = this.isReadonly(`${path}.test_subject_areas`);
+        if (readOnly === null) { readOnly = true; }
+
+        return readOnly;
     }
 });
