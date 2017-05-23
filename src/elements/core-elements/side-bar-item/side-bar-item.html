@@ -51,9 +51,11 @@
       }
 
       iron-icon {
+        width: 100%;
         margin: 0 16px;
         color: var(--dark-icon-color);
-        min-width: 24px;
+        min-width: 26px;
+        min-height: 26px;
       }
 
       #name {
@@ -82,7 +84,6 @@
 
     <a id="main" href$="[[sideBarLink]]" on-tap="_handleMainTap">
       <iron-icon icon="{{icon}}"></iron-icon>
-      <div id="name">{{name}}</div>
     </a>
 
     <iron-collapse id="collapse" opened="{{opened}}">
