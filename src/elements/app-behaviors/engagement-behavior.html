@@ -136,7 +136,7 @@
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
             }
-            //TODO: refactor attachments promises
+
             let promises = [];
             if (engagementAttachmentsTab) { promises[0] = engagementAttachmentsTab.getFiles(); }
             if (reportAttachmentsTab) { promises[1] = reportAttachmentsTab.getFiles(); }
