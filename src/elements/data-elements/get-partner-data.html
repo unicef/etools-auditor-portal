@@ -34,8 +34,8 @@
             },
 
             _handleResponse: function (data, detail) {
-                this.lastData = _.clone(detail);
-                this.partner = detail;
+                this.lastData = _.clone(data.detail);
+                this.partner = data.detail;
                 this.fire('partner-loaded', {success: true});
             },
 
