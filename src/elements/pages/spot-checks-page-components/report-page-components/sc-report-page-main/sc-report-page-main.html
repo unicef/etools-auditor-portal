@@ -7,8 +7,10 @@
 
         <assign-engagement data="{{engagement}}"
                            audit-type="Spot Check"
+                           original-data="[[originalData]]"
                            base-permission-path="{{permissionBase}}"
                            id="assignEngagement"></assign-engagement>
+
         <overview-engagement data="{{engagement}}"
                              id="overviewEngagement"
                              base-permission-path="{{permissionBase}}"></overview-engagement>

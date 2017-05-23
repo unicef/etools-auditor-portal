@@ -4,10 +4,6 @@ Polymer({
 
     properties: {
         page: String
-    },
-
-    _toggleDrawer: function() {
-        this.fire('drawer-toggle-tap');
     }
 
 });

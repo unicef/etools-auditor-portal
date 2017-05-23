@@ -28,8 +28,8 @@ Polymer({
 
         if (!this.riskData.blueprints[0].value) { return; }
 
-        this.primaryArea.value = this.riskOptions[this.riskData.blueprints[0].value];
-        this.primaryArea.extra = this.riskData.blueprints[0].extra;
+        this.set('primaryArea.value', this.riskOptions[this.riskData.blueprints[0].value]);
+        this.set('primaryArea.extra', this.riskData.blueprints[0].extra);
     },
     validate: function(forSave) {
         if (this.primaryArea.extra && !this.primaryArea.value) {

@@ -92,14 +92,12 @@
 
                     this._addToCollection('new_engagement', data.detail.actions);
 
-                    let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type'),
-                        reportAttachmentsTypes = this.getChoices('new_engagement.report_attachments.file_type');
+                    let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
 
-                    if (!engagementAttachmentsTypes || !reportAttachmentsTypes) {
+                    if (!engagementAttachmentsTypes) {
                         this._responseError('Can not load attachments types');
                     }
                     this._setData('engagement_attachments_types', engagementAttachmentsTypes);
-                    this._setData('report_attachments_types', reportAttachmentsTypes);
                     this._setData('riskOptions', riskOptions);
 
                     dataLoaded.engagementOptions = true;

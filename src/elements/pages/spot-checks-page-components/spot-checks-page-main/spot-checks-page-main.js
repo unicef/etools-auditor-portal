@@ -40,6 +40,7 @@ Polymer({
 
     listeners: {
         'engagement-info-loaded': '_infoLoaded',
+        'engagement-updated': '_engagementUpdated',
         'save-progress': '_saveProgress',
         'main-action-activated': '_mainActionActivated'
     },

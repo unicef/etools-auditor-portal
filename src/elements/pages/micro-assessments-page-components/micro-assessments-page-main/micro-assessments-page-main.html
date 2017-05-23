@@ -43,9 +43,10 @@
                         <div name="overview">
                             <engagement-info-details data="{{engagement}}"
                                                      id="engagementDetails"
+                                                     original-data="[[originalData]]"
                                                      base-permission-path="{{permissionBase}}"></engagement-info-details>
 
-                            <partner-details-tab id="partnerDetails" engagement="{{engagement}}" base-permission-path="{{permissionBase}}"></partner-details-tab>
+                            <partner-details-tab original-data="[[originalData]]" id="partnerDetails" engagement="{{engagement}}" base-permission-path="{{permissionBase}}"></partner-details-tab>
 
 
                                 <engagement-staff-members-tab id="staffMembers"
@@ -55,6 +56,7 @@
 
                         <div name="report">
                             <ma-report-page-main id="report"
+                                                 original-data="[[originalData]]"
                                                  engagement="{{engagement}}"
                                                  permission-base="{{permissionBase}}"></ma-report-page-main>
                         </div>

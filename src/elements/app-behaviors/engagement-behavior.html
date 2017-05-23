@@ -15,6 +15,13 @@
             engagementPrefix: {
                 type: String,
                 value: ''
+            },
+            originalData: {
+                type: Object,
+                readOnly: true,
+                value: function() {
+                    return {};
+                }
             }
         },
 
@@ -35,6 +42,16 @@
         },
 
         _infoLoaded: function() {
+            //save data copy
+            this._setOriginalData(_.cloneDeep(this.engagement));
+
+            //add report attachments file types if not exists
+            if (!this.reportFileTypes) {
+                let reportAttachmentsTypes = this.getChoices(`engagement_${this.engagement && this.engagement.id}.report_attachments.file_type`);
+                this._setData('report_attachments_types', reportAttachmentsTypes);
+                this.reportFileTypes = reportAttachmentsTypes;
+            }
+
             let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
             if (!~this.tabsList.indexOf(tab)) {
                 this.routeData.tab = this.tabsList[0] || '';
@@ -43,6 +60,11 @@
 
             this.tab = tab;
             if (this.infoLoaded) { this.infoLoaded(); }
+        },
+
+        _engagementUpdated: function(event) {
+            let data = event && event.detail && event.detail.data;
+            if (data) { this._setOriginalData(_.cloneDeep(this.engagement)); }
         },
 
         _tabChanged: function(tab) {
@@ -95,14 +117,18 @@
                 return Promise.reject('You need engagement object and attachments tabs');
             }
 
+            //Check basic info
+            let [data, engagementId] = this._getBasicInfo({});
 
-            let data = _.clone(this.engagement);
-
-            data.partner = data.partner.id;
-            data.agreement = data.agreement.id;
+            //Add assign report info
+            let reportTab = this.getElement('#report'),
+                assignReportData = reportTab && reportTab.getAssignVisitData();
+            if(assignReportData) {
+                _.assign(data, assignReportData);
+            }
 
             let type;
-            switch (data.type) {
+            switch (this.engagement.type) {
                 case 'ma':
                     type = 'micro-assessments';
                     break;
@@ -113,23 +139,24 @@
                     type = 'audits';
                     break;
                 default:
-                    type = data.type.link;
-                    data.type = data.type.value;
+                    type = this.engagement.type.link;
+                    data.type = this.engagement.type.value;
             }
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
             }
+
             let promises = [];
-            if (engagementAttachmentsTab) { promises.push(engagementAttachmentsTab.getFiles()); }
-            if (reportAttachmentsTab) { promises.push(reportAttachmentsTab.getFiles()); }
+            if (engagementAttachmentsTab) { promises[0] = engagementAttachmentsTab.getFiles(); }
+            if (reportAttachmentsTab) { promises[1] = reportAttachmentsTab.getFiles(); }
 
             return Promise.all(promises)
                     .then((uploadedFiles) => {
-                        data.engagement_attachments = uploadedFiles ? uploadedFiles[0] : undefined;
-                        data.report_attachments = uploadedFiles ? uploadedFiles[1] : undefined;
+                        if (uploadedFiles && uploadedFiles[0]) {data.engagement_attachments = uploadedFiles[0]; }
+                        if (uploadedFiles && uploadedFiles[1]) {data.report_attachments = uploadedFiles[1]; }
                         return {
                             type: type,
-                            id: data.id,
+                            id: engagementId,
                             data: data,
                             submit: submit ? 'submit/' : null,
                             finalize: finalize ? 'finalize/' : null
@@ -202,6 +229,18 @@
             let readOnly = this.isReadonly(`${base}.${type}`);
             if (readOnly === null) { readOnly = true; }
             return readOnly;
+        },
+
+        _getBasicInfo: function(data) {
+            let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData(),
+                partnerDetailsData = this.getElement('#partnerDetails').getPartnerData(),
+                staffMembersData = this.getElement('#staffMembers').getTabData();
+
+            if (engagementDetailsData) { _.assign(data, engagementDetailsData); }
+            if (partnerDetailsData) { data.partner = partnerDetailsData; }
+            if (staffMembersData) { data.staff_members = staffMembersData; }
+
+            return [data, this.engagement.id];
         }
 
     };
