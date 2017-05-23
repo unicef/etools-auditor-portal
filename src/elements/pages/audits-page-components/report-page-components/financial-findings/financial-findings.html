@@ -1,25 +1,27 @@
-<!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
+<!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
+            paper-input, paper-input/paper-textarea]-->
 <!--import [list-header, list-element]-->
-<!--import [tab-inputs-styles, module-styles, permission-controller, static-data-behavior]-->
+<!--import [tab-inputs-styles, module-styles, static-data-behavior, table-elements-behavior, permission-controller]-->
 
 <dom-module id="financial-findings">
     <template>
+        <!-- inject styles './financial-findings.scss'-->
         <style include="tab-inputs-styles module-styles">
-            :host {
-                position: relative;
-                display: block;
-            }
-
-            .edit-icon { color: var(--module-primary); }
         </style>
 
-        <etools-content-panel class="content-section clearfix" title="Financial findings">
+        <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                           title="Add"
+                           on-tap="openAddDialog"
+                           class="add-button"
+                           icon="add"></paper-icon-button>
+
+        <etools-content-panel class="content-section clearfix" title="Financial Findings">
             <list-header id="list-header"
                          no-ordered
                          data="[[headings]]">
             </list-header>
 
-            <template is="dom-repeat" items="[[data.financial_finding_set]]">
+            <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
                 <list-element
                         class="list-element"
                         data="[[item]]"
@@ -28,11 +30,132 @@
                         has-collapse
                         no-animation>
                     <div slot="icon">
-                        <paper-icon-button icon="icons:create" class="edit-icon"></paper-icon-button>
+                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
+            <template is="dom-if" if="[[!dataItems.length]]">
+                <list-element
+                        class="list-element"
+                        data="[[emptyObj]]"
+                        headings="[[headings]]"
+                        no-animation></list-element>
+            </template>
         </etools-content-panel>
+
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
+            <div class="row-h repeatable-item-container">
+                <div class="repeatable-item-actions">
+                    <div class="row-v actions">
+                        <paper-icon-button class="action delete"
+                                           on-tap="_openDeleteConfirmation"
+                                           hidden$="[[!canBeRemoved]]"
+                                           icon="cancel"></paper-icon-button>
+                    </div>
+                </div>
+
+                <div class="repeatable-item-content">
+                    <div class="row-h group">
+                        <div class="input-container input-container-ms">
+                            <!-- Finding Number -->
+                            <paper-input label="Finding Number"
+                                         value="{{editedItem.finding_number}}"
+                                         placeholder="Enter Finding Number"
+                                         allowed-pattern="[\d]"
+                                         on-focus="_resetFieldError"
+                                         class$="validate-input [[_setRequired('finding_number', basePermissionPath)]]"
+                                         required$="[[_setRequired('finding_number', basePermissionPath)]]"
+                                         error-message="Finding Number is required">
+                            </paper-input>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Title -->
+                            <paper-input label="Title (Category)"
+                                         value="{{editedItem.title}}"
+                                         placeholder="Enter Title"
+                                         on-focus="_resetFieldError"
+                                         class$="validate-input [[_setRequired('title', basePermissionPath)}]]"
+                                         required$="[[_setRequired('title', basePermissionPath)]]"
+                                         error-message="Title is required">
+                            </paper-input>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-ms">
+                            <!-- Amount (local) -->
+                            <etools-currency-amount-input
+                                    label="Amount (local)"
+                                    currency=""
+                                    class$="validate-input {{_setRequired('local_amount', basePermissionPath)}}"
+                                    required$="[[_setRequired('local_amount', basePermissionPath)]]"
+                                    value="{{editedItem.local_amount}}"
+                                    error-message="Amount (local) is required"
+                                    on-focus="_resetFieldError"
+                                    placeholder="&#8212;">
+                            </etools-currency-amount-input>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-ms">
+                            <!-- Amount USD -->
+                            <etools-currency-amount-input
+                                    label="Amount USD"
+                                    currency="$"
+                                    class$="validate-input {{_setRequired('amount', basePermissionPath)}}"
+                                    required$="[[_setRequired('amount', basePermissionPath)]]"
+                                    value="{{editedItem.amount}}"
+                                    error-message="Amount USD is required"
+                                    on-focus="_resetFieldError"
+                                    placeholder="&#8212;">
+                            </etools-currency-amount-input>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Description -->
+                            <paper-textarea label="Description"
+                                            value="{{editedItem.description}}"
+                                            allowed-pattern="[\d\s]"
+                                            placeholder="Enter Description"
+                                            class$="validate-input [[_setRequired('description', basePermissionPath)]]"
+                                            required$="[[_setRequired('description', basePermissionPath)]]">
+                            </paper-textarea>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Recommendation -->
+                            <paper-textarea label="Recommendation"
+                                            value="{{editedItem.recommendation}}"
+                                            allowed-pattern="[\d\s]"
+                                            placeholder="Enter Recommendation"
+                                            class$="validate-input [[_setRequired('recommendation', basePermissionPath)]]"
+                                            required$="[[_setRequired('recommendation', basePermissionPath)]]">
+                            </paper-textarea>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- IP comments -->
+                            <paper-textarea label="IP comments"
+                                            value="{{editedItem.ip_comments}}"
+                                            allowed-pattern="[\d\s]"
+                                            placeholder="Enter IP comments"
+                                            class$="validate-input [[_setRequired('ip_comments', basePermissionPath)]]"
+                                            required$="[[_setRequired('ip_comments', basePermissionPath)]]">
+                            </paper-textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog-element>
+
+        <div class="confirm-backdrop"  opened$="{{confirmDialogOpened}}"></div>
+        <dialog-element dialog-name="deleteConfirm" opened="{{confirmDialogOpened}}" dialog-title="Remove Finding" confirm-btn-text="Ok">
+            <div class="confirm-text">Do you want to remove this finding?</div>
+        </dialog-element>
     </template>
 
     <!-- inject scripts './financial-findings.js'-->
