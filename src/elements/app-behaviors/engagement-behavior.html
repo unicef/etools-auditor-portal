@@ -15,6 +15,13 @@
             engagementPrefix: {
                 type: String,
                 value: ''
+            },
+            originalData: {
+                type: Object,
+                readOnly: true,
+                value: function() {
+                    return {};
+                }
             }
         },
 
@@ -35,6 +42,7 @@
         },
 
         _infoLoaded: function() {
+            this._setOriginalData(_.cloneDeep(this.engagement));
             let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
             if (!~this.tabsList.indexOf(tab)) {
                 this.routeData.tab = this.tabsList[0] || '';
@@ -96,13 +104,12 @@
             }
 
 
-            let data = _.clone(this.engagement);
+            let data = {};
 
-            data.partner = data.partner.id;
-            data.agreement = data.agreement.id;
+            data = this._getBasicInfo(data);
 
             let type;
-            switch (data.type) {
+            switch (this.engagement.type) {
                 case 'ma':
                     type = 'micro-assessments';
                     break;
@@ -113,8 +120,8 @@
                     type = 'audits';
                     break;
                 default:
-                    type = data.type.link;
-                    data.type = data.type.value;
+                    type = this.engagement.type.link;
+                    data.type = this.engagement.type.value;
             }
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
@@ -202,6 +209,19 @@
             let readOnly = this.isReadonly(`${base}.${type}`);
             if (readOnly === null) { readOnly = true; }
             return readOnly;
+        },
+
+        _getBasicInfo: function(data) {
+            let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData(),
+                partnerDetailsData = this.getElement('#partnerDetails').getPartnerData(),
+                staffMembersData = this.getElement('#staffMembers').getTabData();
+
+            if (engagementDetailsData) { _.assign(data, engagementDetailsData); }
+            if (partnerDetailsData) { data.partner = partnerDetailsData; }
+            if (staffMembersData) { data.staff_members = staffMembersData; }
+            data.id = this.engagement.id;
+
+            return data;
         }
 
     };

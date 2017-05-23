@@ -79,6 +79,10 @@ Polymer({
 
         let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || id;
         if (!partnerId) { return; }
+        if (this.isReadOnly('partner', this.basePermissionPath)) {
+            this.partner = this.engagement.partner;
+            return;
+        }
 
         this.requestInProcess = true;
         this.partnerId = partnerId;
@@ -94,5 +98,12 @@ Polymer({
         } else {
             this._requestPartner(null, partner.id);
         }
+    },
+    getPartnerData: function() {
+        let partner = null;
+        if (!this.originalData || this.originalData.partner.id !== this.engagement.partner.id) {
+            partner = this.engagement.partner.id;
+        }
+        return partner;
     }
 });
