@@ -1,8 +1,8 @@
-<!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, etools-searchable-multiselection-menu,
-            etools-datepicker/etools-datepicker-button, etools-content-panel, iron-icons]-->
+<!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons,
+            etools-searchable-multiselection-menu, etools-datepicker/etools-datepicker-button, etools-content-panel]-->
 
-<!--import [tab-inputs-styles, date-behavior, engagement-behavior, permission-controller, list-header, list-element,
-            dialog-element, lodash, table-elements-behavior, static-data-behavior]-->
+<!--import [tab-inputs-styles, permission-controller, date-behavior, list-header, list-element, dialog-element, lodash,
+            table-elements-behavior, static-data-behavior]-->
 
 <dom-module id="summary-engagement">
     <template>
@@ -33,7 +33,7 @@
                 </list-element>
             </template>
 
-            <template is="dom-if" if="[[!_getDataLength(dataItems)]]">
+            <template is="dom-if" if="[[!_getLength(dataItems, dataItems.length)]]">
                 <list-element
                         class="list-element"
                         data="[[emptyObj]]"

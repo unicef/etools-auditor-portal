@@ -5,8 +5,7 @@ Polymer({
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
-        APBehaviors.TableElementsBehavior,
-        APBehaviors.PermissionController
+        APBehaviors.TableElementsBehavior
     ],
     properties: {
         dataItems: {
@@ -97,9 +96,14 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_setPriority(itemModel, priority)',
-        '_updateData(dataItems, categoryOfObservation)'
+        '_updateCategory(dataItems, categoryOfObservation)'
     ],
-    _updateData: function(data, categoryOfObservation) {
+    _getLength: function(dataItems) {
+        return dataItems.filter((item) => {
+            return item.priority === this.priority.value;
+        }).length;
+    },
+    _updateCategory: function(data, categoryOfObservation) {
         _.each(data, (item) => {
             if (item.priority !== this.priority.value) {
                 return;
@@ -125,11 +129,6 @@ Polymer({
     },
     _showFindings: function(item) {
         return this._showItems(item) && item.priority === this.priority.value;
-    },
-    _getDataLength: function(dataItems) {
-        return dataItems.filter((item) => {
-            return item.priority === this.priority.value;
-        }).length;
     },
     getFindingsData: function() {
         let data = [];
