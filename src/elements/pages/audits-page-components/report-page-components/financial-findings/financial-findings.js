@@ -18,6 +18,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
+                    finding_number: '',
                     title: '',
                     local_amount: '',
                     amount: '',
