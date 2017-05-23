@@ -433,7 +433,9 @@
 
                 Promise.all(promises)
                     .then((uploadedFiles) => {
-                        resolve(uploadedFiles.concat(this.deletedAttachments));
+                        let files = uploadedFiles.concat(this.deletedAttachments);
+                        if (!files.length) { files = null; }
+                        resolve(files);
                     })
                     .catch((error) => {
                         reject(error);
