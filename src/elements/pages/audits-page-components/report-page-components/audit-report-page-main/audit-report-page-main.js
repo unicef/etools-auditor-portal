@@ -12,5 +12,8 @@ Polymer({
         let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate();
 
         return assignTabValid;
+    },
+    getAssignVisitData: function() {
+        return this.$.assignEngagement.getAssignVisitData();
     }
 });

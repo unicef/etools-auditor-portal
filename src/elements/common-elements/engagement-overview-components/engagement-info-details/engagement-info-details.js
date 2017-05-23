@@ -33,6 +33,12 @@ Polymer({
         data: {
             type: Object,
             notify: true
+        },
+        originalData: {
+            type: Object,
+            value: function() {
+                return {};
+            }
         }
     },
     listeners: {
@@ -127,5 +133,17 @@ Polymer({
     },
     resetType: function() {
         this.$.auditType.value = '';
+    },
+    getEngagementData: function() {
+        let data = {};
+
+        if (this.originalData.start_date !== this.data.start_date) { data.start_date = this.data.start_date; }
+        if (this.originalData.end_date !== this.data.end_date) { data.end_date = this.data.end_date; }
+        if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) { data.partner_contacted_at = this.data.partner_contacted_at; }
+        if (!this.originalData.agreement || this.originalData.agreement.id !== this.data.agreement.id) { data.agreement = this.data.agreement.id; }
+        if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
+        if (this.originalData.type !== this.data.type.value) { data.type = this.data.type.value; }
+
+        return data;
     }
 });

@@ -28,7 +28,7 @@
                             disabled="[[isReadOnly('partner', basePermissionPath)]]"
                             value="{{engagement.partner}}"
                             id="partner"
-                            error-message="[[]]"
+                            error-message="[[partnerErrorText]]"
                             required="{{_setRequired('partner', basePermissionPath)}}"
                             custom-object-options
                             option-value="id"
@@ -67,7 +67,7 @@
                     <paper-input label="Partner Address"
                                  class="without-border"
                                  disabled readonly
-                                 value="[[partner.address]]"
+                                 value="[[partner.street_address]]"
                                  placeholder="Empty Field">
                     </paper-input>
                 </div>

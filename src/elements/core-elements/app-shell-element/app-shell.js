@@ -50,36 +50,14 @@ Polymer({
     listeners: {
         'global-loading': '_handleGlobalLoading',
         'toast': 'queueToast',
-        'drawer': 'toggleDrawer',
         '404': '_pageNotFound',
         'user-profile-loaded': '_initialDataLoaded',
         'static-data-loaded': '_initialDataLoaded',
-        'drawer-toggle-tap': 'toggleDrawer',
     },
     attached: function() {
         this.baseUrl = this.basePath;
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
         this.$.drawer.$.scrim.remove();
-    },
-    toggleDrawer: function() {
-        let drawerWidth = '220px';
-        let isOpened = !this.$.drawer.opened;
-
-        if (!this.$.drawer.opened) {
-            drawerWidth = '220px';
-        } else {
-            drawerWidth = '60px';
-        }
-
-        this.$.drawer.customStyle['--app-drawer-width'] = drawerWidth;
-        this.$.drawer.updateStyles();
-
-        this.$.layout.style.paddingLeft = drawerWidth;
-        this.$.header.style.paddingLeft = drawerWidth;
-
-        this.$.drawer.querySelector('app-sidebar-menu').toggleClass('opened', isOpened);
-        this.$.drawer.toggleClass('opened', isOpened);
-        this.$.drawer.toggleAttribute('opened', isOpened);
     },
     queueToast: function(e, detail) {
         if (!this._toast) {

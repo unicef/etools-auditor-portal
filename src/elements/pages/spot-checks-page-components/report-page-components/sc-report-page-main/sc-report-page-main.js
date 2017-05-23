@@ -39,5 +39,8 @@ Polymer({
             findings = findings.concat(findingsHighPriority.getFindingsData());
         }
         return findings;
+    },
+    getAssignVisitData: function() {
+        return this.$.assignEngagement.getAssignVisitData();
     }
 });

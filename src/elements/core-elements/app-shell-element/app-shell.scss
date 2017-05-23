@@ -7,7 +7,7 @@ app-drawer {
     visibility: visible;
     right: initial;
 
-    --app-drawer-width: 220px;
+    --app-drawer-width: 70px;
     --app-drawer-content-container: #{'{
         transform: translate3d(0, 0, 0);
         background-color: var(--light-theme-content-color);
@@ -15,9 +15,9 @@ app-drawer {
 }
 
 app-drawer-layout {
-    padding-left: 220px;
+    padding-left: 70px;
 }
 
 app-header {
-    padding-left: 220px;
+    padding-left: 70px;
 }

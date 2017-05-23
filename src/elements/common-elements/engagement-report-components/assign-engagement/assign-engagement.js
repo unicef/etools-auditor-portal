@@ -78,5 +78,16 @@ Polymer({
         if (!this.data.date_of_comments_by_ip) { this.data.date_of_comments_by_ip = null; }
         if (!this.data.date_of_draft_report_to_unicef) { this.data.date_of_draft_report_to_unicef = null; }
         if (!this.data.date_of_comments_by_unicef) { this.data.date_of_comments_by_unicef = null; }
+    },
+    getAssignVisitData: function() {
+        let data = _.pickBy(this.data, (value, key) => {
+            let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
+                                'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef'];
+            if (!~properties.indexOf(key)) { return false; }
+
+            return !this.originalData || this.originalData[key] !== value;
+        });
+
+        return _.isEmpty(data) ? null : data;
     }
 });
