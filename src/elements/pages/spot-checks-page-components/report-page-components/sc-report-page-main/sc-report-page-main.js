@@ -27,5 +27,17 @@ Polymer({
         let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate();
 
         return assignTabValid;
+    },
+    getFindingsData: function() {
+        let findings = [];
+        let findingsLowPriority = Polymer.dom(this.root).querySelector('#findingsLowPriority');
+        if (findingsLowPriority) {
+            findings = findings.concat(findingsLowPriority.getFindingsData());
+        }
+        let findingsHighPriority = Polymer.dom(this.root).querySelector('#findingsHighPriority');
+        if (findingsHighPriority) {
+            findings = findings.concat(findingsHighPriority.getFindingsData());
+        }
+        return findings;
     }
 });

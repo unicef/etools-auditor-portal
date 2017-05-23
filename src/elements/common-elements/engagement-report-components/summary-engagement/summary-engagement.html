@@ -2,7 +2,7 @@
             etools-datepicker/etools-datepicker-button, etools-content-panel, iron-icons]-->
 
 <!--import [tab-inputs-styles, date-behavior, engagement-behavior, permission-controller, list-header, list-element,
-            dialog-element, lodash, table-elements-behavior, ]-->
+            dialog-element, lodash, table-elements-behavior, static-data-behavior]-->
 
 <dom-module id="summary-engagement">
     <template>
@@ -33,7 +33,7 @@
                 </list-element>
             </template>
 
-            <template is="dom-if" if="[[!dataItems.length]]">
+            <template is="dom-if" if="[[!_getDataLength(dataItems)]]">
                 <list-element
                         class="list-element"
                         data="[[emptyObj]]"
@@ -63,6 +63,7 @@
                             <paper-input label="Finding"
                                          value="{{editedItem.finding}}"
                                          placeholder="Enter finding"
+                                         allowed-pattern="[\d]"
                                          on-focus="_resetFieldError"
                                          class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
                                          required="{{_setRequired('finding', basePermissionPath)}}"
@@ -84,7 +85,7 @@
                                     option-value="value"
                                     option-label="display_name"
                                     custom-object-options
-                                    selected="{{editedItem.category_of_observation}}"
+                                    value="{{editedItem.category_of_observation}}"
                                     update-selected
                                     placeholder="&#8212;"></etools-searchable-multiselection-menu>
                         </div>
@@ -106,7 +107,7 @@
                             <!-- Deadline of Action -->
                             <paper-input label="Deadline of Action"
                                          id="deadlineAction"
-                                         class$="disabled-as-readonly [[_setRequired('deadline_of_action', basePermissionPath)]] validate-date"
+                                         class$="disabled-as-readonly [[_setRequired('deadline_of_action', basePermissionPath)]]"
                                          value="[[prettyDate(editedItem.deadline_of_action)]]"
                                          on-down="openDatePicker"
                                          data-selector="deadlineActionSelector"

@@ -1,4 +1,4 @@
-<!--import [polymer, paper-input, paper-input/paper-textarea, etools-checkable-input]-->
+<!--import [polymer, paper-dropdown-menu, paper-listbox, paper-input, paper-input/paper-textarea, etools-checkable-input]-->
 
 <!--import [tab-inputs-styles, module-styles, lodash]-->
 
@@ -36,19 +36,26 @@
 
                     <div class="input-container input-container-s">
                         <!-- Risk Assessment -->
-                        <etools-searchable-multiselection-menu
+                        <paper-dropdown-menu
                                 id="riskAssessmentInput"
-                                options="[[riskOptions]]"
                                 class$="disabled-as-readonly {{_setRequired(editMode)}}"
-                                readonly="[[!editMode]]"
-                                disabled="[[!editMode]]"
-                                required hide-search
-                                value="{{_setRiskValue(blueprint.value, riskOptions)}}"
-                                error-message="This field is required"
-                                invalid="{{riskAssessmentInvalid}}"
-                                on-focus="_resetFieldError"
                                 label="Risk Assessment"
-                                placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                                disabled="[[!editMode]]"
+                                on-focus="_resetFieldError"
+                                invalid="{{riskAssessmentInvalid}}"
+                                placeholder="&#8212;"
+                                error-message="This field is required">
+                            <paper-listbox
+                                    class="dropdown-content"
+                                    selected="{{blueprint.value}}"
+                                    attr-for-selected="value">
+                                <paper-item value="0">N/A</paper-item>
+                                <paper-item value="1">Low</paper-item>
+                                <paper-item value="2">Medium</paper-item>
+                                <paper-item value="3">Significant</paper-item>
+                                <paper-item value="4">High</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
                     </div>
                 </div>
 

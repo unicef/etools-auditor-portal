@@ -32,7 +32,7 @@
             assert.equal(myEl._setIndex(123), 124);
         });
 
-        describe('method _setRiskValue', function() {
+/*        describe('method _setRiskValue', function() {
             it('return undefined if no value provided', function() {
                 assert.isUndefined(myEl._setRiskValue());
             });
@@ -46,7 +46,7 @@
                 var test = {label: 'test'};
                 assert.equal(myEl._setRiskValue(test), test);
             })
-        });
+        });*/
 
         describe('method _setValues', function() {
             it('return undefined if no value provided or value is null', function() {
@@ -222,9 +222,9 @@
 
             it('return risk data copy if risk value is selected', function(done) {
                 flush(function() {
-                    myEl.$.riskAssessmentInput.value = {label: 'test', value: 2};
                     myEl.blueprint = {
-                        id: 0
+                        id: 0,
+                        value: 2
                     };
 
                     var data = myEl.getData();
@@ -236,10 +236,9 @@
 
             it('return undefined if value is not changed', function(done) {
                 flush(function() {
-                    myEl.$.riskAssessmentInput.value = {label: 'test', value: 2};
                     myEl.blueprint = {
                         id: 0,
-                        value: 2,
+//                        value: 2,
                         extra: myEl.extra
                     };
                     assert.isUndefined(myEl.getData());
@@ -249,7 +248,6 @@
 
             it('return data if value is not changed and extra is changed', function(done) {
                 flush(function() {
-                    myEl.$.riskAssessmentInput.value = {label: 'test', value: 2};
                     myEl.blueprint = {
                         id: 0,
                         value: 2

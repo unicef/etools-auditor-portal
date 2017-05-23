@@ -58,6 +58,10 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
+        let reportPage = Polymer.dom(this.root).querySelector('#report');
+        if (reportPage) {
+            data.findings = reportPage.getFindingsData();
+        }
         return data;
     },
 

@@ -49,15 +49,6 @@ Polymer({
         return index + 1;
     },
 
-    _setRiskValue: function(value) {
-        if (!this.riskOptions || (!value && value !== 0)) { return value; }
-        if (typeof value !== 'object') {
-            return this.riskOptions[+value];
-        } else {
-            return value;
-        }
-    },
-
     _setValues: function(values) {
         if (_.isUndefined(values) || _.isNull(values)) {
             this.answer_na = true;
@@ -159,14 +150,17 @@ Polymer({
     },
 
     getData: function() {
-        let selected = this.$.riskAssessmentInput.value;
-        if (!selected) { return; }
-
+        let selectedItem = this.$.riskAssessmentInput.selectedItem;
+        if (!selectedItem) {
+            return;
+        }
         let data = {id: this.blueprint.id};
 
-        if (this.extra && this.extra !== this.blueprint.extra) { data.extra = this.extra; }
-        if (!_.isEqual(selected.value, this.blueprint.value) || data.extra) {
-            data.value = selected.value;
+        if (this.extra && this.extra !== this.blueprint.extra) {
+            data.extra = this.extra;
+        }
+        if (this.blueprint.value || data.extra) {
+            data.value = this.blueprint.value;
         } else {
             return;
         }
