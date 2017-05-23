@@ -26,5 +26,8 @@ Polymer({
         let primaryRiskData = primaryRisk && primaryRisk.getRiskData();
         if (primaryRiskData) { data.unshift(primaryRiskData); }
         return data.length ? {children: data} : null;
+    },
+    getAssignVisitData: function() {
+        return this.$.assignEngagement.getAssignVisitData();
     }
 });

@@ -53,6 +53,11 @@
             if (this.infoLoaded) { this.infoLoaded(); }
         },
 
+        _engagementUpdated: function(event) {
+            let data = event && event.detail && event.detail.data;
+            if (data) { this._setOriginalData(_.cloneDeep(this.engagement)); }
+        },
+
         _tabChanged: function(tab) {
             if (tab && this.routeData && this.routeData.tab !== tab) {
                 this.set('routeData.tab', tab);
@@ -103,10 +108,15 @@
                 return Promise.reject('You need engagement object and attachments tabs');
             }
 
+            //Check basic info
+            let [data, engagementId] = this._getBasicInfo({});
 
-            let data = {};
-
-            data = this._getBasicInfo(data);
+            //Add assign report info
+            let reportTab = this.getElement('#report'),
+                assignReportData = reportTab && reportTab.getAssignVisitData();
+            if(assignReportData) {
+                _.assign(data, assignReportData);
+            }
 
             let type;
             switch (this.engagement.type) {
@@ -126,17 +136,18 @@
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
             }
+            //TODO: refactor attachments promises
             let promises = [];
-            if (engagementAttachmentsTab) { promises.push(engagementAttachmentsTab.getFiles()); }
-            if (reportAttachmentsTab) { promises.push(reportAttachmentsTab.getFiles()); }
+            if (engagementAttachmentsTab) { promises[0] = engagementAttachmentsTab.getFiles(); }
+            if (reportAttachmentsTab) { promises[1] = reportAttachmentsTab.getFiles(); }
 
             return Promise.all(promises)
                     .then((uploadedFiles) => {
-                        data.engagement_attachments = uploadedFiles ? uploadedFiles[0] : undefined;
-                        data.report_attachments = uploadedFiles ? uploadedFiles[1] : undefined;
+                        if (uploadedFiles && uploadedFiles[0]) {data.engagement_attachments = uploadedFiles[0]; }
+                        if (uploadedFiles && uploadedFiles[1]) {data.report_attachments = uploadedFiles[1]; }
                         return {
                             type: type,
-                            id: data.id,
+                            id: engagementId,
                             data: data,
                             submit: submit ? 'submit/' : null,
                             finalize: finalize ? 'finalize/' : null
@@ -219,9 +230,8 @@
             if (engagementDetailsData) { _.assign(data, engagementDetailsData); }
             if (partnerDetailsData) { data.partner = partnerDetailsData; }
             if (staffMembersData) { data.staff_members = staffMembersData; }
-            data.id = this.engagement.id;
 
-            return data;
+            return [data, this.engagement.id];
         }
 
     };

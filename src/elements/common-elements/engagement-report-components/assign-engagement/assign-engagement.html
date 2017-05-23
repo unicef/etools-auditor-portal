@@ -38,11 +38,11 @@
                     </paper-input>
                 </div>
                 <div class="input-container">
-                    <!-- Date of Field Visit -->
+                    <!-- Draft Report Issued to IP -->
                     <paper-input label="Draft Report Issued to IP"
                                  id="draftReportToIpInput"
                                  class$="disabled-as-readonly [[_isRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip)]]"
+                                 disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  validator="dateValidator"
                                  error-message="A valid Draft Report Issued to IP is required"
@@ -62,11 +62,11 @@
                     </paper-input>
                 </div>
                 <div class="input-container">
-                    <!-- Date of Field Visit -->
+                    <!-- Comments Received by IP -->
                     <paper-input label="Comments Received by IP"
                                  id="commentsReceivedByIpInput"
                                  class$="disabled-as-readonly [[_isRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef)]]"
+                                 disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_ip)]]"
                                  validator="dateValidator"
                                  error-message="A valid Date of Comments Received by IP is required"
@@ -88,11 +88,11 @@
             </div>
             <div class="row-h group">
                 <div class="input-container">
-                    <!-- Date of Field Visit -->
+                    <!-- Draft Report Issued to UNICEF -->
                     <paper-input label="Draft Report Issued to UNICEF"
                                  id="draftReportUnicefInput"
                                  class$="disabled-as-readonly [[_isRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef)]]"
+                                 disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
                                  validator="dateValidator"
                                  error-message="A valid Date of Draft Report Issued to UNICEF is required"
@@ -112,11 +112,11 @@
                     </paper-input>
                 </div>
                 <div class="input-container">
-                    <!-- Date of Field Visit -->
+                    <!-- Comments Received by UNICEF -->
                     <paper-input label="Comments Received by UNICEF"
                                  id="commentsReceivedUnicefInput"
                                  class$="disabled-as-readonly [[_isRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '')]]"
+                                 disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_unicef)]]"
                                  validator="dateValidator"
                                  error-message="A valid Date of Comments Received by UNICEF is required"
