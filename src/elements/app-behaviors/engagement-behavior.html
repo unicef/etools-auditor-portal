@@ -42,7 +42,16 @@
         },
 
         _infoLoaded: function() {
+            //save data copy
             this._setOriginalData(_.cloneDeep(this.engagement));
+
+            //add report attachments file types if not exists
+            if (!this.reportFileTypes) {
+                let reportAttachmentsTypes = this.getChoices(`engagement_${this.engagement && this.engagement.id}.report_attachments.file_type`);
+                this._setData('report_attachments_types', reportAttachmentsTypes);
+                this.reportFileTypes = reportAttachmentsTypes;
+            }
+
             let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
             if (!~this.tabsList.indexOf(tab)) {
                 this.routeData.tab = this.tabsList[0] || '';

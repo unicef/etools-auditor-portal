@@ -208,6 +208,8 @@
         describe('_infoLoaded method', function() {
             it('sets originalData property by calling method', function() {
                 behaviorObj._setOriginalData = sinon.spy();
+                behaviorObj._setData = sinon.spy();
+                behaviorObj.getChoices = sinon.spy();
                 behaviorObj.routeData = {
                     tab: 'overview'
                 };
@@ -219,6 +221,8 @@
 
             it('set tab property equal to correct routeData.tab', function() {
                 behaviorObj._setOriginalData = function() {};
+                behaviorObj._setData = sinon.spy();
+                behaviorObj.getChoices = sinon.spy();
                 behaviorObj.tabsList = ['overview'];
                 behaviorObj.routeData = {
                     tab: 'overview'
@@ -231,6 +235,8 @@
 
             it('get tab property from route object if routeData is not defined', function() {
                 behaviorObj._setOriginalData = function() {};
+                behaviorObj._setData = sinon.spy();
+                behaviorObj.getChoices = sinon.spy();
                 behaviorObj.tabsList = ['overview'];
                 behaviorObj.routeData = undefined;
                 behaviorObj.tab = undefined;
@@ -242,6 +248,8 @@
 
             it('set routeData.tab to overview if it not provided or incorrect', function() {
                 behaviorObj._setOriginalData = function() {};
+                behaviorObj._setData = sinon.spy();
+                behaviorObj.getChoices = sinon.spy();
                 behaviorObj.tabsList = ['overview'];
                 behaviorObj.routeData = {
                     tab: ''
