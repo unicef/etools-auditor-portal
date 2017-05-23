@@ -12,7 +12,7 @@
 <body>
 
 <script>
-    xdescribe('Engagement common behavior element', function () {
+    describe('Engagement common behavior element', function () {
         var behaviorObj, copy;
         var testEngagement = {
             "id": 35,
@@ -206,7 +206,19 @@
         });
 
         describe('_infoLoaded method', function() {
+            it('sets originalData property by calling method', function() {
+                behaviorObj._setOriginalData = sinon.spy();
+                behaviorObj.routeData = {
+                    tab: 'overview'
+                };
+                behaviorObj.tabsList = [];
+
+                behaviorObj._infoLoaded();
+                assert.isTrue(behaviorObj._setOriginalData.called)
+            });
+
             it('set tab property equal to correct routeData.tab', function() {
+                behaviorObj._setOriginalData = function() {};
                 behaviorObj.tabsList = ['overview'];
                 behaviorObj.routeData = {
                     tab: 'overview'
@@ -218,6 +230,7 @@
             });
 
             it('get tab property from route object if routeData is not defined', function() {
+                behaviorObj._setOriginalData = function() {};
                 behaviorObj.tabsList = ['overview'];
                 behaviorObj.routeData = undefined;
                 behaviorObj.tab = undefined;
@@ -228,6 +241,7 @@
             });
 
             it('set routeData.tab to overview if it not provided or incorrect', function() {
+                behaviorObj._setOriginalData = function() {};
                 behaviorObj.tabsList = ['overview'];
                 behaviorObj.routeData = {
                     tab: ''
@@ -334,9 +348,13 @@
                             });
                 });
 
-                it('resolve promise with correct data if engagement data and attachment tab provided', function(done) {
+                xit('resolve promise with correct data if engagement data and attachment tab provided', function(done) {
+                    behaviorObj._getBasicInfo = sinon.stub().returns([{}, 0]);
                     behaviorObj.engagement = testEngagement;
-                    sinon.stub(behaviorObj, 'getElement').returns({getFiles: function() { return Promise.resolve([]); }});
+                    sinon.stub(behaviorObj, 'getElement').returns({
+                        getFiles: function() { return Promise.resolve([]); },
+                        getAssignVisitData: function() { return null; }
+                    });
 
                     behaviorObj._prepareData(true)
                             .then(function(data) {

@@ -30,6 +30,7 @@
         beforeEach(function () {
             myEl = fixture('assign-element-fixture');
             myEl.data = {};
+            myEl.originalData = {};
             dateOfFieldVisitInput = Polymer.dom(myEl.root).querySelector('#dateVisitInput');
             draftReportToIpInput = Polymer.dom(myEl.root).querySelector('#draftReportToIpInput');
             commentsReceivedByIpInput = Polymer.dom(myEl.root).querySelector('#commentsReceivedByIpInput');
@@ -80,6 +81,59 @@
                 myEl.data = undefined;
                 myEl.checkDateValues();
                 assert.isUndefined(myEl.data);
+            });
+        });
+
+        describe('method getAssignVisitData', function() {
+            it('returns data containing only assign fields', function() {
+                myEl.data.date_of_field_visit = '2017-04-29';
+                myEl.data.date_of_draft_report_to_ip = 'test';
+                myEl.data.date_of_comments_by_unicef = null;
+                myEl.data.test = null;
+
+                var newData = myEl.getAssignVisitData();
+
+                assert.equal(newData.date_of_field_visit, myEl.data.date_of_field_visit);
+                assert.equal(newData.date_of_draft_report_to_ip, myEl.data.date_of_draft_report_to_ip);
+                assert.equal(newData.date_of_comments_by_unicef, myEl.data.date_of_comments_by_unicef);
+                assert.isUndefined(newData.test);
+            });
+
+            it('not returns data if it is equal to originalData', function() {
+                myEl.originalData = {
+                    date_of_field_visit: '2017-04-29',
+                    date_of_draft_report_to_ip: 'test',
+                    date_of_comments_by_unicef: 'test2'
+                };
+                myEl.data.date_of_field_visit = '2017-04-29';
+                myEl.data.date_of_draft_report_to_ip = 'test';
+                myEl.data.date_of_comments_by_unicef = null;
+
+                var newData = myEl.getAssignVisitData();
+
+                assert.isUndefined(newData.date_of_field_visit);
+                assert.isUndefined(newData.date_of_draft_report_to_ip);
+                assert.equal(newData.date_of_comments_by_unicef, myEl.data.date_of_comments_by_unicef);
+            });
+
+            it('returns only changed data ', function() {
+                myEl.data = {};
+                myEl.originalData = {
+                    date_of_field_visit: '2017-04-29',
+                    date_of_draft_report_to_ip: null,
+                    date_of_comments_by_unicef: null,
+                    date_of_draft_report_to_unicef: null,
+                    date_of_comments_by_ip: null
+                };
+                myEl.data.date_of_field_visit = '2017-04-29';
+
+                var newData = myEl.getAssignVisitData();
+
+                assert.isTrue(_.isEmpty(newData));
+
+                myEl.data.date_of_draft_report_to_ip = 'test4';
+                newData = myEl.getAssignVisitData();
+                assert.equal(newData.date_of_draft_report_to_ip, myEl.data.date_of_draft_report_to_ip);
             });
         });
     });
