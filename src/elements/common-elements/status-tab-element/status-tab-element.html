@@ -18,13 +18,13 @@
                     </div>
                     <div class="status">
                         <span>Partner Contacted</span>
-                        <span class="status-date">{{_getFormattedDate('partner_contacted_at', engagementData)}}</span>
+                        <span class="status-date">{{_getFormattedDate('partner_contacted_at', engagementData.partner_contacted_at)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusState(2, engagementData)]]">
+                <div class$="status-container [[_getStatusState(2, engagementData.date_of_field_visit)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">2</span>
@@ -33,13 +33,13 @@
                     </div>
                     <div class="status">
                         <span>Field Visit</span>
-                        <span class="status-date">{{_getFormattedDate('date_of_field_visit', engagementData)}}</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_field_visit', engagementData.date_of_field_visit)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusState(3, engagementData)]]">
+                <div class$="status-container [[_getStatusState(3, engagementData.date_of_field_visit, engagementData.date_of_draft_report_to_ip)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">3</span>
@@ -48,13 +48,13 @@
                     </div>
                     <div class="status multi-line">
                         <span>Draft Report <br> Issued to IP</span>
-                        <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_ip', engagementData)}}</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_ip', engagementData.date_of_draft_report_to_ip)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusState(4, engagementData)]]">
+                <div class$="status-container [[_getStatusState(4, engagementData.date_of_draft_report_to_ip, engagementData.date_of_comments_by_ip)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">4</span>
@@ -63,13 +63,13 @@
                     </div>
                     <div class="status multi-line">
                         <span>Comments <br> Received by IP</span>
-                        <span class="status-date">{{_getFormattedDate('date_of_comments_by_ip', engagementData)}}</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_comments_by_ip', engagementData.date_of_comments_by_ip)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusState(5, engagementData)]]">
+                <div class$="status-container [[_getStatusState(5, engagementData.date_of_comments_by_ip, engagementData.date_of_draft_report_to_unicef)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">5</span>
@@ -78,13 +78,13 @@
                     </div>
                     <div class="status multi-line">
                         <span>Draft Report <br> Issued to UNICEF</span>
-                        <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_unicef', engagementData)}}</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_unicef', engagementData.date_of_draft_report_to_unicef)}}</span>
                     </div>
                 </div>
 
                 <div class="divider"><div class="status-divider"></div></div>
 
-                <div class$="status-container [[_getStatusState(6, engagementData)]]">
+                <div class$="status-container [[_getStatusState(6, engagementData.date_of_draft_report_to_unicef, engagementData.date_of_comments_by_unicef)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
                         <span class="status-nr">6</span>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="status multi-line">
                         <span>Comments <br> Received by UNICEF</span>
-                        <span class="status-date">{{_getFormattedDate('date_of_comments_by_unicef', engagementData)}}</span>
+                        <span class="status-date">{{_getFormattedDate('date_of_comments_by_unicef', engagementData.date_of_comments_by_unicef)}}</span>
                     </div>
                 </div>
 
