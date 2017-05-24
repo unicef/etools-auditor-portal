@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-    is: 'summary-engagement',
+    is: 'summary-findings-element',
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
@@ -119,7 +119,7 @@ Polymer({
     },
     _setPriority: function(itemModel, priority) {
         itemModel.priority = priority.value;
-        if (priority.value === 'low') {
+        if (priority.value === 'high') {
             this.customStyle['--ecp-header-bg'] = 'var(--module-warning)';
             this.updateStyles();
         }

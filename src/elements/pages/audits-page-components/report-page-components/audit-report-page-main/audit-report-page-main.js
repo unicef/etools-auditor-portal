@@ -15,5 +15,8 @@ Polymer({
     },
     getAssignVisitData: function() {
         return this.$.assignEngagement.getAssignVisitData();
+    },
+    getFinancialFindingsData: function() {
+        return this.$.financialFindings.getFinancialFindingsData();
     }
 });

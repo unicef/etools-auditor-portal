@@ -18,7 +18,6 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    finding_number: '',
                     title: '',
                     local_amount: '',
                     amount: '',
@@ -97,5 +96,8 @@ Polymer({
     observers: [
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)'
-    ]
+    ],
+    getFinancialFindingsData: function() {
+        return this.dataItems;
+    }
 });
