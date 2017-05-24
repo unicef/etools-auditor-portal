@@ -49,13 +49,13 @@
 
         <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
 
-            <div class="row-h repeatable-item-container">
+            <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
 
-                <div class="repeatable-item-actions">
+                <div class="repeatable-item-actions" hidden$="[[!canBeRemoved]]">
                     <div class="row-v actions">
                         <paper-icon-button class="action delete"
                                            on-tap="_openDeleteConfirmation"
-                                           hidden$="[[!canBeRemoved]]"
+
                                            icon="cancel"></paper-icon-button>
                     </div>
                 </div>
