@@ -18,6 +18,10 @@
                 top: 25px;
                 left: initial;
             }
+
+            .po-loading:not([active]) {
+                display: none !important;
+            }
         </style>
 
         <get-agreement-data agreement="{{data.agreement}}" order-number="{{orderNumber}}"></get-agreement-data>

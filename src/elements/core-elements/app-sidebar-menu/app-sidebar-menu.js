@@ -4,6 +4,9 @@ Polymer({
 
     properties: {
         page: String
-    }
+    },
+    behaviors: [
+        etoolsAppConfig.globals
+    ]
 
 });

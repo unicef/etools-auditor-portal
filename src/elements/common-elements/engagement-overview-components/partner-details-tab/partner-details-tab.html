@@ -13,6 +13,10 @@
                 top: 28px;
                 left: initial;
             }
+
+            .partner-loading:not([active]) {
+                display: none !important;
+            }
         </style>
 
         <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
