@@ -8,6 +8,7 @@
                      caching-storage="custom"
                      dexie-db-collection="profile"
                      on-success="_handleResponse"
+                     on-forbidden="_forbidden"
                      on-fail="_handleError"></etools-ajax>
     </template>
 
@@ -56,6 +57,10 @@
             _handleError: function (rsp, err) {
                 console.error('Can\'t load user data');
             },
+
+            _forbidden: function() {
+                window.location.href = window.location.origin + '/';
+            }
 
         });
 
