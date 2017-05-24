@@ -14,7 +14,10 @@ Polymer({
             }
         }
     },
-    observers: ['_setValues(riskData, riskOptions)'],
+    observers: [
+        '_setValues(riskData, riskOptions)',
+        'updateStyles(basePermissionPath)'
+    ],
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
     },

@@ -42,7 +42,8 @@ Polymer({
 
     observers: [
         '_setValues(blueprint.extra)',
-        '_setQuestionHeader(blueprint.header)'
+        '_setQuestionHeader(blueprint.header)',
+        'updateStyles(editMode)'
     ],
 
     _setIndex: function(index) {

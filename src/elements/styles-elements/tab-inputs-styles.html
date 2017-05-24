@@ -108,13 +108,14 @@
                 --paper-input-container-focus-color: var(--module-primary);
             }
 
-            paper-input.readonly, paper-textarea.readonly {
+            paper-input.readonly, paper-dropdown-menu.readonly, paper-textarea.readonly {
                 --paper-input-container-underline: {
                     display: none;
                 };
             }
 
             paper-textarea[readonly], paper-textarea[disabled].disabled-as-readonly,
+            paper-dropdown-menu[readonly], paper-dropdown-menu[disabled].disabled-as-readonly,
             paper-input[readonly], paper-input[disabled].disabled-as-readonly {
                 --paper-input-container: #{'{
                     opacity: 1 !important;
@@ -152,6 +153,7 @@
                 }"};
             }
 
+            paper-dropdown-menu.required,
             paper-textarea.required,
             paper-input.required {
                 --paper-input-container-label: #{"{
