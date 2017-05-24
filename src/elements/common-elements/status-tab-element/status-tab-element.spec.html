@@ -40,13 +40,21 @@
             assert.equal(myEl._getStatusNumber('test'), 0);
         });
 
-        it('return status state', function () {
-            myEl.engagementData = {status: 'draft_issued_to_partner'};
+        describe('status change methods', function() {
 
-            assert.equal(myEl._getStatusState('partner_contacted'), 'completed');
-            assert.equal(myEl._getStatusState(1), 'completed');
-            assert.equal(myEl._getStatusState(4), 'active');
-            assert.equal(myEl._getStatusState(7), 'pending');
+            it('method _classByStatus compare arguments and return status class', function() {
+                assert.equal(myEl._classByStatus(5, 5), 'completed');
+                assert.equal(myEl._classByStatus(5, 7), 'completed');
+                assert.equal(myEl._classByStatus(4, 3), 'active');
+                assert.equal(myEl._classByStatus(4, 2), 'pending');
+            });
+
+            it('method _classByDate check existance of field data', function() {
+                myEl.engagementData = {date_of_field_visit: 'test'};
+                assert.equal(myEl._classByDate(2, 5), 'completed');
+                assert.equal(myEl._classByDate(3, 3), 'active');
+                assert.equal(myEl._classByDate(4, 2), 'pending');
+            });
         });
 
         it('close menu', function () {
