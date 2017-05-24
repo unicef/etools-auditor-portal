@@ -2,13 +2,31 @@
 
 Polymer({
     is: 'financial-findings',
+    behaviors: [
+        APBehaviors.TableElementsBehavior
+    ],
     properties: {
-        basePermissionPath: {
-            type: String
-        },
-        data: {
-            type: Object,
+        dataItems: {
+            type: Array,
             notify: true
+        },
+        mainProperty: {
+            type: String,
+            value: 'financial_finding_set'
+        },
+        itemModel: {
+            type: Object,
+            value: function() {
+                return {
+                    finding_number: '',
+                    title: '',
+                    local_amount: '',
+                    amount: '',
+                    description: '',
+                    recommendation: '',
+                    ip_comments: ''
+                };
+            }
         },
         headings: {
             type: Array,
@@ -42,19 +60,42 @@ Polymer({
             type: Array,
             value: function() {
                 return [{
-                    'size': 30,
+                    'size': 100,
                     'label': 'Description',
                     'path': 'description'
                 }, {
-                    'size': 30,
+                    'size': 100,
                     'label': 'Recommendation',
                     'path': 'recommendation'
                 }, {
-                    'size': 30,
+                    'size': 100,
                     'label': 'IP comments',
                     'path': 'ip_comments'
                 }];
             }
+        },
+        addDialogTexts: {
+            type: Object,
+            value: function() {
+                return {
+                    title: 'Add new Finding'
+                };
+            }
+        },
+        editDialogTexts: {
+            type: Object,
+            value: function() {
+                return {
+                    title: 'Edit Finding'
+                };
+            }
         }
-    }
+    },
+    listeners: {
+        'dialog-confirmed': '_addItemFromDialog'
+    },
+    observers: [
+        'resetDialog(dialogOpened)',
+        'changePermission(basePermissionPath)'
+    ]
 });
