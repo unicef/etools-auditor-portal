@@ -59,7 +59,9 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
+        let reportPage = Polymer.dom(this.root).querySelector('#report');
         data.key_internal_weakness = {};
+        data.financial_finding_set = reportPage.getFinancialFindingsData();
         return data;
     },
 

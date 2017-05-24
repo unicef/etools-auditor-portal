@@ -63,8 +63,8 @@
                                          placeholder="Enter Finding Number"
                                          allowed-pattern="[\d]"
                                          on-focus="_resetFieldError"
-                                         class$="validate-input [[_setRequired('finding_number', basePermissionPath)]]"
-                                         required$="[[_setRequired('finding_number', basePermissionPath)]]"
+                                         class$="validate-input {{_setRequired('finding_number', basePermissionPath)}}"
+                                         required="{{_setRequired('finding_number', basePermissionPath)}}"
                                          error-message="Finding Number is required">
                             </paper-input>
                         </div>

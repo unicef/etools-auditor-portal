@@ -29,16 +29,12 @@ Polymer({
         return assignTabValid;
     },
     getFindingsData: function() {
-        let findings = [];
-        let findingsLowPriority = Polymer.dom(this.root).querySelector('#findingsLowPriority');
-        if (findingsLowPriority) {
-            findings = findings.concat(findingsLowPriority.getFindingsData());
-        }
-        let findingsHighPriority = Polymer.dom(this.root).querySelector('#findingsHighPriority');
-        if (findingsHighPriority) {
-            findings = findings.concat(findingsHighPriority.getFindingsData());
-        }
-        return findings;
+        let findingsLowPriority = this.$.findingsLowPriority.getFindingsData();
+        let findingsHighPriority = this.$.findingsHighPriority.getFindingsData();
+        return _.concat(findingsLowPriority, findingsHighPriority);
+    },
+    getInternalControlsData: function() {
+        return this.$.internalControls.getInternalControlsData();
     },
     getAssignVisitData: function() {
         return this.$.assignEngagement.getAssignVisitData();

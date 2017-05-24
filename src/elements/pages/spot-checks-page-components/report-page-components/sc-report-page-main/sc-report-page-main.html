@@ -1,5 +1,5 @@
 <!--import [polymer]-->
-<!--import [assign-engagement, overview-engagement, summary-engagement, internal-controls]-->
+<!--import [assign-engagement, overview-element, summary-findings-element, internal-controls]-->
 
 <dom-module id="sc-report-page-main">
     <template>
@@ -11,21 +11,22 @@
                            base-permission-path="{{permissionBase}}"
                            id="assignEngagement"></assign-engagement>
 
-        <overview-engagement data="{{engagement}}"
-                             id="overviewEngagement"
-                             base-permission-path="{{permissionBase}}"></overview-engagement>
+        <overview-element data="{{engagement}}"
+                          id="overviewEngagement"
+                          base-permission-path="{{permissionBase}}"></overview-element>
 
-        <summary-engagement data-items="{{engagement.findings}}"
+        <summary-findings-element data-items="{{engagement.findings}}"
+                                  id="findingsHighPriority"
+                                  priority="{{priorities.high}}"
+                                  base-permission-path="{{permissionBase}}"></summary-findings-element>
+
+        <summary-findings-element data-items="{{engagement.findings}}"
                             id="findingsLowPriority"
                             priority="{{priorities.low}}"
-                            base-permission-path="{{permissionBase}}"></summary-engagement>
+                            base-permission-path="{{permissionBase}}"></summary-findings-element>
 
-        <summary-engagement data-items="{{engagement.findings}}"
-                            id="findingsHighPriority"
-                            priority="{{priorities.high}}"
-                            base-permission-path="{{permissionBase}}"></summary-engagement>
-
-        <internal-controls data="{{engagement}}"
+        <internal-controls id="internalControls"
+                           data="{{engagement}}"
                            base-permission-path="{{permissionBase}}"></internal-controls>
     </template>
 

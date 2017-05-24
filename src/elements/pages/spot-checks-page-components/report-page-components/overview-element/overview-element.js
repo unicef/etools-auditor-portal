@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-    is: 'overview-engagement',
+    is: 'overview-element',
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.PermissionController

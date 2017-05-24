@@ -14,5 +14,8 @@ Polymer({
     },
     _resetFieldError: function(event) {
         event.target.invalid = false;
+    },
+    getInternalControlsData: function() {
+        return this.data.internal_controls;
     }
 });
