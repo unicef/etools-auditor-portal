@@ -12,6 +12,14 @@ Polymer({
 
         return required ? 'required' : false;
     },
+    isReadOnly: function(field) {
+        if (!this.basePermissionPath) { return true; }
+
+        let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
+        if (readOnly === null) { readOnly = true; }
+
+        return readOnly;
+    },
     _resetFieldError: function(event) {
         event.target.invalid = false;
     },

@@ -22,8 +22,9 @@
             <paper-textarea label="Document any changes identified"
                          value="{{data.internal_controls}}"
                          on-focus="_resetFieldError"
-                         class$="{{_setRequired('internalControls', basePermissionPath)}}"
-                         required="{{_setRequired('internalControls', basePermissionPath)}}"
+                         class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
+                         required$="[[_setRequired('internal_controls', basePermissionPath)]]"
+                         disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
                          error-message="Document any changes identified is required">
             </paper-textarea>
         </etools-content-panel>
