@@ -38,5 +38,8 @@ Polymer({
     },
     getAssignVisitData: function() {
         return this.$.assignEngagement.getAssignVisitData();
+    },
+    getOverviewData: function() {
+        return this.$.overviewEngagement.getOverviewData();
     }
 });

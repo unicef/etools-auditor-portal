@@ -32,5 +32,15 @@ Polymer({
     },
     _resetFieldError: function(event) {
         event.target.invalid = false;
+    },
+    getOverviewData: function() {
+        let totalAmountTested = this.data.total_amount_tested;
+        let totalAmountOfIneligibleExpenditure = this.data.total_amount_of_ineligible_expenditure;
+        let amountOfIneligibleExpenditures = this.data.amount_of_ineligible_expenditures;
+        return {
+            totalAmountTested: totalAmountTested,
+            totalAmountOfIneligibleExpenditure: totalAmountOfIneligibleExpenditure,
+            amountOfIneligibleExpenditures: amountOfIneligibleExpenditures
+        };
     }
 });

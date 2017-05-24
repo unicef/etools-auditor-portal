@@ -62,6 +62,10 @@ Polymer({
         let reportPage = Polymer.dom(this.root).querySelector('#report');
         data.findings = reportPage.getFindingsData();
         data.internal_controls = reportPage.getInternalControlsData();
+        let overviewData = reportPage.getOverviewData();
+        data.total_amount_tested = overviewData.totalAmountTested;
+        data.total_amount_of_ineligible_expenditure = overviewData.totalAmountOfIneligibleExpenditure;
+        data.amount_of_ineligible_expenditures = overviewData.amountOfIneligibleExpenditures;
         return data;
     },
 
