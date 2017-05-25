@@ -180,8 +180,8 @@
                     reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
 
 
-            if (/*!staffMembersValid || */!detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid) {
-                let openTab = (/*staffMembersValid && */detailsValid) ? 'attachments' : 'overview';
+            if (/*!staffMembersValid || */!detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid || !partnerDetailsValid) {
+                let openTab = (/*staffMembersValid && */partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);
                 this.fire('toast', {text: 'Fix invalid fields before saving'});

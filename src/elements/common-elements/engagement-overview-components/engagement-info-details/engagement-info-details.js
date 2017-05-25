@@ -62,6 +62,9 @@ Polymer({
         let typeValid = this.$.auditType.validate(),
             orderValid = this.$.purchaseOrder.validate();
 
+        if (!typeValid) {
+            this.set('errors.type', 'AuditType is required');
+        }
         return typeValid && orderValid;
     },
     resetValidationErrors: function() {
