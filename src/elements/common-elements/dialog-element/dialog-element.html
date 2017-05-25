@@ -26,10 +26,9 @@
             }
 
             .btn-cancel {
-                /*color: var(--gray-mid);*/
                 color: var(--module-error);
                 font-weight: 500;
-
+                &:not([dialog-dismiss]) { color: var(--gray-mid); }
             }
 
             .btn-confirm {
@@ -53,16 +52,28 @@
                 z-index: 5;
             }
             .close-btn:hover { color: #000;}
+
+            .loading {
+                margin-top: 3px;
+                vertical-align: top;
+                margin-left: 15px;
+            }
+
+            .loading:not([active]) {
+                display: none !important;
+            }
+
         </style>
 
         <paper-dialog size="md" opened="{{opened}}"
+                      modal="{{requestInProcess}}"
                       with-backdrop
                       ok-btn-text="sync from vision">
-            <iron-icon icon="icons:close" class="close-btn" dialog-dismiss></iron-icon>
-            <h2 class="dialog-title">[[dialogTitle]]</h2>
+            <iron-icon icon="icons:close" class="close-btn" dialog-dismiss$="{{!requestInProcess}}"></iron-icon>
+            <h2 class="dialog-title">[[dialogTitle]]<etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="loading"></etools-loading></h2>
             <slot></slot>
             <div class="buttons" id="buttons">
-                <paper-button dialog-dismiss class="btn-cancel">[[cancelBtnText]]</paper-button>
+                <paper-button dialog-dismiss$="{{!requestInProcess}}" class="btn-cancel">[[cancelBtnText]]</paper-button>
                 <paper-button autofocus class="btn-confirm" on-tap="confirmDialog">[[confirmBtnText]]</paper-button>
             </div>
         </paper-dialog>
@@ -88,12 +99,22 @@
                 },
                 opened: {
                     type: Boolean,
+                    notify: true,
+                    observer: '_openedChanged'
+                },
+                requestInProcess: {
+                    type: Boolean,
                     notify: true
                 },
                 dialogName: String
             },
             confirmDialog: function() {
                 this.fire('dialog-confirmed', {dialogName: this.dialogName});
+            },
+            _openedChanged: function(opened) {
+                if (!opened && this.requestInProcess) {
+                    this.opened = true;
+                }
             }
         });
     </script>

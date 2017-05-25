@@ -47,11 +47,20 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)'
+        'changePermission(basePermissionPath)',
+        'updateStyles(requestInProcess)',
+        '_dataChanged(subjectAreas)'
     ],
 
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
+    },
+
+    _dataChanged: function() {
+        if (this.dialogOpened) {
+            this.requestInProcess = false;
+            this.dialogOpened = false;
+        }
     },
 
     changePermission: function(basePermissionPath) {
@@ -68,6 +77,7 @@ Polymer({
     },
 
     getRiskData: function() {
+        if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
         let elements = Polymer.dom(this.root).querySelectorAll('.area-element'),
             riskData = [];
 
@@ -77,6 +87,17 @@ Polymer({
         });
 
         return riskData.length ? riskData : null;
+    },
+
+    getCurrentData: function() {
+        if (!this.dialogOpened) { return null; }
+        let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'value', 'extra']);
+        blueprint.value = blueprint.value.value;
+
+        return [{
+            id: this.editedArea.id,
+            blueprints: [blueprint]
+        }];
     },
 
     validateEditFields: function() {
@@ -119,6 +140,13 @@ Polymer({
 
     _saveEditedArea: function() {
         if (!this.validateEditFields()) { return; }
+
+        if (this.dialogOpened && !this.saveWithButton) {
+            this.requestInProcess = true;
+            this.fire('save-progress', {quietAdding: true});
+            return;
+        }
+
         let data = _.cloneDeep(this.editedArea);
         data.changed = true;
         this.splice('subjectAreas.children', this.editedAreaIndex, 1, data);

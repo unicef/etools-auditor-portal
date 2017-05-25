@@ -22,18 +22,28 @@
                 value: function() {
                     return {};
                 }
+            },
+            saveWithButton: {
+                type: Boolean,
+                value: false
             }
         },
 
         ready: function() {
             this.editedItem = _.cloneDeep(this.itemModel);
+            this._addObserverEffect("requestInProcess", 'updateStyles');
         },
 
         _dataItemsChanged: function(data) {
             this.originalData = _.cloneDeep(data);
+            if (this.dialogOpened) {
+                this.requestInProcess = false;
+                this.dialogOpened = false;
+            }
         },
 
         getTabData: function() {
+            if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
             if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
             if (!this.originalData.length && !this.dataItems.length) { return null; }
             let data = [];
@@ -45,6 +55,11 @@
             });
 
             return data.length ? data : null;
+        },
+
+        getCurrentData: function() {
+            if (!this.dialogOpened) { return null; }
+            return [_.cloneDeep(this.editedItem)];
         },
 
         _canBeChanged: function() {
@@ -119,6 +134,14 @@
 
             if (!this.validate()) { return; }
 
+            //save after popup click
+            if (this.dialogOpened && !this.saveWithButton) {
+                this.requestInProcess = true;
+                this.fire('save-progress', {quietAdding: true});
+                return;
+            }
+
+            //save after click on save button
             let item = _.cloneDeep(this.editedItem);
             if (this.canBeRemoved && !isNaN(this.editedIndex)) {
                 //if is edit popup
@@ -155,9 +178,9 @@
             } else {
                 this.splice('dataItems', this.editedIndex, 1);
                 this.resetDialog();
+                this.dialogOpened = false;
             }
             this.confirmDialogOpened = false;
-            this.dialogOpened = false;
         },
 
         _showItems: function(item) {

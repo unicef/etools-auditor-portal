@@ -33,7 +33,7 @@
 
             if (isNaN(statusNumber)) { statusNumber = this._getStatusNumber(statusNumber); }
             let currentStatusNumber = this._getStatusNumber(this.engagementData.status);
-            if (statusNumber === 1 || statusNumber === 7 || statusNumber === 8) {
+            if (statusNumber === 1 || statusNumber === 7 || statusNumber === 8 || currentStatusNumber > 6) {
                 return this._classByStatus(statusNumber, currentStatusNumber);
             } else {
                 return this._classByDate(statusNumber, currentStatusNumber);

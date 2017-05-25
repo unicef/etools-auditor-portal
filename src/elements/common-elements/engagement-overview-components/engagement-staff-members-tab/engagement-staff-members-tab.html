@@ -47,7 +47,7 @@
 
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="{{requestInProcess}}">
 
             <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
 
@@ -55,7 +55,7 @@
                     <div class="row-v actions">
                         <paper-icon-button class="action delete"
                                            on-tap="_openDeleteConfirmation"
-
+                                           disabled="{{requestInProcess}}"
                                            icon="cancel"></paper-icon-button>
                     </div>
                 </div>
@@ -69,6 +69,8 @@
                                          placeholder="Enter Position"
                                          on-focus="_resetFieldError"
                                          class$="validate-input {{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          required="{{_setRequired('user.profile.job_title', basePermissionPath)}}"
                                          error-message="Position is required">
                             </paper-input>
@@ -80,6 +82,8 @@
                                          placeholder="Enter First Name"
                                          class$="validate-input {{_setRequired('user.first_name', basePermissionPath)}}"
                                          required="{{_setRequired('user.first_name', basePermissionPath)}}"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          error-message="First name is required">
                             </paper-input>
@@ -91,6 +95,8 @@
                                          placeholder="Enter Last Name"
                                          class$="validate-input {{_setRequired('user.last_name', basePermissionPath)}}"
                                          required="{{_setRequired('user.last_name', basePermissionPath)}}"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          error-message="Last name is required">
                             </paper-input>
@@ -104,6 +110,8 @@
                                          allowed-pattern="[\d\s-]"
                                          placeholder="Enter Phone"
                                          class$="validate-input {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
@@ -115,6 +123,8 @@
                                          placeholder="Enter E-mail"
                                          class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
                                          required="{{_setRequired('user.email', basePermissionPath)}}"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          id="emailInput"
                                          error-message="A valid email address is required">
@@ -130,6 +140,8 @@
                         <div class="staff-check-box notify-box input-container input-container-l">
                             <etools-checkable-input checked="{{editedItem.receive_audit_notifications}}"
                                                     label="Receive Notifications on Audit Tasks?"
+                                                    disabled="{{requestInProcess}}"
+                                                    readonly$="{{requestInProcess}}"
                                                     type="checkbox"
                                                     label-alignment="right">
                             </etools-checkable-input>

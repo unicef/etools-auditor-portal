@@ -81,12 +81,14 @@
             }
         },
 
-        _saveProgress: function() {
+        _saveProgress: function(event) {
             if (!this._validateBasicInfo()) { return; }
             if (this.customBasicValidation && !this.customBasicValidation()) { return; }
 
+            let quietAdding = event && event.detail && event.detail.quietAdding;
             return this._prepareData()
                     .then((data) => {
+                        this.quietAdding = quietAdding;
                         this.updatedEngagement = data;
                     });
         },

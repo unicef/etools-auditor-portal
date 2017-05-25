@@ -39,6 +39,10 @@
                 basePermissionPath: {
                     type: String,
                     notify: true
+                },
+                quietAdding: {
+                    type: Boolean,
+                    notify: true
                 }
             },
 
@@ -79,7 +83,10 @@
                 } else {
                     action = 'saved';
                 }
-                this.fire('toast', {text: `Engagement data has been ${action}!`});
+
+                if (!this.quietAdding) {
+                    this.fire('toast', {text: `Engagement data has been ${action}!`});
+                }
 
                 this.appDexieDb.collectionsList.update('engagements', {expire: 0});
             },
@@ -150,7 +157,9 @@
             },
 
             _saveEngagement: function(data, url) {
-                this.fire('global-loading', {type: 'update-engagement', active: true, message: 'Updating engagement data...'});
+                if (!this.quietAdding) {
+                    this.fire('global-loading', {type: 'update-engagement', active: true, message: 'Updating engagement data...'});
+                }
                 this.postData = data;
                 this.url = url;
             }
