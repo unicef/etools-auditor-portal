@@ -72,7 +72,8 @@
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
                                          required="{{_setRequired('user.profile.job_title', basePermissionPath)}}"
-                                         error-message="Position is required">
+                                         invalid="{{errors.profile.job_title}}"
+                                         error-message="{{errors.profile.job_title}}">
                             </paper-input>
                         </div>
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.first_name)}}">
@@ -82,10 +83,11 @@
                                          placeholder="Enter First Name"
                                          class$="validate-input {{_setRequired('user.first_name', basePermissionPath)}}"
                                          required="{{_setRequired('user.first_name', basePermissionPath)}}"
+                                         invalid="{{errors.user.first_name}}"
+                                         error-message="{{errors.user.first_name}}"
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
-                                         on-focus="_resetFieldError"
-                                         error-message="First name is required">
+                                         on-focus="_resetFieldError">
                             </paper-input>
                         </div>
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.last_name)}}">
@@ -95,10 +97,11 @@
                                          placeholder="Enter Last Name"
                                          class$="validate-input {{_setRequired('user.last_name', basePermissionPath)}}"
                                          required="{{_setRequired('user.last_name', basePermissionPath)}}"
+                                         invalid="{{errors.user.last_name}}"
+                                         error-message="{{errors.user.last_name}}"
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
-                                         on-focus="_resetFieldError"
-                                         error-message="Last name is required">
+                                         on-focus="_resetFieldError">
                             </paper-input>
                         </div>
                     </div>
@@ -112,6 +115,8 @@
                                          class$="validate-input {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
+                                         invalid="{{errors.user.profile.phone_number}}"
+                                         error-message="{{errors.user.profile.phone_number}}"
                                          required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
@@ -127,7 +132,8 @@
                                          readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          id="emailInput"
-                                         error-message="A valid email address is required">
+                                         invalid="{{errors.user.email}}"
+                                         error-message="{{errors.user.email}}">
                                 <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
 

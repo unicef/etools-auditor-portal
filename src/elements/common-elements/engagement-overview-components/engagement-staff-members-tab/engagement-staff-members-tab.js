@@ -94,7 +94,8 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)'
+        'changePermission(basePermissionPath)',
+        '_errorHandler(errorObject.staff_members)'
     ],
 
     attached: function() {
@@ -108,15 +109,26 @@ Polymer({
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         if (required && !value) {
-            emailInput.invalid = true;
+            this.errors = {user: {email: 'Email is required'}};
             return false;
         }
         if (value && !re.test(value)) {
-            emailInput.invalid = true;
+            this.errors = {user: {email: 'Email is incorrect'}};
             return false;
         }
 
-        return true;
+        let valid = true;
+
+        if (this.saveWithButton) {
+            _.each(this.dataItems, item => {
+                if (item.user && item.user.email === this.editedItem.user.email) {
+                    this.errors = {user: {email: 'Email must be unique'}};
+                    valid = false;
+                }
+            });
+        }
+
+        return valid;
     }
 
 });

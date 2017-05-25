@@ -1,4 +1,4 @@
-<!--import [polymer, lodash]-->
+<!--import [polymer, lodash, error-handler-behavior]-->
 
 <script>
     'use strict';
@@ -26,7 +26,13 @@
             saveWithButton: {
                 type: Boolean,
                 value: false
-            }
+            },
+            errors: {
+                type: Object,
+                value: function() {
+                    return {};
+                }
+            },
         },
 
         ready: function() {
@@ -189,13 +195,21 @@
 
         _openDeleteConfirmation: function() {
             this.confirmDialogOpened = true;
+        },
+
+        _errorHandler: function(errorData) {
+            this.requestInProcess = false;
+            if (!errorData) { return; }
+            let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData)[0] : this.refactorErrorObject(errorData);
+            this.set('errors', refactoredData);
         }
 
     };
 
     APBehaviors.TableElementsBehavior = [
         APBehaviors.TableElementsBehaviorImpl,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ];
 
 </script>
