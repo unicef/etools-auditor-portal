@@ -43,12 +43,12 @@
                 return true;
             },
 
-            getFieldAttribute: function(path, attribute) {
+            getFieldAttribute: function(path, attribute, actionType) {
                 if (!path || !attribute) { throw new Error('path and attribute arguments must be provided'); }
                 if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
                 if (typeof attribute !== 'string') { throw new Error('attribute argument must be a string'); }
 
-                let value = this._getCollection(path);
+                let value = this._getCollection(path, actionType);
 
                 if (value) { value = value[attribute]; }
 
@@ -72,7 +72,7 @@
             },
 
             getChoices: function(path) {
-                return this.getFieldAttribute(path, 'choices');
+                return this.getFieldAttribute(path, 'choices', 'GET');
             },
 
             _getCollection: function(path, actionType) {
