@@ -31,7 +31,8 @@ Polymer({
     getFindingsData: function() {
         let findingsLowPriority = this.$.findingsLowPriority.getFindingsData();
         let findingsHighPriority = this.$.findingsHighPriority.getFindingsData();
-        return _.concat(findingsLowPriority, findingsHighPriority);
+        let findings = _.concat(findingsLowPriority || [], findingsHighPriority || []);
+        return findings.length ? findings : null;
     },
     getInternalControlsData: function() {
         return this.$.internalControls.getInternalControlsData();

@@ -43,15 +43,15 @@
 
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="{{requestInProcess}}">
 
-            <div class="row-h repeatable-item-container">
+            <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
 
-                <div class="repeatable-item-actions">
+                <div class="repeatable-item-actions" hidden$="[[!canBeRemoved]]">
                     <div class="row-v actions">
                         <paper-icon-button class="action delete"
                                            on-tap="_openDeleteConfirmation"
-                                           hidden$="[[!canBeRemoved]]"
+                                           disabled="{{requestInProcess}}"
                                            icon="cancel"></paper-icon-button>
                     </div>
                 </div>
@@ -65,8 +65,10 @@
                                          placeholder="Enter finding"
                                          allowed-pattern="[\d]"
                                          on-focus="_resetFieldError"
-                                         class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
+                                         class$="disabled-as-readonly validate-input {{_setRequired('finding', basePermissionPath)}}"
                                          required="{{_setRequired('finding', basePermissionPath)}}"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          error-message="Finding is required">
                             </paper-input>
                         </div>
@@ -78,6 +80,8 @@
                                     options="[[categoryOfObservation]]"
                                     class$="disabled-as-readonly [[_setRequired('category_of_observation', basePermissionPath)]]"
                                     required="[[_setRequired('category_of_observation', basePermissionPath)]]"
+                                    disabled="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
                                     hide-search
                                     error-message="Category of Observation is required"
                                     on-focus="_resetFieldError"
@@ -97,7 +101,9 @@
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter recommendation"
-                                            class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"
+                                            class$="disabled-as-readonly validate-input {{_setRequired('recommendation', basePermissionPath)}}"
+                                            disabled="{{requestInProcess}}"
+                                            readonly$="{{requestInProcess}}"
                                             required="{{_setRequired('recommendation', basePermissionPath)}}">
                             </paper-textarea>
                         </div>
@@ -113,6 +119,8 @@
                                          data-selector="deadlineActionSelector"
                                          error-message="A valid Date of Action is required"
                                          required="[[_setRequired('deadline_of_action', basePermissionPath)]]"
+                                         disabled="{{requestInProcess}}"
+                                         readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          placeholder="&#8212;">
                                 <etools-datepicker-button prefix

@@ -131,6 +131,7 @@ Polymer({
         return this._showItems(item) && item.priority === this.priority.value;
     },
     getFindingsData: function() {
+        if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
         let data = [];
         _.each(this.dataItems, (item) => {
             if (item.priority !== this.priority.value) {
@@ -147,6 +148,12 @@ Polymer({
                 data.push(item);
             }
         });
-        return data;
+        return data && data.length ? data : null;
+    },
+    getCurrentData: function() {
+        if (!this.dialogOpened) { return null; }
+        let data = _.clone(this.editedItem);
+        if (data.category_of_observation && data.category_of_observation.value) { data.category_of_observation = data.category_of_observation.value; }
+        return [data];
     }
 });
