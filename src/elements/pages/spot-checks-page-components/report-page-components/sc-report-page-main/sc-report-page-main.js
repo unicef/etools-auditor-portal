@@ -35,12 +35,12 @@ Polymer({
         return findings.length ? findings : null;
     },
     getInternalControlsData: function() {
-        return this.$.internalControls.getInternalControlsData();
+        return this.$.internalControls.getInternalControlsData() || null;
     },
     getAssignVisitData: function() {
-        return this.$.assignEngagement.getAssignVisitData();
+        return this.$.assignEngagement.getAssignVisitData() || null;
     },
     getOverviewData: function() {
-        return this.$.overviewEngagement.getOverviewData();
+        return this.$.overviewEngagement.getOverviewData() || null;
     }
 });
