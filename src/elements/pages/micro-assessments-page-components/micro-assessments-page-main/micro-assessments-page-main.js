@@ -68,8 +68,12 @@ Polymer({
         } else {
             delete data.questionnaire;
         }
+
         let subjectAreas = Polymer.dom(this.root).querySelector('#report').getRisksData();
         data.test_subject_areas = subjectAreas || {};
+
+        let findingsData = Polymer.dom(this.root).querySelector('#report').getFindingsData();
+        if (findingsData && findingsData.length) { data.findings = findingsData; }
 
         return data;
     },

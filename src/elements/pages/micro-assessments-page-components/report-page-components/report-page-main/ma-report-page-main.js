@@ -29,5 +29,8 @@ Polymer({
     },
     getAssignVisitData: function() {
         return this.$.assignEngagement.getAssignVisitData();
+    },
+    getFindingsData: function() {
+        return this.$.controlFindings.getTabData();
     }
 });

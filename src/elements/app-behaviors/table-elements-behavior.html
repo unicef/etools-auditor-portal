@@ -22,6 +22,10 @@
                 value: function() {
                     return {};
                 }
+            },
+            saveWithButton: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -39,7 +43,7 @@
         },
 
         getTabData: function() {
-            if (this.dialogOpened) { return this.getCurrentData(); }
+            if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
             if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
             if (!this.originalData.length && !this.dataItems.length) { return null; }
             let data = [];
@@ -131,7 +135,7 @@
             if (!this.validate()) { return; }
 
             //save after popup click
-            if (this.dialogOpened) {
+            if (this.dialogOpened && !this.saveWithButton) {
                 this.requestInProcess = true;
                 this.fire('save-progress', {quietAdding: true});
                 return;
