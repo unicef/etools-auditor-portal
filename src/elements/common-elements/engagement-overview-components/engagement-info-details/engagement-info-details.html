@@ -1,7 +1,7 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu,
             etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
 
-<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data, error-handler-behavior]-->
 
 <dom-module id="engagement-info-details">
     <template>
@@ -36,8 +36,8 @@
                                  value="{{data.agreement.order_number}}"
                                  allowed-pattern="[\d]"
                                  placeholder="Enter Order number"
-                                 invalid="{{orderInputInvalid}}"
-                                 error-message="{{orderNumberErrorText}}"
+                                 invalid="{{_checkInvalid(errors.agreement)}}"
+                                 error-message="{{errors.agreement}}"
                                  required$="{{_setRequired('agreement', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
                                  readonly="{{requestInProcess}}"
@@ -101,6 +101,8 @@
                                  class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}}"
                                  required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
+                                 invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
+                                 error-message="{{errors.partner_contacted_at}}"
                                  id="contactedDateInput"
                                  value="[[prettyDate(data.partner_contacted_at)]]"
                                  on-down="openDatePicker"
@@ -125,7 +127,8 @@
                             value="{{_processValue(data.type)}}"
                             required="{{_setRequired('type', basePermissionPath)}}"
                             id="auditType"
-                            error-message="Audit Type is required"
+                            invalid="{{_checkInvalid(errors.type)}}"
+                            error-message="{{errors.type}}"
                             custom-object-options hide-search
                             option-value="value"
                             option-label="label"
@@ -143,6 +146,8 @@
                                  class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
                                  required="{{_setRequired('start_date', basePermissionPath)}}"
+                                 invalid="{{_checkInvalid(errors.start_date)}}"
+                                 error-message="{{errors.start_date}}"
                                  id="periodStartDateInput"
                                  value="[[prettyDate(data.start_date)]]"
                                  on-down="openDatePicker"
@@ -163,6 +168,8 @@
                                  class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
                                  required="{{_setRequired('end_date', basePermissionPath)}}"
+                                 invalid="{{_checkInvalid(errors.end_date)}}"
+                                 error-message="{{errors.end_date}}"
                                  id="periodEndDateInput"
                                  value="[[prettyDate(data.end_date)]]"
                                  on-down="openDatePicker"
@@ -185,6 +192,8 @@
                             class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}}"
                             disabled="[[isReadOnly('total_value', basePermissionPath)]]"
                             required="{{_setRequired('total_value', basePermissionPath)}}"
+                            invalid="{{_checkInvalid(errors.total_value)}}"
+                            error-message="{{errors.total_value}}"
                             value="{{data.total_value}}"
                             placeholder="Enter Total Value"></etools-currency-amount-input>
                 </div>

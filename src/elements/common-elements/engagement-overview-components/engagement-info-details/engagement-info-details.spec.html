@@ -176,41 +176,31 @@
         describe('method _validatePurchaseOrder', function() {
             it('returns false, sets orderInputInvalid and orderNumberErrorText if requestInProcess', function() {
                 myEl.requestInProcess = true;
-                assert.isFalse(myEl.orderInputInvalid);
-                assert.isUndefined(myEl.orderNumberErrorText);
 
                 assert.isFalse(myEl._validatePurchaseOrder());
-                assert.isTrue(myEl.orderInputInvalid);
-                assert.isDefined(myEl.orderNumberErrorText)
+                assert.isDefined(myEl.errors.agreement);
             });
 
             it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no value and orderInput is required', function() {
                 myEl.requestInProcess = false;
-                myEl.orderInputInvalid = false;
-                myEl.orderNumberErrorText = undefined;
 
                 var orderInput = {required: true};
 
                 assert.isFalse(myEl._validatePurchaseOrder(orderInput));
-                assert.isTrue(myEl.orderInputInvalid);
-                assert.isDefined(myEl.orderNumberErrorText)
+                assert.isDefined(myEl.errors.agreement);
             });
 
             it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no agreement.id', function() {
                 myEl.requestInProcess = false;
-                myEl.orderInputInvalid = false;
-                myEl.orderNumberErrorText = undefined;
 
                 var orderInput = {value: '123123', required: true};
 
                 assert.isFalse(myEl._validatePurchaseOrder(orderInput));
-                assert.isTrue(myEl.orderInputInvalid);
-                assert.isDefined(myEl.orderNumberErrorText)
+                assert.isDefined(myEl.errors.agreement);
             });
 
             it('returns true, sets orderInputInvalid to false', function() {
                 myEl.requestInProcess = false;
-                myEl.orderInputInvalid = true;
                 myEl.data = {
                     agreement: {
                         id: '123123'
@@ -220,8 +210,6 @@
                 var orderInput = {value: '123123', required: true};
 
                 assert.isTrue(myEl._validatePurchaseOrder(orderInput));
-                assert.isFalse(myEl.orderInputInvalid);
-                assert.isUndefined(myEl.orderNumberErrorText)
             });
         })
 

@@ -5,7 +5,8 @@ Polymer({
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         basePermissionPath: {
@@ -39,11 +40,18 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        errors: {
+            type: Object,
+            value: function() {
+                return {};
+            }
         }
     },
     listeners: {
         'agreement-loaded': '_agreementLoaded'
     },
+    observers: ['_errorHandler(errorObject)'],
     ready: function() {
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
@@ -113,22 +121,19 @@ Polymer({
     },
     _validatePurchaseOrder: function(orderInput) {
         if (this.requestInProcess) {
-            this.orderInputInvalid = true;
-            this.orderNumberErrorText = 'Please, wait until Purchase Order loaded';
+            this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
             return false;
         }
         let value = orderInput && orderInput.value;
         if (!value && orderInput && orderInput.required) {
-            this.orderInputInvalid = true;
-            this.orderNumberErrorText = 'Purchase order is required';
+            this.set('errors.agreement', 'Purchase order is required');
             return false;
         }
         if (!this.data || !this.data.agreement || !this.data.agreement.id) {
-            this.orderNumberErrorText = 'Purchase order not found';
-            this.orderInputInvalid = true;
+            this.set('errors.agreement', 'Purchase order not found');
             return false;
         }
-        this.orderInputInvalid = false;
+        this.set('errors.agreement', false);
         return true;
     },
     resetType: function() {
@@ -145,5 +150,9 @@ Polymer({
         if (this.originalData.type !== this.data.type.value) { data.type = this.data.type.value; }
 
         return data;
+    },
+    _errorHandler: function(errorData) {
+        if (!errorData) { return; }
+        this.set('errors', this.refactorErrorObject(errorData));
     }
 });

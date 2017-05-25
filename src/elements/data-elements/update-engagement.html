@@ -121,7 +121,7 @@
                 let responseData = error && error.request && error.request.detail &&
                                     error.request.detail.request && error.request.detail.request.xhr;
 
-                let {status, response} = responseData;
+                let {status, response} = responseData || {};
 
                 if (status === 400) { this.set('errorObject', response); }
 
