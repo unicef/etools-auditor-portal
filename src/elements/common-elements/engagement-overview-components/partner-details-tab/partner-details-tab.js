@@ -110,7 +110,7 @@ Polymer({
         if (!this.originalData || this.originalData.partner.id !== this.engagement.partner.id) {
             partner = this.engagement.partner.id;
         }
-        return null;
+        return partner;
     },
     _errorHandler: function(errorData) {
         if (!errorData) { return; }
