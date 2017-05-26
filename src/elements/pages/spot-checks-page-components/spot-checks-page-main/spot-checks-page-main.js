@@ -65,7 +65,7 @@ Polymer({
         if (findingData) { data.findings = findingData; }
 
         let internalControlsData = reportPage.getInternalControlsData();
-        if (internalControlsData) { data.internal_controls = findingData; }
+        if (!_.isUndefined(internalControlsData)) { data.internal_controls = internalControlsData; }
 
         let overviewData = reportPage.getOverviewData() || {};
         _.assign(data, overviewData);

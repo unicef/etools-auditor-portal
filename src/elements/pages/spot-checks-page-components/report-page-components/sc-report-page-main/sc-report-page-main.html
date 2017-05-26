@@ -32,7 +32,9 @@
                                   base-permission-path="{{permissionBase}}"></summary-findings-element>
 
         <internal-controls id="internalControls"
-                           data="{{engagement}}"
+                           error-object="{{errorObject}}"
+                           data="{{engagement.internal_controls}}"
+                           original-data="[[originalData.internal_controls]]"
                            base-permission-path="{{permissionBase}}"></internal-controls>
     </template>
 

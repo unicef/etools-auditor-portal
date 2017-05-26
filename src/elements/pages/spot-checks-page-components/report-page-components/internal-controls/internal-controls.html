@@ -20,12 +20,13 @@
                 changes identified
             </div>
             <paper-textarea label="Document any changes identified"
-                         value="{{data.internal_controls}}"
-                         on-focus="_resetFieldError"
-                         class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
-                         required$="[[_setRequired('internal_controls', basePermissionPath)]]"
-                         disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
-                         error-message="Document any changes identified is required">
+                            value="{{data}}"
+                            on-focus="_resetFieldError"
+                            class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
+                            required$="[[_setRequired('internal_controls', basePermissionPath)]]"
+                            disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
+                            invalid="{{_checkInvalid(errors.internal_controls)}}"
+                            error-message="{{errors.partner_contacted_at}}">
             </paper-textarea>
         </etools-content-panel>
     </template>
