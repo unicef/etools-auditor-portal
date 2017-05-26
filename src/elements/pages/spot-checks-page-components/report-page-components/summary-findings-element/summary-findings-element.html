@@ -58,29 +58,12 @@
 
                 <div class="repeatable-item-content">
                     <div class="row-h group">
-                        <div class="input-container input-container-ms">
-                            <!-- Finding -->
-                            <paper-input label="Finding"
-                                         value="{{editedItem.finding}}"
-                                         placeholder="Enter finding"
-                                         allowed-pattern="[\d]"
-                                         on-focus="_resetFieldError"
-                                         class$="disabled-as-readonly validate-input {{_setRequired('finding', basePermissionPath)}}"
-                                         required="{{_setRequired('finding', basePermissionPath)}}"
-                                         disabled="{{requestInProcess}}"
-                                         readonly$="{{requestInProcess}}"
-                                         invalid="{{errors.finding}}"
-                                         error-message="{{errors.finding}}">
-                            </paper-input>
-                        </div>
-                    </div>
-                    <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Category of Observation -->
                             <etools-searchable-multiselection-menu
                                     options="[[categoryOfObservation]]"
                                     class$="disabled-as-readonly validate-input [[_setRequired('category_of_observation', basePermissionPath)]]"
-                                    required="[[_setRequired('category_of_observation', basePermissionPath)]]"
+                                    required$="[[_setRequired('category_of_observation', basePermissionPath)]]"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
                                     hide-search

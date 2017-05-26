@@ -96,8 +96,5 @@ Polymer({
     observers: [
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)'
-    ],
-    getFinancialFindingsData: function() {
-        return this.dataItems;
-    }
+    ]
 });

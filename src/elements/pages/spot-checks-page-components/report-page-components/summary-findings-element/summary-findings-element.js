@@ -37,7 +37,11 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 70,
+                        'size': 20,
+                        'label': 'Finding Number',
+                        'path': 'finding'
+                    },                    {
+                        'size': 50,
                         'label': 'Subject Area',
                         'path': 'category_of_observation.display_name'
                     },
