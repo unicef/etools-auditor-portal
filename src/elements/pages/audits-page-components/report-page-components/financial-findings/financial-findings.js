@@ -95,6 +95,12 @@ Polymer({
     },
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)'
-    ]
+        'changePermission(basePermissionPath)',
+        '_errorHandler(errorObject.financial_finding_set)'
+    ],
+    _errorHandler: function(errorData) {
+        this.requestInProcess = false;
+        if (!errorData || !this.dialogOpened) { return; }
+        this.set('errors', this.refactorErrorObject(errorData)[0]);
+    }
 });
