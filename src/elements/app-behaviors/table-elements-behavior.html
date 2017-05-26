@@ -93,7 +93,10 @@
 
             Array.prototype.forEach.call(elements, (element) => {
                 //TODO: improve validation
-                if (element.required && !element.validate()) { valid = false; }
+                if (element.required && !element.validate()) {
+                    element.invalid = 'This field is required';
+                    valid = false;
+                }
             });
 
             return valid;

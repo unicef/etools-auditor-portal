@@ -73,13 +73,15 @@
         });
 
         it('reset validation errors', function () {
-            numberInput.invalid = true;
-            auditTypeInput.invalid = true;
+            myEl.errors = {
+                agreement: 'Test',
+                type: 'Test'
+            };
 
             myEl.resetValidationErrors();
 
-            assert.isFalse(numberInput.invalid);
-            assert.isFalse(auditTypeInput.invalid);
+            assert.isFalse(myEl.errors.agreement);
+            assert.isFalse(myEl.errors.type);
         });
 
         it('return required class if edit mode on', function () {
