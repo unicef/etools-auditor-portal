@@ -154,6 +154,7 @@
 
             return Promise.all(promises)
                     .then((uploadedFiles) => {
+                console.log('uploadedFiles', uploadedFiles);
                         if (uploadedFiles && uploadedFiles[0]) {data.engagement_attachments = uploadedFiles[0]; }
                         if (uploadedFiles && uploadedFiles[1]) {data.report_attachments = uploadedFiles[1]; }
                         return {
@@ -173,14 +174,14 @@
                     //TODO: don't validate staff members in tabular view
                     //staffMembersValid = this.getElement('#staffMembers').validate();
 
-            let engagementAttachments = this.getElement('#engagement_attachments'),
-                    reportAttachments = this.getElement('#report_attachments');
+//            let engagementAttachments = this.getElement('#engagement_attachments'),
+//                    reportAttachments = this.getElement('#report_attachments');
 
-            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
-                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
+//            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
+//                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
 
 
-            if (/*!staffMembersValid || */!detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid) {
+            if (/*!staffMembersValid || */!detailsValid/* || !engagementAttachmentsValid || !reportAttachmentsValid*/) {
                 let openTab = (/*staffMembersValid && */detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);

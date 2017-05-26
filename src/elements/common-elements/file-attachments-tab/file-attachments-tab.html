@@ -1,27 +1,142 @@
-<!--import [polymer, etools-file-element, etools-content-panel, static-data-behavior]-->
+<!--import [polymer, iron-icon, paper-icon-button, etools-content-panel, static-data-behavior]-->
+<!--import [tab-inputs-styles, module-styles, shared-styles, table-elements-behavior]-->
 
 <dom-module id="file-attachments-tab">
     <template>
+        <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
-        <etools-content-panel panel-title="[[title]]">
-            <div class="no-attachments" hidden$="{{_hideEmptyState(files.length)}}">There are no attachments added.</div>
+        <paper-icon-button
+                hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                title="Add"
+                on-tap="openAddDialog"
+                class="add-button"
+                icon="add">
+        </paper-icon-button>
 
-            <etools-file-element id="filesElement"
-                                 activate-file-types
-                                 multiple
-                                 readonly="[[readonly]]"
-                                 label=""
-                                 files="{{files}}"
-                                 file-types="[[fileTypes]]"
-                                 file-type-required="[[fileTypeRequired]]"
-                                 allow-download="[[allowDownload]]"
-                                 allow-change="[[allowChange]]"
-                                 allow-delete="[[allowDelete]]"
-                                 file-checkbox-visible="[[fileCheckboxVisible]]"
-                                 file-checkbox-title="[[fileCheckboxTitle]]"
-                                 file-checkbox-label="[[fileCheckboxLabel]]"></etools-file-element>
+        <etools-content-panel class="content-section clearfix" panel-title="[[title]]">
+            <list-header
+                    id="list-header"
+                    no-additional
+                    no-ordered
+                    data="[[headings]]">
+            </list-header>
+
+            <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
+                <list-element
+                        class="list-element"
+                        no-additional
+                        data="[[item]]"
+                        headings="[[headings]]">
+                    <div slot="custom">
+                        <iron-icon icon="icons:attachment" class="download-icon"></iron-icon>
+                        <a class$="truncate"
+                           href="[[item.file]]"
+                           download="[[item.file_name]]"
+                           target="_blank"
+                           title="[[item.file_name]]">
+                            [[item.file_name]]
+                        </a>
+                    </div>
+
+                    <div slot="icon">
+                        <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                    </div>
+                </list-element>
+            </template>
+
+            <template is="dom-if" if="[[!dataItems.length]]">
+                <list-element
+                        class="list-element"
+                        no-additional
+                        data="[[emptyObj]]"
+                        headings="[[headings]]">
+                </list-element>
+            </template>
         </etools-content-panel>
+
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="[[requestInProcess]]">
+            <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
+                <div class="repeatable-item-actions" hidden$="[[!canBeRemoved]]">
+                    <div class="row-v actions">
+                        <paper-icon-button class="action delete"
+                                           on-tap="_openDeleteConfirmation"
+                                           disabled="{{requestInProcess}}"
+                                           icon="cancel">
+                        </paper-icon-button>
+                    </div>
+                </div>
+
+                <div class="repeatable-item-content">
+                    <template is="dom-if" if="[[fileTypeRequired]]">
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                    <etools-searchable-multiselection-menu
+                                            id="fileType"
+                                            class="validate-input disabled-as-readonly"
+                                            data-index$="[[index]]"
+                                            label="[[fileTypesLabel]]"
+                                            placeholder="&#8212;"
+                                            error-message="This field is required"
+                                            options="[[fileTypes]]"
+                                            hide-search
+                                            custom-object-options
+                                            option-value="value"
+                                            option-label="display_name"
+                                            value="{{editedItem.type}}"
+                                            on-value-change="_setFileType"
+                                            on-focus="_resetFieldError"
+                                            disabled$="[[requestInProcess]]"
+                                            readonly$="[[requestInProcess]]"
+                                            required$="[[fileTypeRequired]]">
+                                    </etools-searchable-multiselection-menu>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template is="dom-if" if="[[!canBeRemoved]]">
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                <paper-button
+                                        class="upload-button"
+                                        on-tap="_openFileChooser"
+                                        title="[[uploadLabel]]"
+                                        disabled$="[[requestInProcess]]"
+                                        readonly$="[[requestInProcess]]"
+                                        raised>
+                                    <iron-icon icon="file-upload"></iron-icon>
+                                    [[uploadLabel]]
+                                </paper-button>
+
+                                <input
+                                        id="fileInput"
+                                        class="validate-input"
+                                        type="file"
+                                        disabled$="[[requestInProcess]]"
+                                        readonly$="[[requestInProcess]]"
+                                        on-change="_fileSelected"
+                                        hidden
+                                        required>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <template is="dom-if" if="[[invalid]]">
+                                <paper-input-error aria-live="assertive">[[errorMessage]]</paper-input-error>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog-element>
+
+        <div class="confirm-backdrop"  opened$="{{confirmDialogOpened}}"></div>
+        <dialog-element dialog-name="deleteConfirm" opened="{{confirmDialogOpened}}" dialog-title="Remove File" confirm-btn-text="Ok">
+            <div class="confirm-text">Do you want to remove this file?</div>
+        </dialog-element>
     </template>
 
     <!-- inject scripts './file-attachments-tab.js'-->
