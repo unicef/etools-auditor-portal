@@ -36,6 +36,10 @@ Polymer({
             value: function() {
                 return [];
             }
+        },
+        noAdditional: {
+            type: Boolean,
+            value: false
         }
     },
     _orderChanged: function(newOrder) {

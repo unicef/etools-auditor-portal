@@ -17,6 +17,7 @@
 
             <list-header id="list-header"
                          data="[[headings]]"
+                         no-additional$="[[noAdditional]]"
                          order-by="{{orderBy}}">
             </list-header>
 
@@ -26,6 +27,7 @@
                         data="[[item]]"
                         headings="[[headings]]"
                         details="[[details]]"
+                        no-additional$="[[noAdditional]]"
                         has-collapse="[[hasCollapse]]"
                         no-animation="[[noAnimation]]">
                 </list-element>
