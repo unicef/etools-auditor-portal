@@ -75,6 +75,7 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)'
+        'changePermission(basePermissionPath)',
+        '_errorHandler(errorObject.findings)'
     ]
 });

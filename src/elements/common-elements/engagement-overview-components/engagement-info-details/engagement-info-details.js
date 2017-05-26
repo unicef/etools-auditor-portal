@@ -68,8 +68,8 @@ Polymer({
         return typeValid && orderValid;
     },
     resetValidationErrors: function() {
-        this.$.auditType.invalid = false;
-        this.$.purchaseOrder.invalid = false;
+        this.set('errors.type', false);
+        this.set('errors.agreement', false);
     },
     _setRequired: function(field) {
         if (!this.basePermissionPath) { return false; }
@@ -79,7 +79,7 @@ Polymer({
         return required ? 'required' : false;
     },
     _resetFieldError: function(event) {
-        event.target.invalid = false;
+        this.set(`errors.${event.target.getAttribute('field')}`, false);
     },
     _processValue: function(value) {
         if (typeof value === 'string') {
@@ -156,6 +156,6 @@ Polymer({
     },
     _errorHandler: function(errorData) {
         if (!errorData) { return; }
-        this.set('errors', this.refactorErrorObject(errorData));
+        this.set('errors', _.clone(this.refactorErrorObject(errorData)));
     }
 });

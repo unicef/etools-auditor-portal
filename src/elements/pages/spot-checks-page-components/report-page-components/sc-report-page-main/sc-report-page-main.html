@@ -7,6 +7,7 @@
 
         <assign-engagement data="{{engagement}}"
                            audit-type="Spot Check"
+                           error-object="{{errorObject}}"
                            original-data="[[originalData]]"
                            base-permission-path="{{permissionBase}}"
                            id="assignEngagement"></assign-engagement>
@@ -18,13 +19,17 @@
 
         <summary-findings-element data-items="{{engagement.findings}}"
                                   id="findingsHighPriority"
+                                  error-object="{{errorObject}}"
+                                  original-data="[[originalData.findings]]"
                                   priority="{{priorities.high}}"
                                   base-permission-path="{{permissionBase}}"></summary-findings-element>
 
         <summary-findings-element data-items="{{engagement.findings}}"
-                            id="findingsLowPriority"
-                            priority="{{priorities.low}}"
-                            base-permission-path="{{permissionBase}}"></summary-findings-element>
+                                  id="findingsLowPriority"
+                                  error-object="{{errorObject}}"
+                                  original-data="[[originalData.findings]]"
+                                  priority="{{priorities.low}}"
+                                  base-permission-path="{{permissionBase}}"></summary-findings-element>
 
         <internal-controls id="internalControls"
                            data="{{engagement}}"

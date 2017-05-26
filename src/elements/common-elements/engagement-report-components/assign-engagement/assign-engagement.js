@@ -4,7 +4,8 @@ Polymer({
     is: 'assign-engagement',
     behaviors: [
         APBehaviors.DateBehavior,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         basePermissionPath: {
@@ -18,7 +19,8 @@ Polymer({
         '_updateStyles(data.date_of_comments_by_ip)',
         '_updateStyles(data.date_of_draft_report_to_unicef)',
         '_updateStyles(data.date_of_comments_by_unicef)',
-        '_updateStyles(basePermissionPath)'
+        '_updateStyles(basePermissionPath)',
+        '_errorHandler(errorObject)'
     ],
     ready: function() {
         this.$['date-validator'].validate = this._validDate.bind(this);
@@ -54,16 +56,15 @@ Polymer({
             let previousDate = Date.parse(previousElement.value);
             let currentDate = Date.parse(currentElement.value);
             if (!forSave && currentElement.required && !currentElement.validate()) {
+                currentElement.invalid = 'Field is required';
                 valid = false;
             }
             if (previousDate > currentDate) {
-                currentElement.invalid = true;
-                currentElement.errorMessage = 'This date should be after previous date';
+                currentElement.invalid = 'This date should be after previous date';
                 valid = false;
             }
             if (previousDate > Date.now()) {
-                previousElement.invalid = true;
-                previousElement.errorMessage = 'This date should be before today';
+                previousElement.invalid = 'This date should be before today';
                 valid = false;
             }
             return currentElement;
@@ -89,5 +90,9 @@ Polymer({
         });
 
         return _.isEmpty(data) ? null : data;
+    },
+    _errorHandler: function(errorData) {
+        if (!errorData) { return; }
+        this.set('errors', this.refactorErrorObject(errorData));
     }
 });

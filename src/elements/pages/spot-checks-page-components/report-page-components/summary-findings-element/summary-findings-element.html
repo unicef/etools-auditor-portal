@@ -69,7 +69,8 @@
                                          required="{{_setRequired('finding', basePermissionPath)}}"
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
-                                         error-message="Finding is required">
+                                         invalid="{{errors.finding}}"
+                                         error-message="{{errors.finding}}">
                             </paper-input>
                         </div>
                     </div>
@@ -78,12 +79,13 @@
                             <!-- Category of Observation -->
                             <etools-searchable-multiselection-menu
                                     options="[[categoryOfObservation]]"
-                                    class$="disabled-as-readonly [[_setRequired('category_of_observation', basePermissionPath)]]"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('category_of_observation', basePermissionPath)]]"
                                     required="[[_setRequired('category_of_observation', basePermissionPath)]]"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
                                     hide-search
-                                    error-message="Category of Observation is required"
+                                    invalid="{{errors.category_of_observation}}"
+                                    error-message="{{errors.category_of_observation}}"
                                     on-focus="_resetFieldError"
                                     label="Category of Observation"
                                     option-value="value"
@@ -91,7 +93,7 @@
                                     custom-object-options
                                     value="{{editedItem.category_of_observation}}"
                                     update-selected
-                                    placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                                    placeholder="Select Category"></etools-searchable-multiselection-menu>
                         </div>
                     </div>
                     <div class="row-h group">
@@ -104,6 +106,9 @@
                                             class$="disabled-as-readonly validate-input {{_setRequired('recommendation', basePermissionPath)}}"
                                             disabled="{{requestInProcess}}"
                                             readonly$="{{requestInProcess}}"
+                                            invalid="{{errors.recommendation}}"
+                                            error-message="{{errors.recommendation}}"
+                                            on-focus="_resetFieldError"
                                             required="{{_setRequired('recommendation', basePermissionPath)}}">
                             </paper-textarea>
                         </div>
@@ -117,7 +122,8 @@
                                          value="[[prettyDate(editedItem.deadline_of_action)]]"
                                          on-down="openDatePicker"
                                          data-selector="deadlineActionSelector"
-                                         error-message="A valid Date of Action is required"
+                                         invalid="{{errors.deadline_of_action}}"
+                                         error-message="{{errors.deadline_of_action}}"
                                          required="[[_setRequired('deadline_of_action', basePermissionPath)]]"
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
