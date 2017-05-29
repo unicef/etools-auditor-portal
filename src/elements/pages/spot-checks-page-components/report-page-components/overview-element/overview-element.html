@@ -58,6 +58,8 @@
                             class$="disabled-as-readonly [[_setRequired('total_amount_tested', basePermissionPath)]]"
                             disabled$="[[isReadOnly('total_amount_tested', basePermissionPath)]]"
                             required$="[[_setRequired('total_amount_tested', basePermissionPath)]]"
+                            invalid="{{_checkInvalid(errors.total_amount_tested)}}"
+                            error-message="{{errors.total_amount_tested}}"
                             value="{{data.total_amount_tested}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
@@ -70,6 +72,8 @@
                             class$="disabled-as-readonly [[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             disabled$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             required$="[[_setRequired('total_amount_of_ineligible_expenditure')]]"
+                            invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
+                            error-message="{{errors.total_amount_of_ineligible_expenditure}}"
                             value="{{data.total_amount_of_ineligible_expenditure}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
@@ -80,6 +84,8 @@
                             class$="disabled-as-readonly [[_setRequired('amount_of_ineligible_expenditures', basePermissionPath)]]"
                             disabled$="[[isReadOnly('amount_of_ineligible_expenditures', basePermissionPath)]]"
                             required$="[[_setRequired('amount_of_ineligible_expenditures', basePermissionPath)]]"
+                            invalid="{{_checkInvalid(errors.amount_of_ineligible_expenditures)}}"
+                            error-message="{{errors.amount_of_ineligible_expenditures}}"
                             value="{{data.amount_of_ineligible_expenditures}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>

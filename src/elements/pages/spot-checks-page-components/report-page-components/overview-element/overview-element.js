@@ -4,14 +4,24 @@ Polymer({
     is: 'overview-element',
     behaviors: [
         APBehaviors.DateBehavior,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         basePermissionPath: {
             type: String,
             observer: '_basePathChanged'
+        },
+        errors: {
+            type: Object,
+            value: function() {
+                return {};
+            }
         }
     },
+    observers: [
+        '_errorHandler(errorObject)'
+    ],
     _basePathChanged: function() {
         this.updateStyles();
     },
@@ -39,5 +49,9 @@ Polymer({
                     'total_amount_of_ineligible_expenditure',
                     'amount_of_ineligible_expenditures'].indexOf(key) && !!value && value !== this.originalData[key];
         });
+    },
+    _errorHandler: function(errorData) {
+        if (!errorData) { return; }
+        this.set('errors', this.refactorErrorObject(errorData));
     }
 });
