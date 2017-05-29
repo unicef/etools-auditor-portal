@@ -3,8 +3,30 @@
 Polymer({
     is: 'internal-controls',
     behaviors: [
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
+    observers: [
+        '_errorHandler(errorObject)'
+    ],
+    properties: {
+        data: {
+            type: Object,
+            notify: true
+        },
+        originalData: {
+            type: Object,
+            value: function() {
+                return {};
+            }
+        },
+        errors: {
+            type: Object,
+            value: function() {
+                return {};
+            }
+        }
+    },
     _setRequired: function(field) {
         if (!this.basePermissionPath) { return false; }
 
@@ -24,6 +46,14 @@ Polymer({
         event.target.invalid = false;
     },
     getInternalControlsData: function() {
-        return this.data.internal_controls;
+        let data;
+        if (!_.isEqual(this.originalData, this.data)) {
+            data = this.data;
+        }
+        return data;
+    },
+    _errorHandler: function(errorData) {
+        if (!errorData) { return; }
+        this.set('errors', this.refactorErrorObject(errorData));
     }
 });

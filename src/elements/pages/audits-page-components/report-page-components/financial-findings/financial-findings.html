@@ -1,7 +1,7 @@
-<!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
-            paper-input, paper-input/paper-textarea]-->
+<!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons, etools-content-panel,
+            etools-currency-amount-input, etools-searchable-multiselection-menu]-->
 <!--import [list-header, list-element]-->
-<!--import [tab-inputs-styles, module-styles, static-data-behavior, table-elements-behavior, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, dialog-element, lodash, table-elements-behavior, permission-controller]-->
 
 <dom-module id="financial-findings">
     <template>
@@ -43,32 +43,20 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]">
-            <div class="row-h repeatable-item-container">
-                <div class="repeatable-item-actions">
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="{{requestInProcess}}">
+
+            <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
+
+                <div class="repeatable-item-actions" hidden$="[[!canBeRemoved]]">
                     <div class="row-v actions">
                         <paper-icon-button class="action delete"
                                            on-tap="_openDeleteConfirmation"
-                                           hidden$="[[!canBeRemoved]]"
+                                           disabled="{{requestInProcess}}"
                                            icon="cancel"></paper-icon-button>
                     </div>
                 </div>
 
                 <div class="repeatable-item-content">
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
-                            <!-- Finding Number -->
-                            <paper-input label="Finding Number"
-                                         value="{{editedItem.finding_number}}"
-                                         placeholder="Enter Finding Number"
-                                         allowed-pattern="[\d]"
-                                         on-focus="_resetFieldError"
-                                         class$="validate-input {{_setRequired('finding_number', basePermissionPath)}}"
-                                         required="{{_setRequired('finding_number', basePermissionPath)}}"
-                                         error-message="Finding Number is required">
-                            </paper-input>
-                        </div>
-                    </div>
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Title -->
@@ -76,9 +64,12 @@
                                          value="{{editedItem.title}}"
                                          placeholder="Enter Title"
                                          on-focus="_resetFieldError"
-                                         class$="validate-input [[_setRequired('title', basePermissionPath)}]]"
+                                         class$="disabled-as-readonly validate-input [[_setRequired('title', basePermissionPath)]]"
                                          required$="[[_setRequired('title', basePermissionPath)]]"
-                                         error-message="Title is required">
+                                         disabled$="[[requestInProcess]]"
+                                         readonly$="[[requestInProcess]]"
+                                         invalid="{{errors.title}}"
+                                         error-message="{{errors.title}}">
                             </paper-input>
                         </div>
                     </div>
@@ -88,10 +79,13 @@
                             <etools-currency-amount-input
                                     label="Amount (local)"
                                     currency=""
-                                    class$="validate-input {{_setRequired('local_amount', basePermissionPath)}}"
+                                    class$="disabled-as-readonly validate-input {{_setRequired('local_amount', basePermissionPath)}}"
                                     required$="[[_setRequired('local_amount', basePermissionPath)]]"
                                     value="{{editedItem.local_amount}}"
-                                    error-message="Amount (local) is required"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid$="[[errors.local_amount]]"
+                                    error-message$="[[errors.local_amount]]"
                                     on-focus="_resetFieldError"
                                     placeholder="&#8212;">
                             </etools-currency-amount-input>
@@ -103,10 +97,13 @@
                             <etools-currency-amount-input
                                     label="Amount USD"
                                     currency="$"
-                                    class$="validate-input {{_setRequired('amount', basePermissionPath)}}"
+                                    class$="disabled-as-readonly validate-input {{_setRequired('amount', basePermissionPath)}}"
                                     required$="[[_setRequired('amount', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid$="[[errors.amount]]"
+                                    error-message$="[[errors.amount]]"
                                     value="{{editedItem.amount}}"
-                                    error-message="Amount USD is required"
                                     on-focus="_resetFieldError"
                                     placeholder="&#8212;">
                             </etools-currency-amount-input>
@@ -119,8 +116,12 @@
                                             value="{{editedItem.description}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter Description"
-                                            class$="validate-input [[_setRequired('description', basePermissionPath)]]"
-                                            required$="[[_setRequired('description', basePermissionPath)]]">
+                                            class$="disabled-as-readonly validate-input [[_setRequired('description', basePermissionPath)]]"
+                                            required$="[[_setRequired('description', basePermissionPath)]]"
+                                            disabled$="[[requestInProcess]]"
+                                            readonly$="[[requestInProcess]]"
+                                            invalid$="[[errors.description]]"
+                                            error-message$="[[errors.description]]">
                             </paper-textarea>
                         </div>
                     </div>
@@ -131,8 +132,12 @@
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter Recommendation"
-                                            class$="validate-input [[_setRequired('recommendation', basePermissionPath)]]"
-                                            required$="[[_setRequired('recommendation', basePermissionPath)]]">
+                                            class$="disabled-as-readonly validate-input [[_setRequired('recommendation', basePermissionPath)]]"
+                                            required$="[[_setRequired('recommendation', basePermissionPath)]]"
+                                            disabled$="[[requestInProcess]]"
+                                            readonly$="[[requestInProcess]]"
+                                            invalid$="[[errors.recommendation]]"
+                                            error-message$="[[errors.recommendation]]">
                             </paper-textarea>
                         </div>
                     </div>
@@ -143,8 +148,12 @@
                                             value="{{editedItem.ip_comments}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter IP comments"
-                                            class$="validate-input [[_setRequired('ip_comments', basePermissionPath)]]"
-                                            required$="[[_setRequired('ip_comments', basePermissionPath)]]">
+                                            class$="disabled-as-readonly validate-input [[_setRequired('ip_comments', basePermissionPath)]]"
+                                            required$="[[_setRequired('ip_comments', basePermissionPath)]]"
+                                            disabled$="[[requestInProcess]]"
+                                            readonly$="[[requestInProcess]]"
+                                            invalid$="[[errors.ip_comments]]"
+                                            error-message$="[[errors.ip_comments]]">
                             </paper-textarea>
                         </div>
                     </div>

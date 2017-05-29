@@ -1,4 +1,4 @@
-<!--import [polymer, lodash]-->
+<!--import [polymer, lodash, error-handler-behavior]-->
 
 <script>
     'use strict';
@@ -26,7 +26,13 @@
             saveWithButton: {
                 type: Boolean,
                 value: false
-            }
+            },
+            errors: {
+                type: Object,
+                value: function() {
+                    return {};
+                }
+            },
         },
 
         ready: function() {
@@ -86,8 +92,11 @@
                     valid = true;
 
             Array.prototype.forEach.call(elements, (element) => {
-                //TODO: improve validation
-                if (element.required && !element.validate()) { valid = false; }
+                if (element.required && !element.validate()) {
+                    element.invalid = 'This field is required';
+                    element.errorMessage = 'This field is required';
+                    valid = false;
+                }
             });
 
             return valid;
@@ -192,13 +201,21 @@
 
         _openDeleteConfirmation: function() {
             this.confirmDialogOpened = true;
+        },
+
+        _errorHandler: function(errorData) {
+            this.requestInProcess = false;
+            if (!errorData) { return; }
+            let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData)[0] : this.refactorErrorObject(errorData);
+            this.set('errors', refactoredData);
         }
 
     };
 
     APBehaviors.TableElementsBehavior = [
         APBehaviors.TableElementsBehaviorImpl,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ];
 
 </script>

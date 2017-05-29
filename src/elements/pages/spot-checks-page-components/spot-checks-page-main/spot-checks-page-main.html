@@ -20,6 +20,7 @@
         <update-engagement updated-engagement-data="{{updatedEngagement}}"
                            quiet-adding="{{quietAdding}}"
                            engagement="{{engagement}}"
+                           error-object="{{errorObject}}"
                            base-permission-path="{{permissionBase}}"></update-engagement>
 
 
@@ -45,20 +46,28 @@
                         <div name="overview">
                             <engagement-info-details data="{{engagement}}"
                                                      id="engagementDetails"
+                                                     error-object="{{errorObject}}"
+                                                     original-data="[[originalData]]"
                                                      base-permission-path="{{permissionBase}}"></engagement-info-details>
 
-                            <partner-details-tab id="partnerDetails" engagement="{{engagement}}" base-permission-path="{{permissionBase}}"></partner-details-tab>
+                            <partner-details-tab id="partnerDetails"
+                                                 original-data="[[originalData]]"
+                                                 engagement="{{engagement}}"
+                                                 error-object="{{errorObject}}"
+                                                 base-permission-path="{{permissionBase}}"></partner-details-tab>
 
 
-                                <engagement-staff-members-tab id="staffMembers"
-                                                              base-permission-path="{{permissionBase}}"
-                                                              data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
+                            <engagement-staff-members-tab id="staffMembers"
+                                                          base-permission-path="{{permissionBase}}"
+                                                          error-object="{{errorObject}}"
+                                                          data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
                         </div>
 
                         <div name="report">
                             <sc-report-page-main id="report"
                                                  original-data="[[originalData]]"
                                                  engagement="{{engagement}}"
+                                                 error-object="{{errorObject}}"
                                                  permission-base="{{permissionBase}}"></sc-report-page-main>
                         </div>
 

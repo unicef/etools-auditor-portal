@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button]-->
-<!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller, error-handler-behavior]-->
 
 <dom-module id="assign-engagement">
     <template>
@@ -11,7 +11,7 @@
             }
         </style>
 
-        <etools-content-panel class="content-section clearfx" panel-title="Assign {{auditType}}">
+        <etools-content-panel class="content-section clearfx" panel-title="Engagement Status">
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Date of Field Visit -->
@@ -23,7 +23,8 @@
                                  on-down="openDatePicker"
                                  data-selector="dateVisit"
                                  validator="dateValidator"
-                                 error-message="A valid Date of Field Visit is required"
+                                 invalid="{{errors.date_of_field_visit}}"
+                                 error-message="{{errors.date_of_field_visit}}"
                                  required="[[_isRequired('date_of_field_visit', basePermissionPath)]]"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
@@ -45,7 +46,8 @@
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  validator="dateValidator"
-                                 error-message="A valid Draft Report Issued to IP is required"
+                                 invalid="{{errors.date_of_draft_report_to_ip}}"
+                                 error-message="{{errors.date_of_draft_report_to_ip}}"
                                  on-down="openDatePicker"
                                  data-selector="draftReportToIp"
                                  validator="dateValidator"
@@ -69,7 +71,8 @@
                                  disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_ip)]]"
                                  validator="dateValidator"
-                                 error-message="A valid Date of Comments Received by IP is required"
+                                 invalid="{{errors.date_of_comments_by_ip}}"
+                                 error-message="{{errors.date_of_comments_by_ip}}"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedByIp"
                                  validator="dateValidator"
@@ -95,7 +98,8 @@
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
                                  validator="dateValidator"
-                                 error-message="A valid Date of Draft Report Issued to UNICEF is required"
+                                 invalid="{{errors.date_of_draft_report_to_unicef}}"
+                                 error-message="{{errors.date_of_draft_report_to_unicef}}"
                                  on-down="openDatePicker"
                                  data-selector="draftReportUnicef"
                                  validator="dateValidator"
@@ -119,7 +123,8 @@
                                  disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_unicef)]]"
                                  validator="dateValidator"
-                                 error-message="A valid Date of Comments Received by UNICEF is required"
+                                 invalid="{{errors.date_of_comments_by_unicef}}"
+                                 error-message="{{errors.date_of_comments_by_unicef}}"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedUnicef"
                                  validator="dateValidator"

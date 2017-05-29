@@ -5,14 +5,15 @@ Polymer({
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         basePermissionPath: {
             type: String,
             observer: '_basePathChanged'
         },
-        auditTypes: {
+        engagementTypes: {
             type: Array,
             value: function() {
                 return [{
@@ -39,11 +40,22 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        errors: {
+            type: Object,
+            value: function() {
+                return {};
+            }
+        },
+        engagementType: {
+            type: String,
+            value: ''
         }
     },
     listeners: {
         'agreement-loaded': '_agreementLoaded'
     },
+    observers: ['_errorHandler(errorObject)'],
     ready: function() {
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
@@ -51,14 +63,17 @@ Polymer({
         this.updateStyles();
     },
     validate: function() {
-        let typeValid = this.$.auditType.validate(),
+        let typeValid = this.$.engagementType.validate(),
             orderValid = this.$.purchaseOrder.validate();
 
+        if (!typeValid) {
+            this.set('errors.type', 'AuditType is required');
+        }
         return typeValid && orderValid;
     },
     resetValidationErrors: function() {
-        this.$.auditType.invalid = false;
-        this.$.purchaseOrder.invalid = false;
+        this.set('errors.type', false);
+        this.set('errors.agreement', false);
     },
     _setRequired: function(field) {
         if (!this.basePermissionPath) { return false; }
@@ -68,18 +83,18 @@ Polymer({
         return required ? 'required' : false;
     },
     _resetFieldError: function(event) {
-        event.target.invalid = false;
+        this.set(`errors.${event.target.getAttribute('field')}`, false);
     },
     _processValue: function(value) {
         if (typeof value === 'string') {
-            return this.auditTypes.filter((type) => {
+            return this.engagementTypes.filter((type) => {
                 return type.value === value;
             })[0];
         } else {
             return value;
         }
     },
-    _setAuditType: function(e, value) {
+    _setEngagementType: function(e, value) {
         this.set('data.type', value.selectedValues);
     },
     isReadOnly: function(field) {
@@ -113,26 +128,23 @@ Polymer({
     },
     _validatePurchaseOrder: function(orderInput) {
         if (this.requestInProcess) {
-            this.orderInputInvalid = true;
-            this.orderNumberErrorText = 'Please, wait until Purchase Order loaded';
+            this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
             return false;
         }
         let value = orderInput && orderInput.value;
         if (!value && orderInput && orderInput.required) {
-            this.orderInputInvalid = true;
-            this.orderNumberErrorText = 'Purchase order is required';
+            this.set('errors.agreement', 'Purchase order is required');
             return false;
         }
         if (!this.data || !this.data.agreement || !this.data.agreement.id) {
-            this.orderNumberErrorText = 'Purchase order not found';
-            this.orderInputInvalid = true;
+            this.set('errors.agreement', 'Purchase order not found');
             return false;
         }
-        this.orderInputInvalid = false;
+        this.set('errors.agreement', false);
         return true;
     },
     resetType: function() {
-        this.$.auditType.value = '';
+        this.$.engagementType.value = '';
     },
     getEngagementData: function() {
         let data = {};
@@ -145,5 +157,16 @@ Polymer({
         if (this.originalData.type !== this.data.type.value) { data.type = this.data.type.value; }
 
         return data;
+    },
+    _errorHandler: function(errorData) {
+        if (!errorData) { return; }
+        this.set('errors', _.clone(this.refactorErrorObject(errorData)));
+    },
+    _setContractDates: function(start, end) {
+        if (!start || !end) { return; }
+        return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
+    },
+    _showTotalValue: function(type) {
+        return type !== 'ma';
     }
 });

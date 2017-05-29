@@ -25,6 +25,13 @@
                 newEngagementData: {
                     type: Object,
                     observer: '_newEngagementChanged'
+                },
+                errorObject: {
+                    type: Object,
+                    notify: true,
+                    value: function() {
+                        return {};
+                    }
                 }
             },
 
@@ -36,7 +43,14 @@
                 this.appDexieDb.collectionsList.update('engagements', {expire: 0});
             },
 
-            _handleError: function () {
+            _handleError: function (event, error) {
+                let responseData = error && error.request && error.request.detail &&
+                        error.request.detail.request && error.request.detail.request.xhr;
+
+                let {status, response} = responseData || {};
+
+                if (status === 400) { this.set('errorObject', response); }
+
                 this.fire('engagement-created');
                 this.fire('global-loading', {type: 'create-engagement'});
             },

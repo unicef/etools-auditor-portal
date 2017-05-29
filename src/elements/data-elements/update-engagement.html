@@ -43,6 +43,13 @@
                 quietAdding: {
                     type: Boolean,
                     notify: true
+                },
+                errorObject: {
+                    type: Object,
+                    notify: true,
+                    value: function() {
+                        return {};
+                    }
                 }
             },
 
@@ -102,7 +109,7 @@
                 this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.type}).url;
             },
 
-            _handleError: function () {
+            _handleError: function (event, error) {
                 this.actionUrl = '';
                 if (this.method === 'PATCH') {
                     this.fire('global-loading', {type: 'update-engagement'});
@@ -111,8 +118,18 @@
                 } else if (this.method === 'POST' && ~this.actionUrl.indexOf('finalize')) {
                     this.fire('global-loading', {type: 'finalize-engagement'});
                 }
+                let responseData = error && error.request && error.request.detail &&
+                                    error.request.detail.request && error.request.detail.request.xhr;
+
+                let {status, response} = responseData || {};
+
+                if (status === 400) { this.set('errorObject', response); }
+
+                if (status === 500) { this.errorObject = {}; }
                 this.fire('engagement-updated');
-                this.fire('toast', {text: 'Can not save engagement data. Please try again later!'});
+                if (!this.quietAdding) {
+                    this.fire('toast', {text: 'Can not save engagement data. Please try again later!'});
+                }
             },
 
             _handleOptionsError: function() {

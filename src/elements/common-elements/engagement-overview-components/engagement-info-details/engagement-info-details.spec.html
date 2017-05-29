@@ -45,7 +45,7 @@
             myEl = fixture('element-fixture');
             numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
             partnerInput = Polymer.dom(myEl.root).querySelector('#partner');
-            auditTypeInput = Polymer.dom(myEl.root).querySelector('#auditType');
+            auditTypeInput = Polymer.dom(myEl.root).querySelector('#engagementType');
         });
 
         it('update styles', function () {
@@ -73,13 +73,15 @@
         });
 
         it('reset validation errors', function () {
-            numberInput.invalid = true;
-            auditTypeInput.invalid = true;
+            myEl.errors = {
+                agreement: 'Test',
+                type: 'Test'
+            };
 
             myEl.resetValidationErrors();
 
-            assert.isFalse(numberInput.invalid);
-            assert.isFalse(auditTypeInput.invalid);
+            assert.isFalse(myEl.errors.agreement);
+            assert.isFalse(myEl.errors.type);
         });
 
         it('return required class if edit mode on', function () {
@@ -176,41 +178,31 @@
         describe('method _validatePurchaseOrder', function() {
             it('returns false, sets orderInputInvalid and orderNumberErrorText if requestInProcess', function() {
                 myEl.requestInProcess = true;
-                assert.isFalse(myEl.orderInputInvalid);
-                assert.isUndefined(myEl.orderNumberErrorText);
 
                 assert.isFalse(myEl._validatePurchaseOrder());
-                assert.isTrue(myEl.orderInputInvalid);
-                assert.isDefined(myEl.orderNumberErrorText)
+                assert.isDefined(myEl.errors.agreement);
             });
 
             it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no value and orderInput is required', function() {
                 myEl.requestInProcess = false;
-                myEl.orderInputInvalid = false;
-                myEl.orderNumberErrorText = undefined;
 
                 var orderInput = {required: true};
 
                 assert.isFalse(myEl._validatePurchaseOrder(orderInput));
-                assert.isTrue(myEl.orderInputInvalid);
-                assert.isDefined(myEl.orderNumberErrorText)
+                assert.isDefined(myEl.errors.agreement);
             });
 
             it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no agreement.id', function() {
                 myEl.requestInProcess = false;
-                myEl.orderInputInvalid = false;
-                myEl.orderNumberErrorText = undefined;
 
                 var orderInput = {value: '123123', required: true};
 
                 assert.isFalse(myEl._validatePurchaseOrder(orderInput));
-                assert.isTrue(myEl.orderInputInvalid);
-                assert.isDefined(myEl.orderNumberErrorText)
+                assert.isDefined(myEl.errors.agreement);
             });
 
             it('returns true, sets orderInputInvalid to false', function() {
                 myEl.requestInProcess = false;
-                myEl.orderInputInvalid = true;
                 myEl.data = {
                     agreement: {
                         id: '123123'
@@ -220,8 +212,6 @@
                 var orderInput = {value: '123123', required: true};
 
                 assert.isTrue(myEl._validatePurchaseOrder(orderInput));
-                assert.isFalse(myEl.orderInputInvalid);
-                assert.isUndefined(myEl.orderNumberErrorText)
             });
         })
 

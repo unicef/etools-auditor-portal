@@ -7,26 +7,34 @@
 
         <assign-engagement data="{{engagement}}"
                            audit-type="Spot Check"
+                           error-object="{{errorObject}}"
                            original-data="[[originalData]]"
                            base-permission-path="{{permissionBase}}"
                            id="assignEngagement"></assign-engagement>
 
         <overview-element data="{{engagement}}"
                           id="overviewEngagement"
+                          original-data="[[originalData]]"
                           base-permission-path="{{permissionBase}}"></overview-element>
 
         <summary-findings-element data-items="{{engagement.findings}}"
                                   id="findingsHighPriority"
+                                  error-object="{{errorObject}}"
+                                  original-data="[[originalData.findings]]"
                                   priority="{{priorities.high}}"
                                   base-permission-path="{{permissionBase}}"></summary-findings-element>
 
         <summary-findings-element data-items="{{engagement.findings}}"
-                            id="findingsLowPriority"
-                            priority="{{priorities.low}}"
-                            base-permission-path="{{permissionBase}}"></summary-findings-element>
+                                  id="findingsLowPriority"
+                                  error-object="{{errorObject}}"
+                                  original-data="[[originalData.findings]]"
+                                  priority="{{priorities.low}}"
+                                  base-permission-path="{{permissionBase}}"></summary-findings-element>
 
         <internal-controls id="internalControls"
-                           data="{{engagement}}"
+                           error-object="{{errorObject}}"
+                           data="{{engagement.internal_controls}}"
+                           original-data="[[originalData.internal_controls]]"
                            base-permission-path="{{permissionBase}}"></internal-controls>
     </template>
 

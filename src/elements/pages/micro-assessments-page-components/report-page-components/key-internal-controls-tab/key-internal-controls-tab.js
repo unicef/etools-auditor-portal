@@ -4,7 +4,8 @@ Polymer({
     is: 'key-internal-controls-tab',
     behaviors: [
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         columns: {
@@ -37,6 +38,10 @@ Polymer({
                     'size': 100
                 }];
             }
+        },
+        dialogOpened: {
+            type: Boolean,
+            notify: true
         }
     },
 
@@ -49,7 +54,8 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         'updateStyles(requestInProcess)',
-        '_dataChanged(subjectAreas)'
+        '_dataChanged(subjectAreas)',
+        '_errorHandler(errorObject.test_subject_areas)'
     ],
 
     ready: function() {
@@ -103,6 +109,17 @@ Polymer({
     validateEditFields: function() {
         let valueValid = this.$.riskAssessmentInput.validate(),
             extraValid = this.$.briefJustification.validate();
+
+        let errors = {
+            children: [{
+                blueprints: [{
+                    value: !valueValid ? 'Please, select Risk Assessment' : false,
+                    extra: !extraValid ? 'Please, enter Brief Justification' : false
+                }]
+            }]
+        };
+        this.set('errors', errors);
+
         return valueValid && extraValid;
     },
 
@@ -165,5 +182,10 @@ Polymer({
     },
     _showRisk: function(risk) {
         return risk && risk.type === 'default';
+    },
+    _errorHandler: function(errorData) {
+        this.requestInProcess = false;
+        if (!errorData || !this.dialogOpened) { return; }
+        this.set('errors', this.refactorErrorObject(errorData));
     }
 });

@@ -37,7 +37,11 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 70,
+                        'size': 20,
+                        'label': 'Finding Number',
+                        'path': 'finding'
+                    },                    {
+                        'size': 50,
                         'label': 'Subject Area',
                         'path': 'category_of_observation.display_name'
                     },
@@ -96,7 +100,8 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_setPriority(itemModel, priority)',
-        '_updateCategory(dataItems, categoryOfObservation)'
+        '_updateCategory(dataItems, categoryOfObservation)',
+        '_errorHandler(errorObject.findings)'
     ],
     _getLength: function(dataItems) {
         return dataItems.filter((item) => {
@@ -126,27 +131,45 @@ Polymer({
     },
     attached: function() {
         this.categoryOfObservation = this.getData('category_of_observation');
+        this.set('errors.deadline_of_action', false);
     },
     _showFindings: function(item) {
         return this._showItems(item) && item.priority === this.priority.value;
     },
     getFindingsData: function() {
+        if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
         let data = [];
-        _.each(this.dataItems, (item) => {
+        _.each(this.dataItems, (item, index) => {
             if (item.priority !== this.priority.value) {
                 return;
             }
             if (!item.deadline_of_action) {
                 item.deadline_of_action = null;
             }
+            let dataItem;
             if (_.isObject(item.category_of_observation)) {
                 let preparedItem = _.cloneDeep(item);
                 preparedItem.category_of_observation = item.category_of_observation.value;
-                data.push(preparedItem);
+                dataItem = preparedItem;
             } else {
-                data.push(item);
+                dataItem = item;
             }
+
+            if (!_.isEqualWith(dataItem, this.originalData[index], (objValue, othValue) => {
+                    if (objValue && othValue && objValue === othValue.value) { return true; }
+                })) { data.push(dataItem); }
         });
-        return data;
+        return data && data.length ? data : null;
+    },
+    getCurrentData: function() {
+        if (!this.dialogOpened) { return null; }
+        let data = _.clone(this.editedItem);
+        if (data.category_of_observation && data.category_of_observation.value) { data.category_of_observation = data.category_of_observation.value; }
+        return [data];
+    },
+    _errorHandler: function(errorData) {
+        this.requestInProcess = false;
+        if (!errorData || !this.dialogOpened) { return; }
+        this.set('errors', this.refactorErrorObject(errorData)[0]);
     }
 });

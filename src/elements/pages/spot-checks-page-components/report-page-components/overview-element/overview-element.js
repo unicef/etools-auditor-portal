@@ -34,13 +34,10 @@ Polymer({
         event.target.invalid = false;
     },
     getOverviewData: function() {
-        let totalAmountTested = this.data.total_amount_tested;
-        let totalAmountOfIneligibleExpenditure = this.data.total_amount_of_ineligible_expenditure;
-        let amountOfIneligibleExpenditures = this.data.amount_of_ineligible_expenditures;
-        return {
-            totalAmountTested: totalAmountTested,
-            totalAmountOfIneligibleExpenditure: totalAmountOfIneligibleExpenditure,
-            amountOfIneligibleExpenditures: amountOfIneligibleExpenditures
-        };
+        return _.pickBy(this.data, (value, key) => {
+            return ~['total_amount_tested',
+                    'total_amount_of_ineligible_expenditure',
+                    'amount_of_ineligible_expenditures'].indexOf(key) && !!value && value !== this.originalData[key];
+        });
     }
 });

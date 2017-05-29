@@ -60,12 +60,16 @@ Polymer({
 
     customDataPrepare: function(data) {
         let reportPage = Polymer.dom(this.root).querySelector('#report');
-        data.findings = reportPage.getFindingsData();
-        data.internal_controls = reportPage.getInternalControlsData();
-        let overviewData = reportPage.getOverviewData();
-        data.total_amount_tested = overviewData.totalAmountTested;
-        data.total_amount_of_ineligible_expenditure = overviewData.totalAmountOfIneligibleExpenditure;
-        data.amount_of_ineligible_expenditures = overviewData.amountOfIneligibleExpenditures;
+
+        let findingData = reportPage.getFindingsData();
+        if (findingData) { data.findings = findingData; }
+
+        let internalControlsData = reportPage.getInternalControlsData();
+        if (!_.isUndefined(internalControlsData)) { data.internal_controls = internalControlsData; }
+
+        let overviewData = reportPage.getOverviewData() || {};
+        _.assign(data, overviewData);
+
         return data;
     },
 

@@ -35,7 +35,8 @@
                                 readonly="[[isReadOnly(basePermissionPath)]]"
                                 disabled="[[isReadOnly(basePermissionPath)]]"
                                 value="{{primaryArea.value}}"
-                                error-message="This field is required"
+                                invalid="{{errors.children.0.blueprints.0.value}}"
+                                error-message="{{errors.children.0.blueprints.0.value}}"
                                 on-focus="_resetFieldError"
                                 label="Risk Assessment"
                                 placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
@@ -47,11 +48,13 @@
                         <!-- Brief Justification -->
                         <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
                                         required
-                                        error-message="This field is required"
+                                        invalid="{{errors.children.0.blueprints.0.extra}}"
+                                        error-message="{{errors.children.0.blueprints.0.extra}}"
                                         id="briefJustification"
                                         class="disabled-as-readonly validate-input"
                                         value="{{primaryArea.extra}}"
                                         disabled="[[isReadOnly(basePermissionPath)]]"
+                                        on-focus="_resetFieldError"
                                         placeholder="Enter Brief Justification">
                         </paper-textarea>
                     </div>

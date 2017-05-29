@@ -4,7 +4,8 @@ Polymer({
     is: 'partner-details-tab',
     behaviors: [
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         basePermissionPath: {
@@ -15,10 +16,17 @@ Polymer({
         requestInProcess: {
             type: Boolean,
             value: false
+        },
+        errors: {
+            type: Object,
+            value: function() {
+                return {};
+            }
         }
     },
     observers: [
-        '_engagementChanged(engagement.partner)'
+        '_engagementChanged(engagement.partner)',
+        '_errorHandler(errorObject)'
     ],
     listeners: {
         'partner-loaded': '_partnerLoaded'
@@ -31,13 +39,11 @@ Polymer({
     },
     validate: function() {
         if (!this.$.partner || !this.$.partner.required) { return true; }
-
         if (!this.engagement || !this.engagement.partner || !this.engagement.partner.id) {
-            this.partnerErrorText = 'Partner is required';
-            this.$.partner.invalid = true;
+            this.set('errors.partner', 'Partner is required');
             return false;
         } else if (!this.partner.id) {
-            this.partnerErrorText = 'Can not find partner data';
+            this.set('errors.partner', 'Can not find partner data');
             this.$.partner.invalid = true;
             return false;
         } else {
@@ -54,8 +60,8 @@ Polymer({
 
         return required ? 'required' : false;
     },
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
+    _resetFieldError: function() {
+        this.set('errors.partner', false);
     },
     isReadOnly: function(field, basePermissionPath, inProcess) {
         if (!basePermissionPath || inProcess) { return true; }
@@ -105,5 +111,9 @@ Polymer({
             partner = this.engagement.partner.id;
         }
         return partner;
+    },
+    _errorHandler: function(errorData) {
+        if (!errorData) { return; }
+        this.set('errors', this.refactorErrorObject(errorData));
     }
 });

@@ -17,6 +17,6 @@ Polymer({
         return this.$.assignEngagement.getAssignVisitData();
     },
     getFinancialFindingsData: function() {
-        return this.$.financialFindings.getFinancialFindingsData();
+        return this.$.financialFindings.getTabData();
     }
 });

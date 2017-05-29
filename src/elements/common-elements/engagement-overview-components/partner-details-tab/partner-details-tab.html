@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles, module-styles, get-partner-data]-->
+<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles, module-styles, get-partner-data, error-handler-behavior]-->
 
 <dom-module id="partner-details-tab">
     <template>
@@ -32,7 +32,8 @@
                             disabled="[[isReadOnly('partner', basePermissionPath)]]"
                             value="{{engagement.partner}}"
                             id="partner"
-                            error-message="[[partnerErrorText]]"
+                            invalid="{{_checkInvalid(errors.partner)}}"
+                            error-message="{{errors.partner}}"
                             required="{{_setRequired('partner', basePermissionPath)}}"
                             custom-object-options
                             option-value="id"

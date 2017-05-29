@@ -19,7 +19,7 @@
                 pattern="/:tab"
                 data="{{routeData}}"></app-route>
 
-        <add-new-engagement new-engagement-data="{{newEngagementData}}"></add-new-engagement>
+        <add-new-engagement new-engagement-data="{{newEngagementData}}" error-object="{{errorObject}}"></add-new-engagement>
 
         <pages-header-element show-export-button
                               title="Add New Engagement"></pages-header-element>
@@ -37,11 +37,12 @@
                             attr-for-selected="name">
 
                     <div name="overview">
-                        <engagement-info-details data="{{engagement}}" id="engagementDetails" base-permission-path="new_engagement"></engagement-info-details>
+                        <engagement-info-details error-object="{{errorObject}}" data="{{engagement}}" id="engagementDetails" base-permission-path="new_engagement"></engagement-info-details>
 
-                        <partner-details-tab id="partnerDetails" engagement="{{engagement}}" base-permission-path="new_engagement"></partner-details-tab>
+                        <partner-details-tab id="partnerDetails" error-object="{{errorObject}}" engagement="{{engagement}}" base-permission-path="new_engagement"></partner-details-tab>
 
                         <engagement-staff-members-tab id="staffMembers"
+                                                      error-object="{{errorObject}}"
                                                       save-with-button
                                                       base-permission-path="new_engagement"
                                                       data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>

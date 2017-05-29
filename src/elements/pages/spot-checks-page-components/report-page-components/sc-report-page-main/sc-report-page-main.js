@@ -31,15 +31,17 @@ Polymer({
     getFindingsData: function() {
         let findingsLowPriority = this.$.findingsLowPriority.getFindingsData();
         let findingsHighPriority = this.$.findingsHighPriority.getFindingsData();
-        return _.concat(findingsLowPriority, findingsHighPriority);
+        let findings = _.concat(findingsLowPriority || [], findingsHighPriority || []);
+        return findings.length ? findings : null;
     },
     getInternalControlsData: function() {
-        return this.$.internalControls.getInternalControlsData();
+        let internalControlsData = this.$.internalControls.getInternalControlsData();
+        return !_.isUndefined(internalControlsData) ? internalControlsData : null;
     },
     getAssignVisitData: function() {
-        return this.$.assignEngagement.getAssignVisitData();
+        return this.$.assignEngagement.getAssignVisitData() || null;
     },
     getOverviewData: function() {
-        return this.$.overviewEngagement.getOverviewData();
+        return this.$.overviewEngagement.getOverviewData() || null;
     }
 });

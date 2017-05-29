@@ -17,7 +17,7 @@
             selection: []
         },
         {
-            name: 'audit type',
+            name: 'engagement type',
             query: 'f_type',
             hideSearch: true,
             optionValue: 'value',
@@ -111,14 +111,18 @@
                         'path': 'agreement.audit_organization.name'
                     }, {
                         'size': 15,
-                        'label': 'Audit Type',
+                        'label': 'Engagement Type',
                         'name': 'type',
                         'ordered': false
                     }, {
                         'size': 30,
                         'label': 'Status',
                         'name': 'status',
-                        'ordered': false
+                        'ordered': false,
+                        'additional': {
+                            'type': 'date',
+                            'path': 'status_date'
+                        }
                     }];
                 }
             },
@@ -141,17 +145,6 @@
             hasCollapse: {
                 type: Boolean,
                 value: false
-            },
-            listDetails: {
-                type: Array,
-                value: function() {
-                    return [{
-                        'label': 'Date of status',
-                        'name': 'date',
-                        'path': 'status_date',
-                        'size': 16
-                    }];
-                }
             }
         },
         listeners: {},
