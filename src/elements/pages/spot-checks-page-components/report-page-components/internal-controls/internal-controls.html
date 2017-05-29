@@ -21,6 +21,7 @@
             </div>
             <paper-textarea label="Document any changes identified"
                             value="{{data}}"
+                            always-float-label
                             on-focus="_resetFieldError"
                             class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
                             required$="[[_setRequired('internal_controls', basePermissionPath)]]"

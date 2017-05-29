@@ -46,7 +46,7 @@ Polymer({
         event.target.invalid = false;
     },
     getInternalControlsData: function() {
-        let data;
+        let data = null;
         if (!_.isEqual(this.originalData, this.data)) {
             data = this.data;
         }
