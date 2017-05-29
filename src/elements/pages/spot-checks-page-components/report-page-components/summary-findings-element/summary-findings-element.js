@@ -28,7 +28,8 @@ Polymer({
                 return {
                     category_of_observation: '',
                     deadline_of_action: null,
-                    recommendation: ''
+                    recommendation: '',
+                    agreed_action_by_ip: ''
                 };
             }
         },
@@ -64,6 +65,10 @@ Polymer({
                 return [{
                     'label': 'Recommendation',
                     'path': 'recommendation',
+                    'size': 100
+                }, {
+                    'label': 'Agreed Action by IP',
+                    'path': 'agreed_action_by_ip',
                     'size': 100
                 }];
             }

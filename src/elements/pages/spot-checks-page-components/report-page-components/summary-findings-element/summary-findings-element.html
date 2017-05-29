@@ -85,14 +85,31 @@
                             <paper-textarea label="Recommendation"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
-                                            placeholder="Enter recommendation"
                                             class$="disabled-as-readonly validate-input {{_setRequired('recommendation', basePermissionPath)}}"
                                             disabled="{{requestInProcess}}"
                                             readonly$="{{requestInProcess}}"
                                             invalid="{{errors.recommendation}}"
                                             error-message="{{errors.recommendation}}"
                                             on-focus="_resetFieldError"
+                                            always-float-label
                                             required="{{_setRequired('recommendation', basePermissionPath)}}">
+                            </paper-textarea>
+                        </div>
+                    </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Recommendation -->
+                            <paper-textarea label="Agreed Action by IP"
+                                            value="{{editedItem.agreed_action_by_ip}}"
+                                            allowed-pattern="[\d\s]"
+                                            class$="disabled-as-readonly validate-input {{_setRequired('agreed_action_by_ip', basePermissionPath)}}"
+                                            disabled="{{requestInProcess}}"
+                                            readonly$="{{requestInProcess}}"
+                                            invalid="{{errors.agreed_action_by_ip}}"
+                                            error-message="{{errors.agreed_action_by_ip}}"
+                                            on-focus="_resetFieldError"
+                                            always-float-label
+                                            required="{{_setRequired('agreed_action_by_ip', basePermissionPath)}}">
                             </paper-textarea>
                         </div>
                     </div>

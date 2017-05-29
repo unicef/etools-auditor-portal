@@ -36,7 +36,7 @@ Polymer({
     },
     getInternalControlsData: function() {
         let internalControlsData = this.$.internalControls.getInternalControlsData();
-        return !_.isUndefined(internalControlsData) ? internalControlsData : null;
+        return !_.isNull(internalControlsData) ? internalControlsData : null;
     },
     getAssignVisitData: function() {
         return this.$.assignEngagement.getAssignVisitData() || null;
