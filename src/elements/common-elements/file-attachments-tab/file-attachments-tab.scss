@@ -3,9 +3,74 @@
     display: block;
     margin-bottom: 20px;
 
-    --ecp-content: #{'{
-        padding:  0
-    }'};
+    .add-button {
+        position: absolute;
+        right: 15px;
+        top: 4px;
+        width: 40px;
+        height: 40px;
+        color: #ffffff;
+        z-index: 10;
+    }
 
-    .no-attachments { padding: 16px 20px; }
+    a {
+        padding-left: 5px;
+        color: #40c4ff;
+        text-decoration: none;
+    }
+    .truncate { white-space: nowrap; }
+
+    .edit-icon {
+        padding: 5px;
+        width: 30px;
+        height: 30px;
+        color: var(--gray-mid);
+    }
+
+    .repeatable-item-container {
+        min-width: 300px;
+    }
+}
+
+:host .confirm-backdrop[opened] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 104;
+}
+
+etools-content-panel {
+    --ecp-content: #{'{
+            padding: 0;
+            padding-bottom: 7px;
+        }'};
+}
+
+.upload-button {
+    --paper-button: #{'{
+                    @apply(--layout-flex);
+                    @apply(--layout-start-justified);
+                    font-weight: bold;
+                    font-size: 14px;
+                    margin: 0;
+                    padding: 0 19px 0 12px;
+                    height: 36px;
+                    color: #ffffff;
+                    background-color: var(--module-primary)
+                }'};
+}
+
+.download-icon {
+    --iron-icon-width: 25px;
+    --iron-icon-height: 25px;
+    --iron-icon-fill-color: var(--gray-50);
+}
+
+paper-input-error {
+    position: relative;
+    visibility: visible;
+    margin-left: 5px;
 }

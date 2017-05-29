@@ -386,8 +386,8 @@
                     var stub = sinon.stub(behaviorObj, 'getElement');
                     stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
                     stub.withArgs('#partnerDetails').returns({validate: function() { return false; }});
-                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
-                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
+//                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
+//                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
                     behaviorObj.fire = sinon.spy();
 
@@ -396,19 +396,19 @@
                     assert.equal(behaviorObj.fire.args[0].length, 2);
                 });
 
-                it('sets attachments tab if engagementDetails is valid but attachments aren\'t valid', function() {
-                    var stub = sinon.stub(behaviorObj, 'getElement');
-                    stub.withArgs('#engagementDetails').returns({validate: function() { return true; }});
-                    stub.withArgs('#partnerDetails').returns({validate: function() { return true; }});
-                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
-                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
-                    behaviorObj.set = sinon.spy();
-                    behaviorObj.fire = sinon.spy();
-
-                    assert.isFalse(behaviorObj._validateBasicInfo());
-                    assert.isTrue(behaviorObj.set.calledWith('tab', 'attachments'));
-                    assert.equal(behaviorObj.fire.args[0].length, 2);
-                });
+//                it('sets attachments tab if engagementDetails is valid but attachments aren\'t valid', function() {
+//                    var stub = sinon.stub(behaviorObj, 'getElement');
+//                    stub.withArgs('#engagementDetails').returns({validate: function() { return true; }});
+//                    stub.withArgs('#partnerDetails').returns({validate: function() { return true; }});
+//                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
+//                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
+//                    behaviorObj.set = sinon.spy();
+//                    behaviorObj.fire = sinon.spy();
+//
+//                    assert.isFalse(behaviorObj._validateBasicInfo());
+//                    assert.isTrue(behaviorObj.set.calledWith('tab', 'attachments'));
+//                    assert.equal(behaviorObj.fire.args[0].length, 2);
+//                });
 
                 it('can receive tab property name as argument to set if validation failed', function() {
                     sinon.stub(behaviorObj, 'getElement').returns({validate: function() { return false; }});

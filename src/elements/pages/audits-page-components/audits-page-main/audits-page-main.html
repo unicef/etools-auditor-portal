@@ -72,15 +72,19 @@
                         <div name="attachments">
                             <file-attachments-tab title$="Engagement Attachments"
                                                   id="engagement_attachments"
-                                                  allow-download allow-delete file-type-required
-                                                  files="[[engagement.engagement_attachments]]"
+                                                  main-property="engagement_attachments"
+                                                  error-object="{{errorObject.engagement_attachments}}"
+                                                  allow-download allow-delete file-type-required multiple
+                                                  data-items="[[engagement.engagement_attachments]]"
                                                   file-types="[[engagementFileTypes]]"
                                                   readonly="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"></file-attachments-tab>
 
                             <file-attachments-tab title="Report Attachments"
                                                   id="report_attachments"
-                                                  allow-download allow-delete file-type-required
-                                                  files="[[engagement.report_attachments]]"
+                                                  main-property="report_attachments"
+                                                  error-object="{{errorObject.report_attachments}}"
+                                                  allow-download allow-delete file-type-required multiple
+                                                  data-items="[[engagement.report_attachments]]"
                                                   file-types="[[reportFileTypes]]"
                                                   readonly="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"></file-attachments-tab>
                         </div>

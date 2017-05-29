@@ -52,12 +52,16 @@
                     <div name="attachments">
                         <file-attachments-tab title="Attachments"
                                               id="engagement_attachments"
-                                              files="[[engagement.engagement_attachments]]"
+                                              main-property="engagement_attachments"
+                                              error-object="{{errorObject.engagement_attachments}}"
+                                              data-items="[[engagement.engagement_attachments]]"
                                               file-types="[[fileTypes]]"
-                                              readonly="[[_attachmentsReadonly()]]"
+                                              readonly$="[[_attachmentsReadonly()]]"
                                               file-type-required
                                               allow-download
-                                              allow-delete>
+                                              allow-delete
+                                              save-with-button
+                                              multiple>
                         </file-attachments-tab>
                     </div>
 
