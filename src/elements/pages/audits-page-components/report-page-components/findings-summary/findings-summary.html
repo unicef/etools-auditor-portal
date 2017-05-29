@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
 <!--import [list-header, list-element]-->
-<!--import [tab-inputs-styles, module-styles, permission-controller, static-data-behavior]-->
+<!--import [tab-inputs-styles, module-styles, shared-styles, dialog-element, table-elements-behavior, static-data-behavior]-->
 
 <dom-module id="findings-summary">
     <template>
@@ -11,121 +11,194 @@
                 margin-bottom: 20px;
             }
 
-            .edit-icon { color: var(--module-primary); }
+            .edit-icon {
+                padding: 5px;
+                width: 30px;
+                height: 30px;
+                color: var(--gray-mid);
+            }
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Summary of audit findings">
             <list-header id="list-header"
                          no-additional
                          no-ordered
-                         data="[[headings]]">
+                         data="[[columns]]">
             </list-header>
 
-            <list-element
-                    class="list-element"
-                    no-additional
-                    data="[[data]]"
-                    headings="[[headings]]">
-                <div slot="icon">
-                    <paper-icon-button icon="icons:create" class="edit-icon"></paper-icon-button>
-                </div>
-            </list-element>
+            <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
+                <list-element
+                        class="list-element"
+                        no-additional
+                        data="[[item]]"
+                        headings="[[columns]]">
+                    <div slot="icon">
+                        <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                    </div>
+                </list-element>
+            </template>
         </etools-content-panel>
 
-        <!--TODO: remove this section if unneeded-->
-        <!--<etools-content-panel class="content-section clearfix" panel-title="Summary of audit findings">-->
-            <!--<div class="row-h group">-->
-                <!--<div class="input-container">-->
-                    <!--&lt;!&ndash; Implementing partner name &ndash;&gt;-->
-                    <!--<paper-input-->
-                            <!--id="partnerName"-->
-                            <!--label="Implementing partner name"-->
-                            <!--placeholder="Enter name"-->
-                            <!--value="{{data.partner.name}}"-->
-                            <!--disabled$="[[isReadOnly('partner', basePermissionPath)]]"-->
-                            <!--class$="disabled-as-readonly [[_setRequired('partner', basePermissionPath)]]"-->
-                            <!--required="[[_setRequired('partner', basePermissionPath)]]">-->
-                    <!--</paper-input>-->
-                <!--</div>-->
+        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="[[requestInProcess]]">
+            <div class="row-h repeatable-item-container" without-line>
+                <div class="repeatable-item-content">
+                    <div class="row-h group">
+                        <div class="input-container">
+                            <!-- Implementing partner name -->
+                            <paper-input
+                                    label="Implementing partner name"
+                                    placeholder="Enter name"
+                                    value="{{editedItem.partner.name}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly"
+                                    readonly>
+                            </paper-input>
+                        </div>
 
-                <!--<div class="input-container">-->
-                    <!--&lt;!&ndash; Audited expenditure (USD) &ndash;&gt;-->
-                    <!--<etools-currency-amount-input-->
-                            <!--id="auditedExpenditure"-->
-                            <!--label="Audited expenditure (USD)"-->
-                            <!--placeholder="Enter value"-->
-                            <!--currency="$"-->
-                            <!--value="{{data.audited_expenditure}}"-->
-                            <!--disabled="[[isReadOnly('audited_expenditure', basePermissionPath)]]"-->
-                            <!--class$="disabled-as-readonly [[_setRequired('audited_expenditure', basePermissionPath)]]"-->
-                            <!--required="[[_setRequired('audited_expenditure', basePermissionPath)]]">-->
-                    <!--</etools-currency-amount-input>-->
-                <!--</div>-->
+                        <div class="input-container">
+                            <!-- Audited expenditure (USD) -->
+                            <etools-currency-amount-input
+                                    label="Audited expenditure (USD)"
+                                    placeholder="Enter value"
+                                    currency="$"
+                                    value="{{editedItem.audited_expenditure}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure', basePermissionPath)]]"
+                                    required$="[[_setRequired('audited_expenditure', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.audited_expenditure}}"
+                                    error-message="{{errors.audited_expenditure}}">
+                            </etools-currency-amount-input>
+                        </div>
 
-                <!--<div class="input-container">-->
-                    <!--&lt;!&ndash; Financial findings (USD) &ndash;&gt;-->
-                    <!--<etools-currency-amount-input-->
-                            <!--id="financialFindings"-->
-                            <!--label="Financial findings (USD)"-->
-                            <!--placeholder="Enter value"-->
-                            <!--currency="$"-->
-                            <!--value="{{data.financial_findings}}"-->
-                            <!--disabled="[[isReadOnly('financial_findings', basePermissionPath)]]"-->
-                            <!--class$="disabled-as-readonly [[_setRequired('financial_findings', basePermissionPath)]]"-->
-                            <!--required="[[_setRequired('financial_findings', basePermissionPath)]]">-->
-                    <!--</etools-currency-amount-input>-->
-                <!--</div>-->
-            <!--</div>-->
+                        <div class="input-container">
+                            <!-- Financial findings (USD) -->
+                            <etools-currency-amount-input
+                                    label="Financial findings (USD)"
+                                    placeholder="Enter value"
+                                    currency="$"
+                                    value="{{editedItem.financial_findings}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('financial_findings', basePermissionPath)]]"
+                                    required$="[[_setRequired('financial_findings', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.financial_findings}}"
+                                    error-message="{{errors.financial_findings}}">
+                            </etools-currency-amount-input>
+                        </div>
+                    </div>
 
-            <!--<div class="row-h group">-->
-                <!--<div class="input-container">-->
-                    <!--&lt;!&ndash; % of audited expenditure &ndash;&gt;-->
-                    <!--<etools-currency-amount-input-->
-                            <!--id="percentAuditedExpenditure"-->
-                            <!--label="% of audited expenditure"-->
-                            <!--placeholder="Enter value"-->
-                            <!--value="{{data.percent_of_audited_expenditure}}"-->
-                            <!--disabled="[[isReadOnly('percent_of_audited_expenditure', basePermissionPath)]]"-->
-                            <!--class$="disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"-->
-                            <!--required="[[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]">-->
-                    <!--</etools-currency-amount-input>-->
-                <!--</div>-->
+                    <div class="row-h group">
+                        <div class="input-container">
+                            <!-- % of audited expenditure -->
+                            <etools-currency-amount-input
+                                    label="% of audited expenditure"
+                                    placeholder="Enter value"
+                                    value="{{editedItem.percent_of_audited_expenditure}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
+                                    required$="[[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.percent_of_audited_expenditure}}"
+                                    error-message="{{errors.percent_of_audited_expenditure}}">
+                            </etools-currency-amount-input>
+                        </div>
 
-                <!--<div class="input-container">-->
-                    <!--&lt;!&ndash; Audit opinion &ndash;&gt;-->
-                    <!--<etools-searchable-multiselection-menu-->
-                            <!--id="auditOpinion"-->
-                            <!--label="Audit opinion"-->
-                            <!--placeholder="Select value"-->
-                            <!--error-message="This field is required"-->
-                            <!--options="[[auditOpinions]]"-->
-                            <!--hide-search-->
-                            <!--custom-object-options-->
-                            <!--option-value="value"-->
-                            <!--option-label="display_name"-->
-                            <!--value="[[_processValue(data.audit_opinion)]]"-->
-                            <!--on-value-change="_changeAuditOpinion"-->
-                            <!--on-focus="_resetFieldError"-->
-                            <!--disabled="[[isReadOnly('audit_opinion', basePermissionPath)]]"-->
-                            <!--class$="disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"-->
-                            <!--required="[[_setRequired('audit_opinion', basePermissionPath)]]">-->
-                    <!--</etools-searchable-multiselection-menu>-->
-                <!--</div>-->
+                        <div class="input-container">
+                            <!-- Audit opinion -->
+                            <etools-searchable-multiselection-menu
+                                    label="Audit opinion"
+                                    placeholder="Select value"
+                                    error-message="This field is required"
+                                    options="[[auditOpinions]]"
+                                    hide-search
+                                    custom-object-options
+                                    option-value="value"
+                                    option-label="display_name"
+                                    value="{{editedItem.opinion}}"
+                                    on-value-change="_changeAuditOpinion"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
+                                    required$="[[_setRequired('audit_opinion', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.audit_opinion}}"
+                                    error-message="{{errors.audit_opinion}}">
+                            </etools-searchable-multiselection-menu>
+                        </div>
 
-                <!--<div class="input-container">-->
-                    <!--&lt;!&ndash; Number of financial findings &ndash;&gt;-->
-                    <!--<etools-currency-amount-input-->
-                            <!--id="numberOfFinancialFindings"-->
-                            <!--label="Number of financial findings"-->
-                            <!--placeholder="Enter value"-->
-                            <!--value="{{data.number_of_financial_findings}}"-->
-                            <!--disabled="[[isReadOnly('number_of_financial_findings', basePermissionPath)]]"-->
-                            <!--class$="disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"-->
-                            <!--required="[[_setRequired('number_of_financial_findings', basePermissionPath)]]">-->
-                    <!--</etools-currency-amount-input>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</etools-content-panel>-->
+                        <div class="input-container">
+                            <!-- Number of financial findings -->
+                            <etools-currency-amount-input
+                                    label="Number of financial findings"
+                                    placeholder="Enter value"
+                                    value="{{editedItem.number_of_financial_findings}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
+                                    required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.number_of_financial_findings}}"
+                                    error-message="{{errors.number_of_financial_findings}}">
+                            </etools-currency-amount-input>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container">
+                            <!-- High risk -->
+                            <etools-currency-amount-input
+                                    label="High risk"
+                                    placeholder="Enter value"
+                                    value="{{editedItem.high_risk}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('high_risk', basePermissionPath)]]"
+                                    required$="[[_setRequired('high_risk', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.high_risk}}"
+                                    error-message="{{errors.high_risk}}">
+                            </etools-currency-amount-input>
+                        </div>
+
+                        <div class="input-container">
+                            <!-- Medium risk -->
+                            <etools-currency-amount-input
+                                    label="Medium risk"
+                                    placeholder="Enter value"
+                                    value="{{editedItem.medium_risk}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('medium_risk', basePermissionPath)]]"
+                                    required$="[[_setRequired('medium_risk', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.medium_risk}}"
+                                    error-message="{{errors.medium_risk}}">
+                            </etools-currency-amount-input>
+                        </div>
+
+                        <div class="input-container">
+                            <!-- Low risk -->
+                            <etools-currency-amount-input
+                                    label="Low risk"
+                                    placeholder="Enter value"
+                                    value="{{editedItem.low_risk}}"
+                                    on-focus="_resetFieldError"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('low_risk', basePermissionPath)]]"
+                                    required$="[[_setRequired('low_risk', basePermissionPath)]]"
+                                    disabled$="[[requestInProcess]]"
+                                    readonly$="[[requestInProcess]]"
+                                    invalid="{{errors.low_risk}}"
+                                    error-message="{{errors.low_risk}}">
+                            </etools-currency-amount-input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog-element>
     </template>
 
     <!-- inject scripts './findings-summary.js'-->
