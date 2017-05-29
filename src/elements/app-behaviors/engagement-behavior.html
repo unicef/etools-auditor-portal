@@ -173,14 +173,14 @@
                     //TODO: don't validate staff members in tabular view
                     //staffMembersValid = this.getElement('#staffMembers').validate();
 
-            let engagementAttachments = this.getElement('#engagement_attachments'),
-                    reportAttachments = this.getElement('#report_attachments');
+//            let engagementAttachments = this.getElement('#engagement_attachments'),
+//                    reportAttachments = this.getElement('#report_attachments');
 
-            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
-                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
+//            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
+//                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
 
 
-            if (/*!staffMembersValid || */!detailsValid || !engagementAttachmentsValid || !reportAttachmentsValid || !partnerDetailsValid) {
+            if (/*!staffMembersValid || */!detailsValid/* || !engagementAttachmentsValid || !reportAttachmentsValid*/ || !partnerDetailsValid) {
                 let openTab = (/*staffMembersValid && */partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);
