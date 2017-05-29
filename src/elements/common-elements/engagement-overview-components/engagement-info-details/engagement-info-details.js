@@ -46,6 +46,10 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        engagementType: {
+            type: String,
+            value: ''
         }
     },
     listeners: {
@@ -161,5 +165,8 @@ Polymer({
     _setContractDates: function(start, end) {
         if (!start || !end) { return; }
         return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
+    },
+    _showTotalValue: function(type) {
+        return type !== 'ma';
     }
 });

@@ -169,20 +169,23 @@
                     </paper-input>
                 </div>
 
-                <div class="input-container">
-                    <!-- Total Value of Selected FACE Forms -->
-                    <etools-currency-amount-input
-                            label="Total Value of Selected FACE Forms"
-                            currency="$"
-                            class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}}"
-                            disabled="[[isReadOnly('total_value', basePermissionPath)]]"
-                            required="{{_setRequired('total_value', basePermissionPath)}}"
-                            invalid="{{_checkInvalid(errors.total_value)}}"
-                            field="total_value"
-                            error-message="{{errors.total_value}}"
-                            value="{{data.total_value}}"
-                            placeholder="Enter Total Value"></etools-currency-amount-input>
-                </div>
+                <template is="dom-if" if="{{_showTotalValue(engagementType)}}">
+                    <div class="input-container">
+                        <!-- Total Value of Selected FACE Forms -->
+                        <etools-currency-amount-input
+                                label="Total Value of Selected FACE Forms"
+                                currency="$"
+                                class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}}"
+                                disabled="[[isReadOnly('total_value', basePermissionPath)]]"
+                                required="{{_setRequired('total_value', basePermissionPath)}}"
+                                invalid="{{_checkInvalid(errors.total_value)}}"
+                                field="total_value"
+                                error-message="{{errors.total_value}}"
+                                value="{{data.total_value}}"
+                                placeholder="Enter Total Value"></etools-currency-amount-input>
+                    </div>
+                </template>
+
             </div>
 
 
