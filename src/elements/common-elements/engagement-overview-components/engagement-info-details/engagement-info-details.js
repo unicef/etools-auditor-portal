@@ -157,5 +157,9 @@ Polymer({
     _errorHandler: function(errorData) {
         if (!errorData) { return; }
         this.set('errors', _.clone(this.refactorErrorObject(errorData)));
+    },
+    _setContractDates: function(start, end) {
+        if (!start || !end) { return; }
+        return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
     }
 });
