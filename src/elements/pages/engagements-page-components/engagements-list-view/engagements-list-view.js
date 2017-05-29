@@ -17,7 +17,7 @@
             selection: []
         },
         {
-            name: 'audit type',
+            name: 'engagement type',
             query: 'f_type',
             hideSearch: true,
             optionValue: 'value',
@@ -111,7 +111,7 @@
                         'path': 'agreement.audit_organization.name'
                     }, {
                         'size': 15,
-                        'label': 'Audit Type',
+                        'label': 'Engagement Type',
                         'name': 'type',
                         'ordered': false
                     }, {

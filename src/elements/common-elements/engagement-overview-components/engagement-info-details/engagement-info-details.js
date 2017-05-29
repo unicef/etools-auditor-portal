@@ -13,7 +13,7 @@ Polymer({
             type: String,
             observer: '_basePathChanged'
         },
-        auditTypes: {
+        engagementTypes: {
             type: Array,
             value: function() {
                 return [{
@@ -59,7 +59,7 @@ Polymer({
         this.updateStyles();
     },
     validate: function() {
-        let typeValid = this.$.auditType.validate(),
+        let typeValid = this.$.engagementType.validate(),
             orderValid = this.$.purchaseOrder.validate();
 
         if (!typeValid) {
@@ -83,14 +83,14 @@ Polymer({
     },
     _processValue: function(value) {
         if (typeof value === 'string') {
-            return this.auditTypes.filter((type) => {
+            return this.engagementTypes.filter((type) => {
                 return type.value === value;
             })[0];
         } else {
             return value;
         }
     },
-    _setAuditType: function(e, value) {
+    _setEngagementType: function(e, value) {
         this.set('data.type', value.selectedValues);
     },
     isReadOnly: function(field) {
@@ -140,7 +140,7 @@ Polymer({
         return true;
     },
     resetType: function() {
-        this.$.auditType.value = '';
+        this.$.engagementType.value = '';
     },
     getEngagementData: function() {
         let data = {};
