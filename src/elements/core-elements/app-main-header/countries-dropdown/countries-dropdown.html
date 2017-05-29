@@ -11,7 +11,6 @@
                        horizontal-align="right">
 
       <paper-button class="dropdown-trigger" on-tap="_toggleOpened">
-        <iron-icon class$="[[country.imgClass]] mr-8 b-3" prefix></iron-icon>
         <span class="dropdown-text">[[country.name]]</span>
 
         <iron-icon class="arrow-down" icon="icons:arrow-drop-down"></iron-icon>
@@ -21,7 +20,6 @@
       <paper-menu class="dropdown-content mw-220" selected="[[current]]" on-iron-select="_countrySelected">
         <template id="repeat" is="dom-repeat" items="[[countries]]">
           <paper-item>
-            <iron-icon class$="[[item.imgClass]]" item-icon></iron-icon>
             [[item.name]]
           </paper-item>
         </template>
