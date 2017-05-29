@@ -136,7 +136,6 @@
         },
 
         _addItemFromDialog: function(event) {
-            console.log(this.dialogOpened);
             if(event && event.detail && event.detail.dialogName === 'deleteConfirm') {
                 this.removeItem();
                 return;
@@ -150,7 +149,7 @@
                 this.fire('save-progress', {quietAdding: true});
                 return;
             }
-            console.log('skip');
+
             //save after click on save button
             let item = _.cloneDeep(this.editedItem);
             if (this.canBeRemoved && !isNaN(this.editedIndex)) {
@@ -158,7 +157,6 @@
                 this.splice('dataItems', this.editedIndex, 1, item);
             } else {
                 //if is creation popup
-                console.log('push');
                 this.push('dataItems', item);
             }
 
@@ -183,7 +181,6 @@
         _getTitleValue: function(value) { return value || ''; },
 
         removeItem: function() {
-            console.log('removeItem', this.editedItem);
             if (this.editedItem && this.editedItem.id !== undefined) {
                 this.set('editedItem._delete', true);
                 this._addItemFromDialog();

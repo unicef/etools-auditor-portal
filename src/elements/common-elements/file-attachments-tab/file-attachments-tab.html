@@ -78,7 +78,6 @@
                                             data-index$="[[index]]"
                                             label="[[fileTypesLabel]]"
                                             placeholder="&#8212;"
-                                            error-message="This field is required"
                                             options="[[fileTypes]]"
                                             hide-search
                                             custom-object-options
@@ -89,7 +88,9 @@
                                             on-focus="_resetFieldError"
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
-                                            required$="[[fileTypeRequired]]">
+                                            required$="[[fileTypeRequired]]"
+                                            invalid="{{errors.file_type}}"
+                                            error-message="{{errors.file_type}}">
                                     </etools-searchable-multiselection-menu>
                             </div>
                         </div>

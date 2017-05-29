@@ -92,7 +92,8 @@
             '_filesChange(dataItems.*, fileTypes.*)',
             '_updateHeadings(allowDelete, readonly, fileTypeRequired)',
             'resetDialog(dialogOpened)',
-            'changePermission(basePermissionPath)'
+            'changePermission(basePermissionPath)',
+            '_errorHandler(errorObject)'
         ],
         _getFileType: function(fileType) {
             if (this.fileTypes && this.fileTypes.length > 0) {
@@ -171,7 +172,6 @@
                 this.editedItem.file = URL.createObjectURL(blob);
             }
 
-            console.log('_fileSelected');
             this._checkAlreadySelected();
         },
 
@@ -239,7 +239,6 @@
             });
         },
 
-        //TODO: refactor method
         getFiles: function() {
             return new Promise((resolve, reject) => {
                 let files = [];
@@ -258,8 +257,9 @@
                         changedFiles.push({
                             id: this.editedItem.id,
                             file_type: this.editedItem.file_type,
-                            _delete: this.editedItem._delete,
-                            hyperlink: this.editedItem.file
+                            hyperlink: this.editedItem.file,
+                            date: this.editedItem.date,
+                            _delete: this.editedItem._delete
                         });
                     }
                 });
@@ -272,7 +272,6 @@
                     .then((uploadedFiles) => {
                         uploadedFiles = uploadedFiles.concat(changedFiles);
                         if (!uploadedFiles.length) { uploadedFiles = null; }
-                        console.log(this.mainProperty, uploadedFiles);
                         resolve(uploadedFiles);
                     })
                     .catch((error) => {
@@ -287,7 +286,7 @@
             let alreadySelectedIndex = this.dataItems.findIndex((file) => {
                 return file.file_name === this.editedItem.file_name;
             });
-            console.log('_checkAlreadySelected');
+
             if (alreadySelectedIndex !== -1) {
                 this.invalid = true;
                 this.errorMessage = 'File already selected';
@@ -319,13 +318,17 @@
                 this.errorMessage = '';
             }
 
-            console.log(editedItem);
-            if (this.fileTypeRequired && (editedItem.file_type === null || editedItem.file_type === undefined)) { valid = false; }
+            if (this.fileTypeRequired && !dropdown.validate()) {
+                this.set('errors.file_type', 'This field is required');
+                valid = false;
+            }
 
-            if (!this.canBeRemoved && (!dropdown.validate() || !editedItem.file_name || !editedItem.raw ||
-                !editedItem.date || !editedItem.file)) { valid = false; }
+            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw || !editedItem.date)) {
+                this.invalid = true;
+                this.errorMessage = 'File is not selected';
+                valid = false;
+            }
 
-            console.log(valid);
             return valid;
         }
     });

@@ -73,6 +73,7 @@
                             <file-attachments-tab title$="Engagement Attachments"
                                                   id="engagement_attachments"
                                                   main-property="engagement_attachments"
+                                                  error-object="{{errorObject.engagement_attachments}}"
                                                   allow-download allow-delete file-type-required multiple
                                                   data-items="[[engagement.engagement_attachments]]"
                                                   file-types="[[engagementFileTypes]]"
@@ -81,6 +82,7 @@
                             <file-attachments-tab title="Report Attachments"
                                                   id="report_attachments"
                                                   main-property="report_attachments"
+                                                  error-object="{{errorObject.report_attachments}}"
                                                   allow-download allow-delete file-type-required multiple
                                                   data-items="[[engagement.report_attachments]]"
                                                   file-types="[[reportFileTypes]]"
