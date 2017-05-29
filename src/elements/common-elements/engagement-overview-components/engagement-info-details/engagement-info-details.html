@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu,
+<!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, iron-icons,
             etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
 
 <!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data, error-handler-behavior]-->
@@ -48,44 +48,17 @@
                 </div>
                 <div class="input-container">
                     <!-- Contract Start Date -->
-                    <paper-input label="Contract Start Date"
+                    <paper-input label="Contract Dates"
                                  class="disabled-as-readonly"
                                  disabled
                                  id="contractStartDateInput"
-                                 value="[[prettyDate(data.agreement.contract_start_date)]]"
+                                 value="[[_setContractDates(data.agreement.contract_start_date, data.agreement.contract_end_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="contractStartDate"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="contractStartDate"
-                                                  date="[[prepareDate(data.engagement.contract_start_date)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.engagement.contract_start_date}}"
-                                                  no-init show-clear-btn></etools-datepicker-button>
+                        <iron-icon prefix icon="date-range"></iron-icon>
                     </paper-input>
                 </div>
-                <div class="input-container">
-                    <!-- Contract End Date -->
-                    <paper-input label="Contract End Date"
-                                 class="disabled-as-readonly"
-                                 disabled
-                                 id="contractEndDateInput"
-                                 value="[[prettyDate(data.agreement.contract_end_date)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="contractEndDate"
-                                 placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="contractEndDate"
-                                                  date="[[prepareDate(data.engagement.contract_end_date)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.engagement.contract_end_date}}"
-                                                  no-init show-clear-btn></etools-datepicker-button>
-                    </paper-input>
-                </div>
-            </div>
-
-            <div class="row-h group">
-
                 <div class="input-container">
                     <!-- Auditor -->
                     <paper-input label="Auditor"
@@ -96,6 +69,11 @@
                                  placeholder="&#8212;">
                     </paper-input>
                 </div>
+            </div>
+
+            <div class="row-h group">
+
+
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
                     <paper-input label="Date Partner Was Contacted"
@@ -140,9 +118,7 @@
                             on-focus="_resetFieldError"
                             placeholder="Select Engagement Type"></etools-searchable-multiselection-menu>
                 </div>
-            </div>
 
-            <div class="row-h group">
                 <div class="input-container">
                     <!-- Period Start Date -->
                     <paper-input label="Period Start Date"
@@ -165,6 +141,10 @@
                                                   no-init show-clear-btn></etools-datepicker-button>
                     </paper-input>
                 </div>
+            </div>
+
+            <div class="row-h group">
+
 
                 <div class="input-container">
                     <!-- Period End Date -->
