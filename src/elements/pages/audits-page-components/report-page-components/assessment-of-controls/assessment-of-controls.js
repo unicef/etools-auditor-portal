@@ -31,6 +31,7 @@ Polymer({
         this.set('dataItems', [this.data]);
     },
     _errorHandler: function(errorData) {
+        this.requestInProcess = false;
         if (!errorData) { return; }
         let refactoredData = this.refactorErrorObject(errorData);
         this.set('errors', refactoredData);
@@ -55,7 +56,6 @@ Polymer({
         return this.isReadOnly(field) || this.requestInProcess;
     },
     isReadOnly: function(field) {
-        this.requestInProcess = false;
         if (!this.basePermissionPath) { return true; }
         let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
         if (readOnly === null) { readOnly = true; }
