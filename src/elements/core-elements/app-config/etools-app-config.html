@@ -45,6 +45,9 @@ App global configuration
                 exp: 24 * 60 * 60 * 1000, // 24h
                 cachingKey: 'partners'
             },
+            partnerInfo: {
+                template: '/api/v2/partners/<%=id%>/'
+            },
             auditOrganisations: {
                 url: '/api/audit/audit-organizations/',
                 exp: 24 * 60 * 60 * 1000, // 24h
