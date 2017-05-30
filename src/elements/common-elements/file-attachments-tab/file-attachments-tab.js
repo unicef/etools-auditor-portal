@@ -21,7 +21,9 @@
                         raw: undefined,
                         file_type: undefined,
                         display_name: undefined,
-                        type: {}
+                        type: {},
+                        invalid: false,
+                        errorMessage: ''
                     };
                 }
             },
@@ -53,18 +55,6 @@
             readonly: {
                 type: Boolean,
                 value: false
-            },
-            invalid: {
-                type: Boolean,
-                value: function() {
-                    return false;
-                }
-            },
-            errorMessage: {
-                type: String,
-                value: function() {
-                    return '';
-                }
             },
             fileTypes: {
                 type: Array,
@@ -279,6 +269,11 @@
             });
         },
 
+        _setInvalid: function(errorMessage, invalid) {
+            this.set('editedItem.errorMessage', errorMessage);
+            this.set('editedItem.invalid', invalid);
+        },
+
         _checkAlreadySelected: function() {
             if (!this.dataItems) {return;}
 
@@ -287,13 +282,11 @@
             });
 
             if (alreadySelectedIndex !== -1) {
-                this.invalid = true;
-                this.errorMessage = 'File already selected';
+                this._setInvalid('File already selected', true);
                 return false;
             }
 
-            this.invalid = false;
-            this.errorMessage = '';
+            this._setInvalid('', false);
             return true;
         },
 
@@ -303,18 +296,12 @@
             let valid = true;
 
             if (!this.fileTypes || !this.fileTypes.length) {
-                this.invalid = true;
-                this.errorMessage = 'File type field is required but types are not defined';
+                this._setInvalid('File type field is required but types are not defined', true);
                 valid = false;
             }
 
             if (!this.canBeRemoved && !this._checkAlreadySelected()) {
                 valid = false;
-            }
-
-            if (valid) {
-                this.invalid = false;
-                this.errorMessage = '';
             }
 
             if (this.fileTypeRequired && !dropdown.validate()) {
@@ -323,8 +310,7 @@
             }
 
             if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw || !editedItem.date)) {
-                this.invalid = true;
-                this.errorMessage = 'File is not selected';
+                this._setInvalid('File is not selected', true);
                 valid = false;
             }
 
