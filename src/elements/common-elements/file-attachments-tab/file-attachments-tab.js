@@ -92,7 +92,6 @@
             '_filesChange(dataItems.*, fileTypes.*)',
             '_updateHeadings(allowDelete, readonly, fileTypeRequired)',
             'resetDialog(dialogOpened)',
-            'changePermission(basePermissionPath)',
             '_errorHandler(errorObject)'
         ],
         _getFileType: function(fileType) {
