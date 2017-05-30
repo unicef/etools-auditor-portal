@@ -9,6 +9,10 @@
         <!-- inject styles './engagement-staff-members-tab.scss'-->
         <style include="tab-inputs-styles module-styles"></style>
 
+        <get-staff-members-list organisation-id="[[organisationId]]" queries="{{listQueries}}" data-items="{{dataItems}}"></get-staff-members-list>
+        <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
+
+
         <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
                            title="Add"
                            on-tap="openAddDialog"
@@ -29,8 +33,9 @@
                     <div slot="icon" class="edit-icon-slot">
                         <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                     </div>
-                    <div slot="custom">
-                        <iron-icon icon="check" class="edit-icon check-icon"></iron-icon>
+                    <div slot="checkbox">
+                        <paper-checkbox on-tap="_isActive"
+                                        label=""></paper-checkbox>
                     </div>
                 </list-element>
             </template>
@@ -62,20 +67,24 @@
 
                 <div class="repeatable-item-content">
                     <div class="row-h group">
-                        <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.job_title)}}">
-                            <!-- Position -->
-                            <paper-input label="Position"
-                                         value="{{editedItem.user.profile.job_title}}"
-                                         placeholder="Enter Position"
+                        <div class="input-container" title="{{_getTitleValue(editedItem.user.email)}}">
+                            <!-- Email address -->
+                            <paper-input label="E-mail address"
+                                         value="{{editedItem.user.email}}"
+                                         placeholder="Enter E-mail"
+                                         class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
+                                         required="{{_setRequired('user.email', basePermissionPath)}}"
+                                         disabled="{{_emailDisabled(requestInProcess, canBeRemoved)}}"
+                                         readonly$="{{_emailDisabled(requestInProcess, canBeRemoved)}}"
                                          on-focus="_resetFieldError"
-                                         class$="validate-input {{_setRequired('user.profile.job_title', basePermissionPath)}}"
-                                         disabled="{{requestInProcess}}"
-                                         readonly$="{{requestInProcess}}"
-                                         required="{{_setRequired('user.profile.job_title', basePermissionPath)}}"
-                                         invalid="{{errors.profile.job_title}}"
-                                         error-message="{{errors.profile.job_title}}">
+                                         id="emailInput"
+                                         invalid="{{errors.user.email}}"
+                                         error-message="{{errors.user.email}}">
+                                <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
+
                         </div>
+
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.first_name)}}">
                             <!-- First Name -->
                             <paper-input label="First Name"
@@ -105,6 +114,20 @@
                             </paper-input>
                         </div>
                     </div>
+                    <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.job_title)}}">
+                        <!-- Position -->
+                        <paper-input label="Position"
+                                     value="{{editedItem.user.profile.job_title}}"
+                                     placeholder="Enter Position"
+                                     on-focus="_resetFieldError"
+                                     class$="validate-input {{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                     disabled="{{requestInProcess}}"
+                                     readonly$="{{requestInProcess}}"
+                                     required="{{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                     invalid="{{errors.profile.job_title}}"
+                                     error-message="{{errors.profile.job_title}}">
+                        </paper-input>
+                    </div>
                     <div class="row-h group">
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.phone_number)}}">
                             <!-- Phone number -->
@@ -121,23 +144,7 @@
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
                         </div>
-                        <div class="input-container" title="{{_getTitleValue(editedItem.user.email)}}">
-                            <!-- Email address -->
-                            <paper-input label="E-mail address"
-                                         value="{{editedItem.user.email}}"
-                                         placeholder="Enter E-mail"
-                                         class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
-                                         required="{{_setRequired('user.email', basePermissionPath)}}"
-                                         disabled="{{requestInProcess}}"
-                                         readonly$="{{requestInProcess}}"
-                                         on-focus="_resetFieldError"
-                                         id="emailInput"
-                                         invalid="{{errors.user.email}}"
-                                         error-message="{{errors.user.email}}">
-                                <iron-icon prefix icon="communication:email"></iron-icon>
-                            </paper-input>
 
-                        </div>
 
                     </div>
 
