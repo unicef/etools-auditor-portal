@@ -21,5 +21,8 @@ Polymer({
     },
     getFindingsSummaryData: function() {
         return this.$.findingsSummary.getTabData();
+    },
+    getAssessmentOfControlsData: function() {
+        return this.$.assessmentOfControls.getTabData();
     }
 });
