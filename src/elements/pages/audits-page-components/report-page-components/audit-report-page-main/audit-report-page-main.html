@@ -1,5 +1,5 @@
 <!--import [polymer]-->
-<!--import [assign-engagement, findings-summary, financial-findings, assessment-of-controls]-->
+<!--import [assign-engagement, findings-summary, financial-findings, assessment-of-controls, key-internal-controls-weaknesses]-->
 
 <dom-module id="audit-report-page-main">
     <template>
@@ -35,6 +35,14 @@
                 data="{{engagement}}"
                 base-permission-path="{{permissionBase}}">
         </assessment-of-controls>
+
+        <key-internal-controls-weaknesses
+                id="keyInternalControlsWeaknesses"
+                class="mb-15"
+                error-object="{{errorObject}}"
+                subject-areas="[[engagement.key_internal_weakness]]"
+                base-permission-path="{{permissionBase}}">
+        </key-internal-controls-weaknesses>
     </template>
 
     <!-- inject scripts './audit-report-page-main.js'-->

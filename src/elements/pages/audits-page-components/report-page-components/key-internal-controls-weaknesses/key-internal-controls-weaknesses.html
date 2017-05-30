@@ -1,0 +1,109 @@
+<!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input]-->
+<!--import [list-header, list-element, tab-inputs-styles, module-styles, dialog-element, lodash]-->
+
+<dom-module id="key-internal-controls-weaknesses">
+    <template>
+        <!-- inject styles './key-internal-controls-weaknesses.scss'-->
+        <style include="tab-inputs-styles module-styles"></style>
+        <etools-content-panel panel-title="[[subjectAreas.header]]">
+            <list-header no-ordered
+                         data="[[columns]]">
+            </list-header>
+
+            <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
+                <list-element
+                        class="list-element"
+                        data="[[item]]"
+                        headings="[[columns]]"
+                        details="[[details]]"
+                        has-collapse
+                        no-animation>
+                    <div slot="icon">
+                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                    </div>
+                </list-element>
+            </template>
+            <template is="dom-if" if="[[!subjectAreas.blueprints.length]]">
+                <list-element
+                        class="list-element"
+                        data="[[emptyObj]]"
+                        headings="[[columns]]"
+                        no-animation></list-element>
+            </template>
+        </etools-content-panel>
+        <dialog-element opened="{{dialogOpened}}" dialog-title="Edit Subject Area" confirm-btn-text="Save" request-in-process="{{requestInProcess}}">
+            <div class="container">
+                <div class="row-h repeatable-item-container" without-line>
+                    <div class="repeatable-item-content">
+                        <div class="row-h group">
+                            <div class="input-container input-container-ms">
+                                <!-- Risk Assessment -->
+                                <etools-searchable-multiselection-menu
+                                        id="riskRatingInput"
+                                        class="disabled-as-readonly validate-input"
+                                        options="[[riskOptions]]"
+                                        required hide-search
+                                        disabled="{{requestInProcess}}"
+                                        readonly$="{{requestInProcess}}"
+                                        value="{{editedArea.value}}"
+                                        invalid="{{errors.blueprints.0.value}}"
+                                        error-message="{{errors.blueprints.0.value}}"
+                                        on-focus="_resetFieldError"
+                                        label="Risk rating"
+                                        placeholder="Select Risk rating">
+                                </etools-searchable-multiselection-menu>
+                            </div>
+                        </div>
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                <paper-input
+                                        class="disabled-as-readonly validate-input"
+                                        disabled="{{requestInProcess}}"
+                                        readonly$="{{requestInProcess}}"
+                                        value="{{editedArea.extra.key_control_observation}}"
+                                        invalid="{{errors.blueprints.0.extra}}"
+                                        error-message="{{errors.blueprints.0.extra}}"
+                                        on-focus="_resetFieldError"
+                                        always-float-label
+                                        label="Key control observation">
+                                </paper-input>
+                            </div>
+                        </div>
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                <paper-input
+                                        class="disabled-as-readonly validate-input"
+                                        disabled="{{requestInProcess}}"
+                                        readonly$="{{requestInProcess}}"
+                                        value="{{editedArea.extra.recommendation}}"
+                                        invalid="{{errors.blueprints.0.extra}}"
+                                        error-message="{{errors.blueprints.0.extra}}"
+                                        on-focus="_resetFieldError"
+                                        always-float-label
+                                        label="Recommendation">
+                                </paper-input>
+                            </div>
+                        </div>
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                <paper-input
+                                        class="disabled-as-readonly validate-input"
+                                        disabled="{{requestInProcess}}"
+                                        readonly$="{{requestInProcess}}"
+                                        value="{{editedArea.extra.ip_response}}"
+                                        invalid="{{errors.blueprints.0.extra}}"
+                                        error-message="{{errors.blueprints.0.extra}}"
+                                        on-focus="_resetFieldError"
+                                        always-float-label
+                                        label="IP Response">
+                                </paper-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog-element>
+    </template>
+
+    <!-- inject scripts './key-internal-controls-weaknesses.js'-->
+</dom-module>

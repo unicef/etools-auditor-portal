@@ -18,5 +18,8 @@ Polymer({
     },
     getFinancialFindingsData: function() {
         return this.$.financialFindings.getTabData();
+    },
+    getKeyInternalWeaknessData: function() {
+        return this.$.keyInternalControlsWeaknesses.getKeyInternalWeaknessData();
     }
 });

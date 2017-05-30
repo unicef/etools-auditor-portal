@@ -60,8 +60,14 @@ Polymer({
 
     customDataPrepare: function(data) {
         let reportPage = Polymer.dom(this.root).querySelector('#report');
-        data.key_internal_weakness = {};
-        data.financial_finding_set = reportPage.getFinancialFindingsData();
+        let financialFindingData = reportPage.getFinancialFindingsData();
+        if (!_.isNull(financialFindingData)) {
+            data.financial_finding_set = financialFindingData;
+        }
+        let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
+        if (!_.isNull(keyInternalWeaknessData)) {
+            data.key_internal_weakness = keyInternalWeaknessData;
+        }
         return data;
     },
 
