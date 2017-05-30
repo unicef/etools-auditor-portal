@@ -11,13 +11,14 @@ Polymer({
         noAdditional: Boolean
     },
     observers: [
-        '_setRightPadding(data)'
+        '_setRightPadding(data.*)'
     ],
-    _setRightPadding(headings = []) {
+    _setRightPadding() {
+        if (!this.data) { return; }
         let rightPadding = 0;
         let padding;
 
-        headings.forEach((heading) => {
+        this.data.forEach((heading) => {
             if (typeof heading.size === 'string') {
                 padding = parseInt(heading.size, 10) || 0;
                 rightPadding += padding;

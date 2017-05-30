@@ -51,51 +51,51 @@ Polymer({
         columns: {
             type: Array,
             value: [{
-                'size': 20,
+                'size': 30,
                 'label': 'IP name',
                 'path': 'partner.name'
             }, {
-                'size': 10,
+                'size': 35,
                 'label': 'Audited Expenditure $ ',
                 'path': 'audited_expenditure',
                 'align': 'right'
             }, {
-                'size': 10,
+                'size': 35,
                 'label': 'Financial Findings $ ',
                 'path': 'financial_findings',
                 'align': 'right'
             }, {
-                'size': 10,
+                'size': '80px',
                 'label': '% Of Audited Expenditure',
                 'path': 'percent_of_audited_expenditure',
                 'align': 'right'
             }, {
-                'size': 14,
+                'size': '100px',
                 'label': 'Audit Opinion',
                 'path': 'display_name',
                 'align': 'center'
             }, {
-                'size': 8,
+                'size': '50px',
                 'label': 'No. of Financial Findings',
                 'path': 'financial_findings',
                 'align': 'center'
             }, {
-                'size': 8,
+                'size': '45px',
                 'label': 'No. of High Risk',
                 'path': 'high_risk',
                 'align': 'center'
             }, {
-                'size': 8,
+                'size': '45px',
                 'label': 'No. of Medium Risk',
                 'path': 'medium_risk',
                 'align': 'center'
             }, {
-                'size': 8,
+                'size': '45px',
                 'label': 'No. of Low Risk',
                 'path': 'low_risk',
                 'align': 'center'
             }, {
-                'size': 4,
+                'size': '40px',
                 'label': 'Edit',
                 'name': 'edit',
                 'align': 'center',

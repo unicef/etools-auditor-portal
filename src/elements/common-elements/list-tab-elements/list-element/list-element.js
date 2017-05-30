@@ -50,13 +50,14 @@ Polymer({
         }
     },
     observers: [
-        '_setRightPadding(headings)'
+        '_setRightPadding(headings.*)'
     ],
-    _setRightPadding(headings = []) {
+    _setRightPadding() {
+        if (!this.headings) { return; }
         let rightPadding = 0;
         let padding;
 
-        headings.forEach((heading) => {
+        this.headings.forEach((heading) => {
             if (typeof heading.size === 'string') {
                 padding = parseInt(heading.size, 10) || 0;
                 rightPadding += padding;
