@@ -95,7 +95,6 @@ Polymer({
     },
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)',
         '_errorHandler(errorObject.financial_finding_set)'
     ],
     _errorHandler: function(errorData) {

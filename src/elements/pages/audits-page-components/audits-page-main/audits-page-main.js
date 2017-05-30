@@ -60,8 +60,10 @@ Polymer({
 
     customDataPrepare: function(data) {
         let reportPage = Polymer.dom(this.root).querySelector('#report');
+        let findingsSummaryData = reportPage.getFindingsSummaryData() || [];
+        _.assign(data, findingsSummaryData[0]);
+        data.financial_finding_set = reportPage.getFinancialFindingsData() || [];
         data.key_internal_weakness = {};
-        data.financial_finding_set = reportPage.getFinancialFindingsData();
         return data;
     },
 

@@ -4,11 +4,40 @@ Polymer({
     is: 'findings-summary',
     behaviors: [
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.TableElementsBehavior
     ],
     properties: {
         basePermissionPath: {
             type: String
+        },
+        mainProperty: {
+            type: String,
+            value: 'financial_findings'
+        },
+        itemModel: {
+            type: Object,
+            value: function() {
+                return {
+                    audited_expenditure: undefined,
+                    financial_findings: undefined,
+                    percent_of_audited_expenditure: undefined,
+                    audit_opinion: undefined,
+                    number_of_financial_findings: undefined,
+                    high_risk: undefined,
+                    medium_risk: undefined,
+                    low_risk: undefined,
+                    partner: {
+                        name: ''
+                    },
+                    opinion: {}
+                };
+            }
+        },
+        editDialogTexts: {
+            type: Object,
+            value: {
+                title: 'Summary of audit findings'
+            }
         },
         auditOpinions: {
             type: Array,
@@ -17,93 +46,98 @@ Polymer({
             }
         },
         data: {
-            type: Object,
-            notify: true
+            type: Object
         },
-        headings: {
+        columns: {
             type: Array,
             value: [{
                 'size': 20,
-                'label': 'Implementing partner name',
+                'label': 'IP name',
                 'path': 'partner.name'
             }, {
                 'size': 10,
-                'label': 'Audited expenditure USD',
+                'label': 'Audited Expenditure $ ',
                 'path': 'audited_expenditure',
                 'align': 'right'
             }, {
                 'size': 10,
-                'label': 'Financial findings USD',
+                'label': 'Financial Findings $ ',
                 'path': 'financial_findings',
                 'align': 'right'
             }, {
                 'size': 10,
-                'label': '% of audited expenditure',
+                'label': '% Of Audited Expenditure',
                 'path': 'percent_of_audited_expenditure',
                 'align': 'right'
             }, {
-                'size': 15,
-                'label': 'Audit opinion',
-                'path': 'audit_opinion',
+                'size': 14,
+                'label': 'Audit Opinion',
+                'path': 'display_name',
                 'align': 'center'
             }, {
-                'size': 7,
-                'label': 'No. of FFs',
-                'path': '',
+                'size': 8,
+                'label': 'No. of Financial Findings',
+                'path': 'financial_findings',
                 'align': 'center'
             }, {
-                'size': 7,
-                'label': 'No. of MCFs',
-                'path': '',
+                'size': 8,
+                'label': 'No. of High Risk',
+                'path': 'high_risk',
                 'align': 'center'
             }, {
-                'size': 7,
-                'label': 'No. of CFs',
-                'path': '',
+                'size': 8,
+                'label': 'No. of Medium Risk',
+                'path': 'medium_risk',
                 'align': 'center'
             }, {
-                'size': 7,
-                'label': 'No. of OFs',
-                'path': '',
+                'size': 8,
+                'label': 'No. of Low Risk',
+                'path': 'low_risk',
                 'align': 'center'
             }, {
-                'size': 7,
+                'size': 4,
                 'label': 'Edit',
+                'name': 'edit',
                 'align': 'center',
                 'icon': true
             }]
         }
     },
+
+    listeners: {
+        'dialog-confirmed': '_addItemFromDialog'
+    },
+
+    observers: [
+        'resetDialog(dialogOpened)',
+        'changePermission(basePermissionPath)',
+        '_errorHandler(errorObject)',
+        '_setDataItems(data)',
+        '_setAuditOpinion(data.audit_opinion, auditOpinions)'
+    ],
+
     ready: function() {
         this.auditOpinions = this.getData('audit_opinions');
     },
-    _changeAuditOpinion: function(e, detail) {
-        if (!e || !detail) { return; }
-        this.set('data.audit_opinion', detail.selectedValues.value);
+    _setDataItems: function() {
+        this.set('dataItems', [this.data]);
     },
-    //TODO: move all the methods below into separate\existing behaviour
+    _changeAuditOpinion: function(e, detail) {
+        if (!detail || !detail.selectedValues) { return; }
+        this.editedItem.audit_opinion = detail.selectedValues.value;
+    },
+    _setAuditOpinion: function(auditOpinionValue, auditOpinions) {
+        if (auditOpinions && auditOpinions.length > 0) {
+            let auditOpinion = auditOpinions.find(function(auditOpinion) {
+                return auditOpinion.value === auditOpinionValue;
+            }) || {};
+            this.data.opinion =  auditOpinion;
+            this.data.display_name = auditOpinion.display_name;
+        }
+    },
     _setRequired: function(field) {
         if (!this.basePermissionPath) { return false; }
         let required = this.isRequired(`${this.basePermissionPath}.${field}`);
         return required ? 'required' : false;
-    },
-
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
-    },
-    isReadOnly: function(field) {
-        if (!this.basePermissionPath) { return true; }
-        let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
-        if (readOnly === null) { readOnly = true; }
-        return readOnly;
-    },
-    _processValue: function(value) {
-        if (typeof value === 'string') {
-            return this.auditOpinions.filter((type) => {
-                return type.value === value;
-            })[0];
-        } else {
-            return value;
-        }
     }
 });
