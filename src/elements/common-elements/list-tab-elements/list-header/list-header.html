@@ -5,7 +5,7 @@
         <style include="shared-styles module-styles"></style>
         <!-- inject styles './list-header.scss'-->
 
-        <div class="heading-row-header clearfix">
+        <div class="heading-row-header clearfix" style$="padding-right: [[paddingRight]];">
             <template is="dom-repeat" items="[[data]]">
                 <div  class$="local-headings w[[item.size]] [[item.align]]" ordered$="{{item.ordered}}" on-tap="_changeOrder">
                     <span class="textsec heading">[[item.label]]</span>

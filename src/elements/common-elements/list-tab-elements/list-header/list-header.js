@@ -10,6 +10,23 @@ Polymer({
         noOrdered: Boolean,
         noAdditional: Boolean
     },
+    observers: [
+        '_setRightPadding(data.*)'
+    ],
+    _setRightPadding() {
+        if (!this.data) { return; }
+        let rightPadding = 0;
+        let padding;
+
+        this.data.forEach((heading) => {
+            if (typeof heading.size === 'string') {
+                padding = parseInt(heading.size, 10) || 0;
+                rightPadding += padding;
+            }
+        });
+
+        this.paddingRight = `${rightPadding}px`;
+    },
     _changeOrder: function(event) {
         if (this.noOrdered) { return; }
 
