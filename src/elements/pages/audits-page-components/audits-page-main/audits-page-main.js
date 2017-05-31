@@ -63,8 +63,14 @@ Polymer({
         let findingsSummaryData = reportPage.getFindingsSummaryData() || [];
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
         _.assign(data, findingsSummaryData[0], assessmentOfControlsData[0]);
-        data.financial_finding_set = reportPage.getFinancialFindingsData() || [];
-        data.key_internal_weakness = {};
+        let financialFindingData = reportPage.getFinancialFindingsData();
+        if (!_.isNull(financialFindingData)) {
+            data.financial_finding_set = financialFindingData;
+        }
+        let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
+        if (!_.isNull(keyInternalWeaknessData)) {
+            data.key_internal_weakness = keyInternalWeaknessData;
+        }
         return data;
     },
 

@@ -24,5 +24,8 @@ Polymer({
     },
     getAssessmentOfControlsData: function() {
         return this.$.assessmentOfControls.getTabData();
+    },
+    getKeyInternalWeaknessData: function() {
+        return this.$.keyInternalControlsWeaknesses.getKeyInternalWeaknessData();
     }
 });
