@@ -32,7 +32,6 @@ Polymer({
             value: [{
                 'size': 20,
                 'label': 'Finding Number',
-                'link': '*engagement_type*/*data_id*/overview',
                 'path': 'finding_number'
             }, {
                 'size': 40,
@@ -95,8 +94,14 @@ Polymer({
     },
     observers: [
         'resetDialog(dialogOpened)',
+        '_updateFindings(dataItems)',
         '_errorHandler(errorObject.financial_finding_set)'
     ],
+    _updateFindings: function(items) {
+        _.each(items, (item) => {
+            item.finding_number = ([1e15] + item.id).slice(-4);
+        });
+    },
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData || !this.dialogOpened) { return; }
