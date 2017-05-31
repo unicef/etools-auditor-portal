@@ -103,10 +103,5 @@ Polymer({
         _.each(items, (item) => {
             item.finding_number = ([1e15] + item.id).slice(-4);
         });
-    },
-    _errorHandler: function(errorData) {
-        this.requestInProcess = false;
-        if (!errorData || !this.dialogOpened) { return; }
-        this.set('errors', this.refactorErrorObject(errorData)[0]);
     }
 });

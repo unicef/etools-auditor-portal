@@ -85,7 +85,7 @@
                                     disabled$="[[requestInProcess]]"
                                     readonly$="[[requestInProcess]]"
                                     invalid$="[[errors.local_amount]]"
-                                    error-message$="[[errors.local_amount]]"
+                                    error-message="{{errors.local_amount}}"
                                     on-focus="_resetFieldError"
                                     placeholder="&#8212;">
                             </etools-currency-amount-input>
