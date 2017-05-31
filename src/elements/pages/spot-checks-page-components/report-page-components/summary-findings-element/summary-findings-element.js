@@ -40,7 +40,7 @@ Polymer({
                     {
                         'size': 20,
                         'label': 'Finding Number',
-                        'path': 'finding'
+                        'path': 'finding_number'
                     },                    {
                         'size': 50,
                         'label': 'Subject Area',
@@ -105,7 +105,7 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_setPriority(itemModel, priority)',
-        '_updateCategory(dataItems, categoryOfObservation)',
+        '_updateFinding(dataItems, categoryOfObservation)',
         '_errorHandler(errorObject.findings)'
     ],
     _getLength: function(dataItems) {
@@ -113,7 +113,7 @@ Polymer({
             return item.priority === this.priority.value;
         }).length;
     },
-    _updateCategory: function(data, categoryOfObservation) {
+    _updateFinding: function(data, categoryOfObservation) {
         _.each(data, (item) => {
             if (item.priority !== this.priority.value) {
                 return;
@@ -125,6 +125,8 @@ Polymer({
                     }
                 });
             }
+
+            item.finding_number = ([1e15] + item.id).slice(-4);
         });
     },
     _setPriority: function(itemModel, priority) {
