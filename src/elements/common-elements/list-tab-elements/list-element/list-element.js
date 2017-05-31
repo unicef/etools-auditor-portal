@@ -49,6 +49,23 @@ Polymer({
             notify: true
         }
     },
+    observers: [
+        '_setRightPadding(headings.*)'
+    ],
+    _setRightPadding() {
+        if (!this.headings) { return; }
+        let rightPadding = 0;
+        let padding;
+
+        this.headings.forEach((heading) => {
+            if (typeof heading.size === 'string') {
+                padding = parseInt(heading.size, 10) || 0;
+                rightPadding += padding;
+            }
+        });
+
+        this.paddingRight = `${rightPadding}px`;
+    },
     _computeShowCollapse(details, hasCollapse) {
         return details.length > 0 && hasCollapse;
     },
