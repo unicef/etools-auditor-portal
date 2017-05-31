@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, paper-input/paper-textarea]-->
-<!--import [tab-inputs-styles, module-styles, permission-controller, static-data-behavior]-->
+<!--import [tab-inputs-styles, module-styles, table-elements-behavior]-->
 
 <dom-module id="assessment-of-controls">
     <template>
@@ -9,7 +9,12 @@
                 display: block;
             }
 
-            .edit-icon { color: var(--module-primary); }
+            etools-content-panel {
+                --ecp-content: #{'{
+                    padding: 0;
+                    padding-bottom: 7px;
+                }'};
+            }
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Assessment of Key Internal Controls">
@@ -17,14 +22,15 @@
                 <div class="input-container input-container-l">
                     <!-- Recommendation -->
                     <paper-textarea
-                            id="recommendation"
                             label="Recommendation"
                             placeholder="Enter recommendation"
                             value="{{data.recommendation}}"
-                            max-rows="3"
-                            disabled$="[[!isReadOnly('recommendation', basePermissionPath)]]"
-                            class$="disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
-                            required="[[_setRequired('recommendation', basePermissionPath)]]">
+                            class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('recommendation', basePermissionPath)]]"
+                            disabled$="[[isDisabled('recommendation', requestInProcess)]]"
+                            required$="[[_setRequired('recommendation', basePermissionPath)]]"
+                            invalid$="{{errors.recommendation}}"
+                            error-message="{{errors.recommendation}}">
                     </paper-textarea>
                 </div>
             </div>
@@ -33,14 +39,15 @@
                 <div class="input-container input-container-l">
                     <!-- Audit Observation -->
                     <paper-textarea
-                            id="auditObservation"
                             label="Audit Observation"
                             placeholder="Enter observation"
                             value="{{data.audit_observation}}"
-                            max-rows="3"
-                            disabled$="[[!isReadOnly('audit_observation', basePermissionPath)]]"
-                            class$="disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
-                            required="[[_setRequired('audit_observation', basePermissionPath)]]">
+                            class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('audit_observation', basePermissionPath)]]"
+                            disabled$="[[isDisabled('audit_observation', requestInProcess)]]"
+                            required$="[[_setRequired('audit_observation', basePermissionPath)]]"
+                            invalid$="{{errors.audit_observation}}"
+                            error-message="{{errors.audit_observation}}">
                     </paper-textarea>
                 </div>
             </div>
@@ -49,14 +56,15 @@
                 <div class="input-container input-container-l">
                     <!-- IP Response -->
                     <paper-textarea
-                            id="IPResponse"
                             label="IP Response"
                             placeholder="Enter response"
                             value="{{data.ip_response}}"
-                            max-rows="3"
-                            disabled$="[[!isReadOnly('ip_response', basePermissionPath)]]"
-                            class$="disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
-                            required="[[_setRequired('ip_response', basePermissionPath)]]">
+                            class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('ip_response', basePermissionPath)]]"
+                            disabled$="[[isDisabled('ip_response', requestInProcess)]]"
+                            required$="[[_setRequired('ip_response', basePermissionPath)]]"
+                            invalid$="{{errors.ip_response}}"
+                            error-message="{{errors.ip_response}}">
                     </paper-textarea>
                 </div>
             </div>

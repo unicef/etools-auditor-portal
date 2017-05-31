@@ -125,8 +125,8 @@
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
-                            <template is="dom-if" if="[[invalid]]">
-                                <paper-input-error aria-live="assertive">[[errorMessage]]</paper-input-error>
+                            <template is="dom-if" if="[[editedItem.invalid]]">
+                                <paper-input-error aria-live="assertive">[[editedItem.errorMessage]]</paper-input-error>
                             </template>
                         </div>
                     </div>
