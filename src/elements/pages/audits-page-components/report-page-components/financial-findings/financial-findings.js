@@ -27,7 +27,7 @@ Polymer({
                 };
             }
         },
-        headings: {
+        columns: {
             type: Array,
             value: [{
                 'size': 20,
@@ -43,13 +43,14 @@ Polymer({
                 'path': 'local_amount',
                 'align': 'right'
             }, {
-                'size': 13,
+                'size': 15,
                 'label': 'Amount USD',
                 'path': 'amount',
                 'align': 'right'
             }, {
-                'size': 7,
+                'size': 5,
                 'label': 'Edit',
+                'name': 'edit',
                 'align': 'center',
                 'icon': true
             }]
@@ -94,6 +95,7 @@ Polymer({
     },
     observers: [
         'resetDialog(dialogOpened)',
+        'changePermission(basePermissionPath)',
         '_updateFindings(dataItems)',
         '_errorHandler(errorObject.financial_finding_set)'
     ],

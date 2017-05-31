@@ -18,14 +18,14 @@
         <etools-content-panel class="content-section clearfix" panel-title="Financial Findings">
             <list-header id="list-header"
                          no-ordered
-                         data="[[headings]]">
+                         data="[[columns]]">
             </list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
                 <list-element
                         class="list-element"
                         data="[[item]]"
-                        headings="[[headings]]"
+                        headings="[[columns]]"
                         details="[[details]]"
                         has-collapse
                         no-animation>
@@ -38,7 +38,7 @@
                 <list-element
                         class="list-element"
                         data="[[emptyObj]]"
-                        headings="[[headings]]"
+                        headings="[[columns]]"
                         no-animation></list-element>
             </template>
         </etools-content-panel>
