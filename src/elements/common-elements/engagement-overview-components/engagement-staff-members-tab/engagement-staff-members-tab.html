@@ -1,54 +1,74 @@
 <!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icon,
-            iron-icons, iron-icons/communication-icons]-->
+            iron-icons, iron-icons/communication-icons, etools-loading]-->
 
-<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, dialog-element,
-            lodash, table-elements-behavior, error-handler-behavior]-->
+<!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, list-pagination, dialog-element,
+            lodash, table-elements-behavior, error-handler-behavior, update-staff-members, get-staff-members-list]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
         <!-- inject styles './engagement-staff-members-tab.scss'-->
         <style include="tab-inputs-styles module-styles"></style>
 
-        <get-staff-members-list organisation-id="[[organisationId]]" queries="{{listQueries}}" data-items="{{dataItems}}"></get-staff-members-list>
+        <!--requests-->
+        <get-staff-members-list organisation-id="{{organisationId}}"
+                                datalength="{{datalength}}"
+                                queries="{{listQueries}}"
+                                data-items="{{dataItems}}"
+                                list-loading="{{listLoading}}"></get-staff-members-list>
+
         <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
 
+        <check-user-existance></check-user-existance>
 
-        <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
+        <!--end requests-->
+
+        <paper-icon-button hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
                            title="Add"
                            on-tap="openAddDialog"
                            class="add-button"
                            icon="add"></paper-icon-button>
 
-        <etools-content-panel panel-title="Auditor Staff Members ([[dataItems.length]])" show-expand-btn>
+        <etools-content-panel panel-title="Auditor Staff Members ([[_staffLength(datalength)]])" show-expand-btn>
 
-            <list-header no-additional no-ordered data="[[columns]]"></list-header>
+            <div class="panel-content group">
+                <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading"></etools-loading>
+                <list-header no-additional no-ordered data="[[columns]]"></list-header>
 
-            <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-                <list-element
-                        class="list-element"
-                        data="[[item]]"
-                        no-additional
-                        headings="[[columns]]"
-                        no-animation>
-                    <div slot="icon" class="edit-icon-slot">
-                        <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                    </div>
-                    <div slot="checkbox">
-                        <paper-checkbox on-tap="_isActive"
-                                        label=""></paper-checkbox>
-                    </div>
-                </list-element>
-            </template>
+                <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
+                    <list-element
+                            class="list-element"
+                            data="[[item]]"
+                            no-additional
+                            headings="[[columns]]"
+                            no-animation>
+                        <div slot="icon" class="edit-icon-slot">
+                            <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                        </div>
+                        <div slot="checkbox" class="checkbox">
+                            <paper-checkbox on-tap="_isActive"
+                                            checked="{{item.hasAccess}}"
+                                            label=""></paper-checkbox>
+                        </div>
+                    </list-element>
+                </template>
 
-            <template is="dom-if" if="[[!dataItems.length]]">
-                <list-element
-                        class="list-element"
-                        data="[[emptyObj]]"
-                        no-additional
-                        headings="[[columns]]"
-                        no-animation></list-element>
-            </template>
+                <template is="dom-if" if="[[!dataItems.length]]">
+                    <list-element
+                            class="list-element"
+                            data="[[emptyObj]]"
+                            no-additional
+                            headings="[[columns]]"
+                            no-animation></list-element>
+                </template>
 
+                <list-pagination page-size="{{listSize}}"
+                                 page-number="{{listPage}}"
+                                 datalength="{{datalength}}"
+                                 without-queries
+                                 hidden$="[[!_showPagination(datalength)]]"
+                                 showing-results="{{showingResults}}"></list-pagination>
+
+            </div>
 
         </etools-content-panel>
 
@@ -151,8 +171,8 @@
                     <div class="row-h group">
                         <!--receive notification-->
                         <div class="staff-check-box notify-box input-container input-container-l">
-                            <etools-checkable-input checked="{{editedItem.receive_audit_notifications}}"
-                                                    label="Receive Notifications on Audit Tasks?"
+                            <etools-checkable-input checked="{{editedItem.hasAccess}}"
+                                                    label="Has Access"
                                                     disabled="{{requestInProcess}}"
                                                     readonly$="{{requestInProcess}}"
                                                     type="checkbox"

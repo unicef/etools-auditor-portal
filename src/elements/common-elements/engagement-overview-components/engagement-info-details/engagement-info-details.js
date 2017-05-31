@@ -162,8 +162,12 @@ Polymer({
         if (!errorData) { return; }
         this.set('errors', _.clone(this.refactorErrorObject(errorData)));
     },
-    _setContractDates: function(start, end) {
-        if (!start || !end) { return; }
+    _setContractDates: function(agreement) {
+        if (!agreement) { return; }
+        let start = agreement.contract_start_date,
+            end = agreement.contract_end_date;
+
+        if (!start || !end) { return ''; }
         return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
     },
     _showTotalValue: function(type) {

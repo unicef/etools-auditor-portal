@@ -47,12 +47,12 @@
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="po-loading"></etools-loading>
                 </div>
                 <div class="input-container">
-                    <!-- Contract Start Date -->
+                    <!-- Contract Dates -->
                     <paper-input label="Contract Dates"
                                  class="disabled-as-readonly"
                                  disabled
                                  id="contractStartDateInput"
-                                 value="[[_setContractDates(data.agreement.contract_start_date, data.agreement.contract_end_date)]]"
+                                 value="[[_setContractDates(data.agreement)]]"
                                  on-down="openDatePicker"
                                  data-selector="contractStartDate"
                                  placeholder="&#8212;">

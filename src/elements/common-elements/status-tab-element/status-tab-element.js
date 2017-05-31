@@ -86,6 +86,7 @@
         _showActionButtons: function(engagementData) {
             let collectionName = engagementData.id ? `engagement_${engagementData.id}` : 'new_engagement';
             return this.actionAllowed(collectionName, 'createEngagement') ||
+                this.actionAllowed(collectionName, 'saveEngagement') ||
                 this.actionAllowed(collectionName, 'submit') ||
                 this.actionAllowed(collectionName, 'finalize');
         }

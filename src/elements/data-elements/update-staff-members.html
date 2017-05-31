@@ -52,7 +52,9 @@
                 let responseData = error && error.request && error.request.detail &&
                         error.request.detail.request && error.request.detail.request.xhr;
 
-                this.fire('staff-updated', {error: true, errorData: responseData});
+                let {status, response} = responseData || {};
+
+                this.fire('staff-updated', {error: true, errorData: response, status: status});
             }
 
         });

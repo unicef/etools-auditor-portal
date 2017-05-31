@@ -17,7 +17,7 @@
         width: 33px;
         height: 33px;
         color: var(--gray-mid);
-        margin-left: -5%;
+        margin-left: -14%;
     }
     .edit-icon-slot { overflow: visible !important; }
 
@@ -74,6 +74,19 @@
         width: 720px !important;
     }
 
+    .panel-content {
+        position: relative;
+        margin-bottom: -7px;
+        padding-bottom: 7px;
+    }
+
+    .checkbox {
+        overflow: visible !important;
+        paper-checkbox {
+            margin-left: 16%;
+        }
+    }
+
 }
 
 etools-content-panel {
@@ -82,3 +95,9 @@ etools-content-panel {
             padding-bottom: 7px;
         }'};
  }
+
+list-pagination {
+    --list-pagination-styles: #{'
+        margin-bottom: -8px;
+    '};
+}
