@@ -60,9 +60,9 @@ Polymer({
 
     customDataPrepare: function(data) {
         let reportPage = Polymer.dom(this.root).querySelector('#report');
-        let findingsSummaryData = reportPage.getFindingsSummaryData() || [];
+        let findingsSummaryData = reportPage.getFindingsSummaryData();
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
-        _.assign(data, findingsSummaryData[0], assessmentOfControlsData[0]);
+        _.assign(data, findingsSummaryData, assessmentOfControlsData);
         let financialFindingData = reportPage.getFinancialFindingsData();
         if (!_.isNull(financialFindingData)) {
             data.financial_finding_set = financialFindingData;
