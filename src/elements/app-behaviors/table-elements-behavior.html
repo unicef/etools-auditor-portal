@@ -33,11 +33,21 @@
                     return {};
                 }
             },
+            canBeRemoved: {
+                type: Boolean,
+                value: false
+            },
+            requestInProcess: {
+                type: Boolean,
+                value: false
+            },
         },
 
         ready: function() {
             this.editedItem = _.cloneDeep(this.itemModel);
             this._addObserverEffect("requestInProcess", 'updateStyles');
+            this._addObserverEffect("canBeRemoved", 'updateStyles');
+
         },
 
         _dataItemsChanged: function(data) {

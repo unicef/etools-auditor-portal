@@ -429,6 +429,7 @@
             behaviorObj.engagement = {
                 status: 'report_submitted'
             };
+            behaviorObj.actionAllowed = sinon.stub().returns(true);
 
             behaviorObj._configButtonsData();
             assert.equal(behaviorObj.mainBtnText, 'Finalize');
@@ -446,6 +447,7 @@
         it('method _mainActionActivated run methods depending on engagement status', function() {
             sinon.stub(behaviorObj, '_submitReport');
             sinon.stub(behaviorObj, '_finalizeReport');
+            behaviorObj.actionAllowed = sinon.stub().returns(true);
 
             behaviorObj.engagement = {
                 status: 'report_submitted'

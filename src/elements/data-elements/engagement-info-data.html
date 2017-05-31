@@ -56,7 +56,7 @@
             _handleOptionsResponse: function(data) {
                 let actions = data.detail && data.detail.actions && data.detail.actions;
                 if (actions) {
-                    data.detail.actions.allowed_actions = actions.PUT ? ['saveEngagement'].concat(actions.allowed_FSM_transitions) : actions.allowed_FSM_transitions;
+                    data.detail.actions.allowed_actions = !_.isEmpty(actions.PUT) ? ['saveEngagement'].concat(actions.allowed_FSM_transitions) : actions.allowed_FSM_transitions;
                     this._addToCollection(`engagement_${this.engagementId}`, data.detail.actions);
                 } else {
                     console.error('Can not load permissions for engagement');

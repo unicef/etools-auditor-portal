@@ -119,11 +119,10 @@ Polymer({
     },
     getKeyInternalWeaknessData: function() {
         let blueprint = _.cloneDeep(this.editedArea);
-        if (!blueprint) {
-            return;
-        }
-        if (_.isObject(blueprint.value)) {
+        if (blueprint && _.isObject(blueprint.value)) {
             blueprint.value = blueprint.value.value;
+        } else {
+            return;
         }
         return {
             blueprints: [blueprint]

@@ -47,7 +47,6 @@
                         <div name="overview">
                             <engagement-info-details data="{{engagement}}"
                                                      id="engagementDetails"
-                                                     engagement-type="ma"
                                                      original-data="[[originalData]]"
                                                      error-object="{{errorObject}}"
                                                      base-permission-path="{{permissionBase}}"></engagement-info-details>
@@ -59,6 +58,7 @@
 
 
                             <engagement-staff-members-tab id="staffMembers"
+                                                          engagement="{{engagement}}"
                                                           base-permission-path="{{permissionBase}}"
                                                           error-object="{{errorObject}}"
                                                           data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>

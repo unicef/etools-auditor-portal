@@ -1,0 +1,64 @@
+<!--import [polymer, etools-ajax]-->
+
+<dom-module id="check-user-existence">
+
+    <template>
+
+        <etools-ajax method="GET"
+                     url="{{url}}"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'check-user-existence',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+                email: {
+                    type: String,
+                    notify: true,
+                    observer: '_emailChanged'
+                },
+                emailChecking: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                error: {
+                    type: String,
+                    notify: true
+                }
+            },
+
+            _emailChanged: function(email) {
+                if (!email) { return; }
+
+                this.emailChecking = true;
+                this.url = this.getEndpoint('userExistence', {email: email}).url;
+                this.email = null;
+            },
+
+            _handleResponse: function() {
+                this.set('error', 'This field must be unique.');
+                this.emailChecking = false;
+                this.url = null;
+            },
+
+            _handleError: function() {
+                this.emailChecking = false;
+                this.url = null;
+            }
+
+        });
+
+    </script>
+
+</dom-module>

@@ -209,21 +209,28 @@
 
         _configButtonsData: function() {
             if (!this.engagement) { return; }
+            let collectionName = `engagement_${this.engagement.id}`;
             if (this.engagement.status === 'report_submitted') {
                 this.otherActions = [];
                 this.mainBtnText = 'Finalize';
-            } else {
+            } else if (this.actionAllowed(collectionName, 'submit')) {
                 this.otherActions = [{name: 'save', event: 'save-progress'}];
                 this.mainBtnText = 'Submit';
+            } else {
+                this.otherActions = [];
+                this.mainBtnText = 'Save';
             }
         },
 
         _mainActionActivated: function() {
             if (!this.engagement) { return; }
+            let collectionName = `engagement_${this.engagement.id}`;
             if (this.engagement.status === 'report_submitted') {
                 this._finalizeReport();
-            } else {
+            } else  if (this.actionAllowed(collectionName, 'submit')) {
                 this._submitReport();
+            } else {
+                this._saveProgress();
             }
         },
 

@@ -213,7 +213,33 @@
 
                 assert.isTrue(myEl._validatePurchaseOrder(orderInput));
             });
-        })
+        });
+
+        describe('method _setShowInput', function () {
+            it('sets showInput=false if type is string "ma"', function () {
+                assert.isNotFalse(myEl.showInput);
+                myEl._setShowInput('ma');
+                assert.isFalse(myEl.showInput);
+            });
+
+            it('sets showInput=true if type is not string "ma"', function () {
+                assert.isNotTrue(myEl.showInput);
+                myEl._setShowInput('not ma');
+                assert.isTrue(myEl.showInput);
+            });
+
+            it('sets showInput=false if type is object where property value="ma"', function () {
+                assert.isNotFalse(myEl.showInput);
+                myEl._setShowInput({value: 'ma'});
+                assert.isFalse(myEl.showInput);
+            });
+
+            it('sets showInput=true if type is object where property value!="ma"', function () {
+                assert.isNotTrue(myEl.showInput);
+                myEl._setShowInput({value: 'not ma'});
+                assert.isTrue(myEl.showInput);
+            });
+        });
 
     });
 </script>

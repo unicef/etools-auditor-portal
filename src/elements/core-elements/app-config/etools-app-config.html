@@ -55,6 +55,12 @@ App global configuration
             },
             agreementData: {
                 template: '/api/audit/purchase-orders/sync/<%=id%>/'
+            },
+            staffMembers: {
+                template: '/api/audit/audit-organizations/<%=id%>/staff-members/'
+            },
+            userExistence: {
+                template: '/api/audit/user-search/?email=<%=email%>'
             }
         },
         localEndpoints: {
