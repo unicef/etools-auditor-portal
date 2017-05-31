@@ -35,7 +35,7 @@ Polymer({
         '_routeConfig(route)',
         '_setPermissionBase(engagement.id)',
         '_tabChanged(tab)',
-        '_configButtonsData(engagement.type)'
+        '_configButtonsData(engagement, permissionBase)'
     ],
 
     listeners: {

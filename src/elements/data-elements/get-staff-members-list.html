@@ -1,0 +1,85 @@
+<!--import [polymer, etools-ajax, lodash]-->
+
+<dom-module id="get-staff-members-list">
+
+    <template>
+
+        <etools-ajax method="GET"
+                     url="{{url}}"
+                     on-success="_handleResponse"
+                     on-fail="_handleError"></etools-ajax>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'get-staff-members-list',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            properties: {
+                organisationId: {
+                    type: Number,
+                    notify: true
+                },
+                queries: {
+                    type: Object,
+                    notify: true
+                },
+                dataItems: {
+                    type: Object,
+                    notify: true
+                },
+                listLoading: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                datalength: {
+                    type: Number,
+                    notify: true
+                }
+            },
+
+            observers: ['_startRequest(organisationId, queries)'],
+
+            _startRequest: function(organisationId, listQueries) {
+                if (!organisationId || !listQueries) { return; }
+
+                this.listLoading = true;
+                let queriesString = this._prepareQueries(listQueries);
+                this.url = this.getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
+            },
+
+            _prepareQueries: function(listQueries) {
+                let queries = [];
+                _.each(listQueries, (value, key) => {
+                    queries.push(`${key}=${value}`);
+                });
+                return `?ordering=-id&${queries.join('&')}`;
+            },
+
+            _handleResponse: function(event, detail) {
+                this.dataItems = detail.results;
+                this.datalength = detail.count;
+                this.listLoading = false;
+                this.url = null;
+            },
+
+            _handleError: function(event, error) {
+                let responseData = error && error.request && error.request.detail &&
+                        error.request.detail.request && error.request.detail.request.xhr;
+                console.error(responseData);
+                this.listLoading = false;
+                this.url = null;
+            }
+
+        });
+
+    </script>
+
+</dom-module>

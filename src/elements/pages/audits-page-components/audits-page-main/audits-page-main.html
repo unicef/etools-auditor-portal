@@ -47,15 +47,19 @@
                             <engagement-info-details data="{{engagement}}"
                                                      id="engagementDetails"
                                                      original-data="[[originalData]]"
+                                                     error-object="{{errorObject}}"
                                                      base-permission-path="{{permissionBase}}"></engagement-info-details>
 
                             <partner-details-tab id="partnerDetails"
                                                  original-data="[[originalData]]"
                                                  engagement="{{engagement}}"
+                                                 error-object="{{errorObject}}"
                                                  base-permission-path="{{permissionBase}}"></partner-details-tab>
 
 
                             <engagement-staff-members-tab id="staffMembers"
+                                                          engagement="{{engagement}}"
+                                                          error-object="{{errorObject}}"
                                                           base-permission-path="{{permissionBase}}"
                                                           data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
                         </div>
