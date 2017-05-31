@@ -24,7 +24,7 @@
                     <paper-textarea
                             label="Recommendation"
                             placeholder="Enter recommendation"
-                            value="{{editedItem.recommendation}}"
+                            value="{{data.recommendation}}"
                             class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
                             readonly$="[[isReadOnly('recommendation', basePermissionPath)]]"
                             disabled$="[[isDisabled('recommendation', requestInProcess)]]"
@@ -41,7 +41,7 @@
                     <paper-textarea
                             label="Audit Observation"
                             placeholder="Enter observation"
-                            value="{{editedItem.audit_observation}}"
+                            value="{{data.audit_observation}}"
                             class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
                             readonly$="[[isReadOnly('audit_observation', basePermissionPath)]]"
                             disabled$="[[isDisabled('audit_observation', requestInProcess)]]"
@@ -58,7 +58,7 @@
                     <paper-textarea
                             label="IP Response"
                             placeholder="Enter response"
-                            value="{{editedItem.ip_response}}"
+                            value="{{data.ip_response}}"
                             class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
                             readonly$="[[isReadOnly('ip_response', basePermissionPath)]]"
                             disabled$="[[isDisabled('ip_response', requestInProcess)]]"
