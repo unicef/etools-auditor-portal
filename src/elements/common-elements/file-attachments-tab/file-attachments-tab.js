@@ -70,7 +70,7 @@
                 type: String,
                 value: 'File Type'
             },
-            allowDelete: {
+            allowEdit: {
                 type: Boolean,
                 value: false
             }
@@ -80,7 +80,7 @@
         },
         observers: [
             '_filesChange(dataItems.*, fileTypes.*)',
-            '_updateHeadings(allowDelete, readonly, fileTypeRequired)',
+            '_updateHeadings(allowEdit, readonly, fileTypeRequired)',
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject)'
         ],
@@ -106,31 +106,32 @@
             return true;
         },
 
-        _updateHeadings: function(allowDelete, readonly, fileTypeRequired) {
-            let showDeleteButton = allowDelete && readonly === false;
+        _updateHeadings: function(allowEdit, readonly, fileTypeRequired) {
+            let showEditButton = allowEdit && readonly === false;
             let headings = [{
-                'size': 20,
+                'size': '100px',
                 'name': 'date',
                 'label': 'Date Uploaded',
                 'path': 'date'
             }, {
-                'size': 45,
+                'size': 65,
                 'label': 'File Attachment',
                 'property': 'file_name',
                 'custom': true
             }];
 
-            if (showDeleteButton) {
+            if (showEditButton) {
                 headings.push({
-                    'size': 5,
+                    'size': '40px',
                     'label': 'Edit',
+                    'align': 'center',
                     'icon': true
                 });
             }
 
             if (fileTypeRequired) {
                 headings.splice(1, 0, {
-                    'size': 30,
+                    'size': 35,
                     'label': 'Document Type',
                     'path': 'display_name'
                 });
