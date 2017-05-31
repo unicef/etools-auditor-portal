@@ -20,10 +20,10 @@ Polymer({
         return this.$.financialFindings.getTabData();
     },
     getFindingsSummaryData: function() {
-        return this.$.findingsSummary.getTabData();
+        return this.$.findingsSummary.getCurrentData();
     },
     getAssessmentOfControlsData: function() {
-        return this.$.assessmentOfControls.getTabData();
+        return this.$.assessmentOfControls.getCurrentData();
     },
     getKeyInternalWeaknessData: function() {
         return this.$.keyInternalControlsWeaknesses.getKeyInternalWeaknessData();
