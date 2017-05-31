@@ -27,7 +27,7 @@ Polymer({
                     medium_risk: undefined,
                     low_risk: undefined,
                     partner: {
-                        name: ''
+                        name: undefined
                     },
                     opinion: {}
                 };
@@ -121,6 +121,20 @@ Polymer({
     },
     _setDataItems: function() {
         this.set('dataItems', [this.data]);
+    },
+    getFindingsSummaryData: function() {
+        let itemModelKeys = _.keys(this.itemModel) || [];
+        let partnerPathIndex;
+        let data;
+
+        partnerPathIndex = itemModelKeys.findIndex((key) => {
+            return key === 'partner';
+        });
+        itemModelKeys.splice(partnerPathIndex, 1);
+        itemModelKeys.push('partner.name');
+
+        data = _.pick(this.editedItem, itemModelKeys);
+        return data;
     },
     _changeAuditOpinion: function(e, detail) {
         if (!detail || !detail.selectedValues) { return; }

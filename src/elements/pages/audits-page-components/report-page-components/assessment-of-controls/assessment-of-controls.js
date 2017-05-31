@@ -30,6 +30,14 @@ Polymer({
     _setDataItems: function() {
         this.set('dataItems', [this.data]);
     },
+    getAssessmentOfControlsData: function() {
+        if (!this.data) { return; }
+        return {
+            recommendation: this.data.recommendation,
+            audit_observation: this.data.audit_observation,
+            ip_response: this.data.ip_response
+        };
+    },
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }
