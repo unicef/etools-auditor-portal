@@ -119,57 +119,60 @@
                             placeholder="Select Engagement Type"></etools-searchable-multiselection-menu>
                 </div>
 
-                <div class="input-container">
-                    <!-- Period Start Date -->
-                    <paper-input label="Period Start Date"
-                                 class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}}"
-                                 disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
-                                 required="{{_setRequired('start_date', basePermissionPath)}}"
-                                 invalid="{{_checkInvalid(errors.start_date)}}"
-                                 error-message="{{errors.start_date}}"
-                                 id="periodStartDateInput"
-                                 field="start_date"
-                                 value="[[prettyDate(data.start_date)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="periodStartDate"
-                                 placeholder="Select Start Date">
-                        <etools-datepicker-button prefix
-                                                  id="periodStartDate"
-                                                  date="[[prepareDate(data.start_date)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.start_date}}"
-                                                  no-init show-clear-btn></etools-datepicker-button>
-                    </paper-input>
-                </div>
+                <template is="dom-if" if="{{showInput}}">
+                    <div class="input-container">
+                        <!-- Period Start Date -->
+                        <paper-input label="Period Start Date"
+                                     class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}}"
+                                     disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
+                                     required="{{_setRequired('start_date', basePermissionPath)}}"
+                                     invalid="{{_checkInvalid(errors.start_date)}}"
+                                     error-message="{{errors.start_date}}"
+                                     id="periodStartDateInput"
+                                     field="start_date"
+                                     value="[[prettyDate(data.start_date)]]"
+                                     on-down="openDatePicker"
+                                     data-selector="periodStartDate"
+                                     placeholder="Select Start Date">
+                            <etools-datepicker-button prefix
+                                                      id="periodStartDate"
+                                                      date="[[prepareDate(data.start_date)]]"
+                                                      format="YYYY-MM-DD"
+                                                      pretty-date="{{data.start_date}}"
+                                                      no-init show-clear-btn></etools-datepicker-button>
+                        </paper-input>
+                    </div>
+                </template>
             </div>
 
             <div class="row-h group">
 
+                <template is="dom-if" if="{{showInput}}">
+                    <div class="input-container">
+                        <!-- Period End Date -->
+                        <paper-input label="Period End Date"
+                                     class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}}"
+                                     disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
+                                     required="{{_setRequired('end_date', basePermissionPath)}}"
+                                     invalid="{{_checkInvalid(errors.end_date)}}"
+                                     error-message="{{errors.end_date}}"
+                                     id="periodEndDateInput"
+                                     field="end_date"
+                                     value="[[prettyDate(data.end_date)]]"
+                                     on-down="openDatePicker"
+                                     data-selector="periodEndDate"
+                                     placeholder="Select End Date">
+                            <etools-datepicker-button prefix
+                                                      id="periodEndDate"
+                                                      date="[[prepareDate(data.end_date)]]"
+                                                      format="YYYY-MM-DD"
+                                                      pretty-date="{{data.end_date}}"
+                                                      no-init show-clear-btn></etools-datepicker-button>
+                        </paper-input>
+                    </div>
+                </template>
 
-                <div class="input-container">
-                    <!-- Period End Date -->
-                    <paper-input label="Period End Date"
-                                 class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}}"
-                                 disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
-                                 required="{{_setRequired('end_date', basePermissionPath)}}"
-                                 invalid="{{_checkInvalid(errors.end_date)}}"
-                                 error-message="{{errors.end_date}}"
-                                 id="periodEndDateInput"
-                                 field="end_date"
-                                 value="[[prettyDate(data.end_date)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="periodEndDate"
-                                 placeholder="Select End Date">
-                        <etools-datepicker-button prefix
-                                                  id="periodEndDate"
-                                                  date="[[prepareDate(data.end_date)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.end_date}}"
-                                                  no-init show-clear-btn></etools-datepicker-button>
-                    </paper-input>
-                </div>
-
-                <template is="dom-if" if="{{_showTotalValue(engagementType)}}">
+                <template is="dom-if" if="{{showInput}}">
                     <div class="input-container">
                         <!-- Total Value of Selected FACE Forms -->
                         <etools-currency-amount-input

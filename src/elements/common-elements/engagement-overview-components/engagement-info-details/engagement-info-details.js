@@ -55,7 +55,10 @@ Polymer({
     listeners: {
         'agreement-loaded': '_agreementLoaded'
     },
-    observers: ['_errorHandler(errorObject)'],
+    observers: [
+        '_errorHandler(errorObject)',
+        '_setShowInput(data.type)'
+    ],
     ready: function() {
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
@@ -170,7 +173,13 @@ Polymer({
         if (!start || !end) { return ''; }
         return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
     },
-    _showTotalValue: function(type) {
-        return type !== 'ma';
+    _setShowInput: function(type) {
+        if (typeof type === 'string' && type !== 'ma') {
+            this.showInput = true;
+        } else if (typeof type === 'object' && type.value && type.value !== 'ma') {
+            this.showInput = true;
+        } else {
+            this.showInput = false;
+        }
     }
 });
