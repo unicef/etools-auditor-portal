@@ -2,6 +2,17 @@
     position: relative;
     display: block;
 
+    .email-loading {
+        position: absolute;
+        right: -32px;
+        top: 25px;
+        left: initial;
+        &:not([active]) {
+            display: none !important;
+        }
+    }
+
+
     .add-button {
         position: absolute;
         right: 15px;
@@ -100,4 +111,8 @@ list-pagination {
     --list-pagination-styles: #{'
         margin-bottom: -8px;
     '};
+}
+
+etools-loading {
+    --etools-loading-overlay-transparency: 0.4;
 }

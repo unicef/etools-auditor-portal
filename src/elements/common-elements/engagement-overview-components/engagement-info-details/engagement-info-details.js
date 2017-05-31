@@ -109,7 +109,7 @@ Polymer({
         if (this.requestInProcess) { return; }
 
         let input = event && event.target,
-            value = input && +input.value;
+            value = input && input.value;
 
         this.resetAgreement();
 

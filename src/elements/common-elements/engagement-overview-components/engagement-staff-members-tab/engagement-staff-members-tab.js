@@ -131,15 +131,18 @@ Polymer({
         'changePermission(basePermissionPath)',
         '_errorHandler(errorObject.staff_members)',
         '_organizationChanged(engagement.agreement.audit_organization.id, basePermissionPath)',
+        '_organizationChanged(engagement.agreement.audit_organization.id)',
         '_queriesChanged(listSize, listPage)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
-        '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)'
+        '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
+        'updateStyles(emailChecking)'
     ],
 
     attached: function() {
         this.$.emailInput.validate = this._validEmailAddress.bind(this, this.$.emailInput);
         this.listSize = 10;
         this.listPage = 1;
+        window.ttt = this;
     },
 
     changePermission: function(basePermissionPath) {
@@ -161,7 +164,7 @@ Polymer({
     },
 
     _organizationChanged: function(id) {
-        if (!this._canBeChanged()) { return; }
+        if (!this._canBeChanged() || !this.basePermissionPath) { return; }
         if (!id) { this.resetList(); }
         this.organisationId = +id;
     },
@@ -250,9 +253,21 @@ Polymer({
 
         this.manageEngagementStaff(item);
     },
-    _emailDisabled: function(request, editPopup) {
-        return editPopup || request;
+    _emailDisabled: function(request, editPopup, emailChecking) {
+        return editPopup || request || emailChecking;
     },
+
+    _checkEmail: function(event) {
+        if (this.emailChecking) { return; }
+
+        let input = event && event.target,
+            value = input && input.value;
+
+        if (value && this._validEmailAddress(input)) {
+            this.newEmail = value;
+        }
+    },
+
     _showAddButton: function(basePath, agreement, loading) {
         let orgId = agreement && agreement.audit_organization && agreement.audit_organization.id;
 

@@ -2,7 +2,7 @@
             iron-icons, iron-icons/communication-icons, etools-loading]-->
 
 <!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, list-pagination, dialog-element,
-            lodash, table-elements-behavior, error-handler-behavior, update-staff-members, get-staff-members-list]-->
+            lodash, table-elements-behavior, error-handler-behavior, update-staff-members, get-staff-members-list,check-user-existence]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
@@ -18,7 +18,7 @@
 
         <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
 
-        <check-user-existance></check-user-existance>
+        <check-user-existence email="{{newEmail}}" email-checking="{{emailChecking}}" error="{{errors.user.email}}"></check-user-existence>
 
         <!--end requests-->
 
@@ -94,15 +94,16 @@
                                          placeholder="Enter E-mail"
                                          class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
                                          required="{{_setRequired('user.email', basePermissionPath)}}"
-                                         disabled="{{_emailDisabled(requestInProcess, canBeRemoved)}}"
-                                         readonly$="{{_emailDisabled(requestInProcess, canBeRemoved)}}"
+                                         disabled="{{_emailDisabled(requestInProcess, canBeRemoved, emailChecking)}}"
+                                         readonly$="{{_emailDisabled(requestInProcess, canBeRemoved, emailChecking)}}"
                                          on-focus="_resetFieldError"
+                                         on-blur="_checkEmail"
                                          id="emailInput"
                                          invalid="{{errors.user.email}}"
                                          error-message="{{errors.user.email}}">
                                 <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
-
+                            <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading"></etools-loading>
                         </div>
 
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.first_name)}}">
