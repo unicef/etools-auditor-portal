@@ -1,0 +1,26 @@
+<dom-module id="insert-html">
+    <style>
+        :host {
+            display: block;
+        }
+    </style>
+
+    <template></template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'insert-html',
+                properties: {
+                    html: {
+                        type: String,
+                        observer: '_htmlChanged'
+                    }
+                },
+                _htmlChanged: function (html) {
+                    Polymer.dom(this.root).innerHTML = html;
+                }
+            });
+        })();
+    </script>
+</dom-module>
