@@ -169,7 +169,7 @@
             });
         });
 
-        describe('method validate', function() {
+        xdescribe('method validate', function() {
             it('return true if there are no questionnaire children', function() {
                 assert.isUndefined(myEl.questionnaire.children);
                 assert.isTrue(myEl.validate());
@@ -245,7 +245,7 @@
             });
         });
 
-        describe('method getData', function() {
+        xdescribe('method getData', function() {
             it('calls getData method for each risk element', function() {
                 var elements = [{getData: sinon.spy()}, {getData: sinon.spy()}];
                 sinon.stub(myEl, 'getElements').returns(elements);

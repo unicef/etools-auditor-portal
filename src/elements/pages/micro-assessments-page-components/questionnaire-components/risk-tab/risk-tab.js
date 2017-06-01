@@ -15,13 +15,13 @@ Polymer({
             type: Boolean,
             value: false
         },
-        disabled: {
-            type: Boolean,
-            reflectToAttribute: true
-        },
         completed: {
             type: Boolean,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            value: false
+        },
+        disabled: {
+            type: Boolean
         },
         riskRatingOptions: {
             type: Object,
@@ -35,20 +35,63 @@ Polymer({
                     'moderate': 'Moderate'
                 };
             }
+        },
+        columns: {
+            type: Array,
+            value: function() {
+                return [
+                    {
+                        'size': 100,
+                        'label': 'Question',
+                        'name': 'header'
+                    }, {
+                        'size': '100px',
+                        'label': 'Risk Points',
+                        'name': 'value'
+                    },
+                    {
+                        'size': '40px',
+                        'label': 'Edit',
+                        'name': 'edit',
+                        'icon': true
+                    }
+                ];
+            }
+        },
+        details: {
+            type: Array,
+            value: function() {
+                return [{
+                    'label': 'Comments',
+                    'path': 'extra',
+                    'size': 100
+                }];
+            }
+        },
+        categoryHeader: {
+            type: Array,
+            value: function() {
+                return [{
+                    'path': 'header',
+                    'size': 100
+                }];
+            }
         }
     },
 
     observers: [
-        '_setOpen(disabled, completed, questionnaire)',
-        '_updateStyles(completed)'
+        '_setOpen(disabled, completed, firstRun, questionnaire)',
+        'changePermission(editMode, columns)'
     ],
 
-    _updateStyles: function() {
-        this.updateStyles();
-    },
-
-    _setIndex: function(index) {
-        return index + 1;
+    changePermission: function(editMode, columns) {
+        if (!columns) { return; }
+        let editObj = this.columns && this.columns[this.columns.length - 1];
+        if (editMode && editObj && editObj.name !== 'edit') {
+            this.push('columns', {'size': '40px','label': 'Edit','name': 'edit','icon': true});
+        } else if (!editMode && editObj && editObj.name === 'edit') {
+            this.pop('columns');
+        }
     },
 
     showResults: function(completed, open) {
@@ -64,58 +107,30 @@ Polymer({
         return this.riskRatingOptions[rating] || rating;
     },
 
-    _setOpen: function(disabled, completed) {
-        this.set('opened', !disabled && !completed);
+    _setOpen: function(disabled, completed, firstRun) {
+        if (!firstRun) { return; }
+        this.set('opened', !completed && !disabled);
     },
 
-    validate: function(forSave) {
-        let elements = this.getElements('validatable-element'),
-            valid = true;
-
-        if (!elements || !elements.length) { return true; }
-
-        Array.prototype.forEach.call(elements, (element) => {
-            if (forSave && !element.validate('forSave')) {
-                valid = false;
-            } else if (!forSave && !element.validate()) {
-                valid = false;
-            }
-        });
-
-        return valid;
-    },
-
-    getData: function() {
-        let riskElements = this.getElements('risk'),
-            risks = [];
-
-        Array.prototype.forEach.call(riskElements, (element) => {
-            let data = element.getData();
-            if (data) { risks.push(data); }
-        });
-
-        let nestedRiskElements = this.getElements('nested-risk'),
-            nestedRisks = [];
-
-        Array.prototype.forEach.call(nestedRiskElements, (element) => {
-            let data = element.getData();
-            if (data) { nestedRisks.push(data); }
-        });
-
-        if (risks.length || nestedRisks.length) {
-            let data = _.clone(this.questionnaire);
-            data.blueprints = risks;
-            data.children = nestedRisks;
-
-            return {
-                id: this.questionnaire.id,
-                blueprints: risks,
-                children: nestedRisks
-            };
-        }
+    setPanelTitle: function(header, complited) {
+        if (!complited) { return header; }
+        return `${header} - ${this.riskRatingOptions[this.questionnaire.risk_rating].toUpperCase()}`;
     },
 
     getElements: function(className) {
         return Polymer.dom(this.root).querySelectorAll(`.${className}`);
-    }
+    },
+
+    openEditDialog: function(event) {
+        let item = event && event.model && event.model.item;
+
+        if (!item) { throw Error('Can not find user data'); }
+
+        let childId = null;
+        if (this.questionnaire.children.length) {
+            childId = event.target && event.target.getAttribute('category-id');
+            if (!childId) { throw 'Can not find category id!'; }
+        }
+        this.fire('edit-blueprint', {data: _.cloneDeep(item), tabId: this.questionnaire.id, childId: childId});
+    },
 });

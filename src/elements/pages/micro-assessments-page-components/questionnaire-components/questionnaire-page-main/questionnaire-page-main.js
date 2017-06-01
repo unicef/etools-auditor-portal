@@ -2,14 +2,22 @@
 
 Polymer({
     is: 'questionnaire-page-main',
-    behaviors: [APBehaviors.PermissionController],
+
+    behaviors: [
+        APBehaviors.StaticDataController,
+        APBehaviors.PermissionController
+    ],
+
     properties: {
+        data: {
+            type: Object,
+            observer: '_dataChanged'
+        },
         questionnaire: {
             type: Object,
             value: function() {
                 return {};
-            },
-            notify: true
+            }
         },
         riskRatingOptions: {
             type: Object,
@@ -23,12 +31,38 @@ Polymer({
                     'moderate': 'Moderate'
                 };
             }
+        },
+        firstRun: {
+            type: Boolean,
+            value: true
         }
     },
-    observers: ['_updateStyles(questionnaire)'],
-    _updateStyles: function() {
-        this.updateStyles();
+
+    observers: [
+        'updateStyles(requestInProcess)',
+        'resetDialog(dialogOpened)'
+    ],
+
+    listeners: {
+        'edit-blueprint': '_openEditDialog',
+        'dialog-confirmed': '_addItemFromDialog'
     },
+
+    ready: function() {
+        this.riskOptions = this.getData('riskOptions');
+    },
+
+    _dataChanged: function(data) {
+        if (!data) { return; }
+        if (!_.isEmpty(this.questionnaire) && this.firstRun) {
+            this.firstRun = false;
+        }
+        this.questionnaire = data;
+        this.requestInProcess = false;
+        this.dialogOpened = false;
+        this.resetDialog();
+    },
+
     _checkCompleted: function(item) {
         if (!item) { return false; }
         let completed = true;
@@ -63,37 +97,82 @@ Polymer({
         return !readOnly;
     },
 
-    validate: function(forSave) {
-        if (!this.questionnaire.children || !this.questionnaire.children.length) { return true; }
+    _openEditDialog: function(event, detail) {
+        let item = detail && detail.data;
+        if (!item) { throw Error('Can not find user data'); }
 
-        let elements = this.getElements('validatable-tab'),
-            valid = true;
-
-        Array.prototype.forEach.call(elements, (element) => {
-            if (forSave && !element.validate('forSave')) {
-                element.opened = !element.disabled;
-                valid = false;
-            } else if (!forSave && !element.validate()) {
-                element.opened = !element.disabled;
-                valid = false;
-            }
-        });
-
-        return valid;
+        this.tabId = detail.tabId;
+        this.categoryId = detail.childId;
+        this.editedItem = item;
+        this.originalComments = item.extra;
+        this.$.questionHeader.innerHTML = item.header;
+        this.dialogOpened = true;
     },
 
-    getData: function() {
-        let elements = this.getElements('risk-tab'),
-            risks = [];
+    _setRiskValue: function(value, options) {
+        if (!options) { return; }
+        if (_.isNumber(value)) {
+            return options[value];
+        }
+        return value;
+    },
 
-        Array.prototype.forEach.call(elements, (element) => {
-            let data = element.getData();
-            if (data) { risks.push(data); }
-        });
+    _resetFieldError: function(event) {
+        event.target.invalid = false;
+    },
 
-        if (risks.length) {
+    _addItemFromDialog: function() {
+        if (!this.dialogOpened || !this.validate()) { return; }
+
+        if (this.originalComments === this.editedItem.extra &&
+            this.$.riskAssessmentInput.value &&
+            this.$.riskAssessmentInput.value.value === this.editedItem.value) {
+
+            this.dialogOpened = false;
+            this.resetDialog();
+            return;
+        }
+
+        this.requestInProcess = true;
+        this.fire('save-progress', {quietAdding: true});
+    },
+
+    validate: function() {
+        let riskValid = this.$.riskAssessmentInput.validate(),
+            commentsValid = this.$.riskAssessmentComments.validate();
+
+        return riskValid && commentsValid;
+    },
+
+    getQuestionnaireData: function() {
+        if (!this.dialogOpened) { return null; }
+
+        let data = {
+            id: this.editedItem.id,
+            value: this.$.riskAssessmentInput.value.value,
+            extra: this.editedItem.extra || ''
+        };
+
+        let risk;
+        if (this.categoryId) {
+            let child = {
+                id: +this.categoryId,
+                blueprints: [data]
+            };
+            risk = {
+                id: +this.tabId,
+                children: [child]
+            };
+        } else {
+            risk = {
+                id: +this.tabId,
+                blueprints: [data]
+            };
+        }
+
+        if (risk) {
             return {
-                children: risks
+                children: [risk]
             };
         }
     },
@@ -107,5 +186,13 @@ Polymer({
 
     getRating: function(rating) {
         return this.riskRatingOptions[rating] || rating;
+    },
+    resetDialog: function(opened) {
+        if (opened) { return; }
+        this.$.riskAssessmentInput.invalid = false;
+        this.$.riskAssessmentInput.value = '';
+
+        this.$.riskAssessmentComments.invalid = false;
+        this.$.riskAssessmentComments.value = '';
     }
 });
