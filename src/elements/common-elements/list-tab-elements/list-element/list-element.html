@@ -48,7 +48,7 @@
                     </template>
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
-                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]]">
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                             <template is="dom-if" if="{{_emtyObj(data)}}">
                                  <slot name="checkbox">
                                     <paper-checkbox checked="{{_getValue(item, data, 'bool')}}"
@@ -63,7 +63,7 @@
                     </template>
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
-                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]]">
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                             <template is="dom-if" if="{{_emtyObj(data)}}">
                                 <slot name="icon">
 

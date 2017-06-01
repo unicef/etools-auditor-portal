@@ -20,7 +20,7 @@
         .local-headings {
             display: inline-block;
             box-sizing: border-box;
-            padding-right: 5px;
+            padding-right: 10px;
             font-weight: 500;
             cursor: pointer;
             color: var(--gray-mid);
@@ -72,5 +72,5 @@
 }
 
 :host([no-additional]) {
-    padding: 0 20px;
+    padding: 0 15px;
  }

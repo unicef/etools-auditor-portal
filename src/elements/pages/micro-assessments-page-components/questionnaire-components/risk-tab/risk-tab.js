@@ -55,6 +55,7 @@ Polymer({
                         'size': '40px',
                         'label': 'Edit',
                         'name': 'edit',
+                        'align': 'center',
                         'icon': true
                     }
                 ];
@@ -92,7 +93,7 @@ Polymer({
         if (!columns) { return; }
         let editObj = this.columns && this.columns[this.columns.length - 1];
         if (editMode && editObj && editObj.name !== 'edit') {
-            this.push('columns', {'size': '40px','label': 'Edit','name': 'edit','icon': true});
+            this.push('columns', {'size': '40px','label': 'Edit','name': 'edit','align': 'center','icon': true});
         } else if (!editMode && editObj && editObj.name === 'edit') {
             this.pop('columns');
         }

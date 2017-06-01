@@ -29,13 +29,14 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 95,
+                        'size': 100,
                         'label': 'Description of Finding',
                         'name': 'finding'
                     }, {
-                        'size': 5,
+                        'size': '40px',
                         'label': 'Edit',
                         'name': 'edit',
+                        'align': 'center',
                         'icon': true
                     }
                 ];
