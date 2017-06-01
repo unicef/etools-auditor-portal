@@ -43,12 +43,12 @@ Polymer({
                 'path': 'local_amount',
                 'align': 'right'
             }, {
-                'size': 15,
+                'size': 20,
                 'label': 'Amount USD',
                 'path': 'amount',
                 'align': 'right'
             }, {
-                'size': 5,
+                'size': '40px',
                 'label': 'Edit',
                 'name': 'edit',
                 'align': 'center',

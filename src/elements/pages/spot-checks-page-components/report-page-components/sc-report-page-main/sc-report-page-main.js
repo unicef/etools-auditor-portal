@@ -23,8 +23,8 @@ Polymer({
             notify: true
         }
     },
-    validate: function() {
-        let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate();
+    validate: function(forSave) {
+        let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate(forSave);
 
         return assignTabValid;
     },

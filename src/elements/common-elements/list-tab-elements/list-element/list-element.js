@@ -47,6 +47,14 @@ Polymer({
         data: {
             type: Object,
             notify: true
+        },
+        multiline: {
+            type: Boolean,
+            value: false
+        },
+        noHover: {
+            type: Boolean,
+            value: false
         }
     },
     observers: [

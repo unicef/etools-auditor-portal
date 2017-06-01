@@ -6,17 +6,21 @@
     display: block;
     border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
 
+    .question-title {
+        font-weight: 500;
+        font-size: 14px !important;
+        letter-spacing: 0.5px
+    }
+
     .partner-data {
         display: block;
         width: 100%;
-        height: 100%;
         box-sizing: border-box;
         white-space: nowrap;
         font-size: 0; //skip gaps between inline-blocks
 
         .col-data {
             display: inline-block;
-            line-height: 48px;
             overflow: hidden;
             font-size: 13px;
             text-overflow: ellipsis;
@@ -79,7 +83,7 @@ paper-material {
     @apply (--layout-horizontal);
     @apply (--layout-center);
     width: 100%;
-    height: 48px;
+    min-height: 48px;
     font-size: 13px;
     color: var(--primary-text-color, rgba(0, 0, 0, 0.87));
     background-color: var(--primary-background-color, #FFFFFF);
@@ -89,7 +93,24 @@ paper-material {
 
 :host([no-additional]) {
     paper-material {
-        padding: 0 20px !important;
+        padding: 0 15px !important;
+    }
+}
+
+:host([multiline]) {
+    .partner-data {
+        .col-data {
+            padding-top: 5px;
+            padding-bottom: 5px;
+
+            .truncate { white-space: normal; }
+        }
+    }
+}
+
+:host([no-hover]) {
+    paper-material:hover {
+        background-color: initial;
     }
 }
 
@@ -100,12 +121,10 @@ paper-material ::slotted(*) {
 }
 
 #iconWrapper {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 48px;
-    line-height: 48px;
     padding: 0 24px;
+    margin-left: -72px;
+    line-height: 48px;
+    vertical-align: middle;
     cursor: pointer;
 }
 
@@ -118,8 +137,4 @@ iron-icon {
     background-color: #EEEEEE;
     /* TODO: replace with app-theme var */
     border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
-}
-
-paper-checkbox, .without-checkbox {
-    margin-left: 24%;
 }

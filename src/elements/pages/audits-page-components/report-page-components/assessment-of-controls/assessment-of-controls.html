@@ -11,8 +11,7 @@
 
             etools-content-panel {
                 --ecp-content: #{'{
-                    padding: 0;
-                    padding-bottom: 7px;
+                    padding: 20px 0 50px;
                 }'};
             }
         </style>
@@ -27,7 +26,7 @@
                             value="{{data.recommendation}}"
                             class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
                             readonly$="[[isReadOnly('recommendation', basePermissionPath)]]"
-                            disabled$="[[isDisabled('recommendation', requestInProcess)]]"
+                            disabled$="[[isDisabled('recommendation', requestInProcess, basePermissionPath)]]"
                             required$="[[_setRequired('recommendation', basePermissionPath)]]"
                             invalid$="{{errors.recommendation}}"
                             error-message="{{errors.recommendation}}">
@@ -44,7 +43,7 @@
                             value="{{data.audit_observation}}"
                             class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
                             readonly$="[[isReadOnly('audit_observation', basePermissionPath)]]"
-                            disabled$="[[isDisabled('audit_observation', requestInProcess)]]"
+                            disabled$="[[isDisabled('audit_observation', requestInProcess, basePermissionPath)]]"
                             required$="[[_setRequired('audit_observation', basePermissionPath)]]"
                             invalid$="{{errors.audit_observation}}"
                             error-message="{{errors.audit_observation}}">
@@ -61,7 +60,7 @@
                             value="{{data.ip_response}}"
                             class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
                             readonly$="[[isReadOnly('ip_response', basePermissionPath)]]"
-                            disabled$="[[isDisabled('ip_response', requestInProcess)]]"
+                            disabled$="[[isDisabled('ip_response', requestInProcess, basePermissionPath)]]"
                             required$="[[_setRequired('ip_response', basePermissionPath)]]"
                             invalid$="{{errors.ip_response}}"
                             error-message="{{errors.ip_response}}">

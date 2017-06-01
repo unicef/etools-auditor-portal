@@ -64,13 +64,15 @@ Polymer({
                         'size': 10,
                         'label': 'Has Access',
                         'name': 'hasAccess',
+                        'align': 'center',
                         'property': 'hasAccess',
                         'checkbox': true
                     },
                     {
-                        'size': '35px',
+                        'size': '40px',
                         'label': 'Edit',
                         'name': 'edit',
+                        'align': 'center',
                         'icon': true
                     }
                 ];
@@ -142,7 +144,6 @@ Polymer({
         this.$.emailInput.validate = this._validEmailAddress.bind(this, this.$.emailInput);
         this.listSize = 10;
         this.listPage = 1;
-        window.ttt = this;
     },
 
     changePermission: function(basePermissionPath) {
@@ -153,7 +154,7 @@ Polymer({
                 this.set(`columns.${index}.size`, 18);
             });
             this.push('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
-            this.push('columns', {'size': '35px','label': 'Edit','name': 'edit','icon': true});
+            this.push('columns', {'size': '40px','label': 'Edit','name': 'edit','align': 'center','icon': true});
         } else if (!this._canBeChanged() && editObj && editObj.name === 'edit') {
             this.pop('columns');
             this.pop('columns');
@@ -366,11 +367,22 @@ Polymer({
         this.set('datalength', 0);
     },
     getTabData: function() {
+        if (!this._canBeChanged()) { return null; }
         let staffs = [];
         _.each(this.engagementStaffs, value => {
             staffs.push(value);
         });
-        return staffs;
+
+        let dataChanged = false;
+        if (this.engagement.staff_members.length !== staffs.length) {
+            dataChanged = true;
+        } else {
+            _.each(this.engagement.staff_members, (staff) => {
+                if (!~staffs.indexOf(staff.id)) { dataChanged = true; }
+            });
+        }
+
+        return dataChanged ? staffs : null;
     }
 
 });

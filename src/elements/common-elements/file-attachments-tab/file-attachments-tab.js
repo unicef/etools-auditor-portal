@@ -124,6 +124,7 @@
                 headings.push({
                     'size': '40px',
                     'label': 'Edit',
+                    'name': 'edit',
                     'align': 'center',
                     'icon': true
                 });

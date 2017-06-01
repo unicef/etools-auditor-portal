@@ -17,13 +17,14 @@ Polymer({
                         'label': 'Subject area',
                         'path': 'header'
                     }, {
-                        'size': 25,
+                        'size': 30,
                         'label': 'Risk Assessment',
                         'path': 'value.label'
                     }, {
-                        'size': 5,
+                        'size': '40px',
                         'label': 'Edit',
                         'name': 'edit',
+                        'align': 'center',
                         'icon': true
                     }
                 ];
@@ -76,7 +77,7 @@ Polymer({
         if (readOnly === null) { readOnly = true; }
 
         if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
-            this.push('columns', {'size': 4,'label': 'Edit','name': 'edit','icon': true});
+            this.push('columns', {'size': '40px','label': 'Edit','name': 'edit','align': 'center','icon': true});
         } else if (readOnly && this.columns[this.columns.length - 1].name === 'edit') {
             this.pop('columns');
         }

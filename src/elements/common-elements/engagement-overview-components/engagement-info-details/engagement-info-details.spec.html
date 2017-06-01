@@ -239,6 +239,12 @@
                 myEl._setShowInput({value: 'not ma'});
                 assert.isTrue(myEl.showInput);
             });
+
+            it('sets showInput=false if type is null', function () {
+                assert.isNotFalse(myEl.showInput);
+                myEl._setShowInput(null);
+                assert.isFalse(myEl.showInput);
+            });
         });
 
     });

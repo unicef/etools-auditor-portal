@@ -47,13 +47,14 @@ Polymer({
                         'path': 'category_of_observation.display_name'
                     },
                     {
-                        'size': 25,
+                        'size': 30,
                         'label': 'Deadline of Action',
                         'path': 'deadline_of_action'
                     }, {
-                        'size': 5,
+                        'size': '40px',
                         'label': 'Edit',
                         'name': 'edit',
+                        'align': 'center',
                         'icon': true
                     }
                 ];

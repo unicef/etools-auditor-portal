@@ -1,4 +1,4 @@
-<!--import [polymer, iron-flex-layout, shared-styles, tab-inputs-styles, module-styles, moment-element/moment-import, paper-checkbox]-->
+<!--import [polymer, iron-flex-layout, shared-styles, tab-inputs-styles, module-styles, moment-element/moment-import, paper-checkbox, insert-html]-->
 
 <dom-module id="list-element">
     <template>
@@ -20,15 +20,15 @@
                 <template is="dom-repeat" items="[[headings]]">
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
-                        <a class$="col-data w[[item.size]] [[item.align]] truncate"
+                        <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
                            href$="[[_getLink(item.link, data)]]"
                            title="[[_getValue(item, data)]]">
                             [[_getValue(item, data)]]
                         </a>
                     </template>
 
-                    <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom')]]" restamp>
-                        <span class$="col-data w[[item.size]] [[item.align]] truncate">
+                    <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                             <span class="truncate">
                                 [[_getValue(item, data)]]
 
@@ -39,8 +39,16 @@
                         </span>
                     </template>
 
+                    <template is="dom-if" if="[[_isOneOfType(item, 'html')]]">
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+                            <span class="truncate">
+                                <insert-html html="[[_getValue(item, data)]]"></insert-html>
+                            </span>
+                        </span>
+                    </template>
+
                     <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
-                        <span class$="col-data w[[item.size]] [[item.align]]">
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                             <template is="dom-if" if="{{_emtyObj(data)}}">
                                  <slot name="checkbox">
                                     <paper-checkbox checked="{{_getValue(item, data, 'bool')}}"
@@ -55,7 +63,7 @@
                     </template>
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
-                        <span class$="col-data w[[item.size]] [[item.align]]">
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                             <template is="dom-if" if="{{_emtyObj(data)}}">
                                 <slot name="icon">
 
@@ -68,7 +76,7 @@
                     </template>
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
-                        <span class$="col-data w[[item.size]] [[item.align]]">
+                        <span class$="col-data w[[item.size]] [[item.align]] [[item.class]]">
                             <template is="dom-if" if="{{_hasProperty(data, item.property)}}" restamp>
                                 <slot name="custom">
 

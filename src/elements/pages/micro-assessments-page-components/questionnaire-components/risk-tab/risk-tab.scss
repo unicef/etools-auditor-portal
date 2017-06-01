@@ -2,6 +2,14 @@
     position: relative;
     display: block;
 
+    .edit-icon {
+        padding: 5px;
+        width: 30px;
+        height: 30px;
+        color: var(--gray-mid);
+    }
+    .edit-icon-slot { overflow: visible !important; }
+
     .tab-container {
         position: relative;
         width: 100%;
@@ -13,6 +21,7 @@
             left: 0;
             width: 100%;
             background-color: #ffffff;
+            padding-bottom: 7px;
             box-shadow: 0 3px 11px -2px rgba(0, 0, 0, 0.4);
             opacity: 1;
             transition: 0.25s;
@@ -20,7 +29,7 @@
             &[hidden_results] { opacity: 0;  z-index: -1; }
 
             .result-element {
-                padding: 21px 6%;
+                padding: 16px 2% 16px 2%;
                 box-sizing: border-box;
                 font-size: 17px;
 
@@ -30,9 +39,19 @@
                     min-width: 125px;
                 }
 
-                .value { font-weight: 800; }
+                .value {
+                    width: 120px;
+                    display: inline-block;
+                    text-align: center;
+                    float: right;
+                    font-weight: 800;
+
+                    &.low { color: var(--module-success); }
+                    &.medium { color: var(--module-warning); }
+                    &.significant, &.high { color: var(--module-error); }
+                }
                 &.risk-rating .value { font-weight: 400; }
-                &.risk-rating { border-top: solid 1px #e8e8e8; }
+                &.result-element { border-bottom: solid 1px #e8e8e8; }
             }
         }
     }
@@ -40,37 +59,26 @@
 
 :host([completed]) {
     .tab-container {
-        min-height: 186px;
+        min-height: 348px;
     }
 }
 
 etools-content-panel {
     position: relative;
 
-    &[completed] {
-        --epc-toolbar: #{'{
-            height: 51px;
-            padding: 2px;
-            background: var(--module-success) url(/ap/images/icon-check.svg) no-repeat right 21px center/32px;
-        }'};
-    }
-
     --ecp-header-title: #{'{
         font-weight: 500;
         line-height: 51px;
     }'};
-
-    --ecp-header-disabled: #{'{
-            opacity: 1 !important;
-            background-color: #d9d9d9;
-            color: #a8a8a8;
-        }'};
 
     --epc-toolbar: #{'{
         height: 51px;
         padding: 2px;
         background-color: var(--module-primary);
     }'};
-
+    --ecp-content: #{'{
+            padding: 0;
+            padding-bottom: 7px;
+        }'};
 
 }

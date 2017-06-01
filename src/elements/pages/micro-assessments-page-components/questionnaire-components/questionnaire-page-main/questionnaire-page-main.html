@@ -1,12 +1,12 @@
-<!--import [polymer]-->
+<!--import [polymer, lodash, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea]-->
 
-<!--import [risk-tab, permission-controller]-->
+<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element]-->
 
 <dom-module id="questionnaire-page-main">
     <template>
-        <style>
+        <style include="module-styles tab-inputs-styles">
             etools-content-panel.totals {
-                margin-bottom: 50px;
+                margin-bottom: 20px;
 
                 --ecp-header-title: #{'{
                     font-weight: 500;
@@ -20,10 +20,11 @@
                 }'};
                 --ecp-content: #{'{
                     padding: 0;
+                    padding-bottom: 7px;
                 }'};
             }
             .result-element {
-                padding: 21px 6%;
+                padding: 16px 2% 16px 2%;
                 box-sizing: border-box;
                 font-size: 17px;
 
@@ -33,26 +34,92 @@
                     min-width: 125px;
                 }
 
-                .value { font-weight: 800; }
+                .value {
+                    width: 120px;
+                    display: inline-block;
+                    text-align: center;
+                    float: right;
+                    font-weight: 800;
+
+                    &.low { color: var(--module-success); }
+                    &.medium { color: var(--module-warning); }
+                    &.significant, &.high { color: var(--module-error); }
+                }
                 &.risk-rating .value { font-weight: 400; }
-                &.risk-rating { border-top: solid 1px #e8e8e8; }
+                &.result-element { border-bottom: solid 1px #e8e8e8; }
+            }
+
+            .repeatable-item-container {
+                width: 700px;
             }
         </style>
+
+        <etools-content-panel class="totals" panel-title$="OVERAL RISK RATING - [[getRating(questionnaire.risk_rating, riskRatingOptions)]]" open>
+            <div class="risk-score result-element"><span class="text">Total number of questions:</span><span class="value">[[getScore(questionnaire.blueprint_count)]]</span></div>
+            <div class="risk-score result-element"><span class="text">Total number of applicable questions:</span><span class="value">[[getScore(questionnaire.applicable_questions)]]</span></div>
+            <div class="risk-score result-element"><span class="text">Total number of applicable key questions:</span><span class="value">[[getScore(questionnaire.applicable_key_questions)]]</span></div>
+            <div class="risk-score result-element"><span class="text">Total number of risk points:</span><span class="value">[[getScore(questionnaire.total_number_risk_points)]]</span></div>
+            <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class$="value [[questionnaire.risk_rating]]">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>
+        </etools-content-panel>
 
         <template is="dom-repeat" items="{{questionnaire.children}}">
             <risk-tab questionnaire="{{item}}"
                       class="validatable-tab risk-tab"
                       index="{{index}}"
+                      first-run="[[firstRun]]"
                       completed="{{_checkCompleted(item)}}"
                       disabled="{{_checkDisabled(index, item)}}"
                       edit-mode="[[_allowEdit(basePermissionPath)]]"></risk-tab>
         </template>
 
-        <etools-content-panel class="totals" panel-title="Totals" open>
-            <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">[[getScore(questionnaire.risk_score)]]</span></div>
-            <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class="value">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>
-        </etools-content-panel>
 
+        <dialog-element opened="{{dialogOpened}}" dialog-title="Edit Question" confirm-btn-text="Save" request-in-process="{{requestInProcess}}">
+
+            <div class="row-h repeatable-item-container" without-line>
+
+                <div class="form-title">
+                    <div class="text" id="questionHeader">[[editedItem.header]]</div>
+                </div>
+
+                <div class="repeatable-item-content">
+                    <div class="row-h group">
+                        <div class="input-container  input-container-ms">
+                            <!-- Risk Assessment -->
+                            <etools-searchable-multiselection-menu
+                                    id="riskAssessmentInput"
+                                    options="[[riskOptions]]"
+                                    class="disabled-as-readonly required validate-input"
+                                    readonly="[[requestInProcess]]"
+                                    disabled="[[requestInProcess]]"
+                                    required hide-search
+                                    value="{{_setRiskValue(editedItem.value, riskOptions)}}"
+                                    error-message="This field is required"
+                                    invalid="{{riskAssessmentInvalid}}"
+                                    on-focus="_resetFieldError"
+                                    label="Risk Assessment"
+                                    placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l comment-container">
+                            <!-- Comments -->
+                            <paper-textarea label="Comments"
+                                            id="riskAssessmentComments"
+                                            class="disabled-as-readonly validate-input required"
+                                            required
+                                            value="{{editedItem.extra}}"
+                                            placeholder="Enter Comments"
+                                            on-focus="_resetFieldError"
+                                            error-message="This field is required"
+                                            disabled$="[[requestInProcess]]">
+                            </paper-textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </dialog-element>
 
     </template>
 

@@ -1,6 +1,6 @@
-<!--import [polymer, etools-content-panel]-->
+<!--import [polymer, etools-content-panel, paper-icon-button]-->
 
-<!--import [lodash, module-styles, risk-element, nested-risks]-->
+<!--import [lodash, module-styles, list-element, list-header]-->
 
 <dom-module id="risk-tab">
     <template>
@@ -10,26 +10,61 @@
         <div class="tab-container">
             <etools-content-panel completed$="[[completed]]"
                                   show-expand-btn
-                                  is-disabled="[[disabled]]"
-                                  panel-title="{{questionnaire.header}}"
+                                  panel-title="{{setPanelTitle(questionnaire.header, completed)}}"
                                   open="{{opened}}">
+
+                <list-header no-ordered data="[[columns]]"></list-header>
 
                 <template is="dom-repeat" items="{{questionnaire.blueprints}}">
 
-                    <risk-element class="validatable-element risk" blueprint="{{item}}" index="{{index}}" edit-mode="[[editMode]]"></risk-element>
+                    <list-element
+                            class="list-element"
+                            data="[[item]]"
+                            headings="[[columns]]"
+                            details="[[details]]"
+                            has-collapse multiline
+                            no-animation>
+                        <div slot="icon" class="edit-icon-slot">
+                            <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                        </div>
+
+                    </list-element>
 
                 </template>
 
-                <template is="dom-repeat" items="{{questionnaire.children}}">
+                <template is="dom-repeat" items="{{questionnaire.children}}" as="category">
 
-                    <nested-risks class="validatable-element nested-risk" questionnaire="{{item}}" edit-mode="[[editMode]]"></nested-risks>
+                    <list-element class="list-element"
+                                  data="[[category]]"
+                                  headings="[[categoryHeader]]"
+                                  no-animation multiline no-hover>
+                    </list-element>
+
+                    <template is="dom-repeat" items="{{category.blueprints}}">
+
+                        <list-element class="list-element"
+                                      data="[[item]]"
+                                      headings="[[columns]]"
+                                      details="[[details]]"
+                                      has-collapse multiline
+                                      no-animation>
+                            <div slot="icon" class="edit-icon-slot">
+                                <paper-icon-button icon="create" class="edit-icon" category-id$="{{category.id}}"
+                                                   on-tap="openEditDialog"></paper-icon-button>
+                            </div>
+                        </list-element>
+
+                    </template>
 
                 </template>
             </etools-content-panel>
 
             <div class="risk-result-container" hidden_results$="[[!showResults(completed, opened)]]">
-                <div class="risk-score result-element"><span class="text">Risk Score:</span><span class="value">[[getScore(questionnaire.risk_score)]]</span></div>
-                <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class="value">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>
+                <div class="risk-score result-element"><span class="text">Total number of questions:</span><span class="value">[[getScore(questionnaire.blueprint_count)]]</span></div>
+                <div class="risk-score result-element"><span class="text">Total number of applicable questions:</span><span class="value">[[getScore(questionnaire.applicable_questions)]]</span></div>
+                <div class="risk-score result-element"><span class="text">Total number of applicable key questions:</span><span class="value">[[getScore(questionnaire.applicable_key_questions)]]</span></div>
+                <div class="risk-score result-element"><span class="text">Total number of risk points:</span><span class="value">[[getScore(questionnaire.total_number_risk_points)]]</span></div>
+                <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class$="value [[questionnaire.risk_rating]]">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>
             </div>
         </div>
 
