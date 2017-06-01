@@ -19,7 +19,7 @@
                     <paper-input label="Period converted by FACE form(s) - Start"
                                  id="dateFaceStartInput"
                                  class="disabled-as-readonly"
-                                 disabled="true"
+                                 disabled
                                  value="[[prettyDate(data.start_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="dateFaceStartSelector"
@@ -34,10 +34,10 @@
                     </paper-input>
                 </div>
                 <div class="input-container">
-                    <paper-input label="Period converted by FACE form(s) - Start"
+                    <paper-input label="Period converted by FACE form(s) - End"
                                  id="dateFaceEndInput"
                                  class="disabled-as-readonly"
-                                 disabled="true"
+                                 disabled
                                  value="[[prettyDate(data.end_date)]]"
                                  on-down="openDatePicker"
                                  data-selector="dateFaceEndSelector"
@@ -52,6 +52,18 @@
                     </paper-input>
                 </div>
                 <div class="input-container">
+                    <!-- Total Value of Selected FACE Forms -->
+                    <etools-currency-amount-input
+                            label="Total value of selected FACE form(s)"
+                            currency="$"
+                            class="disabled-as-readonly"
+                            disabled
+                            value="{{data.total_value}}"
+                            placeholder="Enter Total Value"></etools-currency-amount-input>
+                </div>
+            </div>
+            <div class="row-h group">
+                <div class="input-container">
                     <etools-currency-amount-input
                             label="Total amount tested"
                             currency="$"
@@ -63,8 +75,6 @@
                             value="{{data.total_amount_tested}}"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
-            </div>
-            <div class="row-h group">
                 <div class="input-container">
                     <etools-currency-amount-input
                             label="Total amount of ineligible expenditure"
