@@ -176,7 +176,7 @@ Polymer({
     _setShowInput: function(type) {
         if (typeof type === 'string' && type !== 'ma') {
             this.showInput = true;
-        } else if (typeof type === 'object' && type.value && type.value !== 'ma') {
+        } else if (typeof type === 'object' && type && type.value && type.value !== 'ma') {
             this.showInput = true;
         } else {
             this.showInput = false;
