@@ -123,24 +123,29 @@ Polymer({
         this.set('dataItems', [this.data]);
     },
     getFindingsSummaryData: function() {
+        if (_.isEqual(this.editedItem, this.itemModel)) { return; }
+
         let itemModelKeys = _.keys(this.itemModel) || [];
-        let partnerPathIndex;
+        let originalData;
         let data;
 
-        partnerPathIndex = itemModelKeys.findIndex((key) => {
-            return key === 'partner';
-        });
-        itemModelKeys.splice(partnerPathIndex, 1);
         itemModelKeys.push('partner.name');
+        itemModelKeys = itemModelKeys.filter((key) => {
+            return key !== 'partner' && key !== 'opinion';
+        });
 
         data = _.pick(this.editedItem, itemModelKeys);
+        originalData = _.pick(this.originalData && this.originalData[0], itemModelKeys);
+
         data.percent_of_audited_expenditure = data.percent_of_audited_expenditure || null;
         data.number_of_financial_findings = data.number_of_financial_findings || null;
         data.high_risk = data.high_risk || null;
         data.medium_risk = data.medium_risk || null;
         data.low_risk = data.low_risk || null;
 
-        return data;
+        if (!_.isEqual(data, originalData)) {
+            return data;
+        }
     },
     _changeAuditOpinion: function(e, detail) {
         if (!detail || !detail.selectedValues) { return; }

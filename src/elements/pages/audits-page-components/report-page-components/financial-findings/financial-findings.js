@@ -103,5 +103,9 @@ Polymer({
         _.each(items, (item) => {
             item.finding_number = ([1e15] + item.id).slice(-4);
         });
+
+        _.each(this.originalData, (item) => {
+            item.finding_number = ([1e15] + item.id).slice(-4);
+        });
     }
 });

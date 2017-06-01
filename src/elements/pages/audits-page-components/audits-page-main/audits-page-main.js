@@ -62,15 +62,19 @@ Polymer({
         let reportPage = Polymer.dom(this.root).querySelector('#report');
         let findingsSummaryData = reportPage.getFindingsSummaryData();
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
-        _.assign(data, findingsSummaryData, assessmentOfControlsData);
         let financialFindingData = reportPage.getFinancialFindingsData();
+        let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
+
+        _.assign(data, findingsSummaryData, assessmentOfControlsData);
+
         if (!_.isNull(financialFindingData)) {
             data.financial_finding_set = financialFindingData;
         }
-        let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
+
         if (!_.isNull(keyInternalWeaknessData)) {
             data.key_internal_weakness = keyInternalWeaknessData;
         }
+
         return data;
     },
 
