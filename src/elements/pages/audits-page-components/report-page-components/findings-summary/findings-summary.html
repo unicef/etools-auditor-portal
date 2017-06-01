@@ -54,6 +54,7 @@
                             <!-- Implementing partner name -->
                             <paper-input
                                     label="Implementing partner name"
+                                    title$="{{editedItem.partner.name}}"
                                     placeholder="Enter name"
                                     value="{{editedItem.partner.name}}"
                                     on-focus="_resetFieldError"
@@ -100,10 +101,11 @@
                     <div class="row-h group">
                         <div class="input-container">
                             <!-- % of audited expenditure -->
-                            <etools-currency-amount-input
+                            <paper-input
                                     label="% of audited expenditure"
                                     placeholder="Enter value"
                                     value="{{editedItem.percent_of_audited_expenditure}}"
+                                    allowed-pattern="[\d]"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
                                     required$="[[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
@@ -111,7 +113,7 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.percent_of_audited_expenditure}}"
                                     error-message="{{errors.percent_of_audited_expenditure}}">
-                            </etools-currency-amount-input>
+                            </paper-input>
                         </div>
 
                         <div class="input-container">
@@ -139,10 +141,11 @@
 
                         <div class="input-container">
                             <!-- Number of financial findings -->
-                            <etools-currency-amount-input
+                            <paper-input
                                     label="Number of financial findings"
                                     placeholder="Enter value"
                                     value="{{editedItem.number_of_financial_findings}}"
+                                    allowed-pattern="[\d]"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
@@ -150,17 +153,18 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.number_of_financial_findings}}"
                                     error-message="{{errors.number_of_financial_findings}}">
-                            </etools-currency-amount-input>
+                            </paper-input>
                         </div>
                     </div>
 
                     <div class="row-h group">
                         <div class="input-container">
                             <!-- High risk -->
-                            <etools-currency-amount-input
+                            <paper-input
                                     label="High risk"
                                     placeholder="Enter value"
                                     value="{{editedItem.high_risk}}"
+                                    allowed-pattern="[\d]"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('high_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('high_risk', basePermissionPath)]]"
@@ -168,15 +172,16 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.high_risk}}"
                                     error-message="{{errors.high_risk}}">
-                            </etools-currency-amount-input>
+                            </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Medium risk -->
-                            <etools-currency-amount-input
+                            <paper-input
                                     label="Medium risk"
                                     placeholder="Enter value"
                                     value="{{editedItem.medium_risk}}"
+                                    allowed-pattern="[\d]"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('medium_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('medium_risk', basePermissionPath)]]"
@@ -184,15 +189,16 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.medium_risk}}"
                                     error-message="{{errors.medium_risk}}">
-                            </etools-currency-amount-input>
+                            </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Low risk -->
-                            <etools-currency-amount-input
+                            <paper-input
                                     label="Low risk"
                                     placeholder="Enter value"
                                     value="{{editedItem.low_risk}}"
+                                    allowed-pattern="[\d]"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('low_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('low_risk', basePermissionPath)]]"
@@ -200,7 +206,7 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.low_risk}}"
                                     error-message="{{errors.low_risk}}">
-                            </etools-currency-amount-input>
+                            </paper-input>
                         </div>
                     </div>
                 </div>
