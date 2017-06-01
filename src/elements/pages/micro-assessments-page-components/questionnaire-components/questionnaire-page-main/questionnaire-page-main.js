@@ -35,6 +35,10 @@ Polymer({
         firstRun: {
             type: Boolean,
             value: true
+        },
+        errorObject: {
+            type: Object,
+            observer: 'savingError'
         }
     },
 
@@ -194,5 +198,12 @@ Polymer({
 
         this.$.riskAssessmentComments.invalid = false;
         this.$.riskAssessmentComments.value = '';
+    },
+
+    savingError: function() {
+        if (this.requestInProcess) {
+            this.requestInProcess = false;
+            this.fire('toast', {text: 'Can not save data'});
+        }
     }
 });

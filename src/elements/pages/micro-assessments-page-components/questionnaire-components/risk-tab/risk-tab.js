@@ -43,11 +43,13 @@ Polymer({
                     {
                         'size': 100,
                         'label': 'Question',
-                        'name': 'header'
+                        'name': 'header',
+                        'html': true
                     }, {
                         'size': '100px',
                         'label': 'Risk Points',
-                        'name': 'value'
+                        'name': 'value',
+                        'align': 'center'
                     },
                     {
                         'size': '40px',
@@ -73,7 +75,9 @@ Polymer({
             value: function() {
                 return [{
                     'path': 'header',
-                    'size': 100
+                    'size': 100,
+                    'html': true,
+                    'class': 'question-title'
                 }];
             }
         }

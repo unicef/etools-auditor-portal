@@ -22,7 +22,7 @@
                             data="[[item]]"
                             headings="[[columns]]"
                             details="[[details]]"
-                            has-collapse
+                            has-collapse multiline
                             no-animation>
                         <div slot="icon" class="edit-icon-slot">
                             <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
@@ -37,7 +37,7 @@
                     <list-element class="list-element"
                                   data="[[category]]"
                                   headings="[[categoryHeader]]"
-                                  no-animation>
+                                  no-animation multiline no-hover>
                     </list-element>
 
                     <template is="dom-repeat" items="{{category.blueprints}}">
@@ -46,7 +46,7 @@
                                       data="[[item]]"
                                       headings="[[columns]]"
                                       details="[[details]]"
-                                      has-collapse
+                                      has-collapse multiline
                                       no-animation>
                             <div slot="icon" class="edit-icon-slot">
                                 <paper-icon-button icon="create" class="edit-icon" category-id$="{{category.id}}"

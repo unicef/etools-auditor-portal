@@ -6,6 +6,12 @@
     display: block;
     border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
 
+    .question-title {
+        font-weight: 500;
+        font-size: 14px !important;
+        letter-spacing: 0.5px
+    }
+
     .partner-data {
         display: block;
         width: 100%;
@@ -115,12 +121,10 @@ paper-material ::slotted(*) {
 }
 
 #iconWrapper {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 48px;
-    line-height: 48px;
     padding: 0 24px;
+    margin-left: -72px;
+    line-height: 48px;
+    vertical-align: middle;
     cursor: pointer;
 }
 
