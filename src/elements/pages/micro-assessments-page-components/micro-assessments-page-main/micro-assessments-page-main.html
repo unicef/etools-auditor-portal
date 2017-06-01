@@ -60,8 +60,7 @@
                             <engagement-staff-members-tab id="staffMembers"
                                                           engagement="{{engagement}}"
                                                           base-permission-path="{{permissionBase}}"
-                                                          error-object="{{errorObject}}"
-                                                          data-items="{{engagement.staff_members}}"></engagement-staff-members-tab>
+                                                          error-object="{{errorObject}}"></engagement-staff-members-tab>
                         </div>
 
                         <div name="report">
@@ -74,7 +73,7 @@
 
                         <div name="questionnaire">
                             <questionnaire-page-main id="questionnaire"
-                                                     questionnaire="{{engagement.questionnaire}}"
+                                                     data="[[engagement.questionnaire]]"
                                                      error-object="{{errorObject}}"
                                                      base-permission-path="{{permissionBase}}"></questionnaire-page-main>
                         </div>

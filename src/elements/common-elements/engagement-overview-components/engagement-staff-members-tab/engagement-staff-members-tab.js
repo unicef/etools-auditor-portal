@@ -142,7 +142,6 @@ Polymer({
         this.$.emailInput.validate = this._validEmailAddress.bind(this, this.$.emailInput);
         this.listSize = 10;
         this.listPage = 1;
-        window.ttt = this;
     },
 
     changePermission: function(basePermissionPath) {
