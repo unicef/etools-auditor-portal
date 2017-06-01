@@ -31,12 +31,13 @@ Polymer({
         this.set('dataItems', [this.data]);
     },
     getAssessmentOfControlsData: function() {
-        if (!this.data) { return; }
-        return {
-            recommendation: this.data.recommendation,
-            audit_observation: this.data.audit_observation,
-            ip_response: this.data.ip_response
-        };
+        let keys = ['recommendation', 'audit_observation', 'ip_response'];
+        let data = _.pick(this.data, keys);
+        let originalData = _.pick(this.originalData && this.originalData[0], keys);
+
+        if (!_.isEqual(data, originalData)) {
+            return data;
+        }
     },
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
@@ -52,7 +53,7 @@ Polymer({
             this.requestInProcess = true;
             this.dialogOpened = true;
             this.fire('save-progress', {quietAdding: true});
-        }, 100);
+        }, 200);
 
     },
     _setRequired: function(field) {
