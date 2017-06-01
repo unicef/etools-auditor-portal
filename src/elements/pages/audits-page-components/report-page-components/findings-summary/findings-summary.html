@@ -11,6 +11,10 @@
                 margin-bottom: 20px;
             }
 
+            #ipName {
+                --paper-input-container-focus-color: rgba(0, 0, 0, 0.5);
+            }
+
             etools-content-panel {
                 --ecp-content: #{'{
                     padding: 0;
@@ -53,6 +57,7 @@
                         <div class="input-container">
                             <!-- Implementing partner name -->
                             <paper-input
+                                    id="ipName"
                                     label="Implementing partner name"
                                     title$="{{editedItem.partner.name}}"
                                     placeholder="Enter name"
