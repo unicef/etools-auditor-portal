@@ -365,11 +365,22 @@ Polymer({
         this.set('datalength', 0);
     },
     getTabData: function() {
+        if (!this._canBeChanged()) { return null; }
         let staffs = [];
         _.each(this.engagementStaffs, value => {
             staffs.push(value);
         });
-        return staffs;
+
+        let dataChanged = false;
+        if (this.engagement.staff_members.length !== staffs.length) {
+            dataChanged = true;
+        } else {
+            _.each(this.engagement.staff_members, (staff) => {
+                if (!~staffs.indexOf(staff.id)) { dataChanged = true; }
+            });
+        }
+
+        return dataChanged ? staffs : null;
     }
 
 });
