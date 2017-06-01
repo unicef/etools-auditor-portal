@@ -169,28 +169,12 @@
 
         _validateBasicInfo: function(property) {
             let detailsValid = this.getElement('#engagementDetails').validate(),
-                    partnerDetailsValid = this.getElement('#partnerDetails').validate();
-                    //TODO: don't validate staff members in tabular view
-                    //staffMembersValid = this.getElement('#staffMembers').validate();
+                partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
-//            let engagementAttachments = this.getElement('#engagement_attachments'),
-//                    reportAttachments = this.getElement('#report_attachments');
-
-//            let engagementAttachmentsValid = engagementAttachments ? engagementAttachments.validate() : true,
-//                    reportAttachmentsValid = reportAttachments ? reportAttachments.validate() : true;
-
-
-            if (/*!staffMembersValid || */!detailsValid/* || !engagementAttachmentsValid || !reportAttachmentsValid*/ || !partnerDetailsValid) {
-                let openTab = (/*staffMembersValid && */partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
+            if (!detailsValid || !partnerDetailsValid) {
+                let openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
 
                 this.set(property || 'tab', openTab);
-                this.fire('toast', {text: 'Fix invalid fields before saving'});
-                return false;
-            }
-
-            let assignReportTab = this.getElement('#assignEngagement');
-            if (assignReportTab && !assignReportTab.validate('forSave')) {
-                this.set(property || 'tab', 'report');
                 this.fire('toast', {text: 'Fix invalid fields before saving'});
                 return false;
             }
