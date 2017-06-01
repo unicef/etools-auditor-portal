@@ -3,6 +3,10 @@
   display: block;
   margin-bottom: 20px;
 
+  paper-textarea.fixed-width {
+    width: 400px;
+  }
+
   .add-button {
     position: absolute;
     right: 15px;
