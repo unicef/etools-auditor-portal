@@ -77,7 +77,7 @@ Polymer({
             }, {
                 'size': '50px',
                 'label': 'No. of Financial Findings',
-                'path': 'financial_findings',
+                'path': 'number_of_financial_findings',
                 'align': 'center'
             }, {
                 'size': '50px',
@@ -134,6 +134,12 @@ Polymer({
         itemModelKeys.push('partner.name');
 
         data = _.pick(this.editedItem, itemModelKeys);
+        data.percent_of_audited_expenditure = data.percent_of_audited_expenditure || null;
+        data.number_of_financial_findings = data.number_of_financial_findings || null;
+        data.high_risk = data.high_risk || null;
+        data.medium_risk = data.medium_risk || null;
+        data.low_risk = data.low_risk || null;
+
         return data;
     },
     _changeAuditOpinion: function(e, detail) {
