@@ -81,13 +81,17 @@ Polymer({
         });
     },
     changePermission: function(basePermissionPath) {
-        if (!basePermissionPath) { return; }
+        if (!basePermissionPath) {
+            return;
+        }
 
         let readOnly = this.isReadonly(`${this.basePermissionPath}.key_internal_weakness`);
-        if (readOnly === null) { readOnly = true; }
+        if (readOnly === null) {
+            readOnly = true;
+        }
 
         if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
-            this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
+            this.push('columns', {'size': '45px', 'label': 'Edit', 'name': 'edit', 'align': 'center', 'icon': true});
         } else if (readOnly && this.columns[this.columns.length - 1].name === 'edit') {
             this.pop('columns');
         }
@@ -106,12 +110,18 @@ Polymer({
             return;
         }
 
-        let blueprint = this.subjectAreas.blueprints[index];
-        this.editedArea = _.cloneDeep(blueprint);
+        this.originData = this.subjectAreas.blueprints[index];
+        this.editedArea = _.cloneDeep(this.originData);
         this.editedArea.extra = this.editedArea.extra || {};
         this.dialogOpened = true;
     },
     _saveEditedArea: function() {
+        if (_.isEqual(this.originData, this.editedArea)) {
+            this.dialogOpened = false;
+            this.resetDialog();
+            return;
+        }
+
         this.requestInProcess = true;
         this.fire('save-progress', {quietAdding: true});
     },
@@ -120,6 +130,7 @@ Polymer({
     },
     getKeyInternalWeaknessData: function() {
         let blueprint = _.cloneDeep(this.editedArea);
+
         if (blueprint && _.isObject(blueprint.value)) {
             blueprint.value = blueprint.value.value;
         } else {
@@ -130,7 +141,9 @@ Polymer({
         };
     },
     resetDialog: function(opened) {
-        if (opened) { return; }
+        if (opened) {
+            return;
+        }
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-input');
 
         Array.prototype.forEach.call(elements, element => {
