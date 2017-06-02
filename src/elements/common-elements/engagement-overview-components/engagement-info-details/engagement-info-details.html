@@ -33,6 +33,7 @@
                     <paper-input label="Purchase Order"
                                  id="purchaseOrder"
                                  field="agreement"
+                                 maxlength="30"
                                  class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
                                  value="{{data.agreement.order_number}}"
                                  allowed-pattern="[\d]"
