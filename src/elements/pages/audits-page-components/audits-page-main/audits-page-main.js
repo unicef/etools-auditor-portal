@@ -80,7 +80,9 @@ Polymer({
 
     customBasicValidation: function() {
         let reportTab = Polymer.dom(this.root).querySelector('#report');
-        let reportValid = reportTab && reportTab.validate('forSave');
+        if (!reportTab) { return true; }
+
+        let reportValid = reportTab.validate('forSave');
         
         if (!reportValid) {
             this.set('tab', 'report');
