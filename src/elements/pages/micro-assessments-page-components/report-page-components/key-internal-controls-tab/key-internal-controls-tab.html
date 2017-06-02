@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-dropdown-menu, paper-listbox, paper-item, etools-searchable-multiselection-menu]-->
-<!--import [list-header, list-element, subject-area-element, dialog-element, tab-inputs-styles, module-styles, lodash]-->
+<!--import [list-header, list-element, subject-area-element, dialog-element, tab-inputs-styles, module-styles, lodash, textarea-max-rows-behavior]-->
 
 <dom-module id="key-internal-controls-tab">
     <template>
@@ -47,6 +47,7 @@
                             <div class="input-container input-container-l">
                                 <!-- Brief Justification -->
                                 <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
+                                                max-rows="4"
                                                 required
                                                 disabled="{{requestInProcess}}"
                                                 readonly$="{{requestInProcess}}"

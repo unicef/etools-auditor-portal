@@ -3,7 +3,8 @@
 Polymer({
     is: 'financial-findings',
     behaviors: [
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
     properties: {
         dataItems: {

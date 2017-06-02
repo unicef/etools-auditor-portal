@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel, paper-input/paper-textarea]-->
 
-<!--import [tab-inputs-styles, module-styles, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, permission-controller, textarea-max-rows-behavior]-->
 
 <dom-module id="internal-controls">
     <template>
@@ -21,6 +21,7 @@
             </div>
             <paper-textarea label="Document any changes identified"
                             placeholder="Enter comments"
+                            max-rows="4"
                             value="{{data}}"
                             always-float-label
                             on-focus="_resetFieldError"
