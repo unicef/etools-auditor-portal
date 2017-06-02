@@ -27,7 +27,6 @@ Polymer({
     },
     openEditDialog: function() {
         this.fire('open-edit-dialog', {data: this.area});
-        this.$.listElement.detailsOpened = true;
     },
     getRiskData: function() {
         if (!this.area.blueprints[0].value) { return null; }
