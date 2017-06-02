@@ -132,6 +132,7 @@
                                      id="periodStartDateInput"
                                      field="start_date"
                                      value="[[prettyDate(data.start_date)]]"
+                                     on-focus="_resetFieldError"
                                      on-down="openDatePicker"
                                      data-selector="periodStartDate"
                                      placeholder="Select Start Date">
@@ -160,6 +161,7 @@
                                      id="periodEndDateInput"
                                      field="end_date"
                                      value="[[prettyDate(data.end_date)]]"
+                                     on-focus="_resetFieldError"
                                      on-down="openDatePicker"
                                      data-selector="periodEndDate"
                                      placeholder="Select End Date">
@@ -184,6 +186,7 @@
                                 required="{{_setRequired('total_value', basePermissionPath)}}"
                                 invalid="{{_checkInvalid(errors.total_value)}}"
                                 field="total_value"
+                                on-focus="_resetFieldError"
                                 error-message="{{errors.total_value}}"
                                 value="{{data.total_value}}"
                                 placeholder="Enter Total Value"></etools-currency-amount-input>

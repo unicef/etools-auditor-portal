@@ -29,7 +29,7 @@
 
                                 <etools-searchable-multiselection-menu
                                         id="riskAssessmentInput"
-                                        class="disabled-as-readonly validate-input"
+                                        class="disabled-as-readonly validate-input required"
                                         options="[[riskOptions]]"
                                         required hide-search
                                         disabled="{{requestInProcess}}"
@@ -54,7 +54,7 @@
                                                 max-rows="4"
                                                 error-message="{{errors.children.0.blueprints.0.extra}}"
                                                 id="briefJustification"
-                                                class="disabled-as-readonly validate-input"
+                                                class="disabled-as-readonly validate-input required"
                                                 value="{{editedArea.blueprints.0.extra}}"
                                                 on-focus="_resetFieldError"
                                                 placeholder="Enter Brief Justification">

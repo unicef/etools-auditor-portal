@@ -175,6 +175,7 @@
                 behaviorObj.validate = sinon.stub().returns(true);
                 behaviorObj.canBeRemoved = true;
                 behaviorObj.editedIndex = 0;
+                behaviorObj.originalEditedObj = {};
 
                 behaviorObj.splice = sinon.spy();
                 behaviorObj.resetDialog = sinon.spy();

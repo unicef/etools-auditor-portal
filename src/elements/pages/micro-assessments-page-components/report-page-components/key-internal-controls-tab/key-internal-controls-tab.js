@@ -148,6 +148,7 @@ Polymer({
 
         let data = this.subjectAreas.children[index];
         this.editedArea = _.cloneDeep(data);
+        this.originalEditedObj = _.cloneDeep(data);
         this.editedAreaIndex = index;
         this.dialogOpened = true;
     },
@@ -158,6 +159,12 @@ Polymer({
 
     _saveEditedArea: function() {
         if (!this.validateEditFields()) { return; }
+
+        if (_.isEqual(this.originalEditedObj, this.editedArea)) {
+            this.dialogOpened = false;
+            this.resetDialog();
+            return;
+        }
 
         if (this.dialogOpened && !this.saveWithButton) {
             this.requestInProcess = true;

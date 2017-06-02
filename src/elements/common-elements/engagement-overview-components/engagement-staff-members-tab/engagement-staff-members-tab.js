@@ -297,6 +297,12 @@ Polymer({
 
         let item = _.cloneDeep(this.editedItem);
         if (this.canBeRemoved && !isNaN(this.editedIndex)) {
+            if (_.isEqual(this.originalEditedObj, this.editedItem)) {
+                this.requestInProcess = false;
+                this.dialogOpened = false;
+                this.resetDialog();
+                return;
+            }
             this.set('newData', {
                 method: 'PATCH',
                 data: item,

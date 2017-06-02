@@ -138,6 +138,7 @@
             if ((!index && index !== 0) || index < 0) { throw Error('Can not find user data'); }
 
             this.editedItem = _.cloneDeep(this.dataItems[index]);
+            this.originalEditedObj = _.cloneDeep(this.dataItems[index]);
             this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
             this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
             this.canBeRemoved = true;
@@ -152,6 +153,12 @@
             }
 
             if (!this.validate()) { return; }
+
+            if (this.canBeRemoved && _.isEqual(this.originalEditedObj, this.editedItem)) {
+                this.dialogOpened = false;
+                this.resetDialog();
+                return;
+            }
 
             //save after popup click
             if (this.dialogOpened && !this.saveWithButton) {
