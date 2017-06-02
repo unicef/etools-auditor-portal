@@ -56,22 +56,25 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="[[requestInProcess]]">
-            <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
-                <div class="repeatable-item-actions" hidden$="[[!canBeRemoved]]">
-                    <div class="row-v actions">
-                        <paper-icon-button class="action delete"
-                                           on-tap="_openDeleteConfirmation"
-                                           disabled="{{requestInProcess}}"
-                                           icon="cancel">
-                        </paper-icon-button>
+        <dialog-element
+                opened="{{dialogOpened}}"
+                dialog-title="[[dialogTitle]]"
+                confirm-btn-text="[[confirmBtnText]]"
+                cancel-btn-text="[[cancelBtnText]]"
+                request-in-process="[[requestInProcess]]"
+                confirm-dialog-opened="[[confirmDialogOpened]]">
+
+            <div class="row-h repeatable-item-container" without-line>
+                <template is="dom-if" if="[[editedItem.file_name]]">
+                    <div class="form-title">
+                        <div class="text">[[editedItem.file_name]]</div>
                     </div>
-                </div>
+                </template>
 
                 <div class="repeatable-item-content">
                     <template is="dom-if" if="[[fileTypeRequired]]">
                         <div class="row-h group">
-                            <div class="input-container input-container-l">
+                            <div class="input-container input-container-ms">
                                     <etools-searchable-multiselection-menu
                                             id="fileType"
                                             class="validate-input disabled-as-readonly"
@@ -98,27 +101,35 @@
 
                     <template is="dom-if" if="[[!canBeRemoved]]">
                         <div class="row-h group">
-                            <div class="input-container input-container-l">
-                                <paper-button
-                                        class="upload-button"
-                                        on-tap="_openFileChooser"
+                            <div class="input-container input-container-ms">
+                                <!-- File Upload -->
+                                <paper-input-container
+                                        always-float-label
                                         title="[[uploadLabel]]"
                                         disabled$="[[requestInProcess]]"
                                         readonly$="[[requestInProcess]]"
-                                        raised>
-                                    <iron-icon icon="file-upload"></iron-icon>
-                                    [[uploadLabel]]
-                                </paper-button>
+                                        invalid="[[editedItem.fileInvalid]]">
+                                    <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
 
-                                <input
-                                        id="fileInput"
-                                        class="validate-input"
-                                        type="file"
-                                        disabled$="[[requestInProcess]]"
-                                        readonly$="[[requestInProcess]]"
-                                        on-change="_fileSelected"
-                                        hidden
-                                        required>
+                                    <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
+                                        <iron-icon icon="file-upload"></iron-icon>
+                                        [[uploadLabel]]
+                                    </paper-button>
+
+                                    <template is="dom-if" if="[[editedItem.fileInvalid]]">
+                                        <paper-input-error aria-live="assertive">[[editedItem.fileErrorMessage]]</paper-input-error>
+                                    </template>
+
+                                    <input
+                                            id="fileInput"
+                                            class="validate-input"
+                                            type="file"
+                                            disabled$="[[requestInProcess]]"
+                                            readonly$="[[requestInProcess]]"
+                                            on-change="_fileSelected"
+                                            hidden
+                                            required>
+                                </paper-input-container>
                             </div>
                         </div>
                     </template>
@@ -126,7 +137,7 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <template is="dom-if" if="[[editedItem.invalid]]">
-                                <paper-input-error aria-live="assertive">[[editedItem.errorMessage]]</paper-input-error>
+                                <paper-input-error class="attachment-error" aria-live="assertive">[[editedItem.errorMessage]]</paper-input-error>
                             </template>
                         </div>
                     </div>
@@ -135,7 +146,7 @@
         </dialog-element>
 
         <div class="confirm-backdrop"  opened$="{{confirmDialogOpened}}"></div>
-        <dialog-element dialog-name="deleteConfirm" opened="{{confirmDialogOpened}}" dialog-title="Remove File" confirm-btn-text="Ok">
+        <dialog-element dialog-name="deleteConfirm" opened="{{confirmDialogOpened}}" dialog-title="Remove Attachment" confirm-btn-text="Ok">
             <div class="confirm-text">Do you want to remove this file?</div>
         </dialog-element>
     </template>
