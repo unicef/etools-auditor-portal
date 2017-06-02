@@ -60,6 +60,8 @@ Polymer({
 
     customDataPrepare: function(data) {
         let reportPage = Polymer.dom(this.root).querySelector('#report');
+        if (!reportPage) { return data; }
+        
         let findingsSummaryData = reportPage.getFindingsSummaryData();
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
         let financialFindingData = reportPage.getFinancialFindingsData();

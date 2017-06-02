@@ -62,17 +62,20 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
-        let questionnaire = Polymer.dom(this.root).querySelector('#questionnaire').getQuestionnaireData();
+        let questionnaireTab = Polymer.dom(this.root).querySelector('#questionnaire');
+        let questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
         if (questionnaire) {
             data.questionnaire = questionnaire;
         } else {
             delete data.questionnaire;
         }
 
-        let subjectAreas = Polymer.dom(this.root).querySelector('#report').getRisksData();
+        let reportTab = Polymer.dom(this.root).querySelector('#report');
+        
+        let subjectAreas = reportTab && reportTab.getRisksData();
         data.test_subject_areas = subjectAreas || {};
-
-        let findingsData = Polymer.dom(this.root).querySelector('#report').getFindingsData();
+        
+        let findingsData = reportTab && reportTab.getFindingsData();
         if (findingsData && findingsData.length) { data.findings = findingsData; }
 
         return data;

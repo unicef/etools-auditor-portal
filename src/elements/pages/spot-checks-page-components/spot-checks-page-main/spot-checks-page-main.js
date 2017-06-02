@@ -61,6 +61,8 @@ Polymer({
     customDataPrepare: function(data) {
         let reportPage = Polymer.dom(this.root).querySelector('#report');
 
+        if (!reportPage) { return data; }
+        
         let findingData = reportPage.getFindingsData();
         if (findingData) { data.findings = findingData; }
 
