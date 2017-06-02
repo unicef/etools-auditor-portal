@@ -5,7 +5,8 @@ Polymer({
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
     properties: {
         dataItems: {

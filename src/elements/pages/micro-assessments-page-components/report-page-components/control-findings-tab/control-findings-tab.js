@@ -4,7 +4,8 @@ Polymer({
     is: 'control-findings-tab',
 
     behaviors: [
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
     properties: {
         dataItems: {

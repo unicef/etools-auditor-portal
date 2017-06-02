@@ -5,7 +5,8 @@ Polymer({
 
     behaviors: [
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
 
     properties: {

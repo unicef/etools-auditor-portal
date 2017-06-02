@@ -1,0 +1,37 @@
+<!--import [polymer]-->
+
+<script>
+    'use strict';
+
+    window.APBehaviors = window.APBehaviors || {};
+    APBehaviors.TextareaMaxRowsBehavior = {
+        attached: function() {
+            let paperTextareas = Polymer.dom(this.root).querySelectorAll('paper-textarea') || [];
+
+            paperTextareas.forEach((paperTextarea) => {
+                this.setMaxHeight(paperTextarea);
+            });
+        },
+
+        setMaxHeight: function(paperTextarea) {
+            if (!paperTextarea) { return; }
+
+            let paperInput = Polymer.dom(paperTextarea.root).querySelector('paper-input-container');
+            let textarea = Polymer.dom(paperInput).querySelector('.paper-input-input'); //textarea-autogrow
+            let textareaStyles = window.getComputedStyle(textarea, null) || {};
+            let maxRows = +paperTextarea.getAttribute('max-rows');
+
+            this.async(() => {
+                let lineHeight = textareaStyles.lineHeight || '';
+                let lineHeightPx = parseInt(lineHeight, 10);
+
+                if (lineHeightPx && maxRows && maxRows > 1) {
+                    let maxHeight = maxRows * lineHeightPx + 5;
+                    textarea.style.maxHeight = `${maxHeight}px`;
+                }
+            });
+        }
+
+    };
+
+</script>

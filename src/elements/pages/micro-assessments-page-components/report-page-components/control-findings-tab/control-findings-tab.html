@@ -1,5 +1,5 @@
 <!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icons]-->
-<!--import [tab-inputs-styles, permission-controller, list-header, list-element, dialog-element, lodash, table-elements-behavior]-->
+<!--import [tab-inputs-styles, permission-controller, list-header, list-element, dialog-element, lodash, table-elements-behavior, textarea-max-rows-behavior]-->
 
 <dom-module id="control-findings-tab">
     <template>
@@ -77,6 +77,7 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea label="Recommendation"
+                                            max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter recommendation"

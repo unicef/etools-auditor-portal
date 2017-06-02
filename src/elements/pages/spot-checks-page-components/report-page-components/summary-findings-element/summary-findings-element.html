@@ -2,7 +2,7 @@
             etools-searchable-multiselection-menu, etools-datepicker/etools-datepicker-button, etools-content-panel]-->
 
 <!--import [tab-inputs-styles, permission-controller, date-behavior, list-header, list-element, dialog-element, lodash,
-            table-elements-behavior, static-data-behavior]-->
+            table-elements-behavior, static-data-behavior, textarea-max-rows-behavior]-->
 
 <dom-module id="summary-findings-element">
     <template>
@@ -83,6 +83,7 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea label="Recommendation"
+                                            max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
                                             class$="disabled-as-readonly fixed-width validate-input {{_setRequired('recommendation', basePermissionPath)}}"
@@ -100,6 +101,7 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea label="Agreed Action by IP"
+                                            max-rows="4"
                                             value="{{editedItem.agreed_action_by_ip}}"
                                             allowed-pattern="[\d\s]"
                                             class$="disabled-as-readonly fixed-width validate-input {{_setRequired('agreed_action_by_ip', basePermissionPath)}}"

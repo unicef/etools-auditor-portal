@@ -3,7 +3,8 @@
 Polymer({
     is: 'assessment-of-controls',
     behaviors: [
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
     properties: {
         basePermissionPath: {
