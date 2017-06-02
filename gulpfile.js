@@ -21,6 +21,7 @@ const copyAssets = require('./gulp-tasks/copy-assets');
 const copyBower = require('./gulp-tasks/copy-bower');
 const runTests = require('./gulp-tasks/test');
 const jsLinter = require('./gulp-tasks/js-linter');
+const elementImpr = require('./gulp-tasks/improve-elements');
 
 
 
@@ -74,8 +75,9 @@ gulp.task('default', gulp.series([
   // project.serviceWorker
 ]));
 
+//TODO: remove elementImpr task
 //Run dev server and watch changes
-gulp.task('server', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('start', 'watch')));
+gulp.task('server', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('start', 'watch')));
 
 
 // DO NOT RUN
