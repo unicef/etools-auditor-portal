@@ -46,7 +46,7 @@
             if (this.engagementData[statusFields[statusNumber]]) {
                 return 'completed';
             } else if ((statusNumber === 2 && currentStatusNumber !== 0) || this.engagementData[statusFields[statusNumber - 1]]) {
-                return 'active';
+                return 'pending';
             } else {
                 return 'pending';
             }

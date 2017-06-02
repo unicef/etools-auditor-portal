@@ -52,7 +52,7 @@
             it('method _classByDate check existance of field data', function() {
                 myEl.engagementData = {date_of_field_visit: 'test'};
                 assert.equal(myEl._classByDate(2, 5), 'completed');
-                assert.equal(myEl._classByDate(3, 3), 'active');
+                assert.equal(myEl._classByDate(3, 3), 'pending');
                 assert.equal(myEl._classByDate(4, 2), 'pending');
             });
         });
