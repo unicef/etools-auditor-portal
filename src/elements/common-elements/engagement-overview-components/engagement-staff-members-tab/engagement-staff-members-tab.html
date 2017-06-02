@@ -28,7 +28,7 @@
                            class="add-button"
                            icon="add"></paper-icon-button>
 
-        <etools-content-panel panel-title="Auditor Staff Members ([[_staffLength(datalength)]])" show-expand-btn>
+        <etools-content-panel panel-title="Auditor Staff Members ([[_staffLength(datalength, dataItems.length)]])" show-expand-btn>
 
             <div class="panel-content group">
                 <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading"></etools-loading>

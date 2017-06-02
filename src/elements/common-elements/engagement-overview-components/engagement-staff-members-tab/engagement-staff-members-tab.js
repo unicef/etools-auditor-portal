@@ -279,8 +279,8 @@ Polymer({
         return +dataItems && +dataItems > 10;
     },
 
-    _staffLength: function(length) {
-        return length || 0;
+    _staffLength: function(length, length2) {
+        return length || length2 || 0;
     },
 
     _addStaffFromDialog: function(event) {
@@ -334,6 +334,7 @@ Polymer({
             this.splice('dataItems', details.index, 1, details.data);
         } else if (details.action === 'post') {
             this.manageEngagementStaff(details.data);
+            this.set('listPage', 0);
             this.set('listPage', 1);
         } else if (details.action === 'delete') {
             let last = this.dataItems.length === 1 ? 1 : 0;
