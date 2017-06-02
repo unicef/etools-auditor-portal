@@ -11,6 +11,13 @@ Polymer({
         basePermissionPath: {
             type: String,
             observer: '_updateStyles'
+        },
+        maxDate: {
+            type: Date,
+            value: function() {
+                let nextDay = moment(moment().format('YYYY-MM-DD')).add(1, 'days').format();
+                return new Date(nextDay);
+            }
         }
     },
     observers: [
@@ -90,6 +97,9 @@ Polymer({
         });
 
         return _.isEmpty(data) ? null : data;
+    },
+    minDate: function(date) {
+        return date ? new Date(date) : false;
     },
     _errorHandler: function(errorData) {
         if (!errorData) { return; }

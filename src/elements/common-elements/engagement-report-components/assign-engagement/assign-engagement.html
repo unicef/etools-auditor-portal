@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button]-->
+<!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button, etools-datepicker]-->
 <!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller, error-handler-behavior]-->
 
 <dom-module id="assign-engagement">
@@ -29,12 +29,13 @@
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="dateVisit"
-                                                  date="[[prepareDate(data.date_of_field_visit)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.date_of_field_visit}}"
-                                                  no-init show-clear-btn>
+                        <etools-datepicker prefix
+                                           id="dateVisit"
+                                           date="[[prepareDate(data.date_of_field_visit)]]"
+                                           format="YYYY-MM-DD"
+                                           max-date="{{maxDate}}"
+                                           pretty-date="{{data.date_of_field_visit}}"
+                                           no-init show-clear-btn></etools-datepicker>
                         </etools-datepicker-button>
                     </paper-input>
                 </div>
@@ -54,12 +55,14 @@
                                  on-focus="_resetFieldError"
                                  required="[[_isRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="draftReportToIp"
-                                                  date="[[prepareDate(data.date_of_draft_report_to_ip)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.date_of_draft_report_to_ip}}"
-                                                  no-init show-clear-btn>
+                        <etools-datepicker prefix
+                                           id="draftReportToIp"
+                                           date="[[prepareDate(data.date_of_draft_report_to_ip)]]"
+                                           format="YYYY-MM-DD"
+                                           pretty-date="{{data.date_of_draft_report_to_ip}}"
+                                           no-init show-clear-btn
+                                           max-date="{{maxDate}}"
+                                           min-date="{{minDate(data.date_of_field_visit)}}"></etools-datepicker>
                         </etools-datepicker-button>
                     </paper-input>
                 </div>
@@ -79,12 +82,14 @@
                                  on-focus="_resetFieldError"
                                  required="[[_isRequired('date_of_comments_by_ip', basePermissionPath)]]"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="commentsReceivedByIp"
-                                                  date="[[prepareDate(data.date_of_comments_by_ip)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.date_of_comments_by_ip}}"
-                                                  no-init show-clear-btn>
+                        <etools-datepicker prefix
+                                           id="commentsReceivedByIp"
+                                           date="[[prepareDate(data.date_of_comments_by_ip)]]"
+                                           format="YYYY-MM-DD"
+                                           pretty-date="{{data.date_of_comments_by_ip}}"
+                                           no-init show-clear-btn
+                                           max-date="{{maxDate}}"
+                                           min-date="{{minDate(data.date_of_draft_report_to_ip)}}"></etools-datepicker>
                         </etools-datepicker-button>
                     </paper-input>
                 </div>
@@ -106,12 +111,14 @@
                                  on-focus="_resetFieldError"
                                  required="[[_isRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="draftReportUnicef"
-                                                  date="[[prepareDate(data.date_of_draft_report_to_unicef)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.date_of_draft_report_to_unicef}}"
-                                                  no-init show-clear-btn>
+                        <etools-datepicker prefix
+                                           id="draftReportUnicef"
+                                           date="[[prepareDate(data.date_of_draft_report_to_unicef)]]"
+                                           format="YYYY-MM-DD"
+                                           pretty-date="{{data.date_of_draft_report_to_unicef}}"
+                                           no-init show-clear-btn
+                                           max-date="{{maxDate}}"
+                                           min-date="{{minDate(data.date_of_comments_by_ip)}}"></etools-datepicker>
                         </etools-datepicker-button>
                     </paper-input>
                 </div>
@@ -131,13 +138,14 @@
                                  on-focus="_resetFieldError"
                                  required="[[_isRequired('date_of_comments_by_unicef', basePermissionPath)]]"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="commentsReceivedUnicef"
-                                                  date="[[prepareDate(data.date_of_comments_by_unicef)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.date_of_comments_by_unicef}}"
-                                                  no-init show-clear-btn>
-                        </etools-datepicker-button>
+                        <etools-datepicker prefix
+                                           id="commentsReceivedUnicef"
+                                           date="[[prepareDate(data.date_of_comments_by_unicef)]]"
+                                           format="YYYY-MM-DD"
+                                           pretty-date="{{data.date_of_comments_by_unicef}}"
+                                           no-init show-clear-btn
+                                           max-date="{{maxDate}}"
+                                           min-date="{{minDate(data.date_of_draft_report_to_unicef)}}"></etools-datepicker>
                     </paper-input>
                 </div>
             </div>
