@@ -1,6 +1,6 @@
 <!--import [polymer, lodash, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea]-->
 
-<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element]-->
+<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element, textarea-max-rows-behavior]-->
 
 <dom-module id="questionnaire-page-main">
     <template>
@@ -113,6 +113,7 @@
                         <div class="input-container input-container-l comment-container">
                             <!-- Comments -->
                             <paper-textarea label="Comments"
+                                            max-rows="4"
                                             id="riskAssessmentComments"
                                             class="disabled-as-readonly validate-input required"
                                             required

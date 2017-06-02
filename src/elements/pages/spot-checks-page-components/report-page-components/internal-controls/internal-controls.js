@@ -4,7 +4,8 @@ Polymer({
     is: 'internal-controls',
     behaviors: [
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior
+        APBehaviors.ErrorHandlerBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
     observers: [
         '_errorHandler(errorObject)'

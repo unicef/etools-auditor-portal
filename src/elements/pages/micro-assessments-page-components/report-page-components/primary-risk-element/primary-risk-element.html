@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea, lodash]-->
+<!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea, lodash, textarea-max-rows-behavior]-->
 
 <dom-module id="primary-risk-element">
     <template>
@@ -47,6 +47,7 @@
                     <div class="input-container input-container-l">
                         <!-- Brief Justification -->
                         <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
+                                        max-rows="4"
                                         required
                                         invalid="{{errors.children.0.blueprints.0.extra}}"
                                         error-message="{{errors.children.0.blueprints.0.extra}}"

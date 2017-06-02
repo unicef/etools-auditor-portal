@@ -1,7 +1,7 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons, etools-content-panel,
             etools-currency-amount-input, etools-searchable-multiselection-menu]-->
 <!--import [list-header, list-element]-->
-<!--import [tab-inputs-styles, module-styles, dialog-element, lodash, table-elements-behavior, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, dialog-element, lodash, table-elements-behavior, permission-controller, textarea-max-rows-behavior]-->
 
 <dom-module id="financial-findings">
     <template>
@@ -113,6 +113,7 @@
                         <div class="input-container input-container-l">
                             <!-- Description -->
                             <paper-textarea label="Description"
+                                            max-rows="4"
                                             value="{{editedItem.description}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter Description"
@@ -129,6 +130,7 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea label="Recommendation"
+                                            max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter Recommendation"
@@ -145,6 +147,7 @@
                         <div class="input-container input-container-l">
                             <!-- IP comments -->
                             <paper-textarea label="IP comments"
+                                            max-rows="4"
                                             value="{{editedItem.ip_comments}}"
                                             allowed-pattern="[\d\s]"
                                             placeholder="Enter IP comments"
