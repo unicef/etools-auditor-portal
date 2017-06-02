@@ -95,7 +95,7 @@ Polymer({
                 'path': 'low_risk',
                 'align': 'center'
             }, {
-                'size': '40px',
+                'size': '45px',
                 'label': 'Edit',
                 'name': 'edit',
                 'align': 'center',
@@ -121,6 +121,8 @@ Polymer({
     },
     _setDataItems: function() {
         this.set('dataItems', [this.data]);
+        this.set('itemModel.audit_opinion', this.data.audit_opinion);
+        this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
     },
     getFindingsSummaryData: function() {
         if (_.isEqual(this.editedItem, this.itemModel)) { return; }

@@ -122,7 +122,7 @@
 
             if (showEditButton) {
                 headings.push({
-                    'size': '40px',
+                    'size': '45px',
                     'label': 'Edit',
                     'name': 'edit',
                     'align': 'center',

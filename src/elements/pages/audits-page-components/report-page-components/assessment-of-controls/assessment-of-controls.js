@@ -46,15 +46,15 @@ Polymer({
         let refactoredData = this.refactorErrorObject(errorData);
         this.set('errors', refactoredData);
     },
-    _saveData: function(e, detail) {
-        this.debounce('_saveDataDebouncer', () => {
-            if (!detail || detail.value) { return; }
-            if (!this.validate()) { return; }
-
-            this.requestInProcess = true;
-            this.dialogOpened = true;
-            this.fire('save-progress', {quietAdding: true});
-        }, 200);
+    _saveData: function(/*e, detail*/) {
+        // this.debounce('_saveDataDebouncer', () => {
+        //     if (!detail || detail.value) { return; }
+        //     if (!this.validate()) { return; }
+        //
+        //     this.requestInProcess = true;
+        //     this.dialogOpened = true;
+        //     this.fire('save-progress', {quietAdding: true});
+        // }, 200);
 
     },
     _setRequired: function(field) {
