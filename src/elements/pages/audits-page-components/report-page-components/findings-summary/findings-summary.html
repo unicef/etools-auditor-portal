@@ -11,10 +11,6 @@
                 margin-bottom: 20px;
             }
 
-            #ipName {
-                --paper-input-container-focus-color: rgba(0, 0, 0, 0.5);
-            }
-
             etools-content-panel {
                 --ecp-content: #{'{
                     padding: 0;
@@ -58,17 +54,16 @@
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
-                        <div class="input-container">
+                        <div class="input-container" title$="{{editedItem.partner.name}}">
                             <!-- Implementing partner name -->
                             <paper-input
-                                    id="ipName"
                                     label="Implementing partner name"
-                                    title$="{{editedItem.partner.name}}"
                                     placeholder="Enter name"
                                     value="{{editedItem.partner.name}}"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly"
-                                    readonly>
+                                    readonly
+                                    disabled>
                             </paper-input>
                         </div>
 
@@ -110,11 +105,11 @@
                     <div class="row-h group">
                         <div class="input-container">
                             <!-- % of audited expenditure -->
-                            <paper-input
+                            <etools-currency-amount-input
                                     label="% of audited expenditure"
                                     placeholder="Enter value"
+                                    currency=""
                                     value="{{editedItem.percent_of_audited_expenditure}}"
-                                    allowed-pattern="[\d]"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
                                     required$="[[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
@@ -122,7 +117,7 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.percent_of_audited_expenditure}}"
                                     error-message="{{errors.percent_of_audited_expenditure}}">
-                            </paper-input>
+                            </etools-currency-amount-input>
                         </div>
 
                         <div class="input-container">
@@ -155,6 +150,7 @@
                                     placeholder="Enter value"
                                     value="{{editedItem.number_of_financial_findings}}"
                                     allowed-pattern="[\d]"
+                                    maxlength="9"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
@@ -174,6 +170,7 @@
                                     placeholder="Enter value"
                                     value="{{editedItem.high_risk}}"
                                     allowed-pattern="[\d]"
+                                    maxlength="9"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('high_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('high_risk', basePermissionPath)]]"
@@ -191,6 +188,7 @@
                                     placeholder="Enter value"
                                     value="{{editedItem.medium_risk}}"
                                     allowed-pattern="[\d]"
+                                    maxlength="9"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('medium_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('medium_risk', basePermissionPath)]]"
@@ -208,6 +206,7 @@
                                     placeholder="Enter value"
                                     value="{{editedItem.low_risk}}"
                                     allowed-pattern="[\d]"
+                                    maxlength="9"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('low_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('low_risk', basePermissionPath)]]"

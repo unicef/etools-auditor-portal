@@ -166,5 +166,11 @@ Polymer({
         if (!this.basePermissionPath) { return false; }
         let required = this.isRequired(`${this.basePermissionPath}.${field}`);
         return required ? 'required' : false;
+    },
+    _errorHandler: function(errorData) {
+        this.requestInProcess = false;
+        if (!errorData) { return; }
+        let refactoredData = this.refactorErrorObject(errorData);
+        this.set('errors', refactoredData);
     }
 });
