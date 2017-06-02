@@ -32,7 +32,7 @@
                     value: false,
                     notify: true
                 },
-                error: {
+                errors: {
                     type: String,
                     notify: true
                 }
@@ -47,7 +47,9 @@
             },
 
             _handleResponse: function() {
-                this.set('error', 'This field must be unique.');
+                if (!this.errors) { this.set('errors', {}); }
+                if (!this.errors.user) { this.set('errors.user', {}); }
+                if (!this.errors.user.email) { this.set('errors.user.email', 'This field must be unique.'); }
                 this.emailChecking = false;
                 this.url = null;
             },

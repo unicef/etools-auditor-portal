@@ -131,7 +131,7 @@ Polymer({
     observers: [
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
-        '_errorHandler(errorObject.staff_members)',
+        '_handleUpdateError(errorObject.staff_members)',
         '_organizationChanged(engagement.agreement.audit_organization.id, basePermissionPath)',
         '_organizationChanged(engagement.agreement.audit_organization.id)',
         '_queriesChanged(listSize, listPage)',
@@ -358,8 +358,12 @@ Polymer({
         }
     },
     _handleUpdateError: function(errorData) {
-        this.set('errors', this.refactorErrorObject(errorData));
+        let error =  this.refactorErrorObject(errorData);
+        this.set('errors', error);
         this.requestInProcess = false;
+        if (_.isString(error) && ~error.indexOf('required')) {
+            this.fire('toast', {text: 'Please, select at least one staff member.'});
+        }
     },
     resetList: function() {
         this.set('dataItems', []);
