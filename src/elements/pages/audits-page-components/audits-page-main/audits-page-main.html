@@ -32,12 +32,23 @@
                 <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
                             selected="{{tab}}" id="pageTabs">
                     <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
-                    <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
+
+                    <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+                        <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
+                    </template>
+
                     <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
                 </paper-tabs>
             </div>
 
+            <template is="dom-if" if="{{!_showReportTabs(permissionBase, engagement)}}" restamp>
+
+                <div class="submitted-message">Engagement has been submitted to auditor</div>
+
+            </template>
+
             <div class="view-container">
+
                 <div id="pageContent">
                     <iron-pages id="info-tabs"
                                 selected="{{tab}}"
@@ -63,17 +74,18 @@
                                                           base-permission-path="{{permissionBase}}"></engagement-staff-members-tab>
                         </div>
 
-                        <div name="report">
-                            <audit-report-page-main id="report"
-                                                    original-data="[[originalData]]"
-                                                    error-object="{{errorObject}}"
-                                                    engagement="{{engagement}}"
-                                                    permission-base="{{permissionBase}}"></audit-report-page-main>
-                        </div>
-
+                        <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+                            <div name="report">
+                                <audit-report-page-main id="report"
+                                                        original-data="[[originalData]]"
+                                                        error-object="{{errorObject}}"
+                                                        engagement="{{engagement}}"
+                                                        permission-base="{{permissionBase}}"></audit-report-page-main>
+                            </div>
+                        </template>
 
                         <div name="attachments">
-                            <file-attachments-tab title$="Engagement Attachments"
+                            <file-attachments-tab title="Related Documents"
                                                   id="engagement_attachments"
                                                   main-property="engagement_attachments"
                                                   error-object="{{errorObject.engagement_attachments}}"
@@ -82,14 +94,16 @@
                                                   file-types="[[engagementFileTypes]]"
                                                   readonly="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"></file-attachments-tab>
 
-                            <file-attachments-tab title="Report Attachments"
-                                                  id="report_attachments"
-                                                  main-property="report_attachments"
-                                                  error-object="{{errorObject.report_attachments}}"
-                                                  allow-download allow-edit file-type-required multiple
-                                                  data-items="[[engagement.report_attachments]]"
-                                                  file-types="[[reportFileTypes]]"
-                                                  readonly="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"></file-attachments-tab>
+                            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+                                <file-attachments-tab title="Report Attachments"
+                                                      id="report_attachments"
+                                                      main-property="report_attachments"
+                                                      error-object="{{errorObject.report_attachments}}"
+                                                      allow-download allow-edit file-type-required multiple
+                                                      data-items="[[engagement.report_attachments]]"
+                                                      file-types="[[reportFileTypes]]"
+                                                      readonly="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"></file-attachments-tab>
+                            </template>
                         </div>
 
                     </iron-pages>

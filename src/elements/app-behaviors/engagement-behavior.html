@@ -234,6 +234,14 @@
             if (staffMembersData) { data.staff_members = staffMembersData; }
 
             return [data, this.engagement.id];
+        },
+
+        _showReportTabs: function(permissionBase, engagement) {
+            if (!permissionBase || !engagement) { return false; }
+
+            return this.actionAllowed(permissionBase, 'submit') ||
+                    engagement.status === 'report_submitted' ||
+                    engagement.status === 'final';
         }
 
     };
