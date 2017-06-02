@@ -50,12 +50,11 @@
                 <div class="input-container">
                     <!-- Contract Dates -->
                     <paper-input label="Contract Dates"
-                                 class="disabled-as-readonly"
-                                 disabled
+                                 class="without-border"
+                                 disabled readonly
                                  id="contractStartDateInput"
                                  value="[[_setContractDates(data.agreement)]]"
                                  on-down="openDatePicker"
-                                 data-selector="contractStartDate"
                                  placeholder="&#8212;">
                         <iron-icon prefix icon="date-range"></iron-icon>
                     </paper-input>
@@ -63,8 +62,8 @@
                 <div class="input-container">
                     <!-- Auditor -->
                     <paper-input label="Auditor"
-                                 class="disabled-as-readonly"
-                                 disabled
+                                 class="without-border"
+                                 disabled readonly
                                  id="auditorInput"
                                  value="[[data.agreement.audit_organization.name]]"
                                  placeholder="&#8212;">
