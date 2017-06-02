@@ -34,7 +34,7 @@ Polymer({
                         'label': 'Description of Finding',
                         'name': 'finding'
                     }, {
-                        'size': '40px',
+                        'size': '45px',
                         'label': 'Edit',
                         'name': 'edit',
                         'align': 'center',

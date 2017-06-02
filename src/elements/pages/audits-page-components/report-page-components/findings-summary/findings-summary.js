@@ -95,7 +95,7 @@ Polymer({
                 'path': 'low_risk',
                 'align': 'center'
             }, {
-                'size': '40px',
+                'size': '45px',
                 'label': 'Edit',
                 'name': 'edit',
                 'align': 'center',

@@ -69,7 +69,7 @@ Polymer({
                         'checkbox': true
                     },
                     {
-                        'size': '40px',
+                        'size': '45px',
                         'label': 'Edit',
                         'name': 'edit',
                         'align': 'center',
@@ -154,7 +154,7 @@ Polymer({
                 this.set(`columns.${index}.size`, 18);
             });
             this.push('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
-            this.push('columns', {'size': '40px','label': 'Edit','name': 'edit','align': 'center','icon': true});
+            this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
         } else if (!this._canBeChanged() && editObj && editObj.name === 'edit') {
             this.pop('columns');
             this.pop('columns');

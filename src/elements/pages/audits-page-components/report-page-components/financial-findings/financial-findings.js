@@ -49,7 +49,7 @@ Polymer({
                 'path': 'amount',
                 'align': 'right'
             }, {
-                'size': '40px',
+                'size': '45px',
                 'label': 'Edit',
                 'name': 'edit',
                 'align': 'center',
