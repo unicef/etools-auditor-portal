@@ -71,10 +71,8 @@ Polymer({
         }
 
         let reportTab = Polymer.dom(this.root).querySelector('#report');
-        
         let subjectAreas = reportTab && reportTab.getRisksData();
         data.test_subject_areas = subjectAreas || {};
-        
         let findingsData = reportTab && reportTab.getFindingsData();
         if (findingsData && findingsData.length) { data.findings = findingsData; }
 

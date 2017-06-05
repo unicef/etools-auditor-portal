@@ -62,7 +62,6 @@ Polymer({
         let reportPage = Polymer.dom(this.root).querySelector('#report');
 
         if (!reportPage) { return data; }
-        
         let findingData = reportPage.getFindingsData();
         if (findingData) { data.findings = findingData; }
 
@@ -78,9 +77,7 @@ Polymer({
     customBasicValidation: function() {
         let reportTab = Polymer.dom(this.root).querySelector('#report');
         if (!reportTab) { return true; }
-        
         let reportValid = reportTab.validate('forSave');
-        
         if (!reportValid) {
             this.set('tab', 'report');
             this.fire('toast', {text: 'Fix invalid fields before saving'});
