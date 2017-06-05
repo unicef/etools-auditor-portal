@@ -5,4 +5,4 @@ RUN apk add git
 
 RUN mkdir /code
 WORKDIR /code
-CMD npm rebuild node-sass && /code/node_modules/.bin/gulp server
+CMD npm rebuild node-sass && /code/node_modules/.bin/gulp devup

@@ -20,7 +20,7 @@ RUN mv docker.wct.conf.js wct.conf.js
 
 RUN npm install
 RUN bower --allow-root install
-RUN gulp build
+RUN gulp prodBuild
 
 EXPOSE 8080
-CMD ["gulp", "start"]
+CMD ["gulp", "startServer"]
