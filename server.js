@@ -3,7 +3,8 @@ var fs = require('fs');
 var url = require('url');
 var path = require('path');
 
-var ROOT = __dirname + "/build";
+var directory = process.env.NODE_ENV ? '/build/bundled/' : '/build/';
+var ROOT = __dirname + directory;
 
 http.createServer(function(req, res) {
     sendFileSafe(url.parse(req.url).pathname, res);

@@ -2,11 +2,16 @@
   "entrypoint": "src/index.html",
   "shell": "src/elements/core-elements/app-shell-element/app-shell.html",
   "fragments": [
-    "src/elements/pages/not-found-page-view/not-found-page-view.html"
+    "src/elements/pages/not-found-page-view/not-found-page-view.html",
+    "src/elements/pages/engagements-page-components/engagements-page-main/engagements-page-main.html",
+    "src/elements/pages/micro-assessments-page-components/micro-assessments-page-main/micro-assessments-page-main.html",
+    "src/elements/pages/spot-checks-page-components/spot-checks-page-main/spot-checks-page-main.html",
+    "src/elements/pages/audits-page-components/audits-page-main/audits-page-main.html"
   ],
   "sourceGlobs": [
     "src/assets/**/*",
     "src/elements/**/*",
-    "src/*"
+    "!src/assets/data/**/*",
+    "src/manifest.json"
   ]
 }

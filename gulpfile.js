@@ -70,9 +70,9 @@ gulp.task('build', gulp.series(clean.build, jsLinter, gulp.parallel(buildElement
 gulp.task('precommit', gulp.series('lint', 'test'));
 
 gulp.task('default', gulp.series([
-  clean.build,
+  clean.build, elementImpr,
   project.merge(source, dependencies),
-  // project.serviceWorker
+  gulp.parallel(function startServer() { nodemon({ script: 'server.js', env: { 'NODE_ENV': 'production' } }) }, 'watch')
 ]));
 
 //TODO: remove elementImpr task
