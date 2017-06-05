@@ -23,14 +23,12 @@ const runTests = require('./gulp-tasks/test');
 const jsLinter = require('./gulp-tasks/js-linter');
 const elementImpr = require('./gulp-tasks/improve-elements');
 
-
-
 global.config = {
   appName: 'etoolsTpm',
   polymerJsonPath: path.join(process.cwd(), 'polymer.json'),
   build: {
     rootDirectory: 'build',
-    bundledDirectory: 'bundled',
+    bundledDirectory: '',
     unbundledDirectory: 'unbundled',
     bundleType: 'bundled' // We will only be using a bundled build
   },
@@ -54,17 +52,15 @@ gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAsse
 
 //TODO: remove all elementImpr tasks
 
-gulp.task('startDevServer', function () { nodemon({ script: 'server.js' }) });
-gulp.task('startServer', function () { nodemon({ script: 'server.js', env: { 'NODE_ENV': 'production' } }) });
+gulp.task('startServer', function () { nodemon({ script: 'server.js' }) });
 
 gulp.task('devBuild', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower)));
-gulp.task('prodBuild', gulp.series(clean.build, elementImpr, project.merge(source, dependencies)));
+gulp.task('prodBuild', gulp.series(clean.build, elementImpr, buildElements, project.merge(source, dependencies)));
 
 gulp.task('precommit', gulp.series('lint', 'test'));
 
-
 //Run dev server and watch changes
-gulp.task('devup', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('startDevServer', 'watch')));
+gulp.task('devup', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('startServer', 'watch')));
 
 //Minify scripts, run prod server and watch changes
 gulp.task('default', gulp.series([ 'prodBuild', 'startServer' ]));
