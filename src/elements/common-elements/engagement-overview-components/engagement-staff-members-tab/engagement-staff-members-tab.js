@@ -385,8 +385,11 @@ Polymer({
     resetList: function() {
         this.set('dataItems', []);
         this.set('listPage', 1);
+        this.set('searchQuery', '');
+        this.set('searchString', '');
         this.set('engagementStaffs', {});
         this.set('datalength', 0);
+        this.updateStyles();
     },
     getTabData: function() {
         if (!this._canBeChanged()) { return null; }
