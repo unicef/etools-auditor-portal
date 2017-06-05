@@ -23,7 +23,9 @@
                         display_name: undefined,
                         type: {},
                         invalid: false,
-                        errorMessage: ''
+                        fileInvalid: false,
+                        errorMessage: '',
+                        fileErrorMessage: ''
                     };
                 }
             },
@@ -35,13 +37,16 @@
             addDialogTexts: {
                 type: Object,
                 value: {
-                    title: 'Add new File'
+                    title: 'Attach File',
+                    confirmBtn: 'Attach'
                 }
             },
             editDialogTexts: {
                 type: Object,
                 value: {
-                    title: 'Edit File'
+                    title: 'Edit Attachment',
+                    confirmBtn: 'Edit',
+                    cancelBtn: 'Delete'
                 }
             },
             multiple: {
@@ -50,7 +55,7 @@
             },
             uploadLabel: {
                 type: String,
-                value: 'Upload File'
+                value: 'File Attachment'
             },
             readonly: {
                 type: Boolean,
@@ -68,7 +73,7 @@
             },
             fileTypesLabel: {
                 type: String,
-                value: 'File Type'
+                value: 'Document Type'
             },
             allowEdit: {
                 type: Boolean,
@@ -76,7 +81,8 @@
             }
         },
         listeners: {
-            'dialog-confirmed': '_addItemFromDialog'
+            'dialog-confirmed': '_addItemFromDialog',
+            'dialog-cancelled': '_handleDialogCancel'
         },
         observers: [
             '_filesChange(dataItems.*, fileTypes.*)',
@@ -84,6 +90,11 @@
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject)'
         ],
+        _handleDialogCancel: function(e, detail) {
+            if (this.canBeRemoved) {
+                this._openDeleteConfirmation(e, detail);
+            }
+        },
         _getFileType: function(fileType) {
             if (this.fileTypes && this.fileTypes.length > 0) {
                 let type = this.fileTypes.filter(function(type) {
@@ -276,6 +287,11 @@
             this.set('editedItem.invalid', invalid);
         },
 
+        _setFileInvalid: function(errorMessage, invalid) {
+            this.set('editedItem.fileErrorMessage', errorMessage);
+            this.set('editedItem.fileInvalid', invalid);
+        },
+
         _checkAlreadySelected: function() {
             if (!this.dataItems) {return;}
 
@@ -284,11 +300,11 @@
             });
 
             if (alreadySelectedIndex !== -1) {
-                this._setInvalid('File already selected', true);
+                this._setFileInvalid('File already selected', true);
                 return false;
             }
 
-            this._setInvalid('', false);
+            this._setFileInvalid('', false);
             return true;
         },
 
@@ -300,6 +316,8 @@
             if (!this.fileTypes || !this.fileTypes.length) {
                 this._setInvalid('File type field is required but types are not defined', true);
                 valid = false;
+            } else {
+                this._setInvalid('', false);
             }
 
             if (!this.canBeRemoved && !this._checkAlreadySelected()) {
@@ -312,7 +330,7 @@
             }
 
             if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw || !editedItem.date)) {
-                this._setInvalid('File is not selected', true);
+                this._setFileInvalid('File is not selected', true);
                 valid = false;
             }
 

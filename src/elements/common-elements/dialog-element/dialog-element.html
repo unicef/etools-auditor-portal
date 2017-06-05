@@ -73,7 +73,7 @@
             <h2 class="dialog-title">[[dialogTitle]]<etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="loading"></etools-loading></h2>
             <slot></slot>
             <div class="buttons" id="buttons">
-                <paper-button dialog-dismiss$="{{!requestInProcess}}" class="btn-cancel">[[cancelBtnText]]</paper-button>
+                <paper-button dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}" class="btn-cancel" on-tap="cancelDialog">[[cancelBtnText]]</paper-button>
                 <paper-button autofocus class="btn-confirm" on-tap="confirmDialog">[[confirmBtnText]]</paper-button>
             </div>
         </paper-dialog>
@@ -107,10 +107,20 @@
                     value: false,
                     notify: true
                 },
+                confirmDialogOpened: {
+                    type: Boolean,
+                    value: false
+                },
                 dialogName: String
+            },
+            _setDialogDismiss: function(requestInProcess, confirmDialogOpened) {
+                return !requestInProcess && !confirmDialogOpened;
             },
             confirmDialog: function() {
                 this.fire('dialog-confirmed', {dialogName: this.dialogName});
+            },
+            cancelDialog: function() {
+                this.fire('dialog-cancelled', {dialogName: this.dialogName});
             },
             _openedChanged: function(opened) {
                 if (!opened && this.requestInProcess) {

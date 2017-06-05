@@ -127,6 +127,7 @@
         openAddDialog: function() {
             this.dialogTitle = (this.addDialogTexts && this.addDialogTexts.title) || 'Add new Item';
             this.confirmBtnText = (this.addDialogTexts && this.addDialogTexts.confirmBtn) || 'Add';
+            this.cancelBtnText = (this.addDialogTexts && this.addDialogTexts.cancelBtn) || 'Cancel';
             this.canBeRemoved = false;
             this.dialogOpened = true;
         },
@@ -141,6 +142,7 @@
             this.originalEditedObj = _.cloneDeep(this.dataItems[index]);
             this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
             this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
+            this.cancelBtnText = (this.editDialogTexts && this.editDialogTexts.cancelBtn) || 'Cancel';
             this.canBeRemoved = true;
             this.editedIndex = index;
             this.dialogOpened = true;
@@ -192,6 +194,7 @@
 
             this.dialogTitle = '';
             this.confirmBtnText = '';
+            this.cancelBtnText = '';
             this.editedItem = _.cloneDeep(this.itemModel);
         },
 
