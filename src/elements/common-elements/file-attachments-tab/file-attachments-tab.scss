@@ -28,8 +28,28 @@
     }
 
     .repeatable-item-container {
-        min-width: 300px;
+        min-width: 500px;
     }
+}
+
+paper-input-container {
+    margin: 0 12px;
+
+    --paper-input-container-color: var(--gray-20);
+    --paper-input-container-focus-color: var(--module-primary);
+    --paper-input-container: #{'{
+        opacity: 1 !important;
+    }'};
+    --paper-input-container-underline: #{'{
+        display: none !important;
+    }'};
+    --paper-input-container-underline-focus: #{"{
+        display: none;
+    }"};
+    --paper-input-container-underline-disabled: #{"{
+        display: block !important;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
+    }"};
 }
 
 :host .confirm-backdrop[opened] {
@@ -51,16 +71,16 @@ etools-content-panel {
 
 .upload-button {
     --paper-button: #{'{
-                    @apply(--layout-flex);
-                    @apply(--layout-start-justified);
-                    font-weight: bold;
-                    font-size: 14px;
-                    margin: 0;
-                    padding: 0 19px 0 12px;
-                    height: 36px;
-                    color: #ffffff;
-                    background-color: var(--module-primary)
-                }'};
+        @apply(--layout-flex);
+        @apply(--layout-start-justified);
+        font-weight: bold;
+        font-size: 14px;
+        margin: 0;
+        padding-right: 19px;
+        height: 36px;
+        color: var(--module-primary);
+        background-color: #ffffff;
+    }'};
 }
 
 .download-icon {
@@ -69,8 +89,8 @@ etools-content-panel {
     --iron-icon-fill-color: var(--gray-50);
 }
 
-paper-input-error {
+.attachment-error {
     position: relative;
     visibility: visible;
-    margin-left: 5px;
+    margin-left: 12px;
 }
