@@ -34,20 +34,8 @@ global.config = {
     unbundledDirectory: 'unbundled',
     bundleType: 'bundled' // We will only be using a bundled build
   },
-  // serviceWorkerPath: 'service-worker.js',
-  // // Service Worker precache options based on
-  // // https://github.com/GoogleChrome/sw-precache#options-parameter
-  // swPrecacheConfig: {
-  //   navigateFallback: '/index.html'
-  // },
   sourceCodeDirectory: './src'
 };
-
-// Change global config if building into eTools
-const etoolsBuild = require('./gulp-tasks/etoolsBuild.js');
-if (argv._[0] === 'fullBuild') {
-  etoolsBuild.config();
-}
 
 const project = require('./gulp-tasks/project.js');
 const source = require('./gulp-tasks/project-source');
@@ -64,29 +52,19 @@ gulp.task('watch', function () {
 gulp.task('lint', gulp.series(jsLinter));
 gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower), runTests));
 
-gulp.task('start', function () { nodemon({ script: 'server.js' }) });
-gulp.task('build', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower)));
+//TODO: remove all elementImpr tasks
+
+gulp.task('startDevServer', function () { nodemon({ script: 'server.js' }) });
+gulp.task('startServer', function () { nodemon({ script: 'server.js', env: { 'NODE_ENV': 'production' } }) });
+
+gulp.task('devBuild', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower)));
+gulp.task('prodBuild', gulp.series(clean.build, elementImpr, project.merge(source, dependencies)));
 
 gulp.task('precommit', gulp.series('lint', 'test'));
 
-gulp.task('default', gulp.series([
-  clean.build, elementImpr,
-  project.merge(source, dependencies),
-  gulp.parallel(function startServer() { nodemon({ script: 'server.js', env: { 'NODE_ENV': 'production' } }) }, 'watch')
-]));
 
-//TODO: remove elementImpr task
 //Run dev server and watch changes
-gulp.task('server', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('start', 'watch')));
+gulp.task('devup', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('startDevServer', 'watch')));
 
-
-// DO NOT RUN
-// Fully builds project
-// Minifying, linting, and building into eTools
-// TODO: This task is on hold
-gulp.task('fullBuild', gulp.series([
-  clean.fullBuild,
-  project.merge(source, dependencies),
-  project.serviceWorker,
-  etoolsBuild.buildTemplate
-]));
+//Minify scripts, run prod server and watch changes
+gulp.task('default', gulp.series([ 'prodBuild', 'startServer' ]));
