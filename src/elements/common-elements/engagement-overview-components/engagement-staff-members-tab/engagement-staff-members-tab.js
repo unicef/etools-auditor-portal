@@ -115,11 +115,15 @@ Polymer({
         },
         showingResults: {
             type: String,
-            computed: '_calcShowingResults(datalength, listSize, listPage)'
+            computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, dataItems.length)'
         },
         datalength: {
             type: Number,
             value: 0
+        },
+        searchQuery: {
+            type: String,
+            value: ''
         }
     },
 
@@ -134,7 +138,7 @@ Polymer({
         '_handleUpdateError(errorObject.staff_members)',
         '_organizationChanged(engagement.agreement.audit_organization.id, basePermissionPath)',
         '_organizationChanged(engagement.agreement.audit_organization.id)',
-        '_queriesChanged(listSize, listPage)',
+        '_queriesChanged(listSize, listPage, searchQuery)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
         'updateStyles(emailChecking)'
@@ -170,19 +174,23 @@ Polymer({
         this.organisationId = +id;
     },
 
-    _queriesChanged: function(listSize, listPage) {
+    _queriesChanged: function(listSize, listPage, searchQuery) {
         if (!listPage || !listSize) { return; }
 
-        if (this.lastSize && this.lastSize !== listSize) {
+        if (((this.lastSize && this.lastSize !== listSize) ||
+             (!_.isUndefined(this.lastSearchQuery) && this.lastSearchQuery !== searchQuery)) && this.listPage !== 1) {
+            this.lastSearchQuery = searchQuery;
             this.lastSize = listSize;
             this.listPage = 1;
             return;
         }
         this.lastSize = listSize;
+        this.lastSearchQuery = searchQuery;
 
         this.set('listQueries', {
             page_size: listSize,
-            page: listPage
+            page: listPage,
+            search: searchQuery || ''
         });
     },
 
@@ -210,12 +218,14 @@ Polymer({
         }
     },
 
-    _calcShowingResults: function(datalength, listSize, listPage) {
+    _calcShowingResults: function(datalength, listSize, listPage, searchQuery, itemsLength) {
         let last = listSize * listPage,
-            first = last - listSize + 1;
+            first = last - listSize + 1,
+            length = searchQuery ? itemsLength : datalength;
 
-        if (last > datalength) { last = datalength; }
-        return `${first}-${last} of ${datalength}`;
+        if (last > length) { last = length; }
+        if (first > length) { first = 0; }
+        return `${first}-${last} of ${length}`;
     },
 
     _validEmailAddress: function(emailInput) {
@@ -279,8 +289,9 @@ Polymer({
         return +dataItems && +dataItems > 10;
     },
 
-    _staffLength: function(length, length2) {
-        return length || length2 || 0;
+    _staffLength: function(length, length2, search) {
+        let staffLength = search ? length2 : length || length2;
+        return staffLength || 0;
     },
 
     _addStaffFromDialog: function(event) {
@@ -374,8 +385,11 @@ Polymer({
     resetList: function() {
         this.set('dataItems', []);
         this.set('listPage', 1);
+        this.set('searchQuery', '');
+        this.set('searchString', '');
         this.set('engagementStaffs', {});
         this.set('datalength', 0);
+        this.updateStyles();
     },
     getTabData: function() {
         if (!this._canBeChanged()) { return null; }
@@ -394,6 +408,25 @@ Polymer({
         }
 
         return dataChanged ? staffs : null;
+    },
+
+    _getSearchInputClass: function(searchString) {
+        if (searchString) { return 'filled'; }
+        return 'empty';
+    },
+
+    searchBlur: function() {
+        this.updateStyles();
+    },
+
+    _searchChanged: function() {
+        let value = this.$.searchInput.value || '';
+
+        if (value.length - 1) {
+            this.debounce('newRequest', () => {
+                this.set('searchQuery', value);
+            }, 500);
+        }
     }
 
 });
