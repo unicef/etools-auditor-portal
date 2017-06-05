@@ -394,6 +394,15 @@ Polymer({
         }
 
         return dataChanged ? staffs : null;
+    },
+
+    _getSearchInputClass: function(searchString) {
+        if (searchString) { return 'filled'; }
+        return 'empty';
+    },
+
+    searchBlur: function() {
+        this.updateStyles();
     }
 
 });

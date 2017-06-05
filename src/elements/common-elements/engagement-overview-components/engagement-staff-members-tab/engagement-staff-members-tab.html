@@ -6,8 +6,9 @@
 
 <dom-module id="engagement-staff-members-tab">
     <template>
-        <!-- inject styles './engagement-staff-members-tab.scss'-->
+
         <style include="tab-inputs-styles module-styles"></style>
+        <!-- inject styles './engagement-staff-members-tab.scss'-->
 
         <!--requests-->
         <get-staff-members-list organisation-id="{{organisationId}}"
@@ -27,6 +28,17 @@
                            on-tap="openAddDialog"
                            class="add-button"
                            icon="add"></paper-icon-button>
+
+        <div class="search-input-container">
+            <paper-input class$="search-input [[_getSearchInputClass(searchString)]]"
+                         value="{{searchString}}"
+                         hidden$="[[!_showPagination(datalength)]]"
+                         on-blur="searchBlur"
+                         placeholder="Search">
+                <iron-icon prefix icon="search"></iron-icon>
+            </paper-input>
+        </div>
+
 
         <etools-content-panel panel-title="Auditor Staff Members ([[_staffLength(datalength, dataItems.length)]])" show-expand-btn>
 

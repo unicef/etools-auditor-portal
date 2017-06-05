@@ -19,9 +19,40 @@
         top: 4px;
         width: 40px;
         height: 40px;
-        color: #ffffff;
+        color: rgba(255, 255, 255, 0.7);
         z-index: 10;
     }
+
+    .search-input-container {
+        position: absolute;
+        right: 55px;
+        height: 48px;
+        color: #ffffff;
+        overflow: hidden;
+        z-index: 10;
+
+        .search-input {
+            width: 5%;
+            float: right;
+            box-sizing: border-box;
+            min-width: 46px;
+            margin-top: -13px;
+
+            &[focused] {
+                width: 100%;
+            }
+            &:not(.empty) {
+                width: 100% !important;
+            }
+            iron-icon {
+                top: -1px;
+                color: rgba(255, 255, 255, 0.7);
+            }
+            transition: 0.35s;
+            cursor: pointer;
+        }
+    }
+
 
     .edit-icon {
         padding: 5px;
@@ -112,4 +143,22 @@ list-pagination {
 
 etools-loading {
     --etools-loading-overlay-transparency: 0.4;
+}
+
+paper-input.search-input {
+    --paper-input-container-color: rgba(255, 255, 255, 0.5);
+    --paper-input-container-focus-color: #ffffff;
+    --paper-input-container-input-color: #ffffff;
+    --paper-input-container-underline-focus: #{'{
+        border-bottom: 1px solid #ffffff;
+    }'};
+    --paper-input-container-underline: #{'{
+        border-bottom: none;
+    }'}
+}
+
+paper-input.search-input.filled {
+    --paper-input-container-underline: #{'{
+        border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+    }'}
 }
