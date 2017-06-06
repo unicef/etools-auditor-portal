@@ -149,6 +149,17 @@ Polymer({
         return riskValid && commentsValid;
     },
 
+    validateComplited: function() {
+        if (!this.questionnaire || !this.questionnaire.children || !this.questionnaire.children.length) { return false; }
+        let complited = true;
+
+        _.each(this.questionnaire.children, tab => {
+            if (!this._checkCompleted(tab)) { complited = false; }
+        });
+
+        return complited;
+    },
+
     getQuestionnaireData: function() {
         if (!this.dialogOpened) { return null; }
 

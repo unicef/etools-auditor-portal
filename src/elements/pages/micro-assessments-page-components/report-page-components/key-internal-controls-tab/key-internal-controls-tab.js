@@ -194,7 +194,12 @@ Polymer({
     },
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
-        if (!errorData || !this.dialogOpened) { return; }
-        this.set('errors', this.refactorErrorObject(errorData));
+        if (!errorData) { return; }
+        let data = this.refactorErrorObject(errorData);
+        if (!this.dialogOpened && _.isString(data)) {
+            this.fire('toast', {text: `Test Subject Areas: ${data}`});
+        } else {
+            this.set('errors', data);
+        }
     }
 });
