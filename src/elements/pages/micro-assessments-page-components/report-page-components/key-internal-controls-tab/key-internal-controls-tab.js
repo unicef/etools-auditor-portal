@@ -195,11 +195,18 @@ Polymer({
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }
+
         let data = this.refactorErrorObject(errorData);
+        let nonField = this.checkNonField(errorData);
+
         if (!this.dialogOpened && _.isString(data)) {
             this.fire('toast', {text: `Test Subject Areas: ${data}`});
         } else {
             this.set('errors', data);
+        }
+
+        if (nonField) {
+            this.fire('toast', {text: `Test Subject Areas: ${nonField}`});
         }
     }
 });

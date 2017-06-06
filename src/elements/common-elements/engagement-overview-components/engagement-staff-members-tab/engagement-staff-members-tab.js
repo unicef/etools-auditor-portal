@@ -375,11 +375,17 @@ Polymer({
         }
     },
     _handleUpdateError: function(errorData) {
+        let nonField = this.checkNonField(errorData);
         let error =  this.refactorErrorObject(errorData);
+
         this.set('errors', error);
         this.requestInProcess = false;
-        if (_.isString(error) && ~error.indexOf('required')) {
-            this.fire('toast', {text: 'Please, select at least one staff member.'});
+        if (_.isString(error)) {
+            let text = !!~error.indexOf('required') ? 'Please, select at least one staff member.' : error;
+            this.fire('toast', {text: `Staff Members: ${text}`});
+        }
+        if (nonField) {
+            this.fire('toast', {text: `Staff Members: ${nonField}`});
         }
     },
     resetList: function() {

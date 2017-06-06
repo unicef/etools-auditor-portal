@@ -212,10 +212,20 @@ Polymer({
         this.$.riskAssessmentComments.value = '';
     },
 
-    savingError: function() {
+    savingError: function(errorObj) {
         if (this.requestInProcess) {
             this.requestInProcess = false;
             this.fire('toast', {text: 'Can not save data'});
+        }
+        if (!errorObj || !errorObj.questionnaire) { return; }
+
+        let nonField = this.checkNonField(errorObj.questionnaire);
+        let data = this.refactorErrorObject(errorObj.questionnaire);
+        if (_.isString(data)) {
+            this.fire('toast', {text: `Qustionnaire: ${data}`});
+        }
+        if (nonField) {
+            this.fire('toast', {text: `Qustionnaire: ${nonField}`});
         }
     }
 });

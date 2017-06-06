@@ -78,6 +78,15 @@ Polymer({
     observers: [
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
-        '_errorHandler(errorObject.findings)'
-    ]
+        '_errorHandler(errorObject.findings)',
+        '_checkNonField(errorObject.findings)'
+    ],
+    _checkNonField: function(error) {
+        if (!error) { return; }
+
+        let nonField = this.checkNonField(error);
+        if (nonField) {
+            this.fire('toast', {text: `Findings and Recommendations: ${nonField}`});
+        }
+    }
 });
