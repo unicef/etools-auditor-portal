@@ -88,7 +88,8 @@
             '_filesChange(dataItems.*, fileTypes.*)',
             '_updateHeadings(allowEdit, readonly, fileTypeRequired)',
             'resetDialog(dialogOpened)',
-            '_errorHandler(errorObject)'
+            '_errorHandler(errorObject)',
+            'savingError(errorObject)'
         ],
         _handleDialogCancel: function(e, detail) {
             if (this.canBeRemoved) {
@@ -335,6 +336,22 @@
             }
 
             return valid;
+        },
+
+        savingError: function(errorObj) {
+            if (this.requestInProcess) {
+                this.requestInProcess = false;
+                this.fire('toast', {text: 'Can not save data'});
+            }
+            if (!errorObj) { return; }
+
+            let nonField = this.checkNonField(errorObj);
+            if (typeof errorObj === 'string') {
+                this.fire('toast', {text: `Attachments: ${errorObj}`});
+            }
+            if (nonField) {
+                this.fire('toast', {text: `Attachments: ${nonField}`});
+            }
         }
     });
 })();
