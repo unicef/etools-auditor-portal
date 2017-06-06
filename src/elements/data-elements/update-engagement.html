@@ -93,6 +93,8 @@
 
                 if (!this.quietAdding) {
                     this.fire('toast', {text: `Engagement data has been ${action}!`});
+                } else {
+                    this.quietAdding = false;
                 }
 
                 this.appDexieDb.collectionsList.update('engagements', {expire: 0});
@@ -110,7 +112,6 @@
             },
 
             _handleError: function (event, error) {
-                this.actionUrl = '';
                 if (this.method === 'PATCH') {
                     this.fire('global-loading', {type: 'update-engagement'});
                 } else if (this.method === 'POST' && ~this.actionUrl.indexOf('submit')) {
@@ -118,6 +119,9 @@
                 } else if (this.method === 'POST' && ~this.actionUrl.indexOf('finalize')) {
                     this.fire('global-loading', {type: 'finalize-engagement'});
                 }
+
+                this.actionUrl = '';
+
                 let responseData = error && error.request && error.request.detail &&
                                     error.request.detail.request && error.request.detail.request.xhr;
 
@@ -128,7 +132,9 @@
                 if (status === 500) { this.errorObject = {}; }
                 this.fire('engagement-updated');
                 if (!this.quietAdding) {
-                    this.fire('toast', {text: 'Can not save engagement data. Please try again later!'});
+                    this.fire('toast', {text: 'Can not save engagement data. Please check all fields and try again later!'});
+                } else {
+                    this.quietAdding = false;
                 }
             },
 

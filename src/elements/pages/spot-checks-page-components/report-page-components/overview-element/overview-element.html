@@ -59,6 +59,7 @@
                             class="disabled-as-readonly"
                             disabled
                             value="{{data.total_value}}"
+                            on-focus="_resetFieldError"
                             placeholder="Enter Total Value"></etools-currency-amount-input>
                 </div>
             </div>
@@ -73,6 +74,7 @@
                             invalid="{{_checkInvalid(errors.total_amount_tested)}}"
                             error-message="{{errors.total_amount_tested}}"
                             value="{{data.total_amount_tested}}"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
                 <div class="input-container">
@@ -85,6 +87,7 @@
                             invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
                             error-message="{{errors.total_amount_of_ineligible_expenditure}}"
                             value="{{data.total_amount_of_ineligible_expenditure}}"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
                 <div class="input-container">
@@ -97,6 +100,7 @@
                             invalid="{{_checkInvalid(errors.amount_of_ineligible_expenditures)}}"
                             error-message="{{errors.amount_of_ineligible_expenditures}}"
                             value="{{data.amount_of_ineligible_expenditures}}"
+                            on-focus="_resetFieldError"
                             placeholder="&#8212;"></etools-currency-amount-input>
                 </div>
             </div>

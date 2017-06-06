@@ -28,6 +28,7 @@
         ready: function() {
             this.engagementFileTypes = this.getData('engagement_attachments_types');
             this.reportFileTypes = this.getData('report_attachments_types');
+            this._addObserverEffect("errorObject", '_errorOccurred');
         },
 
         _routeConfig: function(route) {
@@ -242,6 +243,15 @@
             return this.actionAllowed(permissionBase, 'submit') ||
                     engagement.status === 'report_submitted' ||
                     engagement.status === 'final';
+        },
+
+        _errorOccurred: function(errorObj) {
+            if (!errorObj || !_.isObject(errorObj)) { return; }
+            let page = this.witchPageTrows(errorObj);
+            if (page) {
+                let tab = this.tab ? 'tab' : 'routeData.tab';
+                this.set(tab, page);
+            }
         }
 
     };
@@ -249,7 +259,8 @@
     APBehaviors.EngagementBehavior = [
         APBehaviors.EngagementBehaviorImpl,
         APBehaviors.PermissionController,
-        APBehaviors.StaticDataController
+        APBehaviors.StaticDataController,
+        APBehaviors.ErrorHandlerBehavior
     ];
 
 </script>
