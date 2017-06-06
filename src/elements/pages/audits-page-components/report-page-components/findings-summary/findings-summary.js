@@ -170,7 +170,18 @@ Polymer({
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }
+
         let refactoredData = this.refactorErrorObject(errorData);
-        this.set('errors', refactoredData);
+        let itemModelKeys = _.keys(this.itemModel) || [];
+        itemModelKeys = itemModelKeys.filter((key) => {
+            return key !== 'partner' && key !== 'opinion';
+        });
+        let findingsSummaryErrors = _.pick(refactoredData, itemModelKeys);
+
+        if (!this.dialogOpened && _.values(findingsSummaryErrors).length) {
+            this.fire('toast', {text: `Please fill in the Summary of Audit Findings.`});
+        } else {
+            this.set('errors', refactoredData);
+        }
     }
 });
