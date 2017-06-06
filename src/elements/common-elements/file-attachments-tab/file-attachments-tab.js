@@ -118,7 +118,7 @@
         },
 
         _updateHeadings: function(allowEdit, readonly, fileTypeRequired) {
-            let showEditButton = allowEdit && readonly === false;
+            let showEditButton = allowEdit && (readonly === false);
             let headings = [{
                 'size': '100px',
                 'name': 'date',
@@ -161,9 +161,15 @@
             }
         },
 
-        _fileSelected: function() {
-            let files = Polymer.dom(this.root).querySelector('#fileInput').files || {};
+        _fileSelected: function(e) {
+            if (!e || !e.target) { return false; }
+
+            let files = e.target.files || {};
             let file = files[0];
+
+            if (this._checkAlreadySelected()) {
+                return false;
+            }
 
             if (file && file instanceof File) {
                 let blob = new Blob([file.raw]);
@@ -172,9 +178,9 @@
                 this.editedItem.raw = file;
                 this.editedItem.date = new Date().getTime();
                 this.editedItem.file = URL.createObjectURL(blob);
-            }
 
-            this._checkAlreadySelected();
+                return true;
+            }
         },
 
         _setFileType: function(e, detail) {
@@ -185,8 +191,8 @@
             }
         },
 
-        _filesChange: function() {
-            if (!this.dataItems) {return;}
+        _filesChange: function() { //TODO: refactor tests
+            if (!this.dataItems) { return false; }
 
             this.dataItems.forEach((file, index) => {
                 if (file.file && file.id && !file.file_name) {
@@ -220,7 +226,7 @@
             return url.split('/').pop();
         },
 
-        _getUploadedFile: function(fileModel) {
+        _getUploadedFile: function(fileModel) { //TODO: tests
             return new Promise((resolve, reject) => {
                 let reader = new FileReader();
                 let uploadedFile = {
@@ -241,7 +247,7 @@
             });
         },
 
-        getFiles: function() {
+        getFiles: function() { //TODO: refactor tests
             return new Promise((resolve, reject) => {
                 let files = [];
                 let changedFiles = [];
@@ -282,17 +288,17 @@
             });
         },
 
-        _setInvalid: function(errorMessage, invalid) {
+        _setInvalid: function(errorMessage, invalid) { //TODO: tests
             this.set('editedItem.errorMessage', errorMessage);
             this.set('editedItem.invalid', invalid);
         },
 
-        _setFileInvalid: function(errorMessage, invalid) {
+        _setFileInvalid: function(errorMessage, invalid) { //TODO: tests
             this.set('editedItem.fileErrorMessage', errorMessage);
             this.set('editedItem.fileInvalid', invalid);
         },
 
-        _checkAlreadySelected: function() {
+        _checkAlreadySelected: function() { //TODO: tests
             if (!this.dataItems) {return;}
 
             let alreadySelectedIndex = this.dataItems.findIndex((file) => {
@@ -301,14 +307,14 @@
 
             if (alreadySelectedIndex !== -1) {
                 this._setFileInvalid('File already selected', true);
-                return false;
+                return true;
             }
 
             this._setFileInvalid('', false);
-            return true;
+            return false;
         },
 
-        validate: function() {
+        validate: function() { //TODO: tests
             let dropdown = Polymer.dom(this.root).querySelector('#fileType');
             let editedItem = this.editedItem;
             let valid = true;
@@ -320,7 +326,7 @@
                 this._setInvalid('', false);
             }
 
-            if (!this.canBeRemoved && !this._checkAlreadySelected()) {
+            if (!this.canBeRemoved && this._checkAlreadySelected()) {
                 valid = false;
             }
 

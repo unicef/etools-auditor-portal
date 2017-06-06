@@ -1,0 +1,388 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [file-attachments-tab, lodash]-->
+</head>
+<body>
+
+<test-fixture id="file-attachments-tab-fixture">
+    <template>
+        <file-attachments-tab></file-attachments-tab>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<file-attachments-tab>', function () {
+        var myEl;
+        beforeEach(function () {
+            myEl = fixture('file-attachments-tab-fixture');
+        });
+        //TODO: test buttons
+
+        describe('method _handleDialogCancel(e, detail)', function () {
+            it('calls _openDeleteConfirmation() method and pass their own arguments to him if canBeRemoved is true', function () {
+                let spy = sinon.spy(myEl, '_openDeleteConfirmation');
+                myEl.canBeRemoved = true;
+
+                assert.isFalse(spy.called);
+                myEl._handleDialogCancel('arg1', 'arg2');
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(myEl._openDeleteConfirmation.calledWith('arg1', 'arg2'))
+            });
+
+            it('not calls _openDeleteConfirmation() method if canBeRemoved is false', function () {
+                let spy = sinon.spy(myEl, '_openDeleteConfirmation');
+                myEl.canBeRemoved = false;
+
+                assert.isFalse(spy.called);
+                myEl._handleDialogCancel();
+                assert.isFalse(spy.called);
+            });
+
+            it('called when fired "dialog-cancelled" event', function () {
+                let spy = sinon.spy(myEl, '_handleDialogCancel');
+
+                assert.isFalse(spy.called);
+                myEl.fire('dialog-cancelled');
+                assert.isTrue(spy.calledOnce);
+            });
+        });
+
+        describe('method _getFileType(fileType)', function () {
+            beforeEach(function () {
+                var fileTypes = [
+                    {value: 1, display_name: 'Training materials'},
+                    {value: 2, display_name: 'ToRs'},
+                    {value: 3, display_name: 'Other'}
+                ];
+
+                myEl.fileTypes = fileTypes;
+            });
+
+            it('returns null when fileTypes Array is empty', function () {
+                myEl.fileTypes = [];
+
+                assert.isNull(myEl._getFileType('1'));
+            });
+
+            it('returns null when fileType is not found', function () {
+                assert.isNull(myEl._getFileType('4'));
+            });
+
+            it('returns file type', function () {
+                var fileType = myEl._getFileType('3');
+
+                assert.isObject(fileType);
+                assert.equal(fileType.display_name, myEl.fileTypes[2].display_name);
+                assert.equal(fileType.value, myEl.fileTypes[2].value);
+            });
+
+            it ('returns null when this.fileTypes is undefined', function () {
+                myEl.fileTypes = undefined;
+                assert.isNull(myEl._getFileType('1'));
+            });
+        });
+
+        describe('method _showAddBtn(filesLength, readonly)', function () {
+            it('returns true when readonly = false, multiple = true and filesLength >= 0', function () {
+                myEl.multiple = true;
+
+                assert.equal(myEl._showAddBtn(0, false), true);
+                assert.equal(myEl._showAddBtn(1, false), true);
+                assert.equal(myEl._showAddBtn(2, false), true);
+            });
+
+            it('returns true when readonly = false, multiple = false and filesLength = 0', function () {
+                myEl.multiple = false;
+
+                assert.equal(myEl._showAddBtn(0, false), true);
+            });
+
+            it('returns false when readonly = false, multiple = false and filesLength > 0', function () {
+                myEl.multiple = false;
+
+                assert.equal(myEl._showAddBtn(1, false), false);
+            });
+
+            it('returns false when readonly = true', function () {
+                assert.equal(myEl._showAddBtn(1, true), false);
+            });
+        });
+
+        describe('method _updateHeadings(allowEdit, readonly, fileTypeRequired)', function () {
+            let headingsTemp;
+            let headings = [{
+                'size': '100px',
+                'name': 'date',
+                'label': 'Date Uploaded',
+                'path': 'date'
+            }, {
+                'size': 65,
+                'label': 'File Attachment',
+                'property': 'file_name',
+                'custom': true
+            }];
+            let editButtonOptions = {
+                'size': '45px',
+                'label': 'Edit',
+                'name': 'edit',
+                'align': 'center',
+                'icon': true
+            };
+            let documentTypeOptions = {
+                'size': 35,
+                'label': 'Document Type',
+                'path': 'display_name'
+            };
+
+            beforeEach(function () {
+                headingsTemp = _.cloneDeep(headings);
+            });
+
+            it('not adds editButtonOptions if readonly=true', function (done) {
+                myEl.headings = [];
+                assert.equal(myEl.headings.length, 0);
+                myEl._updateHeadings(true, true);
+
+                flush(function () {
+                    assert.equal(myEl.headings.length, 2);
+                    assert.deepEqual(myEl.headings, headingsTemp);
+                    done();
+                });
+            });
+
+            it('not adds editButtonOptions if allowEdit=false', function (done) {
+                myEl.headings = [];
+                assert.equal(myEl.headings.length, 0);
+                myEl._updateHeadings(false, false);
+
+                flush(function () {
+                    assert.equal(myEl.headings.length, 2);
+                    assert.deepEqual(myEl.headings, headingsTemp);
+                    done();
+                });
+            });
+
+            it('adds editButtonOptions if allowEdit=true && readonly=false', function (done) {
+                myEl.headings = [];
+                headingsTemp.push(_.cloneDeep(editButtonOptions));
+                assert.equal(myEl.headings.length, 0);
+                myEl._updateHeadings(true, false);
+
+                flush(function () {
+                    assert.equal(myEl.headings.length, 3);
+                    assert.deepEqual(myEl.headings, headingsTemp);
+                    done();
+                });
+            });
+
+            it('not adds documentTypeOptions if fileTypeRequired is false', function (done) {
+                myEl.headings = [];
+                assert.equal(myEl.headings.length, 0);
+                myEl._updateHeadings(false, true, false);
+
+                flush(function () {
+                    assert.equal(myEl.headings.length, 2);
+                    assert.deepEqual(myEl.headings, headingsTemp);
+                    done();
+                });
+            });
+
+            it('adds documentTypeOptions if fileTypeRequired=true', function (done) {
+                myEl.headings = [];
+                headingsTemp.splice(1, 0, _.cloneDeep(documentTypeOptions));
+                assert.equal(myEl.headings.length, 0);
+                myEl._updateHeadings(false, false, true);
+
+                flush(function () {
+                    assert.equal(myEl.headings.length, 3);
+                    assert.deepEqual(myEl.headings, headingsTemp);
+                    done();
+                });
+            });
+        });
+
+        describe('method _fileSelected(e)', function () {
+            let file;
+            let e;
+
+            beforeEach(function () {
+                file = new File([''], 'filename');
+                e = {target: {files: {0: file}}};
+            });
+
+            it('returns false with bad arguments', function () {
+                assert.isFalse(myEl._fileSelected());
+                assert.isFalse(myEl._fileSelected({}));
+            });
+
+            it('calls _checkAlreadySelected() method', function () {
+                let spy = sinon.spy(myEl, '_checkAlreadySelected');
+
+                assert.isFalse(spy.called);
+                myEl._fileSelected(e);
+                assert.isTrue(spy.calledOnce);
+            });
+
+            it('returns false if _checkAlreadySelected() method returns true', function () {
+                sinon.stub(myEl, '_checkAlreadySelected').returns(true);
+                assert.isFalse(myEl._fileSelected(e));
+            });
+
+            it('not sets editedItem properties if file is undefined or has invalid type', function () {
+                sinon.stub(myEl, '_checkAlreadySelected').returns(false);
+                assert.isUndefined(myEl.editedItem.file_name);
+                assert.isUndefined(myEl._fileSelected({target: {}}));
+                assert.isUndefined(myEl.editedItem.file_name);
+                assert.isUndefined(myEl._fileSelected({target: {files: {}}}));
+                assert.isUndefined(myEl.editedItem.file_name);
+                assert.isUndefined(myEl._fileSelected({target: {files: {0: {}}}}));
+                assert.isUndefined(myEl.editedItem.file_name);
+            });
+
+            it('sets editedItem properties if file is correct', function () {
+                sinon.stub(myEl, '_checkAlreadySelected').returns(false);
+
+                assert.isTrue(myEl._fileSelected(e));
+                assert.equal(myEl.editedItem.file_name, file.name);
+                assert.deepEqual(myEl.editedItem.raw, file);
+                assert.isDefined(myEl.editedItem.date);
+                assert.isDefined(myEl.editedItem.file);
+            });
+        });
+
+        describe('method _setFileType(e, detail)', function () {
+            it('not sets editedItem properties with bad arguments', function () {
+                assert.isUndefined(myEl.editedItem.display_name);
+                myEl._setFileType({}, undefined);
+                assert.isUndefined(myEl.editedItem.display_name);
+                myEl._setFileType({}, {});
+                assert.isUndefined(myEl.editedItem.display_name);
+            });
+
+            it('sets editedItem type, display_name and file_type properties', function () {
+                let detail = {
+                    selectedValues: {
+                        value: '1',
+                        display_name: 'display_name'
+                    }
+                };
+
+                assert.deepEqual(myEl.editedItem.type, {});
+                assert.isUndefined(myEl.editedItem.file_type);
+                assert.isUndefined(myEl.editedItem.display_name);
+
+                myEl._setFileType({}, detail);
+
+                assert.deepEqual(myEl.editedItem.type, detail.selectedValues);
+                assert.equal(myEl.editedItem.file_type, detail.selectedValues.value);
+                assert.equal(myEl.editedItem.display_name, detail.selectedValues.display_name);
+            });
+        });
+
+        describe('method _filesChange()', function () {
+            let dataItems = [
+                {file_name: 'name', file_type: '1', display_name: 'FF', file: 'url'},
+                {file_name: 'name2', file_type: '1', display_name: 'FF', file: 'url2'}
+            ];
+
+            it('returns false if dataItems array is not defined', function () {
+                myEl.dataItems = undefined;
+
+                assert.isFalse(myEl._filesChange());
+            });
+
+            it('cuts off dataItems array when multiple is false', function () {
+                myEl.multiple = true;
+                myEl.dataItems = _.cloneDeep(dataItems);
+
+                assert.equal(myEl.dataItems.length, 2);
+
+                myEl.multiple = false;
+                myEl._filesChange();
+
+                assert.equal(myEl.dataItems.length, 1);
+            });
+
+//            it('calls _getFilenameFromUrl() method');
+
+            it('removes dataItems without file_name property', function (done) {
+                let newFile = new File([''], 'newFile');
+
+                myEl.dataItems = [];
+                myEl.dataItems.push({raw: newFile, file_type: '1'});
+
+                assert.equal(myEl.dataItems.length, 1);
+                myEl._filesChange();
+
+                flush(function () {
+                    assert.equal(myEl.dataItems.length, 0);
+                    done();
+                });
+            });
+
+            it('removes dataItems with incorrect file property', function (done) {
+                myEl.dataItems = [];
+                myEl.dataItems.push({file: '', id: 1});
+
+                assert.equal(myEl.dataItems.length, 1);
+                myEl._filesChange();
+
+                flush(function () {
+                    assert.equal(myEl.dataItems.length, 0);
+                    done();
+                });
+            });
+
+//            it('calls _getFileType() method');
+        });
+
+        describe('method _getFilenameFromUrl(url)', function () {
+            it('returns filename', function () {
+                assert.equal(myEl._getFilenameFromUrl('path/to/file/filename'), 'filename');
+            });
+
+            it('returns undefined', function () {
+                assert.isUndefined(myEl._getFilenameFromUrl(''));
+            });
+        });
+
+//        describe('method getFiles()', function () {
+//            beforeEach(function () {
+//                myEl.files = [{
+//                    file_name: 'name',
+//                    raw: new File([''], 'name')
+//                }];
+//            });
+//
+//            it('Promise resolves an Array of Objects', function () {
+//                myEl.getFiles().then((resolved) => {
+//                    assert.isArray(resolved);
+//                    assert.isObject(resolved[0]);
+//                });
+//            });
+//
+//            it ('Promise rejected', function () {
+//                sinon.stub(myEl, '_getUploadedFile').returns(() => {
+//                    return new Promise((resolve, reject) => {
+//                        reject(new Error('Error!'));
+//                    });
+//                });
+//
+//                myEl.getFiles().catch((rejected) => {
+//                    assert.isDefined(rejected);
+//                });
+//            });
+//        });
+
+    });
+</script>
+
+</body>
+</html>
