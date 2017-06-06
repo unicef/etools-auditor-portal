@@ -50,16 +50,16 @@
                 let message = null;
                 if (_.isArray(errorObj)) {
                     _.each(errorObj, value => {
-                        let recurcieve = this.checkNonField(value);
-                        recurcieve && !message ? message = recurcieve : null;
+                        let recursive = this.checkNonField(value);
+                        recursive && !message ? message = recursive : null;
                     });
                 } else {
                     _.each(errorObj, (value, key) => {
                         if (key === 'non_field_errors') {
                             message = value;
                         } else {
-                            let recurcieve = this.checkNonField(value);
-                            recurcieve && !message ? message = recurcieve : null;
+                            let recursive = this.checkNonField(value);
+                            recursive && !message ? message = recursive : null;
                         }
                     });
                 }
