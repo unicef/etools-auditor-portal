@@ -98,7 +98,8 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_updateFindings(dataItems)',
-        '_errorHandler(errorObject.financial_finding_set)'
+        '_errorHandler(errorObject.financial_finding_set)',
+        '_checkNonField(errorObject.financial_finding_set)'
     ],
     _updateFindings: function(items) {
         _.each(items, (item) => {
@@ -108,5 +109,13 @@ Polymer({
         _.each(this.originalData, (item) => {
             item.finding_number = ([1e15] + item.id).slice(-4);
         });
+    },
+    _checkNonField: function(error) {
+        if (!error) { return; }
+
+        let nonField = this.checkNonField(error);
+        if (nonField) {
+            this.fire('toast', {text: `Financial Findings: ${nonField}`});
+        }
     }
 });

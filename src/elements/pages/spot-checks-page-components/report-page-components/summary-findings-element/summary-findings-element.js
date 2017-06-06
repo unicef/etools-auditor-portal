@@ -178,7 +178,19 @@ Polymer({
     },
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
-        if (!errorData || !this.dialogOpened) { return; }
-        this.set('errors', this.refactorErrorObject(errorData)[0]);
+        if (!errorData) { return; }
+
+        let data = this.refactorErrorObject(errorData);
+        let nonField = this.checkNonField(errorData);
+
+        if (!this.dialogOpened && _.isString(data)) {
+            this.fire('toast', {text: `Summary of ${this.priority.display_name} Priority Findings and Recommendations: ${data}`});
+        } else {
+            this.set('errors', data);
+        }
+
+        if (nonField) {
+            this.fire('toast', {text: `Summary of ${this.priority.display_name} Priority Findings and Recommendations: ${nonField}`});
+        }
     }
 });

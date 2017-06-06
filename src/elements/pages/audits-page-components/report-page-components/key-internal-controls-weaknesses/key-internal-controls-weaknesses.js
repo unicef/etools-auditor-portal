@@ -98,10 +98,19 @@ Polymer({
     },
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
-        if (!errorData || !this.dialogOpened) {
-            return;
+        if (!errorData) { return; }
+
+        let nonField = this.checkNonField(errorData);
+        let data = this.refactorErrorObject(errorData);
+        if (!this.dialogOpened && _.isString(data)) {
+            this.fire('toast', {text: `Key Internal Controls Weaknesses: ${data}`});
+        } else {
+            this.set('errors', data);
         }
-        this.set('errors', this.refactorErrorObject(errorData));
+
+        if (nonField) {
+            this.fire('toast', {text: `Key Internal Controls Weaknesses: ${nonField}`});
+        }
     },
     openEditDialog: function(event) {
         let index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
