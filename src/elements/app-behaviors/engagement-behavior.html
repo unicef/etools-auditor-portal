@@ -33,6 +33,7 @@
 
         _routeConfig: function(route) {
             if (this.route && !~this.route.prefix.indexOf(this.engagementPrefix)) { return; }
+            this.errorObject = {};
 
             let id = this.routeData ? this.routeData.id : route.path.split('/')[1];
             if (id && !isNaN(+id)) {

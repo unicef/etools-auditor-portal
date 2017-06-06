@@ -149,6 +149,17 @@ Polymer({
         return riskValid && commentsValid;
     },
 
+    validateComplited: function() {
+        if (!this.questionnaire || !this.questionnaire.children || !this.questionnaire.children.length) { return false; }
+        let complited = true;
+
+        _.each(this.questionnaire.children, tab => {
+            if (!this._checkCompleted(tab)) { complited = false; }
+        });
+
+        return complited;
+    },
+
     getQuestionnaireData: function() {
         if (!this.dialogOpened) { return null; }
 
@@ -201,10 +212,20 @@ Polymer({
         this.$.riskAssessmentComments.value = '';
     },
 
-    savingError: function() {
+    savingError: function(errorObj) {
         if (this.requestInProcess) {
             this.requestInProcess = false;
             this.fire('toast', {text: 'Can not save data'});
+        }
+        if (!errorObj || !errorObj.questionnaire) { return; }
+
+        let nonField = this.checkNonField(errorObj.questionnaire);
+        let data = this.refactorErrorObject(errorObj.questionnaire);
+        if (_.isString(data)) {
+            this.fire('toast', {text: `Qustionnaire: ${data}`});
+        }
+        if (nonField) {
+            this.fire('toast', {text: `Qustionnaire: ${nonField}`});
         }
     }
 });
