@@ -63,7 +63,7 @@ Polymer({
         }
     },
     _pageChanged: function(page) {
-        if (page === 'new') {
+        if (page === 'new' || page === 'list') {
             this.set('engagement', {
                 status: '',
                 staff_members: [],

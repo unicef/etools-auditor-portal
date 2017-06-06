@@ -58,14 +58,19 @@
             _prepareQueries: function(listQueries) {
                 let queries = [];
                 _.each(listQueries, (value, key) => {
-                    queries.push(`${key}=${value}`);
+                    if (key !== 'search' || !!value) {
+                        queries.push(`${key}=${value}`);
+                    }
+
                 });
                 return `?ordering=-id&${queries.join('&')}`;
             },
 
             _handleResponse: function(event, detail) {
                 this.dataItems = detail.results;
-                this.datalength = detail.count;
+                if (this.queries && !this.queries.search) {
+                    this.datalength = detail.count;
+                }
                 this.listLoading = false;
                 this.url = null;
             },
