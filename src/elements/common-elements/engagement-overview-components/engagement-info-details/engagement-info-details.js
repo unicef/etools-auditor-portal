@@ -72,7 +72,18 @@ Polymer({
         if (!typeValid) {
             this.set('errors.type', 'AuditType is required');
         }
-        return typeValid && orderValid;
+
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-field');
+        let valid = true;
+        _.each(elements, element => {
+            if (element.required && !element.validate()) {
+                element.errorMessage = 'Field is required';
+                element.invalid = true;
+                valid = false;
+            }
+        });
+
+        return typeValid && orderValid && valid;
     },
     resetValidationErrors: function() {
         this.set('errors.type', false);
