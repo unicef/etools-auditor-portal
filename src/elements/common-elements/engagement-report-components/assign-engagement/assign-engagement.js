@@ -15,8 +15,8 @@ Polymer({
         maxDate: {
             type: Date,
             value: function() {
-                let nextDay = moment(moment().format('YYYY-MM-DD')).add(1, 'days').format();
-                return new Date(nextDay);
+                let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+                return new Date(nextDay - 1);
             }
         }
     },
@@ -104,7 +104,7 @@ Polymer({
         return _.isEmpty(data) ? null : data;
     },
     minDate: function(date) {
-        return date ? new Date(date) : false;
+        return date ? new Date(moment(date).format()) : false;
     },
     _errorHandler: function(errorData) {
         if (!errorData) { return; }

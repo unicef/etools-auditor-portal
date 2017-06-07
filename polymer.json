@@ -13,6 +13,7 @@
     "src/elements/**/*",
     "!src/assets/data/**/*",
     "src/manifest.json",
+    "src/bower_components/webcomponentsjs/webcomponents-lite.min.js",
     "src/bower_components/webcomponentsjs/webcomponents-lite.js"
   ]
 }
