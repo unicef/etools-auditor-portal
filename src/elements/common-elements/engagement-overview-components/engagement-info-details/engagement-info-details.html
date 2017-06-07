@@ -77,16 +77,17 @@
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
                     <paper-input label="Date Partner Was Contacted"
-                                 class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}}"
+                                 class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}} validate-field"
                                  required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
                                  disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
                                  invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
                                  error-message="{{errors.partner_contacted_at}}"
                                  id="contactedDateInput"
-                                 field="agreement"
+                                 field="partner_contacted_at"
                                  value="[[prettyDate(data.partner_contacted_at)]]"
                                  on-down="openDatePicker"
                                  data-selector="contactedDate"
+                                 on-focus="_resetFieldError"
                                  placeholder="Select Contacted Date">
                         <etools-datepicker-button prefix
                                                   id="contactedDate"
@@ -119,11 +120,11 @@
                             placeholder="Select Engagement Type"></etools-searchable-multiselection-menu>
                 </div>
 
-                <template is="dom-if" if="{{showInput}}">
+                <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Period Start Date -->
                         <paper-input label="Period Start Date"
-                                     class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}}"
+                                     class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}} validate-field"
                                      disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
                                      required="{{_setRequired('start_date', basePermissionPath)}}"
                                      invalid="{{_checkInvalid(errors.start_date)}}"
@@ -148,11 +149,11 @@
 
             <div class="row-h group">
 
-                <template is="dom-if" if="{{showInput}}">
+                <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Period End Date -->
                         <paper-input label="Period End Date"
-                                     class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}}"
+                                     class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}} validate-field"
                                      disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
                                      required="{{_setRequired('end_date', basePermissionPath)}}"
                                      invalid="{{_checkInvalid(errors.end_date)}}"
@@ -174,13 +175,13 @@
                     </div>
                 </template>
 
-                <template is="dom-if" if="{{showInput}}">
+                <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Total Value of Selected FACE Forms -->
                         <etools-currency-amount-input
                                 label="Total Value of Selected FACE Forms"
                                 currency="$"
-                                class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}}"
+                                class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}} validate-field"
                                 disabled="[[isReadOnly('total_value', basePermissionPath)]]"
                                 required="{{_setRequired('total_value', basePermissionPath)}}"
                                 invalid="{{_checkInvalid(errors.total_value)}}"

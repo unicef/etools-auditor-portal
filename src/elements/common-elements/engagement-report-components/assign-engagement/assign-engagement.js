@@ -66,18 +66,18 @@ Polymer({
 
             if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
                 element.errorMessage = 'Field is required';
-                element.invalid = 'Field is required';
+                element.invalid = true;
                 valid = false;
             }
 
             if (previousDate > currentDate) {
                 element.errorMessage = 'This date should be after previous date';
-                element.invalid = 'This date should be after previous date';
+                element.invalid = true;
                 valid = false;
             }
             if (previousDate > Date.now()) {
                 element.errorMessage = 'This date should be before today';
-                previousElement.invalid = 'This date should be before today';
+                previousElement.invalid = true;
                 valid = false;
             }
         });
