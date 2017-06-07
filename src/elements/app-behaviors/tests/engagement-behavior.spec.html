@@ -163,6 +163,21 @@
         });
 
         describe('method _routeConfig', function() {
+            it('reset errorObject if prefix correct', function () {
+                behaviorObj.fire = sinon.spy();
+                behaviorObj.engagementPrefix = '/micro-assessments';
+                behaviorObj.route = {
+                    prefix: '/micro-assessments',
+                    path: '/26'
+                };
+
+                assert.isUndefined(behaviorObj.errorObject);
+
+                behaviorObj._routeConfig(behaviorObj.route);
+
+                assert.isObject(behaviorObj.errorObject);
+            });
+
             it('fire event if engagement id is not provided or incorrect', function () {
                 behaviorObj.fire = sinon.spy();
                 behaviorObj.engagementPrefix = '/micro-assessments';
@@ -260,6 +275,65 @@
                 assert.equal(behaviorObj.routeData.tab, 'overview');
                 assert.isUndefined(behaviorObj.tab)
             });
+
+            it('calls infoLoaded method if it is defined', function() {
+                behaviorObj._setOriginalData = function() {};
+                behaviorObj._setData = sinon.spy();
+                behaviorObj.getChoices = sinon.spy();
+                behaviorObj.tabsList = ['overview'];
+                behaviorObj.routeData = {
+                    tab: 'overview'
+                };
+                behaviorObj.tab = undefined;
+
+                assert.doesNotThrow(behaviorObj._infoLoaded.bind(behaviorObj));
+
+                behaviorObj.infoLoaded = sinon.spy();
+                behaviorObj._infoLoaded();
+
+                assert.isTrue(behaviorObj.infoLoaded.called);
+            });
+
+            it('get choices and sets data if reportFileTypes is not defined', function() {
+                var types = 'test';
+                behaviorObj._setOriginalData = function() {};
+                behaviorObj._setData = sinon.spy();
+                behaviorObj.getChoices = sinon.stub().returns(types);
+                behaviorObj.reportFileTypes = {};
+                behaviorObj.tabsList = ['overview'];
+                behaviorObj.routeData = {
+                    tab: 'overview'
+                };
+                behaviorObj.tab = undefined;
+
+                behaviorObj._infoLoaded();
+
+                assert.isFalse(behaviorObj._setData.called);
+                assert.isFalse(behaviorObj.getChoices.called);
+
+                behaviorObj.reportFileTypes = undefined;
+
+                behaviorObj._infoLoaded();
+
+                assert.isTrue(behaviorObj._setData.called);
+                assert.isTrue(behaviorObj.getChoices.called);
+                assert.equal(behaviorObj.reportFileTypes, types);
+            });
+        });
+
+        it('_engagementUpdated method sets OriginalData if event detail argument provided', function() {
+            behaviorObj._setOriginalData = sinon.spy();
+            var event = {
+                detail: {
+                    data: 'test'
+                }
+            };
+
+            behaviorObj._engagementUpdated();
+            assert.isFalse(behaviorObj._setOriginalData.called);
+
+            behaviorObj._engagementUpdated(event);
+            assert.isTrue(behaviorObj._setOriginalData.called);
         });
 
         it('_getMembersLength method return length or 0', function() {
@@ -295,11 +369,26 @@
         describe('saving report', function() {
 
             describe('method _saveProgress', function() {
-                it('call basic info validation method', function() {
+                it('calls basic info validation method', function() {
                     sinon.stub(behaviorObj, '_validateBasicInfo');
                     behaviorObj._saveProgress();
 
                     assert.isTrue(behaviorObj._validateBasicInfo.called);
+                    behaviorObj._validateBasicInfo.restore();
+                });
+
+                it('calls customBasicValidation method if it is defined and _validateBasicInfo returns true', function() {
+                    sinon.stub(behaviorObj, '_validateBasicInfo');
+                    behaviorObj.customBasicValidation = sinon.spy();
+                    behaviorObj._saveProgress();
+
+                    assert.isTrue(behaviorObj._validateBasicInfo.called);
+                    assert.isFalse(behaviorObj.customBasicValidation.called);
+
+                    behaviorObj._validateBasicInfo.returns(true)
+                    behaviorObj._saveProgress();
+
+                    assert.isTrue(behaviorObj.customBasicValidation.called);
                     behaviorObj._validateBasicInfo.restore();
                 });
 
@@ -312,6 +401,21 @@
                             .then(function() {
                                 assert.isTrue(behaviorObj._prepareData.called);
                                 assert.isObject(behaviorObj.updatedEngagement);
+
+                                behaviorObj._validateBasicInfo.restore();
+                                behaviorObj._prepareData.restore();
+                                done();
+                            });
+                });
+
+                it('sets quietAdding property equal to event.detail.quietAdding', function(done) {
+                    sinon.stub(behaviorObj, '_validateBasicInfo').returns(true);
+                    sinon.stub(behaviorObj, '_prepareData').returns(Promise.resolve({}));
+
+
+                    behaviorObj._saveProgress({detail: {quietAdding: true}})
+                            .then(function() {
+                                assert.isTrue(behaviorObj.quietAdding);
 
                                 behaviorObj._validateBasicInfo.restore();
                                 behaviorObj._prepareData.restore();
@@ -346,12 +450,37 @@
 
             });
 
+            describe('method _finalizeReport', function() {
+                it('call engagement validation method', function() {
+                    behaviorObj._validateEngagement = sinon.stub();
+                    behaviorObj._finalizeReport();
+
+                    assert.isTrue(behaviorObj._validateEngagement.called);
+                });
+
+                it('call _prepareData and save data to updatedEngagement if engagement data is valid', function(done) {
+                    behaviorObj._validateEngagement = sinon.stub().returns(true);
+                    sinon.stub(behaviorObj, '_prepareData').returns(Promise.resolve({}));
+
+
+                    behaviorObj._finalizeReport()
+                            .then(function() {
+                                assert.isTrue(behaviorObj._prepareData.calledWith(false, true));
+                                assert.isObject(behaviorObj.updatedEngagement);
+
+                                behaviorObj._prepareData.restore();
+                                done();
+                            });
+                });
+
+            });
+
             describe('method _prepareData', function() {
 
-                it('reject if no engagement data or attachments tab', function(done) {
+                it('reject if no engagement data', function(done) {
                     behaviorObj._prepareData()
                             .catch(function(info) {
-                                assert.equal(info, 'You need engagement object and attachments tabs');
+                                assert.equal(info, 'You need engagement object');
                                 done();
                             });
                 });
@@ -377,17 +506,15 @@
             });
 
             describe('method _validateBasicInfo', function() {
-                it('return true if staffMembers, engagementDetails and attachments are valid', function() {
+                it('return true if engagementDetails and partnerDetails are valid', function() {
                     sinon.stub(behaviorObj, 'getElement').returns({validate: function() { return true; }});
                     assert.isTrue(behaviorObj._validateBasicInfo());
                 });
 
-                it('return false if engagementDetails or attachments aren\'t valid', function() {
+                it('return false if engagementDetails or partnerDetails aren\'t valid', function() {
                     var stub = sinon.stub(behaviorObj, 'getElement');
                     stub.withArgs('#engagementDetails').returns({validate: function() { return false; }});
                     stub.withArgs('#partnerDetails').returns({validate: function() { return false; }});
-//                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
-//                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
                     behaviorObj.set = sinon.spy();
                     behaviorObj.fire = sinon.spy();
 
@@ -396,19 +523,6 @@
                     assert.equal(behaviorObj.fire.args[0].length, 2);
                 });
 
-//                it('sets attachments tab if engagementDetails is valid but attachments aren\'t valid', function() {
-//                    var stub = sinon.stub(behaviorObj, 'getElement');
-//                    stub.withArgs('#engagementDetails').returns({validate: function() { return true; }});
-//                    stub.withArgs('#partnerDetails').returns({validate: function() { return true; }});
-//                    stub.withArgs('#engagement_attachments').returns({validate: function() { return false; }});
-//                    stub.withArgs('#report_attachments').returns({validate: function() { return false; }});
-//                    behaviorObj.set = sinon.spy();
-//                    behaviorObj.fire = sinon.spy();
-//
-//                    assert.isFalse(behaviorObj._validateBasicInfo());
-//                    assert.isTrue(behaviorObj.set.calledWith('tab', 'attachments'));
-//                    assert.equal(behaviorObj.fire.args[0].length, 2);
-//                });
 
                 it('can receive tab property name as argument to set if validation failed', function() {
                     sinon.stub(behaviorObj, 'getElement').returns({validate: function() { return false; }});
@@ -425,42 +539,52 @@
 
         });
 
-        it('method _configButtonsData returns btn text and other actions depending on engagement status', function() {
-            behaviorObj.engagement = {
-                status: 'report_submitted'
-            };
-            behaviorObj.actionAllowed = sinon.stub().returns(true);
+        it('method _configButtonsData returns btn text and other actions depending on engagement status and permissions', function() {
+            behaviorObj.engagement = {};
+            behaviorObj.actionAllowed = sinon.stub().returns(false);
+
+            behaviorObj._configButtonsData();
+
+            assert.equal(behaviorObj.mainBtnText, 'Save');
+            assert.equal(behaviorObj.otherActions.length, 0);
+
+            behaviorObj.engagement.status = 'report_submitted';
 
             behaviorObj._configButtonsData();
             assert.equal(behaviorObj.mainBtnText, 'Finalize');
             assert.equal(behaviorObj.otherActions.length, 0);
 
-            behaviorObj.engagement = {
-                status: 'other'
-            };
+            behaviorObj.engagement.status = 'other';
+            behaviorObj.actionAllowed.returns(true);
 
             behaviorObj._configButtonsData();
             assert.equal(behaviorObj.mainBtnText, 'Submit');
             assert.equal(behaviorObj.otherActions.length, 1);
+
+
         });
 
         it('method _mainActionActivated run methods depending on engagement status', function() {
             sinon.stub(behaviorObj, '_submitReport');
             sinon.stub(behaviorObj, '_finalizeReport');
-            behaviorObj.actionAllowed = sinon.stub().returns(true);
+            sinon.stub(behaviorObj, '_saveProgress');
+            behaviorObj.actionAllowed = sinon.stub().returns(false);
+            behaviorObj.engagement = {};
 
-            behaviorObj.engagement = {
-                status: 'report_submitted'
-            };
+            behaviorObj._mainActionActivated();
+
+            assert.isTrue(behaviorObj._saveProgress.called);
+            assert.isFalse(behaviorObj._submitReport.called);
+            assert.isFalse(behaviorObj._finalizeReport.called);
+
+            behaviorObj.engagement.status = 'report_submitted';
 
             behaviorObj._mainActionActivated();
 
             assert.isTrue(behaviorObj._finalizeReport.called);
-            assert.isFalse(behaviorObj._submitReport.called);
 
-            behaviorObj.engagement = {
-                status: 'other'
-            };
+            behaviorObj.engagement.status = 'other';
+            behaviorObj.actionAllowed.returns(true);
 
             behaviorObj._mainActionActivated();
 
@@ -478,8 +602,117 @@
 
             behaviorObj.isReadonly.returns(false);
             assert.isFalse(behaviorObj._attachmentsReadonly());
-        })
+        });
 
+        describe('method _showReportTabs', function() {
+            it('returns false if one of two arguments is false', function() {
+                behaviorObj.actionAllowed = sinon.stub().returns(true);
+
+                assert.isFalse(behaviorObj._showReportTabs());
+                assert.isFalse(behaviorObj._showReportTabs(true));
+                assert.isFalse(behaviorObj._showReportTabs(null, true));
+
+                assert.isTrue(behaviorObj._showReportTabs(true, true));
+            });
+
+            it('returns true if actionAllowed returns true', function() {
+                behaviorObj.actionAllowed = sinon.stub().returns(false);
+                assert.isFalse(behaviorObj._showReportTabs(true, true));
+
+                behaviorObj.actionAllowed = sinon.stub().returns(true);
+                assert.isTrue(behaviorObj._showReportTabs(true, true));
+            });
+
+            it('returns true if engagement.status is report_submitted or final', function() {
+                behaviorObj.actionAllowed = sinon.stub().returns(false);
+
+                assert.isFalse(behaviorObj._showReportTabs(true, true));
+                assert.isFalse(behaviorObj._showReportTabs(true, {status: 'test'}));
+
+                assert.isTrue(behaviorObj._showReportTabs(true, {status: 'report_submitted'}));
+                assert.isTrue(behaviorObj._showReportTabs(true, {status: 'final'}));
+            });
+        });
+
+        describe('method _getBasicInfo', function() {
+            beforeEach(function() {
+                behaviorObj.engagement = {};
+                behaviorObj.getElement = sinon.stub().returns({
+                    getEngagementData: function() { return {test: true}; },
+                    getPartnerData: function() { return 'partnerData'; },
+                    getTabData: function() { return 'staffData'; }
+                });
+            });
+
+            it('returns array with data obj and engagement id', function() {
+                behaviorObj.engagement.id = 12;
+
+                var data =  behaviorObj._getBasicInfo({});
+
+                assert.isObject(data[0]);
+                assert.equal(data[1], behaviorObj.engagement.id);
+            });
+
+            it('gets data from tabs and assign it to object if it is defined', function() {
+                var data =  behaviorObj._getBasicInfo({})[0];
+
+                assert.isTrue(data.test);
+                assert.equal(data.partner, 'partnerData');
+                assert.equal(data.staff_members, 'staffData');
+            });
+            it('returns empty object if all tabs return null', function() {
+                behaviorObj.getElement.returns({
+                    getEngagementData: function() { return null; },
+                    getPartnerData: function() { return null; },
+                    getTabData: function() { return null; }
+                });
+                var data =  behaviorObj._getBasicInfo();
+
+                assert.equal(Object.keys(data[0]).length, 0);
+            });
+        });
+
+        describe('method _errorOccurred', function() {
+            it('calls witchPageTrows method with own first argument', function() {
+                let error = {test: 'test'};
+                behaviorObj.witchPageTrows = sinon.spy();
+
+                behaviorObj._errorOccurred(error);
+
+                assert.isTrue(behaviorObj.witchPageTrows.calledWith(error));
+            });
+
+            it('returns if argument is not provided or is not object', function() {
+                behaviorObj.witchPageTrows = sinon.spy();
+
+                behaviorObj._errorOccurred();
+                assert.isFalse(behaviorObj.witchPageTrows.called);
+
+                behaviorObj._errorOccurred('test');
+                assert.isFalse(behaviorObj.witchPageTrows.called);
+
+                behaviorObj._errorOccurred({});
+                assert.isTrue(behaviorObj.witchPageTrows.called);
+            });
+
+            it('calls set method if witchPageTrows returns page name', function() {
+                behaviorObj.witchPageTrows = sinon.stub().returns(false);
+                behaviorObj.set = sinon.spy();
+
+                behaviorObj._errorOccurred({});
+                assert.isFalse(behaviorObj.set.called);
+
+                behaviorObj.witchPageTrows.returns('test');
+
+                behaviorObj._errorOccurred({});
+                assert.isTrue(behaviorObj.set.calledWith('routeData.tab', 'test'));
+
+                behaviorObj.tab = 'test';
+
+                behaviorObj._errorOccurred({});
+                assert.isTrue(behaviorObj.set.calledWith('tab', 'test'));
+            })
+        });
     });
 </script>
 
