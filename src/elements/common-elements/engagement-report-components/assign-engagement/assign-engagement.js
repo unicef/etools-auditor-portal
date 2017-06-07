@@ -59,22 +59,27 @@ Polymer({
     validate: function(forSave) {
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');
         let valid = true;
-        elements.reduce((previousElement, currentElement) => {
-            let previousDate = Date.parse(previousElement.value);
-            let currentDate = Date.parse(currentElement.value);
-            if (!forSave && currentElement.required && !currentElement.validate()) {
-                currentElement.invalid = 'Field is required';
+        _.each(elements, (element, index) => {
+            let previousElement = index !== 0 ? elements[index - 1] : null,
+                currentDate = Date.parse(element.value),
+                previousDate = previousElement ? Date.parse(previousElement.value) : 0;
+
+            if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
+                element.errorMessage = 'Field is required';
+                element.invalid = 'Field is required';
                 valid = false;
             }
+
             if (previousDate > currentDate) {
-                currentElement.invalid = 'This date should be after previous date';
+                element.errorMessage = 'This date should be after previous date';
+                element.invalid = 'This date should be after previous date';
                 valid = false;
             }
             if (previousDate > Date.now()) {
+                element.errorMessage = 'This date should be before today';
                 previousElement.invalid = 'This date should be before today';
                 valid = false;
             }
-            return currentElement;
         });
 
         return valid;
@@ -104,5 +109,8 @@ Polymer({
     _errorHandler: function(errorData) {
         if (!errorData) { return; }
         this.set('errors', this.refactorErrorObject(errorData));
+    },
+    _checkFieldInvalid: function(error) {
+        return !!error;
     }
 });

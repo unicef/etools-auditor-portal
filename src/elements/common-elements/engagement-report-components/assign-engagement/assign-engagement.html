@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button, etools-datepicker]-->
-<!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller, error-handler-behavior]-->
+<!--import [lodash, tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller, error-handler-behavior]-->
 
 <dom-module id="assign-engagement">
     <template>
@@ -23,7 +23,7 @@
                                  on-down="openDatePicker"
                                  data-selector="dateVisit"
                                  validator="dateValidator"
-                                 invalid="{{errors.date_of_field_visit}}"
+                                 invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
                                  error-message="{{errors.date_of_field_visit}}"
                                  required="[[_isRequired('date_of_field_visit', basePermissionPath)]]"
                                  validator="dateValidator"
@@ -47,7 +47,7 @@
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  validator="dateValidator"
-                                 invalid="{{errors.date_of_draft_report_to_ip}}"
+                                 invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
                                  error-message="{{errors.date_of_draft_report_to_ip}}"
                                  on-down="openDatePicker"
                                  data-selector="draftReportToIp"
@@ -74,7 +74,7 @@
                                  disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_ip)]]"
                                  validator="dateValidator"
-                                 invalid="{{errors.date_of_comments_by_ip}}"
+                                 invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
                                  error-message="{{errors.date_of_comments_by_ip}}"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedByIp"
@@ -103,7 +103,7 @@
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
                                  validator="dateValidator"
-                                 invalid="{{errors.date_of_draft_report_to_unicef}}"
+                                 invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
                                  error-message="{{errors.date_of_draft_report_to_unicef}}"
                                  on-down="openDatePicker"
                                  data-selector="draftReportUnicef"
@@ -130,7 +130,7 @@
                                  disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_unicef)]]"
                                  validator="dateValidator"
-                                 invalid="{{errors.date_of_comments_by_unicef}}"
+                                 invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
                                  error-message="{{errors.date_of_comments_by_unicef}}"
                                  on-down="openDatePicker"
                                  data-selector="commentsReceivedUnicef"
