@@ -191,7 +191,7 @@
             }
         },
 
-        _filesChange: function() { //TODO: refactor tests
+        _filesChange: function() {
             if (!this.dataItems) { return false; }
 
             this.dataItems.forEach((file, index) => {
@@ -226,7 +226,7 @@
             return url.split('/').pop();
         },
 
-        _getUploadedFile: function(fileModel) { //TODO: tests
+        _getUploadedFile: function(fileModel) {
             return new Promise((resolve, reject) => {
                 let reader = new FileReader();
                 let uploadedFile = {
@@ -288,18 +288,18 @@
             });
         },
 
-        _setInvalid: function(errorMessage, invalid) { //TODO: tests
+        _setInvalid: function(errorMessage, invalid) {
             this.set('editedItem.errorMessage', errorMessage);
             this.set('editedItem.invalid', invalid);
         },
 
-        _setFileInvalid: function(errorMessage, invalid) { //TODO: tests
+        _setFileInvalid: function(errorMessage, invalid) {
             this.set('editedItem.fileErrorMessage', errorMessage);
             this.set('editedItem.fileInvalid', invalid);
         },
 
-        _checkAlreadySelected: function() { //TODO: tests
-            if (!this.dataItems) {return;}
+        _checkAlreadySelected: function() {
+            if (!this.dataItems) {return false;}
 
             let alreadySelectedIndex = this.dataItems.findIndex((file) => {
                 return file.file_name === this.editedItem.file_name;
@@ -314,24 +314,24 @@
             return false;
         },
 
-        validate: function() { //TODO: tests
+        validate: function() {
             let dropdown = Polymer.dom(this.root).querySelector('#fileType');
             let editedItem = this.editedItem;
             let valid = true;
 
-            if (!this.fileTypes || !this.fileTypes.length) {
+            if (this.fileTypeRequired && (!this.fileTypes || !this.fileTypes.length)) {
                 this._setInvalid('File type field is required but types are not defined', true);
                 valid = false;
             } else {
                 this._setInvalid('', false);
             }
 
-            if (!this.canBeRemoved && this._checkAlreadySelected()) {
+            if (this.fileTypeRequired && !dropdown.validate()) {
+                this.set('errors.file_type', 'This field is required');
                 valid = false;
             }
 
-            if (this.fileTypeRequired && !dropdown.validate()) {
-                this.set('errors.file_type', 'This field is required');
+            if (!this.canBeRemoved && this._checkAlreadySelected()) {
                 valid = false;
             }
 
