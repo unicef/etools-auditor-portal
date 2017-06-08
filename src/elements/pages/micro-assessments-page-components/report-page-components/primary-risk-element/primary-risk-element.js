@@ -5,8 +5,7 @@ Polymer({
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.ErrorHandlerBehavior
     ],
     properties: {
         primaryArea: {
