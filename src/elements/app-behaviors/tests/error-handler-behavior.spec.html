@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [error-handler-behavior, lodash]-->
+</head>
+<body>
+
+<script>
+
+    describe('Last created data behavior element', function () {
+        var behaviorObj;
+
+        beforeEach(function () {
+            behaviorObj = APBehaviors.ErrorHandlerBehavior;
+        });
+
+        it('method _checkInvalid convert argument to boolean and return it', function() {
+            assert.isFalse(behaviorObj._checkInvalid());
+            assert.isFalse(behaviorObj._checkInvalid(null));
+            assert.isFalse(behaviorObj._checkInvalid(''));
+
+            assert.isTrue(behaviorObj._checkInvalid({}));
+            assert.isTrue(behaviorObj._checkInvalid('hello'));
+        });
+
+        describe('method checkNonField', function() {
+            it('returns  null if argument is not object', function() {
+                assert.isNull(behaviorObj.checkNonField(''));
+                assert.isNull(behaviorObj.checkNonField(123));
+                assert.isNull(behaviorObj.checkNonField(true));
+            });
+
+            it('if argument is object, recursive checks all nested object and return value of first non_field_errors property or null', function() {
+                assert.isNull(behaviorObj.checkNonField({key: {}}));
+                assert.equal(behaviorObj.checkNonField({non_field_errors: 'test'}), 'test');
+                assert.equal(behaviorObj.checkNonField({key: {non_field_errors: 'test'}}), 'test');
+            });
+
+            it('if argument is array, recursive checks all items in the array', function() {
+                var array = [];
+                assert.isNull(behaviorObj.checkNonField(array));
+
+                array.push({});
+                assert.isNull(behaviorObj.checkNonField(array));
+
+                array.push('test');
+                assert.isNull(behaviorObj.checkNonField(array));
+
+                array.push({key: {non_field_errors: 'test'}});
+                assert.equal(behaviorObj.checkNonField(array), 'test');
+            });
+        });
+
+        describe('method refactorErrorObject', function() {
+            it('returns  empty object if argument is equal to false', function() {
+                assert.equal(Object.keys(behaviorObj.refactorErrorObject('')).length, 0);
+                assert.equal(Object.keys(behaviorObj.refactorErrorObject(false)).length, 0);
+                assert.equal(Object.keys(behaviorObj.refactorErrorObject()).length, 0);
+                assert.equal(Object.keys(behaviorObj.refactorErrorObject(null)).length, 0);
+            });
+
+            it('returns argument if it is not object', function() {
+                assert.equal(behaviorObj.refactorErrorObject('test'), 'test');
+                assert.equal(behaviorObj.refactorErrorObject(756), 756);
+                assert.equal(behaviorObj.refactorErrorObject(true), true);
+            });
+
+            it('if argument is array returns first item if it is not object', function() {
+                assert.equal(behaviorObj.refactorErrorObject(['test']), 'test');
+                assert.equal(behaviorObj.refactorErrorObject([756]), 756);
+                assert.equal(behaviorObj.refactorErrorObject([null]), null);
+            });
+
+            it('if argument is object recursive calls for each key value in object', function() {
+                assert.isTrue(_.isEqual(behaviorObj.refactorErrorObject({key: 'value'}), {key: 'value'}));
+                assert.isTrue(_.isEqual(behaviorObj.refactorErrorObject({key: ['value']}), {key: 'value'}));
+            });
+
+            it('if argument is array recursive calls for each item in array if first item is object', function() {
+                assert.isTrue(_.isEqual(behaviorObj.refactorErrorObject([['test']]), ['test']));
+                assert.isTrue(_.isEqual(behaviorObj.refactorErrorObject([{key: 'value'}]), [{key: 'value'}]));
+                assert.isTrue(_.isEqual(behaviorObj.refactorErrorObject([{key: 'value', foo: ['test']}]), [{key: 'value', foo: 'test'}]));
+            });
+        });
+
+        it('method witchPageTrows iterates over argument properties and return tab name in which this property exists in priority order or null', function() {
+            var object = {};
+            assert.isNull(behaviorObj.witchPageTrows(object));
+
+            object.date_of_comments_by_unicef = true;
+            assert.equal(behaviorObj.witchPageTrows(object), 'report');
+
+            object.questionnaire = true;
+            assert.equal(behaviorObj.witchPageTrows(object), 'questionnaire');
+
+            object.engagement_attachments = true;
+            assert.equal(behaviorObj.witchPageTrows(object), 'attachments');
+
+            object.agreement = true;
+            assert.equal(behaviorObj.witchPageTrows(object), 'overview');
+        })
+    });
+</script>
+
+</body>
+</html>

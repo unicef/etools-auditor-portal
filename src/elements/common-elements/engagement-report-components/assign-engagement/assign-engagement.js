@@ -15,8 +15,8 @@ Polymer({
         maxDate: {
             type: Date,
             value: function() {
-                let nextDay = moment(moment().format('YYYY-MM-DD')).add(1, 'days').format();
-                return new Date(nextDay);
+                let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+                return new Date(nextDay - 1);
             }
         }
     },
@@ -59,22 +59,27 @@ Polymer({
     validate: function(forSave) {
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');
         let valid = true;
-        elements.reduce((previousElement, currentElement) => {
-            let previousDate = Date.parse(previousElement.value);
-            let currentDate = Date.parse(currentElement.value);
-            if (!forSave && currentElement.required && !currentElement.validate()) {
-                currentElement.invalid = 'Field is required';
+        _.each(elements, (element, index) => {
+            let previousElement = index !== 0 ? elements[index - 1] : null,
+                currentDate = Date.parse(element.value),
+                previousDate = previousElement ? Date.parse(previousElement.value) : 0;
+
+            if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
+                element.errorMessage = 'Field is required';
+                element.invalid = true;
                 valid = false;
             }
+
             if (previousDate > currentDate) {
-                currentElement.invalid = 'This date should be after previous date';
+                element.errorMessage = 'This date should be after previous date';
+                element.invalid = true;
                 valid = false;
             }
             if (previousDate > Date.now()) {
-                previousElement.invalid = 'This date should be before today';
+                element.errorMessage = 'This date should be before today';
+                previousElement.invalid = true;
                 valid = false;
             }
-            return currentElement;
         });
 
         return valid;
@@ -99,10 +104,13 @@ Polymer({
         return _.isEmpty(data) ? null : data;
     },
     minDate: function(date) {
-        return date ? new Date(date) : false;
+        return date ? new Date(moment(date).format()) : false;
     },
     _errorHandler: function(errorData) {
         if (!errorData) { return; }
         this.set('errors', this.refactorErrorObject(errorData));
+    },
+    _checkFieldInvalid: function(error) {
+        return !!error;
     }
 });

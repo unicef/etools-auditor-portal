@@ -118,7 +118,7 @@
                 reportAttachmentsTab = this.getElement('#report_attachments');
 
             if (!this.engagement) {
-                return Promise.reject('You need engagement object and attachments tabs');
+                return Promise.reject('You need engagement object');
             }
 
             //Check basic info
@@ -167,7 +167,6 @@
                         };
                     });
         },
-
 
         _validateBasicInfo: function(property) {
             let detailsValid = this.getElement('#engagementDetails').validate(),
@@ -227,6 +226,8 @@
         },
 
         _getBasicInfo: function(data) {
+            data = data || {};
+
             let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData(),
                 partnerDetailsData = this.getElement('#partnerDetails').getPartnerData(),
                 staffMembersData = this.getElement('#staffMembers').getTabData();

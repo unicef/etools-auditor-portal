@@ -40,13 +40,19 @@
 
             _emailChanged: function(email) {
                 if (!email) { return; }
+                if (isNaN(+this.organisationId)) { return; }
 
                 this.emailChecking = true;
-                this.url = this.getEndpoint('userExistence', {email: email}).url;
+                this.url = this.getEndpoint('userExistence', {email: email, id: this.organisationId}).url;
                 this.email = null;
             },
 
-            _handleResponse: function() {
+            _handleResponse: function(event, detail) {
+                if (!detail || !detail.results || !detail.results.length) {
+                    this._handleError();
+                    return;
+                }
+
                 if (!this.errors) { this.set('errors', {}); }
                 if (!this.errors.user) { this.set('errors.user', {}); }
                 if (!this.errors.user.email) { this.set('errors.user.email', 'This field must be unique.'); }

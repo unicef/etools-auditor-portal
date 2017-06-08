@@ -19,7 +19,7 @@ Polymer({
             this.originalData = _.cloneDeep(data);
         }
 
-        if (data.blueprints[0].value && typeof data.blueprints[0].value !== 'object') {
+        if (_.isNumber(data.blueprints[0].value)) {
             this.area.blueprints[0].value = this.riskOptions[this.area.blueprints[0].value];
         }
 
