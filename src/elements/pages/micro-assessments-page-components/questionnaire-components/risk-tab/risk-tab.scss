@@ -65,11 +65,11 @@
     }
 }
 
-:host([completed]) {
-    .tab-container {
-        min-height: 348px;
-    }
-}
+//:host([completed]) {
+//    .tab-container {
+//        min-height: 348px;
+//    }
+//}
 
 etools-content-panel {
     position: relative;

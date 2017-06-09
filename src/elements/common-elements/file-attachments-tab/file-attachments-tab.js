@@ -119,7 +119,7 @@
         },
 
         _updateHeadings: function(allowEdit, readonly, fileTypeRequired) {
-            let showEditButton = allowEdit && readonly === false;
+            let showEditButton = allowEdit && (readonly === false);
             let headings = [{
                 'size': '100px',
                 'name': 'date',
@@ -162,9 +162,15 @@
             }
         },
 
-        _fileSelected: function() {
-            let files = Polymer.dom(this.root).querySelector('#fileInput').files || {};
+        _fileSelected: function(e) {
+            if (!e || !e.target) { return false; }
+
+            let files = e.target.files || {};
             let file = files[0];
+
+            if (this._checkAlreadySelected()) {
+                return false;
+            }
 
             if (file && file instanceof File) {
                 let blob = new Blob([file.raw]);
@@ -173,9 +179,9 @@
                 this.editedItem.raw = file;
                 this.editedItem.date = new Date().getTime();
                 this.editedItem.file = URL.createObjectURL(blob);
-            }
 
-            this._checkAlreadySelected();
+                return true;
+            }
         },
 
         _setFileType: function(e, detail) {
@@ -187,7 +193,7 @@
         },
 
         _filesChange: function() {
-            if (!this.dataItems) {return;}
+            if (!this.dataItems) { return false; }
 
             this.dataItems.forEach((file, index) => {
                 if (file.file && file.id && !file.file_name) {
@@ -242,7 +248,7 @@
             });
         },
 
-        getFiles: function() {
+        getFiles: function() { //TODO: refactor tests
             return new Promise((resolve, reject) => {
                 let files = [];
                 let changedFiles = [];
@@ -294,7 +300,7 @@
         },
 
         _checkAlreadySelected: function() {
-            if (!this.dataItems) {return;}
+            if (!this.dataItems) {return false;}
 
             let alreadySelectedIndex = this.dataItems.findIndex((file) => {
                 return file.file_name === this.editedItem.file_name;
@@ -302,11 +308,11 @@
 
             if (alreadySelectedIndex !== -1) {
                 this._setFileInvalid('File already selected', true);
-                return false;
+                return true;
             }
 
             this._setFileInvalid('', false);
-            return true;
+            return false;
         },
 
         validate: function() {
@@ -314,19 +320,19 @@
             let editedItem = this.editedItem;
             let valid = true;
 
-            if (!this.fileTypes || !this.fileTypes.length) {
+            if (this.fileTypeRequired && (!this.fileTypes || !this.fileTypes.length)) {
                 this._setInvalid('File type field is required but types are not defined', true);
                 valid = false;
             } else {
                 this._setInvalid('', false);
             }
 
-            if (!this.canBeRemoved && !this._checkAlreadySelected()) {
+            if (this.fileTypeRequired && !dropdown.validate()) {
+                this.set('errors.file_type', 'This field is required');
                 valid = false;
             }
 
-            if (this.fileTypeRequired && !dropdown.validate()) {
-                this.set('errors.file_type', 'This field is required');
+            if (!this.canBeRemoved && this._checkAlreadySelected()) {
                 valid = false;
             }
 

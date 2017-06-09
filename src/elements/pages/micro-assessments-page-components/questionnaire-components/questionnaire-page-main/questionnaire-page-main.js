@@ -40,6 +40,10 @@ Polymer({
         errorObject: {
             type: Object,
             observer: 'savingError'
+        },
+        overalRiskOpen: {
+            type: Boolean,
+            value: false
         }
     },
 

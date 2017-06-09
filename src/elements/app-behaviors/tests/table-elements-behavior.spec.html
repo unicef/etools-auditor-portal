@@ -61,6 +61,26 @@
 
                 assert.isNull(behaviorObj.getTabData());
             });
+
+            it('runs getCurrentData method if dialogOpened and not saveWithButton', function() {
+                behaviorObj.dataItems = [{foo: 'bar'}, {bar: 'baz'}];
+                behaviorObj.originalData = [{foo: 'bar'},{bar: 'baz'}];
+                sinon.spy(behaviorObj, 'getCurrentData');
+                behaviorObj.dialogOpened = false;
+                behaviorObj.saveWithButton = true;
+
+                behaviorObj.getTabData();
+                assert.isFalse(behaviorObj.getCurrentData.called);
+
+                behaviorObj.dialogOpened = true;
+                behaviorObj.getTabData();
+                assert.isFalse(behaviorObj.getCurrentData.called);
+
+
+                behaviorObj.saveWithButton = false;
+                behaviorObj.getTabData();
+                assert.isTrue(behaviorObj.getCurrentData.called);
+            });
         });
 
         describe('method _canBeChanged', function() {
@@ -198,6 +218,18 @@
                 assert.isTrue(behaviorObj.push.called);
                 assert.isTrue(behaviorObj.resetDialog.called);
                 assert.isFalse(behaviorObj.dialogOpened);
+            });
+
+            it('start request and fire event if dialogOpened and not saveWithButton', function() {
+                behaviorObj.validate = sinon.stub().returns(true);
+                behaviorObj.fire = sinon.spy();
+                behaviorObj.saveWithButton = false;
+                behaviorObj.dialogOpened = true;
+
+                behaviorObj._addItemFromDialog();
+
+                assert.isTrue(behaviorObj.fire.called);
+                assert.isTrue(behaviorObj.requestInProcess);
             });
         });
 

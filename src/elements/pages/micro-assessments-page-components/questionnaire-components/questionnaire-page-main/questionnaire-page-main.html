@@ -62,7 +62,7 @@
             }
         </style>
 
-        <etools-content-panel class="totals" panel-title$="OVERAL RISK RATING - [[getRating(questionnaire.risk_rating, riskRatingOptions)]]" open>
+        <etools-content-panel class="totals" panel-title$="OVERAL RISK RATING - [[getRating(questionnaire.risk_rating, riskRatingOptions)]]" open="{{overalRiskOpen}}">
             <div class="risk-score result-element"><span class="text">Total number of questions:</span><span class="value">[[getScore(questionnaire.blueprint_count)]]</span></div>
             <div class="risk-score result-element"><span class="text">Total number of applicable questions:</span><span class="value">[[getScore(questionnaire.applicable_questions)]]</span></div>
             <div class="risk-score result-element"><span class="text">Total number of applicable key questions:</span><span class="value">[[getScore(questionnaire.applicable_key_questions)]]</span></div>
