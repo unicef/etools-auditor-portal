@@ -66,8 +66,8 @@
 
             <div class="row-h repeatable-item-container" without-line>
                 <template is="dom-if" if="[[editedItem.file_name]]">
-                    <div class="form-title">
-                        <div class="text">[[editedItem.file_name]]</div>
+                    <div class="form-title" title$="[[editedItem.file_name]]">
+                        <div class="text truncate">[[editedItem.file_name]]</div>
                     </div>
                 </template>
 

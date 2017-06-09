@@ -1,17 +1,12 @@
 <!--import [polymer, app-route, paper-tabs, iron-pages, app-route/app-location, lodash]-->
-<!--import [shared-styles, module-styles, pages-header-element, file-attachments-tab, last-created-behavior,
+<!--import [shared-styles, module-styles, main-page-styles, pages-header-element, file-attachments-tab, last-created-behavior,
             status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement,
             engagement-behavior, partner-details-tab]-->
 
 <dom-module id="new-engagement-view">
     <template>
         <!-- inject styles './new-engagement-view.scss'-->
-        <style include="shared-styles module-styles">
-            .view-container {
-                display: flex;
-                padding: 15px;
-            }
-        </style>
+        <style include="shared-styles module-styles main-page-styles"></style>
 
         <app-location path="{{path}}"></app-location>
         <app-route
