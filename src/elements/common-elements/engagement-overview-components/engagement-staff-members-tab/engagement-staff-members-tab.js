@@ -129,6 +129,7 @@ Polymer({
 
     listeners: {
         'dialog-confirmed': '_addStaffFromDialog',
+        'delete-confirmed': 'removeStaff',
         'staff-updated': '_staffUpdated'
     },
 

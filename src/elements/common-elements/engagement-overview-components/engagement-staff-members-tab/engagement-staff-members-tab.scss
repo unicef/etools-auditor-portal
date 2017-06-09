@@ -93,7 +93,9 @@
     }
 
     .notify-box {
-        margin-bottom: 20px;
+        padding-left: 12px;
+        box-sizing: border-box;
+        //margin-bottom: 20px;
     }
 
     .confirm-backdrop[opened] {
