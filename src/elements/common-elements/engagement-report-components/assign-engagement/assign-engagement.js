@@ -33,7 +33,6 @@ Polymer({
         this.$['date-validator'].validate = this._validDate.bind(this);
     },
     _validDate: function(date) {
-        console.log('date validate!');
         return !!(date);
     },
     _updateStyles: function() {

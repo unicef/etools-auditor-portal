@@ -546,20 +546,20 @@
             behaviorObj._configButtonsData();
 
             assert.equal(behaviorObj.mainBtnText, 'Save');
-            assert.equal(behaviorObj.otherActions.length, 0);
+            assert.equal(behaviorObj.otherActions.length, 2);
 
             behaviorObj.engagement.status = 'report_submitted';
 
             behaviorObj._configButtonsData();
             assert.equal(behaviorObj.mainBtnText, 'Finalize');
-            assert.equal(behaviorObj.otherActions.length, 0);
+            assert.equal(behaviorObj.otherActions.length, 2);
 
             behaviorObj.engagement.status = 'other';
             behaviorObj.actionAllowed.returns(true);
 
             behaviorObj._configButtonsData();
             assert.equal(behaviorObj.mainBtnText, 'Submit');
-            assert.equal(behaviorObj.otherActions.length, 1);
+            assert.equal(behaviorObj.otherActions.length, 2);
 
 
         });

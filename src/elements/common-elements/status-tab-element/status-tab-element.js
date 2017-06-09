@@ -66,14 +66,14 @@
         },
         _btnClicked: function(e) {
             if (!e || !e.target) { return; }
-            let target = e.target,
-                isMainAction = !target.closest('paper-menu-button');
+            let target = e.target.closest('.other-options'),
+                isMainAction = !e.target.closest('paper-menu-button');
 
             if (isMainAction) {
                 this.fire('main-action-activated');
                 return;
             }
-            if (target.hasAttribute('event-name')) {
+            if (target && target.hasAttribute('event-name')) {
                 this.fire(target.getAttribute('event-name'));
             }
         },

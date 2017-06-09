@@ -42,6 +42,8 @@ Polymer({
         'engagement-info-loaded': '_infoLoaded',
         'engagement-updated': '_engagementUpdated',
         'save-progress': '_saveProgress',
+        'finalize-engagement': '_finalizeReport',
+        'submit-engagement': '_submitReport',
         'main-action-activated': '_mainActionActivated'
     },
 
