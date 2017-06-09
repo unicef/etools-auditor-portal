@@ -82,7 +82,7 @@
       }
     </style>
 
-    <a id="main" href$="[[sideBarLink]]" on-tap="_handleMainTap">
+    <a id="main" target$="[[_setTarget(external)]]" href$="[[sideBarLink]]" on-tap="_handleMainTap">
       <iron-icon icon="{{icon}}"></iron-icon>
     </a>
 
@@ -99,6 +99,12 @@
     Polymer({
 
       is: 'side-bar-item',
+      properties: {
+        external: {
+          type: Boolean,
+          value: false
+        }
+      },
 
       _handleMainTap: function() {
         if (this.hasAttribute('nested-nav')) {
@@ -112,6 +118,11 @@
           this.opened = this.opened ? false : true;
         }
       },
+
+      _setTarget: function() {
+        if (this.external) { return '_blank'; }
+        return '_self'
+      }
 
     });
 
