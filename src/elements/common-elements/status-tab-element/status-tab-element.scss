@@ -163,6 +163,21 @@
             iron-icon[icon="check"] { display: none; }
             .status-icon .icon-wrapper .status-nr { display: inherit; }
         }
+
+        &.canceled {
+            .status-icon .icon-wrapper {
+                background: transparent;
+                iron-icon {
+                    width: 25px;
+                    height: 25px;
+                    color: var(--module-error);
+                }
+            }
+            .status {
+                color: inherit;
+                font-weight: bold;
+            }
+        }
     }
 
     .divider {

@@ -3,11 +3,11 @@
 (function() {
     let statuses = ['partner_contacted', 'field_visit', 'draft_issued_to_partner',
         'comments_received_by_partner', 'draft_issued_to_unicef',
-        'comments_received_by_unicef', 'report_submitted', 'final'];
+        'comments_received_by_unicef', 'report_submitted', 'final', 'canceled'];
 
     let statusFields = [null, null, 'date_of_field_visit', 'date_of_draft_report_to_ip',
         'date_of_comments_by_ip', 'date_of_draft_report_to_unicef',
-        'date_of_comments_by_unicef'];
+        'date_of_comments_by_unicef', 'date_of_report_submit', 'date_of_report_submit'];
 
     Polymer({
         is: 'status-tab-element',
@@ -28,12 +28,13 @@
                 }
             }
         },
+        observers: ['checkCanceled(engagementData.status)'],
         _getStatusState: function(statusNumber) {
             if (!this.engagementData || this.engagementData.status === undefined) { return; }
 
             if (isNaN(statusNumber)) { statusNumber = this._getStatusNumber(statusNumber); }
             let currentStatusNumber = this._getStatusNumber(this.engagementData.status);
-            if (statusNumber === 1 || statusNumber === 7 || statusNumber === 8 || currentStatusNumber > 6) {
+            if (statusNumber === 1) {
                 return this._classByStatus(statusNumber, currentStatusNumber);
             } else {
                 return this._classByDate(statusNumber, currentStatusNumber);
@@ -42,11 +43,9 @@
         _classByStatus: function(statusNumber, currentStatusNumber) {
             if (+statusNumber === currentStatusNumber + 1) { return 'active'; } else if (+statusNumber <= currentStatusNumber) { return 'completed'; } else { return 'pending'; }
         },
-        _classByDate: function(statusNumber, currentStatusNumber) {
+        _classByDate: function(statusNumber) {
             if (this.engagementData[statusFields[statusNumber]]) {
                 return 'completed';
-            } else if ((statusNumber === 2 && currentStatusNumber !== 0) || this.engagementData[statusFields[statusNumber - 1]]) {
-                return 'pending';
             } else {
                 return 'pending';
             }
@@ -89,6 +88,29 @@
                 this.actionAllowed(collectionName, 'saveEngagement') ||
                 this.actionAllowed(collectionName, 'submit') ||
                 this.actionAllowed(collectionName, 'finalize');
+        },
+        checkCanceled: function(status) {
+            if (!status || status !== 'canceled') {
+                this.canceled = false;
+                return;
+            }
+
+            let number;
+            _.each(statusFields.slice(2), (field, index) => {
+                if (!!this.engagementData[field]) { number = index + 1; }
+            });
+
+            if (isNaN(number)) {
+                Polymer.dom(this.root).appendChild(this.$.canceledStatus);
+            } else {
+                let statuses = Polymer.dom(this.root).querySelectorAll('.divider:not(.canceled)'),
+                    lastComplited = statuses && statuses[number];
+
+                if (!lastComplited) {throw 'Can not find last complited status element!'; }
+                Polymer.dom(this.$.statusList).insertBefore(this.$.canceledStatus, lastComplited);
+            }
+
+            this.canceled = true;
         }
     });
 

@@ -8,7 +8,22 @@
 
         <etools-content-panel panel-title="Status">
 
-            <div class="status-list">
+            <div class="status-list" id="statusList">
+                <div class="canceled-status" id="canceledStatus" hidden$="[[!canceled]]">
+                    <div class="divider canceled"><div class="status-divider"></div></div>
+
+                    <div class="status-container canceled">
+                        <div class="status-icon">
+                            <span class="icon-wrapper">
+                                <iron-icon icon="warning"></iron-icon>
+                            </span>
+                        </div>
+                        <div class="status">
+                            <span>Canceled</span>
+                            <span class="status-date">{{_getFormattedDate('date_of_cancel', engagementData.date_of_cancel)}}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class$="status-container first [[_getStatusState(1, engagementData)]]">
                     <div class="status-icon">
                     <span class="icon-wrapper">
