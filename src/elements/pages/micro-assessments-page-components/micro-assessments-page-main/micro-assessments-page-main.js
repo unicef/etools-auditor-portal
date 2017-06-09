@@ -41,6 +41,8 @@ Polymer({
         'save-progress': '_saveProgress',
         'finalize-engagement': '_finalizeReport',
         'submit-engagement': '_submitReport',
+        'cancel-engagement': '_openCancelDialog',
+        'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
     },
 

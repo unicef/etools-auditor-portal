@@ -1,12 +1,12 @@
 <!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash, etools-content-panel]-->
 
-<!--import [shared-styles, module-styles, main-page-styles, app-main-header, pages-header-element, file-attachments-tab,
+<!--import [shared-styles, module-styles, main-page-styles, tab-inputs-styles, app-main-header, pages-header-element, file-attachments-tab,
             update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior, audit-report-page-main, partner-details-tab]-->
+            engagement-info-data, engagement-behavior, audit-report-page-main, partner-details-tab, dialog-element]-->
 
 <dom-module id="audits-page-main">
     <template>
-        <style include="shared-styles module-styles main-page-styles"></style>
+        <style include="shared-styles module-styles main-page-styles tab-inputs-styles"></style>
 
         <app-route
                 route="{{route}}"
@@ -41,7 +41,7 @@
                 </paper-tabs>
             </div>
 
-            <template is="dom-if" if="{{!_showReportTabs(permissionBase, engagement)}}" restamp>
+            <template is="dom-if" if="{{_showSubmitedMessage(permissionBase, engagement)}}" restamp>
 
                 <div class="submitted-message">Engagement has been submitted to auditor</div>
 
@@ -55,6 +55,22 @@
                                 attr-for-selected="name">
 
                         <div name="overview">
+
+                            <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
+                                <etools-content-panel class="cancellation-tab" panel-title="Cancellation Reason">
+                                    <div class="row-h group">
+                                        <div class="input-container input-container-l">
+                                            <!-- Comments -->
+                                            <paper-textarea label="Comments"
+                                                            value="{{engagement.cancel_comment}}"
+                                                            class="without-border"
+                                                            disabled readonly>
+                                            </paper-textarea>
+                                        </div>
+                                    </div>
+                                </etools-content-panel>
+                            </template>
+
                             <engagement-info-details data="{{engagement}}"
                                                      id="engagementDetails"
                                                      original-data="[[originalData]]"
@@ -115,6 +131,20 @@
                                         other-actions="[[otherActions]]"></status-tab-element>
                 </div>
             </div>
+
+            <dialog-element opened="{{dialogOpened}}"
+                            dialog-title="Cancellation of Engagement"
+                            confirm-btn-text="Continue">
+                <paper-textarea label="Cancellation Reason"
+                                max-rows="4"
+                                required
+                                error-message="This field is required."
+                                id="cancellationReasonInput"
+                                class="required"
+                                on-focus="_resetFieldError"
+                                placeholder="Enter reason of cancellation">
+                </paper-textarea>
+            </dialog-element>
         </template>
 
     </template>

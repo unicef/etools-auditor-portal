@@ -290,8 +290,15 @@
 
             return this.actionAllowed(permissionBase, 'submit') ||
                     engagement.status === 'report_submitted' ||
-                    engagement.status === 'canceled' ||
                     engagement.status === 'final';
+        },
+
+        _showCancellationReason: function(engagement) {
+            return engagement.status === 'canceled';
+        },
+
+        _showSubmitedMessage: function(permissionBase, engagement) {
+            return !this._showCancellationReason(engagement) && !this._showReportTabs(permissionBase, engagement);
         },
 
         _errorOccurred: function(errorObj) {
