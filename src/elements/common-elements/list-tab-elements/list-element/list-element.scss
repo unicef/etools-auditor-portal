@@ -18,6 +18,7 @@
         box-sizing: border-box;
         white-space: nowrap;
         font-size: 0; //skip gaps between inline-blocks
+        overflow: inherit;
 
         .col-data {
             display: inline-block;
