@@ -83,8 +83,7 @@
         .status-icon {
             .icon-wrapper {
                 background-color: var(--gray-light);
-                @apply(--layout-vertical);
-                @apply(--layout-center-justified);
+                text-align: center;
                 width: 24px;
                 height: 24px;
                 -webkit-border-radius: 50%;
@@ -98,14 +97,12 @@
                     width: 16px;
                     height: 16px;
                     color: #fff;
-                    @apply(--layout-self-center);
                 }
 
                 span {
                     height: 24px;
                     line-height: 24px;
                     font-size: 13px;
-                    @apply(--layout-self-center);
                 }
             }
         }
