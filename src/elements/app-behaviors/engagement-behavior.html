@@ -243,14 +243,17 @@
             if (!this.engagement) { return; }
             let collectionName = `engagement_${this.engagement.id}`;
             if (this.engagement.status === 'report_submitted') {
-                this.otherActions = [{name: 'finalize', event: 'finalize-engagement', icon: 'assignment-turned-in'}, {name: 'cancel engagement', event: 'cancel-engagement', icon: 'cancel'}];
+                this.otherActions = [{name: 'finalize', event: 'finalize-engagement', icon: 'assignment-turned-in'}];
                 this.mainBtnText = 'Finalize';
             } else if (this.actionAllowed(collectionName, 'submit')) {
                 this.otherActions = [{name: 'submit', event: 'submit-engagement', icon: 'assignment-turned-in'}, {name: 'save', event: 'save-progress', icon: 'save'}];
                 this.mainBtnText = 'Submit';
             } else {
-                this.otherActions = [{name: 'save', event: 'save-progress', icon: 'save'}, {name: 'cancel engagement', event: 'cancel-engagement', icon: 'cancel'}];
+                this.otherActions = [{name: 'save', event: 'save-progress', icon: 'save'}];
                 this.mainBtnText = 'Save';
+            }
+            if (this.actionAllowed(collectionName, 'cancel')) {
+                this.push('otherActions', {name: 'cancel engagement', event: 'cancel-engagement', icon: 'cancel'});
             }
         },
 
