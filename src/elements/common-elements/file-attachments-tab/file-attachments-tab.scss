@@ -28,7 +28,7 @@
     }
 
     .repeatable-item-container {
-        min-width: 500px;
+        width: 500px;
     }
 }
 
@@ -65,7 +65,6 @@ paper-input-container {
 etools-content-panel {
     --ecp-content: #{'{
             padding: 0;
-            padding-bottom: 7px;
         }'};
 }
 

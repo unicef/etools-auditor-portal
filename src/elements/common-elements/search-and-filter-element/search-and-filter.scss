@@ -44,10 +44,38 @@
 
         paper-button { color: var(--module-primary); font-weight: bold; }
 
+        paper-menu-button {
+            padding: 0;
+            margin: 8px;
+
+            paper-button {
+                margin: 0;
+            }
+        }
+
         paper-menu {
-            --paper-menu-background-color: #ffffff;
+            width: 160px;
             background-color: #ffffff;
-            span.add-filter--item-name { white-space: nowrap; }
+
+            --paper-menu-background-color: #ffffff;
+            --paper-menu-focused-item-after: #{'{
+                background: var(--primary-background-color);
+                opacity: 0;
+            }'};
+
+            paper-item {
+                font-weight: normal;
+
+                --paper-item-focused-before: #{'{
+                    background: var(--primary-background-color);
+                    opacity: 0;
+                }'};
+            }
+
+            span.add-filter--item-name {
+                white-space: nowrap;
+                text-transform: capitalize;
+            }
         }
     }
 

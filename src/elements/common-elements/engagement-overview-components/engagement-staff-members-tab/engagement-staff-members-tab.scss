@@ -120,7 +120,7 @@
     .panel-content {
         position: relative;
         margin-bottom: -7px;
-        padding-bottom: 7px;
+        padding-bottom: 0;
     }
 
     .checkbox {
@@ -133,7 +133,6 @@
 etools-content-panel {
      --ecp-content: #{'{
             padding: 0;
-            padding-bottom: 7px;
         }'};
  }
 
