@@ -46,7 +46,6 @@
                 value: {
                     title: 'Edit Attachment',
                     confirmBtn: 'Edit',
-                    cancelBtn: 'Delete'
                 }
             },
             multiple: {
@@ -82,6 +81,7 @@
         },
         listeners: {
             'dialog-confirmed': '_addItemFromDialog',
+            'delete-confirmed': 'removeItem',
             'dialog-cancelled': '_handleDialogCancel'
         },
         observers: [
