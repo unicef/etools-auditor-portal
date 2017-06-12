@@ -11,7 +11,7 @@ Polymer({
         },
         showingResults: {
             type: String,
-            computed: '_computeResultsToShow(listLength, queryParams.size)'
+            computed: '_computeResultsToShow(listLength, queryParams.page_size)'
         },
         orderBy: {
             type: String,
@@ -43,9 +43,15 @@ Polymer({
         }
     },
     _orderChanged: function(newOrder) {
-        if (!newOrder) { return; }
+        if (!newOrder || !this.headings) { return; }
 
-        let [name, direction] = newOrder.split('.');
+        let direction = 'asc';
+        let name = newOrder;
+
+        if (name.startsWith('-')) {
+            direction = 'desc';
+            name = name.slice(1);
+        }
 
         this.headings.forEach((heading, index) => {
             if (heading.name === name) {
@@ -55,10 +61,10 @@ Polymer({
             }
         });
 
-        if (this.queryParams.ordered_by !== this.orderBy) { this.set('queryParams.ordered_by', this.orderBy); }
+        if (this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
     },
     _paramsChanged: function(newParams) {
-        if (this.orderBy !== newParams.ordered_by) { this.orderBy = newParams.ordered_by; }
+        if (this.orderBy !== newParams.ordering) { this.orderBy = newParams.ordering; }
     },
     _computeResultsToShow: function(lengthAmount, size) {
         let page = (this.queryParams.page || 1) - 1;

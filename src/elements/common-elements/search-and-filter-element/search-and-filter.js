@@ -40,7 +40,7 @@
         },
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
-                this.updateQueries({search: this.searchString || undefined, filters_changed: 'true'});
+                this.updateQueries({search: this.searchString || undefined, page: '1', filters_changed: 'true'});
             }, 300);
         },
         addFilter: function(e) {
@@ -72,7 +72,10 @@
 
             let indexToRemove = this.usedFilters.indexOf(e.model.item);
             let queryObject = {filters_changed: 'true'};
-            queryObject[query] = undefined;
+            if (this.queryParams[query] !== undefined) {
+                queryObject[query] = undefined;
+                queryObject.page = '1';
+            }
 
             this.updateQueries(queryObject);
             this.splice('usedFilters', indexToRemove, 1);
@@ -154,7 +157,7 @@
             if (detail.selectedValues && query) {
                 let filter = this._getFilter(query);
                 let optionValue = filter.optionValue || 'value';
-                let queryObject = {filters_changed: 'true'};
+                let queryObject = {page: '1', filters_changed: 'true'};
 
                 queryObject[query] = detail.selectedValues[optionValue];
                 this.updateQueries(queryObject);

@@ -113,7 +113,7 @@
         describe('method searchKeyDown()', function () {
             this.timeout(350);
 
-            it('updates "search" and "filters_changed" query params after 300ms delay', function (done) {
+            it('updates "search", "page" and "filters_changed" query params after 300ms delay', function (done) {
                 var queryParams = myEl.parseQueries();
                 var searchString = 'search';
 
@@ -130,6 +130,7 @@
                     queryParams = myEl.parseQueries();
                     assert.equal(queryParams.search, searchString);
                     assert.equal(queryParams.filters_changed, 'true');
+                    assert.equal(queryParams.page, '1');
                     done();
                 }, 300);
             });
@@ -265,6 +266,20 @@
                     assert.isTrue(myEl.updateQueries.calledWithMatch(args));
                     done();
                 });
+            });
+
+            it('resets filter query and page number', function () {
+                sinon.spy(myEl, 'updateQueries');
+                assert.equal(myEl.availableFilters.length, filters.length - 1);
+                assert.equal(myEl.usedFilters.length, 1);
+
+                let query = filters[0].query;
+                let args = {filters_changed: 'true', query: undefined, page: '1'};
+                myEl.queryParams[query] = 'some value';
+
+                myEl.removeFilter(e);
+                assert.isTrue(myEl.updateQueries.calledOnce);
+                assert.isTrue(myEl.updateQueries.calledWithMatch(args));
             });
 
             it('.filter-reset-button removes corresponding filter', function (done) {
@@ -448,7 +463,7 @@
                 var e = {path: [{id: filterId}]};
                 var filterValue = myEl.filters[2].selection[filter.optionValue];
                 var detail = {selectedValues: {}};
-                var args = {filters_changed: 'true'};
+                var args = {filters_changed: 'true', page: '1'};
 
                 detail.selectedValues[filter.optionValue] = filterValue;
                 args[filterId] = filterValue;
