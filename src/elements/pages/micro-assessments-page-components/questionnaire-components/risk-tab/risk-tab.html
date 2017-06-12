@@ -1,6 +1,6 @@
-<!--import [polymer, etools-content-panel, paper-icon-button]-->
+<!--import [polymer, etools-content-panel, paper-icon-button, etools-searchable-multiselection-menu]-->
 
-<!--import [lodash, module-styles, list-element, list-header]-->
+<!--import [lodash, module-styles, list-element, list-header, static-data-behavior]-->
 
 <dom-module id="risk-tab">
     <template>
@@ -27,7 +27,22 @@
                         <div slot="icon" class="edit-icon-slot">
                             <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                         </div>
+                        <div slot="custom">
+                            <template is="dom-if" if="{{editMode}}">
+                                <etools-searchable-multiselection-menu options="[[riskOptions]]"
+                                                                       class="disabled-as-readonly required validate-input"
+                                                                       value="{{_setRiskValue(item.value, riskOptions)}}"
+                                                                       hide-search dynamic-align
+                                                                       allow-outside-scroll
+                                                                       on-focus="_resetFieldError"
+                                                                       on-value-change="_riskValueChanged"
+                                                                       placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                            </template>
+                            <template is="dom-if" if="{{!editMode}}">
+                                [[_getStringValue(item.value, riskOptions, '--')]]
+                            </template>
 
+                        </div>
                     </list-element>
 
                 </template>
@@ -51,6 +66,24 @@
                             <div slot="icon" class="edit-icon-slot">
                                 <paper-icon-button icon="create" class="edit-icon" category-id$="{{category.id}}"
                                                    on-tap="openEditDialog"></paper-icon-button>
+                            </div>
+
+                            <div slot="custom">
+                                <template is="dom-if" if="{{editMode}}">
+                                    <etools-searchable-multiselection-menu options="[[riskOptions]]"
+                                                                           class="disabled-as-readonly required validate-input"
+                                                                           value="{{_setRiskValue(item.value, riskOptions)}}"
+                                                                           hide-search dynamic-align
+                                                                           allow-outside-scroll
+                                                                           category-id$="{{category.id}}"
+                                                                           on-focus="_resetFieldError"
+                                                                           on-value-change="_riskValueChanged"
+                                                                           placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                                </template>
+
+                                <template is="dom-if" if="{{!editMode}}">
+                                    [[_getStringValue(item.value, riskOptions, '--')]]
+                                </template>
                             </div>
                         </list-element>
 

@@ -149,7 +149,7 @@ Polymer({
     _emtyObj: function(data) {
         return data && !data.empty;
     },
-    _hasProperty: function(data, property) {
-        return data && property && this.get('data.' + property);
+    _hasProperty: function(data, property, doNotHide) {
+        return data && (doNotHide || property && this.get('data.' + property));
     }
 });

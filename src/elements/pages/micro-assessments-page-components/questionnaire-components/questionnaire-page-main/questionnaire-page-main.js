@@ -44,6 +44,17 @@ Polymer({
         overalRiskOpen: {
             type: Boolean,
             value: false
+        },
+        changedData: {
+            type: Array,
+            value: function() {
+                return [];
+            }
+        },
+        requests: {
+            type: Number,
+            value: 0,
+            readOnly: true
         }
     },
 
@@ -54,7 +65,8 @@ Polymer({
 
     listeners: {
         'edit-blueprint': '_openEditDialog',
-        'dialog-confirmed': '_addItemFromDialog'
+        'dialog-confirmed': '_addItemFromDialog',
+        'risk-value-changed': '_riskValueChanged'
     },
 
     ready: function() {
@@ -66,10 +78,16 @@ Polymer({
         if (!_.isEmpty(this.questionnaire) && this.firstRun) {
             this.firstRun = false;
         }
-        this.questionnaire = data;
-        this.requestInProcess = false;
-        this.dialogOpened = false;
-        this.resetDialog();
+        this.requestsCount(-1);
+
+        if (!this.requestsCount()) {
+            this.questionnaire = data;
+        }
+        if (this.dialogOpened && this.requestInProcess) {
+            this.requestInProcess = false;
+            this.dialogOpened = false;
+            this.resetDialog();
+        }
     },
 
     _checkCompleted: function(item) {
@@ -130,6 +148,14 @@ Polymer({
         event.target.invalid = false;
     },
 
+    _riskValueChanged: function(event, detail) {
+        this.changedData.push({
+            children: [detail.data]
+        });
+        this.requestsCount(1);
+        this.fire('save-progress', {quietAdding: true});
+    },
+
     _addItemFromDialog: function() {
         if (!this.dialogOpened || !this.validate()) { return; }
 
@@ -165,8 +191,11 @@ Polymer({
     },
 
     getQuestionnaireData: function() {
-        if (!this.dialogOpened) { return null; }
+        if (this.dialogOpened) { return this.getDataFromDialog() || null; }
+        return this.changedData && this.changedData.shift() || null;
+    },
 
+    getDataFromDialog: function() {
         let data = {
             id: this.editedItem.id,
             value: this.$.riskAssessmentInput.value.value,
@@ -231,5 +260,12 @@ Polymer({
         if (nonField) {
             this.fire('toast', {text: `Qustionnaire: ${nonField}`});
         }
+    },
+    requestsCount: function(number) {
+        if (!number && isNaN(number)) { return this.requests; }
+        let count = number > 0 ? this.requests + 1 : this.requests - 1;
+        if (count < 0) { count = 0; }
+        this._setRequests(count);
+        return this.requests;
     }
 });

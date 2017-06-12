@@ -556,7 +556,7 @@
 
             behaviorObj.engagement.status = 'other';
             behaviorObj.actionAllowed.returns(true);
-            behaviorObj.push = sinon.spy()
+            behaviorObj.push = sinon.spy();
 
             behaviorObj._configButtonsData();
             assert.equal(behaviorObj.mainBtnText, 'Submit');
