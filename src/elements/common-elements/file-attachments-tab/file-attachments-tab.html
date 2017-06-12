@@ -31,11 +31,11 @@
                         headings="[[headings]]">
                     <div slot="custom">
                         <iron-icon icon="icons:attachment" class="download-icon"></iron-icon>
-                        <a class$="truncate"
-                           href="[[item.file]]"
-                           download="[[item.file_name]]"
+                        <a class="truncate"
+                           href$="[[item.file]]"
+                           download$="[[item.file_name]]"
                            target="_blank"
-                           title="[[item.file_name]]">
+                           title$="[[item.file_name]]">
                             [[item.file_name]]
                         </a>
                     </div>
@@ -66,8 +66,8 @@
 
             <div class="row-h repeatable-item-container" without-line>
                 <template is="dom-if" if="[[editedItem.file_name]]">
-                    <div class="form-title">
-                        <div class="text">[[editedItem.file_name]]</div>
+                    <div class="form-title" title$="[[editedItem.file_name]]">
+                        <div class="text truncate">[[editedItem.file_name]]</div>
                     </div>
                 </template>
 

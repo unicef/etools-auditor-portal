@@ -1,4 +1,4 @@
-<!--import [polymer, lodash]-->
+<!--import [polymer, lodash, textarea-max-rows-behavior]-->
 
 <script>
     'use strict';
@@ -29,6 +29,7 @@
             this.engagementFileTypes = this.getData('engagement_attachments_types');
             this.reportFileTypes = this.getData('report_attachments_types');
             this._addObserverEffect("errorObject", '_errorOccurred');
+            this._addObserverEffect("dialogOpened", 'resetDialog');
         },
 
         _routeConfig: function(route) {
@@ -83,6 +84,22 @@
             }
         },
 
+        _openCancelDialog: function() {
+            this.dialogOpened = true;
+        },
+
+        resetDialog: function(opened) {
+            let input = this.getElement('#cancellationReasonInput');
+            if (!opened && input) {
+                input.value = '';
+                this._resetFieldError({target: input});
+            }
+        },
+
+        _resetFieldError: function(event) {
+            event.target.invalid = false;
+        },
+
         _saveProgress: function(event) {
             if (!this._validateBasicInfo()) { return; }
             if (this.customBasicValidation && !this.customBasicValidation()) { return; }
@@ -111,6 +128,36 @@
                     .then((data) => {
                         this.updatedEngagement = data;
                     });
+        },
+
+        _cancelEngagement: function() {
+            if (!this.dialogOpened) { return; }
+            let input = this.getElement('#cancellationReasonInput');
+
+            if (!input) { throw 'Can not find input!'}
+            if(!input.validate()) { return; }
+
+            let type;
+            switch (this.engagement.type) {
+                case 'ma':
+                    type = 'micro-assessments';
+                    break;
+                case 'sc':
+                    type = 'spot-checks';
+                    break;
+                case 'audit':
+                    type = 'audits';
+                    break;
+            }
+
+            this.updatedEngagement = {
+                type: type,
+                id: this.engagement.id,
+                data: {cancel_comment: input.value},
+                cancel: 'cancel/'
+            };
+            this.dialogOpened = false;
+            if (this.tab === 'report') { this.tab = 'overview'; }
         },
 
         _prepareData: function(submit, finalize) {
@@ -196,13 +243,13 @@
             if (!this.engagement) { return; }
             let collectionName = `engagement_${this.engagement.id}`;
             if (this.engagement.status === 'report_submitted') {
-                this.otherActions = [];
+                this.otherActions = [{name: 'finalize', event: 'finalize-engagement', icon: 'assignment-turned-in'}, {name: 'cancel engagement', event: 'cancel-engagement', icon: 'cancel'}];
                 this.mainBtnText = 'Finalize';
             } else if (this.actionAllowed(collectionName, 'submit')) {
-                this.otherActions = [{name: 'save', event: 'save-progress'}];
+                this.otherActions = [{name: 'submit', event: 'submit-engagement', icon: 'assignment-turned-in'}, {name: 'save', event: 'save-progress', icon: 'save'}];
                 this.mainBtnText = 'Submit';
             } else {
-                this.otherActions = [];
+                this.otherActions = [{name: 'save', event: 'save-progress', icon: 'save'}, {name: 'cancel engagement', event: 'cancel-engagement', icon: 'cancel'}];
                 this.mainBtnText = 'Save';
             }
         },
@@ -247,6 +294,14 @@
                     engagement.status === 'final';
         },
 
+        _showCancellationReason: function(engagement) {
+            return engagement.status === 'canceled';
+        },
+
+        _showSubmitedMessage: function(permissionBase, engagement) {
+            return !this._showCancellationReason(engagement) && !this._showReportTabs(permissionBase, engagement);
+        },
+
         _errorOccurred: function(errorObj) {
             if (!errorObj || !_.isObject(errorObj)) { return; }
             let page = this.witchPageTrows(errorObj);
@@ -262,7 +317,8 @@
         APBehaviors.EngagementBehaviorImpl,
         APBehaviors.PermissionController,
         APBehaviors.StaticDataController,
-        APBehaviors.ErrorHandlerBehavior
+        APBehaviors.ErrorHandlerBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ];
 
 </script>

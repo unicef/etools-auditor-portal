@@ -83,6 +83,17 @@ Polymer({
             }
         });
 
+        let periodStart = Polymer.dom(this.root).querySelector('#periodStartDateInput'),
+            periodEnd = Polymer.dom(this.root).querySelector('#periodEndDateInput'),
+            startValue = periodStart ? Date.parse(periodStart.value) : 0,
+            endValue = periodEnd ? Date.parse(periodEnd.value) : 0;
+
+        if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
+            periodEnd.errorMessage = 'This date should be after Period Start Date';
+            periodEnd.invalid = true;
+            valid = false;
+        }
+
         return typeValid && orderValid && valid;
     },
     resetValidationErrors: function() {
@@ -98,6 +109,7 @@ Polymer({
     },
     _resetFieldError: function(event) {
         this.set(`errors.${event.target.getAttribute('field')}`, false);
+        event.target.invalid = false;
     },
     _processValue: function(value) {
         if (typeof value === 'string') {

@@ -1,10 +1,10 @@
 <!--import [polymer, paper-input, paper-card, iron-icon, etools-searchable-multiselection-menu,
             paper-menu-button, paper-button, paper-menu, paper-toggle-button,
-            shared-styles, module-styles, iron-flex-layout, query-params-controller]-->
+            shared-styles, module-styles, tab-inputs-styles, iron-flex-layout, query-params-controller]-->
 
 <dom-module id="search-and-filter">
     <template>
-        <style include="shared-styles module-styles iron-flex"></style>
+        <style include="shared-styles module-styles tab-inputs-styles iron-flex"></style>
          <!--inject styles './search-and-filter.scss'-->
 
         <paper-card class="second-header horizontal layout center">
@@ -47,7 +47,7 @@
             <!-- ADD FILTERS -->
             <div id="add-filter-container">
 
-                <paper-menu-button>
+                <paper-menu-button horizontal-align="right" vertical-align="top" no-overlap>
 
                     <paper-button class="dropdown-trigger">
                         <iron-icon icon="filter-list" class="filter-list-icon"></iron-icon>

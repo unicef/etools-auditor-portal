@@ -1,0 +1,100 @@
+paper-dialog {
+    background-color: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+@media screen and (max-width: 767px) {
+    paper-dialog {
+        width: calc(100vw - 30px);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    paper-dialog {
+        width: calc(100vw - 30px);
+    }
+}
+
+#buttons {
+    display: block;
+    padding: 32px 8px 17px 24px;
+
+}
+
+.right { float: right; }
+.left { float: left; }
+
+.btn-cancel {
+    color: var(--gray-mid);
+    font-weight: 500;
+    &:not([dialog-dismiss]) { color: var(--gray-mid); }
+    z-index: 5;
+}
+
+.btn-delete {
+    color: var(--module-error);
+    font-weight: 500;
+}
+
+.btn-confirm {
+    color: var(--module-primary);
+    font-weight: 500;
+    z-index: 5;
+}
+
+.dialog-title {
+    padding: 16px 24px 10px !important;
+    min-height: 26px;
+    margin-top: 0 !important;
+}
+
+.close-btn {
+    position: absolute;
+    right: -5px;
+    top: 4px;
+    margin-top: 14px !important;
+    color: var(--gray-mid-dark);
+    cursor: pointer;
+    transition: 0.15s;
+    z-index: 5;
+}
+.close-btn:hover { color: #000;}
+
+.loading {
+    margin-top: 3px;
+    vertical-align: top;
+    margin-left: 15px;
+}
+
+.loading:not([active]) {
+    display: none !important;
+}
+
+.delete-container {
+    position: relative;
+    transform: translateX(-100%);
+    background-color: transparent;
+    &[confirm-opened] { transform: none;  }
+
+    .text {
+        position: absolute;
+        left: 0;
+        bottom: 100%;
+        padding-left: 11px;
+        font-size: 13px;
+        color: var(--gray-light);
+    }
+}
+
+.main-delete-btn {
+    position: absolute;
+    top: 32px;
+    left: 24px;
+    &[hidden-delete] { opacity: 0; }
+}
+
+paper-button[disabled] {
+    background-color: transparent;
+    color: var(--gray-mid)
+}

@@ -25,7 +25,8 @@ Polymer({
                         draft_issued_to_unicef: 'Draft Report Issued To UNICEF',
                         comments_received_by_unicef: 'Comments Received By UNICEF',
                         report_submitted: 'Report Submitted',
-                        final: 'Final Report'
+                        final: 'Final Report',
+                        canceled: 'Canceled'
                     }
                 };
             }

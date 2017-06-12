@@ -71,6 +71,10 @@
                 {
                     label: 'Final Report',
                     value: 'final'
+                },
+                {
+                    label: 'Canceled',
+                    value: 'canceled'
                 }
             ]
         }
