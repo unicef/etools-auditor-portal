@@ -7,6 +7,7 @@ Polymer({
         APBehaviors.ErrorHandlerBehavior
     ],
     observers: [
+        'updateStyles(basePermissionPath)',
         '_errorHandler(errorObject)'
     ],
     properties: {
