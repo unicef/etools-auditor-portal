@@ -77,9 +77,14 @@
 
                     <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
                         <span class$="col-data w[[item.size]] [[item.align]] [[item.class]]">
+                            <template is="dom-if" if="{{_hasProperty(data, item.property, item.doNotHide)}}" restamp>
                                 <slot name="custom">
 
                                 </slot>
+                                 </template>
+                            <template is="dom-if" if="{{!_hasProperty(data, item.property, item.doNotHide)}}">
+                                <span class="">--</span>
+                            </template>
                         </span>
                     </template>
 

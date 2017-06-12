@@ -49,10 +49,12 @@ Polymer({
                         'name': 'header',
                         'html': true
                     }, {
-                        'size': '130px',
-                        'label': 'Risk Points',
+                        'size': '160px',
+                        'label': 'Risk Assessment',
                         'name': 'value',
-                        'custom': true
+                        'property': 'value',
+                        'custom': true,
+                        'doNotHide': true
                     },
                     {
                         'size': '45px',
@@ -124,6 +126,39 @@ Polymer({
         this.set('opened', !completed && !disabled);
     },
 
+    _riskValueChanged: function(event, value) {
+        let item = event && event.model && event.model.item,
+            changedValue = value && value.selectedValues && value.selectedValues.value,
+            data;
+
+        if ((!changedValue && changedValue !== 0) || changedValue === item.value) { return; }
+
+        item.value = changedValue;
+
+        let childId = null;
+        if (this.questionnaire.children.length) {
+            childId = event.target && event.target.getAttribute('category-id');
+            if (!childId) { throw 'Can not find category id!'; }
+            data = {
+                id: this.questionnaire.id,
+                children: [{
+                    id: childId,
+                    blueprints: [{value: changedValue, id: item.id}]
+                }]
+            };
+        } else {
+            data = {
+                id: this.questionnaire.id,
+                blueprints: [{value: changedValue, id: item.id}]
+            };
+        }
+        this.fire('risk-value-changed', {data: data});
+    },
+
+    _resetFieldError: function() {
+        this.set('errors.partner', false);
+    },
+
     setPanelTitle: function(header, complited) {
         if (!complited) { return header; }
         return `${header} - ${this.riskRatingOptions[this.questionnaire.risk_rating].toUpperCase()}`;
@@ -151,5 +186,9 @@ Polymer({
             return options[value];
         }
         return value;
+    },
+    _getStringValue: function(value, options, defaultValue) {
+        if (!options || !_.isNumber(value)) { return defaultValue; }
+        return options[value].label || defaultValue;
     }
 });
