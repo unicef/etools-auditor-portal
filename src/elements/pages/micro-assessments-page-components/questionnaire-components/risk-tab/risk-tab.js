@@ -2,6 +2,9 @@
 
 Polymer({
     is: 'risk-tab',
+    behaviors: [
+        APBehaviors.StaticDataController
+    ],
     properties: {
         questionnaire: {
             type: Object,
@@ -46,10 +49,10 @@ Polymer({
                         'name': 'header',
                         'html': true
                     }, {
-                        'size': '100px',
+                        'size': '130px',
                         'label': 'Risk Points',
                         'name': 'value',
-                        'align': 'center'
+                        'custom': true
                     },
                     {
                         'size': '45px',
@@ -88,6 +91,10 @@ Polymer({
         '_setOpen(disabled, completed, firstRun, questionnaire)',
         'changePermission(editMode, columns)'
     ],
+
+    ready: function() {
+        this.riskOptions = this.getData('riskOptions');
+    },
 
     changePermission: function(editMode, columns) {
         if (!columns) { return; }
@@ -138,4 +145,11 @@ Polymer({
         }
         this.fire('edit-blueprint', {data: _.cloneDeep(item), tabId: this.questionnaire.id, childId: childId});
     },
+    _setRiskValue: function(value, options) {
+        if (!options) { return; }
+        if (_.isNumber(value)) {
+            return options[value];
+        }
+        return value;
+    }
 });

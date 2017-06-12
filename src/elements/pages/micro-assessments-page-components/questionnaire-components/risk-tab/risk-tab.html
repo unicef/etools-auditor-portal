@@ -1,6 +1,6 @@
-<!--import [polymer, etools-content-panel, paper-icon-button]-->
+<!--import [polymer, etools-content-panel, paper-icon-button, etools-searchable-multiselection-menu]-->
 
-<!--import [lodash, module-styles, list-element, list-header]-->
+<!--import [lodash, module-styles, list-element, list-header, static-data-behavior]-->
 
 <dom-module id="risk-tab">
     <template>
@@ -27,7 +27,17 @@
                         <div slot="icon" class="edit-icon-slot">
                             <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                         </div>
-
+                        <div slot="custom" >
+                            <etools-searchable-multiselection-menu
+                                    id="riskAssessmentInput"
+                                    options="[[riskOptions]]"
+                                    class="disabled-as-readonly required validate-input"
+                                    value="{{_setRiskValue(item.value, riskOptions)}}"
+                                    hide-search
+                                    allow-outside-scroll
+                                    on-focus="_resetFieldError"
+                                    placeholder="--"></etools-searchable-multiselection-menu>
+                        </div>
                     </list-element>
 
                 </template>
