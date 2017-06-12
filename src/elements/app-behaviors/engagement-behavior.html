@@ -157,6 +157,7 @@
                 cancel: 'cancel/'
             };
             this.dialogOpened = false;
+            if (this.tab === 'report') { this.tab = 'overview'; }
         },
 
         _prepareData: function(submit, finalize) {

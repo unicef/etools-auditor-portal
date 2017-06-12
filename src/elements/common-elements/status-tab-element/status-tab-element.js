@@ -53,6 +53,9 @@
         _getStatusNumber: function(status) {
             return statuses.indexOf(status) + 1;
         },
+        _refactorStatusNumber: function(number, status) {
+            return (status === 'canceled' && !this.engagementData[statusFields[+number]]) ? +number + 1 : number;
+        },
         closeMenu: function() {
             this.statusBtnMenuOpened = false;
         },
