@@ -100,11 +100,14 @@
 
             let number;
             _.each(statusFields.slice(2), (field, index) => {
-                if (!!this.engagementData[field]) { number = index + 1; }
+                if (!this.engagementData[field]) {
+                    number = index;
+                    return false;
+                }
             });
 
             if (isNaN(number)) {
-                Polymer.dom(this.root).appendChild(this.$.canceledStatus);
+                Polymer.dom(this.$.statusList).appendChild(this.$.canceledStatus);
             } else {
                 let statuses = Polymer.dom(this.root).querySelectorAll('.divider:not(.canceled)'),
                     lastComplited = statuses && statuses[number];
