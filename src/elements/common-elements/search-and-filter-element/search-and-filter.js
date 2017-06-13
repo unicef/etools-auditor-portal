@@ -37,7 +37,9 @@
         ],
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
-                this.updateQueries({search: this.searchString || undefined, page: '1'});
+                if (this.searchString.length !== 1) {
+                    this.updateQueries({search: this.searchString || undefined, page: '1'});
+                }
             }, 300);
         },
         addFilter: function(e) {

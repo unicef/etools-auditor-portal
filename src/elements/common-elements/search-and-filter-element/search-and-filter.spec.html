@@ -23,21 +23,21 @@
         var filters = [
             {
                 name: 'auditor',
-                query: 'f_auditor',
+                query: 'auditor',
                 optionValue: 'id',
                 optionLabel: 'name',
                 selection: []
             },
             {
                 name: 'partner',
-                query: 'f_partner_id',
+                query: 'partner',
                 optionValue: 'id',
                 optionLabel: 'name',
                 selection: []
             },
             {
                 name: 'engagement type',
-                query: 'f_type',
+                query: 'type',
                 hideSearch: true,
                 optionValue: 'value',
                 optionLabel: 'label',
@@ -54,7 +54,7 @@
             },
             {
                 name: 'status',
-                query: 'f_status',
+                query: 'status',
                 hideSearch: true,
                 optionValue: 'value',
                 optionLabel: 'label',
@@ -90,6 +90,10 @@
                     {
                         label: 'Final Report',
                         value: 'final'
+                    },
+                    {
+                        label: 'Canceled',
+                        value: 'canceled'
                     }
                 ]
             }
@@ -104,7 +108,7 @@
         describe('method searchKeyDown()', function () {
             this.timeout(350);
 
-            it('updates "search", "page" and "filters_changed" query params after 300ms delay', function (done) {
+            it('updates "search" and "page" query params after 300ms delay if string length >= 2', function (done) {
                 var queryParams = myEl.parseQueries();
                 var searchString = 'search';
 
@@ -119,6 +123,26 @@
                     queryParams = myEl.parseQueries();
                     assert.equal(queryParams.search, searchString);
                     assert.equal(queryParams.page, '1');
+                    done();
+                }, 300);
+            });
+
+            it('not updates "search" query if string length === 1', function (done) {
+                myEl.updateQueries({search: undefined});
+
+                var queryParams = myEl.parseQueries();
+                var searchString = 's';
+
+                assert.isUndefined(queryParams.search);
+
+                myEl.searchString = searchString;
+                myEl.searchKeyDown();
+                queryParams = myEl.parseQueries();
+                assert.isUndefined(queryParams.search);
+
+                setTimeout(function () {
+                    queryParams = myEl.parseQueries();
+                    assert.isUndefined(queryParams.search);
                     done();
                 }, 300);
             });
