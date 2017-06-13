@@ -5,8 +5,8 @@
 
 <dom-module id="financial-findings">
     <template>
-        <!-- inject styles './financial-findings.scss'-->
         <style include="tab-inputs-styles module-styles"></style>
+        <!-- inject styles './financial-findings.scss'-->
 
         <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
                            title="Add"
@@ -42,18 +42,15 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="{{requestInProcess}}">
+        <dialog-element
+                opened="{{dialogOpened}}"
+                dialog-title="[[dialogTitle]]"
+                confirm-btn-text="[[confirmBtnText]]"
+                show-delete-btn="[[canBeRemoved]]"
+                delete-confirmation-text="Do you want to remove this finding?"
+                request-in-process="{{requestInProcess}}">
 
-            <div class="row-h repeatable-item-container" without-line$="[[!canBeRemoved]]">
-
-                <div class="repeatable-item-actions" hidden$="[[!canBeRemoved]]">
-                    <div class="row-v actions">
-                        <paper-icon-button class="action delete"
-                                           on-tap="_openDeleteConfirmation"
-                                           disabled="{{requestInProcess}}"
-                                           icon="cancel"></paper-icon-button>
-                    </div>
-                </div>
+            <div class="row-h repeatable-item-container" without-line>
 
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -161,11 +158,6 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
-
-        <div class="confirm-backdrop"  opened$="{{confirmDialogOpened}}"></div>
-        <dialog-element dialog-name="deleteConfirm" opened="{{confirmDialogOpened}}" dialog-title="Remove Finding" confirm-btn-text="Ok">
-            <div class="confirm-text">Do you want to remove this finding?</div>
         </dialog-element>
     </template>
 

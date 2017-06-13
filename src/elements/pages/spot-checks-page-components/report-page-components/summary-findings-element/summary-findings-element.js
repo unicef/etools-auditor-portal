@@ -39,7 +39,7 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 20,
+                        'size': 25,
                         'label': 'Finding Number',
                         'path': 'finding_number'
                     },                    {
@@ -100,7 +100,8 @@ Polymer({
     },
 
     listeners: {
-        'dialog-confirmed': '_addItemFromDialog'
+        'dialog-confirmed': '_addItemFromDialog',
+        'delete-confirmed': 'removeItem',
     },
 
     observers: [

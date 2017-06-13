@@ -1,50 +1,38 @@
 :host {
-  position: relative;
-  display: block;
-  margin-bottom: 20px;
+    position: relative;
+    display: block;
+    margin-bottom: 20px;
 
-  paper-textarea.fixed-width {
-    width: 400px;
-  }
+    .add-button {
+        position: absolute;
+        right: 15px;
+        top: 4px;
+        width: 40px;
+        height: 40px;
+        color: #ffffff;
+        z-index: 10;
+    }
 
-  .add-button {
-    position: absolute;
-    right: 15px;
-    top: 4px;
-    width: 40px;
-    height: 40px;
-    color: #ffffff;
-    z-index: 10;
-  }
+    .edit-icon {
+        padding: 5px;
+        width: 30px;
+        height: 30px;
+        color: var(--gray-mid);
+    }
 
-  .edit-icon {
-    padding: 5px;
-    width: 30px;
-    height: 30px;
-    color: var(--gray-mid);
-  }
+    .repeatable-item-container[without-line] {
+        min-width: 0 !important;
+        padding: 0 24px !important;
+        margin-bottom: 0 !important;
+    }
 
-  .repeatable-item-container {
-    min-width: 700px;
-  }
-
-  .confirm-backdrop[opened] {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 104;
-  }
-
-  .confirm-text {
-    padding: 5px 86px 0 23px !important;
-  }
+    .confirm-text {
+        padding: 5px 86px 0 23px !important;
+    }
 }
 
 etools-content-panel {
-  --ecp-content: #{'{
+    --ecp-content: #{'{
             padding: 0;
         }'};
 }

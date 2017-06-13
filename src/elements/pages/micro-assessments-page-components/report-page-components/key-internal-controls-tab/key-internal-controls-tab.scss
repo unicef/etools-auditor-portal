@@ -6,12 +6,16 @@
         box-sizing: border-box;
     }
 
+    .row-h.repeatable-item-container[without-line] {
+        padding: 0 !important;
+    }
+
     .repeatable-item-container .repeatable-item-content {
         margin-left: 25px;
     }
 
     .container {
-        min-width: 600px;
+        margin-bottom: 0 !important;
     }
 
     .form-title {

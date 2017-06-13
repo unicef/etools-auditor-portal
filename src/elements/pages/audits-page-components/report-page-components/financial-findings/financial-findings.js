@@ -92,7 +92,8 @@ Polymer({
         }
     },
     listeners: {
-        'dialog-confirmed': '_addItemFromDialog'
+        'dialog-confirmed': '_addItemFromDialog',
+        'delete-confirmed': 'removeItem',
     },
     observers: [
         'resetDialog(dialogOpened)',
