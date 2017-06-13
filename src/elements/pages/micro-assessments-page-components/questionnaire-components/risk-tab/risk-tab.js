@@ -71,7 +71,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Comments',
-                    'path': 'extra',
+                    'path': 'extra.comments',
                     'size': 100
                 }];
             }
@@ -178,7 +178,13 @@ Polymer({
             childId = event.target && event.target.getAttribute('category-id');
             if (!childId) { throw 'Can not find category id!'; }
         }
-        this.fire('edit-blueprint', {data: _.cloneDeep(item), tabId: this.questionnaire.id, childId: childId});
+        let data = _.cloneDeep(item);
+        if (data && _.isJSONObj(data.extra)) {
+            data.extra = JSON.parse(data.extra);
+        } else {
+            data.extra = {comments: (data.extra && data.extra.comments) || ''};
+        }
+        this.fire('edit-blueprint', {data: data, tabId: this.questionnaire.id, childId: childId});
     },
     _setRiskValue: function(value, options) {
         if (!options) { return; }
@@ -190,5 +196,9 @@ Polymer({
     _getStringValue: function(value, options, defaultValue) {
         if (!options || !_.isNumber(value)) { return defaultValue; }
         return options[value].label || defaultValue;
+    },
+    _prepareData: function(data) {
+        if (data && _.isJSONObj(data.extra)) { data.extra = JSON.parse(data.extra); }
+        return data;
     }
 });

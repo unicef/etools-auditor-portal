@@ -131,7 +131,7 @@ Polymer({
         this.tabId = detail.tabId;
         this.categoryId = detail.childId;
         this.editedItem = item;
-        this.originalComments = item.extra;
+        this.originalComments = item.extra && item.extra.comments;
         this.$.questionHeader.innerHTML = item.header;
         this.dialogOpened = true;
     },
@@ -159,7 +159,7 @@ Polymer({
     _addItemFromDialog: function() {
         if (!this.dialogOpened || !this.validate()) { return; }
 
-        if (this.originalComments === this.editedItem.extra &&
+        if (this.originalComments === this.editedItem.extra.comments &&
             this.$.riskAssessmentInput.value &&
             this.$.riskAssessmentInput.value.value === this.editedItem.value) {
 
@@ -199,7 +199,7 @@ Polymer({
         let data = {
             id: this.editedItem.id,
             value: this.$.riskAssessmentInput.value.value,
-            extra: this.editedItem.extra || ''
+            extra: JSON.stringify(this.editedItem.extra || '')
         };
 
         let risk;

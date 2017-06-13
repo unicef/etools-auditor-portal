@@ -36,7 +36,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Brief Justification for Rating (main internal control gaps)',
-                    'path': 'extra',
+                    'path': 'extra.comments',
                     'size': 100
                 }];
             }
@@ -101,6 +101,7 @@ Polymer({
         if (!this.dialogOpened) { return null; }
         let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'value', 'extra']);
         blueprint.value = blueprint.value.value;
+        blueprint.extra = JSON.stringify({comments: blueprint.extra.comments || ''});
 
         return [{
             id: this.editedArea.id,

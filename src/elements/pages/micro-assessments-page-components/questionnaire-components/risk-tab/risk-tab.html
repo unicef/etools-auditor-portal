@@ -19,7 +19,7 @@
 
                     <list-element
                             class="list-element"
-                            data="[[item]]"
+                            data="[[_prepareData(item)]]"
                             headings="[[columns]]"
                             details="[[details]]"
                             has-collapse multiline
@@ -58,7 +58,7 @@
                     <template is="dom-repeat" items="{{category.blueprints}}">
 
                         <list-element class="list-element"
-                                      data="[[item]]"
+                                      data="[[_prepareData(item)]]"
                                       headings="[[columns]]"
                                       details="[[details]]"
                                       has-collapse multiline

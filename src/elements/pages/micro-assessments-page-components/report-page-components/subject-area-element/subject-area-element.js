@@ -23,6 +23,12 @@ Polymer({
             this.area.blueprints[0].value = this.riskOptions[this.area.blueprints[0].value];
         }
 
+        if (_.isJSONObj(data.blueprints[0].extra)) {
+            data.blueprints[0].extra = JSON.parse(data.blueprints[0].extra);
+        } else {
+            data.blueprints[0].extra = {comments: (data.blueprints[0].extra && data.blueprints[0].extra.comments) || ''};
+        }
+
         this.areaData = _.clone(this.area.blueprints[0]);
     },
     openEditDialog: function() {
