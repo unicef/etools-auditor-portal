@@ -23,6 +23,12 @@ Polymer({
             type: Array,
             notify: true
         },
+        emptyObj: {
+            type: Object,
+            value: function() {
+                return {empty: true};
+            }
+        },
         withoutPagination: {
             type: Boolean,
             value: false
