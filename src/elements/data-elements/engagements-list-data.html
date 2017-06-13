@@ -6,8 +6,6 @@
 
         <etools-ajax
                 endpoint="[[endpoint]]"
-                caching-storage="custom"
-                dexie-db-collection="engagements"
                 on-success="_engagementsLoaded"
                 on-fail="_responseError"></etools-ajax>
 
@@ -24,186 +22,95 @@
             ],
 
             properties: {
-                engagements: {
-                    type: Array,
-                    value: [],
-                    notify: true
-                },
                 engagementsList: {
                     type: Array,
                     readOnly: true,
                     notify: true
                 },
                 requestQueries: {
+                    type: Object
+                },
+                lastState: {
                     type: Object,
-                    observer: 'getEngagementsList'
+                    value: {}
                 },
                 listLength: {
                     type: Number,
                     notify: true
                 },
-                indexObject: {
-                    type: Object,
-                    value: function() {
-                        return {
-                            f_auditor: {
-                                type: 'number',
-                                path: 'agreement.audit_organization.id'
-                            },
-                            f_partner_id: {
-                                type: 'number',
-                                path: 'partner.id'
-                            },
-                            f_type: {
-                                path: 'type'
-                            },
-                            f_status: {
-                                path: 'status'
-                            },
-                            type: {
-                                path: 'type'
-                            },
-                            status: {
-                                path: 'status'
-                            },
-                            partner: {
-                                path: 'partner.name'
-                            },
-                            po: {
-                                path: 'agreement.order_number'
-                            },
-                            auditor: {
-                                path: 'agreement.audit_organization.name'
-                            },
-                        }
-                    }
-                }
-
             },
 
             observers: [
-                '_setListLength(engagements)'
+                'getEngagementsList(requestQueries.*)'
             ],
 
-            ready: function () {
-                this.endpoint = this.getEndpoint('engagementsList');
-            },
-
-            _engagementsLoaded: function(data) {
-                this.updateListData = false;
-                this.set('endpoint', {url: null});
-                this.engagements = data && data.detail;
-                if (this._validatePageQuery()) {
-                    this.getEngagementsList();
+            _engagementsLoaded: function(e, detail) {
+                if (!detail || !detail.results || detail.count === undefined) {
+                    this._responseError(e, detail);
+                    return;
                 }
+
+                this._setEngagementsList(detail.results);
+                this.listLength = detail.count;
+
+                this.fire('global-loading', {type: 'engagements-list'});
             },
-            _responseError: function() {},
 
             getEngagementsList: function() {
-                if (!this.engagements.length || this.updateListData) return;
-                if (this.currentTransaction) {
-                    this.currentTransaction.abort();
+                let reloadRequired = this.reloadRequired();
+
+                this.lastState = _.cloneDeep(this.requestQueries);
+
+                if (!reloadRequired) {
+                    //not reload the page
+                    return;
                 }
 
-                let params = this.requestQueries || {};
-                let filters = Object.keys(params).filter((key) => {
-                    return key.startsWith('f_');
-                });
+                this.fire('global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
 
-                this.appDexieDb.transaction('r', this.appDexieDb.engagements, () => {
-                    this.currentTransaction = Dexie.currentTransaction;
-
-                    let table = this.appDexieDb.engagements;
-                    let searchFields = ['partner', 'po', 'auditor'];
-                    let searchString = params['search'];
-
-                    //sort
-                    if (params.ordered_by) {
-                        let [field, order] = params.ordered_by.split('.');
-                        table = table.orderBy(this.indexObject[field].path);
-
-                        if (order === 'desc') {
-                            table = table.reverse();
-                        }
-                    }
-
-                    //filters
-                    filters.forEach((key) => {
-                        let value = params[key];
-                        let type = this.indexObject[key].type;
-                        let path = this.indexObject[key].path;
-
-                        if (type === 'number') {
-                            value = parseInt(value);
-                        }
-
-                        table = table.filter((engagement) => {
-                            return _.get(engagement, path) === value;
-                        });
-                    });
-
-                    //search
-                    if (typeof searchString === 'string' && searchString) {
-                        searchString = searchString.toLowerCase();
-
-                        table = table.filter((engagement) => {
-                            let foundIndex = searchFields.findIndex((key) => {
-                                let path = this.indexObject[key].path;
-                                let value = _.get(engagement, path) || '';
-
-                                return value.toLowerCase().indexOf(searchString) !== -1;
-                            });
-
-                            return foundIndex !== -1;
-                        });
-                    }
-
-                    return table.count().then((listLength) => {
-                        this.set('listLength', listLength);
-
-                        if (!this.withoutPagination && params.size) {
-                            table.offset( ((params.page || 1) - 1) * params.size )
-                                .limit(+params.size);
-                        }
-
-                        return table.toArray();
-                    });
-                }).then((engagementsList) => {
-                    this._setEngagementsList(engagementsList);
-                });
+                let endpoint = this.getEndpoint('engagementsList');
+                endpoint.url += this.getQueriesString();
+                this.endpoint = endpoint;
             },
 
-            _validatePageQuery: function() {
-                if (!this.requestQueries) return;
-                if (!this.requestQueries.page || !this.requestQueries.size) return true;
-                let lastPage = this.engagements.length % this.requestQueries.size ?
-                        Math.floor(this.engagements.length / this.requestQueries.size + 1) :
-                this.engagements.length / this.requestQueries.size;
+            reloadRequired: function () {
+                let lastKeys = _.keys(this.lastState);
+                let requestQueriesKeys = _.keys(this.requestQueries);
+                let filtersKeys = ['auditor', 'partner', 'type', 'status'];
+                let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
-                if (+this.requestQueries.page > lastPage) {
-                    //update page query
-                    this.updateQueries({page: `${lastPage}`})
-                } else {
-                    return true;
+                queriesKeys = _.uniq(queriesKeys);
+                queriesKeys = _.difference(queriesKeys, filtersKeys);
+
+                let otherQueriesChanged = queriesKeys.some((key) => {
+                    let lastValue = this.lastState[key];
+                    let newValue = this.requestQueries[key];
+                    return lastValue !== newValue;
+                });
+
+                let filtersChanged = !filtersKeys.every((key) => {
+                    let lastValue = this.lastState[key];
+                    let newValue = this.requestQueries[key];
+                    return lastValue === newValue || newValue === true || (lastValue === true && newValue === undefined);
+                });
+
+                return otherQueriesChanged || filtersChanged;
+            },
+
+            _responseError: function(e, detail) {
+                let responseData = detail && detail.request && detail.request.detail &&
+                    detail.request.detail.request && detail.request.detail.request.xhr;
+                let {status, response} = responseData || {};
+
+                //wrong page in queries
+                if (status === 404 && this.requestQueries.page !== '1') {
+                    this.updateQueries({page: '1'});
+                    return;
                 }
+
+                this.fire('global-loading', {type: 'engagements-list'});
+                this.fire('toast', {text: 'Page not found.'});
             },
-
-            _setListLength: function(engagements) {
-                return engagements.length;
-            },
-
-            checkExpire: function() {
-                if (this.updateListData === undefined || this.updateListData) { return; }
-                this.appDexieDb.collectionsList
-                        .get('engagements')
-                        .then((data) => {
-                            if (data && +data.expire <= 0) {
-                                this.updateListData = true;
-                                this.endpoint = this.getEndpoint('engagementsList');
-                            }
-                        })
-            }
-
         });
 
     </script>

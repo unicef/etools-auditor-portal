@@ -37,11 +37,7 @@ Polymer({
 
     goToFirst: function() { this.set('pageNumber', '1'); },
     goToLeft: function() {
-        if (this.currentPage <= 2 && !this.withoutQueries) {
-            this.updateQueries({page: false});
-        } else {
-            this.set('pageNumber', `${+this.currentPage - 1}`);
-        }
+        this.set('pageNumber', `${+this.currentPage - 1}`);
     },
     goToRight: function() {
         if (this.currentPage !== this.lastPage) { this.set('pageNumber', `${(+this.currentPage || 1) + 1}`); }

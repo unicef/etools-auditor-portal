@@ -4,21 +4,21 @@
     let filters = [
         {
             name: 'auditor',
-            query: 'f_auditor',
+            query: 'auditor',
             optionValue: 'id',
             optionLabel: 'name',
             selection: []
         },
         {
             name: 'partner',
-            query: 'f_partner_id',
+            query: 'partner',
             optionValue: 'id',
             optionLabel: 'name',
             selection: []
         },
         {
             name: 'engagement type',
-            query: 'f_type',
+            query: 'type',
             hideSearch: true,
             optionValue: 'value',
             optionLabel: 'label',
@@ -35,7 +35,7 @@
         },
         {
             name: 'status',
-            query: 'f_status',
+            query: 'status',
             hideSearch: true,
             optionValue: 'value',
             optionLabel: 'label',
@@ -97,20 +97,20 @@
                     return [{
                         'size': 15,
                         'label': 'Purchase Order #',
-                        'name': 'po',
+                        'name': 'agreement__order_number',
                         'link': '*engagement_type*/*data_id*/overview',
                         'ordered': false,
                         'path': 'agreement.order_number'
                     }, {
                         'size': 20,
                         'label': 'Partner Name',
-                        'name': 'partner',
+                        'name': 'partner__name',
                         'ordered': false,
                         'path': 'partner.name'
                     }, {
                         'size': 20,
                         'label': 'Auditor',
-                        'name': 'auditor',
+                        'name': 'agreement__audit_organization__name',
                         'ordered': false,
                         'path': 'agreement.audit_organization.name'
                     }, {
@@ -138,10 +138,6 @@
                 type: Array,
                 value: []
             },
-            engagements: {
-                type: Array,
-                value: []
-            },
             newBtnLink: {
                 type: String,
                 value: '/engagements/new/overview'
@@ -153,20 +149,17 @@
         },
         listeners: {},
         observers: [
-            'setFiltersSelections(engagements.*)'
+            'setFiltersSelections(engagementsList.*)'
         ],
         _showAddButton: function() {
             return this.actionAllowed('new_engagement', 'createEngagement');
-        },
-        checkExpire: function() {
-            this.$.listData.checkExpire();
         },
         _getFilterIndex: function(query) {
             return this.$.filters._getFilterIndex(query);
         },
         setFiltersSelections: function() {
-            let partnersFilterIndex = this._getFilterIndex('f_partner_id');
-            let auditorsFilterIndex = this._getFilterIndex('f_auditor');
+            let partnersFilterIndex = this._getFilterIndex('partner');
+            let auditorsFilterIndex = this._getFilterIndex('auditor');
 
             if (partnersFilterIndex !== -1) {
                 this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners'));

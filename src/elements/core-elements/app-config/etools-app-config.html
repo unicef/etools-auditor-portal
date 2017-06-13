@@ -10,8 +10,6 @@ App global configuration
     var etoolsCustomDexieDb = new Dexie('AP');
     etoolsCustomDexieDb.version(1).stores({
         collectionsList: '&name, expire',
-        engagements: `id, partner.name, partner.id, type, status,
-            agreement.order_number, agreement.audit_organization.name, agreement.audit_organization.id`,
         partners: 'id',
         auditors: 'id'
     });
@@ -30,9 +28,7 @@ App global configuration
                 url: '/users/api/profile/'
             },
             engagementsList: {
-                url: '/api/audit/engagements/?page_size=all',
-                exp: 10 * 60 * 1000, // 10min
-                cachingKey: 'engagements'
+                url: '/api/audit/engagements/'
             },
             engagementInfo: {
                 template: '/api/audit/<%=type%>/<%=id%>/'
@@ -76,9 +72,7 @@ App global configuration
                 url: '/data/user-profile.json'
             },
             engagementsList: {
-                url: '/data/engagements-list.json',
-                exp: 6 * 60 * 60 * 1000, // 6h
-                cachingKey: 'engagements'
+                url: '/data/engagements-list.json'
             }
         },
 
@@ -112,7 +106,6 @@ App global configuration
                 localStorage.removeItem('userId');
 
                 etoolsCustomDexieDb.collectionsList.clear();
-                etoolsCustomDexieDb.engagements.clear();
                 etoolsCustomDexieDb.partners.clear();
                 etoolsCustomDexieDb.auditors.clear();
             },

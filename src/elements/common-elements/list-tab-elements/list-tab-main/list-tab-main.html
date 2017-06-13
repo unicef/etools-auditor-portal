@@ -33,10 +33,19 @@
                 </list-element>
             </template>
 
+            <template is="dom-if" if="[[!data.length]]">
+                <list-element
+                        class="list-element"
+                        no-additional
+                        data="[[emptyObj]]"
+                        headings="[[headings]]">
+                </list-element>
+            </template>
+
             <template is="dom-if" if="[[!withoutPagination]]" restamp>
                 <list-pagination
                         id="list-pagination"
-                        page-size="{{queryParams.size}}"
+                        page-size="{{queryParams.page_size}}"
                         page-number="{{queryParams.page}}"
                         datalength="[[listLength]]"
                         page-marker="[[pageMarker]]"

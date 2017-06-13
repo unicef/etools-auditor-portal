@@ -101,35 +101,24 @@
             myEl.filters = _.cloneDeep(filters);
         });
 
-        describe('method ready()', function () {
-            it('sets pageReloaded property to true', function () {
-                myEl.pageReloaded = undefined;
-                assert.isUndefined(myEl.pageReloaded);
-                myEl.ready();
-                assert.isTrue(myEl.pageReloaded);
-            });
-        });
-
         describe('method searchKeyDown()', function () {
             this.timeout(350);
 
-            it('updates "search" and "filters_changed" query params after 300ms delay', function (done) {
+            it('updates "search", "page" and "filters_changed" query params after 300ms delay', function (done) {
                 var queryParams = myEl.parseQueries();
                 var searchString = 'search';
 
                 assert.isUndefined(queryParams.search);
-                assert.isUndefined(queryParams.filters_changed);
 
                 myEl.searchString = searchString;
                 myEl.searchKeyDown();
                 queryParams = myEl.parseQueries();
                 assert.isUndefined(queryParams.search);
-                assert.isUndefined(queryParams.filters_changed);
 
                 setTimeout(function () {
                     queryParams = myEl.parseQueries();
                     assert.equal(queryParams.search, searchString);
-                    assert.equal(queryParams.filters_changed, 'true');
+                    assert.equal(queryParams.page, '1');
                     done();
                 }, 300);
             });
@@ -163,7 +152,7 @@
             });
         });
 
-        describe('method addFilter(e)', function () {
+        describe('method addFilter(e)', function () { //TODO: tests
             var query = filters[0].query;
 
             beforeEach(function () {
@@ -257,7 +246,7 @@
 
                 myEl.removeFilter(e);
                 flush(function () {
-                    var args = {filters_changed: 'true'};
+                    var args = {};
                     args[e.query] = undefined;
                     assert.equal(myEl.availableFilters.length, filters.length);
                     assert.equal(myEl.usedFilters.length, 0);
@@ -265,6 +254,20 @@
                     assert.isTrue(myEl.updateQueries.calledWithMatch(args));
                     done();
                 });
+            });
+
+            it('resets filter query and page number', function () {
+                sinon.spy(myEl, 'updateQueries');
+                assert.equal(myEl.availableFilters.length, filters.length - 1);
+                assert.equal(myEl.usedFilters.length, 1);
+
+                let query = filters[0].query;
+                let args = {query: undefined, page: '1'};
+                myEl.queryParams[query] = 'some value';
+
+                myEl.removeFilter(e);
+                assert.isTrue(myEl.updateQueries.calledOnce);
+                assert.isTrue(myEl.updateQueries.calledWithMatch(args));
             });
 
             it('.filter-reset-button removes corresponding filter', function (done) {
@@ -293,7 +296,7 @@
             });
         });
 
-        describe('method _restoreFilters()', function () {
+        describe('method _restoreFilters()', function () { //TODO: tests
             beforeEach(function () {
                 myEl.queryParams = {};
             });
@@ -329,7 +332,7 @@
                 });
             });
 
-            it('resets availableFilters and usedFilters when pageReloaded=true', function () {
+            xit('resets availableFilters and usedFilters when pageReloaded=true', function () {
                 myEl.pageReloaded = true;
                 myEl._restoreFilters();
                 myEl.flushDebouncer('_restoreFilters');
@@ -339,7 +342,7 @@
                 assert.isFalse(myEl.pageReloaded);
             });
 
-            it('resets availableFilters and usedFilters when queryParams.filters_changed is undefined', function () {
+            xit('resets availableFilters and usedFilters when queryParams.filters_changed is undefined', function () {
                 myEl.pageReloaded = false;
                 myEl.queryParams.filters_changed = undefined;
                 myEl._restoreFilters();
@@ -350,7 +353,7 @@
                 assert.isFalse(myEl.pageReloaded);
             });
 
-            it('doesn\'t reset availableFilters and usedFilters when pageReloaded=false', function () {
+            xit('doesn\'t reset availableFilters and usedFilters when pageReloaded=false', function () {
                 myEl._restoreFilters();
                 myEl.flushDebouncer('_restoreFilters');
                 myEl.addFilter(myEl.filters[2].query);
@@ -448,7 +451,7 @@
                 var e = {path: [{id: filterId}]};
                 var filterValue = myEl.filters[2].selection[filter.optionValue];
                 var detail = {selectedValues: {}};
-                var args = {filters_changed: 'true'};
+                var args = {page: '1'};
 
                 detail.selectedValues[filter.optionValue] = filterValue;
                 args[filterId] = filterValue;
