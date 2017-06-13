@@ -129,7 +129,8 @@
                 'size': 65,
                 'label': 'File Attachment',
                 'property': 'file_name',
-                'custom': true
+                'custom': true,
+                'doNotHide': true
             }];
 
             if (showEditButton) {
@@ -175,7 +176,7 @@
             if (file && file instanceof File) {
                 let blob = new Blob([file.raw]);
 
-                this.editedItem.file_name = file.name;
+                this.set('editedItem.file_name', file.name);
                 this.editedItem.raw = file;
                 this.editedItem.date = new Date().getTime();
                 this.editedItem.file = URL.createObjectURL(blob);
