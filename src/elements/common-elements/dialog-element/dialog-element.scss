@@ -2,19 +2,21 @@ paper-dialog {
     background-color: #ffffff;
     border-radius: 4px;
     overflow: hidden;
+    width: 96%;
+    max-width: 700px !important;
 }
 
-@media screen and (max-width: 767px) {
-    paper-dialog {
-        width: calc(100vw - 30px);
-    }
-}
-
-@media screen and (max-width: 480px) {
-    paper-dialog {
-        width: calc(100vw - 30px);
-    }
-}
+//@media screen and (max-width: 767px) {
+//    paper-dialog {
+//        width: calc(100vw - 30px);
+//    }
+//}
+//
+//@media screen and (max-width: 480px) {
+//    paper-dialog {
+//        width: calc(100vw - 30px);
+//    }
+//}
 
 #buttons {
     display: block;
@@ -41,10 +43,11 @@ paper-dialog {
     color: var(--module-primary);
     font-weight: 500;
     z-index: 5;
+    margin-right: 9px;
 }
 
 .dialog-title {
-    padding: 16px 24px 10px !important;
+    padding: 16px 24px 10px 36px !important;
     min-height: 26px;
     margin-top: 0 !important;
 }

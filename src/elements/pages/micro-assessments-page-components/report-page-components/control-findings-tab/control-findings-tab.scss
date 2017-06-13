@@ -20,7 +20,10 @@
     }
 
     .repeatable-item-container.row-h  {
-        min-width: 700px;
+        width: 100%;
+        min-width: 0 !important;
+        padding: 0 24px !important;
+        margin-bottom: 0;
     }
 
     .confirm-text {
@@ -31,6 +34,11 @@
         overflow: visible !important;
     }
 }
+//
+//dialog-element {
+//    width: 100%;
+//    max-width: 700px !important;
+//}
 
 etools-content-panel {
     --ecp-content: #{'{

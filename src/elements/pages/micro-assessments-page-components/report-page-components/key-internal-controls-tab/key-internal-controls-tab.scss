@@ -6,6 +6,10 @@
         box-sizing: border-box;
     }
 
+    .row-h.repeatable-item-container[without-line] {
+        padding: 0 !important;
+    }
+
     .repeatable-item-container .repeatable-item-content {
         margin-left: 25px;
     }
