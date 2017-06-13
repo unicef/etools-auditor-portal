@@ -30,6 +30,10 @@
                 requestQueries: {
                     type: Object
                 },
+                lastState: {
+                    type: Object,
+                    value: {}
+                },
                 listLength: {
                     type: Number,
                     notify: true
@@ -53,11 +57,44 @@
             },
 
             getEngagementsList: function() {
+                let reloadRequired = this.reloadRequired();
+
+                this.lastState = _.cloneDeep(this.requestQueries);
+
+                if (!reloadRequired) {
+                    //not reload the page
+                    return;
+                }
+
                 this.fire('global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
 
                 let endpoint = this.getEndpoint('engagementsList');
                 endpoint.url += this.getQueriesString();
                 this.endpoint = endpoint;
+            },
+
+            reloadRequired: function () {
+                let lastKeys = _.keys(this.lastState);
+                let requestQueriesKeys = _.keys(this.requestQueries);
+                let filtersKeys = ['auditor', 'partner', 'type', 'status'];
+                let queriesKeys = lastKeys.concat(requestQueriesKeys);
+
+                queriesKeys = _.uniq(queriesKeys);
+                queriesKeys = _.difference(queriesKeys, filtersKeys);
+
+                let otherQueriesChanged = queriesKeys.some((key) => {
+                    let lastValue = this.lastState[key];
+                    let newValue = this.requestQueries[key];
+                    return lastValue !== newValue;
+                });
+
+                let filtersChanged = !filtersKeys.every((key) => {
+                    let lastValue = this.lastState[key];
+                    let newValue = this.requestQueries[key];
+                    return lastValue === newValue || newValue === true || (lastValue === true && newValue === undefined);
+                });
+
+                return otherQueriesChanged || filtersChanged;
             },
 
             _responseError: function(e, detail) {
