@@ -21,10 +21,10 @@
         color: var(--gray-mid);
     }
 
-    .repeatable-item-container {
+    .repeatable-item-container[without-line] {
         min-width: 0 !important;
         padding: 0 24px !important;
-        margin-bottom: 0;
+        margin-bottom: 0 !important;
     }
 
     .confirm-text {
