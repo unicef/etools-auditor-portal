@@ -50,6 +50,13 @@ Polymer({
         engagementType: {
             type: String,
             value: ''
+        },
+        maxDate: {
+            type: Date,
+            value: function() {
+                let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+                return new Date(nextDay - 1);
+            }
         }
     },
     listeners: {
