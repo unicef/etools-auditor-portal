@@ -103,6 +103,10 @@ Polymer({
             value = this._refactorValue(item.name, value);
         } else if (item.name === 'date') {
             value = this._refactorTime(value);
+        } else if (item.name === 'currency') {
+            value = this._refactorCurrency(value);
+        } else if (item.name === 'percents') {
+            value = (typeof value === 'number' && !isNaN(+value)) ? `${+value} %` : null;
         }
 
         if (bool) {
@@ -124,6 +128,10 @@ Polymer({
         if (date.toString() !== 'Invalid Date') {
             return moment.utc(date).format(format);
         }
+    },
+    _refactorCurrency: function(value) {
+        value = +value || 0;
+        return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
     },
     _getAdditionalValue: function(item) {
         if (!item.additional) { return; }

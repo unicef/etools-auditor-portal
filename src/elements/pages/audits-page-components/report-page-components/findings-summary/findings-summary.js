@@ -56,16 +56,19 @@ Polymer({
                 'path': 'partner.name'
             }, {
                 'size': 20,
+                'name': 'currency',
                 'label': 'Audited Expenditure $ ',
                 'path': 'audited_expenditure',
                 'align': 'right'
             }, {
                 'size': 15,
+                'name': 'currency',
                 'label': 'Financial Findings $ ',
                 'path': 'financial_findings',
                 'align': 'right'
             }, {
                 'size': 20,
+                'name': 'percents',
                 'label': '% Of Audited Expenditure',
                 'path': 'percent_of_audited_expenditure',
                 'align': 'right'
