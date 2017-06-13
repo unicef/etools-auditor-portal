@@ -80,6 +80,8 @@
             @apply(--layout-warp);
         }
 
+        iron-icon { display: inline-block !important;}
+
         .status-icon {
             .icon-wrapper {
                 background-color: var(--gray-light);
@@ -128,15 +130,6 @@
             }
         }
 
-        //old version of status tree
-        //&.active {
-        //    .status-icon .icon-wrapper { background-color: var(--module-primary);  }
-        //    .status {
-        //        color: inherit;
-        //        font-weight: bold;
-        //    }
-        //}
-
         &.active,
         &.completed {
             .status-icon .icon-wrapper {
@@ -152,12 +145,12 @@
                 font-weight: bold;
             }
         }
-        &.pending iron-icon[icon="check"] { display: none; }
+        &.pending iron-icon { display: none; }
 
         //added to new version of status tree
         &.active.first {
             .status-icon .icon-wrapper { background-color: var(--module-primary);  }
-            iron-icon[icon="check"] { display: none; }
+            iron-icon { display: none; }
             .status-icon .icon-wrapper .status-nr { display: inherit; }
         }
 

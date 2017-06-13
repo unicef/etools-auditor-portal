@@ -1,10 +1,17 @@
-<!--import [polymer, paper-dropdown-menu, paper-listbox, paper-item]-->
-<!--import [country-flag-styles, countries-data]-->
+<!--import [polymer, etools-app-config, paper-dropdown-menu, paper-listbox, paper-item, etools-ajax]-->
+<!--import [country-flag-styles]-->
 
 <dom-module id="countries-dropdown">
   <template>
     <style include="country-flag-styles"></style>
     <!-- inject styles './../header-styles.scss'-->
+
+    <etools-ajax method="POST"
+                 url="{{url}}"
+                 body="{{countryData}}"
+                 on-success="_handleResponse"
+                 on-forbidden="_handleError"
+                 on-fail="_handleError"></etools-ajax>
 
     <paper-menu-button id="dropdown" vertical-align="top"
                        vertical-offset="56"
@@ -19,7 +26,7 @@
 
       <paper-menu class="dropdown-content mw-220" selected="[[current]]" on-iron-select="_countrySelected">
         <template id="repeat" is="dom-repeat" items="[[countries]]">
-          <paper-item>
+          <paper-item on-tap="_changeCountry">
             [[item.name]]
           </paper-item>
         </template>

@@ -61,6 +61,9 @@ App global configuration
             },
             userExistence: {
                 template: '/api/audit/audit-organizations/<%=id%>/staff-members/?search=<%=email%>'
+            },
+            changeCountry: {
+                url: '/users/api/changecountry/'
             }
         },
         localEndpoints: {
@@ -118,21 +121,6 @@ App global configuration
                 path = path || '';
                 return this.basePath + path;
             }
-        },
-
-        // permissions
-        permissions: {
-            superPermissions: [
-
-            ], //for testing
-            unicefUserPermissions: [
-
-            ],
-            unicefFpPermissions: [],
-            pmePermissions: [],
-            tpmPermissions: [
-
-            ]
         }
 
     };
