@@ -176,7 +176,7 @@
             });
         });
 
-        describe('method addFilter(e)', function () { //TODO: tests
+        describe('method addFilter(e)', function () {
             var query = filters[0].query;
 
             beforeEach(function () {
@@ -211,6 +211,42 @@
                     assert.equal(myEl.availableFilters.length, filters.length - 1);
                     assert.equal(myEl.usedFilters.length, 1);
                     assert.isTrue(myEl._setFilterValue.calledOnce);
+                    done();
+                });
+            });
+
+            it('calls updateQueries() with filter default value if such query is not defined in queryParams', function (done) {
+                var e = {model: {item: {query: query}}};
+                sinon.spy(myEl, 'updateQueries');
+
+                assert.equal(myEl.availableFilters.length, filters.length);
+                assert.equal(myEl.usedFilters.length, 0);
+
+                myEl.addFilter(e);
+                flush(function () {
+                    var args = {};
+                    args[query] = true;
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isTrue(myEl.updateQueries.calledOnce);
+                    assert.isTrue(myEl.updateQueries.calledWith(args));
+                    done();
+                });
+            });
+
+            it('not calls updateQueries() if such query is defined in queryParams', function (done) {
+                var e = {model: {item: {query: query}}};
+                sinon.spy(myEl, 'updateQueries');
+                myEl.queryParams[query] = '1';
+
+                assert.equal(myEl.availableFilters.length, filters.length);
+                assert.equal(myEl.usedFilters.length, 0);
+
+                myEl.addFilter(e);
+                flush(function () {
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isFalse(myEl.updateQueries.called);
                     done();
                 });
             });
@@ -320,7 +356,7 @@
             });
         });
 
-        describe('method _restoreFilters()', function () { //TODO: tests
+        describe('method _restoreFilters()', function () {
             beforeEach(function () {
                 myEl.queryParams = {};
             });
@@ -335,6 +371,14 @@
                     assert.equal(myEl.searchString, searchString);
                     done();
                 });
+            });
+
+            it('resets availableFilters and usedFilters', function () {
+                myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
+
+                assert.deepEqual(myEl.availableFilters, myEl.filters);
+                assert.deepEqual(myEl.usedFilters, []);
             });
 
             it('restores filters from query params', function (done) {
@@ -354,41 +398,6 @@
                     assert.isTrue(myEl.addFilter.calledWith(query));
                     done();
                 });
-            });
-
-            xit('resets availableFilters and usedFilters when pageReloaded=true', function () {
-                myEl.pageReloaded = true;
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-
-                assert.deepEqual(myEl.availableFilters, myEl.filters);
-                assert.deepEqual(myEl.usedFilters, []);
-                assert.isFalse(myEl.pageReloaded);
-            });
-
-            xit('resets availableFilters and usedFilters when queryParams.filters_changed is undefined', function () {
-                myEl.pageReloaded = false;
-                myEl.queryParams.filters_changed = undefined;
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-
-                assert.deepEqual(myEl.availableFilters, myEl.filters);
-                assert.deepEqual(myEl.usedFilters, []);
-                assert.isFalse(myEl.pageReloaded);
-            });
-
-            xit('doesn\'t reset availableFilters and usedFilters when pageReloaded=false', function () {
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-                myEl.addFilter(myEl.filters[2].query);
-
-                myEl.pageReloaded = false;
-                myEl.queryParams.filters_changed = 'true';
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-
-                assert.notDeepEqual(myEl.availableFilters, myEl.filters);
-                assert.notDeepEqual(myEl.usedFilters, []);
             });
         });
 
