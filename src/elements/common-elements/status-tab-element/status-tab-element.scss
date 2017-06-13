@@ -145,12 +145,12 @@
                 font-weight: bold;
             }
         }
-        &.pending iron-icon { display: none; }
+        &.pending iron-icon { display: none !important; }
 
         //added to new version of status tree
         &.active.first {
             .status-icon .icon-wrapper { background-color: var(--module-primary);  }
-            iron-icon { display: none; }
+            iron-icon { display: none !important; }
             .status-icon .icon-wrapper .status-nr { display: inherit; }
         }
 
