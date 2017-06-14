@@ -15,7 +15,7 @@
                 value: function() {
                     return {
                         id: undefined,
-                        date: undefined,
+                        created: undefined,
                         file: undefined,
                         file_name: undefined,
                         raw: undefined,
@@ -124,7 +124,7 @@
                 'size': '100px',
                 'name': 'date',
                 'label': 'Date Uploaded',
-                'path': 'date'
+                'path': 'created'
             }, {
                 'size': 65,
                 'label': 'File Attachment',
@@ -178,7 +178,7 @@
 
                 this.set('editedItem.file_name', file.name);
                 this.editedItem.raw = file;
-                this.editedItem.date = new Date().getTime();
+                this.editedItem.created = new Date().toISOString();
                 this.editedItem.file = URL.createObjectURL(blob);
 
                 return true;
@@ -268,7 +268,7 @@
                             id: this.editedItem.id,
                             file_type: this.editedItem.file_type,
                             hyperlink: this.editedItem.file,
-                            date: this.editedItem.date,
+                            created: this.editedItem.created,
                             _delete: this.editedItem._delete
                         });
                     }
@@ -337,7 +337,7 @@
                 valid = false;
             }
 
-            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw || !editedItem.date)) {
+            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.rawd)) {
                 this._setFileInvalid('File is not selected', true);
                 valid = false;
             }
