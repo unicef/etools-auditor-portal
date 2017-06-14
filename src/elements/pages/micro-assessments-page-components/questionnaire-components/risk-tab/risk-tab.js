@@ -45,6 +45,7 @@ Polymer({
                 return [
                     {
                         'size': 100,
+                        'class': 'pr-25',
                         'label': 'Question',
                         'name': 'header',
                         'html': true
