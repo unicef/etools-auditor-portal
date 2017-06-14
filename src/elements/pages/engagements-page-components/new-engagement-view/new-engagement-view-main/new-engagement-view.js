@@ -18,7 +18,12 @@ Polymer({
                     staff_members: [],
                     type: {},
                     engagement_attachments: [],
-                    agreement: {}
+                    agreement: {},
+                    date_of_field_visit: null,
+                    date_of_draft_report_to_ip: null,
+                    date_of_comments_by_ip: null,
+                    date_of_draft_report_to_unicef: null,
+                    date_of_comments_by_unicef: null
                 };
             }
         }
@@ -69,7 +74,12 @@ Polymer({
                 staff_members: [],
                 type: {},
                 engagement_attachments: [],
-                agreement: {}
+                agreement: {},
+                date_of_field_visit: null,
+                date_of_draft_report_to_ip: null,
+                date_of_comments_by_ip: null,
+                date_of_draft_report_to_unicef: null,
+                date_of_comments_by_unicef: null
             });
 
             this.$.engagementDetails.resetValidationErrors();

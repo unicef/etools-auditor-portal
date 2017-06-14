@@ -3,8 +3,9 @@
 
 <dom-module id="key-internal-controls-weaknesses">
     <template>
-        <!-- inject styles './key-internal-controls-weaknesses.scss'-->
         <style include="tab-inputs-styles module-styles"></style>
+        <!-- inject styles './key-internal-controls-weaknesses.scss'-->
+
         <etools-content-panel panel-title="[[subjectAreas.header]]">
             <list-header no-ordered
                          data="[[columns]]">
@@ -56,47 +57,50 @@
                         </div>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
-                                <paper-input
-                                        class="disabled-as-readonly validate-input"
-                                        disabled="{{requestInProcess}}"
-                                        readonly$="{{requestInProcess}}"
+                                <paper-textarea
+                                        label="Key control observation"
+                                        max-rows="4"
                                         value="{{editedArea.extra.key_control_observation}}"
-                                        invalid="{{errors.blueprints.0.extra}}"
-                                        error-message="{{errors.blueprints.0.extra}}"
                                         on-focus="_resetFieldError"
-                                        always-float-label
-                                        label="Key control observation">
-                                </paper-input>
+                                        placeholder="Enter Observation"
+                                        class="disabled-as-readonly validate-input"
+                                        disabled="{{requestInProcess}}"
+                                        readonly="{{requestInProcess}}"
+                                        invalid="{{errors.blueprints.0.extra}}"
+                                        error-message="{{errors.blueprints.0.extra}}">
+                                </paper-textarea>
                             </div>
                         </div>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
-                                <paper-input
-                                        class="disabled-as-readonly validate-input"
-                                        disabled="{{requestInProcess}}"
-                                        readonly$="{{requestInProcess}}"
+                                <paper-textarea
+                                        label="Recommendation"
+                                        max-rows="4"
                                         value="{{editedArea.extra.recommendation}}"
-                                        invalid="{{errors.blueprints.0.extra}}"
-                                        error-message="{{errors.blueprints.0.extra}}"
                                         on-focus="_resetFieldError"
-                                        always-float-label
-                                        label="Recommendation">
-                                </paper-input>
+                                        placeholder="Enter Recommendation"
+                                        class="disabled-as-readonly validate-input"
+                                        disabled="{{requestInProcess}}"
+                                        readonly="{{requestInProcess}}"
+                                        invalid="{{errors.blueprints.0.extra}}"
+                                        error-message="{{errors.blueprints.0.extra}}">
+                                </paper-textarea>
                             </div>
                         </div>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
-                                <paper-input
+                                <paper-textarea
+                                        label="IP Response"
+                                        max-rows="4"
+                                        value="{{editedArea.extra.ip_response}}"
+                                        on-focus="_resetFieldError"
+                                        placeholder="Enter Response"
                                         class="disabled-as-readonly validate-input"
                                         disabled="{{requestInProcess}}"
-                                        readonly$="{{requestInProcess}}"
-                                        value="{{editedArea.extra.ip_response}}"
+                                        readonly="{{requestInProcess}}"
                                         invalid="{{errors.blueprints.0.extra}}"
-                                        error-message="{{errors.blueprints.0.extra}}"
-                                        on-focus="_resetFieldError"
-                                        always-float-label
-                                        label="IP Response">
-                                </paper-input>
+                                        error-message="{{errors.blueprints.0.extra}}">
+                                </paper-textarea>
                             </div>
                         </div>
                     </div>

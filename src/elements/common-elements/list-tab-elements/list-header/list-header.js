@@ -30,10 +30,19 @@ Polymer({
     _changeOrder: function(event) {
         if (this.noOrdered) { return; }
 
-        let newOrderBy = event.model.item.name,
-            [currentOrderName, direction] = this.orderBy.split('.');
+        let newOrderName = event.model.item.name;
+        let currentOrderName = this.orderBy;
+        let direction = '-';
 
-        direction = newOrderBy !== currentOrderName || direction !== 'asc' ? 'asc' : 'desc';
-        this.orderBy = `${newOrderBy}.${direction}`;
+        if (currentOrderName.startsWith('-')) {
+            direction = '';
+            currentOrderName = currentOrderName.slice(1);
+        }
+
+        if (newOrderName !== currentOrderName) {
+            direction = '';
+        }
+
+        this.orderBy = `${direction}${newOrderName}`;
     }
 });

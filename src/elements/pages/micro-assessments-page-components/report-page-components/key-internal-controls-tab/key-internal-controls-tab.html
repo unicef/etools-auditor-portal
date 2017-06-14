@@ -3,8 +3,9 @@
 
 <dom-module id="key-internal-controls-tab">
     <template>
-        <!-- inject styles './key-internal-controls-tab.scss'-->
         <style include="tab-inputs-styles module-styles"></style>
+        <!-- inject styles './key-internal-controls-tab.scss'-->
+
         <etools-content-panel panel-title="[[subjectAreas.header]]">
             <list-header no-ordered data="[[columns]]"></list-header>
 
@@ -55,7 +56,7 @@
                                                 error-message="{{errors.children.0.blueprints.0.extra}}"
                                                 id="briefJustification"
                                                 class="disabled-as-readonly validate-input required"
-                                                value="{{editedArea.blueprints.0.extra}}"
+                                                value="{{editedArea.blueprints.0.extra.comments}}"
                                                 on-focus="_resetFieldError"
                                                 placeholder="Enter Brief Justification">
                                 </paper-textarea>

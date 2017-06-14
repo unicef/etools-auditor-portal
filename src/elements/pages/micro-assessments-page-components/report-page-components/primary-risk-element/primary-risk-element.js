@@ -37,8 +37,13 @@ Polymer({
             return;
         }
 
+        let extra = {comments: ''};
+        if (_.isJSONObj(this.riskData.blueprints[0].extra)) {
+            extra = JSON.parse(this.riskData.blueprints[0].extra);
+        }
+
         this.set('primaryArea.value', this.riskOptions[this.riskData.blueprints[0].value]);
-        this.set('primaryArea.extra', this.riskData.blueprints[0].extra);
+        this.set('primaryArea.extra', extra);
     },
     validate: function(forSave) {
         if (this.primaryArea.extra && !this.primaryArea.value) {
@@ -69,14 +74,14 @@ Polymer({
             return null;
         }
         if (this.primaryArea.value.value === this.originalData.blueprints[0].value &&
-            this.primaryArea.extra === this.originalData.blueprints[0].extra) {
+            JSON.stringify(this.primaryArea.extra) === this.originalData.blueprints[0].extra) {
             return null;
         }
 
         let blueprint = {
             id: this.riskData.blueprints[0].id,
             value: this.primaryArea.value.value,
-            extra: this.primaryArea.extra || ''
+            extra: JSON.stringify(this.primaryArea.extra || '')
         };
 
         return {

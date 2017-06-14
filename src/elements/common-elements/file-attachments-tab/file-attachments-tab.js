@@ -15,7 +15,7 @@
                 value: function() {
                     return {
                         id: undefined,
-                        date: undefined,
+                        created: undefined,
                         file: undefined,
                         file_name: undefined,
                         raw: undefined,
@@ -46,7 +46,6 @@
                 value: {
                     title: 'Edit Attachment',
                     confirmBtn: 'Edit',
-                    cancelBtn: 'Delete'
                 }
             },
             multiple: {
@@ -82,6 +81,7 @@
         },
         listeners: {
             'dialog-confirmed': '_addItemFromDialog',
+            'delete-confirmed': 'removeItem',
             'dialog-cancelled': '_handleDialogCancel'
         },
         observers: [
@@ -124,12 +124,13 @@
                 'size': '100px',
                 'name': 'date',
                 'label': 'Date Uploaded',
-                'path': 'date'
+                'path': 'created'
             }, {
                 'size': 65,
                 'label': 'File Attachment',
                 'property': 'file_name',
-                'custom': true
+                'custom': true,
+                'doNotHide': true
             }];
 
             if (showEditButton) {
@@ -175,9 +176,9 @@
             if (file && file instanceof File) {
                 let blob = new Blob([file.raw]);
 
-                this.editedItem.file_name = file.name;
+                this.set('editedItem.file_name', file.name);
                 this.editedItem.raw = file;
-                this.editedItem.date = new Date().getTime();
+                this.editedItem.created = new Date().toISOString();
                 this.editedItem.file = URL.createObjectURL(blob);
 
                 return true;
@@ -267,7 +268,7 @@
                             id: this.editedItem.id,
                             file_type: this.editedItem.file_type,
                             hyperlink: this.editedItem.file,
-                            date: this.editedItem.date,
+                            created: this.editedItem.created,
                             _delete: this.editedItem._delete
                         });
                     }
@@ -336,7 +337,7 @@
                 valid = false;
             }
 
-            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw || !editedItem.date)) {
+            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw)) {
                 this._setFileInvalid('File is not selected', true);
                 valid = false;
             }

@@ -27,6 +27,9 @@
             .edit-icon-slot {
                 overflow: visible !important;
             }
+            .repeatable-item-container {
+                margin-bottom: 0 !important;
+            }
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Summary of audit findings">
@@ -59,7 +62,6 @@
                                     label="Implementing partner name"
                                     placeholder="Enter name"
                                     value="{{editedItem.partner.name}}"
-                                    on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly"
                                     readonly
                                     disabled>
@@ -150,13 +152,10 @@
                                     value="{{editedItem.number_of_financial_findings}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
-                                    on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    invalid="{{errors.number_of_financial_findings}}"
-                                    error-message="{{errors.number_of_financial_findings}}">
+                                    disabled
+                                    readonly>
                             </paper-input>
                         </div>
                     </div>

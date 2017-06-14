@@ -56,16 +56,19 @@ Polymer({
                 'path': 'partner.name'
             }, {
                 'size': 20,
+                'name': 'currency',
                 'label': 'Audited Expenditure $ ',
                 'path': 'audited_expenditure',
                 'align': 'right'
             }, {
                 'size': 15,
+                'name': 'currency',
                 'label': 'Financial Findings $ ',
                 'path': 'financial_findings',
                 'align': 'right'
             }, {
                 'size': 20,
+                'name': 'percents',
                 'label': '% Of Audited Expenditure',
                 'path': 'percent_of_audited_expenditure',
                 'align': 'right'
@@ -113,7 +116,8 @@ Polymer({
         'changePermission(basePermissionPath)',
         '_errorHandler(errorObject)',
         '_setDataItems(data)',
-        '_setAuditOpinion(data.audit_opinion, auditOpinions)'
+        '_setAuditOpinion(data.audit_opinion, auditOpinions)',
+        '_computeFFNumber(editedItem.low_risk, editedItem.medium_risk, editedItem.high_risk)',
     ],
 
     ready: function() {
@@ -123,6 +127,10 @@ Polymer({
         this.set('dataItems', [this.data]);
         this.set('itemModel.audit_opinion', this.data.audit_opinion);
         this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
+    },
+    _computeFFNumber: function(lowRisk = 0, mediumRisk = 0, highRisk = 0) {
+        let FFNumber = Number(lowRisk) + Number(mediumRisk) + Number(highRisk);
+        this.set('editedItem.number_of_financial_findings', FFNumber);
     },
     getFindingsSummaryData: function() {
         if (_.isEqual(this.editedItem, this.itemModel)) { return; }

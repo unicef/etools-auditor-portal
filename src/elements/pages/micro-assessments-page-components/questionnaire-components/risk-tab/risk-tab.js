@@ -2,6 +2,9 @@
 
 Polymer({
     is: 'risk-tab',
+    behaviors: [
+        APBehaviors.StaticDataController
+    ],
     properties: {
         questionnaire: {
             type: Object,
@@ -42,14 +45,17 @@ Polymer({
                 return [
                     {
                         'size': 100,
+                        'class': 'pr-25',
                         'label': 'Question',
                         'name': 'header',
                         'html': true
                     }, {
-                        'size': '100px',
-                        'label': 'Risk Points',
+                        'size': '160px',
+                        'label': 'Risk Assessment',
                         'name': 'value',
-                        'align': 'center'
+                        'property': 'value',
+                        'custom': true,
+                        'doNotHide': true
                     },
                     {
                         'size': '45px',
@@ -66,7 +72,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Comments',
-                    'path': 'extra',
+                    'path': 'extra.comments',
                     'size': 100
                 }];
             }
@@ -88,6 +94,10 @@ Polymer({
         '_setOpen(disabled, completed, firstRun, questionnaire)',
         'changePermission(editMode, columns)'
     ],
+
+    ready: function() {
+        this.riskOptions = this.getData('riskOptions');
+    },
 
     changePermission: function(editMode, columns) {
         if (!columns) { return; }
@@ -117,6 +127,39 @@ Polymer({
         this.set('opened', !completed && !disabled);
     },
 
+    _riskValueChanged: function(event, value) {
+        let item = event && event.model && event.model.item,
+            changedValue = value && value.selectedValues && value.selectedValues.value,
+            data;
+
+        if ((!changedValue && changedValue !== 0) || changedValue === item.value) { return; }
+
+        item.value = changedValue;
+
+        let childId = null;
+        if (this.questionnaire.children.length) {
+            childId = event.target && event.target.getAttribute('category-id');
+            if (!childId) { throw 'Can not find category id!'; }
+            data = {
+                id: this.questionnaire.id,
+                children: [{
+                    id: childId,
+                    blueprints: [{value: changedValue, id: item.id}]
+                }]
+            };
+        } else {
+            data = {
+                id: this.questionnaire.id,
+                blueprints: [{value: changedValue, id: item.id}]
+            };
+        }
+        this.fire('risk-value-changed', {data: data});
+    },
+
+    _resetFieldError: function() {
+        this.set('errors.partner', false);
+    },
+
     setPanelTitle: function(header, complited) {
         if (!complited) { return header; }
         return `${header} - ${this.riskRatingOptions[this.questionnaire.risk_rating].toUpperCase()}`;
@@ -136,6 +179,27 @@ Polymer({
             childId = event.target && event.target.getAttribute('category-id');
             if (!childId) { throw 'Can not find category id!'; }
         }
-        this.fire('edit-blueprint', {data: _.cloneDeep(item), tabId: this.questionnaire.id, childId: childId});
+        let data = _.cloneDeep(item);
+        if (data && _.isJSONObj(data.extra)) {
+            data.extra = JSON.parse(data.extra);
+        } else {
+            data.extra = {comments: (data.extra && data.extra.comments) || ''};
+        }
+        this.fire('edit-blueprint', {data: data, tabId: this.questionnaire.id, childId: childId});
     },
+    _setRiskValue: function(value, options) {
+        if (!options) { return; }
+        if (_.isNumber(value)) {
+            return options[value];
+        }
+        return value;
+    },
+    _getStringValue: function(value, options, defaultValue) {
+        if (!options || !_.isNumber(value)) { return defaultValue; }
+        return options[value].label || defaultValue;
+    },
+    _prepareData: function(data) {
+        if (data && _.isJSONObj(data.extra)) { data.extra = JSON.parse(data.extra); }
+        return data;
+    }
 });

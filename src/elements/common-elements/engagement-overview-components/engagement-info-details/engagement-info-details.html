@@ -89,12 +89,13 @@
                                  data-selector="contactedDate"
                                  on-focus="_resetFieldError"
                                  placeholder="Select Contacted Date">
-                        <etools-datepicker-button prefix
-                                                  id="contactedDate"
-                                                  date="[[prepareDate(data.partner_contacted_at)]]"
-                                                  format="YYYY-MM-DD"
-                                                  pretty-date="{{data.partner_contacted_at}}"
-                                                  no-init show-clear-btn></etools-datepicker-button>
+                        <etools-datepicker prefix
+                                           id="contactedDate"
+                                           date="[[prepareDate(data.partner_contacted_at)]]"
+                                           format="YYYY-MM-DD"
+                                           pretty-date="{{data.partner_contacted_at}}"
+                                           max-date="{{maxDate}}"
+                                           no-init show-clear-btn></etools-datepicker>
                     </paper-input>
                 </div>
 

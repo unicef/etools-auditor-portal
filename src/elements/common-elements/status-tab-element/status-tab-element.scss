@@ -80,11 +80,12 @@
             @apply(--layout-warp);
         }
 
+        iron-icon { display: inline-block !important;}
+
         .status-icon {
             .icon-wrapper {
                 background-color: var(--gray-light);
-                @apply(--layout-vertical);
-                @apply(--layout-center-justified);
+                text-align: center;
                 width: 24px;
                 height: 24px;
                 -webkit-border-radius: 50%;
@@ -98,14 +99,12 @@
                     width: 16px;
                     height: 16px;
                     color: #fff;
-                    @apply(--layout-self-center);
                 }
 
                 span {
                     height: 24px;
                     line-height: 24px;
                     font-size: 13px;
-                    @apply(--layout-self-center);
                 }
             }
         }
@@ -131,15 +130,6 @@
             }
         }
 
-        //old version of status tree
-        //&.active {
-        //    .status-icon .icon-wrapper { background-color: var(--module-primary);  }
-        //    .status {
-        //        color: inherit;
-        //        font-weight: bold;
-        //    }
-        //}
-
         &.active,
         &.completed {
             .status-icon .icon-wrapper {
@@ -155,12 +145,12 @@
                 font-weight: bold;
             }
         }
-        &.pending iron-icon[icon="check"] { display: none; }
+        &.pending iron-icon { display: none !important; }
 
         //added to new version of status tree
         &.active.first {
             .status-icon .icon-wrapper { background-color: var(--module-primary);  }
-            iron-icon[icon="check"] { display: none; }
+            iron-icon { display: none !important; }
             .status-icon .icon-wrapper .status-nr { display: inherit; }
         }
 

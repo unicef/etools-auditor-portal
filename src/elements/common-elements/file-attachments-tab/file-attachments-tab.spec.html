@@ -125,12 +125,13 @@
                 'size': '100px',
                 'name': 'date',
                 'label': 'Date Uploaded',
-                'path': 'date'
+                'path': 'created'
             }, {
                 'size': 65,
                 'label': 'File Attachment',
                 'property': 'file_name',
-                'custom': true
+                'custom': true,
+                'doNotHide': true
             }];
             let editButtonOptions = {
                 'size': '45px',
@@ -256,7 +257,7 @@
                 assert.isTrue(myEl._fileSelected(e));
                 assert.equal(myEl.editedItem.file_name, file.name);
                 assert.deepEqual(myEl.editedItem.raw, file);
-                assert.isDefined(myEl.editedItem.date);
+                assert.isDefined(myEl.editedItem.created);
                 assert.isDefined(myEl.editedItem.file);
             });
         });
@@ -595,7 +596,7 @@
                 myEl.canBeRemoved = false;
                 sinon.stub(myEl, '_checkAlreadySelected').returns(true);
                 //file is selected:
-                _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw', date: new Date().getTime()});
+                _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw'});
 
                 assert.isFalse(myEl.validate());
             });
@@ -606,7 +607,7 @@
                 myEl.canBeRemoved = false;
                 sinon.stub(myEl, '_checkAlreadySelected').returns(false);
                 //file is not selected:
-                _.assign(myEl.editedItem, {file_name: undefined, raw: undefined, date: undefined});
+                _.assign(myEl.editedItem, {file_name: undefined, raw: undefined});
                 assert.isFalse(spy.called);
 
                 assert.isFalse(myEl.validate());

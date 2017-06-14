@@ -24,7 +24,6 @@ Polymer({
     _routeConfig: function(view) {
         if (!this.route || !~this.route.prefix.indexOf('/engagements')) { return; }
         if (view === 'list') {
-            this.$.listPage.checkExpire();
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
             this.view = 'list';
@@ -40,15 +39,13 @@ Polymer({
         let queriesUpdates = {},
             queries = this.parseQueries();
 
-        if (!queries.size) { queriesUpdates.size = '10'; }
-        if (!queries.ordered_by) { queriesUpdates.ordered_by = 'po.asc'; }
+        if (!queries.page_size) { queriesUpdates.page_size = '10'; }
+        if (!queries.ordering) { queriesUpdates.ordering = 'agreement__order_number'; }
+        if (!queries.page) { queriesUpdates.page = '1'; }
 
-        if (queries.page) {
-            let page = +queries.page;
-            if (page < 2 || isNaN(page) ||
-                (!!this.lastParams && (queries.size !== this.lastParams.size || queries.ordered_by !== this.lastParams.ordered_by))) {
-                queriesUpdates.page = false;
-            }
+        let page = +queries.page;
+        if (isNaN(page) || (this.lastParams && (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
+            queriesUpdates.page = '1';
         }
 
         if (!this.lastParams) {

@@ -23,21 +23,21 @@
         var filters = [
             {
                 name: 'auditor',
-                query: 'f_auditor',
+                query: 'auditor',
                 optionValue: 'id',
                 optionLabel: 'name',
                 selection: []
             },
             {
                 name: 'partner',
-                query: 'f_partner_id',
+                query: 'partner',
                 optionValue: 'id',
                 optionLabel: 'name',
                 selection: []
             },
             {
                 name: 'engagement type',
-                query: 'f_type',
+                query: 'type',
                 hideSearch: true,
                 optionValue: 'value',
                 optionLabel: 'label',
@@ -54,7 +54,7 @@
             },
             {
                 name: 'status',
-                query: 'f_status',
+                query: 'status',
                 hideSearch: true,
                 optionValue: 'value',
                 optionLabel: 'label',
@@ -90,6 +90,10 @@
                     {
                         label: 'Final Report',
                         value: 'final'
+                    },
+                    {
+                        label: 'Canceled',
+                        value: 'canceled'
                     }
                 ]
             }
@@ -101,35 +105,44 @@
             myEl.filters = _.cloneDeep(filters);
         });
 
-        describe('method ready()', function () {
-            it('sets pageReloaded property to true', function () {
-                myEl.pageReloaded = undefined;
-                assert.isUndefined(myEl.pageReloaded);
-                myEl.ready();
-                assert.isTrue(myEl.pageReloaded);
-            });
-        });
-
         describe('method searchKeyDown()', function () {
             this.timeout(350);
 
-            it('updates "search" and "filters_changed" query params after 300ms delay', function (done) {
+            it('updates "search" and "page" query params after 300ms delay if string length >= 2', function (done) {
                 var queryParams = myEl.parseQueries();
                 var searchString = 'search';
 
                 assert.isUndefined(queryParams.search);
-                assert.isUndefined(queryParams.filters_changed);
 
                 myEl.searchString = searchString;
                 myEl.searchKeyDown();
                 queryParams = myEl.parseQueries();
                 assert.isUndefined(queryParams.search);
-                assert.isUndefined(queryParams.filters_changed);
 
                 setTimeout(function () {
                     queryParams = myEl.parseQueries();
                     assert.equal(queryParams.search, searchString);
-                    assert.equal(queryParams.filters_changed, 'true');
+                    assert.equal(queryParams.page, '1');
+                    done();
+                }, 300);
+            });
+
+            it('not updates "search" query if string length === 1', function (done) {
+                myEl.updateQueries({search: undefined});
+
+                var queryParams = myEl.parseQueries();
+                var searchString = 's';
+
+                assert.isUndefined(queryParams.search);
+
+                myEl.searchString = searchString;
+                myEl.searchKeyDown();
+                queryParams = myEl.parseQueries();
+                assert.isUndefined(queryParams.search);
+
+                setTimeout(function () {
+                    queryParams = myEl.parseQueries();
+                    assert.isUndefined(queryParams.search);
                     done();
                 }, 300);
             });
@@ -202,6 +215,42 @@
                 });
             });
 
+            it('calls updateQueries() with filter default value if such query is not defined in queryParams', function (done) {
+                var e = {model: {item: {query: query}}};
+                sinon.spy(myEl, 'updateQueries');
+
+                assert.equal(myEl.availableFilters.length, filters.length);
+                assert.equal(myEl.usedFilters.length, 0);
+
+                myEl.addFilter(e);
+                flush(function () {
+                    var args = {};
+                    args[query] = true;
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isTrue(myEl.updateQueries.calledOnce);
+                    assert.isTrue(myEl.updateQueries.calledWith(args));
+                    done();
+                });
+            });
+
+            it('not calls updateQueries() if such query is defined in queryParams', function (done) {
+                var e = {model: {item: {query: query}}};
+                sinon.spy(myEl, 'updateQueries');
+                myEl.queryParams[query] = '1';
+
+                assert.equal(myEl.availableFilters.length, filters.length);
+                assert.equal(myEl.usedFilters.length, 0);
+
+                myEl.addFilter(e);
+                flush(function () {
+                    assert.equal(myEl.availableFilters.length, filters.length - 1);
+                    assert.equal(myEl.usedFilters.length, 1);
+                    assert.isFalse(myEl.updateQueries.called);
+                    done();
+                });
+            });
+
             it('prevents filters duplicates', function (done) {
                 myEl.addFilter(query);
                 assert.equal(myEl.availableFilters.length, filters.length - 1);
@@ -257,7 +306,7 @@
 
                 myEl.removeFilter(e);
                 flush(function () {
-                    var args = {filters_changed: 'true'};
+                    var args = {};
                     args[e.query] = undefined;
                     assert.equal(myEl.availableFilters.length, filters.length);
                     assert.equal(myEl.usedFilters.length, 0);
@@ -265,6 +314,20 @@
                     assert.isTrue(myEl.updateQueries.calledWithMatch(args));
                     done();
                 });
+            });
+
+            it('resets filter query and page number', function () {
+                sinon.spy(myEl, 'updateQueries');
+                assert.equal(myEl.availableFilters.length, filters.length - 1);
+                assert.equal(myEl.usedFilters.length, 1);
+
+                let query = filters[0].query;
+                let args = {query: undefined, page: '1'};
+                myEl.queryParams[query] = 'some value';
+
+                myEl.removeFilter(e);
+                assert.isTrue(myEl.updateQueries.calledOnce);
+                assert.isTrue(myEl.updateQueries.calledWithMatch(args));
             });
 
             it('.filter-reset-button removes corresponding filter', function (done) {
@@ -310,6 +373,14 @@
                 });
             });
 
+            it('resets availableFilters and usedFilters', function () {
+                myEl._restoreFilters();
+                myEl.flushDebouncer('_restoreFilters');
+
+                assert.deepEqual(myEl.availableFilters, myEl.filters);
+                assert.deepEqual(myEl.usedFilters, []);
+            });
+
             it('restores filters from query params', function (done) {
                 var filter = myEl.filters[2];
                 var query = filter.query;
@@ -327,41 +398,6 @@
                     assert.isTrue(myEl.addFilter.calledWith(query));
                     done();
                 });
-            });
-
-            it('resets availableFilters and usedFilters when pageReloaded=true', function () {
-                myEl.pageReloaded = true;
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-
-                assert.deepEqual(myEl.availableFilters, myEl.filters);
-                assert.deepEqual(myEl.usedFilters, []);
-                assert.isFalse(myEl.pageReloaded);
-            });
-
-            it('resets availableFilters and usedFilters when queryParams.filters_changed is undefined', function () {
-                myEl.pageReloaded = false;
-                myEl.queryParams.filters_changed = undefined;
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-
-                assert.deepEqual(myEl.availableFilters, myEl.filters);
-                assert.deepEqual(myEl.usedFilters, []);
-                assert.isFalse(myEl.pageReloaded);
-            });
-
-            it('doesn\'t reset availableFilters and usedFilters when pageReloaded=false', function () {
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-                myEl.addFilter(myEl.filters[2].query);
-
-                myEl.pageReloaded = false;
-                myEl.queryParams.filters_changed = 'true';
-                myEl._restoreFilters();
-                myEl.flushDebouncer('_restoreFilters');
-
-                assert.notDeepEqual(myEl.availableFilters, myEl.filters);
-                assert.notDeepEqual(myEl.usedFilters, []);
             });
         });
 
@@ -448,7 +484,7 @@
                 var e = {path: [{id: filterId}]};
                 var filterValue = myEl.filters[2].selection[filter.optionValue];
                 var detail = {selectedValues: {}};
-                var args = {filters_changed: 'true'};
+                var args = {page: '1'};
 
                 detail.selectedValues[filter.optionValue] = filterValue;
                 args[filterId] = filterValue;

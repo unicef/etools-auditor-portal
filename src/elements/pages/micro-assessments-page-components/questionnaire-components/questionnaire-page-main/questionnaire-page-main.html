@@ -57,7 +57,9 @@
             }
 
             .repeatable-item-container {
-                width: 700px;
+                margin-bottom: 0 !important;
+                min-width: 0 !important;
+                padding: 0 24px !important;
             }
         </style>
 
@@ -116,7 +118,7 @@
                                             id="riskAssessmentComments"
                                             class="disabled-as-readonly validate-input"
                                             max-rows="4"
-                                            value="{{editedItem.extra}}"
+                                            value="{{editedItem.extra.comments}}"
                                             placeholder="Enter Comments"
                                             on-focus="_resetFieldError"
                                             error-message="This field is required"

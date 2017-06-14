@@ -35,12 +35,11 @@
         observers: [
             '_restoreFilters(queryParams.*)'
         ],
-        ready: function() {
-            this.pageReloaded = true;
-        },
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
-                this.updateQueries({search: this.searchString || undefined, filters_changed: 'true'});
+                if (this.searchString.length !== 1) {
+                    this.updateQueries({search: this.searchString || undefined, page: '1'});
+                }
             }, 300);
         },
         addFilter: function(e) {
@@ -60,6 +59,12 @@
 
                 this._setFilterValue(newFilter);
                 this.push('usedFilters', newFilter);
+
+                if (this.queryParams[query] === undefined) {
+                    let queryObject = {};
+                    queryObject[query] = true;
+                    this.updateQueries(queryObject);
+                }
             }
         },
         removeFilter: function(e) {
@@ -71,11 +76,12 @@
             this.push('availableFilters', removedFilter);
 
             let indexToRemove = this.usedFilters.indexOf(e.model.item);
-            let queryObject = {filters_changed: 'true'};
+            let queryObject = {};
             queryObject[query] = undefined;
+            queryObject.page = '1';
 
-            this.updateQueries(queryObject);
             this.splice('usedFilters', indexToRemove, 1);
+            this.updateQueries(queryObject);
         },
         _restoreFilters: function() {
             this.debounce('_restoreFilters', () => {
@@ -85,11 +91,8 @@
                     return;
                 }
 
-                if (!queryParams.filters_changed || this.pageReloaded) {
-                    this.availableFilters = this.filters;
-                    this.usedFilters = [];
-                    this.pageReloaded = false;
-                }
+                this.availableFilters = this.filters;
+                this.usedFilters = [];
 
                 if (queryParams.search) {
                     this.set('searchString', queryParams.search);
@@ -154,9 +157,9 @@
             if (detail.selectedValues && query) {
                 let filter = this._getFilter(query);
                 let optionValue = filter.optionValue || 'value';
-                let queryObject = {filters_changed: 'true'};
-
+                let queryObject = {page: '1'};
                 queryObject[query] = detail.selectedValues[optionValue];
+
                 this.updateQueries(queryObject);
             }
         }

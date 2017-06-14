@@ -40,11 +40,13 @@ Polymer({
                 'path': 'title'
             }, {
                 'size': 20,
+                'name': 'currency',
                 'label': 'Amount (local)',
                 'path': 'local_amount',
                 'align': 'right'
             }, {
                 'size': 20,
+                'name': 'currency',
                 'label': 'Amount USD',
                 'path': 'amount',
                 'align': 'right'
@@ -92,7 +94,8 @@ Polymer({
         }
     },
     listeners: {
-        'dialog-confirmed': '_addItemFromDialog'
+        'dialog-confirmed': '_addItemFromDialog',
+        'delete-confirmed': 'removeItem',
     },
     observers: [
         'resetDialog(dialogOpened)',
