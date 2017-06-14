@@ -44,7 +44,7 @@ Polymer({
         if (!queries.page) { queriesUpdates.page = '1'; }
 
         let page = +queries.page;
-        if (isNaN(page) || (this.lastParams && (queries.page_size !== this.lastParams.page_size))) {
+        if (isNaN(page) || (this.lastParams && (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
             queriesUpdates.page = '1';
         }
 
