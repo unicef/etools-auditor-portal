@@ -60,25 +60,31 @@ Polymer({
         this.$.drawer.$.scrim.remove();
     },
     queueToast: function(e, detail) {
-        if (!this._toast) {
-            this._toast = document.createElement('paper-toast');
-            this.listen(this._toast, 'iron-overlay-closed', 'dequeueToast');
-            Polymer.dom(this.$.layout).appendChild(this._toast);
-            Polymer.dom.flush();
-        }
-        if (!this._toastQueue.length) {
-            this.push('_toastQueue', detail);
-            this._toast.show(detail);
-        } else {
-            this.push('_toastQueue', detail);
+        let multiNotifications = Polymer.dom(this.root).querySelector('multi-notifications');
+        if (multiNotifications && detail) {
+            multiNotifications.fire('notification-push', detail);
         }
     },
-    dequeueToast: function() {
-        this.shift('_toastQueue');
-        if (this._toastQueue.length) {
-            this._toast.show(this._toastQueue[0]);
-        }
-    },
+    // queueToast: function(e, detail) {
+    //     if (!this._toast) {
+    //         this._toast = document.createElement('paper-toast');
+    //         this.listen(this._toast, 'iron-overlay-closed', 'dequeueToast');
+    //         Polymer.dom(this.$.layout).appendChild(this._toast);
+    //         Polymer.dom.flush();
+    //     }
+    //     if (!this._toastQueue.length) {
+    //         this.push('_toastQueue', detail);
+    //         this._toast.show(detail);
+    //     } else {
+    //         this.push('_toastQueue', detail);
+    //     }
+    // },
+    // dequeueToast: function() {
+    //     this.shift('_toastQueue');
+    //     if (this._toastQueue.length) {
+    //         this._toast.show(this._toastQueue[0]);
+    //     }
+    // },
     _routePageChanged: function() {
         if (!this.initLoadingComplete || !this.routeData.page) { return; }
         this.page = this.routeData.page || 'engagements';
