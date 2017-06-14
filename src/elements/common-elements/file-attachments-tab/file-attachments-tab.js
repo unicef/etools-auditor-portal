@@ -337,7 +337,7 @@
                 valid = false;
             }
 
-            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.rawd)) {
+            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw)) {
                 this._setFileInvalid('File is not selected', true);
                 valid = false;
             }

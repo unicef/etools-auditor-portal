@@ -596,7 +596,7 @@
                 myEl.canBeRemoved = false;
                 sinon.stub(myEl, '_checkAlreadySelected').returns(true);
                 //file is selected:
-                _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw', created: new Date().toISOString()});
+                _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw'});
 
                 assert.isFalse(myEl.validate());
             });
