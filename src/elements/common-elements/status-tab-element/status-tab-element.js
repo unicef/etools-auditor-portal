@@ -69,7 +69,7 @@
         _btnClicked: function(e) {
             if (!e || !e.target) { return; }
             let target = e.target.classList.contains('other-options') ? e.target : e.target.parentElement,
-                isMainAction = !target.classList.contains('other-options');
+                isMainAction = !target.classList.contains('other-options') && !target.classList.contains('option-button') ;
 
             if (isMainAction) {
                 this.fire('main-action-activated');
