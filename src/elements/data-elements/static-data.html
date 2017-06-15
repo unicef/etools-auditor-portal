@@ -72,8 +72,9 @@
                     this._allDataLoaded();
                 },
 
-                _auditorsLoaded: function(data) {
-                    this._setData('auditors', data.detail);
+                _auditorsLoaded: function(e, detail) {
+                    let auditors = detail && detail.results || [];
+                    this._setData('auditors', auditors);
                     dataLoaded.auditors = true;
                     this._allDataLoaded();
                 },
