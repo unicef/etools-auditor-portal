@@ -60,7 +60,7 @@ gulp.task('prodBuild', gulp.series(clean.build, elementImpr, buildElements, proj
 gulp.task('precommit', gulp.series('lint', 'test'));
 
 //Run dev server and watch changes
-gulp.task('devup', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower), gulp.parallel('startServer', 'watch')));
+gulp.task('devup', gulp.series('devBuild', gulp.parallel('startServer', 'watch')));
 
 //Minify scripts, run prod server and watch changes
 gulp.task('default', gulp.series([ 'prodBuild', 'startServer' ]));
