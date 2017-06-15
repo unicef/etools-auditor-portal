@@ -68,8 +68,8 @@
         },
         _btnClicked: function(e) {
             if (!e || !e.target) { return; }
-            let target = e.target.closest('.other-options'),
-                isMainAction = !e.target.closest('paper-menu-button');
+            let target = e.target.classList.contains('other-options') ? e.target : e.target.parentElement,
+                isMainAction = !target.classList.contains('other-options');
 
             if (isMainAction) {
                 this.fire('main-action-activated');
