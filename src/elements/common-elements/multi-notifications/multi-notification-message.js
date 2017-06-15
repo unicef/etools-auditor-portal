@@ -6,9 +6,6 @@ Polymer({
         Polymer.IronOverlayBehavior
     ],
     properties: {
-        id: {
-            type: Number
-        },
         text: {
             type: String,
             value: ''
@@ -43,16 +40,18 @@ Polymer({
         'transitionend': '_onTransitionEnd',
         'push-up': '_pushUp'
     },
-    _onTransitionEnd: function() {
-        if (!this.opened) {
-            this.fire('notification-shift');
+    _onTransitionEnd: function(e) {
+        if (e && e.target === this && e.propertyName === 'opacity') {
+            if (!this.opened) {
+                this.fire('notification-shift', this.id);
+            }
         }
     },
     _renderOpened: function() {
-        this.style.opacity = '1';
+        this.classList.add('notification-open');
     },
     _renderClosed: function() {
-        this.style.opacity = '0';
+        this.classList.remove('notification-open');
     },
     _onFitIntoChanged: function(fitInto) {
         this.positionTarget = fitInto;

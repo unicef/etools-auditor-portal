@@ -22,6 +22,10 @@
                 opacity: 0;
                 @apply(--paper-font-common-base);
             }
+
+            :host(.notification-open) {
+                opacity: 1;
+            }
         </style>
         <span>{{text}}</span>
     </template>
