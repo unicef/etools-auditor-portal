@@ -65,9 +65,9 @@ Polymer({
         }
     },
     queueToast: function(e, detail) {
-        let multiNotifications = Polymer.dom(this.root).querySelector('multi-notifications');
-        if (multiNotifications && detail) {
-            multiNotifications.fire('notification-push', detail);
+        let notificationList = Polymer.dom(this.root).querySelector('multi-notification-list');
+        if (notificationList && detail) {
+            notificationList.fire('notification-push', detail);
         }
     },
     _routePageChanged: function() {

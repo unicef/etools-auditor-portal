@@ -1,7 +1,5 @@
-'use strict';
-
 Polymer({
-    is: 'multi-notification-message',
+    is: 'multi-notification-item',
     behaviors: [
         Polymer.IronOverlayBehavior
     ],
@@ -38,7 +36,7 @@ Polymer({
     },
     listeners: {
         'transitionend': '_onTransitionEnd',
-        'push-up': '_pushUp'
+        'move-up': '_moveUp'
     },
     _onTransitionEnd: function(e) {
         if (e && e.target === this && e.propertyName === 'opacity') {
@@ -65,9 +63,14 @@ Polymer({
     get _canAutoClose() {
         return this.duration > 0 && this.duration !== Infinity;
     },
-    _pushUp: function() {
+    _moveUp: function() {
         this.offset += 70;
         this.style.transform = `translateY(-${this.offset}px)`;
     }
 
+    /**
+     * Fired when notification should be moved up
+     *
+     * @event move-up
+     */
 });
