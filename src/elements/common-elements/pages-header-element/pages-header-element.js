@@ -70,5 +70,9 @@ Polymer({
     },
     _showBtn: function(link) {
         return !link;
+    },
+    _setTitle: function(engagement, title) {
+        if (!engagement || !engagement.unique_id) { return title; }
+        return engagement.unique_id;
     }
 });
