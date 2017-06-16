@@ -27,7 +27,7 @@ Polymer({
                 }, {
                     'size': 30,
                     'label': 'Risk rating',
-                    'path': 'value.label'
+                    'path': 'risk.value.label'
                 }, {
                     'size': '45px',
                     'label': 'Edit',
@@ -42,15 +42,15 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Key control observation',
-                    'path': 'extra.key_control_observation',
+                    'path': 'risk.extra.key_control_observation',
                     'size': 100
                 }, {
                     'label': 'Recommendation',
-                    'path': 'extra.recommendation',
+                    'path': 'risk.extra.recommendation',
                     'size': 100
                 }, {
                     'label': 'IP response',
-                    'path': 'extra.ip_response',
+                    'path': 'risk.extra.ip_response',
                     'size': 100
                 }];
             }
@@ -72,12 +72,14 @@ Polymer({
     },
     _updateCategory: function(data, riskOptions) {
         _.each(data, (item) => {
-            if (!_.isObject(item.value)) {
+            if (item.risk && !_.isObject(item.risk.value)) {
                 riskOptions.filter((riskOption) => {
-                    if (riskOption.value === item.value) {
-                        item.value = riskOption;
+                    if (riskOption.value === item.risk.value) {
+                        item.risk.value = riskOption;
                     }
                 });
+            } else {
+                item.risk = {};
             }
         });
     },
@@ -122,7 +124,7 @@ Polymer({
 
         this.originData = this.subjectAreas.blueprints[index];
         this.editedArea = _.cloneDeep(this.originData);
-        this.editedArea.extra = this.editedArea.extra || {};
+        this.editedArea.risk.extra = this.editedArea.risk.extra || {};
         this.dialogOpened = true;
     },
     _saveEditedArea: function() {
@@ -141,8 +143,8 @@ Polymer({
     getKeyInternalWeaknessData: function() {
         let blueprint = _.cloneDeep(this.editedArea);
 
-        if (blueprint && _.isObject(blueprint.value)) {
-            blueprint.value = blueprint.value.value;
+        if (blueprint && _.isObject(blueprint.risk.value)) {
+            blueprint.risk.value = blueprint.risk.value.value;
         } else {
             return;
         }

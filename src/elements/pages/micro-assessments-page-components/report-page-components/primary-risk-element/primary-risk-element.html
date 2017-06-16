@@ -29,14 +29,14 @@
 
                         <etools-searchable-multiselection-menu
                                 id="riskAssessmentInput"
-                                class="validate-input disabled-as-readonly"
+                                class="validate-input disabled-as-readonly required"
                                 options="[[riskOptions]]"
                                 required hide-search
                                 readonly="[[isReadOnly(basePermissionPath)]]"
                                 disabled="[[isReadOnly(basePermissionPath)]]"
-                                value="{{primaryArea.value}}"
-                                invalid="{{errors.children.0.blueprints.0.value}}"
-                                error-message="{{errors.children.0.blueprints.0.value}}"
+                                value="{{primaryArea.risk.value}}"
+                                invalid="{{errors.children.0.blueprints.0.risk.value}}"
+                                error-message="{{errors.children.0.blueprints.0.risk.value}}"
                                 on-focus="_resetFieldError"
                                 label="Risk Assessment"
                                 placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
@@ -48,12 +48,12 @@
                         <!-- Brief Justification -->
                         <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
                                         required
-                                        invalid="{{errors.children.0.blueprints.0.extra}}"
-                                        error-message="{{errors.children.0.blueprints.0.extra}}"
+                                        invalid="{{errors.children.0.blueprints.0.risk.extra}}"
+                                        error-message="{{errors.children.0.blueprints.0.risk.extra}}"
                                         max-rows="4"
                                         id="briefJustification"
-                                        class="disabled-as-readonly validate-input"
-                                        value="{{primaryArea.extra.comments}}"
+                                        class="disabled-as-readonly validate-input required"
+                                        value="{{primaryArea.risk.extra.comments}}"
                                         disabled="[[isReadOnly(basePermissionPath)]]"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Brief Justification">

@@ -11,7 +11,7 @@ Polymer({
         primaryArea: {
             type: Object,
             value: function() {
-                return {};
+                return {risk: {}};
             }
         }
     },
@@ -33,21 +33,21 @@ Polymer({
         }
         this.originalData = _.cloneDeep(data);
 
-        if (!this.riskData.blueprints[0].value) {
+        if (!this.riskData.blueprints[0].risk.value) {
             return;
         }
 
         let extra = {comments: ''};
-        if (_.isJSONObj(this.riskData.blueprints[0].extra)) {
-            extra = JSON.parse(this.riskData.blueprints[0].extra);
+        if (_.isJSONObj(this.riskData.blueprints[0].risk.extra)) {
+            extra = JSON.parse(this.riskData.blueprints[0].risk.extra);
         }
 
-        this.set('primaryArea.value', this.riskOptions[this.riskData.blueprints[0].value]);
-        this.set('primaryArea.extra', extra);
+        this.set('primaryArea.risk.value', this.riskOptions[this.riskData.blueprints[0].risk.value]);
+        this.set('primaryArea.risk.extra', extra);
     },
     validate: function(forSave) {
-        if (this.primaryArea.extra && !this.primaryArea.value) {
-            this.set('errors', {children: [{blueprints: [{value: 'Please, select Risk Assessment'}]}]});
+        if (this.primaryArea.risk.extra && !this.primaryArea.risk.value) {
+            this.set('errors', {children: [{blueprints: [{risk: {value: 'Please, select Risk Assessment'}}]}]});
             return false;
         }
         if (!this.basePermissionPath || forSave) { return true; }
@@ -60,8 +60,10 @@ Polymer({
         let errors = {
             children: [{
                 blueprints: [{
-                    value: !riskValid ? 'Please, select Risk Assessment' : false,
-                    extra: !commentsValid ? 'Please, enter Brief Justification' : false
+                    risk: {
+                        value: !riskValid ? 'Please, select Risk Assessment' : false,
+                        extra: !commentsValid ? 'Please, enter Brief Justification' : false
+                    }
                 }]
             }]
         };
@@ -70,18 +72,22 @@ Polymer({
         return riskValid && commentsValid;
     },
     getRiskData: function() {
-        if (!this.primaryArea.value) {
+        if (!this.primaryArea.risk.value) {
             return null;
         }
-        if (this.primaryArea.value.value === this.originalData.blueprints[0].value &&
-            JSON.stringify(this.primaryArea.extra) === this.originalData.blueprints[0].extra) {
+        if (this.primaryArea.risk.value.value === this.originalData.blueprints[0].risk.value &&
+            JSON.stringify(this.primaryArea.risk.extra) === this.originalData.blueprints[0].risk.extra) {
             return null;
         }
 
+        let risk = {
+            value: this.primaryArea.risk.value.value,
+            extra: JSON.stringify(this.primaryArea.risk.extra || '')
+        };
+
         let blueprint = {
             id: this.riskData.blueprints[0].id,
-            value: this.primaryArea.value.value,
-            extra: JSON.stringify(this.primaryArea.extra || '')
+            risk: risk
         };
 
         return {

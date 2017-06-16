@@ -53,7 +53,7 @@ Polymer({
                         'size': '160px',
                         'label': 'Risk Assessment',
                         'name': 'value',
-                        'property': 'value',
+                        'property': 'risk.value',
                         'custom': true,
                         'doNotHide': true
                     },
@@ -72,7 +72,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Comments',
-                    'path': 'extra.comments',
+                    'path': 'risk.extra.comments',
                     'size': 100
                 }];
             }
@@ -132,9 +132,9 @@ Polymer({
             changedValue = value && value.selectedValues && value.selectedValues.value,
             data;
 
-        if ((!changedValue && changedValue !== 0) || changedValue === item.value) { return; }
+        if ((!changedValue && changedValue !== 0) || changedValue === item.risk.value) { return; }
 
-        item.value = changedValue;
+        item.risk.value = changedValue;
 
         let childId = null;
         if (this.questionnaire.children.length) {
@@ -144,13 +144,13 @@ Polymer({
                 id: this.questionnaire.id,
                 children: [{
                     id: childId,
-                    blueprints: [{value: changedValue, id: item.id}]
+                    blueprints: [{risk: {value: changedValue}, id: item.id}]
                 }]
             };
         } else {
             data = {
                 id: this.questionnaire.id,
-                blueprints: [{value: changedValue, id: item.id}]
+                blueprints: [{risk: {value: changedValue}, id: item.id}]
             };
         }
         this.fire('risk-value-changed', {data: data});
@@ -180,10 +180,10 @@ Polymer({
             if (!childId) { throw 'Can not find category id!'; }
         }
         let data = _.cloneDeep(item);
-        if (data && _.isJSONObj(data.extra)) {
-            data.extra = JSON.parse(data.extra);
+        if (data && _.isJSONObj(data.risk.extra)) {
+            data.risk.extra = JSON.parse(data.risk.extra);
         } else {
-            data.extra = {comments: (data.extra && data.extra.comments) || ''};
+            data.risk.extra = {comments: (data.risk.extra && data.risk.extra.comments) || ''};
         }
         this.fire('edit-blueprint', {data: data, tabId: this.questionnaire.id, childId: childId});
     },
@@ -199,7 +199,7 @@ Polymer({
         return options[value].label || defaultValue;
     },
     _prepareData: function(data) {
-        if (data && _.isJSONObj(data.extra)) { data.extra = JSON.parse(data.extra); }
+        if (data && _.isJSONObj(data.risk.extra)) { data.risk.extra = JSON.parse(data.risk.extra); }
         return data;
     }
 });

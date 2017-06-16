@@ -46,9 +46,9 @@
                                         required hide-search
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"
-                                        value="{{editedArea.value}}"
-                                        invalid="{{errors.blueprints.0.value}}"
-                                        error-message="{{errors.blueprints.0.value}}"
+                                        value="{{editedArea.risk.value}}"
+                                        invalid="{{errors.blueprints.0.risk.value}}"
+                                        error-message="{{errors.blueprints.0.risk.value}}"
                                         on-focus="_resetFieldError"
                                         label="Risk rating"
                                         placeholder="Select Risk rating">
@@ -60,14 +60,14 @@
                                 <paper-textarea
                                         label="Key control observation"
                                         max-rows="4"
-                                        value="{{editedArea.extra.key_control_observation}}"
+                                        value="{{editedArea.risk.extra.key_control_observation}}"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Observation"
                                         class="disabled-as-readonly validate-input"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
-                                        invalid="{{errors.blueprints.0.extra}}"
-                                        error-message="{{errors.blueprints.0.extra}}">
+                                        invalid="{{errors.blueprints.0.risk.extra}}"
+                                        error-message="{{errors.blueprints.0.risk.extra}}">
                                 </paper-textarea>
                             </div>
                         </div>
@@ -76,14 +76,14 @@
                                 <paper-textarea
                                         label="Recommendation"
                                         max-rows="4"
-                                        value="{{editedArea.extra.recommendation}}"
+                                        value="{{editedArea.risk.extra.recommendation}}"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Recommendation"
                                         class="disabled-as-readonly validate-input"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
-                                        invalid="{{errors.blueprints.0.extra}}"
-                                        error-message="{{errors.blueprints.0.extra}}">
+                                        invalid="{{errors.blueprints.0.risk.extra}}"
+                                        error-message="{{errors.blueprints.0.risk.extra}}">
                                 </paper-textarea>
                             </div>
                         </div>
@@ -92,14 +92,14 @@
                                 <paper-textarea
                                         label="IP Response"
                                         max-rows="4"
-                                        value="{{editedArea.extra.ip_response}}"
+                                        value="{{editedArea.risk.extra.ip_response}}"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Response"
                                         class="disabled-as-readonly validate-input"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
-                                        invalid="{{errors.blueprints.0.extra}}"
-                                        error-message="{{errors.blueprints.0.extra}}">
+                                        invalid="{{errors.blueprints.0.risk.extra}}"
+                                        error-message="{{errors.blueprints.0.risk.extra}}">
                                 </paper-textarea>
                             </div>
                         </div>

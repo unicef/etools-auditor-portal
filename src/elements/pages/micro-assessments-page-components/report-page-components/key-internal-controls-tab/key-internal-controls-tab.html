@@ -35,9 +35,9 @@
                                         required hide-search
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"
-                                        value="{{editedArea.blueprints.0.value}}"
-                                        invalid="{{errors.children.0.blueprints.0.value}}"
-                                        error-message="{{errors.children.0.blueprints.0.value}}"
+                                        value="{{editedArea.blueprints.0.risk.value}}"
+                                        invalid="{{errors.children.0.blueprints.0.risk.value}}"
+                                        error-message="{{errors.children.0.blueprints.0.risk.value}}"
                                         on-focus="_resetFieldError"
                                         label="Risk Assessment"
                                         placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
@@ -51,12 +51,12 @@
                                                 required
                                                 disabled="{{requestInProcess}}"
                                                 readonly$="{{requestInProcess}}"
-                                                invalid="{{errors.children.0.blueprints.0.extra}}"
+                                                invalid="{{errors.children.0.blueprints.0.risk.extra}}"
                                                 max-rows="4"
-                                                error-message="{{errors.children.0.blueprints.0.extra}}"
+                                                error-message="{{errors.children.0.blueprints.0.risk.extra}}"
                                                 id="briefJustification"
                                                 class="disabled-as-readonly validate-input required"
-                                                value="{{editedArea.blueprints.0.extra.comments}}"
+                                                value="{{editedArea.blueprints.0.risk.extra.comments}}"
                                                 on-focus="_resetFieldError"
                                                 placeholder="Enter Brief Justification">
                                 </paper-textarea>

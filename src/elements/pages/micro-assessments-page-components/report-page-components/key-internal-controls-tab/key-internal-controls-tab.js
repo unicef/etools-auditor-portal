@@ -20,7 +20,7 @@ Polymer({
                     }, {
                         'size': 30,
                         'label': 'Risk Assessment',
-                        'path': 'value.label'
+                        'path': 'risk.value.label'
                     }, {
                         'size': '45px',
                         'label': 'Edit',
@@ -36,7 +36,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Brief Justification for Rating (main internal control gaps)',
-                    'path': 'extra.comments',
+                    'path': 'risk.extra.comments',
                     'size': 100
                 }];
             }
@@ -99,9 +99,9 @@ Polymer({
 
     getCurrentData: function() {
         if (!this.dialogOpened) { return null; }
-        let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'value', 'extra']);
-        blueprint.value = blueprint.value.value;
-        blueprint.extra = JSON.stringify({comments: blueprint.extra.comments || ''});
+        let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'risk']);
+        blueprint.risk.value = blueprint.risk.value.value;
+        blueprint.risk.extra = JSON.stringify({comments: blueprint.risk.extra.comments || ''});
 
         return [{
             id: this.editedArea.id,
@@ -116,8 +116,11 @@ Polymer({
         let errors = {
             children: [{
                 blueprints: [{
-                    value: !valueValid ? 'Please, select Risk Assessment' : false,
-                    extra: !extraValid ? 'Please, enter Brief Justification' : false
+                    risk: {
+                        value: !valueValid ? 'Please, select Risk Assessment' : false,
+                        extra: !extraValid ? 'Please, enter Brief Justification' : false
+                    }
+
                 }]
             }]
         };

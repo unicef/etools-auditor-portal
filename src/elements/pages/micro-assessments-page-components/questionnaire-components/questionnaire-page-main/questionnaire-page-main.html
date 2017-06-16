@@ -101,7 +101,7 @@
                                     readonly="[[requestInProcess]]"
                                     disabled="[[requestInProcess]]"
                                     required hide-search
-                                    value="{{_setRiskValue(editedItem.value, riskOptions)}}"
+                                    value="{{_setRiskValue(editedItem.risk.value, riskOptions)}}"
                                     error-message="This field is required"
                                     invalid="{{riskAssessmentInvalid}}"
                                     on-focus="_resetFieldError"
@@ -118,7 +118,7 @@
                                             id="riskAssessmentComments"
                                             class="disabled-as-readonly validate-input"
                                             max-rows="4"
-                                            value="{{editedItem.extra.comments}}"
+                                            value="{{editedItem.risk.extra.comments}}"
                                             placeholder="Enter Comments"
                                             on-focus="_resetFieldError"
                                             error-message="This field is required"
