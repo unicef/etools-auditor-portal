@@ -48,6 +48,10 @@ Polymer({
         let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
         if (readOnly === null) { readOnly = true; }
 
+        if (!(prevDate instanceof Boolean) && new Date(prevDate) > this.maxDate) {
+            return true;
+        }
+
         return readOnly || !(prevDate && !nextDate);
     },
     _isRequired: function(field) {
