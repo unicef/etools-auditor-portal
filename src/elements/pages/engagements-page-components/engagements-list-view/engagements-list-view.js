@@ -4,7 +4,7 @@
     let filters = [
         {
             name: 'auditor',
-            query: 'auditor',
+            query: 'agreement__audit_organization',
             optionValue: 'id',
             optionLabel: 'name',
             selection: []
@@ -159,7 +159,7 @@
         },
         setFiltersSelections: function() {
             let partnersFilterIndex = this._getFilterIndex('partner');
-            let auditorsFilterIndex = this._getFilterIndex('auditor');
+            let auditorsFilterIndex = this._getFilterIndex('agreement__audit_organization');
 
             if (partnersFilterIndex !== -1) {
                 this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners'));
