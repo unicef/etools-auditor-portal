@@ -1,6 +1,7 @@
 <!--import [polymer, lodash, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea]-->
 
-<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element, textarea-max-rows-behavior]-->
+<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element,
+            textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="questionnaire-page-main">
     <template>
@@ -78,7 +79,7 @@
                       first-run="[[firstRun]]"
                       completed="{{_checkCompleted(item)}}"
                       disabled="{{_checkDisabled(index, item)}}"
-                      edit-mode="[[_allowEdit(basePermissionPath)]]"></risk-tab>
+                      edit-mode="[[!isReadOnly('questionnaire', basePermissionPath)]]"></risk-tab>
         </template>
 
 

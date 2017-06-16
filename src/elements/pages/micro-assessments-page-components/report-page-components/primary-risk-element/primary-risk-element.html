@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea, lodash, textarea-max-rows-behavior]-->
+<!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea, lodash, textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="primary-risk-element">
     <template>
@@ -32,8 +32,8 @@
                                 class="validate-input disabled-as-readonly required"
                                 options="[[riskOptions]]"
                                 required hide-search
-                                readonly="[[isReadOnly(basePermissionPath)]]"
-                                disabled="[[isReadOnly(basePermissionPath)]]"
+                                readonly="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
+                                disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
                                 value="{{primaryArea.risk.value}}"
                                 invalid="{{errors.children.0.blueprints.0.risk.value}}"
                                 error-message="{{errors.children.0.blueprints.0.risk.value}}"
@@ -54,7 +54,7 @@
                                         id="briefJustification"
                                         class="disabled-as-readonly validate-input required"
                                         value="{{primaryArea.risk.extra.comments}}"
-                                        disabled="[[isReadOnly(basePermissionPath)]]"
+                                        disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Brief Justification">
                         </paper-textarea>

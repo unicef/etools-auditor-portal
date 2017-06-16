@@ -2,11 +2,13 @@
 
 Polymer({
     is: 'assign-engagement',
+
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior
+        APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         basePermissionPath: {
             type: String,
@@ -20,6 +22,7 @@ Polymer({
             }
         }
     },
+
     observers: [
         '_updateStyles(data.date_of_field_visit)',
         '_updateStyles(data.date_of_draft_report_to_ip)',
@@ -29,36 +32,26 @@ Polymer({
         '_updateStyles(basePermissionPath)',
         '_errorHandler(errorObject)'
     ],
+
     ready: function() {
         this.$['date-validator'].validate = this._validDate.bind(this);
     },
+
     _validDate: function(date) {
         return !!(date);
     },
+
     _updateStyles: function() {
         this.updateStyles();
         this.checkDateValues();
     },
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
+
+    _isReadOnly: function(field, prevDate, nextDate, basePermissionPath) {
+        return this.isReadOnly(field, basePermissionPath) ||
+            !(prevDate && !nextDate) ||
+            (!(prevDate instanceof Boolean) && new Date(prevDate) > this.maxDate);
     },
-    _isReadOnly: function(field, prevDate, nextDate) {
-        if (!this.basePermissionPath) { return true; }
 
-        let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
-        if (readOnly === null) { readOnly = true; }
-
-        if (!(prevDate instanceof Boolean) && new Date(prevDate) > this.maxDate) {
-            return true;
-        }
-
-        return readOnly || !(prevDate && !nextDate);
-    },
-    _isRequired: function(field) {
-        if (!this.basePermissionPath) { return false; }
-
-        return this.isRequired(`${this.basePermissionPath}.${field}`) ? 'required' : '';
-    },
     validate: function(forSave) {
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');
         let valid = true;
@@ -87,6 +80,7 @@ Polymer({
 
         return valid;
     },
+
     checkDateValues: function() {
         if (!this.data) { return; }
         if (!this.data.date_of_field_visit) { this.data.date_of_field_visit = null; }
@@ -95,6 +89,7 @@ Polymer({
         if (!this.data.date_of_draft_report_to_unicef) { this.data.date_of_draft_report_to_unicef = null; }
         if (!this.data.date_of_comments_by_unicef) { this.data.date_of_comments_by_unicef = null; }
     },
+
     getAssignVisitData: function() {
         let data = _.pickBy(this.data, (value, key) => {
             let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
@@ -106,14 +101,13 @@ Polymer({
 
         return _.isEmpty(data) ? null : data;
     },
+
     minDate: function(date) {
         return date ? new Date(moment(date).format()) : false;
     },
-    _errorHandler: function(errorData) {
-        if (!errorData) { return; }
-        this.set('errors', this.refactorErrorObject(errorData));
-    },
+
     _checkFieldInvalid: function(error) {
         return !!error;
     }
+
 });

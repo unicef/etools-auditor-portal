@@ -2,12 +2,14 @@
 
 Polymer({
     is: 'summary-findings-element',
+
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior,
         APBehaviors.TextareaMaxRowsBehavior
     ],
+
     properties: {
         dataItems: {
             type: Array,
@@ -111,11 +113,13 @@ Polymer({
         '_updateFinding(dataItems, categoryOfObservation)',
         '_errorHandler(errorObject.findings)'
     ],
+
     _getLength: function(dataItems) {
         return dataItems.filter((item) => {
             return item.priority === this.priority.value;
         }).length;
     },
+
     _updateFinding: function(data, categoryOfObservation) {
         _.each(data, (item) => {
             if (item.priority !== this.priority.value) {
@@ -132,6 +136,7 @@ Polymer({
             item.finding_number = ([1e15] + item.id).slice(-4);
         });
     },
+
     _setPriority: function(itemModel, priority) {
         itemModel.priority = priority.value;
         if (priority.value === 'high') {
@@ -139,13 +144,16 @@ Polymer({
             this.updateStyles();
         }
     },
+
     attached: function() {
         this.categoryOfObservation = this.getData('category_of_observation');
         this.set('errors.deadline_of_action', false);
     },
+
     _showFindings: function(item) {
         return this._showItems(item) && item.priority === this.priority.value;
     },
+
     getFindingsData: function() {
         if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
         let data = [];
@@ -171,12 +179,14 @@ Polymer({
         });
         return data && data.length ? data : null;
     },
+
     getCurrentData: function() {
         if (!this.dialogOpened) { return null; }
         let data = _.clone(this.editedItem);
         if (data.category_of_observation && data.category_of_observation.value) { data.category_of_observation = data.category_of_observation.value; }
         return [data];
     },
+
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }

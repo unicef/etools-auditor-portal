@@ -2,10 +2,12 @@
 
 Polymer({
     is: 'audits-page-main',
+
     behaviors: [
         APBehaviors.EngagementBehavior,
         APBehaviors.StaticDataController
     ],
+
     properties: {
         engagement: {
             type: Object,

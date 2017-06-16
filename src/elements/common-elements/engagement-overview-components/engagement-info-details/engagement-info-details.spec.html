@@ -84,18 +84,12 @@
             assert.isFalse(myEl.errors.type);
         });
 
-        it('return required class if edit mode on', function () {
-            myEl.basePermissionPath = 'test';
-            assert.equal(myEl._setRequired('agreement'), 'required');
-            assert.equal(myEl._setRequired(), false);
-            assert.equal(myEl._setRequired('not_found'), false);
-        });
-
         it('get audit type dropdown object value', function () {
             assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
         });
 
-        describe('method isReadOnly', function() {
+//       //TODO: move to behavior
+        xdescribe('method isReadOnly', function() {
             it('return true if there is no basePermissionPath property', function() {
                 assert.isUndefined(myEl.basePermissionPath);
                 assert.isTrue(myEl.isReadOnly());

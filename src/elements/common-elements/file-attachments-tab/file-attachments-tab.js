@@ -91,11 +91,13 @@
             '_errorHandler(errorObject)',
             'savingError(errorObject)'
         ],
+
         _handleDialogCancel: function(e, detail) {
             if (this.canBeRemoved) {
                 this._openDeleteConfirmation(e, detail);
             }
         },
+
         _getFileType: function(fileType) {
             if (this.fileTypes && this.fileTypes.length > 0) {
                 let type = this.fileTypes.filter(function(type) {

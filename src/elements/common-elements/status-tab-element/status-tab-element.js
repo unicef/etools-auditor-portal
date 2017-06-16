@@ -11,9 +11,11 @@
 
     Polymer({
         is: 'status-tab-element',
+
         behaviors: [
             APBehaviors.PermissionController
         ],
+
         properties: {
             engagementData: {
                 type: Object,
@@ -28,7 +30,9 @@
                 }
             }
         },
+
         observers: ['checkCanceled(engagementData.status)'],
+
         _getStatusState: function(statusNumber) {
             if (!this.engagementData || this.engagementData.status === undefined) { return; }
 
@@ -40,9 +44,11 @@
                 return this._classByDate(statusNumber, currentStatusNumber);
             }
         },
+
         _classByStatus: function(statusNumber, currentStatusNumber) {
             if (+statusNumber === currentStatusNumber + 1) { return 'active'; } else if (+statusNumber <= currentStatusNumber) { return 'completed'; } else { return 'pending'; }
         },
+
         _classByDate: function(statusNumber) {
             if (this.engagementData[statusFields[statusNumber]]) {
                 return 'completed';
@@ -50,15 +56,19 @@
                 return 'pending';
             }
         },
+
         _getStatusNumber: function(status) {
             return statuses.indexOf(status) + 1;
         },
+
         _refactorStatusNumber: function(number, status) {
             return (status === 'canceled' && !this.engagementData[statusFields[+number]]) ? +number + 1 : number;
         },
+
         closeMenu: function() {
             this.statusBtnMenuOpened = false;
         },
+
         _getFormattedDate: function(field) {
             if (!this.engagementData || !this.engagementData[field]) { return; }
             let date = new Date(this.engagementData[field]),
@@ -66,6 +76,7 @@
 
             return moment.utc(date).format(format);
         },
+
         _btnClicked: function(e) {
             if (!e || !e.target) { return; }
             let target = e.target.classList.contains('other-options') ? e.target : e.target.parentElement,
@@ -79,12 +90,15 @@
                 this.fire(target.getAttribute('event-name'));
             }
         },
+
         _showOtherActions: function(actions) {
             return !!actions.length;
         },
+
         _setBtnClass: function(actions) {
             if (actions.length) { return 'with-actions'; }
         },
+
         _showActionButtons: function(engagementData) {
             let collectionName = engagementData.id ? `engagement_${engagementData.id}` : 'new_engagement';
             return this.actionAllowed(collectionName, 'createEngagement') ||
@@ -92,6 +106,7 @@
                 this.actionAllowed(collectionName, 'submit') ||
                 this.actionAllowed(collectionName, 'finalize');
         },
+
         checkCanceled: function(status) {
             if (!status || status !== 'canceled') {
                 this.canceled = false;

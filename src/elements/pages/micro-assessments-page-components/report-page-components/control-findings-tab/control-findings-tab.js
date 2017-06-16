@@ -7,6 +7,7 @@ Polymer({
         APBehaviors.TableElementsBehavior,
         APBehaviors.TextareaMaxRowsBehavior
     ],
+
     properties: {
         dataItems: {
             type: Array,
@@ -82,6 +83,7 @@ Polymer({
         '_errorHandler(errorObject.findings)',
         '_checkNonField(errorObject.findings)'
     ],
+
     _checkNonField: function(error) {
         if (!error) { return; }
 

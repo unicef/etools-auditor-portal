@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button, etools-datepicker]-->
-<!--import [lodash, tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller, error-handler-behavior]-->
+<!--import [lodash, tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller, common-methods-behavior]-->
 
 <dom-module id="assign-engagement">
     <template>
@@ -17,7 +17,7 @@
                     <!-- Date of Field Visit -->
                     <paper-input label="Date of Field Visit"
                                  id="dateVisitInput"
-                                 class$="disabled-as-readonly [[_isRequired('date_of_field_visit', basePermissionPath)]] validate-date"
+                                 class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_field_visit', 'true', data.date_of_draft_report_to_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_field_visit)]]"
                                  on-down="openDatePicker"
@@ -25,7 +25,7 @@
                                  validator="dateValidator"
                                  invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
                                  error-message="{{errors.date_of_field_visit}}"
-                                 required="[[_isRequired('date_of_field_visit', basePermissionPath)]]"
+                                 required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
                                  placeholder="&#8212;">
@@ -42,7 +42,7 @@
                     <!-- Draft Report Issued to IP -->
                     <paper-input label="Draft Report Issued to IP"
                                  id="draftReportToIpInput"
-                                 class$="disabled-as-readonly [[_isRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
+                                 class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  validator="dateValidator"
@@ -52,7 +52,7 @@
                                  data-selector="draftReportToIp"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
-                                 required="[[_isRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
+                                 required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
                                            id="draftReportToIp"
@@ -69,7 +69,7 @@
                     <!-- Comments Received by IP -->
                     <paper-input label="Comments Received by IP"
                                  id="commentsReceivedByIpInput"
-                                 class$="disabled-as-readonly [[_isRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
+                                 class$="disabled-as-readonly [[_setRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_ip)]]"
                                  validator="dateValidator"
@@ -79,7 +79,7 @@
                                  data-selector="commentsReceivedByIp"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
-                                 required="[[_isRequired('date_of_comments_by_ip', basePermissionPath)]]"
+                                 required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
                                            id="commentsReceivedByIp"
@@ -98,7 +98,7 @@
                     <!-- Draft Report Issued to UNICEF -->
                     <paper-input label="Draft Report Issued to UNICEF"
                                  id="draftReportUnicefInput"
-                                 class$="disabled-as-readonly [[_isRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
+                                 class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
                                  validator="dateValidator"
@@ -108,7 +108,7 @@
                                  data-selector="draftReportUnicef"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
-                                 required="[[_isRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
+                                 required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
                                            id="draftReportUnicef"
@@ -125,7 +125,7 @@
                     <!-- Comments Received by UNICEF -->
                     <paper-input label="Comments Received by UNICEF"
                                  id="commentsReceivedUnicefInput"
-                                 class$="disabled-as-readonly [[_isRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
+                                 class$="disabled-as-readonly [[_setRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_comments_by_unicef)]]"
                                  validator="dateValidator"
@@ -135,7 +135,7 @@
                                  data-selector="commentsReceivedUnicef"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
-                                 required="[[_isRequired('date_of_comments_by_unicef', basePermissionPath)]]"
+                                 required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
                                            id="commentsReceivedUnicef"

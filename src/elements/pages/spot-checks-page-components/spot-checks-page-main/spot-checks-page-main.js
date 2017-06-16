@@ -2,10 +2,12 @@
 
 Polymer({
     is: 'spot-checks-page-main',
+
     behaviors: [
         APBehaviors.EngagementBehavior,
         APBehaviors.StaticDataController
     ],
+
     properties: {
         engagement: {
             type: Object,
@@ -93,6 +95,7 @@ Polymer({
     infoLoaded: function() {
         this.loadChoices('category_of_observation');
     },
+
     loadChoices: function(property) {
         if (this.getData(property)) { return; }
         let choices = this.getChoices(`engagement_${this.engagement.id}.findings.${property}`);

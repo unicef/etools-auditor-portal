@@ -82,10 +82,12 @@
 
     Polymer({
         is: 'engagements-list-view',
+
         behaviors: [
             APBehaviors.PermissionController,
             APBehaviors.StaticDataController
         ],
+
         properties: {
             queryParams: {
                 type: Object,
@@ -147,16 +149,19 @@
                 value: false
             }
         },
-        listeners: {},
+
         observers: [
             'setFiltersSelections(engagementsList.*)'
         ],
+
         _showAddButton: function() {
             return this.actionAllowed('new_engagement', 'createEngagement');
         },
+
         _getFilterIndex: function(query) {
             return this.$.filters._getFilterIndex(query);
         },
+
         setFiltersSelections: function() {
             let partnersFilterIndex = this._getFilterIndex('partner');
             let auditorsFilterIndex = this._getFilterIndex('auditor');
@@ -169,5 +174,6 @@
                 this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors'));
             }
         }
+
     });
 })();

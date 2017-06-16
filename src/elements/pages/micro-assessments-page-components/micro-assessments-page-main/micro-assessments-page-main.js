@@ -2,7 +2,9 @@
 
 Polymer({
     is: 'micro-assessments-page-main',
+
     behaviors: [APBehaviors.EngagementBehavior],
+
     properties: {
         engagement: {
             type: Object,
@@ -96,4 +98,5 @@ Polymer({
         }
         return true;
     }
+
 });

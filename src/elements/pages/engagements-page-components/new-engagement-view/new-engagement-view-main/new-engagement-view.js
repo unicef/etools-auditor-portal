@@ -2,6 +2,7 @@
 
 Polymer({
     is: 'new-engagement-view',
+
     behaviors: [
         etoolsAppConfig.globals,
         APBehaviors.LastCreatedController,
@@ -9,6 +10,7 @@ Polymer({
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController
     ],
+
     properties: {
         engagement: {
             type: Object,
@@ -28,19 +30,24 @@ Polymer({
             }
         }
     },
+
     observers: ['_pageChanged(page)'],
+
     listeners: {
         'main-action-activated': '_saveNewEngagement',
         'engagement-created': '_engagementCreated',
     },
+
     ready: function() {
         this.fileTypes = this.getData('engagement_attachments_types');
     },
+
     _attachmentsReadonly: function() {
         let readOnly = this.isReadonly(`new_engagement.engagement_attachments`);
         if (readOnly === null) { readOnly = true; }
         return readOnly;
     },
+
     _saveNewEngagement: function() {
         if (!this._validateBasicInfo('routeData.tab')) { return; }
 
@@ -49,6 +56,7 @@ Polymer({
                 this.newEngagementData = data;
             });
     },
+
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
         if (event.detail.success && event.detail.data) {
@@ -67,6 +75,7 @@ Polymer({
             };
         }
     },
+
     _pageChanged: function(page) {
         if (page === 'new' || page === 'list') {
             this.set('engagement', {

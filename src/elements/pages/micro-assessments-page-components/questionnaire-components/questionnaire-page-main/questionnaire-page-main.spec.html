@@ -159,27 +159,6 @@
             });
         });
 
-        describe('method _allowEdit', function() {
-            it('return false if no base argument provided', function() {
-                assert.isFalse(myEl._allowEdit());
-            });
-
-            it('return true if field is not readonly', function() {
-                sinon.stub(myEl, 'isReadonly').returns(false);
-                assert.isTrue(myEl._allowEdit('test'));
-                myEl.isReadonly.restore();
-            });
-
-            it('return false if field is readonly or null', function() {
-                var stub = sinon.stub(myEl, 'isReadonly').returns(true);
-                assert.isFalse(myEl._allowEdit('test'));
-
-                stub.returns(null);
-                assert.isFalse(myEl._allowEdit('test'));
-
-                myEl.isReadonly.restore();
-            });
-        });
 
         xdescribe('method validate', function() {
             it('return true if there are no questionnaire children', function() {

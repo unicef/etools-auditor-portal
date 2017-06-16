@@ -1,0 +1,52 @@
+<!--import [polymer, lodash, error-handler-behavior, permission-controller]-->
+
+<script>
+    'use strict';
+
+    window.APBehaviors = window.APBehaviors || {};
+    APBehaviors.CommonMethodsBehaviorImpl = {
+        _resetFieldError: function(event) {
+            if (!event || !event.target) { return; }
+
+            let field = event.target.getAttribute('field');
+            if (field) { this.set(`errors.${field}`, false); }
+
+            event.target.invalid = false;
+        },
+
+        isReadOnly: function(field, basePermissionPath, inProcess) {
+            if (!basePermissionPath || inProcess) { return true; }
+
+            let readOnly = this.isReadonly(`${basePermissionPath}.${field}`);
+            if (readOnly === null) { readOnly = true; }
+
+            return readOnly;
+        },
+
+        _setRequired: function(field, basePermissionPath) {
+            if (!basePermissionPath) { return false; }
+
+            let required = this.isRequired(`${basePermissionPath}.${field}`);
+
+            return required ? 'required' : false;
+        },
+
+        _errorHandler: function(errorData) {
+            if (!errorData) { return; }
+            if (this.requestInProcess) { this.requestInProcess = false; }
+            this.set('errors', _.clone(this.refactorErrorObject(errorData)));
+        },
+
+        _basePathChanged: function() {
+            this.updateStyles();
+        },
+    };
+
+    APBehaviors.CommonMethodsBehavior = [
+        APBehaviors.CommonMethodsBehaviorImpl,
+        APBehaviors.PermissionController,
+        APBehaviors.ErrorHandlerBehavior
+
+    ];
+
+</script>

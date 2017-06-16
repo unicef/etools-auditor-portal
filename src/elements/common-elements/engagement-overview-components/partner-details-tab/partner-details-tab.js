@@ -5,7 +5,7 @@ Polymer({
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior
+        APBehaviors.CommonMethodsBehavior
     ],
     properties: {
         basePermissionPath: {
@@ -24,19 +24,20 @@ Polymer({
             }
         }
     },
+
     observers: [
         '_engagementChanged(engagement.partner)',
         '_errorHandler(errorObject)'
     ],
+
     listeners: {
         'partner-loaded': '_partnerLoaded'
     },
+
     ready: function() {
         this.set('partners', this.getData('partners'));
     },
-    _basePathChanged: function() {
-        this.updateStyles();
-    },
+
     validate: function() {
         if (!this.$.partner || !this.$.partner.required) { return true; }
         if (!this.engagement || !this.engagement.partner || !this.engagement.partner.id) {
@@ -50,27 +51,15 @@ Polymer({
             return true;
         }
     },
+
     resetValidationErrors: function() {
         this.$.partner.invalid = false;
     },
-    _setRequired: function(field) {
-        if (!this.basePermissionPath) { return false; }
 
-        let required = this.isRequired(`${this.basePermissionPath}.${field}`);
-
-        return required ? 'required' : false;
-    },
     _resetFieldError: function() {
         this.set('errors.partner', false);
     },
-    isReadOnly: function(field, basePermissionPath, inProcess) {
-        if (!basePermissionPath || inProcess) { return true; }
 
-        let readOnly = this.isReadonly(`${basePermissionPath}.${field}`);
-        if (readOnly === null) { readOnly = true; }
-
-        return readOnly;
-    },
     _setReadonlyClass: function(inProcess, basePermissionPath) {
         if (this.isReadOnly('partner', basePermissionPath)) {
             return 'disabled-as-readonly';
@@ -78,6 +67,7 @@ Polymer({
             return inProcess ? 'readonly' : '';
         }
     },
+
     _requestPartner: function(event, id) {
         if (this.requestInProcess) { return; }
 
@@ -94,10 +84,12 @@ Polymer({
         this.partnerId = partnerId;
         return true;
     },
+
     _partnerLoaded: function() {
         this.requestInProcess = false;
         this.validate();
     },
+
     _engagementChanged: function(partner) {
         if (!partner) {
             this.set('partner', {});
@@ -105,15 +97,13 @@ Polymer({
             this._requestPartner(null, partner.id);
         }
     },
+
     getPartnerData: function() {
         let partner = null;
         if (!this.originalData || this.originalData.partner.id !== this.engagement.partner.id) {
             partner = this.engagement.partner.id;
         }
         return partner;
-    },
-    _errorHandler: function(errorData) {
-        if (!errorData) { return; }
-        this.set('errors', this.refactorErrorObject(errorData));
     }
+
 });

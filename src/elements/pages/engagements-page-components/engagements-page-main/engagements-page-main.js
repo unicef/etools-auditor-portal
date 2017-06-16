@@ -2,10 +2,12 @@
 
 Polymer({
     is: 'engagements-page-main',
+
     behaviors: [
         APBehaviors.QueryParamsController,
         APBehaviors.PermissionController
     ],
+
     properties: {
         queryParams: {
             type: Object,
@@ -17,6 +19,7 @@ Polymer({
             value: 0
         }
     },
+
     observers: [
         '_routeConfig(routeData.view)'
     ],
@@ -35,6 +38,7 @@ Polymer({
             this.fire('404');
         }
     },
+
     _configListParams: function(noNotify) {
         let queriesUpdates = {},
             queries = this.parseQueries();
@@ -57,6 +61,7 @@ Polymer({
         this.updateQueries(queriesUpdates, null, noNotify);
         return this.parseQueries();
     },
+
     _queryParamsChanged: function() {
         if (!~this.route.prefix.indexOf('/engagements') || !this.routeData) { return; }
         if (this.routeData.view === 'list') {
@@ -66,9 +71,11 @@ Polymer({
             this.clearQueries();
         }
     },
+
     _setEngagementsListQueries: function(queries) {
         if (!_.isEmpty(queries) && (!this.partnersListQueries || !_.isEqual(this.partnersListQueries, queries))) {
             this.partnersListQueries = queries;
         }
     }
+
 });

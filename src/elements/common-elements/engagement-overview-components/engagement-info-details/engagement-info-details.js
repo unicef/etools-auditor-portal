@@ -6,7 +6,7 @@ Polymer({
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior
+        APBehaviors.CommonMethodsBehavior
     ],
     properties: {
         basePermissionPath: {
@@ -66,12 +66,11 @@ Polymer({
         '_errorHandler(errorObject)',
         '_setShowInput(data.type)'
     ],
+
     ready: function() {
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
-    _basePathChanged: function() {
-        this.updateStyles();
-    },
+
     validate: function() {
         let typeValid = this.$.engagementType.validate(),
             orderValid = this.$.purchaseOrder.validate();
@@ -103,21 +102,12 @@ Polymer({
 
         return typeValid && orderValid && valid;
     },
+
     resetValidationErrors: function() {
         this.set('errors.type', false);
         this.set('errors.agreement', false);
     },
-    _setRequired: function(field) {
-        if (!this.basePermissionPath) { return false; }
 
-        let required = this.isRequired(`${this.basePermissionPath}.${field}`);
-
-        return required ? 'required' : false;
-    },
-    _resetFieldError: function(event) {
-        this.set(`errors.${event.target.getAttribute('field')}`, false);
-        event.target.invalid = false;
-    },
     _processValue: function(value) {
         if (typeof value === 'string') {
             return this.engagementTypes.filter((type) => {
@@ -127,17 +117,11 @@ Polymer({
             return value;
         }
     },
+
     _setEngagementType: function(e, value) {
         this.set('data.type', value.selectedValues);
     },
-    isReadOnly: function(field) {
-        if (!this.basePermissionPath) { return true; }
 
-        let readOnly = this.isReadonly(`${this.basePermissionPath}.${field}`);
-        if (readOnly === null) { readOnly = true; }
-
-        return readOnly;
-    },
     _requestAgreement: function(event) {
         if (this.requestInProcess) { return; }
 
@@ -152,13 +136,16 @@ Polymer({
         this.orderNumber = value;
         return true;
     },
+
     _agreementLoaded: function() {
         this.requestInProcess = false;
         this.$.purchaseOrder.validate();
     },
+
     resetAgreement: function() {
         this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
     },
+
     _validatePurchaseOrder: function(orderInput) {
         if (this.requestInProcess) {
             this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
@@ -176,9 +163,11 @@ Polymer({
         this.set('errors.agreement', false);
         return true;
     },
+
     resetType: function() {
         this.$.engagementType.value = '';
     },
+
     getEngagementData: function() {
         let data = {};
 
@@ -191,10 +180,7 @@ Polymer({
 
         return data;
     },
-    _errorHandler: function(errorData) {
-        if (!errorData) { return; }
-        this.set('errors', _.clone(this.refactorErrorObject(errorData)));
-    },
+
     _setContractDates: function(agreement) {
         if (!agreement) { return; }
         let start = agreement.contract_start_date,
@@ -203,6 +189,7 @@ Polymer({
         if (!start || !end) { return ''; }
         return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
     },
+
     _setShowInput: function(type) {
         if (typeof type === 'string' && type !== 'ma') {
             this.showInput = true;

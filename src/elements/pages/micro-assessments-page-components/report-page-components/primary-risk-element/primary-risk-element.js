@@ -2,29 +2,29 @@
 
 Polymer({
     is: 'primary-risk-element',
+
     behaviors: [
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior
+        APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         primaryArea: {
             type: Object,
             value: function() {
-                return {risk: {}};
+                return {risk: {extra: {}}};
             }
         }
     },
+
     observers: [
         '_setValues(riskData, riskOptions)',
         'updateStyles(basePermissionPath)',
-        '_errorHandler(errorObject.test_subject_areas)'
+        'errorHandler(errorObject.test_subject_areas)'
     ],
+
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
-    },
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
     },
 
     _setValues: function(data) {
@@ -33,7 +33,7 @@ Polymer({
         }
         this.originalData = _.cloneDeep(data);
 
-        if (!this.riskData.blueprints[0].risk.value) {
+        if (!this.riskData.blueprints[0].risk || !this.riskData.blueprints[0].risk.value) {
             return;
         }
 
@@ -45,6 +45,7 @@ Polymer({
         this.set('primaryArea.risk.value', this.riskOptions[this.riskData.blueprints[0].risk.value]);
         this.set('primaryArea.risk.extra', extra);
     },
+
     validate: function(forSave) {
         if (this.primaryArea.risk.extra && !this.primaryArea.risk.value) {
             this.set('errors', {children: [{blueprints: [{risk: {value: 'Please, select Risk Assessment'}}]}]});
@@ -71,11 +72,13 @@ Polymer({
 
         return riskValid && commentsValid;
     },
+
     getRiskData: function() {
         if (!this.primaryArea.risk.value) {
             return null;
         }
-        if (this.primaryArea.risk.value.value === this.originalData.blueprints[0].risk.value &&
+        if (this.originalData.blueprints[0].risk &&
+            this.primaryArea.risk.value.value === this.originalData.blueprints[0].risk.value &&
             JSON.stringify(this.primaryArea.risk.extra) === this.originalData.blueprints[0].risk.extra) {
             return null;
         }
@@ -95,20 +98,9 @@ Polymer({
             blueprints: [blueprint]
         };
     },
-    isReadOnly: function(path) {
-        if (!path) {
-            return true;
-        }
 
-        let readOnly = this.isReadonly(`${path}.test_subject_areas`);
-        if (readOnly === null) {
-            readOnly = true;
-        }
-
-        return readOnly;
-    },
-    _errorHandler: function(errorData) {
-        if (!errorData || this.dialogOpened) { return; }
-        this.set('errors', this.refactorErrorObject(errorData));
+    errorHandler: function(errorData) {
+        if (this.dialogOpened) { return; }
+        this._errorHandler(errorData);
     }
 });

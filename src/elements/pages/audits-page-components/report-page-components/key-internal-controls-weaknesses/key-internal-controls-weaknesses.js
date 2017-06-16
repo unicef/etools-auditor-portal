@@ -2,12 +2,14 @@
 
 Polymer({
     is: 'key-internal-controls-weaknesses',
+
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior,
+        APBehaviors.CommonMethodsBehavior,
         APBehaviors.TextareaMaxRowsBehavior,
     ],
+
     properties: {
         subjectAreas: {
             type: Object,
@@ -56,9 +58,11 @@ Polymer({
             }
         }
     },
+
     listeners: {
         'dialog-confirmed': '_saveEditedArea'
     },
+
     observers: [
         'resetDialog(dialogOpened)',
         'updateStyles(requestInProcess)',
@@ -67,9 +71,11 @@ Polymer({
         '_updateCategory(subjectAreas.blueprints, riskOptions)',
         'changePermission(basePermissionPath)',
     ],
+
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
     },
+
     _updateCategory: function(data, riskOptions) {
         _.each(data, (item) => {
             if (item.risk && !_.isObject(item.risk.value)) {
@@ -83,15 +89,9 @@ Polymer({
             }
         });
     },
-    changePermission: function(basePermissionPath) {
-        if (!basePermissionPath) {
-            return;
-        }
 
-        let readOnly = this.isReadonly(`${this.basePermissionPath}.key_internal_weakness`);
-        if (readOnly === null) {
-            readOnly = true;
-        }
+    changePermission: function(basePermissionPath) {
+        let readOnly = this.isReadOnly('key_internal_weakness', basePermissionPath);
 
         if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
             this.push('columns', {'size': '45px', 'label': 'Edit', 'name': 'edit', 'align': 'center', 'icon': true});
@@ -99,6 +99,7 @@ Polymer({
             this.pop('columns');
         }
     },
+
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }
@@ -115,6 +116,7 @@ Polymer({
             this.fire('toast', {text: `Key Internal Controls Weaknesses: ${nonField}`});
         }
     },
+
     openEditDialog: function(event) {
         let index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
         if ((!index && index !== 0) || !~index) {
@@ -127,6 +129,7 @@ Polymer({
         this.editedArea.risk.extra = this.editedArea.risk.extra || {};
         this.dialogOpened = true;
     },
+
     _saveEditedArea: function() {
         if (_.isEqual(this.originData, this.editedArea)) {
             this.dialogOpened = false;
@@ -137,9 +140,7 @@ Polymer({
         this.requestInProcess = true;
         this.fire('save-progress', {quietAdding: true});
     },
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
-    },
+
     getKeyInternalWeaknessData: function() {
         let blueprint = _.cloneDeep(this.editedArea);
 
@@ -152,6 +153,7 @@ Polymer({
             blueprints: [blueprint]
         };
     },
+
     resetDialog: function(opened) {
         if (opened) {
             return;
@@ -164,6 +166,7 @@ Polymer({
         });
 
     },
+
     _dataChanged: function() {
         if (this.dialogOpened) {
             this.requestInProcess = false;

@@ -2,12 +2,15 @@
 
 Polymer({
     is: 'key-internal-controls-tab',
+
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.ErrorHandlerBehavior,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.TextareaMaxRowsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         columns: {
             type: Array,
@@ -72,10 +75,7 @@ Polymer({
     },
 
     changePermission: function(basePermissionPath) {
-        if (!basePermissionPath) { return; }
-
-        let readOnly = this.isReadonly(`${this.basePermissionPath}.test_subject_areas`);
-        if (readOnly === null) { readOnly = true; }
+        let readOnly = this.isReadOnly('test_subject_areas', basePermissionPath);
 
         if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
             this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
@@ -100,8 +100,10 @@ Polymer({
     getCurrentData: function() {
         if (!this.dialogOpened) { return null; }
         let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'risk']);
-        blueprint.risk.value = blueprint.risk.value.value;
-        blueprint.risk.extra = JSON.stringify({comments: blueprint.risk.extra.comments || ''});
+        blueprint.risk = {
+            value: blueprint.risk.value.value,
+            extra: JSON.stringify({comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''})
+        };
 
         return [{
             id: this.editedArea.id,
@@ -158,10 +160,6 @@ Polymer({
         this.dialogOpened = true;
     },
 
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
-    },
-
     _saveEditedArea: function() {
         if (!this.validateEditFields()) { return; }
 
@@ -193,9 +191,11 @@ Polymer({
         });
 
     },
+
     _showRisk: function(risk) {
         return risk && risk.type === 'default';
     },
+
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }

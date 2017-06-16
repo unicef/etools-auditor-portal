@@ -2,10 +2,12 @@
 
 Polymer({
     is: 'findings-summary',
+
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior
     ],
+
     properties: {
         basePermissionPath: {
             type: String
@@ -123,15 +125,18 @@ Polymer({
     ready: function() {
         this.auditOpinions = this.getData('audit_opinions');
     },
+
     _setDataItems: function() {
         this.set('dataItems', [this.data]);
         this.set('itemModel.audit_opinion', this.data.audit_opinion);
         this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
     },
+
     _computeFFNumber: function(lowRisk = 0, mediumRisk = 0, highRisk = 0) {
         let FFNumber = Number(lowRisk) + Number(mediumRisk) + Number(highRisk);
         this.set('editedItem.number_of_financial_findings', FFNumber);
     },
+
     getFindingsSummaryData: function() {
         if (_.isEqual(this.editedItem, this.itemModel)) { return; }
 
@@ -164,10 +169,12 @@ Polymer({
             }, {});
         }
     },
+
     _changeAuditOpinion: function(e, detail) {
         if (!detail || !detail.selectedValues) { return; }
         this.editedItem.audit_opinion = detail.selectedValues.value;
     },
+
     _setAuditOpinion: function(auditOpinionValue, auditOpinions) {
         if (auditOpinions && auditOpinions.length > 0) {
             let auditOpinion = auditOpinions.find(function(auditOpinion) {
@@ -177,11 +184,7 @@ Polymer({
             this.data.display_name = auditOpinion.display_name;
         }
     },
-    _setRequired: function(field) {
-        if (!this.basePermissionPath) { return false; }
-        let required = this.isRequired(`${this.basePermissionPath}.${field}`);
-        return required ? 'required' : false;
-    },
+
     _errorHandler: function(errorData) {
         this.requestInProcess = false;
         if (!errorData) { return; }

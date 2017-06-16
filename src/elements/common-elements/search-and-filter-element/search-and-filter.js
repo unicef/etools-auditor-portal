@@ -35,6 +35,7 @@
         observers: [
             '_restoreFilters(queryParams.*)'
         ],
+
         searchKeyDown: function() {
             this.debounce('searchKeyDown', () => {
                 if (this.searchString.length !== 1) {
@@ -42,6 +43,7 @@
                 }
             }, 300);
         },
+
         addFilter: function(e) {
             let query = (typeof e === 'string') ? e : e.model.item.query;
             let alreadySelected = this.usedFilters.findIndex((filter) => {
@@ -67,6 +69,7 @@
                 }
             }
         },
+
         removeFilter: function(e) {
             let query = e.model.item.query;
             let removedFilter = this.filters.find((filter) => {
@@ -83,6 +86,7 @@
             this.splice('usedFilters', indexToRemove, 1);
             this.updateQueries(queryObject);
         },
+
         _restoreFilters: function() {
             this.debounce('_restoreFilters', () => {
                 let queryParams = this.queryParams;
@@ -107,11 +111,13 @@
                 });
             }, 50);
         },
+
         _getFilterIndex: function(query) {
             return this.filters.findIndex((filter) => {
                 return filter.query === query;
             });
         },
+
         _setFilterValue: function(filter) {
             if (!filter) {
                 return;
@@ -125,6 +131,7 @@
                 filter.value = undefined;
             }
         },
+
         _getFilterValue: function(filterValue, filter) {
             if (!filter || !filter.selection || filterValue === undefined) {
                 return;
@@ -136,6 +143,7 @@
                 return selectionItem[optionValue].toString() === filterValue;
             });
         },
+
         _getFilter: function(query) {
             let filterIndex = this.filters.findIndex((filter) => {
                 return filter.query === query;
@@ -147,6 +155,7 @@
                 return {};
             }
         },
+
         _changeFilterValue: function(e, detail) {
             if (!e || !detail) {
                 return;
