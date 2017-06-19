@@ -103,11 +103,12 @@
                             <div class="input-container input-container-ms">
                                 <!-- File Upload -->
                                 <paper-input-container
+                                        class="validate-input"
                                         always-float-label
                                         title="[[uploadLabel]]"
                                         disabled$="[[requestInProcess]]"
                                         readonly$="[[requestInProcess]]"
-                                        invalid="[[editedItem.fileInvalid]]">
+                                        invalid="{{errors.file}}">
                                     <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
 
                                     <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
@@ -115,8 +116,8 @@
                                         [[uploadLabel]]
                                     </paper-button>
 
-                                    <template is="dom-if" if="[[editedItem.fileInvalid]]">
-                                        <paper-input-error aria-live="assertive">[[editedItem.fileErrorMessage]]</paper-input-error>
+                                    <template is="dom-if" if="[[errors.file]]">
+                                        <paper-input-error aria-live="assertive">[[errors.file]]</paper-input-error>
                                     </template>
 
                                     <input
@@ -132,14 +133,6 @@
                             </div>
                         </div>
                     </template>
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
-                            <template is="dom-if" if="[[editedItem.invalid]]">
-                                <paper-input-error class="attachment-error" aria-live="assertive">[[editedItem.errorMessage]]</paper-input-error>
-                            </template>
-                        </div>
-                    </div>
                 </div>
             </div>
         </dialog-element>
