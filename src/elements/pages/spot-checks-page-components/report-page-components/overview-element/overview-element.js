@@ -28,8 +28,7 @@ Polymer({
     getOverviewData: function() {
         return _.pickBy(this.data, (value, key) => {
             return ~['total_amount_tested',
-                    'total_amount_of_ineligible_expenditure',
-                    'amount_of_ineligible_expenditures'].indexOf(key) && value !== this.originalData[key];
+                    'total_amount_of_ineligible_expenditure'].indexOf(key) && value !== this.originalData[key];
         });
     }
 });

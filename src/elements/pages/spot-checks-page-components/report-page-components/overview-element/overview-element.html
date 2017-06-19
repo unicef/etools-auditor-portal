@@ -90,19 +90,6 @@
                             on-focus="_resetFieldError"
                             placeholder="Enter Total amount of ineligible expenditure"></etools-currency-amount-input>
                 </div>
-                <div class="input-container">
-                    <etools-currency-amount-input
-                            label="Amount of ineligible expenditures"
-                            currency="$"
-                            class$="disabled-as-readonly [[_setRequired('amount_of_ineligible_expenditures', basePermissionPath)]]"
-                            disabled$="[[isReadOnly('amount_of_ineligible_expenditures', basePermissionPath)]]"
-                            required$="[[_setRequired('amount_of_ineligible_expenditures', basePermissionPath)]]"
-                            invalid="{{_checkInvalid(errors.amount_of_ineligible_expenditures)}}"
-                            error-message="{{errors.amount_of_ineligible_expenditures}}"
-                            value="{{data.amount_of_ineligible_expenditures}}"
-                            on-focus="_resetFieldError"
-                            placeholder="Enter Amount of ineligible expenditures"></etools-currency-amount-input>
-                </div>
             </div>
         </etools-content-panel>
     </template>
