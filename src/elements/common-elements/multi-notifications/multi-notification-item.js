@@ -65,7 +65,7 @@ Polymer({
     },
     _moveUp: function() {
         this.offset += 70;
-        this.style.transform = `translateY(-${this.offset}px)`;
+        this.transform(`translateY(-${this.offset}px)`);
     }
 
     /**
