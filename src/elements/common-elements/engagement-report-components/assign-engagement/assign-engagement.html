@@ -18,7 +18,7 @@
                     <paper-input label="Date of Field Visit"
                                  id="dateVisitInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_field_visit', 'true', data.date_of_draft_report_to_ip, basePermissionPath)]]"
+                                 disabled$="[[_isReadOnly('date_of_field_visit', true, false, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_field_visit)]]"
                                  on-down="openDatePicker"
                                  data-selector="dateVisit"
@@ -43,7 +43,7 @@
                     <paper-input label="Draft Report Issued to IP"
                                  id="draftReportToIpInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
-                                 disabled$="[[_isReadOnly('date_of_draft_report_to_ip', data.date_of_field_visit, data.date_of_comments_by_ip, basePermissionPath)]]"
+                                 disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip, basePermissionPath)]]"
                                  value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
                                  validator="dateValidator"
                                  invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
@@ -60,8 +60,7 @@
                                            format="YYYY-MM-DD"
                                            pretty-date="{{data.date_of_draft_report_to_ip}}"
                                            no-init show-clear-btn
-                                           max-date="{{maxDate}}"
-                                           min-date="{{minDate(data.date_of_field_visit)}}"></etools-datepicker>
+                                           max-date="{{maxDate}}"></etools-datepicker>
                         </etools-datepicker-button>
                     </paper-input>
                 </div>

@@ -47,33 +47,18 @@ Polymer({
     },
 
     _isReadOnly: function(field, prevDate, nextDate, basePermissionPath) {
-        return this.isReadOnly(field, basePermissionPath) ||
-            !(prevDate && !nextDate) ||
-            (!(prevDate instanceof Boolean) && new Date(prevDate) > this.maxDate);
+        return this.isReadOnly(field, basePermissionPath) || !(prevDate && !nextDate);
     },
 
     validate: function(forSave) {
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-date');
         let valid = true;
         _.each(elements, (element, index) => {
-            let previousElement = index !== 0 ? elements[index - 1] : null,
-                currentDate = Date.parse(element.value),
-                previousDate = previousElement ? Date.parse(previousElement.value) : 0;
+            let previousElement = index > 1 ? elements[index - 1] : null;
 
             if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
                 element.errorMessage = 'Field is required';
                 element.invalid = true;
-                valid = false;
-            }
-
-            if (previousDate > currentDate) {
-                element.errorMessage = 'This date should be after previous date';
-                element.invalid = true;
-                valid = false;
-            }
-            if (previousDate > Date.now()) {
-                element.errorMessage = 'This date should be before today';
-                previousElement.invalid = true;
                 valid = false;
             }
         });
