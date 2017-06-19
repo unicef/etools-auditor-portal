@@ -176,12 +176,9 @@
             }
 
             if (file && file instanceof File) {
-                let blob = new Blob([file.raw]);
-
                 this.set('editedItem.file_name', file.name);
                 this.editedItem.raw = file;
                 this.editedItem.created = new Date().toISOString();
-                this.editedItem.file = URL.createObjectURL(blob);
 
                 return true;
             }
@@ -238,7 +235,11 @@
                     file_type: fileModel.file_type
                 };
 
-                reader.readAsDataURL(fileModel.raw);
+                try {
+                    reader.readAsDataURL(fileModel.raw);
+                } catch (error) {
+                    reject(error);
+                }
 
                 reader.onload = function() {
                     uploadedFile.file = reader.result;
@@ -251,27 +252,26 @@
             });
         },
 
-        getFiles: function() { //TODO: refactor tests
+        getFiles: function() {
             return new Promise((resolve, reject) => {
                 let files = [];
                 let changedFiles = [];
 
                 if (this.saveWithButton) {
                     files = this.dataItems || [];
-                } else if (this.editedItem.file) {
+                } else if (this.editedItem.file || this.editedItem.raw) {
                     files.push(this.editedItem);
                 }
 
                 let promises = files.map((fileModel) => {
-                    if (fileModel && fileModel.raw && fileModel.raw instanceof File) {
+                    if (fileModel && fileModel.raw) {
                         return this._getUploadedFile(fileModel);
                     } else if (!this.saveWithButton) {
                         changedFiles.push({
-                            id: this.editedItem.id,
-                            file_type: this.editedItem.file_type,
-                            hyperlink: this.editedItem.file,
-                            created: this.editedItem.created,
-                            _delete: this.editedItem._delete
+                            id: fileModel.id,
+                            file_type: fileModel.file_type,
+                            hyperlink: fileModel.file,
+                            _delete: fileModel._delete
                         });
                     }
                 });
