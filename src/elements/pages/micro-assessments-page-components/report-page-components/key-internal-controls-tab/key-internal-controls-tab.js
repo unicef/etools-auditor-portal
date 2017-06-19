@@ -47,6 +47,10 @@ Polymer({
         dialogOpened: {
             type: Boolean,
             notify: true
+        },
+        errorBaseText: {
+            type: String,
+            value: 'Test Subject Areas: '
         }
     },
 
@@ -60,18 +64,11 @@ Polymer({
         'changePermission(basePermissionPath)',
         'updateStyles(requestInProcess)',
         '_dataChanged(subjectAreas)',
-        '_errorHandler(errorObject.test_subject_areas)'
+        '_complexErrorHandler(errorObject.test_subject_areas)'
     ],
 
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
-    },
-
-    _dataChanged: function() {
-        if (this.dialogOpened) {
-            this.requestInProcess = false;
-            this.dialogOpened = false;
-        }
     },
 
     changePermission: function(basePermissionPath) {
@@ -194,23 +191,6 @@ Polymer({
 
     _showRisk: function(risk) {
         return risk && risk.type === 'default';
-    },
-
-    _errorHandler: function(errorData) {
-        this.requestInProcess = false;
-        if (!errorData) { return; }
-
-        let data = this.refactorErrorObject(errorData);
-        let nonField = this.checkNonField(errorData);
-
-        if (!this.dialogOpened && _.isString(data)) {
-            this.fire('toast', {text: `Test Subject Areas: ${data}`});
-        } else {
-            this.set('errors', data);
-        }
-
-        if (nonField) {
-            this.fire('toast', {text: `Test Subject Areas: ${nonField}`});
-        }
     }
+
 });

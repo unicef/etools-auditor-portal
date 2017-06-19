@@ -43,7 +43,6 @@
                 let previousUserId = JSON.parse(localStorage.getItem('userId'));
 
                 this._setUser(user);
-//                this._setPermissions(user);
 
                 if (!previousUserId || previousUserId !== user.id) {
                     this.resetOldUserData();

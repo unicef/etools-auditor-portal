@@ -56,6 +56,10 @@ Polymer({
                     'size': 100
                 }];
             }
+        },
+        errorBaseText: {
+            type: String,
+            value: 'Key Internal Controls Weaknesses: '
         }
     },
 
@@ -67,7 +71,7 @@ Polymer({
         'resetDialog(dialogOpened)',
         'updateStyles(requestInProcess)',
         '_dataChanged(subjectAreas)',
-        '_errorHandler(errorObject.key_internal_weakness)',
+        '_complexErrorHandler(errorObject.key_internal_weakness)',
         '_updateCategory(subjectAreas.blueprints, riskOptions)',
         'changePermission(basePermissionPath)',
     ],
@@ -97,23 +101,6 @@ Polymer({
             this.push('columns', {'size': '45px', 'label': 'Edit', 'name': 'edit', 'align': 'center', 'icon': true});
         } else if (readOnly && this.columns[this.columns.length - 1].name === 'edit') {
             this.pop('columns');
-        }
-    },
-
-    _errorHandler: function(errorData) {
-        this.requestInProcess = false;
-        if (!errorData) { return; }
-
-        let nonField = this.checkNonField(errorData);
-        let data = this.refactorErrorObject(errorData);
-        if (!this.dialogOpened && _.isString(data)) {
-            this.fire('toast', {text: `Key Internal Controls Weaknesses: ${data}`});
-        } else {
-            this.set('errors', data);
-        }
-
-        if (nonField) {
-            this.fire('toast', {text: `Key Internal Controls Weaknesses: ${nonField}`});
         }
     },
 
@@ -165,12 +152,6 @@ Polymer({
             element.value = '';
         });
 
-    },
+    }
 
-    _dataChanged: function() {
-        if (this.dialogOpened) {
-            this.requestInProcess = false;
-            this.dialogOpened = false;
-        }
-    },
 });

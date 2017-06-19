@@ -37,9 +37,34 @@
             this.set('errors', _.clone(this.refactorErrorObject(errorData)));
         },
 
+        _complexErrorHandler: function(errorData) {
+            this.requestInProcess = false;
+            if (!errorData) { return; }
+
+            let data = this.refactorErrorObject(errorData);
+            let nonField = this.checkNonField(errorData);
+
+            if (!this.dialogOpened && _.isString(data)) {
+                this.fire('toast', {text: `${this.errorBaseText}${data}`});
+            } else {
+                this.set('errors', data);
+            }
+
+            if (nonField) {
+                this.fire('toast', {text: `${this.errorBaseText}${nonField}`});
+            }
+        },
+
         _basePathChanged: function() {
             this.updateStyles();
         },
+
+        _dataChanged: function() {
+            if (this.dialogOpened) {
+                this.requestInProcess = false;
+                this.dialogOpened = false;
+            }
+        }
     };
 
     APBehaviors.CommonMethodsBehavior = [

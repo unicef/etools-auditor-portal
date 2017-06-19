@@ -7,7 +7,8 @@ Polymer({
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.TextareaMaxRowsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
 
     properties: {
@@ -98,6 +99,10 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        errorBaseText: {
+            type: String,
+            computed: 'getErrorBaseText(priority)'
         }
     },
 
@@ -111,8 +116,13 @@ Polymer({
         'changePermission(basePermissionPath)',
         '_setPriority(itemModel, priority)',
         '_updateFinding(dataItems, categoryOfObservation)',
-        '_errorHandler(errorObject.findings)'
+        '_complexErrorHandler(errorObject.findings)'
     ],
+
+    getErrorBaseText: function(priority) {
+        if (!priority) { return ''; }
+        return `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
+    },
 
     _getLength: function(dataItems) {
         return dataItems.filter((item) => {
@@ -185,23 +195,6 @@ Polymer({
         let data = _.clone(this.editedItem);
         if (data.category_of_observation && data.category_of_observation.value) { data.category_of_observation = data.category_of_observation.value; }
         return [data];
-    },
-
-    _errorHandler: function(errorData) {
-        this.requestInProcess = false;
-        if (!errorData) { return; }
-
-        let data = this.refactorErrorObject(errorData);
-        let nonField = this.checkNonField(errorData);
-
-        if (!this.dialogOpened && _.isString(data)) {
-            this.fire('toast', {text: `Summary of ${this.priority.display_name} Priority Findings and Recommendations: ${data}`});
-        } else {
-            this.set('errors', data);
-        }
-
-        if (nonField) {
-            this.fire('toast', {text: `Summary of ${this.priority.display_name} Priority Findings and Recommendations: ${nonField}`});
-        }
     }
+
 });

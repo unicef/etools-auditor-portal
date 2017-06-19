@@ -22,17 +22,6 @@ Polymer({
         '_setDataItems(data)'
     ],
 
-    ready: function() {
-        let textareas = Polymer.dom(this.root).querySelectorAll('paper-textarea');
-
-        if (textareas) {
-            textareas.forEach((textarea) => {
-                this.listen(textarea, 'focused-changed', '_saveData');
-            });
-        }
-        this.requestInProcess = false;
-    },
-
     _setDataItems: function() {
         this.set('dataItems', [this.data]);
     },
