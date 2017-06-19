@@ -57,7 +57,6 @@ Polymer({
     ready: function() {
         this.baseUrl = this.basePath;
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
-        this.$.drawer.$.scrim.remove();
     },
     attached: function() {
         if (this.initLoadingComplete && this.route.path === '/ap/') {
