@@ -715,6 +715,27 @@
                 assert.isTrue(behaviorObj.set.calledWith('tab', 'test'));
             })
         });
+
+        it('method getType returns engagement type or undefined', function() {
+            assert.isUndefined(behaviorObj.getType());
+            assert.isUndefined(behaviorObj.getType('test'));
+            assert.isUndefined(behaviorObj.getType(1231));
+
+            assert.equal(behaviorObj.getType('ma'), 'micro-assessments');
+            assert.equal(behaviorObj.getType('sc'), 'spot-checks');
+            assert.equal(behaviorObj.getType('audit'), 'audits');
+        });
+
+        it('method _setExportLink calls getEndpoint method if engagement type and id are provided', function() {
+            assert.equal(behaviorObj._setExportLink(), '');
+            assert.equal(behaviorObj._setExportLink({type: 'test'}), '');
+            assert.equal(behaviorObj._setExportLink({id: 12}), '');
+
+            behaviorObj.getEndpoint = sinon.stub().returns({url: ''});
+            behaviorObj._setExportLink({type: 'test', id: 12});
+
+            assert.isTrue(behaviorObj.getEndpoint.called);
+        });
     });
 </script>
 

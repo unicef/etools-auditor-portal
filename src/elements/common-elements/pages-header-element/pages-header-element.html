@@ -14,16 +14,11 @@
                 <span class="flex title" title="[[title]]">[[_setTitle(engagement, title)]]</span>
 
                 <div class="side-heading-button-holder">
-                    <paper-menu-button hidden$="[[!showExportButton]]" >
+                    <paper-menu-button hidden$="[[!showExportButton]]" on-tap="exportData">
                         <paper-button class="grey-buttons dropdown-trigger">
                             <iron-icon icon="file-download"></iron-icon>
                             Export
                         </paper-button>
-                        <paper-menu class="dropdown-content">
-                            <template is="dom-repeat" items="[[exportList]]">
-                                <paper-item on-tap="_export">{{item.name}}</paper-item>
-                            </template>
-                        </paper-menu>
                     </paper-menu-button>
 
                     <paper-button

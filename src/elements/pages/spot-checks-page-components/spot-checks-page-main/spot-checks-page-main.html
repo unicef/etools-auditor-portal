@@ -27,6 +27,7 @@
         <template is="dom-if" if="{{engagement.id}}" restamp>
             <pages-header-element show-export-button
                                   hide-print-button
+                                  export-link="[[_setExportLink(engagement)]]"
                                   engagement="[[engagement]]"
                                   title$="[[engagement.partner.name]] - Spot Check"></pages-header-element>
             <div class="tab-selector">

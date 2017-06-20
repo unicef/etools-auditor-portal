@@ -85,7 +85,8 @@
 
         behaviors: [
             APBehaviors.PermissionController,
-            APBehaviors.StaticDataController
+            APBehaviors.StaticDataController,
+            etoolsAppConfig.globals
         ],
 
         properties: {
@@ -173,6 +174,10 @@
             if (auditorsFilterIndex !== -1) {
                 this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors'));
             }
+        },
+
+        _setExportLink: function() {
+            return this.getEndpoint('engagementsList').url + '?format=csv&page_size=all';
         }
 
     });

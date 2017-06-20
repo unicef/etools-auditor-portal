@@ -1,4 +1,4 @@
-<!--import [polymer, lodash, textarea-max-rows-behavior]-->
+<!--import [polymer, lodash, textarea-max-rows-behavior, etools-app-config]-->
 
 <script>
     'use strict';
@@ -137,18 +137,7 @@
             if (!input) { throw 'Can not find input!'}
             if(!input.validate()) { return; }
 
-            let type;
-            switch (this.engagement.type) {
-                case 'ma':
-                    type = 'micro-assessments';
-                    break;
-                case 'sc':
-                    type = 'spot-checks';
-                    break;
-                case 'audit':
-                    type = 'audits';
-                    break;
-            }
+            let type = this.getType(this.engagement.type);
 
             this.updatedEngagement = {
                 type: type,
@@ -158,6 +147,17 @@
             };
             this.dialogOpened = false;
             if (this.tab === 'report') { this.tab = 'overview'; }
+        },
+
+        getType: function(type) {
+            switch (type) {
+                case 'ma':
+                    return 'micro-assessments';
+                case 'sc':
+                    return 'spot-checks';
+                case 'audit':
+                    return 'audits';
+            }
         },
 
         _prepareData: function(submit, finalize) {
@@ -178,21 +178,12 @@
                 _.assign(data, assignReportData);
             }
 
-            let type;
-            switch (this.engagement.type) {
-                case 'ma':
-                    type = 'micro-assessments';
-                    break;
-                case 'sc':
-                    type = 'spot-checks';
-                    break;
-                case 'audit':
-                    type = 'audits';
-                    break;
-                default:
-                    type = this.engagement.type.link;
-                    data.type = this.engagement.type.value;
+            let type = this.getType(this.engagement.type);
+            if (!type) {
+                type = this.engagement.type.link;
+                data.type = this.engagement.type.value;
             }
+
             if (this.customDataPrepare) {
                 data = this.customDataPrepare(data);
             }
@@ -213,6 +204,11 @@
                             finalize: finalize ? 'finalize/' : null
                         };
                     });
+        },
+
+        _setExportLink: function(engagement) {
+            if (!engagement || !engagement.type || !engagement.id) { return ''; }
+            return this.getEndpoint('engagementInfo', {id: engagement.id, type: this.getType(engagement.type)}).url + '?format=csv'
         },
 
         _validateBasicInfo: function(property) {
@@ -321,7 +317,8 @@
         APBehaviors.PermissionController,
         APBehaviors.StaticDataController,
         APBehaviors.ErrorHandlerBehavior,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.TextareaMaxRowsBehavior,
+        etoolsAppConfig.globals
     ];
 
 </script>
