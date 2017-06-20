@@ -47,7 +47,7 @@ Polymer({
     },
 
     validate: function(forSave) {
-        if (this.primaryArea.risk.extra && !this.primaryArea.risk.value) {
+        if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
             this.set('errors', {children: [{blueprints: [{risk: {value: 'Please, select Risk Assessment'}}]}]});
             return false;
         }
