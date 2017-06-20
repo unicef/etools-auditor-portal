@@ -62,6 +62,7 @@ Polymer({
         if (this.initLoadingComplete && this.route.path === '/ap/') {
             this._configPath();
         }
+        this.$.drawer.$.scrim.remove();
     },
     queueToast: function(e, detail) {
         let notificationList = Polymer.dom(this.root).querySelector('multi-notification-list');
