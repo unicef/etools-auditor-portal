@@ -22,10 +22,6 @@
                         file_type: undefined,
                         display_name: undefined,
                         type: {},
-                        invalid: false,
-                        fileInvalid: false,
-                        errorMessage: '',
-                        fileErrorMessage: ''
                     };
                 }
             },
@@ -176,12 +172,9 @@
             }
 
             if (file && file instanceof File) {
-                let blob = new Blob([file.raw]);
-
                 this.set('editedItem.file_name', file.name);
                 this.editedItem.raw = file;
                 this.editedItem.created = new Date().toISOString();
-                this.editedItem.file = URL.createObjectURL(blob);
 
                 return true;
             }
@@ -238,7 +231,11 @@
                     file_type: fileModel.file_type
                 };
 
-                reader.readAsDataURL(fileModel.raw);
+                try {
+                    reader.readAsDataURL(fileModel.raw);
+                } catch (error) {
+                    reject(error);
+                }
 
                 reader.onload = function() {
                     uploadedFile.file = reader.result;
@@ -251,27 +248,26 @@
             });
         },
 
-        getFiles: function() { //TODO: refactor tests
+        getFiles: function() {
             return new Promise((resolve, reject) => {
                 let files = [];
                 let changedFiles = [];
 
                 if (this.saveWithButton) {
                     files = this.dataItems || [];
-                } else if (this.editedItem.file) {
+                } else if (this.editedItem.file || this.editedItem.raw) {
                     files.push(this.editedItem);
                 }
 
                 let promises = files.map((fileModel) => {
-                    if (fileModel && fileModel.raw && fileModel.raw instanceof File) {
+                    if (fileModel && fileModel.raw) {
                         return this._getUploadedFile(fileModel);
                     } else if (!this.saveWithButton) {
                         changedFiles.push({
-                            id: this.editedItem.id,
-                            file_type: this.editedItem.file_type,
-                            hyperlink: this.editedItem.file,
-                            created: this.editedItem.created,
-                            _delete: this.editedItem._delete
+                            id: fileModel.id,
+                            file_type: fileModel.file_type,
+                            hyperlink: fileModel.file,
+                            _delete: fileModel._delete
                         });
                     }
                 });
@@ -292,16 +288,6 @@
             });
         },
 
-        _setInvalid: function(errorMessage, invalid) {
-            this.set('editedItem.errorMessage', errorMessage);
-            this.set('editedItem.invalid', invalid);
-        },
-
-        _setFileInvalid: function(errorMessage, invalid) {
-            this.set('editedItem.fileErrorMessage', errorMessage);
-            this.set('editedItem.fileInvalid', invalid);
-        },
-
         _checkAlreadySelected: function() {
             if (!this.dataItems) {return false;}
 
@@ -310,11 +296,11 @@
             });
 
             if (alreadySelectedIndex !== -1) {
-                this._setFileInvalid('File already selected', true);
+                this.set('errors.file', 'File already selected');
                 return true;
             }
 
-            this._setFileInvalid('', false);
+            this.set('errors.file', '');
             return false;
         },
 
@@ -324,10 +310,10 @@
             let valid = true;
 
             if (this.fileTypeRequired && (!this.fileTypes || !this.fileTypes.length)) {
-                this._setInvalid('File type field is required but types are not defined', true);
+                this.set('errors.file_type', 'File types are not defined');
                 valid = false;
             } else {
-                this._setInvalid('', false);
+                this.set('errors.file_type', '');
             }
 
             if (this.fileTypeRequired && !dropdown.validate()) {
@@ -340,23 +326,34 @@
             }
 
             if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw)) {
-                this._setFileInvalid('File is not selected', true);
+                this.set('errors.file', 'File is not selected');
                 valid = false;
             }
 
             return valid;
         },
 
+        _errorHandler: function(errorData) {
+            let mainProperty = this.mainProperty;
+            this.requestInProcess = false;
+            if (!errorData || !errorData[mainProperty]) { return; }
+            let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData[mainProperty])[0] : this.refactorErrorObject(errorData[mainProperty]);
+            if (typeof refactoredData === 'object') {
+                this.set('errors', refactoredData);
+            }
+        },
+
         savingError: function(errorObj) {
+            let mainProperty = this.mainProperty;
             if (this.requestInProcess) {
                 this.requestInProcess = false;
                 this.fire('toast', {text: 'Can not save data'});
             }
-            if (!errorObj) { return; }
+            if (!errorObj || !errorObj[mainProperty]) { return; }
 
-            let nonField = this.checkNonField(errorObj);
-            if (typeof errorObj === 'string') {
-                this.fire('toast', {text: `Attachments: ${errorObj}`});
+            let nonField = this.checkNonField(errorObj[mainProperty]);
+            if (typeof errorObj[mainProperty] === 'string') {
+                this.fire('toast', {text: `Attachments: ${errorObj[mainProperty]}`});
             }
             if (nonField) {
                 this.fire('toast', {text: `Attachments: ${nonField}`});

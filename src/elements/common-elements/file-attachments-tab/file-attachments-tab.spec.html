@@ -33,7 +33,6 @@
         beforeEach(function () {
             myEl = fixture('file-attachments-tab-fixture');
         });
-        //TODO: test buttons
 
         describe('method _handleDialogCancel(e, detail)', function () {
             it('calls _openDeleteConfirmation() method and pass their own arguments to him if canBeRemoved is true', function () {
@@ -87,7 +86,7 @@
                 assert.equal(fileType.value, myEl.fileTypes[2].value);
             });
 
-            it ('returns null when this.fileTypes is undefined', function () {
+            it('returns null when fileTypes is undefined', function () {
                 myEl.fileTypes = undefined;
                 assert.isNull(myEl._getFileType('1'));
             });
@@ -258,7 +257,6 @@
                 assert.equal(myEl.editedItem.file_name, file.name);
                 assert.deepEqual(myEl.editedItem.raw, file);
                 assert.isDefined(myEl.editedItem.created);
-                assert.isDefined(myEl.editedItem.file);
             });
         });
 
@@ -306,7 +304,7 @@
 
                 assert.isFalse(spy.called);
                 myEl._filesChange();
-                assert.isTrue(myEl._getFilenameFromUrl.calledWith('url/file_name'));
+                assert.isTrue(spy.calledWith('url/file_name'));
                 assert.isTrue(spy.calledOnce);
             });
 
@@ -354,7 +352,7 @@
 
                 assert.isFalse(spy.called);
                 myEl._filesChange();
-                assert.isTrue(myEl._getFileType.calledWith(myEl.dataItems[0].file_type));
+                assert.isTrue(spy.calledWith(myEl.dataItems[0].file_type));
                 assert.isTrue(spy.calledOnce);
             });
 
@@ -394,75 +392,150 @@
         });
 
         describe('method _getUploadedFile(fileModel)', function () {
-            it('Promise resolves an Object', function () {
+            it('Promise resolves an Object', function (done) {
                 let fileModel = {
                     file_name: 'name',
                     raw: new File([''], 'name')
                 };
 
-                myEl._getUploadedFile(fileModel).then(function (resolved) {
-                    assert.isObject(resolved);
-                    assert.ownInclude(resolved, {
-                        file_name: 'name',
-                        raw: new File([''], 'name')
-                    });
-                });
-            });
-
-            it ('Promise rejected', function () {
-                let fileModel = {};
-
-                myEl._getUploadedFile(fileModel).catch(function (rejected) {
-                    assert.isDefined(rejected);
-                });
+                myEl._getUploadedFile(fileModel)
+                    .then((resolved) => {
+                        assert.isObject(resolved);
+                        assert.equal(resolved.file_name, fileModel.file_name);
+                        assert.isDefined(resolved.file);
+                        done();
+                    })
+                    .catch(done);
             });
         });
 
-//        describe('method getFiles()', function () {
-//            beforeEach(function () {
-//                myEl.files = [{
-//                    file_name: 'name',
-//                    raw: new File([''], 'name')
-//                }];
-//            });
-//
-//            it('Promise resolves an Array of Objects', function () {
-//                myEl.getFiles().then((resolved) => {
-//                    assert.isArray(resolved);
-//                    assert.isObject(resolved[0]);
-//                });
-//            });
-//
-//            it ('Promise rejected', function () {
-//                sinon.stub(myEl, '_getUploadedFile').returns(() => {
-//                    return new Promise((resolve, reject) => {
-//                        reject(new Error('Error!'));
-//                    });
-//                });
-//
-//                myEl.getFiles().catch((rejected) => {
-//                    assert.isDefined(rejected);
-//                });
-//            });
-//        });
+        describe('method getFiles()', function () {
+            let files = [
+                {file_name: 'file_name', file_type: '1', raw: new File(['data'], 'file_name')},
+                {file_name: 'file_name2', file_type: '1', raw: new File(['data'], 'file_name2')},
+            ];
 
-        describe('method _setInvalid(errorMessage, invalid)', function () {
-            it('sets editedItem errorMessage and invalid properties', function () {
-                assert.equal(myEl.editedItem.errorMessage, '');
-                assert.isFalse(myEl.editedItem.invalid);
-                myEl._setInvalid('errorMessage', true);
-                assert.equal(myEl.editedItem.errorMessage, 'errorMessage');
-                assert.isTrue(myEl.editedItem.invalid);
+            describe('saveWithButton=true', function () {
+                beforeEach(function () {
+                    myEl.saveWithButton = true;
+                });
+
+                it('Promise resolves an Array of new files', function (done) {
+                    myEl.multiple = true;
+                    myEl.dataItems = _.cloneDeep(files);
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.isArray(resolved);
+                            assert.isObject(resolved[0]);
+                            assert.isObject(resolved[1]);
+                            assert.isDefined(resolved[0].file);
+                            assert.equal(resolved[0].file_name, files[0].file_name);
+                            assert.equal(resolved[0].file_type, files[0].file_type);
+                            done();
+                        })
+                        .catch(done);
+                });
+
+                it('calls _getUploadedFile() method', function (done) {
+                    let spy = sinon.spy(myEl, '_getUploadedFile');
+
+                    myEl.multiple = true;
+                    myEl.dataItems = _.cloneDeep(files);
+
+                    assert.isFalse(spy.called);
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.equal(spy.callCount, files.length);
+                            assert.isTrue(spy.calledWithMatch(files[0]));
+                            assert.isTrue(spy.calledWithMatch(files[1]));
+                            done();
+                        })
+                        .catch(done);
+                });
+
+                it('not calls _getUploadedFile() method for files with bad "raw" property', function (done) {
+                    let spy = sinon.spy(myEl, '_getUploadedFile');
+
+                    myEl.multiple = true;
+                    myEl.dataItems = _.cloneDeep(files);
+                    myEl.dataItems[1].raw = undefined;
+
+                    assert.isFalse(spy.called);
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.equal(spy.callCount, files.length - 1);
+                            assert.isTrue(spy.calledWithMatch(files[0]));
+                            done();
+                        })
+                        .catch(done);
+                });
+
+                it('returns null if files is not defined', function (done) {
+                    myEl.dataItems = [];
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.isNull(resolved);
+                            done();
+                        })
+                        .catch(done);
+                });
             });
-        });
 
-        describe('method _setFileInvalid(errorMessage, invalid)', function () {
-            it('sets editedItem fileErrorMessage and fileInvalid properties', function () {
-                assert.equal(myEl.editedItem.fileErrorMessage, '');
-                assert.isFalse(myEl.editedItem.fileInvalid);
-                myEl._setFileInvalid('errorMessage', true);
-                assert.equal(myEl.editedItem.fileErrorMessage, 'errorMessage');
-                assert.isTrue(myEl.editedItem.fileInvalid);
+            describe('saveWithButton=false', function () {
+                beforeEach(function () {
+                    myEl.saveWithButton = false;
+                });
+
+                it('Promise resolves an Array of new files', function (done) {
+                    myEl.editedItem = {file_name: 'file_name', file_type: '1', raw: new File(['data'], 'file_name')};
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.isArray(resolved);
+                            assert.isObject(resolved[0]);
+                            assert.isDefined(resolved[0].file);
+                            assert.equal(resolved[0].file_name, myEl.editedItem.file_name);
+                            assert.equal(resolved[0].file_type, myEl.editedItem.file_type);
+                            done();
+                        })
+                        .catch(done);
+                });
+
+                it('calls _getUploadedFile() method', function (done) {
+                    let spy = sinon.spy(myEl, '_getUploadedFile');
+
+                    myEl.editedItem = {file_name: 'file_name', file_type: '1', raw: new File(['data'], 'file_name')};
+
+                    assert.isFalse(spy.called);
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.isTrue(spy.calledOnce);
+                            assert.isTrue(spy.calledWithMatch(myEl.editedItem));
+                            done();
+                        })
+                        .catch(done);
+                });
+
+                it('Promise resolves an array with edited file', function (done) {
+                    myEl.editedItem = {id: 1, _delete: true, file_type: '1', file: 'url'};
+
+                    myEl.getFiles()
+                        .then((resolved) => {
+                            assert.isArray(resolved);
+                            assert.isObject(resolved[0]);
+                            assert.equal(resolved[0].id, myEl.editedItem.id);
+                            assert.equal(resolved[0].file_type, myEl.editedItem.file_type);
+                            assert.equal(resolved[0].hyperlink, myEl.editedItem.file);
+                            assert.equal(resolved[0]._delete, myEl.editedItem._delete);
+                            done();
+                        })
+                        .catch(done);
+                });
             });
         });
 
@@ -473,43 +546,24 @@
             });
 
             it('returns true and sets invalid state if editedItem.file_name already in use', function () {
-                let spy = sinon.spy(myEl, '_setFileInvalid');
-
                 myEl.multiple = true;
                 myEl.dataItems = _.cloneDeep(dataItems);
                 myEl.editedItem.file_name = myEl.dataItems[0].file_name;
 
-                assert.equal(myEl.editedItem.errorMessage, '');
-                assert.isFalse(myEl.editedItem.invalid);
-                assert.isFalse(spy.called);
-
+                assert.isUndefined(myEl.errors.file);
                 assert.isTrue(myEl._checkAlreadySelected());
-
-                assert.equal(myEl.editedItem.fileErrorMessage, 'File already selected');
-                assert.isTrue(myEl.editedItem.fileInvalid);
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(myEl._setFileInvalid.calledWith('File already selected', true));
+                assert.equal(myEl.errors.file, 'File already selected');
             });
 
             it('returns false and resets invalid state if editedItem.file_name is free', function () {
-                let spy = sinon.spy(myEl, '_setFileInvalid');
-
                 myEl.multiple = true;
                 myEl.dataItems = _.cloneDeep(dataItems);
                 myEl.editedItem.file_name = 'free name';
-                myEl.editedItem.errorMessage = 'errorMessage';
-                myEl.editedItem.invalid = true;
+                myEl.errors.file = 'errorMessage';
 
-                assert.equal(myEl.editedItem.errorMessage, 'errorMessage');
-                assert.isTrue(myEl.editedItem.invalid);
-                assert.isFalse(spy.called);
-
+                assert.equal(myEl.errors.file, 'errorMessage');
                 assert.isFalse(myEl._checkAlreadySelected());
-
-                assert.equal(myEl.editedItem.fileErrorMessage, '');
-                assert.isFalse(myEl.editedItem.fileInvalid);
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(myEl._setFileInvalid.calledWith('', false));
+                assert.equal(myEl.errors.file, '');
             });
         });
 
@@ -522,60 +576,58 @@
             });
 
             it('returns false when fileType is required but fileTypes array is undefined', function (done) {
-                let spy = sinon.spy(myEl, '_setInvalid');
-
                 myEl.fileTypeRequired = true;
                 myEl.fileTypes = undefined;
-
-                assert.isFalse(spy.called);
 
                 flush(function () {
                     Polymer.dom(myEl.root).querySelector('#fileType').validate = function () { return true; };
                     assert.isFalse(myEl.validate());
-
-                    assert.isTrue(spy.calledOnce);
-                    assert.isTrue(myEl._setInvalid.calledWith('File type field is required but types are not defined', true));
+                    assert.equal(myEl.errors.file_type, 'File types are not defined');
                     done();
                 });
             });
 
             it('returns false when fileType is required but fileTypes array is empty', function (done) {
-                let spy = sinon.spy(myEl, '_setInvalid');
-
                 myEl.fileTypeRequired = true;
                 myEl.fileTypes = [];
-
-                assert.isFalse(spy.called);
 
                 flush(function () {
                     Polymer.dom(myEl.root).querySelector('#fileType').validate = function () { return true; };
                     assert.isFalse(myEl.validate());
+                    assert.equal(myEl.errors.file_type, 'File types are not defined');
+                    done();
+                });
+            });
 
-                    assert.isTrue(spy.calledOnce);
-                    assert.isTrue(myEl._setInvalid.calledWith('File type field is required but types are not defined', true));
+            it('returns true when fileType is required and selected', function (done) {
+                myEl.fileTypeRequired = true;
+                myEl.fileTypes = _.cloneDeep(fileTypes);
+
+                flush(function () {
+                    Polymer.dom(myEl.root).querySelector('#fileType').validate = function () { return true; };
+                    assert.isTrue(myEl.validate());
+                    done();
+                });
+            });
+
+            it('returns true when file is selected', function (done) {
+                myEl.canBeRemoved = false;
+                _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw'});
+
+                flush(function () {
+                    assert.isTrue(myEl.validate());
                     done();
                 });
             });
 
             it('resets invalid state if fileType is not required', function () {
-                let spy = sinon.spy(myEl, '_setInvalid');
-                assert.isFalse(spy.called);
-
                 myEl.validate();
-
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(myEl._setInvalid.calledWith('', false));
+                assert.equal(myEl.errors.file_type, '');
             });
 
             it('resets invalid state if fileTypes is not empty', function () {
-                let spy = sinon.spy(myEl, '_setInvalid');
-
-                assert.isFalse(spy.called);
-
                 myEl.validate();
-
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(myEl._setInvalid.calledWith('', false));
+                assert.equal(myEl.errors.file_type, '');
             });
 
             it('returns false and sets errors.file_type if fileType is required but not selected', function (done) {
@@ -602,22 +654,13 @@
             });
 
             it('returns false and sets fileInvalid if canBeRemoved is false and file is not selected', function () {
-                let spy = sinon.spy(myEl, '_setFileInvalid');
-
                 myEl.canBeRemoved = false;
                 sinon.stub(myEl, '_checkAlreadySelected').returns(false);
                 //file is not selected:
                 _.assign(myEl.editedItem, {file_name: undefined, raw: undefined});
-                assert.isFalse(spy.called);
 
                 assert.isFalse(myEl.validate());
-
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(myEl._setFileInvalid.calledWith('File is not selected', true));
-            });
-
-            it('returns true if all is valid', function () {
-                assert.isTrue(myEl.validate());
+                assert.equal(myEl.errors.file, 'File is not selected');
             });
         });
     });
