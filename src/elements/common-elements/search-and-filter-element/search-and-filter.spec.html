@@ -412,6 +412,12 @@
             it('returns -1 if filter is not found', function () {
                 assert.equal(myEl._getFilterIndex(undefined), -1);
             });
+
+            it('returns -1 if filters is undefined', function () {
+                var query = filters[0].query;
+                myEl.filters = undefined;
+                assert.equal(myEl._getFilterIndex(query), -1);
+            });
         });
 
         describe('method _setFilterValue(filter)', function () {
