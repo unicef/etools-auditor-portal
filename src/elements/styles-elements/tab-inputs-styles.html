@@ -161,9 +161,9 @@
                 }"};
             }
 
-            paper-dropdown-menu.required,
-            paper-textarea.required,
-            paper-input.required {
+            paper-dropdown-menu.required:not([disabled]),
+            paper-textarea.required:not([disabled]),
+            paper-input.required:not([disabled]) {
                 --paper-input-container-label: #{"{
                     background: url(/ap/images/required.svg) no-repeat 99% 20%/8px;
                     width: auto !important;
@@ -173,7 +173,7 @@
                 }"};
             }
 
-            etools-currency-amount-input.required {
+            etools-currency-amount-input.required:not([disabled]) {
                 --etools-currency-container-label: #{'{
                  background: url(/ap/images/required.svg) no-repeat 99% 20%/8px;
                     width: auto !important;
@@ -200,7 +200,7 @@
 
             }
 
-            etools-searchable-multiselection-menu.required {
+            etools-searchable-multiselection-menu.required:not([disabled]) {
                 --esmm-input-container-label: #{'{
                     background: url(/ap/images/required.svg) no-repeat 99% 20%/8px;
                     width: auto !important;

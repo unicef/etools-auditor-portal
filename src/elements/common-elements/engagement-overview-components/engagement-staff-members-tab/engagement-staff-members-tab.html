@@ -2,7 +2,7 @@
             iron-icons, iron-icons/communication-icons, etools-loading]-->
 
 <!--import [tab-inputs-styles, repeatable-data-sets-behavior, permission-controller, list-header, list-element, list-pagination, dialog-element,
-            lodash, table-elements-behavior, error-handler-behavior, update-staff-members, get-staff-members-list,check-user-existence]-->
+            lodash, table-elements-behavior, error-handler-behavior, update-staff-members, get-staff-members-list,check-user-existence, common-methods-behavior]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
@@ -12,6 +12,7 @@
 
         <!--requests-->
         <get-staff-members-list organisation-id="{{organisationId}}"
+                                staffs-base="{{staffsBase}}"
                                 datalength="{{datalength}}"
                                 queries="{{listQueries}}"
                                 data-items="{{dataItems}}"
@@ -103,8 +104,8 @@
                                          value="{{editedItem.user.email}}"
                                          placeholder="Enter E-mail"
                                          maxlength="45"
-                                         class$="validate-input {{_setRequired('user.email', basePermissionPath)}}"
-                                         required="{{_setRequired('user.email', basePermissionPath)}}"
+                                         class$="validate-input {{_setRequired('user.email', staffsBase)}} email"
+                                         required="{{_setRequired('user.email', staffsBase)}}"
                                          disabled="{{_emailDisabled(requestInProcess, canBeRemoved, emailChecking)}}"
                                          readonly$="{{_emailDisabled(requestInProcess, canBeRemoved, emailChecking)}}"
                                          on-focus="_resetFieldError"
@@ -122,9 +123,9 @@
                             <paper-input label="First Name"
                                          value="{{editedItem.user.first_name}}"
                                          placeholder="Enter First Name"
-                                         class$="validate-input {{_setRequired('user.first_name', basePermissionPath)}}"
+                                         class$="validate-input {{_setRequired('user.first_name', staffsBase)}}"
                                          maxlength="30"
-                                         required="{{_setRequired('user.first_name', basePermissionPath)}}"
+                                         required="{{_setRequired('user.first_name', staffsBase)}}"
                                          invalid="{{errors.user.first_name}}"
                                          error-message="{{errors.user.first_name}}"
                                          disabled="{{requestInProcess}}"
@@ -138,8 +139,8 @@
                                          value="{{editedItem.user.last_name}}"
                                          placeholder="Enter Last Name"
                                          maxlength="30"
-                                         class$="validate-input {{_setRequired('user.last_name', basePermissionPath)}}"
-                                         required="{{_setRequired('user.last_name', basePermissionPath)}}"
+                                         class$="validate-input {{_setRequired('user.last_name', staffsBase)}}"
+                                         required="{{_setRequired('user.last_name', staffsBase)}}"
                                          invalid="{{errors.user.last_name}}"
                                          error-message="{{errors.user.last_name}}"
                                          disabled="{{requestInProcess}}"
@@ -155,10 +156,10 @@
                                      placeholder="Enter Position"
                                      maxlength="45"
                                      on-focus="_resetFieldError"
-                                     class$="validate-input {{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                     class$="validate-input {{_setRequired('user.profile.job_title', staffsBase)}}"
                                      disabled="{{requestInProcess}}"
                                      readonly$="{{requestInProcess}}"
-                                     required="{{_setRequired('user.profile.job_title', basePermissionPath)}}"
+                                     required="{{_setRequired('user.profile.job_title', staffsBase)}}"
                                      invalid="{{errors.profile.job_title}}"
                                      error-message="{{errors.profile.job_title}}">
                         </paper-input>
@@ -171,12 +172,12 @@
                                          allowed-pattern="[\d\s-]"
                                          placeholder="Enter Phone"
                                          maxlength="20"
-                                         class$="validate-input {{_setRequired('user.profile.phone_number', basePermissionPath)}}"
+                                         class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
                                          disabled="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
                                          invalid="{{errors.user.profile.phone_number}}"
                                          error-message="{{errors.user.profile.phone_number}}"
-                                         required="{{_setRequired('user.profile.phone_number', basePermissionPath)}}">
+                                         required="{{_setRequired('user.profile.phone_number', staffsBase)}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
                         </div>

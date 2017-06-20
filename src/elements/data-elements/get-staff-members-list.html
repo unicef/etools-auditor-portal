@@ -6,8 +6,13 @@
 
         <etools-ajax method="GET"
                      url="{{url}}"
-                     on-success="_handleResponse"
+                     on-success="_handleDataResponse"
                      on-fail="_handleError"></etools-ajax>
+
+        <etools-ajax method="OPTIONS"
+                     url="[[optionsUrl]]"
+                     on-success="_handleOptionsResponse"
+                     on-fail="_handleOptionsResponse"></etools-ajax>
 
     </template>
 
@@ -18,7 +23,8 @@
             is: 'get-staff-members-list',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                APBehaviors.PermissionController
             ],
 
             properties: {
@@ -42,6 +48,15 @@
                 datalength: {
                     type: Number,
                     notify: true
+                },
+                requestsCompleted: {
+                    type: Object,
+                    value: {}
+                },
+                staffsBase: {
+                    type: String,
+                    notify: true,
+                    value: ''
                 }
             },
 
@@ -52,7 +67,13 @@
 
                 this.listLoading = true;
                 let queriesString = this._prepareQueries(listQueries);
+                this.requestsCompleted = {};
                 this.url = this.getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
+                if (this.collectionExists(`staff_members_${organisationId}`)) {
+                    this.requestsCompleted.options = true;
+                } else {
+                    this.optionsUrl = this.url;
+                }
             },
 
             _prepareQueries: function(listQueries) {
@@ -66,13 +87,34 @@
                 return `?ordering=-id&${queries.join('&')}`;
             },
 
-            _handleResponse: function(event, detail) {
-                this.dataItems = detail.results;
+            _handleDataResponse: function(data) {
+                this.responseData = data.detail;
+                this.requestsCompleted.data = true;
+                this._handleResponse(this.responseData);
+            },
+
+            _handleOptionsResponse: function(data) {
+                let actions = data.detail && data.detail.actions;
+                if (actions) {
+                    this._addToCollection(`staff_members_${this.organisationId}`, data.detail.actions);
+                } else {
+                    console.error('Can not load permissions for engagement');
+                }
+
+                this.requestsCompleted.options = true;
+                this._handleResponse(this.responseData);
+            },
+
+            _handleResponse: function(data) {
+                if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
+
+                this.dataItems = data.results;
                 if (this.queries && !this.queries.search) {
-                    this.datalength = detail.count;
+                    this.datalength = data.count;
                 }
                 this.listLoading = false;
                 this.url = null;
+                this.staffsBase = `staff_members_${this.organisationId}`;
             },
 
             _handleError: function(event, error) {

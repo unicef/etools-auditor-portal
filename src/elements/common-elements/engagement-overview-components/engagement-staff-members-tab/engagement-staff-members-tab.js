@@ -4,7 +4,8 @@ Polymer({
     is: 'engagement-staff-members-tab',
 
     behaviors: [
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
     properties: {
         mainProperty: {
@@ -142,7 +143,7 @@ Polymer({
         '_queriesChanged(listSize, listPage, searchQuery)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-        'updateStyles(emailChecking)'
+        'updateStyles(emailChecking, staffsBase)'
     ],
 
     attached: function() {
@@ -193,6 +194,22 @@ Polymer({
             page: listPage,
             search: searchQuery || ''
         });
+    },
+
+    validate: function() {
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-input:not(.email)'),
+            valid = true,
+            emailValid = this.$.emailInput.disabled || this.$.emailInput.validate();
+
+        Array.prototype.forEach.call(elements, (element) => {
+            if (element.required && !element.disabled && !element.validate()) {
+                element.invalid = 'This field is required';
+                element.errorMessage = 'This field is required';
+                valid = false;
+            }
+        });
+
+        return valid && emailValid;
     },
 
     _dataItemsChanged: function(data, staffs) {
