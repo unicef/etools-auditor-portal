@@ -57,6 +57,7 @@
 
                 ready: function () {
                     this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
+                    this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
                 },
 
@@ -84,10 +85,7 @@
                     if (!this.isValidCollection(actions)) { this._responseError(); }
 
                     if (this.isValidCollection(actions.POST)) {
-                        this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                         actions.allowed_actions = ['createEngagement'].concat(actions.allowed_FSM_transitions || []);
-                    } else {
-                        dataLoaded.partners = true;
                     }
 
                     this._addToCollection('new_engagement', data.detail.actions);

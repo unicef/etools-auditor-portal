@@ -80,6 +80,41 @@
         }
     ];
 
+    let listHeadings = [{
+        'size': 15,
+        'label': 'Purchase Order #',
+        'name': 'agreement__order_number',
+        'link': '*engagement_type*/*data_id*/overview',
+        'ordered': false,
+        'path': 'agreement.order_number'
+    }, {
+        'size': 20,
+        'label': 'Partner Name',
+        'name': 'partner__name',
+        'ordered': false,
+        'path': 'partner.name'
+    }, {
+        'size': 20,
+        'label': 'Auditor',
+        'name': 'agreement__audit_organization__name',
+        'ordered': false,
+        'path': 'agreement.audit_organization.name'
+    }, {
+        'size': 15,
+        'label': 'Engagement Type',
+        'name': 'type',
+        'ordered': false
+    }, {
+        'size': 30,
+        'label': 'Status',
+        'name': 'status',
+        'ordered': false,
+        'additional': {
+            'type': 'date',
+            'path': 'status_date'
+        }
+    }];
+
     Polymer({
         is: 'engagements-list-view',
 
@@ -95,46 +130,11 @@
             },
             listHeadings: {
                 type: Array,
-                value: function() {
-                    return [{
-                        'size': 15,
-                        'label': 'Purchase Order #',
-                        'name': 'agreement__order_number',
-                        'link': '*engagement_type*/*data_id*/overview',
-                        'ordered': false,
-                        'path': 'agreement.order_number'
-                    }, {
-                        'size': 20,
-                        'label': 'Partner Name',
-                        'name': 'partner__name',
-                        'ordered': false,
-                        'path': 'partner.name'
-                    }, {
-                        'size': 20,
-                        'label': 'Auditor',
-                        'name': 'agreement__audit_organization__name',
-                        'ordered': false,
-                        'path': 'agreement.audit_organization.name'
-                    }, {
-                        'size': 15,
-                        'label': 'Engagement Type',
-                        'name': 'type',
-                        'ordered': false
-                    }, {
-                        'size': 30,
-                        'label': 'Status',
-                        'name': 'status',
-                        'ordered': false,
-                        'additional': {
-                            'type': 'date',
-                            'path': 'status_date'
-                        }
-                    }];
-                }
+                value: []
             },
             filters: {
                 type: Array,
-                value: filters
+                value: []
             },
             engagementsList: {
                 type: Array,
@@ -150,16 +150,39 @@
             }
         },
 
-        observers: [
-            'setFiltersSelections(engagementsList.*)'
-        ],
+        ready: function() {
+            this.setupFiltersAndHeadings();
+            this.setFiltersSelections();
+        },
 
         _showAddButton: function() {
             return this.actionAllowed('new_engagement', 'createEngagement');
         },
 
+        setupFiltersAndHeadings: function() {
+            let auditorsFilterIndex = this._getFilterIndex('agreement__audit_organization');
+            let auditorHeadingIndex = listHeadings.findIndex((heading) => {
+                return heading.name === 'agreement__audit_organization__name';
+            });
+
+            if (false) { //TODO: check that user is auditor
+                filters.splice(auditorsFilterIndex, 1);
+                listHeadings.splice(auditorHeadingIndex, 1);
+                listHeadings.forEach((heading) => {
+                    heading.size += 5;
+                });
+            }
+
+            this.set('listHeadings', listHeadings);
+            this.set('filters', filters);
+        },
+
         _getFilterIndex: function(query) {
-            return this.$.filters._getFilterIndex(query);
+            if (!filters) { return -1; }
+
+            return filters.findIndex((filter) => {
+                return filter.query === query;
+            });
         },
 
         setFiltersSelections: function() {
@@ -167,11 +190,11 @@
             let auditorsFilterIndex = this._getFilterIndex('agreement__audit_organization');
 
             if (partnersFilterIndex !== -1) {
-                this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners'));
+                this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners') || []);
             }
 
             if (auditorsFilterIndex !== -1) {
-                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors'));
+                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors') || []);
             }
         }
 
