@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [assessment-of-controls, lodash]-->
+</head>
+<body>
+
+<test-fixture id="assessment-of-controls-fixture">
+    <template>
+        <assessment-of-controls></assessment-of-controls>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<assessment-of-controls>', function () {
+        let myEl;
+
+        beforeEach(function () {
+            myEl = fixture('assessment-of-controls-fixture');
+        });
+
+        describe('method _setDataItems()', function () {
+            it('observer sets dataItems array', function () {
+                let spy = sinon.spy(myEl, '_setDataItems');
+                let data = {key: 'value'};
+
+                assert.isUndefined(myEl.dataItems);
+                assert.isFalse(spy.called);
+                myEl.data = _.clone(data);
+
+                assert.isTrue(spy.calledOnce);
+                assert.deepEqual(myEl.dataItems, [data]);
+
+            });
+        });
+
+        describe('method getAssessmentOfControlsData()', function () {
+            it('returns data if it was changed', function () {
+                myEl.originalData = [{recommendation: 'str', audit_observation: 'str2', ip_response: 'str3'}];
+                myEl.data = _.clone(myEl.originalData[0]);
+                myEl.data.ip_response = 'changed str';
+
+                assert.deepEqual(myEl.getAssessmentOfControlsData(), myEl.data);
+            });
+
+            it('returns undefined if data was not changed', function () {
+                myEl.originalData = [{recommendation: 'str', audit_observation: 'str2', ip_response: 'str3'}];
+                myEl.data = _.clone(myEl.originalData[0]);
+
+                assert.isUndefined(myEl.getAssessmentOfControlsData());
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
