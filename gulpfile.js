@@ -21,7 +21,6 @@ const copyAssets = require('./gulp-tasks/copy-assets');
 const copyBower = require('./gulp-tasks/copy-bower');
 const runTests = require('./gulp-tasks/test');
 const jsLinter = require('./gulp-tasks/js-linter');
-const elementImpr = require('./gulp-tasks/improve-elements');
 
 global.config = {
   appName: 'etoolsTpm',
@@ -50,12 +49,10 @@ gulp.task('watch', function () {
 gulp.task('lint', gulp.series(jsLinter));
 gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower), runTests));
 
-//TODO: remove all elementImpr tasks
-
 gulp.task('startServer', function () { nodemon({ script: 'server.js' }) });
 
-gulp.task('devBuild', gulp.series(clean.build, jsLinter, elementImpr, gulp.parallel(buildElements, copyAssets, copyBower)));
-gulp.task('prodBuild', gulp.series(clean.build, elementImpr, buildElements, project.merge(source, dependencies)));
+gulp.task('devBuild', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower)));
+gulp.task('prodBuild', gulp.series(clean.build, buildElements, project.merge(source, dependencies)));
 
 gulp.task('precommit', gulp.series('lint', 'test'));
 
