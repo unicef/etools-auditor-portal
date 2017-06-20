@@ -173,6 +173,13 @@
                 });
             }
 
+            //TODO: remove let and if below
+            let partners = this.getData('partners');
+            if (!partners || !partners.length) {
+                let partnersFilterIndex = this._getFilterIndex('partner');
+                filters.splice(partnersFilterIndex, 1);
+            }
+
             this.set('listHeadings', listHeadings);
             this.set('filters', filters);
         },

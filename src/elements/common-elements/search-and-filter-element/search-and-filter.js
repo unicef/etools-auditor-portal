@@ -159,11 +159,11 @@
         },
 
         _changeFilterValue: function(e, detail) {
-            if (!e || !detail) {
+            if (!e || !e.currentTarget || !detail) {
                 return;
             }
 
-            let query = e.path[0].id;
+            let query = e.currentTarget.id;
 
             if (detail.selectedValues && query) {
                 let filter = this._getFilter(query);
