@@ -27,12 +27,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="eTools - Partnership Management">
+    <meta name="application-name" content="eTools - Auditor Portal">
 
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="eTools - Partnership Management">
+    <meta name="apple-mobile-web-app-title" content="eTools - Auditor Portal">
 
     <!-- Homescreen icons -->
     <link rel="apple-touch-icon" href="assets/images/manifest/icon-48x48.png">
@@ -96,13 +96,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           onload();
         }
       })();
-
-      // Load pre-caching Service Worker
-//      if ('serviceWorker' in navigator) {
-//        window.addEventListener('load', function() {
-//          navigator.serviceWorker.register('/service-worker.js');
-//        });
-//      }
 
       var appShellImport = document.createElement('link');
       appShellImport.rel = 'import';

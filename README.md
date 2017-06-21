@@ -7,7 +7,7 @@ Installation
 Using git, clone to a local directory:
 
 ```bash
-$ git clone https://bitbucket.org/razortheory/etools-tpm.git
+$ git clone https://github.com/unicef/etools-auditor-portal.git
 ```
 Assuming node and npm are already installed, make sure bower is also installed, if not run:
 
@@ -21,14 +21,10 @@ $ npm install
 $ bower install
 ```
 
-Run Application
----------------
-
-To run the application you can use:
+Tests
+-----
+To run tests you can use:
 
 ```bash
-$ gulp server
+$ gulp test
 ```
-This command will build your add, start the server and serve your files.
-
-
