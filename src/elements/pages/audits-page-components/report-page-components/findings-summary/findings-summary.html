@@ -155,7 +155,9 @@
                                     class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     disabled
-                                    readonly>
+                                    readonly
+                                    invalid="{{errors.number_of_financial_findings}}"
+                                    error-message="{{errors.number_of_financial_findings}}">
                             </paper-input>
                         </div>
                     </div>

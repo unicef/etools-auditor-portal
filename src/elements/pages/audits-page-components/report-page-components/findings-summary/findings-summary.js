@@ -123,7 +123,7 @@ Polymer({
     ],
 
     ready: function() {
-        this.auditOpinions = this.getData('audit_opinions');
+        this.auditOpinions = this.getData('audit_opinions') || [];
     },
 
     _setDataItems: function() {
@@ -197,7 +197,7 @@ Polymer({
         let findingsSummaryErrors = _.pick(refactoredData, itemModelKeys);
 
         if (!this.dialogOpened && _.values(findingsSummaryErrors).length) {
-            this.fire('toast', {text: `Please fill in the Summary of Audit Findings.`});
+            this.fire('toast', {text: 'Please fill in the Summary of Audit Findings.'});
         } else {
             this.set('errors', refactoredData);
         }
