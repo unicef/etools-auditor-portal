@@ -56,11 +56,25 @@ Polymer({
         noHover: {
             type: Boolean,
             value: false
+        },
+        hover: {
+            type: Boolean,
+            reflectToAttribute: true
         }
+    },
+    listeners: {
+        'mouseover': '_setHover',
+        'mouseleave': '_resetHover',
     },
     observers: [
         '_setRightPadding(headings.*)'
     ],
+    _setHover: function() {
+        this.hover = true;
+    },
+    _resetHover: function() {
+        this.hover = false;
+    },
     _setRightPadding() {
         if (!this.headings) { return; }
         let rightPadding = 0;

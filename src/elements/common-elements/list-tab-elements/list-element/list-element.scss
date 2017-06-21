@@ -73,10 +73,11 @@
             }
         }
     }
+}
 
-    paper-material:hover {
+:host([hover]) {
+    paper-material {
         background-color: #EEEEEE;
-        @apply (--hover-setting);
     }
 }
 
