@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [partner-details-tab]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <partner-details-tab id="element"></partner-details-tab>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<partner-details-tab>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        it('method resetValidationErrors sets $.partner.invalid to false', function() {
+            myEl.$.partner.invalid = true;
+            myEl.resetValidationErrors();
+            assert.isFalse(myEl.$.partner.invalid);
+        });
+
+        it('method _resetFieldError calls set with errors.partner and false arguments', function() {
+            sinon.spy(myEl, 'set');
+            myEl._resetFieldError();
+            assert.isTrue(myEl.set.calledWith('errors.partner', false));
+            myEl.set.restore();
+        });
+
+        it('method _partnerLoaded sets requestInProcess to false and calls validate method', function() {
+            sinon.stub(myEl, 'validate');
+            myEl.requestInProcess = true;
+
+            myEl._partnerLoaded();
+
+            assert.isFalse(myEl.requestInProcess);
+            assert.isTrue(myEl.validate.called);
+
+            myEl.validate.restore();
+        });
+
+        describe('method _engagementChanged', function() {
+            it('calls set method if partner argument is not provided', function() {
+                sinon.spy(myEl, 'set');
+                myEl._engagementChanged();
+                assert.isTrue(myEl.set.calledWith('partner', {}));
+                myEl.set.restore();
+            });
+
+            it('calls _requestPartner method with partner.id as second argument', function() {
+                sinon.stub(myEl, '_requestPartner');
+                var partner = {id: 2};
+                myEl._engagementChanged(partner);
+                assert.isTrue(myEl._requestPartner.calledWith(null, partner.id));
+                myEl._requestPartner.restore();
+            });
+        });
+
+        describe('method _setReadonlyClass', function() {
+            it('returns disabled-as-readonly if isReadOnly method returns true', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                assert.equal(myEl._setReadonlyClass(), 'disabled-as-readonly');
+                myEl.isReadOnly.restore();
+            });
+
+            it('returns readonly if inProcess argument is true or empty string', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(false);
+                assert.equal(myEl._setReadonlyClass(true), 'readonly');
+                assert.equal(myEl._setReadonlyClass(), '');
+                myEl.isReadOnly.restore();
+            });
+        });
+
+        it('method getPartnerData returns null if engagement.partner.id changed or null', function() {
+            myEl.originalData = {partner: {id: 666}};
+            myEl.engagement = {partner: {id: 666}};
+            assert.isNull(myEl.getPartnerData());
+
+            myEl.engagement.partner.id = 123;
+            assert.equal(myEl.getPartnerData(), 123);
+        });
+
+        describe('method _requestPartner', function() {
+            it('returns if requestInProcess is true', function() {
+                sinon.spy(myEl, 'set');
+                myEl.requestInProcess = true;
+                myEl._requestPartner();
+                assert.isFalse(myEl.set.called);
+                myEl.set.restore();
+            });
+
+            it('returns if partnerId is not found', function() {
+                sinon.spy(myEl, 'set');
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                myEl.requestInProcess = false;
+                myEl.engagement = {};
+
+                myEl._requestPartner();
+                assert.isTrue(myEl.set.called);
+                assert.isFalse(myEl.isReadOnly.called);
+
+                myEl._requestPartner(null, 12);
+                assert.isTrue(myEl.isReadOnly.called);
+                myEl.isReadOnly.reset();
+
+                myEl._requestPartner({detail: {selectedValues: {id: 12}}});
+                assert.isTrue(myEl.isReadOnly.called);
+
+                myEl.set.restore();
+                myEl.isReadOnly.restore();
+            });
+
+            it('sets partner equal to engagement data if isReadOnly returns true', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                var partner = {
+                    id: 1,
+                    foo: 'bar'
+                };
+                myEl.engagement = {partner: partner};
+                myEl._requestPartner(null, 12);
+                assert.equal(myEl.partner, partner);
+            });
+
+            it('returns true, sets requestInProcess to true, partnerId if isReadOnly returns false', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(false);
+                assert.isTrue(myEl._requestPartner(null, 12));
+                assert.isTrue(myEl.requestInProcess);
+            })
+        })
+
+    });
+</script>
+
+</body>
+</html>
