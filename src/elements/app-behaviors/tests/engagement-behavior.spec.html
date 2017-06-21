@@ -675,36 +675,36 @@
         });
 
         describe('method _errorOccurred', function() {
-            it('calls witchPageTrows method with own first argument', function() {
+            it('calls whichPageTrows method with own first argument', function() {
                 let error = {test: 'test'};
-                behaviorObj.witchPageTrows = sinon.spy();
+                behaviorObj.whichPageTrows = sinon.spy();
 
                 behaviorObj._errorOccurred(error);
 
-                assert.isTrue(behaviorObj.witchPageTrows.calledWith(error));
+                assert.isTrue(behaviorObj.whichPageTrows.calledWith(error));
             });
 
             it('returns if argument is not provided or is not object', function() {
-                behaviorObj.witchPageTrows = sinon.spy();
+                behaviorObj.whichPageTrows = sinon.spy();
 
                 behaviorObj._errorOccurred();
-                assert.isFalse(behaviorObj.witchPageTrows.called);
+                assert.isFalse(behaviorObj.whichPageTrows.called);
 
                 behaviorObj._errorOccurred('test');
-                assert.isFalse(behaviorObj.witchPageTrows.called);
+                assert.isFalse(behaviorObj.whichPageTrows.called);
 
                 behaviorObj._errorOccurred({});
-                assert.isTrue(behaviorObj.witchPageTrows.called);
+                assert.isTrue(behaviorObj.whichPageTrows.called);
             });
 
-            it('calls set method if witchPageTrows returns page name', function() {
-                behaviorObj.witchPageTrows = sinon.stub().returns(false);
+            it('calls set method if whichPageTrows returns page name', function() {
+                behaviorObj.whichPageTrows = sinon.stub().returns(false);
                 behaviorObj.set = sinon.spy();
 
                 behaviorObj._errorOccurred({});
                 assert.isFalse(behaviorObj.set.called);
 
-                behaviorObj.witchPageTrows.returns('test');
+                behaviorObj.whichPageTrows.returns('test');
 
                 behaviorObj._errorOccurred({});
                 assert.isTrue(behaviorObj.set.calledWith('routeData.tab', 'test'));

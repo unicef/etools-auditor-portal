@@ -303,7 +303,7 @@
 
         _errorOccurred: function(errorObj) {
             if (!errorObj || !_.isObject(errorObj)) { return; }
-            let page = this.witchPageTrows(errorObj);
+            let page = this.whichPageTrows(errorObj);
             if (page) {
                 let tab = this.tab ? 'tab' : 'routeData.tab';
                 this.set(tab, page);
