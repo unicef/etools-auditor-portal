@@ -199,4 +199,5 @@ Polymer({
             this.showInput = false;
         }
     }
+
 });

@@ -7,7 +7,7 @@
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
 
-    <!--import [static-data-behavior, engagement-info-details]-->
+    <!--import [static-data-behavior, engagement-info-details, lodash]-->
 </head>
 <body>
 
@@ -72,6 +72,56 @@
             });
         });
 
+        it('method resetType sets value of $.engagementType to empty string', function(done) {
+            flush(function() {
+                myEl.$.engagementType.value = 'test';
+
+                assert.equal(myEl.$.engagementType.value, 'test');
+                myEl.resetType();
+                assert.equal(myEl.$.engagementType.value, '');
+                done();
+            });
+        });
+
+        it('method getEngagementData compare originalData and current and returns changed data', function() {
+            myEl.originalData = {
+                start_date: 'start',
+                partner_contacted_at: 'contacted',
+                agreement: {id: 'id'},
+                total_value: 'total',
+                type: 'type'
+            };
+
+            myEl.data = {
+                start_date: 'start',
+                end_date: 'end',
+                partner_contacted_at: 'contacted',
+                agreement: {id: 'id2'},
+                total_value: 'total',
+                type: {value: 'type5'}
+            };
+            assert.isTrue(_.isEqual(myEl.getEngagementData(), {end_date: 'end', agreement: 'id2', type: 'type5'}));
+        });
+
+        describe('method _setContractDates', function() {
+            it('returns if no argument provided', function() {
+                assert.isUndefined(myEl._setContractDates());
+            });
+
+            it('returns empty string if argument doesn\'t have contract_start_date or contract_end_date properties', function() {
+                assert.equal(myEl._setContractDates({contract_start_date: 'test'}), '');
+                assert.equal(myEl._setContractDates({contract_end_date: 'test'}), '');
+                assert.equal(myEl._setContractDates(1234), '');
+                assert.equal(myEl._setContractDates('test'), '');
+            });
+
+            it('calls prettyDate method for properties and returns compiled string', function() {
+                sinon.stub(myEl, 'prettyDate').returns('test_date');
+                assert.equal(myEl._setContractDates({contract_end_date: 'test', contract_start_date: 'test'}), 'test_date - test_date');
+                myEl.prettyDate.restore();
+            });
+        });
+
         it('reset validation errors', function () {
             myEl.errors = {
                 agreement: 'Test',
@@ -84,41 +134,40 @@
             assert.isFalse(myEl.errors.type);
         });
 
-        it('get audit type dropdown object value', function () {
-            assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
+        describe('method _processValue', function() {
+            it('gets audit type dropdown object value', function () {
+                assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
+                assert.equal(myEl._processValue('sc').label, 'Spot Check');
+            });
+
+            it('returns argument if it is not a String', function() {
+                assert.equal(myEl._processValue(123), 123);
+                var obj = {key: 'value'};
+                assert.equal(myEl._processValue(obj), obj);
+                assert.equal(myEl._processValue(true), true);
+            })
         });
 
-//       //TODO: move to behavior
-        xdescribe('method isReadOnly', function() {
-            it('return true if there is no basePermissionPath property', function() {
-                assert.isUndefined(myEl.basePermissionPath);
-                assert.isTrue(myEl.isReadOnly());
-            });
+        it('method _setEngagementType calls set method with data.type string and selected value as arguments', function() {
+            sinon.spy(myEl, 'set');
+            let value = {selectedValues: 'test'};
 
-            it('calls isReadonly method', function() {
-                sinon.spy(myEl, 'isReadonly');
-                myEl.basePermissionPath = 'test';
+            myEl._setEngagementType({}, value);
+            assert.isTrue(myEl.set.calledWith('data.type', value.selectedValues));
+            myEl.set.restore();
+        });
 
-                myEl.isReadOnly();
-                assert.isTrue(myEl.isReadonly.called);
-            });
+        it('method resetAgreement calls set method with data.agreement string and object with order_number as arguments', function() {
+            sinon.spy(myEl, 'set');
+            myEl.data = {
+                agreement: {order_number: 99}
+            };
 
-            it('returns read_only status', function() {
-                var stub = sinon.stub(myEl, 'isReadonly').returns(true);
-                myEl.basePermissionPath = 'test';
-
-                assert.isTrue(myEl.isReadOnly());
-
-                stub.returns(false);
-                assert.isFalse(myEl.isReadOnly());
-            });
-
-            it('returns true if read_only status is null', function() {
-                var stub = sinon.stub(myEl, 'isReadonly').returns(null);
-                myEl.basePermissionPath = 'test';
-
-                assert.isTrue(myEl.isReadOnly());
-            });
+            myEl.resetAgreement();
+            assert.isTrue(myEl.set.called);
+            assert.equal(myEl.set.args[0][0], 'data.agreement');
+            assert.isTrue(_.isEqual(myEl.set.args[0][1], {order_number: 99}));
+            myEl.set.restore();
         });
 
         describe('method _requestAgreement', function() {

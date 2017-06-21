@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [common-methods-behavior]-->
+</head>
+<body>
+
+<script>
+
+    describe('Common methods behavior element', function () {
+        var behaviorObj;
+
+        beforeEach(function () {
+            behaviorObj = APBehaviors.CommonMethodsBehaviorImpl;
+        });
+
+        describe('method isReadOnly', function() {
+            it('return true if basePermissionPath argument is false or inProcess argument is true', function() {
+                assert.isTrue(behaviorObj.isReadOnly('field', null));
+                assert.isTrue(behaviorObj.isReadOnly('field', 'basePermissionPath', 'inProcess'));
+            });
+
+            it('calls isReadonly method', function() {
+                behaviorObj.isReadonly = sinon.spy();
+
+                behaviorObj.isReadOnly('field', 'basePermissionPath');
+                assert.isTrue(behaviorObj.isReadonly.called);
+            });
+
+            it('returns read_only status', function() {
+                behaviorObj.isReadonly = sinon.stub().returns(true);
+                assert.isTrue(behaviorObj.isReadOnly('field', 'basePermissionPath'));
+
+                behaviorObj.isReadonly.returns(false);
+                assert.isFalse(behaviorObj.isReadOnly('field', 'basePermissionPath'));
+            });
+
+            it('returns true if read_only status is null', function() {
+                behaviorObj.isReadonly = sinon.stub().returns(null);
+
+                assert.isTrue(behaviorObj.isReadOnly('field', 'basePermissionPath'));
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
