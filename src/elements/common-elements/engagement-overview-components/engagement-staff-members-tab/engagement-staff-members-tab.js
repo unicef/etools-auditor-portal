@@ -282,8 +282,9 @@ Polymer({
 
         this.manageEngagementStaff(item);
     },
+
     _emailDisabled: function(request, editPopup, emailChecking) {
-        return editPopup || request || emailChecking;
+        return !!(editPopup || request || emailChecking);
     },
 
     _checkEmail: function(event) {
@@ -304,7 +305,7 @@ Polymer({
     },
 
     _showPagination: function(dataItems) {
-        return +dataItems && +dataItems > 10;
+        return !!(+dataItems && +dataItems > 10);
     },
 
     _staffLength: function(length, length2, search) {
@@ -346,6 +347,7 @@ Polymer({
             });
         }
     },
+
     removeStaff: function() {
         this.requestInProcess = true;
         this.set('newData', {
@@ -356,6 +358,7 @@ Polymer({
         });
         this.confirmDialogOpened = false;
     },
+
     _staffUpdated: function(event, details) {
         if (!details) { throw 'Detail are not provided!'; }
         if (details.error) {
@@ -392,6 +395,7 @@ Polymer({
             delete this.engagementStaffs[staff.user.email];
         }
     },
+
     _handleUpdateError: function(errorData) {
         let nonField = this.checkNonField(errorData);
         let error =  this.refactorErrorObject(errorData);
@@ -406,6 +410,7 @@ Polymer({
             this.fire('toast', {text: `Staff Members: ${nonField}`});
         }
     },
+
     resetList: function() {
         this.set('dataItems', []);
         this.set('listPage', 1);
@@ -415,6 +420,7 @@ Polymer({
         this.set('datalength', 0);
         this.updateStyles();
     },
+
     getTabData: function() {
         if (!this._canBeChanged()) { return null; }
         let staffs = [];

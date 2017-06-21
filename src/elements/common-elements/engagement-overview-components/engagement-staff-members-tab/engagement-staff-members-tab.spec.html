@@ -7,42 +7,413 @@
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
 
+    <!--import [engagement-staff-members-tab]-->
 </head>
 <body>
 
-<!--<test-fixture id="element-fixture">-->
-    <!--<template>-->
-        <!--<engagement-staff-members-tab id="element"></engagement-staff-members-tab>-->
-    <!--</template>-->
-<!--</test-fixture>-->
+<test-fixture id="element-fixture">
+    <template>
+        <engagement-staff-members-tab id="element"></engagement-staff-members-tab>
+    </template>
+</test-fixture>
 
 
 <script>
-//    describe('<engagement-staff-members-tab>', function () {
-//        var myEl;
-//
-//        beforeEach(function () {
-//            myEl = fixture('element-fixture');
-//        });
-//
-//        it('validate email', function (done) {
-//            flush(function() {
-//                var input = {
-//                    value: '',
-//                    required: false
-//                };
-//                assert.isTrue(myEl._validEmailAddress(input));
-//                input.required = true;
-//                assert.isFalse(myEl._validEmailAddress(input));
-//                input.value = 'invalid.mail';
-//                assert.isFalse(myEl._validEmailAddress(input));
-//                input.value = 'valid.mail@gmail.com';
-//                assert.isTrue(myEl._validEmailAddress(input));
-//                done();
-//            })
-//        });
-//
-//    });
+    describe('<engagement-staff-members-tab>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method _organizationChanged', function() {
+            it('calls _canBeChanged method', function() {
+                sinon.spy(myEl, '_canBeChanged');
+                myEl._organizationChanged();
+                assert.isTrue(myEl._canBeChanged.called);
+                myEl._canBeChanged.restore();
+            });
+
+            it('returns if _canBeChanged method returns false or basePermissionPath is undefined', function() {
+                sinon.spy(myEl, 'resetList');
+                sinon.stub(myEl, '_canBeChanged').returns(true);
+                myEl.basePermissionPath = false;
+
+                myEl._organizationChanged();
+
+                myEl._canBeChanged.returns(false);
+                myEl.basePermissionPath = true;
+                myEl._organizationChanged();
+
+                assert.isFalse(myEl.resetList.called);
+
+                myEl._canBeChanged.restore();
+                myEl.resetList.restore();
+            });
+
+            it('calls resetList method if no id argument provided', function() {
+                sinon.spy(myEl, 'resetList');
+                sinon.stub(myEl, '_canBeChanged').returns(true);
+                myEl.basePermissionPath = true;
+
+                myEl._organizationChanged();
+                assert.isTrue(myEl.resetList.called);
+                myEl.resetList.reset();
+
+                myEl._organizationChanged('test');
+                assert.isFalse(myEl.resetList.called);
+
+                myEl._canBeChanged.restore();
+                myEl.resetList.restore();
+            });
+
+            it('sets organisationId as a number if id argument is provided', function() {
+                sinon.spy(myEl, 'resetList');
+                sinon.stub(myEl, '_canBeChanged').returns(true);
+                myEl.basePermissionPath = true;
+
+                myEl._organizationChanged('test');
+                assert.isTrue(isNaN(myEl.organisationId));
+
+                myEl._organizationChanged('666');
+                assert.equal(myEl.organisationId, 666);
+            });
+        });
+
+        describe('method _queriesChanged', function() {
+            it('returns if no listSize or listPage arguments provided', function() {
+                sinon.spy(_, 'isUndefined');
+                sinon.spy(myEl, 'set');
+
+                myEl._queriesChanged();
+                myEl._queriesChanged(true);
+                myEl._queriesChanged(false, true);
+
+                assert.isFalse(myEl.set.called);
+                assert.isFalse(_.isUndefined.called);
+
+                _.isUndefined.restore();
+                myEl.set.restore();
+            });
+        });
+
+        it('method searchBlur calls updateStyles method', function() {
+            sinon.spy(myEl, 'updateStyles');
+            myEl.searchBlur();
+            assert.isTrue(myEl.updateStyles.called);
+            myEl.updateStyles.restore();
+        });
+
+        it('method resetList calls set 6 times and  updateStyles method', function() {
+            sinon.spy(myEl, 'updateStyles');
+            sinon.spy(myEl, 'set');
+            myEl.resetList();
+            assert.equal(myEl.set.callCount, 6);
+            assert.isTrue(myEl.updateStyles.called);
+            myEl.set.restore();
+            myEl.updateStyles.restore();
+        });
+
+        describe('method manageEngagementStaff', function() {
+            it('add staff to engagementStaffs if it hasAccess property is true', function() {
+                assert.isObject(myEl.engagementStaffs);
+                var staff = {
+                    user: {email: 'test_staff'},
+                    id: 111,
+                    hasAccess: true
+                };
+                var staff2 = {
+                    user: {email: 'test_staff2'},
+                    id: 222,
+                    hasAccess: false
+                };
+
+                assert.isUndefined(myEl.engagementStaffs[staff.user.email]);
+                assert.isUndefined(myEl.engagementStaffs[staff2.user.email]);
+
+                myEl.manageEngagementStaff(staff);
+                myEl.manageEngagementStaff(staff2);
+
+                assert.isDefined(myEl.engagementStaffs[staff.user.email]);
+                assert.isUndefined(myEl.engagementStaffs[staff2.user.email]);
+            });
+
+            it('remove staff from engagementStaffs if it hasAccess property is false', function() {
+                myEl.engagementStaffs = {};
+                var staff = {
+                    user: {email: 'test_staff'},
+                    id: 111,
+                    hasAccess: true
+                };
+                assert.isUndefined(myEl.engagementStaffs[staff.user.email]);
+
+                myEl.manageEngagementStaff(staff);
+                assert.isDefined(myEl.engagementStaffs[staff.user.email]);
+
+                staff.hasAccess = false;
+                myEl.manageEngagementStaff(staff);
+                assert.isUndefined(myEl.engagementStaffs[staff.user.email]);
+            });
+        });
+
+        it('method removeStaff sets requestInProcess to true, confirmDialogOpened to false, and calls set method', function() {
+            myEl.requestInProcess = false;
+            myEl.confirmDialogOpened = true;
+            sinon.stub(myEl, 'set');
+            myEl.editedIndex = 666;
+            myEl.editedItem = {id: 'test'};
+
+            myEl.removeStaff();
+
+            assert.isTrue(myEl.requestInProcess);
+            assert.isFalse(myEl.confirmDialogOpened);
+            assert.isTrue(myEl.set.called);
+            assert.isTrue(_.isEqual(myEl.set.args[0][0], 'newData'));
+            assert.isTrue(_.isEqual(myEl.set.args[0][1], {method: 'DELETE', data: {}, staffIndex: myEl.editedIndex, id: `${myEl.editedItem.id}/`}));
+
+            myEl.set.restore();
+        });
+
+        describe('method _staffLength', function() {
+            it('returns second argument or 0 if third argument is true', function() {
+                assert.equal(myEl._staffLength(false, false, true), 0);
+                assert.equal(myEl._staffLength(false, 12, true), 12);
+                assert.equal(myEl._staffLength(false, 'test', true), 'test');
+            });
+
+            it('returns first or second argument or 0 if third argument is false', function() {
+                assert.equal(myEl._staffLength(false, false), 0);
+                assert.equal(myEl._staffLength(false, 12), 12);
+                assert.equal(myEl._staffLength(11, 12), 11);
+            });
+        });
+
+        it('method _showPagination returns true if argument is a number and not less than 11', function() {
+            assert.isFalse(myEl._showPagination());
+            assert.isFalse(myEl._showPagination('test'));
+            assert.isFalse(myEl._showPagination(0));
+            assert.isFalse(myEl._showPagination(10));
+            assert.isTrue(myEl._showPagination(11));
+        });
+
+        it('method _showAddButton returns true if agreement.audit_organization.id is true, loading is false and _canBeChanged returns true', function() {
+            var agreement = {audit_organization: {id: 666}},
+                    loading = false;
+            sinon.stub(myEl, '_canBeChanged').returns(true);
+
+            assert.isTrue(myEl._showAddButton('', agreement, loading));
+
+            loading = true;
+            assert.isFalse(myEl._showAddButton('', agreement, loading));
+
+            loading = false;
+            agreement.audit_organization.id = false;
+            assert.isFalse(myEl._showAddButton('', agreement, loading));
+
+            agreement.audit_organization.id = 666;
+            myEl._canBeChanged.returns(false);
+            assert.isFalse(myEl._showAddButton('', agreement, loading));
+
+            myEl._canBeChanged.restore();
+        });
+
+        describe('method _checkEmail', function() {
+            it('returns if emailChecking is true', function() {
+                myEl.emailChecking = true;
+                sinon.spy(myEl, '_validEmailAddress');
+
+                myEl._checkEmail();
+
+                assert.isFalse(myEl._validEmailAddress.called);
+
+                myEl._validEmailAddress.restore();
+            });
+
+            it('sets newEmail property if value is defined and _validEmailAddress returns true', function() {
+                var event = {target: {value: ''}};
+                myEl.emailChecking = false;
+                sinon.stub(myEl, '_validEmailAddress').returns(false);
+
+                myEl._checkEmail(event);
+                assert.isUndefined(myEl.newEmail);
+
+                event.target.value = 'test';
+                myEl._checkEmail(event);
+                assert.isUndefined(myEl.newEmail);
+
+                myEl._validEmailAddress.returns(true);
+                myEl._checkEmail(event);
+                assert.equal(myEl.newEmail, event.target.value);
+
+                myEl._validEmailAddress.restore();
+            });
+        });
+
+        it('method _emailDisabled returns true if one of three arguments is true', function() {
+            assert.isFalse(myEl._emailDisabled(null, null, null));
+            assert.isTrue(myEl._emailDisabled(null, 'test', null));
+            assert.isTrue(myEl._emailDisabled('test', null, null));
+            assert.isTrue(myEl._emailDisabled(null, null, 'test'));
+        });
+
+        describe('method _isActive', function() {
+            it('throw an error if event.model.item is not defined', function() {
+                sinon.stub(myEl, 'manageEngagementStaff');
+                var foo = myEl._isActive.bind(myEl);
+                assert.throws(foo);
+
+                var event = {model: {item: 'test'}};
+                var bar = myEl._isActive.bind(myEl, event);
+                assert.doesNotThrow(bar);
+
+                myEl.manageEngagementStaff.restore();
+            });
+
+            it('calls manageEngagementStaff method', function() {
+                sinon.stub(myEl, 'manageEngagementStaff');
+                var event = {model: {item: 'test'}};
+
+                myEl._isActive(event);
+                assert.isTrue(myEl.manageEngagementStaff.called);
+
+                myEl.manageEngagementStaff.restore();
+            })
+        });
+
+        describe('method getTabData', function() {
+            it('returns null if _canBeChanged method returns false', function() {
+                sinon.stub(myEl, '_canBeChanged').returns(false);
+                assert.isNull(myEl.getTabData());
+                myEl._canBeChanged.restore();
+            });
+
+            it('returns staffs ids if staff_members changed or null', function() {
+                myEl.engagementStaffs = {
+                    'test1': 1,
+                    'test2': 2,
+                    'test3': 3
+                };
+                myEl.engagement = {staff_members: [{id: 1}, {id: 2}, {id: 3}]};
+                sinon.stub(myEl, '_canBeChanged').returns(true);
+
+                assert.isNull(myEl.getTabData());
+                myEl.engagementStaffs.test4 = 4;
+
+                assert.isTrue(_.isEqual(myEl.getTabData(), [1, 2, 3, 4]));
+
+                myEl._canBeChanged.restore();
+            });
+        });
+
+        it('method _getSearchInputClass returns filled if first argument is true or empty', function() {
+            assert.equal(myEl._getSearchInputClass(), 'empty');
+            assert.equal(myEl._getSearchInputClass(null), 'empty');
+            assert.equal(myEl._getSearchInputClass(NaN), 'empty');
+            assert.equal(myEl._getSearchInputClass('test'), 'filled');
+            assert.equal(myEl._getSearchInputClass(234), 'filled');
+            assert.equal(myEl._getSearchInputClass({}), 'filled');
+        });
+
+        it('method _calcShowingResults returns pagination text string', function() {
+            var datalength = 200,
+                listSize = 10,
+                listPage = 4,
+                searchQuery = 'wef',
+                itemsLength = 111;
+
+            assert.equal(myEl._calcShowingResults(datalength, listSize, listPage, searchQuery, itemsLength), '31-40 of 111');
+            searchQuery = '';
+            assert.equal(myEl._calcShowingResults(datalength, listSize, listPage, searchQuery, itemsLength), '31-40 of 200');
+        });
+
+        describe('method _validEmailAddress', function() {
+            it('check if email is valid', function() {
+                var email = {value: 'we'};
+                assert.isFalse(myEl._validEmailAddress(email));
+                assert.equal(myEl.errors.user.email, 'Email is incorrect')
+            });
+
+            it('return false if value is empty and email is required', function() {
+                var email = {value: '', required: true};
+                assert.isFalse(myEl._validEmailAddress(email));
+                assert.equal(myEl.errors.user.email, 'Email is required')
+            });
+
+            it('return false if saveWithButton is true and email is not unique', function() {
+                myEl.saveWithButton = true;
+                myEl.editedItem = {id: 1, user: {email: 'test@test.test'}};
+                myEl.dataItems = [{id: 1, user: {email: 'test@test.test'}}];
+                var email = {value: 'test@test.test', required: true};
+                assert.isFalse(myEl._validEmailAddress(email));
+                assert.equal(myEl.errors.user.email, 'Email must be unique');
+
+                myEl.editedItem.id = 2;
+                assert.isTrue(myEl._validEmailAddress(email));
+            });
+
+            it('returns true if email is valid', function() {
+                myEl.saveWithButton = false;
+                var email = {value: 'test@test.test', required: true};
+                assert.isTrue(myEl._validEmailAddress(email));
+            });
+        });
+
+        describe('method _staffUpdated', function() {
+            it('throws if detail are not provided', function() {
+                assert.throws(myEl._staffUpdated);
+            });
+
+            it('runs _handleUpdateError method if details.error is true', function() {
+                sinon.stub(myEl, '_handleUpdateError');
+                myEl._staffUpdated({}, {error: true});
+                assert.isTrue(myEl._handleUpdateError.called);
+                myEl._handleUpdateError.restore();
+            });
+
+            it('runs methods depending on details.action', function() {
+                sinon.stub(myEl, 'set');
+                sinon.stub(myEl, 'splice');
+                sinon.stub(myEl, 'manageEngagementStaff');
+                sinon.stub(myEl, 'resetDialog');
+
+                myEl._staffUpdated({}, {action: 'patch', data: {}});
+                assert.isTrue(myEl.splice.called);
+
+                myEl._staffUpdated({}, {action: 'post', data: {}});
+                assert.isTrue(myEl.splice.calledOnce);
+                assert.isTrue(myEl.set.calledTwice);
+
+                myEl._staffUpdated({}, {action: 'delete', data: {}});
+                assert.isTrue(myEl.manageEngagementStaff.calledThrice);
+                assert.isTrue(myEl.splice.calledOnce);
+                assert.isTrue(myEl.set.calledThrice);
+                assert.isTrue(myEl.resetDialog.calledThrice);
+
+                myEl.set.restore();
+                myEl.splice.restore();
+                myEl.manageEngagementStaff.restore();
+                myEl.resetDialog.restore();
+            });
+
+            it('sets requestInProcess and dialogOpened to false', function() {
+                sinon.stub(myEl, 'splice');
+                sinon.stub(myEl, 'manageEngagementStaff');
+                sinon.stub(myEl, 'resetDialog');
+
+                myEl.requestInProcess = true;
+                myEl.dialogOpened = true;
+
+                myEl._staffUpdated({}, {action: 'post', data: {}});
+                assert.isFalse(myEl.dialogOpened);
+                assert.isFalse(myEl.requestInProcess);
+
+                myEl.splice.restore();
+                myEl.manageEngagementStaff.restore();
+                myEl.resetDialog.restore();
+            });
+        });
+
+    });
 </script>
 
 </body>
