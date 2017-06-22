@@ -39,6 +39,8 @@
         }
 
         paper-item {
+            height: 48px;
+            min-height: initial;
             font-weight: bold;
             color: #233944;
             cursor: pointer;
