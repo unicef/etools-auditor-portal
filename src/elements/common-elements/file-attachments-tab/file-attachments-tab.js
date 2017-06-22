@@ -85,7 +85,6 @@
             '_updateHeadings(allowEdit, readonly, fileTypeRequired)',
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject)',
-            'savingError(errorObject)'
         ],
 
         _handleDialogCancel: function(e, detail) {
@@ -333,31 +332,64 @@
             return valid;
         },
 
+        _cutFileName: function(fileName) {
+            if (typeof fileName !== 'string') {
+                return;
+            }
+
+            if (fileName.length <= 20) {
+                return fileName;
+            } else {
+                return fileName.slice(0, 10) + '...' + fileName.slice(-7);
+            }
+        },
+
+        getFilesErrors: function(errors) {
+            if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
+                let filesErrors = [];
+
+                errors.forEach((error, index) => {
+                    let fileName = this.dataItems[index].file_name;
+                    fileName = this._cutFileName(fileName);
+
+                    if (fileName && typeof error.file === 'string') {
+                        filesErrors.push({
+                            fileName: fileName,
+                            error: error.file
+                        });
+                    }
+                });
+
+                return filesErrors;
+            }
+
+            return [];
+        },
+
         _errorHandler: function(errorData) {
             let mainProperty = this.mainProperty;
             this.requestInProcess = false;
             if (!errorData || !errorData[mainProperty]) { return; }
-            let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData[mainProperty])[0] : this.refactorErrorObject(errorData[mainProperty]);
-            if (typeof refactoredData === 'object') {
-                this.set('errors', refactoredData);
-            }
-        },
+            let refactoredData = this.refactorErrorObject(errorData[mainProperty]);
+            let nonField = this.checkNonField(errorData[mainProperty]);
 
-        savingError: function(errorObj) {
-            let mainProperty = this.mainProperty;
-            if (this.requestInProcess) {
-                this.requestInProcess = false;
-                this.fire('toast', {text: 'Can not save data'});
+            if (this.dialogOpened && typeof refactoredData[0] === 'object') {
+                this.set('errors', refactoredData[0]);
             }
-            if (!errorObj || !errorObj[mainProperty]) { return; }
-
-            let nonField = this.checkNonField(errorObj[mainProperty]);
-            if (typeof errorObj[mainProperty] === 'string') {
-                this.fire('toast', {text: `Attachments: ${errorObj[mainProperty]}`});
+            if (typeof errorData[mainProperty] === 'string') {
+                this.fire('toast', {text: `Attachments: ${errorData[mainProperty]}`});
             }
             if (nonField) {
                 this.fire('toast', {text: `Attachments: ${nonField}`});
             }
-        }
+
+            if (!this.dialogOpened) {
+                let filesErrors = this.getFilesErrors(refactoredData);
+
+                filesErrors.forEach((fileError) => {
+                    this.fire('toast', {text: `${fileError.fileName}: ${fileError.error}`});
+                });
+            }
+        },
     });
 })();
