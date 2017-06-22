@@ -160,111 +160,383 @@
         });
 
 
-        xdescribe('method validate', function() {
-            it('return true if there are no questionnaire children', function() {
-                assert.isUndefined(myEl.questionnaire.children);
-                assert.isTrue(myEl.validate());
+        describe('method validate', function() {
+            it('runs validate methods for riskAssessmentInput and riskAssessmentComments', function(done) {
+                flush(function() {
+                    sinon.spy(myEl.$.riskAssessmentInput, 'validate');
+                    sinon.spy(myEl.$.riskAssessmentComments, 'validate');
 
-                myEl.questionnaire.children
-                assert.isTrue(myEl.validate());
+                    myEl.validate();
+
+                    assert.isTrue(myEl.$.riskAssessmentInput.validate.called);
+                    assert.isTrue(myEl.$.riskAssessmentComments.validate.called);
+
+                    myEl.$.riskAssessmentInput.validate.restore();
+                    myEl.$.riskAssessmentComments.validate.restore();
+                    done();
+                });
             });
 
-            it('calls validate method for each risk element', function() {
-                var elements = [{validate: sinon.spy()}, {validate: sinon.spy()}];
-                sinon.stub(myEl, 'getElements').returns(elements);
-                myEl.questionnaire.children = [1, 2, 3];
-
-                myEl.validate();
-                assert.isTrue(elements[0].validate.called);
-                assert.isTrue(elements[1].validate.called);
-            });
-
-            it('calls validate method with forSave arg for each risk element if argument forSave is provided', function() {
-                var elements = [{validate: sinon.spy()}, {validate: sinon.spy()}];
-                sinon.stub(myEl, 'getElements').returns(elements);
-                myEl.questionnaire.children = [1, 2, 3];
-
-                myEl.validate('forSave');
-                assert.isTrue(elements[0].validate.called);
-                assert.isTrue(!!elements[0].validate.args[0][0]);
-                assert.isTrue(elements[1].validate.called);
-                assert.isTrue(!!elements[1].validate.args[0][0]);
-            });
-
-            it('return false if some of elements return false', function() {
-                var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
-                sinon.stub(myEl, 'getElements').returns(elements);
-                myEl.questionnaire.children = [1, 2, 3];
+            it('returns true if both inputs are valid', function() {
+                sinon.stub(myEl.$.riskAssessmentInput, 'validate').returns(false);
+                sinon.stub(myEl.$.riskAssessmentComments, 'validate').returns(false);
 
                 assert.isFalse(myEl.validate());
 
-                assert.isTrue(elements[0].validate.called);
-                assert.isTrue(elements[1].validate.called);
-            });
+                myEl.$.riskAssessmentInput.validate.returns(true);
+                assert.isFalse(myEl.validate());
 
-            it('return false if some of elements return false (with forSave argument)', function() {
-                var elements = [{validate: sinon.stub().returns(false)}, {validate: sinon.spy()}];
-                sinon.stub(myEl, 'getElements').returns(elements);
-                myEl.questionnaire.children = [1, 2, 3];
-
-                assert.isFalse(myEl.validate('forSave'));
-
-                assert.isTrue(elements[0].validate.called);
-                assert.isTrue(elements[1].validate.called);
-            });
-
-            it('return true if all elements returns true', function() {
-                var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
-                sinon.stub(myEl, 'getElements').returns(elements);
-                myEl.questionnaire.children = [1, 2, 3];
-
+                myEl.$.riskAssessmentComments.validate.returns(true);
                 assert.isTrue(myEl.validate());
 
-                assert.isTrue(elements[0].validate.called);
-                assert.isTrue(elements[1].validate.called);
-            });
-
-            it('return true if all elements returns true (with forSave argument)', function() {
-                var elements = [{validate: sinon.stub().returns(true)}, {validate: sinon.stub().returns(true)}];
-                sinon.stub(myEl, 'getElements').returns(elements);
-                myEl.questionnaire.children = [1, 2, 3];
-
-                assert.isTrue(myEl.validate('forSave'));
-
-                assert.isTrue(elements[0].validate.called);
-                assert.isTrue(elements[1].validate.called);
+                myEl.$.riskAssessmentInput.validate.restore();
+                myEl.$.riskAssessmentComments.validate.restore();
             });
         });
 
-        xdescribe('method getData', function() {
-            it('calls getData method for each risk element', function() {
-                var elements = [{getData: sinon.spy()}, {getData: sinon.spy()}];
-                sinon.stub(myEl, 'getElements').returns(elements);
+        describe('method validateComplited', function() {
+            it('returns false if there is no questionnaire.children', function() {
+                sinon.stub(myEl, '_checkCompleted').returns(true);
+                myEl.questionnaire = undefined;
+                assert.isFalse(myEl.validateComplited());
 
-                myEl.getData();
-                assert.isTrue(elements[0].getData.called);
-                assert.isTrue(elements[1].getData.called);
+                myEl.questionnaire = {};
+                assert.isFalse(myEl.validateComplited());
+
+                myEl.questionnaire.children = [];
+                assert.isFalse(myEl.validateComplited());
+
+                myEl.questionnaire.children.push({});
+                assert.isTrue(myEl.validateComplited());
+                myEl._checkCompleted.restore();
             });
 
-            it('returns undefined if all elements returns undefined', function() {
-                var elements = [{getData: sinon.stub().returns(undefined)}, {getData: sinon.stub().returns(undefined)}];
-                sinon.stub(myEl, 'getElements').returns(elements);
+            it('runs _checkCompleted method for each of questionnaire.children', function() {
+                sinon.stub(myEl, '_checkCompleted').returns(true);
+                myEl.questionnaire = {children:[{}, {}, {}]};
 
-                assert.isUndefined(myEl.getData());
-                assert.isTrue(elements[0].getData.called);
-                assert.isTrue(elements[1].getData.called);
+                myEl.validateComplited();
+                assert.isTrue(myEl._checkCompleted.calledThrice);
+
+                myEl._checkCompleted.restore();
             });
 
-            it('returns data containing data returned by elements', function() {
-                var elements = [{getData: sinon.stub().returns('1')}, {getData: sinon.stub().returns('2')}];
-                sinon.stub(myEl, 'getElements').returns(elements);
+            it('returns true if all _checkCompleted calls returns true', function() {
+                sinon.stub(myEl, '_checkCompleted').returns(true);
+                myEl.questionnaire = {children:[{}, {}, {}]};
 
-                assert.deepEqual(myEl.getData(), {children:['1', '2']});
-                assert.isTrue(elements[0].getData.called);
-                assert.isTrue(elements[1].getData.called);
+                assert.isTrue(myEl.validateComplited());
+
+                myEl._checkCompleted.returns(false);
+                assert.isFalse(myEl.validateComplited());
+
+                myEl._checkCompleted.restore();
             });
-        })
+        });
 
+        describe('method requestsCount', function() {
+            it('returns requests property if argument is NaN or not provided', function() {
+                var count = 35;
+                myEl._setRequests(count);
+
+                assert.equal(myEl.requestsCount(), count);
+                assert.equal(myEl.requestsCount('test'), count);
+                assert.equal(myEl.requestsCount({}), count);
+            });
+
+            it('increase requests number if argument is above 0', function() {
+                var count = 0;
+                myEl._setRequests(count);
+
+                assert.equal(myEl.requestsCount(0), count);
+                assert.equal(myEl.requestsCount(-45), count);
+                assert.equal(myEl.requestsCount(1), count + 1);
+                assert.equal(myEl.requestsCount(345), count + 2);
+            });
+
+            it('decrease requests number if argument is less than 0', function() {
+                var count = 45;
+                myEl._setRequests(count);
+
+                assert.equal(myEl.requestsCount(0), count);
+                assert.equal(myEl.requestsCount(-45), count - 1);
+                assert.equal(myEl.requestsCount(-1), count - 2);
+            });
+
+            it('do not decrease requests if it is 0', function() {
+                var count = 0;
+                myEl._setRequests(count);
+
+                assert.equal(myEl.requestsCount(-1), count);
+                assert.equal(myEl.requestsCount(-789), count);
+            });
+        });
+
+        describe('method resetDialog', function() {
+            it('returns if argument opened is true', function(done) {
+                flush(function() {
+                    myEl.$.riskAssessmentInput.invalid = true;
+                    myEl.resetDialog(true);
+                    assert.isTrue(myEl.$.riskAssessmentInput.invalid);
+                    done();
+                });
+            });
+
+            it('resets invalid and value properties for inputs', function(done) {
+                flush(function() {
+                    myEl.$.riskAssessmentInput.invalid = true;
+                    myEl.$.riskAssessmentComments.invalid = 'test';
+                    myEl.$.riskAssessmentInput.value = true;
+                    myEl.$.riskAssessmentComments.value = 'test';
+
+                    myEl.resetDialog();
+                    assert.isFalse(myEl.$.riskAssessmentInput.invalid);
+                    assert.isFalse(myEl.$.riskAssessmentComments.invalid);
+                    assert.equal(myEl.$.riskAssessmentInput.value, '');
+                    assert.equal(myEl.$.riskAssessmentComments.value, '');
+                    done();
+                });
+            });
+        });
+
+        it('method getRating returns value from riskRatingOptions or argument', function() {
+            var value = 'test_value';
+            myEl.riskRatingOptions.test = value;
+
+            assert.equal(myEl.getRating('test'), value);
+            assert.equal(myEl.getRating('test2'), 'test2');
+        });
+
+        it('method getScore returns argument or 0', function() {
+            assert.equal(myEl.getScore(), 0);
+            assert.equal(myEl.getScore({}), 0);
+            assert.equal(myEl.getScore('test'), 0);
+            assert.equal(myEl.getScore('25'), 25);
+            assert.equal(myEl.getScore(34), 34);
+        });
+
+        describe('method getQuestionnaireData', function() {
+            it('calls getDataFromDialog method and returns call result or null if dialogOpened is true', function() {
+                var value = 'test';
+                sinon.stub(myEl, 'getDataFromDialog').returns(value);
+                myEl.dialogOpened = true;
+
+                assert.equal(myEl.getQuestionnaireData(), value);
+                assert.isTrue(myEl.getDataFromDialog.called);
+
+                myEl.getDataFromDialog.returns(undefined);
+                assert.isNull(myEl.getQuestionnaireData());
+
+                myEl.getDataFromDialog.restore();
+            });
+
+            it('returns first element from changedData array or null if dialogOpened is false', function() {
+                myEl.dialogOpened = false;
+                var data = {test: 'test'};
+                myEl.changedData = [data, {}];
+
+                assert.equal(myEl.getQuestionnaireData(), data);
+                myEl.changedData.shift();
+
+                assert.isNull(myEl.getQuestionnaireData());
+
+                myEl.changedData = undefined;
+                assert.isNull(myEl.getQuestionnaireData());
+            });
+        });
+
+        it('method getDataFromDialog returns data with different structure depending on categoryId property', function() {
+            myEl.editedItem = {
+                id: 666
+            };
+            myEl.tabId = 1;
+            myEl.$.riskAssessmentInput = {value: {value: 'testValue'}};
+
+            var data1 = myEl.getDataFromDialog();
+            assert.isDefined(data1.children);
+            assert.isDefined(data1.children[0]);
+            assert.equal(data1.children[0].id, myEl.tabId);
+            assert.isDefined(data1.children[0].blueprints[0]);
+
+            myEl.categoryId = 22;
+            var data2 = myEl.getDataFromDialog();
+            assert.isDefined(data2.children);
+            assert.isDefined(data2.children[0]);
+            assert.equal(data2.children[0].id, myEl.tabId);
+            assert.isDefined(data2.children[0].children[0]);
+            assert.equal(data2.children[0].children[0].id, myEl.categoryId);
+        });
+
+        it('method _riskValueChanged add object to changedData array and calls requestsCount and fire methods', function() {
+            sinon.spy(myEl, 'requestsCount');
+            sinon.spy(myEl, 'fire');
+            myEl.changedData = [];
+            var data = 'test';
+
+            myEl._riskValueChanged({}, {data: data});
+
+            assert.isTrue(myEl.requestsCount.calledOnce);
+            assert.isTrue(myEl.fire.calledOnce);
+            assert.equal(myEl.changedData[0].children, data);
+
+            myEl.requestsCount.restore();
+            myEl.fire.restore();
+        });
+
+        describe('method _setRiskValue', function() {
+            it('returns undefined if no second argument provided', function() {
+                assert.isUndefined(myEl._setRiskValue({}));
+                assert.isUndefined(myEl._setRiskValue(true));
+            });
+
+            it('returns first argument if it is not a number', function() {
+                assert.equal(myEl._setRiskValue('test', true), 'test');
+                assert.equal(myEl._setRiskValue(null, true), null);
+                assert.equal(myEl._setRiskValue(true, true), true);
+            });
+
+            it('use first argument as index for second if it is a number', function() {
+                var options = ['test1', 'test2'];
+                assert.equal(myEl._setRiskValue(0, options), options[0]);
+                assert.equal(myEl._setRiskValue(1, options), options[1]);
+                assert.equal(myEl._setRiskValue(3, options), options[3]);
+            });
+        });
+
+        describe('method _dataChanged', function() {
+            it('returns if data argument is not provided', function() {
+                sinon.spy(myEl, 'requestsCount');
+
+                myEl._dataChanged();
+                assert.isFalse(myEl.requestsCount.called);
+
+                myEl.requestsCount.restore();
+            });
+
+            it('sets firstRun to false if there is questionnaire data and firstRun is true', function() {
+                myEl.questionnaire = {data: true};
+                myEl.firstRun = true;
+                myEl._dataChanged({});
+
+                assert.isFalse(myEl.firstRun);
+            });
+
+            it('decrease requests count by calling requestsCount with -1', function() {
+                sinon.spy(myEl, 'requestsCount');
+
+                myEl._dataChanged({});
+                assert.isTrue(myEl.requestsCount.calledWith(-1));
+
+                myEl.requestsCount.restore();
+            });
+
+            it('sets questionaire equal to argument if requestsCount returns 0', function() {
+                myEl._setRequests(0);
+
+                myEl._dataChanged({foo: 'bar'});
+                assert.equal(myEl.questionnaire.foo, 'bar');
+
+                myEl._setRequests(255);
+
+                myEl._dataChanged({foo: 'bar25'});
+                assert.notEqual(myEl.questionnaire.foo, 'bar25');
+            });
+
+            it('sets requestInProcess and dialogOpened to false and call resetDialog if requestInProcess and dialogOpened are true', function() {
+                myEl.requestInProcess = true;
+                myEl.dialogOpened = true;
+                sinon.spy(myEl, 'resetDialog');
+
+                myEl._dataChanged({foo: 'bar'});
+                assert.isFalse(myEl.requestInProcess);
+                assert.isFalse(myEl.dialogOpened);
+                assert.isTrue(myEl.resetDialog.called);
+
+                myEl.resetDialog.restore();
+            });
+        });
+
+        describe('method _openEditDialog', function() {
+            it('throws if no details.data provided', function() {
+                assert.throws(myEl._openEditDialog);
+            });
+
+            it('sets properties', function(done) {
+                var item = {header: 'testHeader', risk: {extra: {comments: 'testComment'}}};
+                var data = {
+                    tabId: 'tabId',
+                    childId: 'childId',
+                    data: item
+                };
+
+                flush(function() {
+                    myEl._openEditDialog({}, data);
+
+                    assert.equal(myEl.tabId, data.tabId);
+                    assert.equal(myEl.categoryId, data.childId);
+                    assert.equal(myEl.editedItem, data.data);
+                    assert.equal(myEl.originalComments, data.data.risk.extra.comments);
+                    assert.equal(myEl.$.questionHeader.innerHTML, data.data.header);
+                    assert.isTrue(myEl.dialogOpened);
+
+                    done();
+                });
+            });
+        });
+
+        describe('method _addItemFromDialog', function() {
+            it('returns if dialogOpened is false or validate method returns false', function() {
+                sinon.stub(myEl, 'validate').returns(false);
+                sinon.spy(myEl, 'fire');
+                myEl.dialogOpened = false;
+
+                myEl._addItemFromDialog();
+                assert.isFalse(myEl.fire.called);
+
+                myEl.dialogOpened = true;
+                myEl._addItemFromDialog();
+                assert.isFalse(myEl.fire.called);
+
+                myEl.validate.restore();
+                myEl.fire.restore();
+            });
+
+            it('sets requestInProcess to true and calls fire method', function() {
+                sinon.stub(myEl, 'validate').returns(true);
+                sinon.stub(myEl, 'fire');
+                myEl.dialogOpened = true;
+                myEl.requestInProcess = false;
+                myEl.editedItem = {risk: {value: 'value', extra: {comments: 'comments'}}};
+
+                myEl._addItemFromDialog();
+
+                assert.isTrue(myEl.requestInProcess);
+                assert.isTrue(myEl.fire.called);
+
+                myEl.validate.restore();
+                myEl.fire.restore();
+            });
+
+            it('sets dialogOpened to false and calls resetDialog if data was not changed', function() {
+                sinon.stub(myEl, 'validate').returns(true);
+                sinon.stub(myEl, 'fire');
+                sinon.stub(myEl, 'resetDialog');
+                myEl.editedItem = {risk: {value: 'value', extra: {comments: 'comments'}}};
+                myEl.originalComments = 'comments';
+                myEl.$.riskAssessmentInput = {value: {value: 'value'}};
+                myEl.dialogOpened = true;
+
+                myEl._addItemFromDialog();
+
+                assert.isTrue(myEl.resetDialog.called);
+                assert.isFalse(myEl.dialogOpened);
+                assert.isFalse(myEl.fire.called);
+
+                myEl.validate.restore();
+                myEl.fire.restore();
+                myEl.resetDialog.restore();
+            });
+        });
 
     });
 </script>

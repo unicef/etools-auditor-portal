@@ -224,7 +224,7 @@ Polymer({
     },
 
     getScore: function(score) {
-        return score || 0;
+        return +score || 0;
     },
 
     getRating: function(rating) {
@@ -256,11 +256,13 @@ Polymer({
             this.fire('toast', {text: `Qustionnaire: ${nonField}`});
         }
     },
+
     requestsCount: function(number) {
-        if (!number && isNaN(number)) { return this.requests; }
+        if (!number || isNaN(+number)) { return this.requests; }
         let count = number > 0 ? this.requests + 1 : this.requests - 1;
         if (count < 0) { count = 0; }
         this._setRequests(count);
         return this.requests;
     }
+
 });
