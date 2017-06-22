@@ -200,11 +200,12 @@ Polymer({
 
     _getStringValue: function(value, options, defaultValue) {
         if (!options || !_.isNumber(value)) { return defaultValue; }
-        return options[value].label || defaultValue;
+        return options[value] && options[value].label || defaultValue;
     },
 
     _prepareData: function(data) {
         if (data && data.risk && _.isJSONObj(data.risk.extra)) { data.risk.extra = JSON.parse(data.risk.extra); }
         return data;
     }
+
 });
