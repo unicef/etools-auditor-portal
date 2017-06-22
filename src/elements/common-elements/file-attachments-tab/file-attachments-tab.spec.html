@@ -663,6 +663,151 @@
                 assert.equal(myEl.errors.file, 'File is not selected');
             });
         });
+
+        describe('method _cutFileName(fileName)', function () {
+            it('returns undefined if argument is not string', function () {
+                assert.isUndefined(myEl._cutFileName(undefined));
+                assert.isUndefined(myEl._cutFileName(null));
+                assert.isUndefined(myEl._cutFileName([]));
+                assert.isUndefined(myEl._cutFileName({}));
+            });
+
+            it('not modifies original fileName with length <= 20', function () {
+                let fileName = '12345678901234567890';
+
+                assert.lengthOf(fileName, 20);
+                let cutFileName = myEl._cutFileName(fileName);
+
+                assert.equal(cutFileName, fileName);
+                assert.lengthOf(cutFileName, 20);
+            });
+
+            it('leaves 10 first and 7 last symbols of fileName and replaces other with ...', function () {
+                let fileName = '1234567890123456789012345678901234567890';
+
+                assert.lengthOf(fileName, 40);
+                let cutFileName = myEl._cutFileName(fileName);
+                assert.equal(cutFileName, '1234567890...4567890');
+                assert.lengthOf(cutFileName, 20);
+            });
+        });
+
+        describe('method getFilesErrors(errors)', function () {
+            let errors = [{file: 'Incorrect base64 format.'}, {}, {file: 'Incorrect base64 format.'}];
+            let dataItems = [
+                {file_name: 'name', file_type: '1', display_name: 'FF', file: 'url'},
+                {file_name: 'name2', file_type: '1', display_name: 'FF', file: 'url2'},
+                {file_name: 'name3', file_type: '1', display_name: 'FF', file: 'url3'},
+            ];
+
+            it('returns empty array if errors or dataItems not arrays or has different length', function () {
+                //dataItems is not array:
+                myEl.dataItems = null;
+                assert.deepEqual(myEl.getFilesErrors(errors), []);
+                //errors is not array:
+                myEl.multiple = true;
+                myEl.dataItems = _.cloneDeep(dataItems);
+                assert.deepEqual(myEl.getFilesErrors(null), []);
+                //different length:
+                myEl.dataItems.splice(0, 1);
+                assert.deepEqual(myEl.getFilesErrors(errors), []);
+            });
+
+            it('returns array with invalid files data (skip good files)', function () {
+                let filesErrors = [{fileName: 'name', error: 'Incorrect base64 format.'}, {fileName: 'name3', error: 'Incorrect base64 format.'}];
+                myEl.multiple = true;
+                myEl.dataItems = _.cloneDeep(dataItems);
+
+                assert.deepEqual(myEl.getFilesErrors(errors), filesErrors);
+            });
+
+            it('calls _cutFileName() method for each "errors" item', function () {
+                let spy = sinon.spy(myEl, '_cutFileName');
+                myEl.multiple = true;
+                myEl.dataItems = _.cloneDeep(dataItems);
+
+                myEl.getFilesErrors(errors);
+
+                assert.equal(spy.callCount, 3);
+                assert.isTrue(spy.calledWith('name'));
+                assert.isTrue(spy.calledWith('name2'));
+                assert.isTrue(spy.calledWith('name3'));
+            });
+        });
+
+        describe('method _errorHandler(errorData)', function () {
+            it('resets requestInProcess property', function () {
+                myEl.requestInProcess = true;
+                assert.isTrue(myEl.requestInProcess);
+                myEl._errorHandler();
+                assert.isFalse(myEl.requestInProcess);
+            });
+
+            it('returns if errorData is undefined', function () {
+                let spy = sinon.spy(myEl, 'refactorErrorObject');
+
+                assert.isFalse(spy.called);
+                myEl._errorHandler(undefined);
+                assert.isFalse(spy.called);
+            });
+
+            it('updates errors object when refactoredData is object and dialog is opened', function () {
+                let errorData = {report_attachments: [{file: ['Incorrect base64 format.']}]};
+                let refactoredData = [{file: 'Incorrect base64 format.'}];
+                myEl.mainProperty = 'report_attachments';
+                myEl.dialogOpened = true;
+
+                assert.deepEqual(myEl.errors, {});
+                myEl._errorHandler(errorData);
+
+                assert.deepEqual(myEl.errors, refactoredData[0]);
+            });
+
+            it('fires toast with error string', function () {
+                let spy = sinon.spy(myEl, 'fire');
+                let errorData = {report_attachments: 'String with error.'};
+                myEl.mainProperty = 'report_attachments';
+
+                assert.isFalse(spy.called);
+                myEl._errorHandler(errorData);
+
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('toast', {text: `Attachments: ${errorData.report_attachments}`}));
+            });
+
+            it('fires toast with nonField error', function () {
+                let spy = sinon.spy(myEl, 'fire');
+                let errorData = {report_attachments: [{non_field_errors: ['Please provide file or hyperlink.']}]};
+                myEl.mainProperty = 'report_attachments';
+
+                assert.isFalse(spy.called);
+                myEl._errorHandler(errorData);
+
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('toast', {text: `Attachments: ${errorData.report_attachments[0].non_field_errors}`}));
+            });
+
+            it('fires toast with error for each invalid file when dialog is closed (New Engagement Tab)', function () {
+                let errorData = {report_attachments: [{file: ['Incorrect base64 format.']}, {/*The correct file*/}, {file: ['Incorrect base64 format.']}]};
+                let refactoredData = [{file: 'Incorrect base64 format.'}, {}, {file: 'Incorrect base64 format.'}];
+                let filesErrors = [
+                    {fileName: 'filename1.file', error: 'Error1'},
+                    {fileName: 'filename2.file', error: 'Error2'},
+                ];
+                let spy = sinon.spy(myEl, 'fire');
+
+                sinon.stub(myEl, 'getFilesErrors').withArgs(refactoredData).returns(filesErrors);
+                myEl.mainProperty = 'report_attachments';
+                myEl.dialogOpened = false;
+
+                assert.isFalse(spy.called);
+                myEl._errorHandler(errorData);
+
+                assert.equal(spy.callCount, 2);
+                assert.isTrue(spy.calledWith('toast', {text: `${filesErrors[0].fileName}: ${filesErrors[0].error}`}));
+                assert.isTrue(spy.calledWith('toast', {text: `${filesErrors[1].fileName}: ${filesErrors[1].error}`}));
+            });
+        });
     });
 </script>
 
