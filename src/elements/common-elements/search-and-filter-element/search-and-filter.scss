@@ -9,7 +9,7 @@
 }
 
 .second-header {
-    min-height: 84px;
+    padding: 8px 0;
     margin-bottom: 12px;
     --paper-card-background-color: #ffffff;
 
@@ -65,6 +65,8 @@
 
             paper-item {
                 font-weight: normal;
+                height: 48px;
+                min-height: initial;
 
                 --paper-item-focused-before: #{'{
                     background: var(--primary-background-color);
