@@ -19,11 +19,6 @@ App global configuration
 
         // app endpoints
         endpoints: {
-            countries: {
-                url: '/ap/data/countries.json',
-                exp: 6 * 60 * 60 * 1000, // 6h
-                cachingKey: 'countries'
-            },
             userProfile: {
                 url: '/users/api/profile/'
             },
@@ -63,11 +58,6 @@ App global configuration
             }
         },
         localEndpoints: {
-            countries: {
-                url: '/data/countries.json',
-                exp: 6 * 60 * 60 * 1000, // 6h
-                cachingKey: 'countries'
-            },
             userProfile: {
                 url: '/data/user-profile.json'
             },
