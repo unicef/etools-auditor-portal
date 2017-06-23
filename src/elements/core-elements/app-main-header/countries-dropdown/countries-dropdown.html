@@ -24,7 +24,7 @@
         <iron-icon class="arrow-up" icon="icons:arrow-drop-up"></iron-icon>
       </paper-button>
 
-      <paper-menu class="dropdown-content mw-220" selected="[[current]]" on-iron-select="_countrySelected">
+      <paper-menu class="dropdown-content mw-220" selected="[[countryIndex]]" on-iron-select="_countrySelected">
         <template id="repeat" is="dom-repeat" items="[[countries]]">
           <paper-item on-tap="_changeCountry">
             [[item.name]]

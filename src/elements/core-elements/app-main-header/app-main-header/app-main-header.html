@@ -60,8 +60,6 @@
       }
     </style>
 
-    <countries-data countries="{{countries}}"></countries-data>
-
     <app-toolbar sticky class="content-align">
       <div class="titlebar content-align">
         <etools-app-selector hidden$="[[!user.is_staff]]" menu-options="[[menuOptions]]"></etools-app-selector>
@@ -70,11 +68,9 @@
       </div>
 
       <div class="content-align">
-        <!--<countries-dd-old id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dd-old>-->
-        <countries-dropdown id="countries"></countries-dropdown>
+        <countries-dropdown countries="[[user.profile.countries_available]]" country-id="[[user.profile.country]]"></countries-dropdown>
 
         <user-dropdown is-admin="[[user.is_superuser]]"></user-dropdown>
-        <!--<user-dropdown is-admin></user-dropdown>-->
 
         <etools-page-refresh id="refresh"></etools-page-refresh>
       </div>
@@ -91,12 +87,6 @@
           etoolsAppConfig.globals
         ],
         properties: {
-          countries: {
-            type: Array,
-            value: function() {
-              return [];
-            }
-          },
           user: {
             type: Object
           },
@@ -138,9 +128,6 @@
             }
           }
         },
-        observers: [
-          '_updateCountriesList(user.profile.countries_available, countries)'
-        ],
         listeners: {
           'main_refresh': '_refresh_page'
         },
@@ -151,23 +138,6 @@
           event.stopImmediatePropagation();
           this.$.refresh.refresh();
         },
-        _updateCountriesList: function(countriesAvailable, countries) {
-          if (!countriesAvailable) {
-            return;
-          }
-
-          let filteredCountries = countries.filter((country) => {
-              return !!countriesAvailable.find((countryAvailable) => {
-                  return countryAvailable.id === country.id;
-              });
-          });
-          let userCountryIndex = filteredCountries.findIndex((country) => {
-              return country.id === this.user.profile.country;
-          });
-
-          this.$.countries.set('countries', filteredCountries);
-          this.$.countries.set('current', userCountryIndex);
-        }
       });
     })();
   </script>

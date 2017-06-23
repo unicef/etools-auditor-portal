@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [user-dropdown, lodash]-->
+</head>
+<body>
+
+<test-fixture id="user-dropdown-fixture">
+    <template>
+        <user-dropdown></user-dropdown>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<user-dropdown>', function () {
+        let myEl;
+
+        beforeEach(function () {
+            myEl = fixture('user-dropdown-fixture');
+        });
+
+        describe('method _toggleOpened()', function () {
+            it('resets user dropdown selected state', function () {
+                let spy = sinon.spy(myEl.$.dropdownMenu, 'select');
+
+                assert.isFalse(spy.called);
+                myEl._toggleOpened();
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly(null));
+            });
+
+            it('toggles user dropdown opened state', function () {
+                assert.isFalse(myEl.opened);
+                myEl.$.dropdown.opened = true;
+                myEl._toggleOpened();
+                assert.isTrue(myEl.opened);
+            });
+        });
+
+        describe('method _navigateToAdminPage()', function () {
+            it('calls _changeLocation() method with admin page url', function () {
+                let spy = sinon.spy(myEl, '_changeLocation');
+
+                assert.isFalse(spy.called);
+                myEl._navigateToAdminPage();
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('admin'));
+            });
+        });
+
+        describe('method _logout()', function () {
+            it('resets user data', function () {
+                let spy = sinon.spy(myEl, 'resetOldUserData');
+
+                assert.isFalse(spy.called);
+                myEl._logout();
+                assert.isTrue(spy.calledOnce);
+            });
+
+            it('calls _changeLocation() method with logout url', function () {
+                let spy = sinon.spy(myEl, '_changeLocation');
+
+                assert.isFalse(spy.called);
+                myEl._logout();
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('accounts/logout'));
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
