@@ -4,7 +4,7 @@
     let filters = [
         {
             name: 'auditor',
-            query: 'agreement__audit_organization',
+            query: 'agreement__auditor_firm',
             optionValue: 'id',
             optionLabel: 'name',
             selection: []
@@ -96,9 +96,9 @@
     }, {
         'size': 20,
         'label': 'Auditor',
-        'name': 'agreement__audit_organization__name',
+        'name': 'agreement__auditor_firm__name',
         'ordered': false,
-        'path': 'agreement.audit_organization.name'
+        'path': 'agreement.auditor_firm.name'
     }, {
         'size': 15,
         'label': 'Engagement Type',
@@ -161,9 +161,9 @@
         },
 
         setupFiltersAndHeadings: function() {
-            let auditorsFilterIndex = this._getFilterIndex('agreement__audit_organization');
+            let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
             let auditorHeadingIndex = listHeadings.findIndex((heading) => {
-                return heading.name === 'agreement__audit_organization__name';
+                return heading.name === 'agreement__auditor_firm__name';
             });
 
             if (false) { //TODO: check that user is auditor
@@ -195,7 +195,7 @@
 
         setFiltersSelections: function() {
             let partnersFilterIndex = this._getFilterIndex('partner');
-            let auditorsFilterIndex = this._getFilterIndex('agreement__audit_organization');
+            let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
 
             if (partnersFilterIndex !== -1) {
                 this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners') || []);

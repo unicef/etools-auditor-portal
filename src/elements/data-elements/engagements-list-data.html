@@ -76,7 +76,7 @@
             reloadRequired: function () {
                 let lastKeys = _.keys(this.lastState);
                 let requestQueriesKeys = _.keys(this.requestQueries);
-                let filtersKeys = ['agreement__audit_organization', 'partner', 'type', 'status'];
+                let filtersKeys = ['agreement__auditor_firm', 'partner', 'type', 'status'];
                 let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
                 queriesKeys = _.uniq(queriesKeys);

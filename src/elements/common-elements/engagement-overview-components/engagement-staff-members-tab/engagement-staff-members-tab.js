@@ -138,8 +138,8 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_handleUpdateError(errorObject.staff_members)',
-        '_organizationChanged(engagement.agreement.audit_organization.id, basePermissionPath)',
-        '_organizationChanged(engagement.agreement.audit_organization.id)',
+        '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
+        '_organizationChanged(engagement.agreement.auditor_firm.id)',
         '_queriesChanged(listSize, listPage, searchQuery)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
@@ -299,7 +299,7 @@ Polymer({
     },
 
     _showAddButton: function(basePath, agreement, loading) {
-        let orgId = agreement && agreement.audit_organization && agreement.audit_organization.id;
+        let orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
 
         return !!orgId && !loading && this._canBeChanged();
     },

@@ -196,8 +196,8 @@
             assert.isTrue(myEl._showPagination(11));
         });
 
-        it('method _showAddButton returns true if agreement.audit_organization.id is true, loading is false and _canBeChanged returns true', function() {
-            var agreement = {audit_organization: {id: 666}},
+        it('method _showAddButton returns true if agreement.auditor_firm.id is true, loading is false and _canBeChanged returns true', function() {
+            var agreement = {auditor_firm: {id: 666}},
                     loading = false;
             sinon.stub(myEl, '_canBeChanged').returns(true);
 
@@ -207,10 +207,10 @@
             assert.isFalse(myEl._showAddButton('', agreement, loading));
 
             loading = false;
-            agreement.audit_organization.id = false;
+            agreement.auditor_firm.id = false;
             assert.isFalse(myEl._showAddButton('', agreement, loading));
 
-            agreement.audit_organization.id = 666;
+            agreement.auditor_firm.id = 666;
             myEl._canBeChanged.returns(false);
             assert.isFalse(myEl._showAddButton('', agreement, loading));
 
