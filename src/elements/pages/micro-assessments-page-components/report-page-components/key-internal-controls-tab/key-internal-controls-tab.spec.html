@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [key-internal-controls-tab, lodash]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <key-internal-controls-tab id="element"></key-internal-controls-tab>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<key-internal-controls-tab>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method changePermission', function() {
+            it('calls isReadOnly method', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                myEl.changePermission();
+                assert.isTrue(myEl.isReadOnly.called);
+                myEl.isReadOnly.restore();
+            });
+
+            it('calls push method if there is no edit column and readonly is false', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(false);
+                sinon.spy(myEl, 'push');
+
+                myEl.columns.pop();
+                assert.isUndefined(myEl.columns[myEl.columns.length - 1].name);
+
+                myEl.changePermission();
+                assert.isTrue(myEl.push.called);
+                assert.equal(myEl.columns[myEl.columns.length - 1].name, 'edit');
+
+                myEl.isReadOnly.restore();
+                myEl.push.restore();
+            });
+
+            it('calls pop method other cases', function() {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                sinon.spy(myEl, 'pop');
+
+                assert.equal(myEl.columns[myEl.columns.length - 1].name, 'edit');
+
+                myEl.changePermission();
+                assert.isTrue(myEl.pop.called);
+                assert.isUndefined(myEl.columns[myEl.columns.length - 1].name);
+
+                myEl.isReadOnly.restore();
+                myEl.pop.restore();
+            });
+        });
+
+        describe('method getCurrentData', function() {
+            it('returns null if dialogOpened is false', function() {
+                myEl.dialogOpened = false;
+                assert.isNull(myEl.getCurrentData());
+            });
+
+            it('returns risk data', function() {
+                myEl.dialogOpened = true;
+                myEl.editedArea = {
+                    id: 666,
+                    blueprints: [{
+                        id: 777,
+                        risk: {value: {value: 'test'}, extra: {}}
+                    }]
+                };
+                var data = myEl.getCurrentData();
+
+                assert.equal(data[0].id, myEl.editedArea.id);
+                assert.isDefined(data[0].blueprints[0].id);
+                assert.isDefined(data[0].blueprints[0].risk);
+            });
+        });
+
+        describe('method validateEditFields', function() {
+            it('returns true if all validate methods returns true', function() {
+
+                myEl.$.riskAssessmentInput.validate = sinon.stub().returns(false);
+                myEl.$.briefJustification.validate = sinon.stub().returns(false);
+
+                assert.isFalse(myEl.validateEditFields());
+
+                myEl.$.riskAssessmentInput.validate.returns(true);
+                assert.isFalse(myEl.validateEditFields());
+
+                myEl.$.riskAssessmentInput.validate.returns(false);
+                myEl.$.briefJustification.validate.returns(true);
+                assert.isFalse(myEl.validateEditFields());
+
+                myEl.$.riskAssessmentInput.validate.returns(true);
+                assert.isTrue(myEl.validateEditFields());
+            });
+        });
+
+        describe('method openEditDialog', function() {
+            it('throws if there is no event.detail.data object in subjectAreas.children', function() {
+                myEl.subjectAreas = {children: []};
+
+                assert.throws(myEl.openEditDialog);
+
+                assert.isUndefined(myEl.editedArea);
+                assert.isUndefined(myEl.originalEditedObj);
+                assert.isUndefined(myEl.editedAreaIndex);
+                assert.isFalse(myEl.dialogOpened);
+            });
+
+            it('sets properties', function() {
+                var data = {test: 'test', foo: 'bar', id: 666};
+                myEl.subjectAreas = {children: [data]};
+
+                myEl.openEditDialog({detail: {data: data}});
+
+                assert.isTrue(_.isEqual(myEl.editedArea, data));
+                assert.isTrue(_.isEqual(myEl.originalEditedObj, data));
+                assert.equal(myEl.editedAreaIndex, myEl.subjectAreas.children.indexOf(data));
+                assert.isTrue(myEl.dialogOpened);
+            });
+        });
+
+        describe('method _saveEditedArea', function() {
+            it('returns if validateEditFields method returns false', function() {
+                sinon.stub(myEl, 'validateEditFields').returns(false);
+                sinon.spy(myEl, 'splice');
+
+                myEl._saveEditedArea();
+                assert.isFalse(myEl.splice.called);
+
+                myEl.splice.restore();
+                myEl.validateEditFields.restore();
+            });
+
+            it('calls splice method and sets dialogOpened to false if saveWithButton is true and editedArea is not equal to originalEditedObj', function() {
+                myEl.saveWithButton = true;
+                myEl.dialogOpened = true;
+                myEl.editedArea = {test:'test'};
+                sinon.stub(myEl, 'splice');
+                sinon.stub(myEl, 'validateEditFields').returns(true);
+
+                myEl._saveEditedArea();
+                assert.isTrue(myEl.splice.called);
+                assert.isFalse(myEl.dialogOpened);
+
+                myEl.splice.restore();
+                myEl.validateEditFields.restore();
+            });
+
+            it('calls resetDialog method and sets dialogOpened to false if editedArea is equal to originalEditedObj saveWithButton is false', function() {
+                myEl.dialogOpened = true;
+                sinon.stub(myEl, 'resetDialog');
+                sinon.stub(myEl, 'validateEditFields').returns(true);
+
+                myEl._saveEditedArea();
+                assert.isTrue(myEl.resetDialog.called);
+                assert.isFalse(myEl.dialogOpened);
+
+                myEl.resetDialog.restore();
+                myEl.validateEditFields.restore();
+            });
+
+            it('calls fire method and sets requestInProcess to true if saveWithButton is false editedArea is not equal to originalEditedObj', function() {
+                myEl.dialogOpened = true;
+                myEl.saveWithButton = false;
+                myEl.editedArea = {test:'test'};
+                sinon.stub(myEl, 'fire');
+                sinon.stub(myEl, 'validateEditFields').returns(true);
+
+                myEl._saveEditedArea();
+                assert.isTrue(myEl.fire.called);
+                assert.isTrue(myEl.requestInProcess);
+
+                myEl.fire.restore();
+                myEl.validateEditFields.restore();
+            });
+        });
+
+        it('method _showRisk returns true if risk.type === default', function() {
+            assert.isTrue(myEl._showRisk({type: 'default'}));
+            assert.isFalse(myEl._showRisk({type: 'default2'}));
+            assert.isFalse(myEl._showRisk({type: ''}));
+            assert.isFalse(myEl._showRisk({}));
+            assert.isFalse(myEl._showRisk());
+        });
+    });
+</script>
+
+</body>
+</html>

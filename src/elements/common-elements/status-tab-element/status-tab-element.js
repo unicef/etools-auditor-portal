@@ -128,6 +128,7 @@
                     lastComplited = statuses && statuses[number];
 
                 if (!lastComplited) {throw 'Can not find last complited status element!'; }
+                if (!this.$.statusList || !this.$.canceledStatus) {throw 'Can not find elements!'; }
                 Polymer.dom(this.$.statusList).insertBefore(this.$.canceledStatus, lastComplited);
             }
 

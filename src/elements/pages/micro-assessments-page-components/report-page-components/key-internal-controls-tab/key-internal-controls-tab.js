@@ -146,8 +146,7 @@ Polymer({
     openEditDialog: function(event) {
         let index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
         if ((!index && index !== 0) || !~index) {
-            console.error('Can not find data');
-            return;
+            throw 'Can not find data';
         }
 
         let data = this.subjectAreas.children[index];
@@ -190,7 +189,7 @@ Polymer({
     },
 
     _showRisk: function(risk) {
-        return risk && risk.type === 'default';
+        return !!(risk && risk.type === 'default');
     }
 
 });
