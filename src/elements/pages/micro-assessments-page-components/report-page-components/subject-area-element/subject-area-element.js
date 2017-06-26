@@ -33,7 +33,7 @@ Polymer({
             data.blueprints[0].risk = {extra: {}};
         }
 
-        this.areaData = _.clone(this.area.blueprints[0]);
+        this.areaData = _.clone(data.blueprints[0]);
     },
 
     openEditDialog: function() {
