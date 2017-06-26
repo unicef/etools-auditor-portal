@@ -40,7 +40,7 @@ App global configuration
                 template: '/api/v2/partners/<%=id%>/'
             },
             auditOrganisations: {
-                url: '/api/audit/audit-organizations/',
+                url: '/api/audit/audit-firms/',
                 exp: 24 * 60 * 60 * 1000, // 24h
                 cachingKey: 'auditors'
             },
@@ -48,10 +48,10 @@ App global configuration
                 template: '/api/audit/purchase-orders/sync/<%=id%>/'
             },
             staffMembers: {
-                template: '/api/audit/audit-organizations/<%=id%>/staff-members/'
+                template: '/api/audit/audit-firms/<%=id%>/staff-members/'
             },
             userExistence: {
-                template: '/api/audit/audit-organizations/<%=id%>/staff-members/?search=<%=email%>'
+                template: '/api/audit/audit-firms/<%=id%>/staff-members/?search=<%=email%>'
             },
             changeCountry: {
                 url: '/users/api/changecountry/'
