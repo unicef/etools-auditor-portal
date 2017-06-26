@@ -33,7 +33,7 @@ Polymer({
         }
         this.originalData = _.cloneDeep(data);
 
-        if (!this.riskData.blueprints[0].risk || !this.riskData.blueprints[0].risk.value) {
+        if (!this.riskData.blueprints[0].risk || isNaN(+this.riskData.blueprints[0].risk.value)) {
             return;
         }
 
