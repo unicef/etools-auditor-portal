@@ -30,6 +30,7 @@
                                  on-focus="_resetFieldError"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="dateVisit"
                                            date="[[prepareDate(data.date_of_field_visit)]]"
                                            format="YYYY-MM-DD"
@@ -55,6 +56,7 @@
                                  required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="draftReportToIp"
                                            date="[[prepareDate(data.date_of_draft_report_to_ip)]]"
                                            format="YYYY-MM-DD"
@@ -81,6 +83,7 @@
                                  required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="commentsReceivedByIp"
                                            date="[[prepareDate(data.date_of_comments_by_ip)]]"
                                            format="YYYY-MM-DD"
@@ -110,6 +113,7 @@
                                  required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="draftReportUnicef"
                                            date="[[prepareDate(data.date_of_draft_report_to_unicef)]]"
                                            format="YYYY-MM-DD"
@@ -137,6 +141,7 @@
                                  required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
                                  placeholder="&#8212;">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="commentsReceivedUnicef"
                                            date="[[prepareDate(data.date_of_comments_by_unicef)]]"
                                            format="YYYY-MM-DD"

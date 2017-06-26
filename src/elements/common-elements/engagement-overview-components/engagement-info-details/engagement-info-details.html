@@ -91,6 +91,7 @@
                                  on-focus="_resetFieldError"
                                  placeholder="Select Contacted Date">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="contactedDate"
                                            date="[[prepareDate(data.partner_contacted_at)]]"
                                            format="YYYY-MM-DD"
@@ -139,6 +140,7 @@
                                      data-selector="periodStartDate"
                                      placeholder="Select Start Date">
                             <etools-datepicker-button prefix
+                                                      modal="[[datepickerModal]]"
                                                       id="periodStartDate"
                                                       date="[[prepareDate(data.start_date)]]"
                                                       format="YYYY-MM-DD"
@@ -168,6 +170,7 @@
                                      data-selector="periodEndDate"
                                      placeholder="Select End Date">
                             <etools-datepicker-button prefix
+                                                      modal="[[datepickerModal]]"
                                                       id="periodEndDate"
                                                       date="[[prepareDate(data.end_date)]]"
                                                       format="YYYY-MM-DD"

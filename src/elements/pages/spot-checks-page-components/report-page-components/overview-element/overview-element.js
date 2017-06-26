@@ -18,6 +18,10 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        datepickerModal: {
+            type: Boolean,
+            value: false
         }
     },
 

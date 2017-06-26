@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button,
+<!--import [polymer, etools-content-panel, paper-input, etools-datepicker,
             etools-currency-amount-input]-->
 
 <!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, common-methods-behavior]-->
@@ -24,13 +24,14 @@
                                  on-down="openDatePicker"
                                  data-selector="dateFaceStartSelector"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="dateFaceStartSelector"
-                                                  date="[[prepareDate(data.start_date)]]"
-                                                  pretty-date="{{data.start_date}}"
-                                                  format="YYYY-MM-DD"
-                                                  no-init show-clear-btn>
-                        </etools-datepicker-button>
+                        <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
+                                           id="dateFaceStartSelector"
+                                           date="[[prepareDate(data.start_date)]]"
+                                           pretty-date="{{data.start_date}}"
+                                           format="YYYY-MM-DD"
+                                           no-init show-clear-btn>
+                        </etools-datepicker>
                     </paper-input>
                 </div>
                 <div class="input-container">
@@ -42,13 +43,14 @@
                                  on-down="openDatePicker"
                                  data-selector="dateFaceEndSelector"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="dateFaceEndSelector"
-                                                  date="[[prepareDate(data.end_date)]]"
-                                                  pretty-date="{{data.end_date}}"
-                                                  format="YYYY-MM-DD"
-                                                  no-init show-clear-btn>
-                        </etools-datepicker-button>
+                        <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
+                                           id="dateFaceEndSelector"
+                                           date="[[prepareDate(data.end_date)]]"
+                                           pretty-date="{{data.end_date}}"
+                                           format="YYYY-MM-DD"
+                                           no-init show-clear-btn>
+                        </etools-datepicker>
                     </paper-input>
                 </div>
                 <div class="input-container">

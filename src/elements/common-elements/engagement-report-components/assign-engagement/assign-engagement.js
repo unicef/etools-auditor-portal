@@ -20,6 +20,10 @@ Polymer({
                 let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
                 return new Date(nextDay - 1);
             }
+        },
+        datepickerModal: {
+            type: Boolean,
+            value: false
         }
     },
 
