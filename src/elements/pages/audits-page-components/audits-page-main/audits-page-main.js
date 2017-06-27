@@ -68,6 +68,7 @@ Polymer({
         data = data || {};
         let reportPage = this.getElement('#report');
         if (!reportPage) { return data; }
+
         let findingsSummaryData = reportPage.getFindingsSummaryData();
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
         let financialFindingData = reportPage.getFinancialFindingsData();
