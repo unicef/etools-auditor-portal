@@ -33,7 +33,6 @@ Polymer({
         }
     },
     _onNotificationPush: function(e, notification) {
-        Polymer.dom.flush();
         if (this.limit > this.notifications.length) {
             this.push('notifications', notification);
             this.moveUpNotifications();
@@ -42,11 +41,10 @@ Polymer({
         }
     },
     moveUpNotifications: function() {
+        Polymer.dom.flush();
         let notifications = Polymer.dom(this.root).querySelectorAll('multi-notification-item');
         notifications.forEach((notification) => {
-            this.async(() => {
-                notification.fire('move-up');
-            }, 10);
+            notification.fire('move-up');
         });
 
     }

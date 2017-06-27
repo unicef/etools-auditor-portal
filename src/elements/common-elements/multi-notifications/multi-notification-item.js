@@ -1,37 +1,17 @@
 Polymer({
     is: 'multi-notification-item',
-    behaviors: [
-        Polymer.IronOverlayBehavior
-    ],
     properties: {
-        text: {
-            type: String,
-            value: ''
-        },
-        fitInto: {
-            type: Object,
-            value: window,
-            observer: '_onFitIntoChanged'
-        },
-        horizontalAlign: {
-            type: String,
-            value: 'left'
-        },
-        verticalAlign: {
-            type: String,
-            value: 'bottom'
-        },
         duration: {
             type: Number,
             value: 3000
         },
-        noCancelOnOutsideClick: {
+        opened: {
             type: Boolean,
-            value: true
+            observer: '_openedChanged'
         },
-        offset: {
-            type: Number,
-            value: 0
+        text: {
+            type: String,
+            value: ''
         }
     },
     listeners: {
@@ -46,26 +26,32 @@ Polymer({
         }
     },
     _renderOpened: function() {
-        this.classList.add('notification-open');
+        requestAnimationFrame(() => {
+            this.classList.add('notification-open');
+        });
     },
     _renderClosed: function() {
-        this.classList.remove('notification-open');
+        requestAnimationFrame(() => {
+            this.classList.remove('notification-open');
+        });
     },
-    _onFitIntoChanged: function(fitInto) {
-        this.positionTarget = fitInto;
-    },
-    _openedChanged: function() {
-        if (this._canAutoClose) {
+    _openedChanged: function(opened) {
+        if (opened) {
             this.async(this.close, this.duration);
+            this._renderOpened();
+        } else {
+            this._renderClosed();
         }
-        Polymer.IronOverlayBehaviorImpl._openedChanged.apply(this, arguments);
     },
-    get _canAutoClose() {
-        return this.duration > 0 && this.duration !== Infinity;
+    close: function() {
+        this.opened = false;
     },
     _moveUp: function() {
-        this.offset += 70;
-        this.transform(`translateY(-${this.offset}px)`);
+        let m = this;
+        requestAnimationFrame(() => {
+            m.offset = !m.offset && m.offset !== 0 ? 0 : m.offset + 70;
+            this.transform(`translateY(-${m.offset}px)`);
+        });
     }
 
     /**
