@@ -53,7 +53,7 @@ Polymer({
 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo(),
-            reportValid = Polymer.dom(this.root).querySelector('#report').validate();
+            reportValid = this.getElement('#report').validate();
 
         if (!basicInfoValid) { return false; }
         if (!reportValid) {
@@ -65,8 +65,10 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
-        let reportPage = Polymer.dom(this.root).querySelector('#report');
+        data = data || {};
+        let reportPage = this.getElement('#report');
         if (!reportPage) { return data; }
+
         let findingsSummaryData = reportPage.getFindingsSummaryData();
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
         let financialFindingData = reportPage.getFinancialFindingsData();
@@ -86,7 +88,7 @@ Polymer({
     },
 
     customBasicValidation: function() {
-        let reportTab = Polymer.dom(this.root).querySelector('#report');
+        let reportTab = this.getElement('#report');
         if (!reportTab) { return true; }
 
         let reportValid = reportTab.validate('forSave');
@@ -101,10 +103,7 @@ Polymer({
     infoLoaded: function() {
         if (this.getData('audit_opinions')) { return; }
         let auditOpinions = this.getChoices(`engagement_${this.engagement.id}.audit_opinion`);
-        if (!auditOpinions) {
-            auditOpinions = [];
-            return;
-        }
+        if (!auditOpinions) { return; }
         this._setData('audit_opinions', auditOpinions);
     }
 });

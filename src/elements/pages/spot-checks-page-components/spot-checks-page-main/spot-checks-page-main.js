@@ -53,7 +53,7 @@ Polymer({
 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo(),
-            reportValid = Polymer.dom(this.root).querySelector('#report').validate();
+            reportValid = this.getElement('#report').validate();
 
         if (!basicInfoValid) { return false; }
         if (!reportValid) {
@@ -65,9 +65,10 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
-        let reportPage = Polymer.dom(this.root).querySelector('#report');
-
+        data = data || {};
+        let reportPage = this.getElement('#report');
         if (!reportPage) { return data; }
+
         let findingData = reportPage.getFindingsData();
         if (findingData) { data.findings = findingData; }
 
@@ -81,7 +82,7 @@ Polymer({
     },
 
     customBasicValidation: function() {
-        let reportTab = Polymer.dom(this.root).querySelector('#report');
+        let reportTab = this.getElement('#report');
         if (!reportTab) { return true; }
         let reportValid = reportTab.validate('forSave');
         if (!reportValid) {
@@ -99,10 +100,7 @@ Polymer({
     loadChoices: function(property) {
         if (this.getData(property)) { return; }
         let choices = this.getChoices(`engagement_${this.engagement.id}.findings.${property}`);
-        if (!choices) {
-            choices = [];
-            return;
-        }
+        if (!choices) { return; }
         this._setData(property, choices);
     }
 });
