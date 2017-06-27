@@ -41,7 +41,7 @@ Polymer({
 
     _configListParams: function(noNotify) {
         let queriesUpdates = {},
-            queries = this.parseQueries();
+            queries = this.parseQueries() || {};
 
         if (!queries.page_size) { queriesUpdates.page_size = '10'; }
         if (!queries.ordering) { queriesUpdates.ordering = 'agreement__order_number'; }
@@ -52,9 +52,7 @@ Polymer({
             queriesUpdates.page = '1';
         }
 
-        if (!this.lastParams) {
-            this.lastParams = _.clone(queries);
-        } else if (!_.isEqual(this.lastParams, queries)) {
+        if (!this.lastParams || !_.isEqual(this.lastParams, queries)) {
             this.lastParams = _.clone(queries);
         }
 
