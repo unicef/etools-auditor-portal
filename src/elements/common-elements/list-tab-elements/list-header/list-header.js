@@ -13,7 +13,7 @@ Polymer({
     observers: [
         '_setRightPadding(data.*)'
     ],
-    _setRightPadding() {
+    _setRightPadding: function() {
         if (!this.data) { return; }
         let rightPadding = 0;
         let padding;
