@@ -16,7 +16,7 @@
 
         <add-new-engagement new-engagement-data="{{newEngagementData}}" error-object="{{errorObject}}"></add-new-engagement>
 
-        <pages-header-element hide-print-button title="Add New Engagement"></pages-header-element>
+        <pages-header-element hide-print-button title="Add New Engagement" engagement="[[engagement]]"></pages-header-element>
 
         <div class="tab-selector">
             <paper-tabs attr-for-selected="name" noink="" bottom-item="" role="tablist" tabindex="0" selected="{{routeData.tab}}">
@@ -48,7 +48,7 @@
                         <file-attachments-tab title="Attachments"
                                               id="engagement_attachments"
                                               main-property="engagement_attachments"
-                                              error-object="{{errorObject.engagement_attachments}}"
+                                              error-object="{{errorObject}}"
                                               data-items="[[engagement.engagement_attachments]]"
                                               file-types="[[fileTypes]]"
                                               readonly$="[[_attachmentsReadonly()]]"

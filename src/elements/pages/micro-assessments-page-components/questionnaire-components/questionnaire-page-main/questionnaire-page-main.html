@@ -1,6 +1,7 @@
 <!--import [polymer, lodash, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea]-->
 
-<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element, textarea-max-rows-behavior]-->
+<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element,
+            textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="questionnaire-page-main">
     <template>
@@ -78,7 +79,7 @@
                       first-run="[[firstRun]]"
                       completed="{{_checkCompleted(item)}}"
                       disabled="{{_checkDisabled(index, item)}}"
-                      edit-mode="[[_allowEdit(basePermissionPath)]]"></risk-tab>
+                      edit-mode="[[!isReadOnly('questionnaire', basePermissionPath)]]"></risk-tab>
         </template>
 
 
@@ -101,7 +102,7 @@
                                     readonly="[[requestInProcess]]"
                                     disabled="[[requestInProcess]]"
                                     required hide-search
-                                    value="{{_setRiskValue(editedItem.value, riskOptions)}}"
+                                    value="{{_setRiskValue(editedItem.risk.value, riskOptions)}}"
                                     error-message="This field is required"
                                     invalid="{{riskAssessmentInvalid}}"
                                     on-focus="_resetFieldError"
@@ -118,7 +119,7 @@
                                             id="riskAssessmentComments"
                                             class="disabled-as-readonly validate-input"
                                             max-rows="4"
-                                            value="{{editedItem.extra.comments}}"
+                                            value="{{editedItem.risk.extra.comments}}"
                                             placeholder="Enter Comments"
                                             on-focus="_resetFieldError"
                                             error-message="This field is required"

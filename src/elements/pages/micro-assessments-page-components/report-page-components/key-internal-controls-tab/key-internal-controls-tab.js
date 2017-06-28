@@ -2,12 +2,15 @@
 
 Polymer({
     is: 'key-internal-controls-tab',
+
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.ErrorHandlerBehavior,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.TextareaMaxRowsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         columns: {
             type: Array,
@@ -20,7 +23,7 @@ Polymer({
                     }, {
                         'size': 30,
                         'label': 'Risk Assessment',
-                        'path': 'value.label'
+                        'path': 'risk.value.label'
                     }, {
                         'size': '45px',
                         'label': 'Edit',
@@ -36,7 +39,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Brief Justification for Rating (main internal control gaps)',
-                    'path': 'extra.comments',
+                    'path': 'risk.extra.comments',
                     'size': 100
                 }];
             }
@@ -44,6 +47,10 @@ Polymer({
         dialogOpened: {
             type: Boolean,
             notify: true
+        },
+        errorBaseText: {
+            type: String,
+            value: 'Test Subject Areas: '
         }
     },
 
@@ -57,25 +64,15 @@ Polymer({
         'changePermission(basePermissionPath)',
         'updateStyles(requestInProcess)',
         '_dataChanged(subjectAreas)',
-        '_errorHandler(errorObject.test_subject_areas)'
+        '_complexErrorHandler(errorObject.test_subject_areas)'
     ],
 
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
     },
 
-    _dataChanged: function() {
-        if (this.dialogOpened) {
-            this.requestInProcess = false;
-            this.dialogOpened = false;
-        }
-    },
-
     changePermission: function(basePermissionPath) {
-        if (!basePermissionPath) { return; }
-
-        let readOnly = this.isReadonly(`${this.basePermissionPath}.test_subject_areas`);
-        if (readOnly === null) { readOnly = true; }
+        let readOnly = this.isReadOnly('test_subject_areas', basePermissionPath);
 
         if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
             this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
@@ -99,9 +96,11 @@ Polymer({
 
     getCurrentData: function() {
         if (!this.dialogOpened) { return null; }
-        let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'value', 'extra']);
-        blueprint.value = blueprint.value.value;
-        blueprint.extra = JSON.stringify({comments: blueprint.extra.comments || ''});
+        let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'risk']);
+        blueprint.risk = {
+            value: blueprint.risk.value.value,
+            extra: JSON.stringify({comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''})
+        };
 
         return [{
             id: this.editedArea.id,
@@ -116,8 +115,11 @@ Polymer({
         let errors = {
             children: [{
                 blueprints: [{
-                    value: !valueValid ? 'Please, select Risk Assessment' : false,
-                    extra: !extraValid ? 'Please, enter Brief Justification' : false
+                    risk: {
+                        value: !valueValid ? 'Please, select Risk Assessment' : false,
+                        extra: !extraValid ? 'Please, enter Brief Justification' : false
+                    }
+
                 }]
             }]
         };
@@ -144,8 +146,7 @@ Polymer({
     openEditDialog: function(event) {
         let index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
         if ((!index && index !== 0) || !~index) {
-            console.error('Can not find data');
-            return;
+            throw 'Can not find data';
         }
 
         let data = this.subjectAreas.children[index];
@@ -153,10 +154,6 @@ Polymer({
         this.originalEditedObj = _.cloneDeep(data);
         this.editedAreaIndex = index;
         this.dialogOpened = true;
-    },
-
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
     },
 
     _saveEditedArea: function() {
@@ -190,24 +187,9 @@ Polymer({
         });
 
     },
+
     _showRisk: function(risk) {
-        return risk && risk.type === 'default';
-    },
-    _errorHandler: function(errorData) {
-        this.requestInProcess = false;
-        if (!errorData) { return; }
-
-        let data = this.refactorErrorObject(errorData);
-        let nonField = this.checkNonField(errorData);
-
-        if (!this.dialogOpened && _.isString(data)) {
-            this.fire('toast', {text: `Test Subject Areas: ${data}`});
-        } else {
-            this.set('errors', data);
-        }
-
-        if (nonField) {
-            this.fire('toast', {text: `Test Subject Areas: ${nonField}`});
-        }
+        return !!(risk && risk.type === 'default');
     }
+
 });

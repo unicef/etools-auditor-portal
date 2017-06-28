@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [subject-area-element, lodash]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <subject-area-element id="element"></subject-area-element>
+    </template>
+</test-fixture>
+
+
+<script>
+    describe('<subject-area-element>', function () {
+        var myEl;
+
+        beforeEach(function () {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method _setData', function() {
+            it('returns if there is no data argument', function() {
+                myEl._setData();
+                assert.isUndefined(myEl.areaData);
+            });
+
+            it('sets copy of blueprints[0] to areaData, add risk property if it is not defined', function() {
+                var data = {
+                    blueprints: [{id: 666}]
+                };
+                myEl._setData(data);
+
+                assert.isTrue(_.isEqual(myEl.areaData, {id: 666, risk: {extra: {}}}));
+            });
+
+            it('sets copy of data to originalData if data.changed is false', function() {
+               assert.isUndefined(myEl.originalData);
+                var data = {
+                    blueprints: [{id: 666}],
+                    changed: true
+                };
+                myEl._setData(data);
+                assert.isUndefined(myEl.originalData);
+
+                data.changed = false;
+                myEl._setData(data);
+                assert.isTrue(_.isEqual(myEl.originalData, data));
+            });
+        });
+
+        describe('method getRiskData', function() {
+            it('returns null if there is no area.blueprints[0].risk or risk.value', function() {
+                myEl.area = {blueprints:[{risk: {value: null}}]};
+                assert.isNull(myEl.getRiskData());
+            });
+
+            it('returns null if value and extra are not changed', function() {
+                myEl.area = {blueprints:[{risk: {value: {value: 4}, extra: '{"comments":""}'}}]};
+                myEl.originalData = {
+                    blueprints:[{risk: {value: 4, extra: '{"comments":""}'}}]
+                };
+                assert.isNull(myEl.getRiskData());
+            });
+
+            it('returns prepared data', function() {
+                myEl.area = {blueprints:[{risk: {value: 4, extra: '{"comments":""}'}}], id: 666};
+                myEl.originalData = {
+                    blueprints:[{risk: {value: 5, extra: ''}}]
+                };
+                assert.isObject(myEl.getRiskData());
+                assert.isDefined(myEl.getRiskData().id);
+                assert.isDefined(myEl.getRiskData().blueprints);
+            });
+        });
+
+        it('method openEditDialog calls fire method', function() {
+            myEl.area = {blueprints:[{risk: {value: 5, extra: ''}}]};
+
+            sinon.spy(myEl, 'fire');
+            myEl.openEditDialog();
+
+            assert.isTrue(myEl.fire.called);
+            assert.equal(myEl.fire.args[0][0], 'open-edit-dialog');
+            assert.isTrue(_.isEqual(myEl.fire.args[0][1], {data: myEl.area}));
+
+            myEl.fire.restore();
+        });
+
+        it('method validate checks value and extra properties existence', function() {
+            myEl.area = {blueprints:[{risk: {value: null, extra: '{"comments":""}'}}], id: 666};
+            assert.isFalse(myEl.validate());
+
+            myEl.area = {blueprints:[{risk: {value: 2, extra: null}}], id: 666};
+            assert.isFalse(myEl.validate());
+
+            myEl.area = {blueprints:[{risk: {value: 2, extra: '{"comments":""}'}}], id: 666};
+            assert.isTrue(myEl.validate());
+        });
+    });
+</script>
+
+</body>
+</html>

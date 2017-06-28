@@ -27,6 +27,8 @@
         <template is="dom-if" if="{{engagement.id}}" restamp>
             <pages-header-element show-export-button
                                   hide-print-button
+                                  export-link="[[_setExportLink(engagement)]]"
+                                  engagement="[[engagement]]"
                                   title$="[[engagement.partner.name]] - Micro Assessment"></pages-header-element>
             <div class="tab-selector">
                 <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
@@ -112,7 +114,7 @@
                             <file-attachments-tab title="Related Documents"
                                                   id="engagement_attachments"
                                                   main-property="engagement_attachments"
-                                                  error-object="{{errorObject.engagement_attachments}}"
+                                                  error-object="{{errorObject}}"
                                                   allow-download allow-edit file-type-required multiple
                                                   data-items="[[engagement.engagement_attachments]]"
                                                   file-types="[[engagementFileTypes]]"
@@ -123,7 +125,7 @@
                                 <file-attachments-tab title="Report Attachments"
                                                       id="report_attachments"
                                                       main-property="report_attachments"
-                                                      error-object="{{errorObject.report_attachments}}"
+                                                      error-object="{{errorObject}}"
                                                       allow-download allow-edit file-type-required multiple
                                                       data-items="[[engagement.report_attachments]]"
                                                       file-types="[[reportFileTypes]]"

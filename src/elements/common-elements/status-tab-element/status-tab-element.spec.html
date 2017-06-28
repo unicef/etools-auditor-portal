@@ -119,6 +119,72 @@
                 done();
             });
         });
+
+        describe('method _getStatusState', function() {
+            it('returns if engagementData or engagementData.status are undefined', function() {
+                sinon.stub(myEl, '_showActionButtons');
+                sinon.spy(myEl, '_getStatusNumber');
+                myEl.engagementData = undefined;
+
+                myEl._getStatusState();
+                assert.isFalse(myEl._getStatusNumber.called);
+
+                myEl.engagementData = {status: undefined};
+                myEl._getStatusState();
+                assert.isFalse(myEl._getStatusNumber.called);
+
+                myEl._getStatusNumber.restore();
+                myEl._showActionButtons.restore();
+            });
+
+            it('calls _classByStatus method if statusNumber is 1', function() {
+                myEl.engagementData = {status: 'partner_contacted'};
+                sinon.stub(myEl, '_classByStatus');
+
+                myEl._getStatusState(1);
+                assert.isTrue(myEl._classByStatus.called);
+
+                myEl._classByStatus.restore();
+            });
+
+            it('calls _classByStatus method if statusNumber not 1', function() {
+                myEl.engagementData = {status: 'partner_contacted'};
+                sinon.stub(myEl, '_classByDate');
+
+                myEl._getStatusState(45);
+                assert.isTrue(myEl._classByDate.called);
+
+                myEl._classByDate.restore();
+            });
+        });
+
+        it('method _refactorStatusNumber increase number if current status is canceled and status number is not completed', function() {
+            myEl.engagementData = {
+                date_of_field_visit: '2017-05-05',
+                date_of_draft_report_to_ip: null
+            };
+
+            var status = 'canceled',
+                    number = 2;
+
+            assert.equal(myEl._refactorStatusNumber(number, status), number);
+
+            number++;
+            assert.equal(myEl._refactorStatusNumber(number, status), ++number);
+
+            status = 'test';
+            assert.equal(myEl._refactorStatusNumber(number, status), number);
+        });
+
+        it('method _showActionButtons returns true if one of actionAllowed calls returns true', function() {
+            sinon.stub(myEl, 'actionAllowed').returns(true);
+            assert.isTrue(myEl._showActionButtons({}));
+
+            myEl.actionAllowed.returns(false);
+            assert.isFalse(myEl._showActionButtons({}));
+
+            myEl.actionAllowed.restore();
+        });
     });
 </script>
 

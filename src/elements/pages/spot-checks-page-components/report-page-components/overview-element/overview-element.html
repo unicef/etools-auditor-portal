@@ -1,7 +1,7 @@
-<!--import [polymer, etools-content-panel, paper-input, etools-datepicker/etools-datepicker-button,
+<!--import [polymer, etools-content-panel, paper-input, etools-datepicker,
             etools-currency-amount-input]-->
 
-<!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, permission-controller]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, common-methods-behavior]-->
 
 <dom-module id="overview-element">
     <template>
@@ -24,13 +24,14 @@
                                  on-down="openDatePicker"
                                  data-selector="dateFaceStartSelector"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="dateFaceStartSelector"
-                                                  date="[[prepareDate(data.start_date)]]"
-                                                  pretty-date="{{data.start_date}}"
-                                                  format="YYYY-MM-DD"
-                                                  no-init show-clear-btn>
-                        </etools-datepicker-button>
+                        <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
+                                           id="dateFaceStartSelector"
+                                           date="[[prepareDate(data.start_date)]]"
+                                           pretty-date="{{data.start_date}}"
+                                           format="YYYY-MM-DD"
+                                           no-init show-clear-btn>
+                        </etools-datepicker>
                     </paper-input>
                 </div>
                 <div class="input-container">
@@ -42,13 +43,14 @@
                                  on-down="openDatePicker"
                                  data-selector="dateFaceEndSelector"
                                  placeholder="&#8212;">
-                        <etools-datepicker-button prefix
-                                                  id="dateFaceEndSelector"
-                                                  date="[[prepareDate(data.end_date)]]"
-                                                  pretty-date="{{data.end_date}}"
-                                                  format="YYYY-MM-DD"
-                                                  no-init show-clear-btn>
-                        </etools-datepicker-button>
+                        <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
+                                           id="dateFaceEndSelector"
+                                           date="[[prepareDate(data.end_date)]]"
+                                           pretty-date="{{data.end_date}}"
+                                           format="YYYY-MM-DD"
+                                           no-init show-clear-btn>
+                        </etools-datepicker>
                     </paper-input>
                 </div>
                 <div class="input-container">
@@ -75,7 +77,7 @@
                             error-message="{{errors.total_amount_tested}}"
                             value="{{data.total_amount_tested}}"
                             on-focus="_resetFieldError"
-                            placeholder="&#8212;"></etools-currency-amount-input>
+                            placeholder="Enter Total amount tested"></etools-currency-amount-input>
                 </div>
                 <div class="input-container">
                     <etools-currency-amount-input
@@ -88,20 +90,7 @@
                             error-message="{{errors.total_amount_of_ineligible_expenditure}}"
                             value="{{data.total_amount_of_ineligible_expenditure}}"
                             on-focus="_resetFieldError"
-                            placeholder="&#8212;"></etools-currency-amount-input>
-                </div>
-                <div class="input-container">
-                    <etools-currency-amount-input
-                            label="Amount of ineligible expenditures"
-                            currency="$"
-                            class$="disabled-as-readonly [[_setRequired('amount_of_ineligible_expenditures', basePermissionPath)]]"
-                            disabled$="[[isReadOnly('amount_of_ineligible_expenditures', basePermissionPath)]]"
-                            required$="[[_setRequired('amount_of_ineligible_expenditures', basePermissionPath)]]"
-                            invalid="{{_checkInvalid(errors.amount_of_ineligible_expenditures)}}"
-                            error-message="{{errors.amount_of_ineligible_expenditures}}"
-                            value="{{data.amount_of_ineligible_expenditures}}"
-                            on-focus="_resetFieldError"
-                            placeholder="&#8212;"></etools-currency-amount-input>
+                            placeholder="Enter Total amount of ineligible expenditure"></etools-currency-amount-input>
                 </div>
             </div>
         </etools-content-panel>

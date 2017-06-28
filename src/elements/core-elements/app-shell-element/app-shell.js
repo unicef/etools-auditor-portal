@@ -54,29 +54,20 @@ Polymer({
         'user-profile-loaded': '_initialDataLoaded',
         'static-data-loaded': '_initialDataLoaded',
     },
-    attached: function() {
+    ready: function() {
         this.baseUrl = this.basePath;
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
+    },
+    attached: function() {
+        if (this.initLoadingComplete && this.route.path === '/ap/') {
+            this._configPath();
+        }
         this.$.drawer.$.scrim.remove();
     },
     queueToast: function(e, detail) {
-        if (!this._toast) {
-            this._toast = document.createElement('paper-toast');
-            this.listen(this._toast, 'iron-overlay-closed', 'dequeueToast');
-            Polymer.dom(this.$.layout).appendChild(this._toast);
-            Polymer.dom.flush();
-        }
-        if (!this._toastQueue.length) {
-            this.push('_toastQueue', detail);
-            this._toast.show(detail);
-        } else {
-            this.push('_toastQueue', detail);
-        }
-    },
-    dequeueToast: function() {
-        this.shift('_toastQueue');
-        if (this._toastQueue.length) {
-            this._toast.show(this._toastQueue[0]);
+        let notificationList = Polymer.dom(this.root).querySelector('multi-notification-list');
+        if (notificationList && detail) {
+            notificationList.fire('notification-push', detail);
         }
     },
     _routePageChanged: function() {
@@ -96,6 +87,7 @@ Polymer({
         this.importHref(resolvedPageUrl, () => {
             if (!this.initLoadingComplete) { this.initLoadingComplete = true; }
             this.fire('global-loading', {type: 'initialisation'});
+            if (this.route.path === '/ap/') { this._configPath(); }
         }, this._pageNotFound, true);
     },
     _pageNotFound: function(event) {

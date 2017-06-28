@@ -1,7 +1,8 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, iron-icons,
             etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
 
-<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data, error-handler-behavior]-->
+<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data,
+            common-methods-behavior]-->
 
 <dom-module id="engagement-info-details">
     <template>
@@ -16,7 +17,7 @@
                 position: absolute;
                 right: -32px;
                 top: 25px;
-                left: initial;
+                left: auto;
             }
 
             .po-loading:not([active]) {
@@ -65,7 +66,7 @@
                                  class="without-border"
                                  disabled readonly
                                  id="auditorInput"
-                                 value="[[data.agreement.audit_organization.name]]"
+                                 value="[[data.agreement.auditor_firm.name]]"
                                  placeholder="&#8212;">
                     </paper-input>
                 </div>
@@ -90,6 +91,7 @@
                                  on-focus="_resetFieldError"
                                  placeholder="Select Contacted Date">
                         <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
                                            id="contactedDate"
                                            date="[[prepareDate(data.partner_contacted_at)]]"
                                            format="YYYY-MM-DD"
@@ -138,6 +140,7 @@
                                      data-selector="periodStartDate"
                                      placeholder="Select Start Date">
                             <etools-datepicker-button prefix
+                                                      modal="[[datepickerModal]]"
                                                       id="periodStartDate"
                                                       date="[[prepareDate(data.start_date)]]"
                                                       format="YYYY-MM-DD"
@@ -167,6 +170,7 @@
                                      data-selector="periodEndDate"
                                      placeholder="Select End Date">
                             <etools-datepicker-button prefix
+                                                      modal="[[datepickerModal]]"
                                                       id="periodEndDate"
                                                       date="[[prepareDate(data.end_date)]]"
                                                       format="YYYY-MM-DD"

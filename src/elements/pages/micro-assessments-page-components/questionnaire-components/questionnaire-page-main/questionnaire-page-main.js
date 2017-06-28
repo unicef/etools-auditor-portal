@@ -6,7 +6,8 @@ Polymer({
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.TextareaMaxRowsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
 
     properties: {
@@ -95,7 +96,7 @@ Polymer({
         let completed = true;
 
         _.forEach(item.blueprints, blueprint => {
-            if (!blueprint.value && blueprint.value !== 0) {
+            if (!blueprint.risk || (!blueprint.risk.value && blueprint.risk.value !== 0)) {
                 completed = false;
                 return false;
             }
@@ -110,18 +111,11 @@ Polymer({
         });
         return completed;
     },
+
     _checkDisabled: function(index) {
         if (!this.questionnaire.children || index === 0) { return false; }
         let previous = this.questionnaire.children[index - 1];
         return !this._checkCompleted(previous);
-    },
-    _allowEdit: function(base) {
-        if (!base) { return false; }
-
-        let readOnly = this.isReadonly(`${base}.questionnaire`);
-        if (readOnly === null) { readOnly = true; }
-
-        return !readOnly;
     },
 
     _openEditDialog: function(event, detail) {
@@ -131,7 +125,7 @@ Polymer({
         this.tabId = detail.tabId;
         this.categoryId = detail.childId;
         this.editedItem = item;
-        this.originalComments = item.extra && item.extra.comments;
+        this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
         this.$.questionHeader.innerHTML = item.header;
         this.dialogOpened = true;
     },
@@ -142,10 +136,6 @@ Polymer({
             return options[value];
         }
         return value;
-    },
-
-    _resetFieldError: function(event) {
-        event.target.invalid = false;
     },
 
     _riskValueChanged: function(event, detail) {
@@ -159,9 +149,9 @@ Polymer({
     _addItemFromDialog: function() {
         if (!this.dialogOpened || !this.validate()) { return; }
 
-        if (this.originalComments === this.editedItem.extra.comments &&
+        if (this.originalComments === this.editedItem.risk.extra.comments &&
             this.$.riskAssessmentInput.value &&
-            this.$.riskAssessmentInput.value.value === this.editedItem.value) {
+            this.$.riskAssessmentInput.value.value === this.editedItem.risk.value) {
 
             this.dialogOpened = false;
             this.resetDialog();
@@ -196,10 +186,13 @@ Polymer({
     },
 
     getDataFromDialog: function() {
+        let blueprintRisk = {
+                value: this.$.riskAssessmentInput.value.value,
+                extra: JSON.stringify((this.editedItem.risk && this.editedItem.risk.extra) || '')
+            };
         let data = {
             id: this.editedItem.id,
-            value: this.$.riskAssessmentInput.value.value,
-            extra: JSON.stringify(this.editedItem.extra || '')
+            risk: blueprintRisk
         };
 
         let risk;
@@ -229,13 +222,15 @@ Polymer({
     getElements: function(className) {
         return Polymer.dom(this.root).querySelectorAll(`.${className}`);
     },
+
     getScore: function(score) {
-        return score || 0;
+        return +score || 0;
     },
 
     getRating: function(rating) {
         return this.riskRatingOptions[rating] || rating;
     },
+
     resetDialog: function(opened) {
         if (opened) { return; }
         this.$.riskAssessmentInput.invalid = false;
@@ -261,11 +256,13 @@ Polymer({
             this.fire('toast', {text: `Qustionnaire: ${nonField}`});
         }
     },
+
     requestsCount: function(number) {
-        if (!number && isNaN(number)) { return this.requests; }
+        if (!number || isNaN(+number)) { return this.requests; }
         let count = number > 0 ? this.requests + 1 : this.requests - 1;
         if (count < 0) { count = 0; }
         this._setRequests(count);
         return this.requests;
     }
+
 });

@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
 <!--import [list-header, list-element, paper-toast, lodash]-->
-<!--import [tab-inputs-styles, module-styles, shared-styles, dialog-element, table-elements-behavior, static-data-behavior]-->
+<!--import [tab-inputs-styles, module-styles, shared-styles, dialog-element, table-elements-behavior, static-data-behavior, common-methods-behavior]-->
 
 <dom-module id="findings-summary">
     <template>
@@ -155,7 +155,9 @@
                                     class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     disabled
-                                    readonly>
+                                    readonly
+                                    invalid="{{errors.number_of_financial_findings}}"
+                                    error-message="{{errors.number_of_financial_findings}}">
                             </paper-input>
                         </div>
                     </div>

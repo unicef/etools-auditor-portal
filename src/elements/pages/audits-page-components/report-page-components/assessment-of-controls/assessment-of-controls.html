@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, paper-input/paper-textarea]-->
-<!--import [tab-inputs-styles, module-styles, table-elements-behavior, textarea-max-rows-behavior]-->
+<!--import [tab-inputs-styles, module-styles, table-elements-behavior, textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="assessment-of-controls">
     <template>
@@ -27,7 +27,7 @@
                             on-focus="_resetFieldError"
                             class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
                             readonly$="[[isReadOnly('recommendation', basePermissionPath)]]"
-                            disabled$="[[isDisabled('recommendation', requestInProcess, basePermissionPath)]]"
+                            disabled$="[[isReadOnly('recommendation', basePermissionPath, requestInProcess)]]"
                             required$="[[_setRequired('recommendation', basePermissionPath)]]"
                             invalid$="{{errors.recommendation}}"
                             error-message="{{errors.recommendation}}">
@@ -45,7 +45,7 @@
                             on-focus="_resetFieldError"
                             class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
                             readonly$="[[isReadOnly('audit_observation', basePermissionPath)]]"
-                            disabled$="[[isDisabled('audit_observation', requestInProcess, basePermissionPath)]]"
+                            disabled$="[[isReadOnly('audit_observation', basePermissionPath, requestInProcess)]]"
                             required$="[[_setRequired('audit_observation', basePermissionPath)]]"
                             invalid$="{{errors.audit_observation}}"
                             error-message="{{errors.audit_observation}}">
@@ -63,7 +63,7 @@
                             on-focus="_resetFieldError"
                             class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
                             readonly$="[[isReadOnly('ip_response', basePermissionPath)]]"
-                            disabled$="[[isDisabled('ip_response', requestInProcess, basePermissionPath)]]"
+                            disabled$="[[isReadOnly('ip_response', basePermissionPath, requestInProcess)]]"
                             required$="[[_setRequired('ip_response', basePermissionPath)]]"
                             invalid$="{{errors.ip_response}}"
                             error-message="{{errors.ip_response}}">

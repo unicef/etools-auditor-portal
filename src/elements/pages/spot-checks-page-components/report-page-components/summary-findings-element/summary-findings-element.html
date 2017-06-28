@@ -1,8 +1,8 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons,
-            etools-searchable-multiselection-menu, etools-datepicker/etools-datepicker-button, etools-content-panel]-->
+            etools-searchable-multiselection-menu, etools-datepicker, etools-content-panel]-->
 
 <!--import [tab-inputs-styles, permission-controller, date-behavior, list-header, list-element, dialog-element, lodash,
-            table-elements-behavior, static-data-behavior, textarea-max-rows-behavior]-->
+            table-elements-behavior, static-data-behavior, textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="summary-findings-element">
     <template>
@@ -126,13 +126,14 @@
                                          readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          placeholder="&#8212;">
-                                <etools-datepicker-button prefix
-                                                          id="deadlineActionSelector"
-                                                          date="[[prepareDate(editedItem.deadline_of_action)]]"
-                                                          format="YYYY-MM-DD"
-                                                          pretty-date="{{editedItem.deadline_of_action}}"
-                                                          no-init show-clear-btn>
-                                </etools-datepicker-button>
+                                <etools-datepicker prefix
+                                                   modal="[[datepickerModal]]"
+                                                   id="deadlineActionSelector"
+                                                   date="[[prepareDate(editedItem.deadline_of_action)]]"
+                                                   format="YYYY-MM-DD"
+                                                   pretty-date="{{editedItem.deadline_of_action}}"
+                                                   no-init show-clear-btn>
+                                </etools-datepicker>
                             </paper-input>
                         </div>
                     </div>

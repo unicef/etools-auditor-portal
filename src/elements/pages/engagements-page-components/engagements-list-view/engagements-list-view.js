@@ -4,7 +4,7 @@
     let filters = [
         {
             name: 'auditor',
-            query: 'auditor',
+            query: 'agreement__auditor_firm',
             optionValue: 'id',
             optionLabel: 'name',
             selection: []
@@ -80,12 +80,50 @@
         }
     ];
 
+    let listHeadings = [{
+        'size': 15,
+        'label': 'Purchase Order #',
+        'name': 'agreement__order_number',
+        'link': '*engagement_type*/*data_id*/overview',
+        'ordered': false,
+        'path': 'agreement.order_number'
+    }, {
+        'size': 20,
+        'label': 'Partner Name',
+        'name': 'partner__name',
+        'ordered': false,
+        'path': 'partner.name'
+    }, {
+        'size': 20,
+        'label': 'Auditor',
+        'name': 'agreement__auditor_firm__name',
+        'ordered': false,
+        'path': 'agreement.auditor_firm.name'
+    }, {
+        'size': 15,
+        'label': 'Engagement Type',
+        'name': 'type',
+        'ordered': false
+    }, {
+        'size': 30,
+        'label': 'Status',
+        'name': 'status',
+        'ordered': false,
+        'additional': {
+            'type': 'date',
+            'path': 'status_date'
+        }
+    }];
+
     Polymer({
         is: 'engagements-list-view',
+
         behaviors: [
             APBehaviors.PermissionController,
-            APBehaviors.StaticDataController
+            APBehaviors.StaticDataController,
+            etoolsAppConfig.globals
         ],
+
         properties: {
             queryParams: {
                 type: Object,
@@ -93,46 +131,11 @@
             },
             listHeadings: {
                 type: Array,
-                value: function() {
-                    return [{
-                        'size': 15,
-                        'label': 'Purchase Order #',
-                        'name': 'agreement__order_number',
-                        'link': '*engagement_type*/*data_id*/overview',
-                        'ordered': false,
-                        'path': 'agreement.order_number'
-                    }, {
-                        'size': 20,
-                        'label': 'Partner Name',
-                        'name': 'partner__name',
-                        'ordered': false,
-                        'path': 'partner.name'
-                    }, {
-                        'size': 20,
-                        'label': 'Auditor',
-                        'name': 'agreement__audit_organization__name',
-                        'ordered': false,
-                        'path': 'agreement.audit_organization.name'
-                    }, {
-                        'size': 15,
-                        'label': 'Engagement Type',
-                        'name': 'type',
-                        'ordered': false
-                    }, {
-                        'size': 30,
-                        'label': 'Status',
-                        'name': 'status',
-                        'ordered': false,
-                        'additional': {
-                            'type': 'date',
-                            'path': 'status_date'
-                        }
-                    }];
-                }
+                value: []
             },
             filters: {
                 type: Array,
-                value: filters
+                value: []
             },
             engagementsList: {
                 type: Array,
@@ -147,27 +150,65 @@
                 value: false
             }
         },
-        listeners: {},
-        observers: [
-            'setFiltersSelections(engagementsList.*)'
-        ],
+
+        ready: function() {
+            this.setupFiltersAndHeadings();
+            this.setFiltersSelections();
+        },
+
         _showAddButton: function() {
             return this.actionAllowed('new_engagement', 'createEngagement');
         },
-        _getFilterIndex: function(query) {
-            return this.$.filters._getFilterIndex(query);
+
+        setupFiltersAndHeadings: function() {
+            let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
+            let auditorHeadingIndex = listHeadings.findIndex((heading) => {
+                return heading.name === 'agreement__auditor_firm__name';
+            });
+
+            if (false) { //TODO: check that user is auditor
+                filters.splice(auditorsFilterIndex, 1);
+                listHeadings.splice(auditorHeadingIndex, 1);
+                listHeadings.forEach((heading) => {
+                    heading.size += 5;
+                });
+            }
+
+            //TODO: remove let and if below
+            let partners = this.getData('partners');
+            if (!partners || !partners.length) {
+                let partnersFilterIndex = this._getFilterIndex('partner');
+                filters.splice(partnersFilterIndex, 1);
+            }
+
+            this.set('listHeadings', listHeadings);
+            this.set('filters', filters);
         },
+
+        _getFilterIndex: function(query) {
+            if (!filters) { return -1; }
+
+            return filters.findIndex((filter) => {
+                return filter.query === query;
+            });
+        },
+
         setFiltersSelections: function() {
             let partnersFilterIndex = this._getFilterIndex('partner');
-            let auditorsFilterIndex = this._getFilterIndex('auditor');
+            let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
 
             if (partnersFilterIndex !== -1) {
-                this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners'));
+                this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners') || []);
             }
 
             if (auditorsFilterIndex !== -1) {
-                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors'));
+                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors') || []);
             }
+        },
+
+        _setExportLink: function() {
+            return this.getEndpoint('engagementsList').url + '?format=csv&page_size=all';
         }
+
     });
 })();

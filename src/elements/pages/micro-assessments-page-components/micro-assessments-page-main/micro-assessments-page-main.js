@@ -2,7 +2,9 @@
 
 Polymer({
     is: 'micro-assessments-page-main',
+
     behaviors: [APBehaviors.EngagementBehavior],
+
     properties: {
         engagement: {
             type: Object,
@@ -48,8 +50,8 @@ Polymer({
 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo();
-        let questionnaireValid = Polymer.dom(this.root).querySelector('#questionnaire').validateComplited();
-        let reportValid = Polymer.dom(this.root).querySelector('#report').validate();
+        let questionnaireValid = this.getElement('#questionnaire').validateComplited();
+        let reportValid = this.getElement('#report').validate();
 
         if (!basicInfoValid) { return false; }
         if (!reportValid) {
@@ -66,7 +68,8 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
-        let questionnaireTab = Polymer.dom(this.root).querySelector('#questionnaire');
+        data = data || {};
+        let questionnaireTab = this.getElement('#questionnaire');
         let questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
         if (questionnaire) {
             data.questionnaire = questionnaire;
@@ -74,7 +77,7 @@ Polymer({
             delete data.questionnaire;
         }
 
-        let reportTab = Polymer.dom(this.root).querySelector('#report');
+        let reportTab = this.getElement('#report');
         let subjectAreas = reportTab && reportTab.getRisksData();
         data.test_subject_areas = subjectAreas || {};
         let findingsData = reportTab && reportTab.getFindingsData();
@@ -84,7 +87,7 @@ Polymer({
     },
 
     customBasicValidation: function() {
-        let reportTab = Polymer.dom(this.root).querySelector('#report');
+        let reportTab = this.getElement('#report');
         if (!reportTab) { return true; }
 
         let reportValid = reportTab.validate('forSave');
@@ -96,4 +99,5 @@ Polymer({
         }
         return true;
     }
+
 });

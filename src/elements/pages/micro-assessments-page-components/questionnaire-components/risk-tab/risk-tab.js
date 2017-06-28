@@ -45,6 +45,7 @@ Polymer({
                 return [
                     {
                         'size': 100,
+                        'class': 'pr-45',
                         'label': 'Question',
                         'name': 'header',
                         'html': true
@@ -52,7 +53,7 @@ Polymer({
                         'size': '160px',
                         'label': 'Risk Assessment',
                         'name': 'value',
-                        'property': 'value',
+                        'property': 'risk.value',
                         'custom': true,
                         'doNotHide': true
                     },
@@ -71,7 +72,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Comments',
-                    'path': 'extra.comments',
+                    'path': 'risk.extra.comments',
                     'size': 100
                 }];
             }
@@ -131,9 +132,10 @@ Polymer({
             changedValue = value && value.selectedValues && value.selectedValues.value,
             data;
 
-        if ((!changedValue && changedValue !== 0) || changedValue === item.value) { return; }
+        if (!item.risk) { item.risk = {}; }
+        if ((!changedValue && changedValue !== 0) || changedValue === item.risk.value) { return; }
 
-        item.value = changedValue;
+        item.risk.value = changedValue;
 
         let childId = null;
         if (this.questionnaire.children.length) {
@@ -143,13 +145,13 @@ Polymer({
                 id: this.questionnaire.id,
                 children: [{
                     id: childId,
-                    blueprints: [{value: changedValue, id: item.id}]
+                    blueprints: [{risk: {value: changedValue}, id: item.id}]
                 }]
             };
         } else {
             data = {
                 id: this.questionnaire.id,
-                blueprints: [{value: changedValue, id: item.id}]
+                blueprints: [{risk: {value: changedValue}, id: item.id}]
             };
         }
         this.fire('risk-value-changed', {data: data});
@@ -179,13 +181,15 @@ Polymer({
             if (!childId) { throw 'Can not find category id!'; }
         }
         let data = _.cloneDeep(item);
-        if (data && _.isJSONObj(data.extra)) {
-            data.extra = JSON.parse(data.extra);
+        if (!data.risk) { data.risk = {}; }
+        if (_.isJSONObj(data.risk.extra)) {
+            data.risk.extra = JSON.parse(data.risk.extra);
         } else {
-            data.extra = {comments: (data.extra && data.extra.comments) || ''};
+            data.risk.extra = {comments: (data.risk.extra && data.risk.extra.comments) || ''};
         }
         this.fire('edit-blueprint', {data: data, tabId: this.questionnaire.id, childId: childId});
     },
+
     _setRiskValue: function(value, options) {
         if (!options) { return; }
         if (_.isNumber(value)) {
@@ -193,12 +197,15 @@ Polymer({
         }
         return value;
     },
+
     _getStringValue: function(value, options, defaultValue) {
         if (!options || !_.isNumber(value)) { return defaultValue; }
-        return options[value].label || defaultValue;
+        return options[value] && options[value].label || defaultValue;
     },
+
     _prepareData: function(data) {
-        if (data && _.isJSONObj(data.extra)) { data.extra = JSON.parse(data.extra); }
+        if (data && data.risk && _.isJSONObj(data.risk.extra)) { data.risk.extra = JSON.parse(data.risk.extra); }
         return data;
     }
+
 });

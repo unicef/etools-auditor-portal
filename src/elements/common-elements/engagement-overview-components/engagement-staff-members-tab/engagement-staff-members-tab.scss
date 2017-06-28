@@ -6,7 +6,7 @@
         position: absolute;
         right: -32px;
         top: 25px;
-        left: initial;
+        left: auto;
         &:not([active]) {
             display: none !important;
         }

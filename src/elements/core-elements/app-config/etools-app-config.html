@@ -19,11 +19,6 @@ App global configuration
 
         // app endpoints
         endpoints: {
-            countries: {
-                url: '/ap/data/countries.json',
-                exp: 6 * 60 * 60 * 1000, // 6h
-                cachingKey: 'countries'
-            },
             userProfile: {
                 url: '/users/api/profile/'
             },
@@ -45,7 +40,7 @@ App global configuration
                 template: '/api/v2/partners/<%=id%>/'
             },
             auditOrganisations: {
-                url: '/api/audit/audit-organizations/',
+                url: '/api/audit/audit-firms/',
                 exp: 24 * 60 * 60 * 1000, // 24h
                 cachingKey: 'auditors'
             },
@@ -53,21 +48,16 @@ App global configuration
                 template: '/api/audit/purchase-orders/sync/<%=id%>/'
             },
             staffMembers: {
-                template: '/api/audit/audit-organizations/<%=id%>/staff-members/'
+                template: '/api/audit/audit-firms/<%=id%>/staff-members/'
             },
             userExistence: {
-                template: '/api/audit/audit-organizations/<%=id%>/staff-members/?search=<%=email%>'
+                template: '/api/audit/audit-firms/<%=id%>/staff-members/?search=<%=email%>'
             },
             changeCountry: {
                 url: '/users/api/changecountry/'
             }
         },
         localEndpoints: {
-            countries: {
-                url: '/data/countries.json',
-                exp: 6 * 60 * 60 * 1000, // 6h
-                cachingKey: 'countries'
-            },
             userProfile: {
                 url: '/data/user-profile.json'
             },
@@ -94,10 +84,6 @@ App global configuration
                     endpoint.url = this.baseSite + _.template(endpoint.template)(data);
                 }
                 return _.clone(endpoint);
-            },
-
-            getPermissionsList: function (userType) {
-                return etoolsAppConfig.permissions[`${userType}Permissions`];
             },
 
             resetOldUserData: function() {

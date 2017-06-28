@@ -18,6 +18,7 @@
 
             let paperInputContainer = Polymer.dom(paperTextarea.root).querySelector('paper-input-container');
             let textareaAutogrow = Polymer.dom(paperInputContainer).querySelector('.paper-input-input'); //textarea-autogrow
+            if (!textareaAutogrow) { return; }
             let textareaAutogrowStyles = window.getComputedStyle(textareaAutogrow, null) || {};
             let maxRows = +paperTextarea.getAttribute('max-rows');
 

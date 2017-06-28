@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, query-params-controller, lodash]-->
+<!--import [polymer, etools-ajax, query-params-controller, lodash, etools-app-config]-->
 
 <dom-module id="engagements-list-data">
 
@@ -37,7 +37,7 @@
                 listLength: {
                     type: Number,
                     notify: true
-                },
+                }
             },
 
             observers: [
@@ -76,7 +76,7 @@
             reloadRequired: function () {
                 let lastKeys = _.keys(this.lastState);
                 let requestQueriesKeys = _.keys(this.requestQueries);
-                let filtersKeys = ['auditor', 'partner', 'type', 'status'];
+                let filtersKeys = ['agreement__auditor_firm', 'partner', 'type', 'status'];
                 let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
                 queriesKeys = _.uniq(queriesKeys);

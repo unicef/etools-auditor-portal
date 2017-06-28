@@ -2,10 +2,12 @@
 
 Polymer({
     is: 'financial-findings',
+
     behaviors: [
         APBehaviors.TableElementsBehavior,
         APBehaviors.TextareaMaxRowsBehavior
     ],
+
     properties: {
         dataItems: {
             type: Array,
@@ -93,10 +95,12 @@ Polymer({
             }
         }
     },
+
     listeners: {
         'dialog-confirmed': '_addItemFromDialog',
         'delete-confirmed': 'removeItem',
     },
+
     observers: [
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
@@ -104,6 +108,7 @@ Polymer({
         '_errorHandler(errorObject.financial_finding_set)',
         '_checkNonField(errorObject.financial_finding_set)'
     ],
+
     _updateFindings: function(items) {
         _.each(items, (item) => {
             item.finding_number = ([1e15] + item.id).slice(-4);
@@ -113,6 +118,7 @@ Polymer({
             item.finding_number = ([1e15] + item.id).slice(-4);
         });
     },
+
     _checkNonField: function(error) {
         if (!error) { return; }
 

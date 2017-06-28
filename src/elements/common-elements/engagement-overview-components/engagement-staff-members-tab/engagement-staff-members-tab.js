@@ -4,7 +4,8 @@ Polymer({
     is: 'engagement-staff-members-tab',
 
     behaviors: [
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
     properties: {
         mainProperty: {
@@ -137,12 +138,12 @@ Polymer({
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_handleUpdateError(errorObject.staff_members)',
-        '_organizationChanged(engagement.agreement.audit_organization.id, basePermissionPath)',
-        '_organizationChanged(engagement.agreement.audit_organization.id)',
+        '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
+        '_organizationChanged(engagement.agreement.auditor_firm.id)',
         '_queriesChanged(listSize, listPage, searchQuery)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-        'updateStyles(emailChecking)'
+        'updateStyles(emailChecking, staffsBase)'
     ],
 
     attached: function() {
@@ -193,6 +194,22 @@ Polymer({
             page: listPage,
             search: searchQuery || ''
         });
+    },
+
+    validate: function() {
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-input:not(.email)'),
+            valid = true,
+            emailValid = this.$.emailInput.disabled || this.$.emailInput.validate();
+
+        Array.prototype.forEach.call(elements, (element) => {
+            if (element.required && !element.disabled && !element.validate()) {
+                element.invalid = 'This field is required';
+                element.errorMessage = 'This field is required';
+                valid = false;
+            }
+        });
+
+        return valid && emailValid;
     },
 
     _dataItemsChanged: function(data, staffs) {
@@ -265,8 +282,9 @@ Polymer({
 
         this.manageEngagementStaff(item);
     },
+
     _emailDisabled: function(request, editPopup, emailChecking) {
-        return editPopup || request || emailChecking;
+        return !!(editPopup || request || emailChecking);
     },
 
     _checkEmail: function(event) {
@@ -281,13 +299,13 @@ Polymer({
     },
 
     _showAddButton: function(basePath, agreement, loading) {
-        let orgId = agreement && agreement.audit_organization && agreement.audit_organization.id;
+        let orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
 
         return !!orgId && !loading && this._canBeChanged();
     },
 
     _showPagination: function(dataItems) {
-        return +dataItems && +dataItems > 10;
+        return !!(+dataItems && +dataItems > 10);
     },
 
     _staffLength: function(length, length2, search) {
@@ -329,6 +347,7 @@ Polymer({
             });
         }
     },
+
     removeStaff: function() {
         this.requestInProcess = true;
         this.set('newData', {
@@ -339,6 +358,7 @@ Polymer({
         });
         this.confirmDialogOpened = false;
     },
+
     _staffUpdated: function(event, details) {
         if (!details) { throw 'Detail are not provided!'; }
         if (details.error) {
@@ -375,6 +395,7 @@ Polymer({
             delete this.engagementStaffs[staff.user.email];
         }
     },
+
     _handleUpdateError: function(errorData) {
         let nonField = this.checkNonField(errorData);
         let error =  this.refactorErrorObject(errorData);
@@ -389,6 +410,7 @@ Polymer({
             this.fire('toast', {text: `Staff Members: ${nonField}`});
         }
     },
+
     resetList: function() {
         this.set('dataItems', []);
         this.set('listPage', 1);
@@ -398,6 +420,7 @@ Polymer({
         this.set('datalength', 0);
         this.updateStyles();
     },
+
     getTabData: function() {
         if (!this._canBeChanged()) { return null; }
         let staffs = [];

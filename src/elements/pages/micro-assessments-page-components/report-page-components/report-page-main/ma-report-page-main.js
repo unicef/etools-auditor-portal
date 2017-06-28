@@ -2,6 +2,7 @@
 
 Polymer({
     is: 'ma-report-page-main',
+
     properties: {
         engagement: {
             type: Object,
@@ -11,6 +12,7 @@ Polymer({
             type: Object
         }
     },
+
     validate: function(forSave) {
         let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate(forSave),
             primaryValid = this.$.primaryRisk.validate(forSave),
@@ -18,6 +20,7 @@ Polymer({
 
         return assignTabValid && primaryValid && internalControlsValid;
     },
+
     getRisksData: function() {
         let internalControls = this.$.internalControls,
             primaryRisk = this.$.primaryRisk;
@@ -27,9 +30,11 @@ Polymer({
         if (primaryRiskData) { data.unshift(primaryRiskData); }
         return data.length ? {children: data} : null;
     },
+
     getAssignVisitData: function() {
         return this.$.assignEngagement.getAssignVisitData();
     },
+
     getFindingsData: function() {
         return this.$.controlFindings.getTabData();
     }
