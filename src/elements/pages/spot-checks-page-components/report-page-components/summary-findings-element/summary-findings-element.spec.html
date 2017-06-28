@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [summary-findings-element]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <summary-findings-element></summary-findings-element>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<summary-findings-element>', () => {
+        let myEl;
+
+        beforeEach(() =>{
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method _getLength()', () => {
+            it('return summary findings by priority', () => {
+                let dataItems = [
+                    { priority: 'high' },
+                    { priority: 'high' },
+                    { priority: 'low' }
+                ];
+                myEl.priority = {value: 'high'};
+                let itemsLength = myEl._getLength(dataItems);
+                assert.equal(itemsLength, 2);
+            });
+        });
+
+        describe('method _updateFinding()', () => {
+            it('modify finding number by format 0000 and get category of observation from preloaded data by value', () => {
+                myEl.categoryOfObservation = [
+                    {
+                        name: 'test_name',
+                        value: 'test_value'
+                    }
+                ];
+                myEl.dataItems = [
+                    {
+                        finding_number: 1,
+                        category_of_observation: 'test_value'
+                    }
+                ];
+                myEl._updateFinding(myEl.dataItems, myEl.categoryOfObservation);
+                assert.lengthOf(myEl.dataItems[0].finding_number, 4);
+                assert.isObject(myEl.dataItems[0].category_of_observation)
+            });
+        });
+
+        describe('method _setPriority()', () => {
+            it('set styles and priority for itemModel', () => {
+                myEl.itemModel = {};
+                myEl.priority = { value : 'high' };
+                myEl._setPriority(myEl.itemModel, myEl.priority);
+                let customStyle = myEl.customStyle['--ecp-header-bg'];
+                assert.equal(customStyle, 'var(--module-warning)');
+                assert.equal(myEl.itemModel.priority, 'high');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

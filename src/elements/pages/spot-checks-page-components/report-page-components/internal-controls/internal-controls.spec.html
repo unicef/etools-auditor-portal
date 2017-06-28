@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [internal-controls]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <internal-controls></internal-controls>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<internal-controls>', () => {
+        let myEl;
+
+        beforeEach(() =>{
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method getInternalControlsData()', () => {
+            it('get internal controls data', () => {
+                myEl.originalData = '';
+                myEl.data = 'test';
+                let data = myEl.getInternalControlsData();
+                assert.isNotNull(data);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

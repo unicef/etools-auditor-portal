@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [financial-findings, lodash]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <financial-findings id="element"></financial-findings>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<financial-findings>', () => {
+        let myEl;
+
+        beforeEach(function() {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method _updateFindings()', () => {
+            it('finding number formatted to 0000', () => {
+                myEl.dataItems = [
+                    {
+                        finding_number: 2
+                    },
+                    {
+                        finding_number: 12
+                    },
+                    {
+                        finding_number: 123
+                    },
+                    {
+                        finding_number: 1234
+                    }
+                ];
+                _.forEach(myEl.dataItems, (item) => {
+                    assert.lengthOf(item.finding_number, 4);
+                });
+
+                _.forEach(myEl.originalData, (item) => {
+                    assert.lengthOf(item.finding_number, 4);
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

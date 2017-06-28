@@ -107,8 +107,7 @@ Polymer({
     openEditDialog: function(event) {
         let index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
         if ((!index && index !== 0) || !~index) {
-            console.error('Can not find data');
-            return;
+            throw 'Can not find data';
         }
 
         this.originData = this.subjectAreas.blueprints[index];
@@ -134,7 +133,7 @@ Polymer({
         if (blueprint && _.isObject(blueprint.risk.value)) {
             blueprint.risk.value = blueprint.risk.value.value;
         } else {
-            return;
+            return null;
         }
         return {
             blueprints: [blueprint]
