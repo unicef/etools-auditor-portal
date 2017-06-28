@@ -49,7 +49,7 @@ Polymer({
         }
     },
     _orderChanged: function(newOrder) {
-        if (!newOrder || !this.headings) { return; }
+        if (!newOrder || !(this.headings instanceof Array)) { return false; }
 
         let direction = 'asc';
         let name = newOrder;
@@ -74,7 +74,7 @@ Polymer({
     },
     _computeResultsToShow: function(lengthAmount, size) {
         let page = (this.queryParams.page || 1) - 1;
-        size = +(size || 10);
+        size = +size || 10;
 
         let last = size * page + size;
         if (last > lengthAmount) { last = lengthAmount; }
@@ -83,15 +83,18 @@ Polymer({
         return `${first} - ${last} of ${lengthAmount}`;
     },
     _listDataChanged: function() {
-        var rows = Polymer.dom(this.root).querySelectorAll('.list-element');
+        let rows = Polymer.dom(this.root).querySelectorAll('.list-element');
+
         if (rows && rows.length) {
-            for (var i = 0; i < rows.length; i++) {
+            this.noAnimation = true;
+
+            for (let i = 0; i < rows.length; i++) {
                 if (rows[i].detailsOpened) {
-                    this.noAnimation = true;
                     rows[i]._toggleRowDetails();
-                    this.noAnimation = false;
                 }
             }
+
+            this.noAnimation = false;
         }
     }
 });
