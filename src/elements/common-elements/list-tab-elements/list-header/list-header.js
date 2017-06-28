@@ -13,7 +13,7 @@ Polymer({
     observers: [
         '_setRightPadding(data.*)'
     ],
-    _setRightPadding() {
+    _setRightPadding: function() {
         if (!this.data) { return; }
         let rightPadding = 0;
         let padding;
@@ -30,8 +30,8 @@ Polymer({
     _changeOrder: function(event) {
         if (this.noOrdered) { return; }
 
-        let newOrderName = event.model.item.name;
-        let currentOrderName = this.orderBy;
+        let newOrderName = event && event.model && event.model.item && event.model.item.name;
+        let currentOrderName = this.orderBy || '';
         let direction = '-';
 
         if (currentOrderName.startsWith('-')) {

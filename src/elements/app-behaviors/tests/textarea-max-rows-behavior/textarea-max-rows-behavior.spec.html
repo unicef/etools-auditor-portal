@@ -77,7 +77,20 @@
                 assert.isFalse(myEl.setMaxHeight());
             });
 
+            it('returns false if iron-autogrow-textarea not found', function () {
+                let spy = sinon.spy(window, 'getComputedStyle');
+
+                assert.isFalse(spy.called);
+                assert.isFalse(myEl.setMaxHeight({}));
+                assert.isFalse(spy.called);
+            });
+
             it('returns false if paper-textarea max-rows attribute is not defined', function () {
+                assert.isFalse(myEl.setMaxHeight(paperTextarea));
+            });
+
+            it('returns false if paper-textarea max-rows attribute is less than 2', function () {
+                paperTextarea.setAttribute('max-rows', 1);
                 assert.isFalse(myEl.setMaxHeight(paperTextarea));
             });
 

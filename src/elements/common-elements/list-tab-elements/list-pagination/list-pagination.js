@@ -37,18 +37,18 @@ Polymer({
 
     goToFirst: function() { this.set('pageNumber', '1'); },
     goToLeft: function() {
-        this.set('pageNumber', `${+this.currentPage - 1}`);
+        this.set('pageNumber', `${(+this.currentPage || 1) - 1}`);
     },
     goToRight: function() {
         if (this.currentPage !== this.lastPage) { this.set('pageNumber', `${(+this.currentPage || 1) + 1}`); }
     },
     goToLast: function() { this.set('pageNumber', this.lastPage); },
 
-    _disableButton: function(currentPage, datalength, label) {
-        if (+this.currentPage === 1 && !label || +this.currentPage === +this.lastPage && label || this.pageSize >= datalength) { return true; }
+    _disableButton: function(currentPage, datalength, pageSize) {
+        if ((+this.currentPage === 1 && !pageSize) || (+this.currentPage === +this.lastPage && pageSize) || this.pageSize >= datalength) { return true; }
     },
     _calcLastPage: function(dataLength, size) {
-        return dataLength % size ? Math.floor(dataLength / size + 1) : dataLength / size;
+        return dataLength % size ? Math.ceil(dataLength / size) : dataLength / size;
     },
     _pageChanged: function(pageNumber) {
         this.currentPage = pageNumber || 1;

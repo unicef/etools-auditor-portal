@@ -75,7 +75,7 @@ Polymer({
     _resetHover: function() {
         this.hover = false;
     },
-    _setRightPadding() {
+    _setRightPadding: function() {
         if (!this.headings) { return; }
         let rightPadding = 0;
         let padding;
@@ -89,7 +89,7 @@ Polymer({
 
         this.paddingRight = `${rightPadding}px`;
     },
-    _computeShowCollapse(details, hasCollapse) {
+    _computeShowCollapse: function(details, hasCollapse) {
         return details.length > 0 && hasCollapse;
     },
     _toggleRowDetails: function() {
@@ -100,9 +100,9 @@ Polymer({
 
         let types = Array.prototype.slice.call(arguments, 1) || [];
 
-        return !!types.filter(type => {
+        return !!types.find(type => {
             return !!item[type];
-        }).length;
+        });
     },
     _getValue: function(item, data, bool) {
         let value;
@@ -120,7 +120,7 @@ Polymer({
         } else if (item.name === 'currency') {
             value = this._refactorCurrency(value);
         } else if (item.name === 'percents') {
-            value = (typeof value === 'number' && !isNaN(+value)) ? `${+value} %` : null;
+            value = this._refactorPercents(value);
         }
 
         if (bool) {
@@ -147,6 +147,9 @@ Polymer({
         value = +value || 0;
         return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
     },
+    _refactorPercents: function(value) {
+        return (typeof value === 'number' && !isNaN(value)) ? `${value} %` : null;
+    },
     _getAdditionalValue: function(item) {
         if (!item.additional) { return; }
 
@@ -164,6 +167,7 @@ Polymer({
         if (synced) { return 'Synced from VISION'; }
     },
     _getLink: function(pattern) {
+        if (typeof pattern !== 'string') { return '#'; }
         return pattern
             .replace('*data_id*', this.data.id)
             .replace('*engagement_type*', this._refactorValue('link_type', this.data.type));

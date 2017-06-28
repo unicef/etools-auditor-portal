@@ -17,14 +17,14 @@
             if (!paperTextarea) { return false; }
 
             let paperInputContainer = Polymer.dom(paperTextarea.root).querySelector('paper-input-container');
-            let textareaAutogrow = Polymer.dom(paperInputContainer).querySelector('.paper-input-input'); //textarea-autogrow
-            if (!textareaAutogrow) { return; }
+            let textareaAutogrow = Polymer.dom(paperInputContainer).querySelector('.paper-input-input');
+
+            if (!textareaAutogrow) { return false; }
+
             let textareaAutogrowStyles = window.getComputedStyle(textareaAutogrow, null) || {};
             let maxRows = +paperTextarea.getAttribute('max-rows');
 
-            if (!maxRows || maxRows <=1) {
-                return false;
-            }
+            if (!maxRows || maxRows <= 1) { return false; }
 
             this.async(() => {
                 let lineHeight = textareaAutogrowStyles.lineHeight || '';
