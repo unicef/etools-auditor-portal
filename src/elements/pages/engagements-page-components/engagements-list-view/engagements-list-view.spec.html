@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [engagements-list-view, lodash]-->
+</head>
+<body>
+
+<test-fixture id="engagements-list-view-fixture">
+    <template>
+        <engagements-list-view></engagements-list-view>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<engagements-list-view>', function () {
+        let myEl;
+        let filters = [
+            {
+                name: 'auditor',
+                query: 'agreement__auditor_firm',
+                optionValue: 'id',
+                optionLabel: 'name',
+                selection: []
+            },
+            {
+                name: 'partner',
+                query: 'partner',
+                optionValue: 'id',
+                optionLabel: 'name',
+                selection: []
+            },
+            {
+                name: 'engagement type',
+                query: 'type',
+                hideSearch: true,
+                optionValue: 'value',
+                optionLabel: 'label',
+                selection: [{
+                    label: 'Micro Assessment',
+                    value: 'ma'
+                }, {
+                    label: 'Audit',
+                    value: 'audit'
+                }, {
+                    label: 'Spot Check',
+                    value: 'sc'
+                }]
+            },
+            {
+                name: 'status',
+                query: 'status',
+                hideSearch: true,
+                optionValue: 'value',
+                optionLabel: 'label',
+                selection: [
+                    {
+                        label: 'Partner was Contacted',
+                        value: 'partner_contacted'
+                    },
+                    {
+                        label: 'Field Visit',
+                        value: 'field_visit'
+                    },
+                    {
+                        label: 'Draft Report Issued To IP',
+                        value: 'draft_issued_to_partner'
+                    },
+                    {
+                        label: 'Comments Received By IP',
+                        value: 'comments_received_by_partner'
+                    },
+                    {
+                        label: 'Draft Report Issued To UNICEF',
+                        value: 'draft_issued_to_unicef'
+                    },
+                    {
+                        label: 'Comments Received By UNICEF',
+                        value: 'comments_received_by_unicef'
+                    },
+                    {
+                        label: 'Report Submitted',
+                        value: 'report_submitted'
+                    },
+                    {
+                        label: 'Final Report',
+                        value: 'final'
+                    },
+                    {
+                        label: 'Canceled',
+                        value: 'canceled'
+                    }
+                ]
+            }
+        ];
+
+        let listHeadings = [{
+            'size': 15,
+            'label': 'Purchase Order #',
+            'name': 'agreement__order_number',
+            'link': '*engagement_type*/*data_id*/overview',
+            'ordered': false,
+            'path': 'agreement.order_number'
+        }, {
+            'size': 20,
+            'label': 'Partner Name',
+            'name': 'partner__name',
+            'ordered': false,
+            'path': 'partner.name'
+        }, {
+            'size': 20,
+            'label': 'Auditor',
+            'name': 'agreement__auditor_firm__name',
+            'ordered': false,
+            'path': 'agreement.auditor_firm.name'
+        }, {
+            'size': 15,
+            'label': 'Engagement Type',
+            'name': 'type',
+            'ordered': false
+        }, {
+            'size': 30,
+            'label': 'Status',
+            'name': 'status',
+            'ordered': false,
+            'additional': {
+                'type': 'date',
+                'path': 'status_date'
+            }
+        }];
+
+        beforeEach(function () {
+            myEl = fixture('engagements-list-view-fixture');
+        });
+
+        describe('method ready()', function () {
+            it('calls setupFiltersAndHeadings() and setFiltersSelections() methods', function () {
+                let spy = sinon.spy(myEl, 'setupFiltersAndHeadings');
+                let spy2 = sinon.spy(myEl, 'setFiltersSelections');
+
+                assert.isFalse(spy.called);
+                assert.isFalse(spy2.called);
+
+                myEl.ready();
+
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy2.calledOnce);
+            });
+        });
+
+        describe('method _showAddButton()', function () {
+            it('returns result of actionAllowed() method', function () {
+                let spy = sinon.stub(myEl, 'actionAllowed');
+                spy.withArgs('new_engagement', 'createEngagement').returns('returned_value');
+
+                assert.equal(myEl._showAddButton(), 'returned_value');
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('new_engagement', 'createEngagement'));
+            });
+        });
+
+        describe('method setupFiltersAndHeadings()', function () {
+            it('removes partners filter if partners Array is empty', function () {
+                sinon.stub(myEl, 'getData').withArgs('partners').returns([]);
+                myEl.setupFiltersAndHeadings();
+                assert.lengthOf(myEl.filters, 3);
+            });
+
+            it('not removes partners filter if partners Array is not empty', function () {
+                sinon.stub(myEl, 'getData').withArgs('partners').returns([{}, {}]);
+                myEl.setupFiltersAndHeadings();
+                assert.lengthOf(myEl.filters, 4);
+            });
+
+            it('sets listHeadings', function () {
+                myEl.listHeadings = null;
+
+                assert.isNull(myEl.listHeadings);
+                myEl.setupFiltersAndHeadings();
+                assert.lengthOf(myEl.listHeadings, 5);
+            });
+
+            it('sets filters', function () {
+                myEl.filters = null;
+
+                assert.isNull(myEl.filters);
+                myEl.setupFiltersAndHeadings();
+                assert.lengthOf(myEl.filters, 3);
+            });
+        });
+
+        describe('method _getFilterIndex(query)', function () {
+            it('returns -1 if filters is not Array', function () {
+                assert.equal(myEl._getFilterIndex(null), -1);
+            });
+
+            it('returns -1 if filter with such query not found', function () {
+                assert.equal(myEl._getFilterIndex('no_such_query'), -1);
+            });
+
+            it('returns filter index', function () {
+                let query = filters[1].query;
+                assert.equal(myEl._getFilterIndex(query), 1);
+            });
+        });
+
+        describe('method setFiltersSelections()', function () {
+            it('sets partners filter selection property', function () {
+                let partnersFilterIndex = myEl._getFilterIndex('partner');
+                let partners = [{}, {}];
+                sinon.stub(myEl, 'getData').withArgs('partners').returns(partners);
+                myEl.filters[partnersFilterIndex].selection = null;
+
+                myEl.setFiltersSelections();
+                assert.deepEqual(myEl.filters[partnersFilterIndex].selection, partners);
+            });
+
+            it('sets auditors filter selection property', function () {
+                let auditorsFilterIndex = myEl._getFilterIndex('agreement__auditor_firm');
+                let auditors = [{}, {}];
+                sinon.stub(myEl, 'getData').withArgs('auditors').returns(auditors);
+                myEl.filters[auditorsFilterIndex].selection = null;
+
+                myEl.setFiltersSelections();
+                assert.deepEqual(myEl.filters[auditorsFilterIndex].selection, auditors);
+            });
+
+            it('sets partners filter selection=[] if getData() returns bad value', function () {
+                let partnersFilterIndex = myEl._getFilterIndex('partner');
+                sinon.stub(myEl, 'getData').withArgs('partners').returns(null);
+                myEl.filters[partnersFilterIndex].selection = null;
+
+                myEl.setFiltersSelections();
+                assert.deepEqual(myEl.filters[partnersFilterIndex].selection, []);
+            });
+
+            it('sets auditors filter selection=[] if getData() returns bad value', function () {
+                let auditorsFilterIndex = myEl._getFilterIndex('agreement__auditor_firm');
+                sinon.stub(myEl, 'getData').withArgs('auditors').returns(null);
+                myEl.filters[auditorsFilterIndex].selection = null;
+
+                myEl.setFiltersSelections();
+                assert.deepEqual(myEl.filters[auditorsFilterIndex].selection, []);
+            });
+        });
+
+        describe('method _setExportLink()', function () {
+            it('returns export link for engagements list', function () {
+                let url = 'engagementsListUrl';
+                sinon.stub(myEl, 'getEndpoint').withArgs('engagementsList').returns({url: url});
+
+                assert.equal(myEl._setExportLink(), url + '?format=csv&page_size=all');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
