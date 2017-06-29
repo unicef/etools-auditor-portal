@@ -319,6 +319,11 @@
                 assert.equal(myEl._getLink(null), '#');
             });
 
+            it('returns # if formatted link has string "undefined"', function () {
+                myEl.data = {};
+                assert.equal(myEl._getLink('path/*data_id*/path'), '#');
+            });
+
             it('replaces occurrences of *data_id* in pattern with data.id value', function () {
                 myEl.data = {id: 123};
                 assert.equal(myEl._getLink('path/*data_id*/path'), 'path/123/path');
