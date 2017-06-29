@@ -1,3 +1,5 @@
+<!--import [polymer, lodash]-->
+
 <script>
     'use strict';
 
@@ -5,7 +7,7 @@
     APBehaviors.QueryParamsController = {
         parseQueries: function() {
             let queriesOvj = {},
-                    queries = window.location.search
+                    queries = this.getQueriesString()
                             .slice(1)
                             .split('&');
 
@@ -17,19 +19,27 @@
 
             return queriesOvj;
         },
-        getQueriesString: function () {
-            return window.location.search || '';
+
+        getLocationProperty: function(property) {
+            return window && window.location && window.location[property] || '';
         },
+
+        getQueriesString: function () {
+            return this.getLocationProperty('search');
+        },
+
         getPath: function() {
-            let path = window.location.pathname;
+            let path = this.getLocationProperty('pathname');
             if (~path.indexOf('/ap')) { path = path.slice(3) }
             return path.slice(1);
         },
         updateQueries: function (newQueries, path, noNotify) {
-            path = path || this.getPath();
+            if (!_.isObject(newQueries)) { return false; }
             let keys = Object.keys(newQueries);
-            if (!keys.length) return;
 
+            if (!keys.length) { return false; }
+
+            path = path && _.isString(path) ? path : this.getPath();
             let queries = this.parseQueries();
 
             keys.forEach((key) => {
@@ -43,10 +53,12 @@
             });
 
             window.history.replaceState({}, '', `${path}?${queries.join('&')}`);
-            if (!noNotify) window.dispatchEvent(new CustomEvent('location-changed'));
+            if (!noNotify) { window.dispatchEvent(new CustomEvent('location-changed')); }
+            return true;
         },
+
         clearQueries: function() {
-            window.history.replaceState({}, '', window.location.pathname);
+            window.history.replaceState({}, '', this.getLocationProperty('pathname'));
             window.dispatchEvent(new CustomEvent('location-changed'));
         }
 

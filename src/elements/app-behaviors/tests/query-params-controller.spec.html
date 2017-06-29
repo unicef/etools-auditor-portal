@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [query-params-controller, lodash]-->
+</head>
+<body>
+
+<script>
+
+    describe('Query params controller element', function () {
+        var behaviorObj;
+
+        beforeEach(function () {
+            behaviorObj = APBehaviors.QueryParamsController;
+        });
+
+        describe('method parseQueries', function() {
+            it('returns empty object if there is no search queries', function() {
+                sinon.stub(behaviorObj, 'getQueriesString').returns('');
+                assert.isTrue(_.isEmpty(behaviorObj.parseQueries()));
+                behaviorObj.getQueriesString.restore();
+            });
+
+            it('split queries and return object with splited queries', function() {
+                sinon.stub(behaviorObj, 'getQueriesString').returns('?test=test&test2=test2&test3=test3');
+                assert.isTrue(_.isEqual(behaviorObj.parseQueries(), {test: 'test', test2: 'test2', test3: 'test3'}));
+                behaviorObj.getQueriesString.restore();
+            });
+
+            it('sets property as boolean true value if query has no value', function() {
+                sinon.stub(behaviorObj, 'getQueriesString').returns('?test=test&test2&test3');
+
+                assert.isTrue(_.isEqual(behaviorObj.parseQueries(), {test: 'test', test2: true, test3: true}));
+
+                behaviorObj.getQueriesString.restore();
+            });
+        });
+
+        describe('method getPath', function() {
+            it('calls getLocationProperty method with pathname argument', function() {
+                sinon.spy(behaviorObj, 'getLocationProperty');
+
+                behaviorObj.getPath();
+                assert.isTrue(behaviorObj.getLocationProperty.calledWith('pathname'));
+
+                behaviorObj.getLocationProperty.restore();
+            });
+
+            it('return path without / or /ap/', function() {
+                sinon.stub(behaviorObj, 'getLocationProperty').returns('/test-path/');
+
+                assert.equal(behaviorObj.getPath(), 'test-path/');
+
+                behaviorObj.getLocationProperty.returns('/ap/test-path/');
+                assert.equal(behaviorObj.getPath(), 'test-path/');
+
+                behaviorObj.getLocationProperty.restore();
+            });
+        });
+
+        describe('menthod updateQueries', function() {
+            it('return false if first argument is not object or is empty', function() {
+                assert.isFalse(behaviorObj.updateQueries());
+                assert.isFalse(behaviorObj.updateQueries(''));
+                assert.isFalse(behaviorObj.updateQueries(123));
+                assert.isFalse(behaviorObj.updateQueries(true));
+                assert.isFalse(behaviorObj.updateQueries(null));
+                assert.isFalse(behaviorObj.updateQueries({}));
+            });
+
+            it('calls getPath method if second argument is not sting or is empty', function() {
+                sinon.spy(behaviorObj, 'getPath');
+
+                behaviorObj.updateQueries({test: 'test'}, 'test');
+
+                assert.isFalse(behaviorObj.getPath.called);
+
+                behaviorObj.updateQueries({test: 'test'});
+                behaviorObj.updateQueries({test: 'test'}, {});
+                behaviorObj.updateQueries({test: 'test'}, 1231);
+                behaviorObj.updateQueries({test: 'test'}, '');
+
+                assert.equal(behaviorObj.getPath.callCount, 4);
+
+                behaviorObj.getPath.restore();
+            });
+
+            it('updates queries, calls replaceState method and returns true', function() {
+                sinon.stub(behaviorObj, 'parseQueries').returns({test: 'test', test2: true});
+                sinon.spy(window.history, 'replaceState');
+
+                assert.isTrue(behaviorObj.updateQueries({test2: false, test3: true}, 'test-path/'));
+
+                assert.isTrue(window.history.replaceState.calledWith({}, '', 'test-path/?test=test&test3'));
+
+                window.history.replaceState.restore();
+                behaviorObj.parseQueries.restore();
+            });
+
+            it('calls window.dispatchEvent method if third argument is not provided', function() {
+                sinon.spy(window, 'dispatchEvent');
+
+                behaviorObj.updateQueries({test2: false}, '', true);
+                behaviorObj.updateQueries({test2: false}, '', {});
+                behaviorObj.updateQueries({test2: false}, '', 'test');
+
+                assert.isFalse(window.dispatchEvent.called);
+
+                behaviorObj.updateQueries({test2: false}, '');
+                behaviorObj.updateQueries({test2: false}, '', null);
+
+                assert.isTrue(window.dispatchEvent.calledTwice);
+
+                window.dispatchEvent.restore();
+            });
+        });
+
+        it('method clearQueries calls replaceState and dispatchEvent methods', function() {
+            sinon.stub(window, 'dispatchEvent');
+            sinon.stub(window.history, 'replaceState');
+            sinon.stub(behaviorObj, 'getLocationProperty').returns('/test-path/');
+
+            behaviorObj.clearQueries();
+
+            assert.isTrue(window.history.replaceState.calledWith({}, '', '/test-path/'));
+            assert.isTrue(window.dispatchEvent.called);
+
+            window.dispatchEvent.restore();
+            window.history.replaceState.restore();
+            behaviorObj.getLocationProperty.restore();
+        });
+
+        it('method getQueriesString calls getLocationProperty method with string search as argument and returns it result', function() {
+            var result = 'test';
+            sinon.stub(behaviorObj, 'getLocationProperty').returns(result);
+
+            assert.equal(behaviorObj.getQueriesString(), result);
+            assert.isTrue(behaviorObj.getLocationProperty.calledWith('search'));
+
+            behaviorObj.getLocationProperty.restore();
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -168,9 +168,12 @@ Polymer({
     },
     _getLink: function(pattern) {
         if (typeof pattern !== 'string') { return '#'; }
-        return pattern
+
+        let link = pattern
             .replace('*data_id*', this.data.id)
             .replace('*engagement_type*', this._refactorValue('link_type', this.data.type));
+
+        return link.indexOf('undefined') === -1 ? link : '#';
     },
     _emtyObj: function(data) {
         return data && !data.empty;
