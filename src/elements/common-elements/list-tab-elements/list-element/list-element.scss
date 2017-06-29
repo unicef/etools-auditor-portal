@@ -44,7 +44,14 @@
             &.right { text-align: right; }
             &.center { text-align: center; }
         }
-        a.col-data { color: #40c4ff; }
+        a.col-data {
+            color: #40c4ff;
+
+            &[href="#"] {
+                color: initial;
+                pointer-events: none;
+            }
+        }
     }
 
     .partners-data-details {
