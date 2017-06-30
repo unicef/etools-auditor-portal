@@ -104,7 +104,7 @@
                         },
                         {
                             label: 'Draft Report Issued To UNICEF',
-                            value: 'draft_issued_to_unicef'
+                            value: 'draft_issued_to_partner'
                         },
                         {
                             label: 'Comments Received By UNICEF',

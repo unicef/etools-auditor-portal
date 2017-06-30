@@ -1,8 +1,8 @@
 'use strict';
 
 (function() {
-    let statuses = ['partner_contacted', 'field_visit', 'draft_issued_to_partner',
-        'comments_received_by_partner', 'draft_issued_to_unicef',
+    let statuses = ['partner_contacted', 'field_visit', 'draft_issued_to_unicef',
+        'comments_received_by_partner', 'draft_issued_to_partner',
         'comments_received_by_unicef', 'report_submitted', 'final', 'canceled'];
 
     let statusFields = [null, null, 'date_of_field_visit', 'date_of_draft_report_to_ip',

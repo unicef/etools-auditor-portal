@@ -20,9 +20,9 @@ Polymer({
                     status: {
                         partner_contacted: 'Partner was Contacted',
                         field_visit: 'Field Visit',
-                        draft_issued_to_partner: 'Draft Report Issued To IP',
+                        draft_issued_to_unicef: 'Draft Report Issued To IP',
                         comments_received_by_partner: 'Comments Received By IP',
-                        draft_issued_to_unicef: 'Draft Report Issued To UNICEF',
+                        draft_issued_to_partner: 'Draft Report Issued To UNICEF',
                         comments_received_by_unicef: 'Comments Received By UNICEF',
                         report_submitted: 'Report Submitted',
                         final: 'Final Report',
