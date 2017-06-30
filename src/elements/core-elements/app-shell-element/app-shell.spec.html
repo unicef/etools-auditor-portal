@@ -31,6 +31,7 @@
                 sinon.spy(notificationList, 'fire');
                 myEl.queueToast(null, {text: 'test message'});
                 assert.isTrue(notificationList.fire.called);
+                notificationList.fire.restore();
             });
         });
 
@@ -42,6 +43,7 @@
                 myEl.route = {path: 'test'};
                 assert.isTrue(myEl._routePageChanged.called);
                 assert.equal(myEl.page, 'test');
+                myEl._routePageChanged.restore();
             });
         });
 
@@ -52,12 +54,15 @@
                 myEl.page = 'test';
                 assert.isTrue(myEl._pageChanged.called);
                 assert.isTrue(myEl.fire.called);
+                myEl._pageChanged.restore();
+                myEl.fire.restore();
             });
 
             it('call importHref method', () => {
                 sinon.spy(myEl, 'importHref');
                 myEl.page = 'test';
                 assert.isTrue(myEl.importHref.called);
+                myEl.importHref.restore();
             });
         });
 
@@ -68,6 +73,8 @@
                 myEl.fire('404');
                 assert.isTrue(myEl._pageNotFound.called);
                 assert.isTrue(myEl.queueToast.called);
+                myEl._pageNotFound.restore();
+                myEl.queueToast.restore();
             });
 
             it('\'static-data-loaded\' or \'user-profile-loaded\' call method _initialDataLoaded', () => {
@@ -77,13 +84,15 @@
                 assert.isTrue(myEl._initialDataLoaded.called);
                 myEl.fire('static-data-loaded');
                 assert.isTrue(myEl._initialDataLoaded.called);
-                assert.equal(myEl.page, 'test')
+                assert.equal(myEl.page, 'test');
+                myEl._initialDataLoaded.restore();
             });
 
             it('\'global-loading\' call method _handleGlobalLoading', () => {
                 sinon.spy(myEl, '_handleGlobalLoading');
                 myEl.fire('global-loading', {type: 'test', active: true});
                 assert.isTrue(myEl._handleGlobalLoading.called);
+                myEl._handleGlobalLoading.restore();
             });
         });
 
