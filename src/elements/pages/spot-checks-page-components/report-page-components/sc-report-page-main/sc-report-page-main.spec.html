@@ -40,13 +40,7 @@
                 assert.isTrue(myEl.$.assignEngagement.getAssignVisitData.called);
             });
         });
-        describe('method getAssignVisitData', () => {
-            it('calls getAssignVisitData method', () => {
-                sinon.spy(myEl.$.assignEngagement, 'getAssignVisitData');
-                myEl.getAssignVisitData();
-                assert.isTrue(myEl.$.assignEngagement.getAssignVisitData.called);
-            });
-        });
+
         describe('method getInternalControlsData', () => {
             it('calls getInternalControlsData method', () => {
                 sinon.spy(myEl.$.internalControls, 'getInternalControlsData');

@@ -4,5 +4,6 @@ module.exports = {
       browsers: ["chrome", ]
     },
     sauce: false,
-  }
+  },
+  skipUpdateCheck: true
 };

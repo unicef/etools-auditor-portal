@@ -106,8 +106,6 @@
         });
 
         describe('method searchKeyDown()', function () {
-            this.timeout(350);
-
             it('updates "search" and "page" query params after 300ms delay if string length >= 2', function (done) {
                 var queryParams = myEl.parseQueries();
                 var searchString = 'search';

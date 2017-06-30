@@ -6,10 +6,11 @@ const gulp = require('gulp'),
     babel = require("gulp-babel"),
     builder = require('polytempl'),
     gulpIf = require('gulp-if'),
+    fs = require('fs'),
     combine = require('stream-combiner2').obj,
     through2 = require('through2').obj,
     path = require('path'),
-    inject = require('gulp-inject-string');
+    replace = require('gulp-replace');
 
 
 
@@ -55,9 +56,20 @@ function buildElements(done) {
         ))
         .pipe(gulp.dest('./build/'))
         .on('end', function () {
-            // add test sources to index.spec.html and move file to the build folder
-            gulp.src('./src/tests/index.spec.html')
-                .pipe(inject.replace('<!--testSources-->', `"${testSources.join('", "')}"`))
+            let testsPerFile = 24;
+            let indexFilesLength = Math.ceil(testSources.length / testsPerFile) || 1;
+
+            console.log(`\x1b[32mFound ${testSources.length} test files. They will be combined into ${indexFilesLength} files.\x1b[0m`);
+
+            for (let i = 0; i < indexFilesLength; i++) {
+                fs.writeFileSync(`./build/tests/index${i + 1}.spec.html`, fs.readFileSync('./src/tests/index.spec.html'));
+            }
+
+            // add test sources to index{1,2...}.spec.html
+            gulp.src('./build/tests/index*.spec.html')
+                .pipe(replace('<!--testSources-->', function(match) {
+                    return `"${testSources.splice(0, testsPerFile).join('", "')}"`;
+                }))
                 .pipe(gulp.dest('./build/tests/'));
 
             done();
