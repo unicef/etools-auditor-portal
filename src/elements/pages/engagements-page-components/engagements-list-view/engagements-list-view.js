@@ -96,7 +96,7 @@
                         },
                         {
                             label: 'Draft Report Issued To IP',
-                            value: 'draft_issued_to_partner'
+                            value: 'draft_issued_to_unicef'
                         },
                         {
                             label: 'Comments Received By IP',
