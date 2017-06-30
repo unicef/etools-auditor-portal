@@ -95,10 +95,10 @@
                 assert.lengthOf(myEl.globalLoadingQueue, 1);
             });
 
-            it('show message when global-loading element is active and pushed message is not active', () => {
+            it('show message when global-loading element is not active and pushed message not active', () => {
                 let loadingEl = myEl.$['global-loading'];
-                loadingEl.active = true;
-                myEl.fire('global-loading', {type: 'test', message: 'test'});
+                loadingEl.active = false;
+                myEl.fire('global-loading', {type: 'test', message: 'test', active: true});
                 assert.equal(loadingEl.loadingText, 'test');
             });
 
