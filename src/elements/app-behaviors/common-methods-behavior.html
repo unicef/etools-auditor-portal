@@ -6,7 +6,7 @@
     window.APBehaviors = window.APBehaviors || {};
     APBehaviors.CommonMethodsBehaviorImpl = {
         _resetFieldError: function(event) {
-            if (!event || !event.target) { return; }
+            if (!event || !event.target) { return false; }
 
             let field = event.target.getAttribute('field');
             if (field) { this.set(`errors.${field}`, false); }
@@ -32,14 +32,14 @@
         },
 
         _errorHandler: function(errorData) {
-            if (!errorData) { return; }
+            if (!errorData) { return false; }
             if (this.requestInProcess) { this.requestInProcess = false; }
             this.set('errors', _.clone(this.refactorErrorObject(errorData)));
         },
 
         _complexErrorHandler: function(errorData) {
             this.requestInProcess = false;
-            if (!errorData) { return; }
+            if (!errorData) { return false; }
 
             let data = this.refactorErrorObject(errorData);
             let nonField = this.checkNonField(errorData);

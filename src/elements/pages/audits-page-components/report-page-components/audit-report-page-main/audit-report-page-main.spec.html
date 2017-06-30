@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [audit-report-page-main]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <audit-report-page-main id="element"></audit-report-page-main>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<audit-report-page-main>', () => {
+        let myEl;
+
+        beforeEach(function() {
+            myEl = fixture('element-fixture');
+        });
+
+        it('calls getAssignVisitData method', () => {
+            sinon.spy(myEl.$.assignEngagement, 'getAssignVisitData');
+            myEl.getAssignVisitData();
+            assert.isTrue(myEl.$.assignEngagement.getAssignVisitData.called);
+        });
+
+        it('calls getTabData method', () => {
+            myEl.$.financialFindings.originalData = [{test: 'test'}];
+            myEl.$.financialFindings.dataItems = [{test: 'test'}];
+            sinon.spy(myEl.$.financialFindings, 'getTabData');
+            myEl.getFinancialFindingsData();
+            assert.isTrue(myEl.$.financialFindings.getTabData.called);
+        });
+
+        it('calls getFindingsSummaryData method', () => {
+            sinon.spy(myEl.$.findingsSummary, 'getFindingsSummaryData');
+            myEl.getFindingsSummaryData();
+            assert.isTrue(myEl.$.findingsSummary.getFindingsSummaryData.called);
+        });
+
+        it('calls getAssessmentOfControlsData method', () => {
+            sinon.spy(myEl.$.assessmentOfControls, 'getAssessmentOfControlsData');
+            myEl.getAssessmentOfControlsData();
+            assert.isTrue(myEl.$.assessmentOfControls.getAssessmentOfControlsData.called);
+        });
+
+        it('calls getKeyInternalWeaknessData method', () => {
+            sinon.spy(myEl.$.keyInternalControlsWeaknesses, 'getKeyInternalWeaknessData');
+            myEl.getKeyInternalWeaknessData();
+            assert.isTrue(myEl.$.keyInternalControlsWeaknesses.getKeyInternalWeaknessData.called);
+        });
+    });
+</script>
+</body>
+</html>

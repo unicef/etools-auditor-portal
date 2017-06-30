@@ -12,15 +12,15 @@ Polymer({
     ],
 
     properties: {
-        dataItems: {
-            type: Array,
-            notify: true
-        },
         categoryOfObservation: {
             type: Array,
             value: function() {
                 return [];
             }
+        },
+        dataItems: {
+            type: Array,
+            notify: true
         },
         mainProperty: {
             type: String,
@@ -45,7 +45,7 @@ Polymer({
                         'size': 25,
                         'label': 'Finding Number',
                         'path': 'finding_number'
-                    },                    {
+                    }, {
                         'size': 50,
                         'label': 'Subject Area',
                         'path': 'category_of_observation.display_name'
@@ -112,15 +112,17 @@ Polymer({
     },
 
     observers: [
+        '_updateFinding(dataItems, categoryOfObservation)',
         'resetDialog(dialogOpened)',
         'changePermission(basePermissionPath)',
         '_setPriority(itemModel, priority)',
-        '_updateFinding(dataItems, categoryOfObservation)',
         '_complexErrorHandler(errorObject.findings)'
     ],
 
     getErrorBaseText: function(priority) {
-        if (!priority) { return ''; }
+        if (!priority) {
+            return '';
+        }
         return `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
     },
 
@@ -155,7 +157,7 @@ Polymer({
         }
     },
 
-    attached: function() {
+    ready: function() {
         this.categoryOfObservation = this.getData('category_of_observation');
         this.set('errors.deadline_of_action', false);
     },
@@ -165,7 +167,9 @@ Polymer({
     },
 
     getFindingsData: function() {
-        if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
+        if (this.dialogOpened && !this.saveWithButton) {
+            return this.getCurrentData();
+        }
         let data = [];
         _.each(this.dataItems, (item, index) => {
             if (item.priority !== this.priority.value) {
@@ -183,17 +187,44 @@ Polymer({
                 dataItem = item;
             }
 
-            if (!_.isEqualWith(dataItem, this.originalData[index], (objValue, othValue) => {
-                    if (objValue && othValue && objValue === othValue.value) { return true; }
-                })) { data.push(dataItem); }
+            let compareItems = (changedObj, originalObj) => {
+                if (changedObj.category_of_observation) {
+                    if (changedObj.category_of_observation !== originalObj.category_of_observation) {
+                        return false;
+                    }
+                }
+                if (changedObj.deadline_of_action) {
+                    if (changedObj.deadline_of_action !== originalObj.deadline_of_action) {
+                        return false;
+                    }
+                }
+                if (changedObj.recommendation) {
+                    if (changedObj.recommendation !== originalObj.recommendation) {
+                        return false;
+                    }
+                }
+                if (changedObj.agreed_action_by_ip) {
+                    if (changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+            if (!_.isEqualWith(dataItem, this.originalData[index], compareItems)) {
+                data.push(dataItem);
+            }
         });
         return data && data.length ? data : null;
     },
 
     getCurrentData: function() {
-        if (!this.dialogOpened) { return null; }
+        if (!this.dialogOpened) {
+            return null;
+        }
         let data = _.clone(this.editedItem);
-        if (data.category_of_observation && data.category_of_observation.value) { data.category_of_observation = data.category_of_observation.value; }
+        if (data.category_of_observation && data.category_of_observation.value) {
+            data.category_of_observation = data.category_of_observation.value;
+        }
         return [data];
     }
 

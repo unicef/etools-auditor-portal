@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [sc-report-page-main]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <sc-report-page-main></sc-report-page-main>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<sc-report-page-main>', () => {
+        let myEl;
+
+        beforeEach(function() {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method getOverviewData', () => {
+            it('calls getOverviewData method', () => {
+                sinon.spy(myEl.$.overviewEngagement, 'getOverviewData');
+                myEl.getOverviewData();
+                assert.isTrue(myEl.$.overviewEngagement.getOverviewData.called);
+            });
+        });
+
+        describe('method getAssignVisitData', () => {
+            it('calls getAssignVisitData method', () => {
+                sinon.spy(myEl.$.assignEngagement, 'getAssignVisitData');
+                myEl.getAssignVisitData();
+                assert.isTrue(myEl.$.assignEngagement.getAssignVisitData.called);
+            });
+        });
+        describe('method getAssignVisitData', () => {
+            it('calls getAssignVisitData method', () => {
+                sinon.spy(myEl.$.assignEngagement, 'getAssignVisitData');
+                myEl.getAssignVisitData();
+                assert.isTrue(myEl.$.assignEngagement.getAssignVisitData.called);
+            });
+        });
+        describe('method getInternalControlsData', () => {
+            it('calls getInternalControlsData method', () => {
+                sinon.spy(myEl.$.internalControls, 'getInternalControlsData');
+                myEl.getInternalControlsData();
+                assert.isTrue(myEl.$.internalControls.getInternalControlsData.called);
+            });
+        });
+        describe('method getFindingsData', () => {
+            it('calls getFindingsData methods from Low and High priority components', () => {
+                sinon.spy(myEl.$.findingsLowPriority, 'getFindingsData');
+                sinon.spy(myEl.$.findingsHighPriority, 'getFindingsData');
+                myEl.getFindingsData();
+                assert.isTrue(myEl.$.findingsLowPriority.getFindingsData.called);
+                assert.isTrue(myEl.$.findingsHighPriority.getFindingsData.called);
+            });
+        });
+    });
+</script>
+</body>
+</html>
