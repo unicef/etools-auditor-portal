@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!--import [new-engagement-view]-->
+</head>
+<body>
+
+<test-fixture id="element-fixture">
+    <template>
+        <new-engagement-view></new-engagement-view>
+    </template>
+</test-fixture>
+
+<script>
+    describe('<new-engagement-view>', () => {
+        let myEl;
+
+        beforeEach(() => {
+            myEl = fixture('element-fixture');
+        });
+
+        describe('method _attachmentsReadonly()', () => {
+            it('return true when no POST/PUT collection', () => {
+                assert.isTrue(myEl._attachmentsReadonly());
+            });
+
+            it('return false when POST/PUT collection has value', () => {
+                myEl._addToCollection('new_engagement', {
+                    POST: {
+                        "engagement_attachments": {
+                            "required": false,
+                            "read_only": false
+                        }
+                    }
+                });
+                assert.isFalse(myEl._attachmentsReadonly());
+            });
+        });
+
+        describe('method _saveNewEngagement()', () => {
+            it('call _validateBasicInfo', () => {
+                sinon.spy(myEl, '_validateBasicInfo');
+                myEl._saveNewEngagement();
+                assert.isTrue(myEl._validateBasicInfo.called);
+                myEl._validateBasicInfo.restore();
+            });
+        });
+
+        describe('event \'engagement-created\'', () => {
+            it('call method _setLastEngagementData()', () => {
+                sinon.spy(myEl, '_setLastEngagementData');
+                let engagement = { id: '1' };
+                myEl.fire('engagement-created', { success: true, data: engagement });
+                let lastEngagementData = myEl.getLastEngagementData('1');
+                assert.isTrue(myEl._setLastEngagementData.called);
+                assert.equal(engagement.id, lastEngagementData.id)
+            });
+        });
+
+        describe('property \'page\'', () => {
+            it('changed to \'new\'/\'list\' then set empty \'engagement\' object and call clean and reset methods', () => {
+                myEl.engagement = { status: 'test' };
+                sinon.spy(myEl.$.engagementDetails, 'resetValidationErrors');
+                sinon.spy(myEl.$.engagementDetails, 'resetAgreement');
+                sinon.spy(myEl.$.engagementDetails, 'resetType');
+                sinon.spy(myEl.$.partnerDetails, 'resetValidationErrors');
+
+                myEl.page = 'new';
+
+                assert.equal(myEl.engagement.status, '');
+                assert.isTrue(myEl.$.engagementDetails.resetValidationErrors.called);
+                assert.isTrue(myEl.$.engagementDetails.resetAgreement.called);
+                assert.isTrue(myEl.$.engagementDetails.resetType.called);
+                assert.isTrue(myEl.$.partnerDetails.resetValidationErrors.called);
+
+                myEl.$.engagementDetails.resetValidationErrors.restore();
+                myEl.$.engagementDetails.resetAgreement.restore();
+                myEl.$.engagementDetails.resetType.restore();
+                myEl.$.partnerDetails.resetValidationErrors.restore();
+            });
+        })
+    });
+</script>
+
+</body>
+</html>
