@@ -13,6 +13,11 @@
                      on-success="_handleOptionsResponse"
                      on-fail="_handleOptionsResponse"></etools-ajax>
 
+        <etools-ajax method="OPTIONS"
+                     url="[[poOptionsUrl]]"
+                     on-success="_handlePoOptionsResponse"
+                     on-fail="_handlePoOptionsResponse"></etools-ajax>
+
 
     </template>
 
@@ -67,6 +72,26 @@
             },
 
             _handleResponse: function (data) {
+                if (!data || this.collectionExists(`po_${data.agreement.id}`)) {
+                    this._finishRequests(data || {});
+                } else {
+                    this.poOptionsUrl = this.getEndpoint('purchaseOrder', {id: data.agreement.id}).url;
+                }
+            },
+
+            _handlePoOptionsResponse: function(data) {
+                let actions = data.detail && data.detail.actions;
+                if (!this.responseData || !this.responseData.agreement) {
+                    console.error('Can not load permissions for missing purchase order');
+                } else if (actions) {
+                    this._addToCollection(`po_${this.responseData.agreement.id}`, data.detail.actions);
+                } else {
+                    console.error('Can not load permissions for purchase order');
+                }
+                this._finishRequests(this.responseData || {});
+            },
+
+            _finishRequests: function(data) {
                 if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
 
                 if (data) { this.engagementInfo = data; }

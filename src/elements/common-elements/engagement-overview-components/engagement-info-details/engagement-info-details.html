@@ -2,7 +2,7 @@
             etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
 
 <!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data,
-            common-methods-behavior]-->
+            common-methods-behavior, update-agreement-data]-->
 
 <dom-module id="engagement-info-details">
     <template>
@@ -26,6 +26,7 @@
         </style>
 
         <get-agreement-data agreement="{{data.agreement}}" order-number="{{orderNumber}}"></get-agreement-data>
+        <update-agreement-data agreement="{{data.agreement}}" new-date="{{contractExpiryDate}}" po-updating="{{poUpdating}}" errors="{{errors}}"></update-agreement-data>
 
         <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
             <div class="row-h group">
@@ -48,18 +49,7 @@
                                  on-blur="_requestAgreement"></paper-input>
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="po-loading"></etools-loading>
                 </div>
-                <div class="input-container">
-                    <!-- Contract Dates -->
-                    <paper-input label="Contract Dates"
-                                 class="without-border"
-                                 disabled readonly
-                                 id="contractStartDateInput"
-                                 value="[[_setContractDates(data.agreement)]]"
-                                 on-down="openDatePicker"
-                                 placeholder="&#8212;">
-                        <iron-icon prefix icon="date-range"></iron-icon>
-                    </paper-input>
-                </div>
+
                 <div class="input-container">
                     <!-- Auditor -->
                     <paper-input label="Auditor"
@@ -70,10 +60,49 @@
                                  placeholder="&#8212;">
                     </paper-input>
                 </div>
+
+                <div class="input-container">
+                    <!-- PO Date -->
+                    <paper-input label="PO Date"
+                                 class="without-border"
+                                 disabled readonly
+                                 id="contractStartDateInput"
+                                 value="[[prettyDate(data.agreement.contract_start_date)]]"
+                                 on-down="openDatePicker"
+                                 placeholder="&#8212;">
+                        <iron-icon prefix icon="date-range"></iron-icon>
+                    </paper-input>
+                </div>
             </div>
 
             <div class="row-h group">
 
+                <div class="input-container">
+                    <!-- Contract Expiry Date -->
+                    <paper-input label="Contract Expiry Date"
+                                 class$="disabled-as-readonly {{_setRequired('contract_end_date', poPermissionPath)}} validate-field"
+                                 required="{{_setRequired('contract_end_date', poPermissionPath)}}"
+                                 disabled$="[[isReadOnly('contract_end_date', poPermissionPath, poUpdating)]]"
+                                 invalid="{{_checkInvalid(errors.contract_end_date)}}"
+                                 error-message="{{errors.contract_end_date}}"
+                                 id="contractEndDateInput"
+                                 field="contract_end_date"
+                                 value="[[prettyDate(data.agreement.contract_end_date)]]"
+                                 on-down="openDatePicker"
+                                 data-selector="contractEndDate"
+                                 on-focus="_resetFieldError"
+                                 placeholder="Select Contract Expiry Date">
+                        <etools-datepicker prefix
+                                           modal="[[datepickerModal]]"
+                                           id="contractEndDate"
+                                           date="[[prepareDate(data.agreement.contract_end_date)]]"
+                                           format="YYYY-MM-DD"
+                                           pretty-date="{{contractExpiryDate}}"
+                                           min-date="{{_setExpiryMinDate(data.agreement.contract_start_date)}}"
+                                           no-init show-clear-btn></etools-datepicker>
+                    </paper-input>
+                    <etools-loading active="{{poUpdating}}" no-overlay loading-text="" class="po-loading"></etools-loading>
+                </div>
 
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
@@ -123,6 +152,10 @@
                             placeholder="Select Engagement Type"></etools-searchable-multiselection-menu>
                 </div>
 
+            </div>
+
+            <div class="row-h group">
+
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Period Start Date -->
@@ -149,9 +182,6 @@
                         </paper-input>
                     </div>
                 </template>
-            </div>
-
-            <div class="row-h group">
 
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">

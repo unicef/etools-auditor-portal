@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, lodash, etools-app-config]-->
+<!--import [polymer, etools-ajax, lodash, etools-app-config, permission-controller]-->
 
 <dom-module id="get-agreement-data">
 
@@ -7,6 +7,11 @@
         <etools-ajax url="[[url]]"
                      on-success="_handleResponse"
                      on-fail="_handleError"></etools-ajax>
+
+        <etools-ajax method="OPTIONS"
+                     url="[[optionsUrl]]"
+                     on-success="_handleOptionsResponse"
+                     on-fail="_handleOptionsResponse"></etools-ajax>
     </template>
 
     <script>
@@ -16,7 +21,8 @@
             is: 'get-agreement-data',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                APBehaviors.PermissionController
             ],
 
             properties: {
@@ -33,29 +39,40 @@
 
             },
 
-            _handleResponse: function (data) {
-                this.lastData = _.clone(data.detail);
-                this.agreement = data.detail;
+            _handleResponse: function (data, detail) {
+                if (!detail || this.collectionExists(`po_${detail.id}`)) {
+                    this.finishRequest(detail || {});
+                } else {
+                    this.poData = detail;
+                    this.optionsUrl = this.getEndpoint('purchaseOrder', {id: detail.id}).url;
+                }
+                this.url = null;
+            },
+
+            _handleOptionsResponse: function(data) {
+                let actions = data.detail && data.detail.actions;
+                if (!this.poData || !this.poData.id) {
+                    console.error('Can not load permissions for missing purchase order');
+                } else if (actions) {
+                    this._addToCollection(`po_${this.poData.id}`, data.detail.actions);
+                } else {
+                    console.error('Can not load permissions for purchase order');
+                }
+                this.finishRequest(this.poData || {});
+            },
+
+            finishRequest: function(data) {
+                this.agreement = data;
                 this.fire('agreement-loaded', {success: true});
             },
 
             _handleError: function () {
-                this.lastError = true;
                 this.fire('agreement-loaded');
             },
 
-            _orderNumberChanged: function(orderNumber) {
-                if (!orderNumber) { return; }
-                if (orderNumber === this.lastNumber) {
-                    this.orderNumber = null;
-                    this.lastError ? this._handleError() : this._handleResponse({detail: _.clone(this.lastData)});
-                    return;
-                }
-
-                this.lastError = false;
-                this.lastNumber = orderNumber;
+            _orderNumberChanged: function(orderNumber , oldNumber) {
+                if (!orderNumber || orderNumber === oldNumber) { return; }
                 this.url = this.getEndpoint('agreementData', {id: orderNumber}).url;
-                this.orderNumber = null;
             }
 
         });

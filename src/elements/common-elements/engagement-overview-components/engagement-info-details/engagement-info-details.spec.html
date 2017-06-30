@@ -103,23 +103,24 @@
             assert.isTrue(_.isEqual(myEl.getEngagementData(), {end_date: 'end', agreement: 'id2', type: 'type5'}));
         });
 
-        describe('method _setContractDates', function() {
-            it('returns if no argument provided', function() {
-                assert.isUndefined(myEl._setContractDates());
-            });
+        it('method updatePoBasePath calls set method with path or empty string', function() {
+            sinon.spy(myEl, 'set');
 
-            it('returns empty string if argument doesn\'t have contract_start_date or contract_end_date properties', function() {
-                assert.equal(myEl._setContractDates({contract_start_date: 'test'}), '');
-                assert.equal(myEl._setContractDates({contract_end_date: 'test'}), '');
-                assert.equal(myEl._setContractDates(1234), '');
-                assert.equal(myEl._setContractDates('test'), '');
-            });
+            myEl.updatePoBasePath();
+            assert.isTrue(myEl.set.calledWith('poPermissionPath', ''));
 
-            it('calls prettyDate method for properties and returns compiled string', function() {
-                sinon.stub(myEl, 'prettyDate').returns('test_date');
-                assert.equal(myEl._setContractDates({contract_end_date: 'test', contract_start_date: 'test'}), 'test_date - test_date');
-                myEl.prettyDate.restore();
-            });
+            myEl.set.reset();
+
+            myEl.updatePoBasePath(12);
+            assert.isTrue(myEl.set.calledWith('poPermissionPath', 'po_12'));
+
+            myEl.set.restore();
+        });
+
+        it('method _setExpiryMinDate returns Date object or false if argument is undefined', function() {
+            let date = new Date(new Date('2017-06-06').getFullYear(), new Date('2017-06-06').getMonth(), new Date('2017-06-06').getDate()) - 1;
+            assert.equal(+myEl._setExpiryMinDate('2017-06-06'), +new Date(date));
+            assert.isFalse(myEl._setExpiryMinDate());
         });
 
         it('reset validation errors', function () {
@@ -157,16 +158,12 @@
             myEl.set.restore();
         });
 
-        it('method resetAgreement calls set method with data.agreement string and object with order_number as arguments', function() {
+        it('method resetAgreement calls set method 3 times', function() {
             sinon.spy(myEl, 'set');
-            myEl.data = {
-                agreement: {order_number: 99}
-            };
 
             myEl.resetAgreement();
-            assert.isTrue(myEl.set.called);
-            assert.equal(myEl.set.args[0][0], 'data.agreement');
-            assert.isTrue(_.isEqual(myEl.set.args[0][1], {order_number: 99}));
+            assert.equal(myEl.set.callCount, 3);
+
             myEl.set.restore();
         });
 
@@ -185,7 +182,7 @@
                 assert.isTrue(myEl.resetAgreement.called);
             });
 
-            it('returns undefined if there is no event proprty or value, or value is NaN', function() {
+            it('returns undefined if there is no event property or value, or value is NaN or equal to orderNumber', function() {
                 myEl.requestInProcess = false;
                 var event;
                 assert.isUndefined(myEl._requestAgreement(event));
@@ -194,6 +191,10 @@
                 assert.isUndefined(myEl._requestAgreement(event));
 
                 event.target.value = NaN;
+                assert.isUndefined(myEl._requestAgreement(event));
+
+                event.target.value = 123;
+                myEl.orderNumber = 123;
                 assert.isUndefined(myEl._requestAgreement(event));
             });
 

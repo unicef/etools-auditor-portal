@@ -92,6 +92,7 @@ Polymer({
             });
 
             this.$.engagementDetails.resetValidationErrors();
+            this.$.engagementDetails.resetAgreement();
             this.$.partnerDetails.resetValidationErrors();
             this.$.engagementDetails.resetType();
         }

@@ -61,6 +61,10 @@ Polymer({
         datepickerModal: {
             type: Boolean,
             value: false
+        },
+        contractExpiryDate: {
+            type: String,
+            value: null
         }
     },
     listeners: {
@@ -68,7 +72,9 @@ Polymer({
     },
     observers: [
         '_errorHandler(errorObject)',
-        '_setShowInput(data.type)'
+        '_setShowInput(data.type)',
+        'updateStyles(poPermissionPath, poUpdating)',
+        'updatePoBasePath(data.agreement.id)'
     ],
 
     ready: function() {
@@ -132,9 +138,13 @@ Polymer({
         let input = event && event.target,
             value = input && input.value;
 
+        if (+value && value === this.orderNumber) { return; }
         this.resetAgreement();
 
-        if (!value) { return; }
+        if (!value) {
+            this.orderNumber = null;
+            return;
+        }
 
         this.requestInProcess = true;
         this.orderNumber = value;
@@ -148,6 +158,8 @@ Polymer({
 
     resetAgreement: function() {
         this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
+        this.set('contractExpiryDate', null);
+        this.set('orderNumber', null);
     },
 
     _validatePurchaseOrder: function(orderInput) {
@@ -185,15 +197,6 @@ Polymer({
         return data;
     },
 
-    _setContractDates: function(agreement) {
-        if (!agreement) { return; }
-        let start = agreement.contract_start_date,
-            end = agreement.contract_end_date;
-
-        if (!start || !end) { return ''; }
-        return `${this.prettyDate(start)} - ${this.prettyDate(end)}`;
-    },
-
     _setShowInput: function(type) {
         if (typeof type === 'string' && type !== 'ma') {
             this.showInput = true;
@@ -202,6 +205,17 @@ Polymer({
         } else {
             this.showInput = false;
         }
+    },
+
+    updatePoBasePath: function(id) {
+        let path = id ? `po_${id}` : '';
+        this.set('poPermissionPath', path);
+    },
+
+    _setExpiryMinDate: function(minDate) {
+        if (!minDate) { return false; }
+        let today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(), new Date(minDate).getDate());
+        return new Date(today - 1);
     }
 
 });
