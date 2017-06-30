@@ -66,23 +66,26 @@
         describe('property \'page\'', () => {
             it('changed to \'new\'/\'list\' then set empty \'engagement\' object and call clean and reset methods', () => {
                 myEl.engagement = { status: 'test' };
-                sinon.spy(myEl.$.engagementDetails, 'resetValidationErrors');
-                sinon.spy(myEl.$.engagementDetails, 'resetAgreement');
-                sinon.spy(myEl.$.engagementDetails, 'resetType');
-                sinon.spy(myEl.$.partnerDetails, 'resetValidationErrors');
+                let engagementDetails = myEl.$.engagementDetails;
+                let partnerDetails = myEl.$.partnerDetails;
+
+                sinon.spy(engagementDetails, 'resetValidationErrors');
+                sinon.spy(engagementDetails, 'resetAgreement');
+                sinon.spy(engagementDetails, 'resetType');
+                sinon.spy(partnerDetails, 'resetValidationErrors');
 
                 myEl.page = 'new';
 
                 assert.equal(myEl.engagement.status, '');
-                assert.isTrue(myEl.$.engagementDetails.resetValidationErrors.called);
-                assert.isTrue(myEl.$.engagementDetails.resetAgreement.called);
-                assert.isTrue(myEl.$.engagementDetails.resetType.called);
-                assert.isTrue(myEl.$.partnerDetails.resetValidationErrors.called);
+                assert.isTrue(engagementDetails.resetValidationErrors.called);
+                assert.isTrue(engagementDetails.resetAgreement.called);
+                assert.isTrue(engagementDetails.resetType.called);
+                assert.isTrue(partnerDetails.resetValidationErrors.called);
 
-                myEl.$.engagementDetails.resetValidationErrors.restore();
-                myEl.$.engagementDetails.resetAgreement.restore();
-                myEl.$.engagementDetails.resetType.restore();
-                myEl.$.partnerDetails.resetValidationErrors.restore();
+                engagementDetails.resetValidationErrors.restore();
+                engagementDetails.resetAgreement.restore();
+                engagementDetails.resetType.restore();
+                partnerDetails.resetValidationErrors.restore();
             });
         })
     });
