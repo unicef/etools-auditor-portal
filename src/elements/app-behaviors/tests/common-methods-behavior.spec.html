@@ -22,7 +22,7 @@
 
         describe('method _resetFieldError(event)', function () {
             it('returns false if event or event.target has bad value', function () {
-                assert.isFalse(behaviorObj._resetFieldError(null));
+                assert.isTrue(behaviorObj._resetFieldError(null));
                 assert.isFalse(behaviorObj._resetFieldError({}));
                 assert.isFalse(behaviorObj._resetFieldError({target: null}));
             });
