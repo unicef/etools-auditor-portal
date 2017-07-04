@@ -16,7 +16,7 @@ module.exports = function testElements(done) {
         let indexFileName = files.shift();
 
         if (!indexFileName) {
-            endedWithErrors(withErrors);
+            testsEnded(withErrors);
             done();
             return;
         }
@@ -44,10 +44,6 @@ module.exports = function testElements(done) {
         tests.stderr.on('data', (data) => {
             console.log(`${data}`);
             withErrors = true;
-
-            if (argv.pc) {
-                endedWithErrors(withErrors);
-            }
         });
 
         tests.on('close', (code) => {
@@ -56,9 +52,12 @@ module.exports = function testElements(done) {
         });
     }
 
-    function endedWithErrors(withErrors) {
+    function testsEnded(withErrors) {
         if (withErrors) {
             console.log(`\x1b[31mTests failed! See above for more details.\x1b[0m`);
+        }
+
+        if (withErrors && argv.pc) {
             process.exit(1);
         }
     }
