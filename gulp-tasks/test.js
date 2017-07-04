@@ -21,12 +21,18 @@ module.exports = function testElements(done) {
             return;
         }
 
-        let tests = spawn('npm', ['test', `./build/tests/${indexFileName}`]);
+        let tests;
+        if (argv.noxvfb) {
+            tests = spawn('node', ['./node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
+        } else {
+            tests = spawn('xvfb-run', ['./node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
+        }
+
 
         console.log(`\x1b[32mRunning ${indexFileName}.\x1b[0m`);
 
         tests.stdout.on('data', (data) => {
-            if (~data.indexOf('✖') || ~data.indexOf('Tests failed:')) {
+            if (~data.indexOf('✖') || ~data.indexOf('Tests failed')) {
                 data = `\x1b[31m${data}\x1b[0m`;
                 withErrors = true;
             } else if (~data.indexOf('ended with great success')) {
@@ -38,6 +44,7 @@ module.exports = function testElements(done) {
         tests.stderr.on('data', (data) => {
             console.log(`${data}`);
             withErrors = true;
+
             if (argv.pc) {
                 endedWithErrors(withErrors);
                 process.exit(1);

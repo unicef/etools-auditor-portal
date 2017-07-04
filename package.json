@@ -63,7 +63,6 @@
     "through2": "^2.0.3"
   },
   "scripts": {
-    "test": "xvfb-run ./node_modules/.bin/wct",
     "postinstall": "ln -s -f ../../hooks/pre-commit .git/hooks/pre-commit && chmod +x hooks/pre-commit"
   }
 }

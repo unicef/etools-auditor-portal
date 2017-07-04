@@ -1,1 +1,1 @@
-sleep 10 && /code/node_modules/.bin/gulp test
+sleep 10 && /code/node_modules/.bin/gulp test --pc --noxvfb
