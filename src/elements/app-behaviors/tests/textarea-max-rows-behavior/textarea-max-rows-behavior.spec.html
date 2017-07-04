@@ -106,11 +106,10 @@
                 assert.equal(textareaAutogrow.style.maxHeight, '');
                 assert.isNotFalse(myEl.setMaxHeight(paperTextarea));
 
-                this.timeout(100);
                 setTimeout(function () {
                     assert.equal(textareaAutogrow.style.maxHeight, `${lineHeight * maxRows + 5}px`);
                     done();
-                }, 10);
+                }, 50);
             });
         });
     });

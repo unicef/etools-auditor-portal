@@ -1,1 +1,1 @@
-sleep 10 && /code/node_modules/.bin/wct ./build/tests/index.spec.html
+sleep 10 && /code/node_modules/.bin/gulp test --pc --noxvfb
