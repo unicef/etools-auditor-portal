@@ -47,7 +47,6 @@ module.exports = function testElements(done) {
 
             if (argv.pc) {
                 endedWithErrors(withErrors);
-                process.exit(1);
             }
         });
 
@@ -60,6 +59,7 @@ module.exports = function testElements(done) {
     function endedWithErrors(withErrors) {
         if (withErrors) {
             console.log(`\x1b[31mTests failed! See above for more details.\x1b[0m`);
+            process.exit(1);
         }
     }
 };
