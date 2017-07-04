@@ -128,6 +128,11 @@
                 bottom: -18px;
                 left: 33px;
             }
+
+            &.multi-line .status-header {
+                position: absolute;
+                bottom: 0;
+            }
         }
 
         &.active,

@@ -234,7 +234,7 @@
             it('fires toast with error message when trying to submit not filled data and edit dialog is closed', function () {
                 let errorData = {low_risk: 'This field is required.'};
                 let spy = sinon.spy(myEl, 'fire');
-                this.dialogOpened = false;
+                myEl.dialogOpened = false;
 
                 assert.isFalse(spy.called);
                 myEl._errorHandler(errorData);

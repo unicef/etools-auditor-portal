@@ -42,7 +42,6 @@ gulp.task('watch', function () {
   gulp.watch(['./src/elements/**/*.*'], gulp.series(jsLinter, buildElements));
   gulp.watch(['./src/*.*', './src/assets/**/*.*'], gulp.series(copyAssets));
   gulp.watch(['./src/bower_components/**/*.*'], gulp.series(copyBower));
-  gulp.watch(['./src/elements/**/*.spec.html'], gulp.series(runTests));
 });
 
 gulp.task('lint', gulp.series(jsLinter));
