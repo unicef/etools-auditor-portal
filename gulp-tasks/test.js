@@ -35,26 +35,27 @@ module.exports = function testElements(done) {
             if (~data.indexOf('✖') || ~data.indexOf('Tests failed')) {
                 data = `\x1b[31m${data}\x1b[0m`;
                 withErrors = true;
-            } else if (~data.indexOf('ended with great success')) {
-                data = `\x1b[32m${data}\x1b[0m`;
+            } else if (~data.indexOf('ended with great success') || data.indexOf('404') === 0) {
+                return;
             }
             console.log(`${data}`);
         });
 
         tests.stderr.on('data', (data) => {
-            console.log(`${data}`);
+            console.log(data);
             withErrors = true;
         });
 
-        tests.on('close', (code) => {
+        tests.on('close', () => {
             runTests(files);
-            done();
         });
     }
 
     function testsEnded(withErrors) {
         if (withErrors) {
             console.log(`\x1b[31mTests failed! See above for more details.\x1b[0m`);
+        } else {
+            console.log('\x1b[32mTest run ended with great success.\x1b[0m')
         }
 
         if (withErrors && argv.pc) {

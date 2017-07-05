@@ -59,7 +59,7 @@ function buildElements(done) {
             let testsPerFile = 24;
             let indexFilesLength = Math.ceil(testSources.length / testsPerFile) || 1;
 
-            console.log(`\x1b[32mFound ${testSources.length} test files. They will be combined into ${indexFilesLength} files.\x1b[0m`);
+            console.log(`\x1b[32mFound ${testSources.length} test files. They will be combined into ${indexFilesLength} file(s).\x1b[0m`);
 
             for (let i = 0; i < indexFilesLength; i++) {
                 fs.writeFileSync(`./build/tests/index${i + 1}.spec.html`, fs.readFileSync('./src/tests/index.spec.html'));
