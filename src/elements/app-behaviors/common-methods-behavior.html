@@ -64,7 +64,29 @@
                 this.requestInProcess = false;
                 this.dialogOpened = false;
             }
-        }
+        },
+
+        getLabel: function(path, base) {
+            if (!base) { return ''; }
+            return this.getFieldAttribute(`${base}.${path}`, 'label');
+        },
+
+        getMaxLength: function(path, base) {
+            if (!base) { return ''; }
+            return this.getFieldAttribute(`${base}.${path}`, 'max_length');
+        },
+
+        getPlaceholderText: function(path, base, readonly) {
+            if (this.isReadonly(`${base}.${path}`) || readonly) { return 'Empty Field' }
+
+            let label = this.getLabel(path, base);
+            return `Enter ${label}`;
+        },
+
+        _showPrefix: function(path, base, value, readonly) {
+            return (!this.isReadonly(`${base}.${path}`) && !readonly) || !!value;
+        },
+
     };
 
     APBehaviors.CommonMethodsBehavior = [
