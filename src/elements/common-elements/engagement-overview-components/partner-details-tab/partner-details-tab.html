@@ -39,10 +39,11 @@
                             custom-object-options dynamic-align
                             option-value="id"
                             option-label="name"
-                            label="Partner"
+                            label="[[getLabel('partner', basePermissionPath)]]"
                             on-focus="_resetFieldError"
                             on-value-change="_requestPartner"
-                            placeholder="Select Partner"></etools-searchable-multiselection-menu>
+                            placeholder="[[getPlaceholderText('partner', basePermissionPath)]]">
+                    </etools-searchable-multiselection-menu>
 
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                 </div>
