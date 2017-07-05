@@ -79,12 +79,11 @@
 
             it('\'static-data-loaded\' or \'user-profile-loaded\' call method _initialDataLoaded', () => {
                 sinon.spy(myEl, '_initialDataLoaded');
-                myEl.routeData = {page: 'test'};
+                assert.isFalse(myEl._initialDataLoaded.called);
                 myEl.fire('user-profile-loaded');
                 assert.isTrue(myEl._initialDataLoaded.called);
                 myEl.fire('static-data-loaded');
                 assert.isTrue(myEl._initialDataLoaded.called);
-                assert.equal(myEl.page, 'test');
                 myEl._initialDataLoaded.restore();
             });
 
