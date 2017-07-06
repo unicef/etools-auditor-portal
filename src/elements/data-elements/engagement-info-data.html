@@ -112,7 +112,7 @@
             _idChanged: function(id) {
                 if (!id || isNaN(id) || !this.engagementType) { return; }
                 if (+id === this.lastId) {
-                    this.lastError ? this._handleError() : this._handleResponse();
+                    this.lastError ? this._handleError() : this._handleResponse(this.responseData);
                     return;
                 }
 

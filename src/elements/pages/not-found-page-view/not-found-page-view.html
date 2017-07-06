@@ -1,4 +1,4 @@
-<!--import [polymer, shared-styles, page-layout-styles]-->
+<!--import [polymer, shared-styles, page-layout-styles, etools-app-config]-->
 
 <dom-module id="not-found-page-view">
     <template>
@@ -17,7 +17,7 @@
 
         <div id="pageContent">
             <paper-material elevation="1">
-                404 <a href="/partners/list" class="link">Head back home.</a>
+                404 <a href$="[[getLink()]]" class="link">Head back home.</a>
             </paper-material>
         </div>
 
@@ -28,6 +28,14 @@
 
         Polymer({
             is: 'not-found-page-view',
+
+            behaviors: [
+                etoolsAppConfig.globals
+            ],
+
+            getLink: function() {
+                return this.getAbsolutePath('engagements/list');
+            },
 
             openDrawer: function() {
                 this.fire('drawer');
