@@ -32,14 +32,14 @@
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Purchase Order -->
-                    <paper-input label="[[getLabel('agreement', basePermissionPath)]]"
+                    <paper-input label="[[getLabel('agreement.order_number', basePermissionPath)]]"
                                  id="purchaseOrder"
                                  field="agreement"
                                  maxlength="30"
                                  class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
                                  value="{{data.agreement.order_number}}"
                                  allowed-pattern="[\d]"
-                                 placeholder="[[getPlaceholderText('agreement', basePermissionPath)]]"
+                                 placeholder="[[getPlaceholderText('agreement.order_number', basePermissionPath)]]"
                                  invalid$="{{_checkInvalid(errors.agreement)}}"
                                  error-message="{{errors.agreement}}"
                                  required$="{{_setRequired('agreement', basePermissionPath)}}"
@@ -52,24 +52,24 @@
 
                 <div class="input-container">
                     <!-- Auditor -->
-                    <paper-input label="Auditor"
+                    <paper-input label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
                                  class="without-border"
                                  disabled readonly
                                  id="auditorInput"
                                  value="[[data.agreement.auditor_firm.name]]"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('agreement.auditor_firm.name', basePermissionPath)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- PO Date -->
-                    <paper-input label="PO Date"
+                    <paper-input label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
                                  class="without-border"
                                  disabled readonly
                                  id="contractStartDateInput"
                                  value="[[prettyDate(data.agreement.contract_start_date)]]"
                                  on-down="openDatePicker"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('agreement.contract_start_date', basePermissionPath)]]">
                         <iron-icon prefix icon="date-range"></iron-icon>
                     </paper-input>
                 </div>
@@ -79,7 +79,7 @@
 
                 <div class="input-container">
                     <!-- Contract Expiry Date -->
-                    <paper-input label="Contract Expiry Date"
+                    <paper-input label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
                                  class$="disabled-as-readonly {{_setRequired('contract_end_date', poPermissionPath)}} validate-field"
                                  required="{{_setRequired('contract_end_date', poPermissionPath)}}"
                                  disabled$="[[isReadOnly('contract_end_date', poPermissionPath, poUpdating)]]"
@@ -91,7 +91,7 @@
                                  on-down="openDatePicker"
                                  data-selector="contractEndDate"
                                  on-focus="_resetFieldError"
-                                 placeholder="Select Contract Expiry Date">
+                                 placeholder="[[getPlaceholderText('agreement.contract_end_date', basePermissionPath)]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="contractEndDate"

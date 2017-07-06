@@ -85,19 +85,19 @@
 
                 <div class="input-container">
                     <!-- Partner Phone Number -->
-                    <paper-input label="Partner Phone Number"
+                    <paper-input label="[[getLabel('partner.phone_number', basePermissionPath)]]"
                                  class="without-border"
                                  value="{{partner.phone_number}}"
-                                 placeholder="Empty Field"
+                                 placeholder="[[getPlaceholderText('partner.phone_number', basePermissionPath)]]"
                                  disabled readonly></paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
-                    <paper-input label="Partner E-mail Address"
+                    <paper-input label="[[getLabel('partner.email', basePermissionPath)]]"
                                  class="without-border"
                                  value="{{partner.email}}"
-                                 placeholder="Empty Field"
+                                 placeholder="[[getPlaceholderText('partner.email', basePermissionPath)]]"
                                  disabled readonly></paper-input>
                 </div>
             </div>

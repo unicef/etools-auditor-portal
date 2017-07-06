@@ -15,7 +15,7 @@
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Date of Field Visit -->
-                    <paper-input label="Date of Field Visit"
+                    <paper-input label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
                                  id="dateVisitInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_field_visit', true, false, basePermissionPath)]]"
@@ -28,7 +28,7 @@
                                  required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('date_of_field_visit', basePermissionPath)]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="dateVisit"
@@ -41,7 +41,7 @@
                 </div>
                 <div class="input-container">
                     <!-- Draft Report Issued to IP -->
-                    <paper-input label="Draft Report Issued to IP"
+                    <paper-input label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
                                  id="draftReportToIpInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip, basePermissionPath)]]"
@@ -54,7 +54,7 @@
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
                                  required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('date_of_draft_report_to_ip', basePermissionPath)]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="draftReportToIp"
@@ -68,7 +68,7 @@
                 </div>
                 <div class="input-container">
                     <!-- Comments Received by IP -->
-                    <paper-input label="Comments Received by IP"
+                    <paper-input label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
                                  id="commentsReceivedByIpInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
@@ -81,7 +81,7 @@
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
                                  required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('date_of_comments_by_ip', basePermissionPath)]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="commentsReceivedByIp"
@@ -98,7 +98,7 @@
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Draft Report Issued to UNICEF -->
-                    <paper-input label="Draft Report Issued to UNICEF"
+                    <paper-input label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
                                  id="draftReportUnicefInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
@@ -111,7 +111,7 @@
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
                                  required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('date_of_draft_report_to_unicef', basePermissionPath)]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="draftReportUnicef"
@@ -126,7 +126,7 @@
                 </div>
                 <div class="input-container">
                     <!-- Comments Received by UNICEF -->
-                    <paper-input label="Comments Received by UNICEF"
+                    <paper-input label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
                                  id="commentsReceivedUnicefInput"
                                  class$="disabled-as-readonly [[_setRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
                                  disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
@@ -139,7 +139,7 @@
                                  validator="dateValidator"
                                  on-focus="_resetFieldError"
                                  required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('date_of_comments_by_unicef', basePermissionPath)]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="commentsReceivedUnicef"

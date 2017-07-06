@@ -1,6 +1,6 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons, etools-content-panel,
             etools-currency-amount-input, etools-searchable-multiselection-menu]-->
-<!--import [list-header, list-element]-->
+<!--import [list-header, list-element, common-methods-behavior]-->
 <!--import [tab-inputs-styles, module-styles, dialog-element, lodash, table-elements-behavior, permission-controller, textarea-max-rows-behavior]-->
 
 <dom-module id="financial-findings">
@@ -56,9 +56,9 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Title -->
-                            <paper-input label="Title (Category)"
+                            <paper-input label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
                                          value="{{editedItem.title}}"
-                                         placeholder="Enter Title"
+                                         placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
                                          on-focus="_resetFieldError"
                                          class$="disabled-as-readonly validate-input [[_setRequired('title', basePermissionPath)]]"
                                          required$="[[_setRequired('title', basePermissionPath)]]"
@@ -73,7 +73,7 @@
                         <div class="input-container input-container-l">
                             <!-- Amount (local) -->
                             <etools-currency-amount-input
-                                    label="Amount (local)"
+                                    label="[[getLabel('financial_finding_set.local_amount', basePermissionPath)]]"
                                     currency=""
                                     class$="disabled-as-readonly validate-input {{_setRequired('local_amount', basePermissionPath)}}"
                                     required$="[[_setRequired('local_amount', basePermissionPath)]]"
@@ -83,7 +83,7 @@
                                     invalid$="[[errors.local_amount]]"
                                     error-message="{{errors.local_amount}}"
                                     on-focus="_resetFieldError"
-                                    placeholder="&#8212;">
+                                    placeholder="[[getPlaceholderText('financial_finding_set.local_amount', basePermissionPath)]]">
                             </etools-currency-amount-input>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                         <div class="input-container input-container-l">
                             <!-- Amount USD -->
                             <etools-currency-amount-input
-                                    label="Amount USD"
+                                    label="[[getLabel('financial_finding_set.amount', basePermissionPath)]]"
                                     currency="$"
                                     class$="disabled-as-readonly validate-input {{_setRequired('amount', basePermissionPath)}}"
                                     required$="[[_setRequired('amount', basePermissionPath)]]"
@@ -101,18 +101,18 @@
                                     error-message$="[[errors.amount]]"
                                     value="{{editedItem.amount}}"
                                     on-focus="_resetFieldError"
-                                    placeholder="&#8212;">
+                                    placeholder="[[getPlaceholderText('financial_finding_set.amount', basePermissionPath)]]">
                             </etools-currency-amount-input>
                         </div>
                     </div>
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Description -->
-                            <paper-textarea label="Description"
+                            <paper-textarea label="[[getLabel('financial_finding_set.description', basePermissionPath)]]"
                                             max-rows="4"
                                             value="{{editedItem.description}}"
                                             allowed-pattern="[\d\s]"
-                                            placeholder="Enter Description"
+                                            placeholder="[[getPlaceholderText('financial_finding_set.description', basePermissionPath)]]"
                                             class$="disabled-as-readonly fixed-width validate-input [[_setRequired('description', basePermissionPath)]]"
                                             required$="[[_setRequired('description', basePermissionPath)]]"
                                             disabled$="[[requestInProcess]]"
@@ -125,11 +125,11 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="Recommendation"
+                            <paper-textarea label="[[getLabel('financial_finding_set.recommendation', basePermissionPath)]]"
                                             max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
-                                            placeholder="Enter Recommendation"
+                                            placeholder="[[getPlaceholderText('financial_finding_set.recommendation', basePermissionPath)]]"
                                             class$="disabled-as-readonly fixed-width validate-input [[_setRequired('recommendation', basePermissionPath)]]"
                                             required$="[[_setRequired('recommendation', basePermissionPath)]]"
                                             disabled$="[[requestInProcess]]"
@@ -142,11 +142,11 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- IP comments -->
-                            <paper-textarea label="IP comments"
+                            <paper-textarea label="[[getLabel('financial_finding_set.ip_comments', basePermissionPath)]]"
                                             max-rows="4"
                                             value="{{editedItem.ip_comments}}"
                                             allowed-pattern="[\d\s]"
-                                            placeholder="Enter IP comments"
+                                            placeholder="[[getPlaceholderText('financial_finding_set.ip_comments', basePermissionPath)]]"
                                             class$="disabled-as-readonly fixed-width validate-input [[_setRequired('ip_comments', basePermissionPath)]]"
                                             required$="[[_setRequired('ip_comments', basePermissionPath)]]"
                                             disabled$="[[requestInProcess]]"

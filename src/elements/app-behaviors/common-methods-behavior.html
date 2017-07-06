@@ -68,12 +68,12 @@
 
         getLabel: function(path, base) {
             if (!base) { return ''; }
-            return this.getFieldAttribute(`${base}.${path}`, 'label');
+            return this.getFieldAttribute(`${base}.${path}`, 'label', 'GET');
         },
 
         getMaxLength: function(path, base) {
             if (!base) { return ''; }
-            return this.getFieldAttribute(`${base}.${path}`, 'max_length');
+            return this.getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
         },
 
         getPlaceholderText: function(path, base, readonly) {

@@ -5,7 +5,8 @@ Polymer({
 
     behaviors: [
         APBehaviors.StaticDataController,
-        APBehaviors.TableElementsBehavior
+        APBehaviors.TableElementsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
 
     properties: {
