@@ -69,7 +69,7 @@
                                  id="contractStartDateInput"
                                  value="[[prettyDate(data.agreement.contract_start_date)]]"
                                  on-down="openDatePicker"
-                                 placeholder="[[getPlaceholderText('agreement.contract_start_date', basePermissionPath)]]">
+                                 placeholder="&#8212;">
                         <iron-icon prefix icon="date-range"></iron-icon>
                     </paper-input>
                 </div>
@@ -91,7 +91,7 @@
                                  on-down="openDatePicker"
                                  data-selector="contractEndDate"
                                  on-focus="_resetFieldError"
-                                 placeholder="[[getPlaceholderText('agreement.contract_end_date', basePermissionPath)]]">
+                                 placeholder="&#8212;">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="contractEndDate"
@@ -118,7 +118,7 @@
                                  on-down="openDatePicker"
                                  data-selector="contactedDate"
                                  on-focus="_resetFieldError"
-                                 placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath)]]">
+                                 placeholder="&#8212;">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="contactedDate"
@@ -172,7 +172,7 @@
                                      on-focus="_resetFieldError"
                                      on-down="openDatePicker"
                                      data-selector="periodStartDate"
-                                     placeholder="[[getPlaceholderText('start_date', basePermissionPath)]]">
+                                     placeholder="&#8212;">
                             <etools-datepicker-button prefix
                                                       modal="[[datepickerModal]]"
                                                       id="periodStartDate"
@@ -199,7 +199,7 @@
                                      on-focus="_resetFieldError"
                                      on-down="openDatePicker"
                                      data-selector="periodEndDate"
-                                     placeholder="[[getPlaceholderText('end_date', basePermissionPath)]]">
+                                     placeholder="&#8212;">
                             <etools-datepicker-button prefix
                                                       modal="[[datepickerModal]]"
                                                       id="periodEndDate"
