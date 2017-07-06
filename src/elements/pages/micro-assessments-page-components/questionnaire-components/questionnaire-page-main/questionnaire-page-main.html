@@ -62,6 +62,12 @@
                 min-width: 0 !important;
                 padding: 0 24px !important;
             }
+
+            etools-searchable-multiselection-menu {
+                --esmm-list-wrapper: #{"{
+                    max-height: 180px;
+                }"};
+            }
         </style>
 
         <etools-content-panel class="totals" panel-title$="OVERAL RISK RATING - [[getRating(questionnaire.risk_rating, riskRatingOptions)]]" open="{{overalRiskOpen}}">
