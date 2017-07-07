@@ -32,6 +32,12 @@
     }
 }
 
+#fileType {
+    --esmm-list-wrapper: #{"{
+        max-height: 180px;
+    }"};
+}
+
 paper-input-container {
     margin: 0 12px;
 

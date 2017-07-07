@@ -21,8 +21,8 @@
                 <div class="input-container input-container-l">
                     <!-- Recommendation -->
                     <paper-textarea
-                            label="Recommendation"
-                            placeholder="Enter recommendation"
+                            label="[[getLabel('recommendation', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('recommendation', basePermissionPath)]]"
                             value="{{data.recommendation}}"
                             on-focus="_resetFieldError"
                             class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
@@ -39,8 +39,8 @@
                 <div class="input-container input-container-l">
                     <!-- Audit Observation -->
                     <paper-textarea
-                            label="Audit Observation"
-                            placeholder="Enter observation"
+                            label="[[getLabel('audit_observation', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('audit_observation', basePermissionPath)]]"
                             value="{{data.audit_observation}}"
                             on-focus="_resetFieldError"
                             class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
@@ -57,8 +57,8 @@
                 <div class="input-container input-container-l">
                     <!-- IP Response -->
                     <paper-textarea
-                            label="IP Response"
-                            placeholder="Enter response"
+                            label="[[getLabel('ip_response', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('ip_response', basePermissionPath)]]"
                             value="{{data.ip_response}}"
                             on-focus="_resetFieldError"
                             class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"

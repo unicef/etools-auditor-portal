@@ -232,8 +232,17 @@
         });
 
         describe('method _refactorCurrency(value)', function () {
-            it('interprets bad value as 0', function () {
-                assert.equal(myEl._refactorCurrency([]), '0.00');
+            it('returns undefined if value is bad', function () {
+                assert.isUndefined(myEl._refactorCurrency(null), 'null');
+                assert.isUndefined(myEl._refactorCurrency(false), 'false');
+                assert.isUndefined(myEl._refactorCurrency(undefined), 'undefined');
+                assert.isUndefined(myEl._refactorCurrency('sdf'), 'string');
+                assert.isUndefined(myEl._refactorCurrency(''), 'empty string');
+                assert.isUndefined(myEl._refactorCurrency(NaN), 'NaN');
+            });
+
+            it('converts 0 to "0.00"', function () {
+                assert.equal(myEl._refactorCurrency(0), '0.00');
             });
 
             it('refactores value to currency format', function () {

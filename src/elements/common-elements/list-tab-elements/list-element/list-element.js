@@ -144,7 +144,7 @@ Polymer({
         }
     },
     _refactorCurrency: function(value) {
-        value = +value || 0;
+        if ((!value || isNaN(+value)) && value !== 0) { return; }
         return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
     },
     _refactorPercents: function(value) {

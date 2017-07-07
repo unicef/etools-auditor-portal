@@ -55,9 +55,9 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Finding -->
-                            <paper-input label="Finding"
+                            <paper-input label="[[getLabel('findings.finding', basePermissionPath)]]"
                                          value="{{editedItem.finding}}"
-                                         placeholder="Enter finding"
+                                         placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
                                          on-focus="_resetFieldError"
                                          maxlength="400"
                                          class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
@@ -72,11 +72,11 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="Recommendation"
+                            <paper-textarea label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                                             max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
-                                            placeholder="Enter recommendation"
+                                            placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
                                             max-rows="4"
                                             class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"
                                             disabled="{{requestInProcess}}"

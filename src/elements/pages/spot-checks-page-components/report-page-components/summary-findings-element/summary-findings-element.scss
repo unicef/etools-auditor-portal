@@ -36,3 +36,9 @@ etools-content-panel {
             padding: 0;
         }'};
 }
+
+etools-searchable-multiselection-menu {
+    --esmm-list-wrapper: #{"{
+        max-height: 360px;
+    }"};
+}
