@@ -78,6 +78,7 @@ Polymer({
                 return pd.id;
             });
             this.set('activePd', activePd);
+            return true;
         }
     },
 

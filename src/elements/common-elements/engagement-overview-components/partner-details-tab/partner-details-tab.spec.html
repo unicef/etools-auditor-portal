@@ -118,6 +118,47 @@
             });
         });
 
+        describe('method _setActivePd()', function () {
+            it('returns when method isReadOnly() returns false', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(false);
+                myEl.activePd = null;
+
+                assert.isUndefined(myEl._setActivePd());
+            });
+
+            it('returns when activePd is defined', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                myEl.activePd = [];
+
+                assert.isUndefined(myEl._setActivePd());
+            });
+
+            it('returns if isReadOnly() returns true, activePd is not defined, but engagement is not defined', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                myEl.activePd = null;
+                myEl.engagement = null;
+
+                assert.isUndefined(myEl._setActivePd());
+            });
+
+            it('returns if isReadOnly() returns true, activePd is not defined, but engagement.active_pd is not defined', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                myEl.activePd = null;
+                myEl.engagement = {active_pd: null};
+
+                assert.isUndefined(myEl._setActivePd());
+            });
+
+            it('sets activePd property and returns true', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                myEl.activePd = null;
+                myEl.engagement = {active_pd: [{id: 1}, {id: 2}, {id: 3}]};
+
+                assert.isTrue(myEl._setActivePd());
+                assert.deepEqual(myEl.activePd, [1, 2, 3]);
+            });
+        });
+
         describe('method _requestPartner', function() {
             it('returns if requestInProcess is true', function() {
                 sinon.spy(myEl, 'set');
@@ -165,8 +206,24 @@
                 assert.isTrue(myEl._requestPartner(null, 12));
                 assert.isTrue(myEl.requestInProcess);
             })
-        })
+        });
 
+        describe('method isPdReadonly(basePermissionPath, requestInProcess, partner)', function () {
+            it('returns true when method isReadOnly() returns true', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(true);
+                assert.isTrue(myEl.isPdReadonly('path', true, {id: 1}));
+            });
+
+            it('returns true when partner.id is not defined', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(false);
+                assert.isTrue(myEl.isPdReadonly('path', false, {id: undefined}));
+            });
+
+            it('returns false when method isReadOnly() returns false and partner.id is defined', function () {
+                sinon.stub(myEl, 'isReadOnly').returns(false);
+                assert.isFalse(myEl.isPdReadonly('path', false, {id: 1}));
+            });
+        });
     });
 </script>
 
