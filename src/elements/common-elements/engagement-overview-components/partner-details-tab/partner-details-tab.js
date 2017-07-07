@@ -27,7 +27,8 @@ Polymer({
 
     observers: [
         '_engagementChanged(engagement.partner)',
-        '_errorHandler(errorObject)'
+        '_errorHandler(errorObject)',
+        '_setActivePd(activePd)'
     ],
 
     listeners: {
@@ -58,6 +59,7 @@ Polymer({
 
     _resetFieldError: function() {
         this.set('errors.partner', false);
+        this.set('errors.active_pd', false);
     },
 
     _setReadonlyClass: function(inProcess, basePermissionPath) {
@@ -68,15 +70,28 @@ Polymer({
         }
     },
 
+    _setActivePd: function() {
+        if (this.isReadOnly('partner', this.basePermissionPath) && !this.activePd) {
+            if (!this.engagement || !this.engagement.active_pd) { return; }
+
+            let activePd = this.engagement.active_pd.map((pd) => {
+                return pd.id;
+            });
+            this.set('activePd', activePd);
+        }
+    },
+
     _requestPartner: function(event, id) {
         if (this.requestInProcess) { return; }
 
         this.set('partner', {});
+        this.set('activePd', null);
 
         let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || id;
         if (!partnerId) { return; }
         if (this.isReadOnly('partner', this.basePermissionPath)) {
             this.partner = this.engagement.partner;
+            this.set('partner.interventions', this.engagement.active_pd);
             return;
         }
 
@@ -93,17 +108,27 @@ Polymer({
     _engagementChanged: function(partner) {
         if (!partner) {
             this.set('partner', {});
+            this.set('activePd', null);
         } else {
             this._requestPartner(null, partner.id);
         }
     },
 
     getPartnerData: function() {
-        let partner = null;
         if (!this.originalData || this.originalData.partner.id !== this.engagement.partner.id) {
-            partner = this.engagement.partner.id;
+            let partnerId = this.engagement.partner.id;
+
+            return {
+                partner: partnerId,
+                active_pd: this.activePd
+            };
+        } else {
+            return null;
         }
-        return partner;
+    },
+
+    isPdReadonly: function(basePermissionPath, requestInProcess, partner) {
+        return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
     }
 
 });

@@ -32,9 +32,11 @@
             assert.isFalse(myEl.$.partner.invalid);
         });
 
-        it('method _resetFieldError calls set with errors.partner and false arguments', function() {
+        it('method _resetFieldError sets errors.partner and errors.active_pd equal to false', function() {
             sinon.spy(myEl, 'set');
             myEl._resetFieldError();
+            assert.isTrue(myEl.set.calledTwice);
+            assert.isTrue(myEl.set.calledWith('errors.active_pd', false));
             assert.isTrue(myEl.set.calledWith('errors.partner', false));
             myEl.set.restore();
         });
@@ -56,6 +58,7 @@
                 sinon.spy(myEl, 'set');
                 myEl._engagementChanged();
                 assert.isTrue(myEl.set.calledWith('partner', {}));
+                assert.isTrue(myEl.set.calledWith('activePd', null));
                 myEl.set.restore();
             });
 
@@ -83,13 +86,36 @@
             });
         });
 
-        it('method getPartnerData returns null if engagement.partner.id changed or null', function() {
-            myEl.originalData = {partner: {id: 666}};
-            myEl.engagement = {partner: {id: 666}};
-            assert.isNull(myEl.getPartnerData());
+        describe('method getPartnerData', function () {
+            it('returns null if originalData.partner.id === engagement.partner.id', function() {
+                myEl.originalData = {partner: {id: 666}};
+                myEl.engagement = {partner: {id: 666}};
+                assert.isNull(myEl.getPartnerData());
+            });
 
-            myEl.engagement.partner.id = 123;
-            assert.equal(myEl.getPartnerData(), 123);
+            it('returns object with partner id and active_pd if originalData.partner.id !== engagement.partner.id', function() {
+                let returnedData = {
+                    partner: 9,
+                    active_pd: [1, 2, 3]
+                };
+                myEl.originalData = {partner: {id: 666}};
+                myEl.engagement = {partner: {id: 9}};
+                myEl.activePd = [1, 2, 3];
+
+                assert.deepEqual(myEl.getPartnerData(), returnedData);
+            });
+
+            it('returns object with partner id and active_pd if originalData is not defined', function() {
+                let returnedData = {
+                    partner: 9,
+                    active_pd: [1, 2, 3]
+                };
+                myEl.originalData = null;
+                myEl.engagement = {partner: {id: 9}};
+                myEl.activePd = [1, 2, 3];
+
+                assert.deepEqual(myEl.getPartnerData(), returnedData);
+            });
         });
 
         describe('method _requestPartner', function() {
@@ -102,7 +128,7 @@
             });
 
             it('returns if partnerId is not found', function() {
-                sinon.spy(myEl, 'set');
+                sinon.stub(myEl, 'set');
                 sinon.stub(myEl, 'isReadOnly').returns(true);
                 myEl.requestInProcess = false;
                 myEl.engagement = {};
@@ -122,15 +148,16 @@
                 myEl.isReadOnly.restore();
             });
 
-            it('sets partner equal to engagement data if isReadOnly returns true', function() {
+            it('sets partner equal to engagement data if isReadOnly returns true, sets partner.interventions', function() {
                 sinon.stub(myEl, 'isReadOnly').returns(true);
                 var partner = {
                     id: 1,
                     foo: 'bar'
                 };
-                myEl.engagement = {partner: partner};
+                myEl.engagement = {partner: partner, active_pd: [{id: 1}, {id: 2}]};
                 myEl._requestPartner(null, 12);
                 assert.equal(myEl.partner, partner);
+                assert.deepEqual(myEl.partner.interventions, myEl.engagement.active_pd);
             });
 
             it('returns true, sets requestInProcess to true, partnerId if isReadOnly returns false', function() {

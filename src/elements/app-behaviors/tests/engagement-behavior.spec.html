@@ -641,7 +641,7 @@
                 behaviorObj.engagement = {};
                 behaviorObj.getElement = sinon.stub().returns({
                     getEngagementData: function() { return {test: true}; },
-                    getPartnerData: function() { return 'partnerData'; },
+                    getPartnerData: function() { return {partner: true}; },
                     getTabData: function() { return 'staffData'; }
                 });
             });
@@ -659,7 +659,7 @@
                 var data =  behaviorObj._getBasicInfo({})[0];
 
                 assert.isTrue(data.test);
-                assert.equal(data.partner, 'partnerData');
+                assert.isTrue(data.partner);
                 assert.equal(data.staff_members, 'staffData');
             });
             it('returns empty object if all tabs return null', function() {
