@@ -9,12 +9,18 @@
                       modal="{{requestInProcess}}"
                       with-backdrop
                       ok-btn-text="sync from vision">
+            <iron-icon icon="icons:close" class="close-btn" dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}"></iron-icon>
             <h2 class="dialog-title">[[dialogTitle]]<etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="loading"></etools-loading></h2>
-            <slot></slot>
+
+            <template is="dom-if" if="{{!deleteDialog}}" restamp>
+                <slot></slot>
+            </template>
+
             <div class="buttons group" id="buttons">
 
                 <!--Confirm button-->
                 <paper-button autofocus class="btn-confirm right"
+                              delete-btn$="[[deleteDialog]]"
                               on-tap="confirmDialog"
                               disabled="{{requestInProcess}}">[[confirmBtnText]]</paper-button>
 
@@ -23,22 +29,6 @@
                               class="btn-cancel right"
                               disabled="{{requestInProcess}}"
                               on-tap="cancelDialog">[[cancelBtnText]]</paper-button>
-
-
-
-                    <!--Delete buttons-->
-                    <paper-button autofocus id="mainDeleteBtn"
-                                  disabled="{{requestInProcess}}"
-                                  class="main-delete-btn btn-delete left"
-                                  on-tap="_showConfirm"
-                                  hidden$="[[!showDeleteBtn]]"
-                                  hidden-delete$="[[deleteConfirmation]]">Delete</paper-button>
-
-                    <div class="delete-container" id="deleteContainer" confirm-opened$="[[deleteConfirmation]]" hidden$="[[!showDeleteBtn]]">
-                        <div class="text">[[deleteConfirmationText]]</div>
-                        <paper-button autofocus class="btn-delete" disabled="{{requestInProcess}}"  on-tap="sendDeleteEvent">Yes, Delete</paper-button>
-                        <paper-button autofocus class="btn-cancel" disabled="{{requestInProcess}}"  on-tap="_hideDeleteConfirm">No, Cancel</paper-button>
-                    </div>
 
             </div>
         </paper-dialog>
@@ -63,10 +53,6 @@
                     type: String,
                     value: 'Ok'
                 },
-                deleteConfirmationText:{
-                    type: String,
-                    value: 'Are you sure that you want to delete this item?'
-                },
                 opened: {
                     type: Boolean,
                     notify: true,
@@ -81,83 +67,33 @@
                     type: Boolean,
                     value: false
                 },
-                deleteConfirmation: {
-                    type: Boolean,
-                    value: false
-                },
-                showDeleteBtn: {
-                    type: Boolean,
-                    value: false
-                },
                 dialogName: String,
-                animationConfig: {
-                    value: function () {
-                        return {
-                            'showConfirm': [{
-                                name: 'fade-out-animation',
-                                node: this.$.mainDeleteBtn,
-                                timing: {duration: 80}
-                            }, {
-                                name: 'slide-from-left-animation',
-                                node: this.$.deleteContainer,
-                                timing: {duration: 400}
-                            }],
-                            'hideConfirm': [{
-                                name: 'fade-in-animation',
-                                node: this.$.mainDeleteBtn,
-                                timing: {duration: 80, delay: 250}
-                            }, {
-                                name: 'slide-left-animation',
-                                node: this.$.deleteContainer,
-                                timing: {duration: 400}
-                            }]
-                        }
-                    }
+                deleteDialog: {
+                    type: Boolean,
+                    value: false,
+                    observer: 'test'
                 }
             },
-            listeners: {
-                'neon-animation-finish': '_onNeonAnimationFinish'
+            test: function(d) {
+                console.log(d)
             },
             _setDialogDismiss: function(requestInProcess, confirmDialogOpened) {
                 return !requestInProcess && !confirmDialogOpened;
             },
             confirmDialog: function() {
-                if (this.deleteConfirmation) { this._hideDeleteConfirm()}
-                this.fire('dialog-confirmed', {dialogName: this.dialogName});
+                if (this.deleteDialog) {
+                    this.fire('delete-confirmed', {dialogName: this.dialogName});
+                } else {
+                    this.fire('dialog-confirmed', {dialogName: this.dialogName});
+                }
             },
             cancelDialog: function() {
                 this.fire('dialog-cancelled', {dialogName: this.dialogName});
-            },
-            sendDeleteEvent: function() {
-                this.fire('delete-confirmed', {dialogName: this.dialogName});
             },
             _openedChanged: function(opened) {
                 if (!opened && this.requestInProcess) {
                     this.opened = true;
                 }
-                if (!opened) {
-                    this.animationInProcess = false;
-                    this.deleteConfirmation = false;
-                }
-            },
-            _showConfirm: function() {
-                if (this.animationInProcess || this.deleteConfirmation) { return; }
-                this.animationInProcess = true;
-                this.playAnimation('showConfirm');
-            },
-            _hideDeleteConfirm: function() {
-                if (this.animationInProcess || !this.deleteConfirmation) { return; }
-                this.animationInProcess = true;
-                this.playAnimation('hideConfirm');
-            },
-            _onNeonAnimationFinish: function() {
-                if (!this.animationInProcess) { return; }
-                if (!this.deleteConfirmation) {
-                    this.deleteConfirmation = true;
-                } else {
-                    this.deleteConfirmation = false;
-                }
-                this.animationInProcess = false;
             },
             _stopPropagation: function(event) {
                 event.stopImmediatePropagation();

@@ -103,30 +103,6 @@
             });
         });
 
-        describe('method changePermission', function() {
-            it('returns if basePermissionPath argument is not provided', function() {
-                assert.isUndefined(behaviorObj.changePermission());
-            });
-
-            it('add edit column obj if _canBeChanged returns true and obj does not exists', function() {
-                behaviorObj._canBeChanged = sinon.stub().returns(true);
-                behaviorObj.push = sinon.spy();
-                behaviorObj.columns = [{}];
-
-                behaviorObj.changePermission('test');
-                assert.isTrue(behaviorObj.push.called);
-            });
-
-            it('call pop method if _canBeChanged returns false and obj does exists', function() {
-                behaviorObj._canBeChanged = sinon.stub().returns(false);
-                behaviorObj.pop = sinon.spy();
-                behaviorObj.columns = [{name: 'edit'}];
-
-                behaviorObj.changePermission('test');
-                assert.isTrue(behaviorObj.pop.called);
-            });
-        });
-
         describe('method _setRequired', function() {
             it('returns false if basePermissionPath does not exists', function() {
                 assert.isUndefined(behaviorObj.basePermissionPath);
@@ -162,7 +138,7 @@
             behaviorObj.openAddDialog();
             assert.equal(behaviorObj.dialogTitle, 'Add new Item');
             assert.equal(behaviorObj.confirmBtnText, 'Add');
-            assert.isFalse(behaviorObj.canBeRemoved);
+            assert.isTrue(behaviorObj.addDialog);
             assert.isTrue(behaviorObj.dialogOpened);
         });
 
@@ -191,9 +167,9 @@
                 assert.isTrue(behaviorObj.validate.called);
             });
 
-            it('calls splice if canBeRemoved is true and editedIndex is number', function() {
+            it('calls splice if addDialog is false and editedIndex is number', function() {
                 behaviorObj.validate = sinon.stub().returns(true);
-                behaviorObj.canBeRemoved = true;
+                behaviorObj.addDialog = false;
                 behaviorObj.editedIndex = 0;
                 behaviorObj.originalEditedObj = {};
 
@@ -209,6 +185,7 @@
 
             it('calls push other cases', function() {
                 behaviorObj.validate = sinon.stub().returns(true);
+                behaviorObj.addDialog = true;
 
                 behaviorObj.push = sinon.spy();
                 behaviorObj.resetDialog = sinon.spy();
@@ -225,6 +202,7 @@
                 behaviorObj.fire = sinon.spy();
                 behaviorObj.saveWithButton = false;
                 behaviorObj.dialogOpened = true;
+                behaviorObj.addDialog = true;
 
                 behaviorObj._addItemFromDialog();
 
@@ -293,7 +271,6 @@
                 assert.equal(behaviorObj.dialogTitle, 'Edit Item');
                 assert.equal(behaviorObj.confirmBtnText, 'Save');
                 assert.equal(behaviorObj.editedIndex, 0);
-                assert.isTrue(behaviorObj.canBeRemoved);
                 assert.isTrue(behaviorObj.dialogOpened);
             })
         });
