@@ -5,7 +5,8 @@ Polymer({
 
     behaviors: [
         APBehaviors.TableElementsBehavior,
-        APBehaviors.TextareaMaxRowsBehavior
+        APBehaviors.TextareaMaxRowsBehavior,
+        APBehaviors.CommonMethodsBehavior
     ],
 
     properties: {

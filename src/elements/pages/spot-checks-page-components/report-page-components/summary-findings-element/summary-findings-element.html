@@ -65,19 +65,19 @@
                                     invalid="{{errors.category_of_observation}}"
                                     error-message="{{errors.category_of_observation}}"
                                     on-focus="_resetFieldError"
-                                    label="Category of Observation"
+                                    label="[[getLabel('findings.category_of_observation', basePermissionPath)]]"
                                     option-value="value"
                                     option-label="display_name"
                                     custom-object-options
                                     value="{{editedItem.category_of_observation}}"
                                     update-selected
-                                    placeholder="Select Category"></etools-searchable-multiselection-menu>
+                                    placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]"></etools-searchable-multiselection-menu>
                         </div>
                     </div>
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="Recommendation"
+                            <paper-textarea label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                                             max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
@@ -88,14 +88,15 @@
                                             error-message="{{errors.recommendation}}"
                                             on-focus="_resetFieldError"
                                             always-float-label
-                                            required="{{_setRequired('recommendation', basePermissionPath)}}">
+                                            required="{{_setRequired('recommendation', basePermissionPath)}}"
+                                            placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]">
                             </paper-textarea>
                         </div>
                     </div>
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="Agreed Action by IP"
+                            <paper-textarea label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
                                             max-rows="4"
                                             value="{{editedItem.agreed_action_by_ip}}"
                                             allowed-pattern="[\d\s]"
@@ -106,14 +107,15 @@
                                             error-message="{{errors.agreed_action_by_ip}}"
                                             on-focus="_resetFieldError"
                                             always-float-label
-                                            required="{{_setRequired('agreed_action_by_ip', basePermissionPath)}}">
+                                            required="{{_setRequired('agreed_action_by_ip', basePermissionPath)}}"
+                                            placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]">
                             </paper-textarea>
                         </div>
                     </div>
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Deadline of Action -->
-                            <paper-input label="Deadline of Action"
+                            <paper-input label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
                                          id="deadlineAction"
                                          class$="disabled-as-readonly [[_setRequired('deadline_of_action', basePermissionPath)]]"
                                          value="[[prettyDate(editedItem.deadline_of_action)]]"

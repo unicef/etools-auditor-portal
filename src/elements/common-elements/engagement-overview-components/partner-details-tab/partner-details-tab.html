@@ -39,10 +39,11 @@
                             custom-object-options dynamic-align
                             option-value="id"
                             option-label="name"
-                            label="Partner"
+                            label="[[getLabel('partner', basePermissionPath)]]"
                             on-focus="_resetFieldError"
                             on-value-change="_requestPartner"
-                            placeholder="Select Partner"></etools-searchable-multiselection-menu>
+                            placeholder="[[getPlaceholderText('partner', basePermissionPath)]]">
+                    </etools-searchable-multiselection-menu>
 
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                 </div>
@@ -84,19 +85,19 @@
 
                 <div class="input-container">
                     <!-- Partner Phone Number -->
-                    <paper-input label="Partner Phone Number"
+                    <paper-input label="[[getLabel('partner.phone_number', basePermissionPath)]]"
                                  class="without-border"
                                  value="{{partner.phone_number}}"
-                                 placeholder="Empty Field"
+                                 placeholder="[[getPlaceholderText('partner.phone_number', basePermissionPath)]]"
                                  disabled readonly></paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
-                    <paper-input label="Partner E-mail Address"
+                    <paper-input label="[[getLabel('partner.email', basePermissionPath)]]"
                                  class="without-border"
                                  value="{{partner.email}}"
-                                 placeholder="Empty Field"
+                                 placeholder="[[getPlaceholderText('partner.email', basePermissionPath)]]"
                                  disabled readonly></paper-input>
                 </div>
             </div>

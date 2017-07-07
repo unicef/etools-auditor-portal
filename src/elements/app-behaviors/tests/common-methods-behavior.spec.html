@@ -238,7 +238,7 @@
                 var label = behaviorObj.getLabel('field', 'testLabel');
 
                 assert.equal(label, 'test');
-                assert.isTrue(behaviorObj.getFieldAttribute.calledWith('testLabel.field', 'label'));
+                assert.isTrue(behaviorObj.getFieldAttribute.calledWith('testLabel.field', 'label', 'GET'));
             });
         });
 
@@ -287,7 +287,7 @@
                 var label = behaviorObj.getMaxLength('field', 'testLabel');
 
                 assert.equal(label, 666);
-                assert.isTrue(behaviorObj.getFieldAttribute.calledWith('testLabel.field', 'max_length'));
+                assert.isTrue(behaviorObj.getFieldAttribute.calledWith('testLabel.field', 'max_length', 'GET'));
             });
         });
 
