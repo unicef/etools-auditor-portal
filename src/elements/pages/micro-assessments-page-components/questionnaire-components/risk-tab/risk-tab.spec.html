@@ -139,32 +139,6 @@
             assert.isDefined(data.risk.extra.test);
         });
 
-        describe('method changePermission', function() {
-            it('returns if basePermissionPath argument is not provided', function() {
-                assert.isUndefined(myEl.changePermission());
-            });
-
-            it('add edit column obj if first argument is true and obj does not exists', function() {
-                sinon.spy(myEl, 'push');
-                myEl.columns = [{}];
-
-                myEl.changePermission(true, true);
-                assert.isTrue(myEl.push.called);
-
-                myEl.push.restore();
-            });
-
-            it('call pop method if first argument is false and obj does exists', function() {
-                sinon.spy(myEl, 'pop');
-                myEl.columns = [{name: 'edit'}];
-
-                myEl.changePermission(false, true);
-                assert.isTrue(myEl.pop.called);
-
-                myEl.pop.restore();
-            });
-        });
-
         describe('method openEditDialog', function() {
             it('throws if event.model.item is undefined', function() {
                 assert.throws(myEl.openEditDialog);

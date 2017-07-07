@@ -34,12 +34,6 @@ Polymer({
                         'size': 100,
                         'label': 'Description of Finding',
                         'name': 'finding'
-                    }, {
-                        'size': '45px',
-                        'label': 'Edit',
-                        'name': 'edit',
-                        'align': 'center',
-                        'icon': true
                     }
                 ];
             }
@@ -79,7 +73,6 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)',
         '_errorHandler(errorObject.findings)',
         '_checkNonField(errorObject.findings)'
     ],

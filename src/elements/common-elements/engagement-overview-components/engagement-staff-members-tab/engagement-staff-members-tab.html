@@ -57,8 +57,9 @@
                             no-additional
                             headings="[[columns]]"
                             no-animation>
-                        <div slot="icon" class="edit-icon-slot">
-                            <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                        <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
+                            <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                            <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
                         </div>
                         <div slot="checkbox" class="checkbox">
                             <paper-checkbox on-tap="_isActive"
@@ -89,10 +90,9 @@
         </etools-content-panel>
 
         <dialog-element opened="{{dialogOpened}}"
+                        delete-dialog="[[deleteDialog]]"
                         dialog-title="[[dialogTitle]]"
                         confirm-btn-text="[[confirmBtnText]]"
-                        show-delete-btn="[[canBeRemoved]]"
-                        delete-confirmation-text="Are you sure that you want to delete this Staff Member?"
                         request-in-process="{{requestInProcess}}">
 
             <div class="row-h repeatable-item-container" without-line>
@@ -107,8 +107,8 @@
                                          maxlength="45"
                                          class$="validate-input {{_setRequired('user.email', staffsBase)}} email"
                                          required="{{_setRequired('user.email', staffsBase)}}"
-                                         disabled="{{_emailDisabled(requestInProcess, canBeRemoved, emailChecking)}}"
-                                         readonly$="{{_emailDisabled(requestInProcess, canBeRemoved, emailChecking)}}"
+                                         disabled="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
+                                         readonly$="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
                                          on-focus="_resetFieldError"
                                          on-blur="_checkEmail"
                                          id="emailInput"

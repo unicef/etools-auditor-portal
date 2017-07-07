@@ -56,13 +56,6 @@ Polymer({
                         'property': 'risk.value',
                         'custom': true,
                         'doNotHide': true
-                    },
-                    {
-                        'size': '45px',
-                        'label': 'Edit',
-                        'name': 'edit',
-                        'align': 'center',
-                        'icon': true
                     }
                 ];
             }
@@ -91,22 +84,11 @@ Polymer({
     },
 
     observers: [
-        '_setOpen(disabled, completed, firstRun, questionnaire)',
-        'changePermission(editMode, columns)'
+        '_setOpen(disabled, completed, firstRun, questionnaire)'
     ],
 
     ready: function() {
         this.riskOptions = this.getData('riskOptions');
-    },
-
-    changePermission: function(editMode, columns) {
-        if (!columns) { return; }
-        let editObj = this.columns && this.columns[this.columns.length - 1];
-        if (editMode && editObj && editObj.name !== 'edit') {
-            this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
-        } else if (!editMode && editObj && editObj.name === 'edit') {
-            this.pop('columns');
-        }
     },
 
     showResults: function(completed, open) {

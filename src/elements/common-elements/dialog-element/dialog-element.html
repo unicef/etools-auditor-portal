@@ -70,12 +70,8 @@
                 dialogName: String,
                 deleteDialog: {
                     type: Boolean,
-                    value: false,
-                    observer: 'test'
+                    value: false
                 }
-            },
-            test: function(d) {
-                console.log(d)
             },
             _setDialogDismiss: function(requestInProcess, confirmDialogOpened) {
                 return !requestInProcess && !confirmDialogOpened;

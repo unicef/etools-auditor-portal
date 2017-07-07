@@ -11,7 +11,7 @@
                       details="[[details]]"
                       has-collapse
                       no-animation>
-            <div slot="icon" class="edit-icon-slot">
+            <div slot="hover" class="edit-icon-slot"  hidden$="[[!editMode]]">
                 <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
             </div>
         </list-element>
