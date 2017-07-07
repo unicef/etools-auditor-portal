@@ -279,7 +279,7 @@
                 staffMembersData = this.getElement('#staffMembers').getTabData();
 
             if (engagementDetailsData) { _.assign(data, engagementDetailsData); }
-            if (partnerDetailsData) { data.partner = partnerDetailsData; }
+            if (partnerDetailsData) { _.assign(data, partnerDetailsData); }
             if (staffMembersData) { data.staff_members = staffMembersData; }
 
             return [data, this.engagement.id];
