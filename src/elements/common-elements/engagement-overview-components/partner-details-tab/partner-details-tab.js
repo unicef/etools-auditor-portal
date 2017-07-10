@@ -28,7 +28,8 @@ Polymer({
     observers: [
         '_engagementChanged(engagement.partner)',
         '_errorHandler(errorObject)',
-        '_setActivePd(activePd)'
+        '_setActivePd(activePd)',
+        'updateStyles(basePermissionPath, requestInProcess, partner)',
     ],
 
     listeners: {
