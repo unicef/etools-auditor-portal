@@ -64,12 +64,9 @@
                                  class="without-border"
                                  value="{{partner.city}}"
                                  placeholder="Empty Field"
-                                 disabled readonly></paper-input>
+                                 disabled readonly>
+                    </paper-input>
                 </div>
-
-
-
-
             </div>
 
             <div class="row-h group">
@@ -80,7 +77,8 @@
                                  class="without-border"
                                  value="{{partner.postal_code}}"
                                  placeholder="Empty Field"
-                                 disabled readonly></paper-input>
+                                 disabled readonly>
+                    </paper-input>
                 </div>
 
                 <div class="input-container">
@@ -89,7 +87,8 @@
                                  class="without-border"
                                  value="{{partner.phone_number}}"
                                  placeholder="[[getPlaceholderText('partner.phone_number', basePermissionPath)]]"
-                                 disabled readonly></paper-input>
+                                 disabled readonly>
+                    </paper-input>
                 </div>
 
                 <div class="input-container">
@@ -98,31 +97,35 @@
                                  class="without-border"
                                  value="{{partner.email}}"
                                  placeholder="[[getPlaceholderText('partner.email', basePermissionPath)]]"
-                                 disabled readonly></paper-input>
+                                 disabled readonly>
+                    </paper-input>
                 </div>
             </div>
 
             <div class="row-h group">
-                <etools-searchable-multiselection-menu
-                        options="[[partner.interventions]]"
-                        selected-values="{{activePd}}"
-                        update-selected
-                        class$="[[_setRequired('active_pd', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                        readonly="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                        disabled="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                        invalid="{{_checkInvalid(errors.active_pd)}}"
-                        error-message="{{errors.active_pd}}"
-                        on-focus="_resetFieldError"
-                        required="{{_setRequired('active_pd', basePermissionPath)}}"
-                        dynamic-align
-                        multi
-                        hide-search
-                        custom-object-options
-                        option-value="id"
-                        option-label="number"
-                        label="[[getLabel('active_pd', basePermissionPath)]]"
-                        placeholder="[[getPlaceholderText('active_pd', basePermissionPath)]]">
-                </etools-searchable-multiselection-menu>
+                <div class="input-container input-container-l">
+                    <!-- Active PD -->
+                    <etools-searchable-multiselection-menu
+                            options="[[partner.interventions]]"
+                            selected-values="{{activePd}}"
+                            update-selected
+                            class$="[[_setRequired('active_pd', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
+                            readonly="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            disabled="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            invalid="{{_checkInvalid(errors.active_pd)}}"
+                            error-message="{{errors.active_pd}}"
+                            on-focus="_resetFieldError"
+                            required="{{_setRequired('active_pd', basePermissionPath)}}"
+                            dynamic-align
+                            multi
+                            hide-search
+                            custom-object-options
+                            option-value="id"
+                            option-label="number"
+                            label="[[getLabel('active_pd', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('active_pd', basePermissionPath)]]">
+                    </etools-searchable-multiselection-menu>
+                </div>
             </div>
         </etools-content-panel>
 
