@@ -34,35 +34,6 @@
             myEl = fixture('file-attachments-tab-fixture');
         });
 
-        describe('method _handleDialogCancel(e, detail)', function () {
-            it('calls _openDeleteConfirmation() method and pass their own arguments to him if canBeRemoved is true', function () {
-                let spy = sinon.spy(myEl, '_openDeleteConfirmation');
-                myEl.canBeRemoved = true;
-
-                assert.isFalse(spy.called);
-                myEl._handleDialogCancel('arg1', 'arg2');
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(myEl._openDeleteConfirmation.calledWith('arg1', 'arg2'))
-            });
-
-            it('not calls _openDeleteConfirmation() method if canBeRemoved is false', function () {
-                let spy = sinon.spy(myEl, '_openDeleteConfirmation');
-                myEl.canBeRemoved = false;
-
-                assert.isFalse(spy.called);
-                myEl._handleDialogCancel();
-                assert.isFalse(spy.called);
-            });
-
-            it('called when fired "dialog-cancelled" event', function () {
-                let spy = sinon.spy(myEl, '_handleDialogCancel');
-
-                assert.isFalse(spy.called);
-                myEl.fire('dialog-cancelled');
-                assert.isTrue(spy.calledOnce);
-            });
-        });
-
         describe('method _getFileType(fileType)', function () {
             beforeEach(function () {
                 myEl.fileTypes = _.cloneDeep(fileTypes);
@@ -118,7 +89,7 @@
             });
         });
 
-        describe('method _updateHeadings(allowEdit, readonly, fileTypeRequired)', function () {
+        describe('method _updateHeadings(fileTypeRequired)', function () {
             let headingsTemp;
             let headings = [{
                 'size': '100px',
@@ -132,13 +103,6 @@
                 'custom': true,
                 'doNotHide': true
             }];
-            let editButtonOptions = {
-                'size': '45px',
-                'label': 'Edit',
-                'name': 'edit',
-                'align': 'center',
-                'icon': true
-            };
             let documentTypeOptions = {
                 'size': 35,
                 'label': 'Document Type',
@@ -149,47 +113,10 @@
                 headingsTemp = _.cloneDeep(headings);
             });
 
-            it('not adds editButtonOptions if readonly=true', function (done) {
-                myEl.headings = [];
-                assert.equal(myEl.headings.length, 0);
-                myEl._updateHeadings(true, true);
-
-                flush(function () {
-                    assert.equal(myEl.headings.length, 2);
-                    assert.deepEqual(myEl.headings, headingsTemp);
-                    done();
-                });
-            });
-
-            it('not adds editButtonOptions if allowEdit=false', function (done) {
-                myEl.headings = [];
-                assert.equal(myEl.headings.length, 0);
-                myEl._updateHeadings(false, false);
-
-                flush(function () {
-                    assert.equal(myEl.headings.length, 2);
-                    assert.deepEqual(myEl.headings, headingsTemp);
-                    done();
-                });
-            });
-
-            it('adds editButtonOptions if allowEdit=true && readonly=false', function (done) {
-                myEl.headings = [];
-                headingsTemp.push(_.cloneDeep(editButtonOptions));
-                assert.equal(myEl.headings.length, 0);
-                myEl._updateHeadings(true, false);
-
-                flush(function () {
-                    assert.equal(myEl.headings.length, 3);
-                    assert.deepEqual(myEl.headings, headingsTemp);
-                    done();
-                });
-            });
-
             it('not adds documentTypeOptions if fileTypeRequired is false', function (done) {
                 myEl.headings = [];
                 assert.equal(myEl.headings.length, 0);
-                myEl._updateHeadings(false, true, false);
+                myEl._updateHeadings(false);
 
                 flush(function () {
                     assert.equal(myEl.headings.length, 2);
@@ -202,7 +129,7 @@
                 myEl.headings = [];
                 headingsTemp.splice(1, 0, _.cloneDeep(documentTypeOptions));
                 assert.equal(myEl.headings.length, 0);
-                myEl._updateHeadings(false, false, true);
+                myEl._updateHeadings(true);
 
                 flush(function () {
                     assert.equal(myEl.headings.length, 3);
@@ -572,7 +499,7 @@
                 //valid state
                 myEl.fileTypeRequired = false;
                 myEl.fileTypes = _.cloneDeep(fileTypes);
-                myEl.canBeRemoved = true;
+                myEl.addDialog = false;
             });
 
             it('returns false when fileType is required but fileTypes array is undefined', function (done) {
@@ -611,7 +538,7 @@
             });
 
             it('returns true when file is selected', function (done) {
-                myEl.canBeRemoved = false;
+                myEl.addDialog = true;
                 _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw'});
 
                 flush(function () {
@@ -644,8 +571,8 @@
                 });
             });
 
-            it('returns false if canBeRemoved is false and such file already selected', function () {
-                myEl.canBeRemoved = false;
+            it('returns false if addDialog is true and such file already selected', function () {
+                myEl.addDialog = true;
                 sinon.stub(myEl, '_checkAlreadySelected').returns(true);
                 //file is selected:
                 _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw'});
@@ -653,8 +580,8 @@
                 assert.isFalse(myEl.validate());
             });
 
-            it('returns false and sets fileInvalid if canBeRemoved is false and file is not selected', function () {
-                myEl.canBeRemoved = false;
+            it('returns false and sets fileInvalid if addDialog is true and file is not selected', function () {
+                myEl.addDialog = true;
                 sinon.stub(myEl, '_checkAlreadySelected').returns(false);
                 //file is not selected:
                 _.assign(myEl.editedItem, {file_name: undefined, raw: undefined});

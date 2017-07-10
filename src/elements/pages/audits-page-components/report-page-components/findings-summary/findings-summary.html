@@ -45,7 +45,7 @@
                         no-additional
                         data="[[item]]"
                         headings="[[columns]]">
-                    <div slot="icon" class="edit-icon-slot">
+                    <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                     </div>
                 </list-element>

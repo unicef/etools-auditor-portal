@@ -30,12 +30,6 @@ Polymer({
                     'size': 30,
                     'label': 'Risk rating',
                     'path': 'risk.value.label'
-                }, {
-                    'size': '45px',
-                    'label': 'Edit',
-                    'name': 'edit',
-                    'align': 'center',
-                    'icon': true
                 }];
             }
         },
@@ -72,8 +66,7 @@ Polymer({
         'updateStyles(requestInProcess)',
         '_dataChanged(subjectAreas)',
         '_complexErrorHandler(errorObject.key_internal_weakness)',
-        '_updateCategory(subjectAreas.blueprints, riskOptions)',
-        'changePermission(basePermissionPath)',
+        '_updateCategory(subjectAreas.blueprints, riskOptions)'
     ],
 
     ready: function() {
@@ -94,14 +87,8 @@ Polymer({
         });
     },
 
-    changePermission: function(basePermissionPath) {
-        let readOnly = this.isReadOnly('key_internal_weakness', basePermissionPath);
-
-        if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
-            this.push('columns', {'size': '45px', 'label': 'Edit', 'name': 'edit', 'align': 'center', 'icon': true});
-        } else if (readOnly && this.columns[this.columns.length - 1].name === 'edit') {
-            this.pop('columns');
-        }
+    _canBeChanged: function(basePermissionPath) {
+        return !this.isReadOnly('key_internal_weakness', basePermissionPath);
     },
 
     openEditDialog: function(event) {

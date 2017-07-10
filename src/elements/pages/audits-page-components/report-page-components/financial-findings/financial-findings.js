@@ -53,12 +53,6 @@ Polymer({
                 'label': 'Amount USD',
                 'path': 'amount',
                 'align': 'right'
-            }, {
-                'size': '45px',
-                'label': 'Edit',
-                'name': 'edit',
-                'align': 'center',
-                'icon': true
             }]
         },
         details: {
@@ -104,7 +98,6 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)',
         '_updateFindings(dataItems)',
         '_errorHandler(errorObject.financial_finding_set)',
         '_checkNonField(errorObject.financial_finding_set)'

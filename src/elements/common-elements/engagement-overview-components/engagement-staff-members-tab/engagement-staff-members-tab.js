@@ -68,13 +68,6 @@ Polymer({
                         'align': 'center',
                         'property': 'hasAccess',
                         'checkbox': true
-                    },
-                    {
-                        'size': '45px',
-                        'label': 'Edit',
-                        'name': 'edit',
-                        'align': 'center',
-                        'icon': true
                     }
                 ];
             }
@@ -143,7 +136,7 @@ Polymer({
         '_queriesChanged(listSize, listPage, searchQuery)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-        'updateStyles(emailChecking, staffsBase)'
+        'updateStyles(emailChecking, staffsBase, addDialog)'
     ],
 
     attached: function() {
@@ -155,14 +148,12 @@ Polymer({
     changePermission: function(basePermissionPath) {
         if (!basePermissionPath) { return; }
         let editObj = this.columns && this.columns[this.columns.length - 1];
-        if (this._canBeChanged() && editObj && editObj.name !== 'edit') {
+        if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
             _.each(this.columns, (value, index) => {
                 this.set(`columns.${index}.size`, 18);
             });
             this.push('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
-            this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
         } else if (!this._canBeChanged() && editObj && editObj.name === 'edit') {
-            this.pop('columns');
             this.pop('columns');
             _.each(this.columns, (value, index) => {
                 this.set(`columns.${index}.size`, 20);
@@ -283,8 +274,8 @@ Polymer({
         this.manageEngagementStaff(item);
     },
 
-    _emailDisabled: function(request, editPopup, emailChecking) {
-        return !!(editPopup || request || emailChecking);
+    _emailDisabled: function(request, createPopup, emailChecking) {
+        return !!(!createPopup || request || emailChecking);
     },
 
     _checkEmail: function(event) {
@@ -313,20 +304,15 @@ Polymer({
         return staffLength || 0;
     },
 
-    _addStaffFromDialog: function(event) {
+    _addStaffFromDialog: function() {
         if (this.requestInProcess) { return; }
-
-        if (event && event.detail && event.detail.dialogName === 'deleteConfirm') {
-            this.removeStaff();
-            return;
-        }
 
         if (!this.validate()) { return; }
 
         this.requestInProcess = true;
 
         let item = _.cloneDeep(this.editedItem);
-        if (this.canBeRemoved && !isNaN(this.editedIndex)) {
+        if (!this.addDialog && !isNaN(this.editedIndex)) {
             if (_.isEqual(this.originalEditedObj, this.editedItem)) {
                 this.requestInProcess = false;
                 this.dialogOpened = false;
@@ -356,7 +342,6 @@ Polymer({
             staffIndex: this.editedIndex,
             id: `${this.editedItem.id}/`
         });
-        this.confirmDialogOpened = false;
     },
 
     _staffUpdated: function(event, details) {

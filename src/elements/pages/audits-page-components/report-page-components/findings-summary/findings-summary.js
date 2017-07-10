@@ -100,12 +100,6 @@ Polymer({
                 'label': 'No. of Low Risk',
                 'path': 'low_risk',
                 'align': 'center'
-            }, {
-                'size': '45px',
-                'label': 'Edit',
-                'name': 'edit',
-                'align': 'center',
-                'icon': true
             }]
         }
     },
@@ -116,7 +110,6 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)',
         '_errorHandler(errorObject)',
         '_setDataItems(data)',
         '_setAuditOpinion(data.audit_opinion, auditOpinions)',

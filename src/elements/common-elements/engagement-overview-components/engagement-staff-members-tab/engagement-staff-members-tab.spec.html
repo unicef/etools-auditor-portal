@@ -156,9 +156,8 @@
             });
         });
 
-        it('method removeStaff sets requestInProcess to true, confirmDialogOpened to false, and calls set method', function() {
+        it('method removeStaff sets requestInProcess to true and calls set method', function() {
             myEl.requestInProcess = false;
-            myEl.confirmDialogOpened = true;
             sinon.stub(myEl, 'set');
             myEl.editedIndex = 666;
             myEl.editedItem = {id: 'test'};
@@ -166,7 +165,6 @@
             myEl.removeStaff();
 
             assert.isTrue(myEl.requestInProcess);
-            assert.isFalse(myEl.confirmDialogOpened);
             assert.isTrue(myEl.set.called);
             assert.isTrue(_.isEqual(myEl.set.args[0][0], 'newData'));
             assert.isTrue(_.isEqual(myEl.set.args[0][1], {method: 'DELETE', data: {}, staffIndex: myEl.editedIndex, id: `${myEl.editedItem.id}/`}));
@@ -249,11 +247,11 @@
             });
         });
 
-        it('method _emailDisabled returns true if one of three arguments is true', function() {
-            assert.isFalse(myEl._emailDisabled(null, null, null));
-            assert.isTrue(myEl._emailDisabled(null, 'test', null));
-            assert.isTrue(myEl._emailDisabled('test', null, null));
-            assert.isTrue(myEl._emailDisabled(null, null, 'test'));
+        it('method _emailDisabled returns true if second argument is false or other are true', function() {
+            assert.isFalse(myEl._emailDisabled(null, 'test', null));
+            assert.isTrue(myEl._emailDisabled(null, null, null));
+            assert.isTrue(myEl._emailDisabled('test', 'test', null));
+            assert.isTrue(myEl._emailDisabled(null, 'test', 'test'));
         });
 
         describe('method _isActive', function() {

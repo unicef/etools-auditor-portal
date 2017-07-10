@@ -24,12 +24,6 @@ Polymer({
                         'size': 30,
                         'label': 'Risk Assessment',
                         'path': 'risk.value.label'
-                    }, {
-                        'size': '45px',
-                        'label': 'Edit',
-                        'name': 'edit',
-                        'align': 'center',
-                        'icon': true
                     }
                 ];
             }
@@ -61,7 +55,6 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)',
         'updateStyles(requestInProcess)',
         '_dataChanged(subjectAreas)',
         '_complexErrorHandler(errorObject.test_subject_areas)'
@@ -71,14 +64,8 @@ Polymer({
         this.riskOptions = this.getData('riskOptions');
     },
 
-    changePermission: function(basePermissionPath) {
-        let readOnly = this.isReadOnly('test_subject_areas', basePermissionPath);
-
-        if (!readOnly && this.columns[this.columns.length - 1].name !== 'edit') {
-            this.push('columns', {'size': '45px','label': 'Edit','name': 'edit','align': 'center','icon': true});
-        } else if (readOnly && this.columns[this.columns.length - 1].name === 'edit') {
-            this.pop('columns');
-        }
+    _canBeChanged: function(basePermissionPath) {
+        return !this.isReadOnly('test_subject_areas', basePermissionPath);
     },
 
     getRiskData: function() {

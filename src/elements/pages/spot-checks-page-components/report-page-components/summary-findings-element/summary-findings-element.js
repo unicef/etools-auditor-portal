@@ -54,12 +54,6 @@ Polymer({
                         'size': 25,
                         'label': 'Deadline of Action',
                         'path': 'deadline_of_action'
-                    }, {
-                        'size': '45px',
-                        'label': 'Edit',
-                        'name': 'edit',
-                        'align': 'right',
-                        'icon': true
                     }
                 ];
             }
@@ -114,7 +108,6 @@ Polymer({
     observers: [
         '_updateFinding(dataItems, categoryOfObservation)',
         'resetDialog(dialogOpened)',
-        'changePermission(basePermissionPath)',
         '_setPriority(itemModel, priority)',
         '_complexErrorHandler(errorObject.findings)'
     ],

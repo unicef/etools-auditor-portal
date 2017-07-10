@@ -19,8 +19,12 @@ paper-dialog {
 
 #buttons {
     display: block;
-    padding: 32px 8px 17px 24px;
+    margin-top: 25px;
+    padding: 10px 8px 10px 24px;
     overflow: hidden;
+    border-top: 1px solid var(--gray-lighter);
+
+    paper-button { height: 37px; }
 }
 
 .right { float: right; }
@@ -33,16 +37,16 @@ paper-dialog {
     z-index: 5;
 }
 
-.btn-delete {
-    color: var(--module-error);
-    font-weight: 500;
-}
-
 .btn-confirm {
-    color: var(--module-primary);
+    min-width: 90px;
+    color: #ffffff;
+    background-color: var(--module-primary);
     font-weight: 500;
     z-index: 5;
     margin-right: 9px;
+    &[delete-btn] {
+        background-color: var(--module-error);
+    }
 }
 
 .dialog-title {
@@ -73,30 +77,12 @@ paper-dialog {
     display: none !important;
 }
 
-.delete-container {
-    position: relative;
-    transform: translateX(-100%);
-    background-color: transparent;
-    &[confirm-opened] { transform: none;  }
-
-    .text {
-        position: absolute;
-        left: 0;
-        bottom: 100%;
-        padding-left: 11px;
-        font-size: 13px;
-        color: var(--gray-light);
-    }
-}
-
-.main-delete-btn {
-    position: absolute;
-    top: 32px;
-    left: 24px;
-    &[hidden-delete] { opacity: 0; }
-}
-
-paper-button[disabled] {
+paper-button.btn-cancel[disabled] {
     background-color: transparent;
     color: var(--gray-mid)
 }
+
+paper-button[disabled]:not(.btn-cancel) {
+     background-color:  var(--gray-lighter) !important;
+     color: var(--gray-mid) !important;
+ }

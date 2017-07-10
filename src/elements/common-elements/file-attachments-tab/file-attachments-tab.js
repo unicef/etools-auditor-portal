@@ -78,20 +78,13 @@
         listeners: {
             'dialog-confirmed': '_addItemFromDialog',
             'delete-confirmed': 'removeItem',
-            'dialog-cancelled': '_handleDialogCancel'
         },
         observers: [
             '_filesChange(dataItems.*, fileTypes.*)',
-            '_updateHeadings(allowEdit, readonly, fileTypeRequired)',
+            '_updateHeadings(fileTypeRequired)',
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject)',
         ],
-
-        _handleDialogCancel: function(e, detail) {
-            if (this.canBeRemoved) {
-                this._openDeleteConfirmation(e, detail);
-            }
-        },
 
         _getFileType: function(fileType) {
             if (this.fileTypes && this.fileTypes.length > 0) {
@@ -115,8 +108,7 @@
             return true;
         },
 
-        _updateHeadings: function(allowEdit, readonly, fileTypeRequired) {
-            let showEditButton = allowEdit && (readonly === false);
+        _updateHeadings: function(fileTypeRequired) {
             let headings = [{
                 'size': '100px',
                 'name': 'date',
@@ -129,16 +121,6 @@
                 'custom': true,
                 'doNotHide': true
             }];
-
-            if (showEditButton) {
-                headings.push({
-                    'size': '45px',
-                    'label': 'Edit',
-                    'name': 'edit',
-                    'align': 'center',
-                    'icon': true
-                });
-            }
 
             if (fileTypeRequired) {
                 headings.splice(1, 0, {
@@ -320,11 +302,11 @@
                 valid = false;
             }
 
-            if (!this.canBeRemoved && this._checkAlreadySelected()) {
+            if (this.addDialog && this._checkAlreadySelected()) {
                 valid = false;
             }
 
-            if (!this.canBeRemoved && (!editedItem.file_name || !editedItem.raw)) {
+            if (this.addDialog && (!editedItem.file_name || !editedItem.raw)) {
                 this.set('errors.file', 'File is not selected');
                 valid = false;
             }

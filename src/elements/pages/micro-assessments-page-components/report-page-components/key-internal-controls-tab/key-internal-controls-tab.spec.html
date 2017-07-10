@@ -26,44 +26,6 @@
             myEl = fixture('element-fixture');
         });
 
-        describe('method changePermission', function() {
-            it('calls isReadOnly method', function() {
-                sinon.stub(myEl, 'isReadOnly').returns(true);
-                myEl.changePermission();
-                assert.isTrue(myEl.isReadOnly.called);
-                myEl.isReadOnly.restore();
-            });
-
-            it('calls push method if there is no edit column and readonly is false', function() {
-                sinon.stub(myEl, 'isReadOnly').returns(false);
-                sinon.spy(myEl, 'push');
-
-                myEl.columns.pop();
-                assert.isUndefined(myEl.columns[myEl.columns.length - 1].name);
-
-                myEl.changePermission();
-                assert.isTrue(myEl.push.called);
-                assert.equal(myEl.columns[myEl.columns.length - 1].name, 'edit');
-
-                myEl.isReadOnly.restore();
-                myEl.push.restore();
-            });
-
-            it('calls pop method other cases', function() {
-                sinon.stub(myEl, 'isReadOnly').returns(true);
-                sinon.spy(myEl, 'pop');
-
-                assert.equal(myEl.columns[myEl.columns.length - 1].name, 'edit');
-
-                myEl.changePermission();
-                assert.isTrue(myEl.pop.called);
-                assert.isUndefined(myEl.columns[myEl.columns.length - 1].name);
-
-                myEl.isReadOnly.restore();
-                myEl.pop.restore();
-            });
-        });
-
         describe('method getCurrentData', function() {
             it('returns null if dialogOpened is false', function() {
                 myEl.dialogOpened = false;
