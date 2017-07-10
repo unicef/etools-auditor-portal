@@ -153,7 +153,7 @@ Polymer({
                 this.set(`columns.${index}.size`, 18);
             });
             this.push('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
-        } else if (!this._canBeChanged() && editObj && editObj.name === 'edit') {
+        } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
             this.pop('columns');
             _.each(this.columns, (value, index) => {
                 this.set(`columns.${index}.size`, 20);
