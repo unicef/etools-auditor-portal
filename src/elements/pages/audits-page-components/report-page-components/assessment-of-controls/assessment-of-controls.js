@@ -19,7 +19,8 @@ Polymer({
 
     observers: [
         '_errorHandler(errorObject)',
-        '_setDataItems(data)'
+        '_setDataItems(data)',
+        'updateStyles(basePermissionPath, requestInProcess)',
     ],
 
     _setDataItems: function() {
