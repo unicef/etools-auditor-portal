@@ -39,7 +39,7 @@
                                  class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
                                  value="{{data.agreement.order_number}}"
                                  allowed-pattern="[\d]"
-                                 placeholder="[[getPlaceholderText('agreement.order_number', basePermissionPath)]]"
+                                 placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
                                  invalid$="{{_checkInvalid(errors.agreement)}}"
                                  error-message="{{errors.agreement}}"
                                  required$="{{_setRequired('agreement', basePermissionPath)}}"
@@ -53,24 +53,25 @@
                 <div class="input-container">
                     <!-- Auditor -->
                     <paper-input label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(poPermissionPath)]]"
                                  disabled readonly
                                  id="auditorInput"
                                  value="[[data.agreement.auditor_firm.name]]"
-                                 placeholder="[[getPlaceholderText('agreement.auditor_firm.name', basePermissionPath)]]">
+                                 placeholder="[[getReadonlyPlaceholder(poPermissionPath)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- PO Date -->
                     <paper-input label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(poPermissionPath)]]"
                                  disabled readonly
                                  id="contractStartDateInput"
                                  value="[[prettyDate(data.agreement.contract_start_date)]]"
                                  on-down="openDatePicker"
-                                 placeholder="&#8212;">
-                        <iron-icon prefix icon="date-range"></iron-icon>
+                                 placeholder="[[getReadonlyPlaceholder(poPermissionPath)]]">
+                        <iron-icon  hidden="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
+                                    prefix icon="date-range"></iron-icon>
                     </paper-input>
                 </div>
             </div>
@@ -91,7 +92,7 @@
                                  on-down="openDatePicker"
                                  data-selector="contractEndDate"
                                  on-focus="_resetFieldError"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('contract_end_date', poPermissionPath, 'datepicker')]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="contractEndDate"
@@ -118,7 +119,7 @@
                                  on-down="openDatePicker"
                                  data-selector="contactedDate"
                                  on-focus="_resetFieldError"
-                                 placeholder="&#8212;">
+                                 placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]">
                         <etools-datepicker prefix
                                            modal="[[datepickerModal]]"
                                            id="contactedDate"
@@ -149,7 +150,7 @@
                             on-value-change="_setEngagementType"
                             label="[[getLabel('type', basePermissionPath)]]"
                             on-focus="_resetFieldError"
-                            placeholder="[[getPlaceholderText('type', basePermissionPath)]]">
+                            placeholder="[[getPlaceholderText('type', basePermissionPath, 'dropdown')]]">
                     </etools-searchable-multiselection-menu>
                 </div>
 
@@ -172,7 +173,7 @@
                                      on-focus="_resetFieldError"
                                      on-down="openDatePicker"
                                      data-selector="periodStartDate"
-                                     placeholder="&#8212;">
+                                     placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]">
                             <etools-datepicker-button prefix
                                                       modal="[[datepickerModal]]"
                                                       id="periodStartDate"
@@ -199,7 +200,7 @@
                                      on-focus="_resetFieldError"
                                      on-down="openDatePicker"
                                      data-selector="periodEndDate"
-                                     placeholder="&#8212;">
+                                     placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]">
                             <etools-datepicker-button prefix
                                                       modal="[[datepickerModal]]"
                                                       id="periodEndDate"

@@ -253,21 +253,16 @@
                 assert.isTrue(behaviorObj.isReadonly.calledWith('undefined.undefined'));
             });
 
-            it('returns \'Empty Field\' if isReadonly method returns true or third argument provided and is true', function() {
+            it('returns \'Empty Field\' if isReadonly method returns true', function() {
                 behaviorObj.isReadonly = sinon.stub().returns(true);
 
                 assert.equal(behaviorObj.getPlaceholderText(), 'Empty Field');
                 assert.equal(behaviorObj.getPlaceholderText('field', 'test'), 'Empty Field');
-
-                behaviorObj.isReadonly.returns(false);
-
-                assert.notEqual(behaviorObj.getPlaceholderText(), 'Empty Field');
-                assert.notEqual(behaviorObj.getPlaceholderText('field', 'test'), 'Empty Field');
-                assert.equal(behaviorObj.getPlaceholderText('field', 'test', true), 'Empty Field');
             });
 
             it('calls getLabel method and returns it value with Enter prefix', function() {
                 behaviorObj.getLabel = sinon.stub().returns('test label');
+                behaviorObj.isReadonly = sinon.stub().returns(false);
 
                 assert.equal(behaviorObj.getPlaceholderText(), 'Enter test label');
             });

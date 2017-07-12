@@ -42,7 +42,7 @@
                             label="[[getLabel('partner', basePermissionPath)]]"
                             on-focus="_resetFieldError"
                             on-value-change="_requestPartner"
-                            placeholder="[[getPlaceholderText('partner', basePermissionPath)]]">
+                            placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]">
                     </etools-searchable-multiselection-menu>
 
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
@@ -51,19 +51,19 @@
                 <div class="input-container">
                     <!-- Partner Address -->
                     <paper-input label="Partner Address"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
                                  disabled readonly
                                  value="[[partner.street_address]]"
-                                 placeholder="Empty Field">
+                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner City -->
                     <paper-input label="Partner City"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
                                  value="{{partner.city}}"
-                                 placeholder="Empty Field"
+                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -74,9 +74,9 @@
                 <div class="input-container">
                     <!-- Partner Postal Code -->
                     <paper-input label="Partner Postal Code"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
                                  value="{{partner.postal_code}}"
-                                 placeholder="Empty Field"
+                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -84,9 +84,9 @@
                 <div class="input-container">
                     <!-- Partner Phone Number -->
                     <paper-input label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
                                  value="{{partner.phone_number}}"
-                                 placeholder="[[getPlaceholderText('partner.phone_number', basePermissionPath)]]"
+                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -94,9 +94,9 @@
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
                     <paper-input label="[[getLabel('partner.email', basePermissionPath)]]"
-                                 class="without-border"
+                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
                                  value="{{partner.email}}"
-                                 placeholder="[[getPlaceholderText('partner.email', basePermissionPath)]]"
+                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -123,7 +123,7 @@
                             option-value="id"
                             option-label="number"
                             label="[[getLabel('active_pd', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('active_pd', basePermissionPath)]]">
+                            placeholder="[[getPlaceholderText('active_pd', basePermissionPath, 'selector')]]">
                     </etools-searchable-multiselection-menu>
                 </div>
             </div>
