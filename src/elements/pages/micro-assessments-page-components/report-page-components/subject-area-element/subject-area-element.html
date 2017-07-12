@@ -1,8 +1,17 @@
-<!--import [polymer, list-element, lodash, static-data-behavior]-->
+<!--import [polymer, list-element, lodash, static-data-behavior, tab-inputs-styles]-->
 
 <dom-module id="subject-area-element">
     <template>
-        <!-- inject styles './subject-area-element.scss'-->
+        <style include="tab-inputs-styles">
+            :host {
+                position: relative;
+                display: block;
+
+                .edit-icon-slot {
+                    overflow: visible !important;
+                }
+            }
+        </style>
 
         <list-element class="list-element"
                       id="listElement"

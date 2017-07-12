@@ -14,13 +14,6 @@
         z-index: 10;
     }
 
-    .edit-icon {
-        padding: 5px;
-        width: 30px;
-        height: 30px;
-        color: var(--gray-mid);
-    }
-
     .repeatable-item-container[without-line] {
         min-width: 0 !important;
         padding: 0 24px !important;
@@ -29,10 +22,6 @@
 
     .confirm-text {
         padding: 5px 86px 0 23px !important;
-    }
-
-    .edit-icon-slot {
-        overflow: visible !important;
     }
 }
 

@@ -135,7 +135,7 @@
         openDeleteDialog: function(event) {
             let index = this._getIndex(event);
 
-            this.dialogTitle = 'Are you sure you want to delete?';
+            this.dialogTitle = this.deleteTitle || 'Are you sure you want to delete?';
             this.confirmBtnText = 'Delete';
             this.cancelBtnText = 'Cancel';
             this.deleteDialog = true;

@@ -63,9 +63,8 @@
                                       details="[[details]]"
                                       has-collapse multiline
                                       no-animation>
-                            <div slot="icon" class="edit-icon-slot">
-                                <paper-icon-button icon="create" class="edit-icon" category-id$="{{category.id}}"
-                                                   on-tap="openEditDialog"></paper-icon-button>
+                            <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
+                                <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog" category-id$="{{category.id}}"></paper-icon-button>
                             </div>
 
                             <div slot="custom">
