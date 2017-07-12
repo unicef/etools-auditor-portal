@@ -53,23 +53,23 @@
                 <div class="input-container">
                     <!-- Auditor -->
                     <paper-input label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(poPermissionPath)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
                                  disabled readonly
                                  id="auditorInput"
                                  value="[[data.agreement.auditor_firm.name]]"
-                                 placeholder="[[getReadonlyPlaceholder(poPermissionPath)]]">
+                                 placeholder="[[getReadonlyPlaceholder(data.agreement)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- PO Date -->
                     <paper-input label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(poPermissionPath)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
                                  disabled readonly
                                  id="contractStartDateInput"
                                  value="[[prettyDate(data.agreement.contract_start_date)]]"
                                  on-down="openDatePicker"
-                                 placeholder="[[getReadonlyPlaceholder(poPermissionPath)]]">
+                                 placeholder="[[getReadonlyPlaceholder(data.agreement)]]">
                         <iron-icon  hidden="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
                                     prefix icon="date-range"></iron-icon>
                     </paper-input>

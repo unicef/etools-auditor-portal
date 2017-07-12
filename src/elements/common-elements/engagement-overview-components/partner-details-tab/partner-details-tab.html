@@ -51,19 +51,19 @@
                 <div class="input-container">
                     <!-- Partner Address -->
                     <paper-input label="Partner Address"
-                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
                                  disabled readonly
                                  value="[[partner.street_address]]"
-                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]">
+                                 placeholder="[[getReadonlyPlaceholder(partner)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner City -->
                     <paper-input label="Partner City"
-                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
                                  value="{{partner.city}}"
-                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
+                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -74,9 +74,9 @@
                 <div class="input-container">
                     <!-- Partner Postal Code -->
                     <paper-input label="Partner Postal Code"
-                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
                                  value="{{partner.postal_code}}"
-                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
+                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -84,9 +84,9 @@
                 <div class="input-container">
                     <!-- Partner Phone Number -->
                     <paper-input label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
                                  value="{{partner.phone_number}}"
-                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
+                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -94,9 +94,9 @@
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
                     <paper-input label="[[getLabel('partner.email', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(engagement.partner)]]"
+                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
                                  value="{{partner.email}}"
-                                 placeholder="[[getReadonlyPlaceholder(engagement.partner)]]"
+                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
                                  disabled readonly>
                     </paper-input>
                 </div>
@@ -109,7 +109,7 @@
                             options="[[partner.interventions]]"
                             selected-values="{{activePd}}"
                             update-selected
-                            class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]]"
+                            class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
                             readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                             disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                             required$="{{_setRequired('active_pd', basePermissionPath)}}"
@@ -123,7 +123,7 @@
                             option-value="id"
                             option-label="number"
                             label="[[getLabel('active_pd', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('active_pd', basePermissionPath, 'selector')]]">
+                            placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]">
                     </etools-searchable-multiselection-menu>
                 </div>
             </div>

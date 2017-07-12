@@ -85,11 +85,11 @@
         },
 
         getReadonlyPlaceholder: function(data) {
-            return !!data ? 'Empty Field' : '-';
+            return !!(data && data.id) ? 'Empty Field' : '-';
         },
 
         _setReadonlyFieldClass: function(data) {
-            return !data ? 'no-data-fetched' : '';
+            return !data || !data.id ? 'no-data-fetched' : '';
         },
 
         _showPrefix: function(path, base, value, readonly) {

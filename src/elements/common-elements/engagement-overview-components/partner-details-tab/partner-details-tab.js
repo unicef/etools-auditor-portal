@@ -131,6 +131,15 @@ Polymer({
 
     isPdReadonly: function(basePermissionPath, requestInProcess, partner) {
         return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
+    },
+
+    activePdPlaceholder: function(basePermissionPath, partner) {
+        if (!partner || !partner.id) { return '-'; }
+        return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
+    },
+
+    _setPlaceholderColor: function(partner) {
+        return (!partner || !partner.id) ? 'no-data-fetched' : '';
     }
 
 });

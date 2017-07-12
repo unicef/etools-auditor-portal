@@ -98,6 +98,7 @@
 
             etools-searchable-multiselection-menu, paper-input, paper-textarea, paper-dropdown-menu {
                 outline: none!important;
+                --esmm-placeholder-color: var(--gray-20);
                 --paper-input-container-color: var(--gray-20);
                 --paper-input-container-focus-color: var(--module-primary);
                 --paper-input-container-input: {
@@ -119,7 +120,9 @@
                 };
             }
 
+            etools-searchable-multiselection-menu.no-data-fetched,
             paper-input.no-data-fetched {
+                --esmm-placeholder-color: var(--gray-dark);
                 --paper-input-container-color: var(--gray-dark);
             }
 
