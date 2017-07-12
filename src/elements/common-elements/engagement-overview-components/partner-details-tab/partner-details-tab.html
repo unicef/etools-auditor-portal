@@ -109,13 +109,13 @@
                             options="[[partner.interventions]]"
                             selected-values="{{activePd}}"
                             update-selected
-                            class$="[[_setRequired('active_pd', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                            readonly="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            disabled="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            invalid="{{_checkInvalid(errors.active_pd)}}"
+                            class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]]"
+                            readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            required$="{{_setRequired('active_pd', basePermissionPath)}}"
+                            invalid$="{{_checkInvalid(errors.active_pd)}}"
                             error-message="{{errors.active_pd}}"
                             on-focus="_resetFieldError"
-                            required="{{_setRequired('active_pd', basePermissionPath)}}"
                             dynamic-align
                             multi
                             hide-search
