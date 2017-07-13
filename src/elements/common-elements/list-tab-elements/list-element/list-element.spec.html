@@ -253,13 +253,13 @@
         describe('method _refactorPercents(value)', function () {
             it('returns null for bad values', function () {
                 assert.isNull(myEl._refactorPercents(NaN));
-                assert.isNull(myEl._refactorPercents(null));
-                assert.isNull(myEl._refactorPercents({}));
-                assert.isNull(myEl._refactorPercents([]));
+                assert.isNull(myEl._refactorPercents('1s.12'));
+                assert.isNull(myEl._refactorPercents(14.1));
             });
 
             it('returns number with percent symbol', function () {
-                assert.equal(myEl._refactorPercents(88.8), '88.8 %');
+                assert.equal(myEl._refactorPercents(14.45), '14.45%');
+                assert.equal(myEl._refactorPercents('88.80'), '88.80%');
             });
         });
 

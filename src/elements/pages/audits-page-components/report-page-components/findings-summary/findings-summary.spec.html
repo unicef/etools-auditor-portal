@@ -142,9 +142,30 @@
 
                 it('replaces empty strings with null where needed and returns object with changed properties', function () {
                     myEl.originalData = [_.cloneDeep(myEl.editedItem)];
+                    myEl.originalData[0].number_of_financial_findings = '';
+                    myEl.originalData[0].high_risk = '';
                     myEl.originalData[0].medium_risk = '';
+                    myEl.originalData[0].low_risk = '';
 
-                    assert.deepEqual(myEl.getFindingsSummaryData(), {medium_risk: null});
+                    assert.deepEqual(myEl.getFindingsSummaryData(), {
+                        number_of_financial_findings: null,
+                        high_risk: null,
+                        medium_risk: null,
+                        low_risk: null,
+                    });
+                });
+
+                it('replaces null with 0 where needed and returns object with changed properties', function () {
+                    myEl.originalData = [_.cloneDeep(myEl.editedItem)];
+                    myEl.originalData[0].audited_expenditure = null;
+                    myEl.originalData[0].financial_findings = null;
+                    myEl.originalData[0].percent_of_audited_expenditure = null;
+
+                    assert.deepEqual(myEl.getFindingsSummaryData(), {
+                        audited_expenditure: 0,
+                        financial_findings: 0,
+                        percent_of_audited_expenditure: 0,
+                    });
                 });
             });
         });
