@@ -57,9 +57,9 @@
                             <!-- Category of Observation -->
                             <etools-searchable-multiselection-menu
                                     options="[[categoryOfObservation]]"
-                                    class$="disabled-as-readonly validate-input [[_setRequired('category_of_observation', basePermissionPath)]]"
-                                    required$="[[_setRequired('category_of_observation', basePermissionPath)]]"
-                                    disabled="{{requestInProcess}}"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('findings.category_of_observation', basePermissionPath)]]"
+                                    required$="[[_setRequired('findings.category_of_observation', basePermissionPath)]]"
+                                    disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
                                     hide-search
                                     invalid="{{errors.category_of_observation}}"
@@ -81,14 +81,14 @@
                                             max-rows="4"
                                             value="{{editedItem.recommendation}}"
                                             allowed-pattern="[\d\s]"
-                                            class$="disabled-as-readonly fixed-width validate-input {{_setRequired('recommendation', basePermissionPath)}}"
-                                            disabled="{{requestInProcess}}"
+                                            class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
+                                            disabled$="{{requestInProcess}}"
                                             readonly$="{{requestInProcess}}"
                                             invalid="{{errors.recommendation}}"
                                             error-message="{{errors.recommendation}}"
                                             on-focus="_resetFieldError"
                                             always-float-label
-                                            required="{{_setRequired('recommendation', basePermissionPath)}}"
+                                            required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
                                             placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]">
                             </paper-textarea>
                         </div>
@@ -100,14 +100,14 @@
                                             max-rows="4"
                                             value="{{editedItem.agreed_action_by_ip}}"
                                             allowed-pattern="[\d\s]"
-                                            class$="disabled-as-readonly fixed-width validate-input {{_setRequired('agreed_action_by_ip', basePermissionPath)}}"
-                                            disabled="{{requestInProcess}}"
+                                            class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
+                                            disabled$="{{requestInProcess}}"
                                             readonly$="{{requestInProcess}}"
                                             invalid="{{errors.agreed_action_by_ip}}"
                                             error-message="{{errors.agreed_action_by_ip}}"
                                             on-focus="_resetFieldError"
                                             always-float-label
-                                            required="{{_setRequired('agreed_action_by_ip', basePermissionPath)}}"
+                                            required$="{{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
                                             placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]">
                             </paper-textarea>
                         </div>
@@ -117,14 +117,14 @@
                             <!-- Deadline of Action -->
                             <paper-input label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
                                          id="deadlineAction"
-                                         class$="disabled-as-readonly [[_setRequired('deadline_of_action', basePermissionPath)]]"
+                                         class$="disabled-as-readonly [[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
                                          value="[[prettyDate(editedItem.deadline_of_action)]]"
                                          on-down="openDatePicker"
                                          data-selector="deadlineActionSelector"
                                          invalid="{{errors.deadline_of_action}}"
                                          error-message="{{errors.deadline_of_action}}"
-                                         required="[[_setRequired('deadline_of_action', basePermissionPath)]]"
-                                         disabled="{{requestInProcess}}"
+                                         required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
+                                         disabled$="{{requestInProcess}}"
                                          readonly$="{{requestInProcess}}"
                                          on-focus="_resetFieldError"
                                          placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]">
