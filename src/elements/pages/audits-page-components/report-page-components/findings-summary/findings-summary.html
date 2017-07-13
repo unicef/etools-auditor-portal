@@ -4,7 +4,7 @@
 
 <dom-module id="findings-summary">
     <template>
-        <style include="tab-inputs-styles module-styles">
+        <style include="module-styles tab-inputs-styles">
             :host {
                 position: relative;
                 display: block;
@@ -49,10 +49,10 @@
                         <div class="input-container" title$="{{editedItem.partner.name}}">
                             <!-- Implementing partner name -->
                             <paper-input
-                                    label="[[getLabel('partner.name', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('partner.name', basePermissionPath)]]"
+                                    label$="[[getLabel('partner.name', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('partner.name', basePermissionPath)]]"
                                     value="{{editedItem.partner.name}}"
-                                    class$="validate-input disabled-as-readonly"
+                                    class="validate-input disabled-as-readonly"
                                     readonly
                                     disabled>
                             </paper-input>
@@ -61,8 +61,8 @@
                         <div class="input-container">
                             <!-- Audited expenditure (USD) -->
                             <etools-currency-amount-input
-                                    label="[[getLabel('audited_expenditure', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('audited_expenditure', basePermissionPath)]]"
+                                    label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('audited_expenditure', basePermissionPath)]]"
                                     currency="$"
                                     value="{{editedItem.audited_expenditure}}"
                                     on-focus="_resetFieldError"
@@ -78,8 +78,8 @@
                         <div class="input-container">
                             <!-- Financial findings (USD) -->
                             <etools-currency-amount-input
-                                    label="[[getLabel('financial_findings', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('financial_findings', basePermissionPath)]]"
+                                    label$="[[getLabel('financial_findings', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('financial_findings', basePermissionPath)]]"
                                     currency="$"
                                     value="{{editedItem.financial_findings}}"
                                     on-focus="_resetFieldError"
@@ -97,8 +97,8 @@
                         <div class="input-container">
                             <!-- % of audited expenditure -->
                             <etools-currency-amount-input
-                                    label="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
+                                    label$="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
                                     currency=""
                                     value="{{editedItem.percent_of_audited_expenditure}}"
                                     on-focus="_resetFieldError"
@@ -114,8 +114,8 @@
                         <div class="input-container">
                             <!-- Audit opinion -->
                             <etools-searchable-multiselection-menu
-                                    label="[[getLabel('audit_opinion', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
+                                    label$="[[getLabel('audit_opinion', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
                                     error-message="This field is required"
                                     options="[[auditOpinions]]"
                                     hide-search
@@ -137,8 +137,8 @@
                         <div class="input-container">
                             <!-- Number of financial findings -->
                             <paper-input
-                                    label="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
+                                    label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
                                     value="{{editedItem.number_of_financial_findings}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
@@ -156,8 +156,8 @@
                         <div class="input-container">
                             <!-- High risk -->
                             <paper-input
-                                    label="[[getLabel('high_risk', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('high_risk', basePermissionPath)]]"
+                                    label$="[[getLabel('high_risk', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('high_risk', basePermissionPath)]]"
                                     value="{{editedItem.high_risk}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
@@ -174,8 +174,8 @@
                         <div class="input-container">
                             <!-- Medium risk -->
                             <paper-input
-                                    label="[[getLabel('medium_risk', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('medium_risk', basePermissionPath)]]"
+                                    label$="[[getLabel('medium_risk', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('medium_risk', basePermissionPath)]]"
                                     value="{{editedItem.medium_risk}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
@@ -192,8 +192,8 @@
                         <div class="input-container">
                             <!-- Low risk -->
                             <paper-input
-                                    label="[[getLabel('low_risk', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('low_risk', basePermissionPath)]]"
+                                    label$="[[getLabel('low_risk', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('low_risk', basePermissionPath)]]"
                                     value="{{editedItem.low_risk}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"

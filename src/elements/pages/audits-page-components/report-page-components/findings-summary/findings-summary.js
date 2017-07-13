@@ -114,6 +114,7 @@ Polymer({
         '_setDataItems(data)',
         '_setAuditOpinion(data.audit_opinion, auditOpinions)',
         '_computeFFNumber(editedItem.low_risk, editedItem.medium_risk, editedItem.high_risk)',
+        'updateStyles(basePermissionPath, requestInProcess)',
     ],
 
     ready: function() {
@@ -153,6 +154,10 @@ Polymer({
         data.high_risk = data.high_risk || null;
         data.medium_risk = data.medium_risk || null;
         data.low_risk = data.low_risk || null;
+
+        data.audited_expenditure = data.audited_expenditure || 0;
+        data.financial_findings = data.financial_findings || 0;
+        data.percent_of_audited_expenditure = data.percent_of_audited_expenditure || 0;
 
         if (!_.isEqual(data, originalData)) {
             //return only changed values

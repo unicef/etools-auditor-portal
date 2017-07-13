@@ -148,7 +148,8 @@ Polymer({
         return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
     },
     _refactorPercents: function(value) {
-        return (typeof value === 'number' && !isNaN(value)) ? `${value} %` : null;
+        let regexp = /[\d]+.[\d]{2}/;
+        return regexp.test(value) ? `${value}%` : null;
     },
     _getAdditionalValue: function(item) {
         if (!item.additional) { return; }
