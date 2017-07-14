@@ -42,9 +42,10 @@
                                 <!-- Risk Assessment -->
                                 <etools-searchable-multiselection-menu
                                         id="riskRatingInput"
-                                        class="disabled-as-readonly validate-input"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}} validate-input"
                                         options="[[riskOptions]]"
-                                        required hide-search
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}}"
+                                        hide-search
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"
                                         value="{{editedArea.risk.value}}"
@@ -64,7 +65,8 @@
                                         value="{{editedArea.risk.extra.key_control_observation}}"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Observation"
-                                        class="disabled-as-readonly validate-input"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
                                         invalid="{{errors.blueprints.0.risk.extra}}"
@@ -80,7 +82,8 @@
                                         value="{{editedArea.risk.extra.recommendation}}"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Recommendation"
-                                        class="disabled-as-readonly validate-input"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
                                         invalid="{{errors.blueprints.0.risk.extra}}"
@@ -96,7 +99,8 @@
                                         value="{{editedArea.risk.extra.ip_response}}"
                                         on-focus="_resetFieldError"
                                         placeholder="Enter Response"
-                                        class="disabled-as-readonly validate-input"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
                                         invalid="{{errors.blueprints.0.risk.extra}}"

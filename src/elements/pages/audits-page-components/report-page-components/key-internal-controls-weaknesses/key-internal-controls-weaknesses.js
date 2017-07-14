@@ -104,6 +104,8 @@ Polymer({
     },
 
     _saveEditedArea: function() {
+        if (!this.validate()) { return; }
+
         if (_.isEqual(this.originData, this.editedArea)) {
             this.dialogOpened = false;
             this.resetDialog();
@@ -138,6 +140,20 @@ Polymer({
             element.value = '';
         });
 
-    }
+    },
+    validate: function() {
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-input'),
+            valid = true;
+
+        Array.prototype.forEach.call(elements, (element) => {
+            if (element.required && !element.validate()) {
+                element.invalid = 'This field is required';
+                element.errorMessage = 'This field is required';
+                valid = false;
+            }
+        });
+
+        return valid;
+    },
 
 });
