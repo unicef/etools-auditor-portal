@@ -62,19 +62,24 @@ Polymer({
             reflectToAttribute: true
         }
     },
+
     listeners: {
         'mouseover': '_setHover',
         'mouseleave': '_resetHover',
     },
+
     observers: [
         '_setRightPadding(headings.*)'
     ],
+
     _setHover: function() {
         this.hover = true;
     },
+
     _resetHover: function() {
         this.hover = false;
     },
+
     _setRightPadding: function() {
         if (!this.headings) { return; }
         let rightPadding = 0;
@@ -89,12 +94,15 @@ Polymer({
 
         this.paddingRight = `${rightPadding}px`;
     },
+
     _computeShowCollapse: function(details, hasCollapse) {
         return details.length > 0 && hasCollapse;
     },
+
     _toggleRowDetails: function() {
         Polymer.dom(this.root).querySelector('#details').toggle();
     },
+
     _isOneOfType: function(item) {
         if (!item) { return false; }
 
@@ -104,6 +112,7 @@ Polymer({
             return !!item[type];
         });
     },
+
     _getValue: function(item, data, bool) {
         let value;
 
@@ -131,10 +140,12 @@ Polymer({
 
         return value;
     },
+
     _refactorValue: function(type, value) {
         let values = this.itemValues[type];
         if (values) { return values[value]; }
     },
+
     _refactorTime: function(value, format = 'DD MMM YYYY') {
         if (!value) { return; }
 
@@ -143,14 +154,17 @@ Polymer({
             return moment.utc(date).format(format);
         }
     },
+
     _refactorCurrency: function(value) {
         if ((!value || isNaN(+value)) && value !== 0) { return; }
         return value.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
     },
+
     _refactorPercents: function(value) {
         let regexp = /[\d]+.[\d]{2}/;
         return regexp.test(value) ? `${value}%` : null;
     },
+
     _getAdditionalValue: function(item) {
         if (!item.additional) { return; }
 
@@ -164,9 +178,11 @@ Polymer({
 
         return value || '--';
     },
+
     _getStatus: function(synced) {
         if (synced) { return 'Synced from VISION'; }
     },
+
     _getLink: function(pattern) {
         if (typeof pattern !== 'string') { return '#'; }
 
@@ -176,10 +192,13 @@ Polymer({
 
         return link.indexOf('undefined') === -1 ? link : '#';
     },
+
     _emtyObj: function(data) {
         return data && !data.empty;
     },
+
     _hasProperty: function(data, property, doNotHide) {
         return data && (doNotHide || property && this.get('data.' + property));
     }
+
 });
