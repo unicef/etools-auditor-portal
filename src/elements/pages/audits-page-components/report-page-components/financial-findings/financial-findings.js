@@ -35,6 +35,7 @@ Polymer({
             type: Array,
             value: [{
                 'size': 20,
+                'name': 'finding',
                 'label': 'Finding Number',
                 'path': 'finding_number'
             }, {
@@ -102,20 +103,9 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        '_updateFindings(dataItems)',
         '_errorHandler(errorObject.financial_finding_set)',
         '_checkNonField(errorObject.financial_finding_set)'
     ],
-
-    _updateFindings: function(items) {
-        _.each(items, (item) => {
-            item.finding_number = ([1e15] + item.id).slice(-4);
-        });
-
-        _.each(this.originalData, (item) => {
-            item.finding_number = ([1e15] + item.id).slice(-4);
-        });
-    },
 
     _checkNonField: function(error) {
         if (!error) { return; }

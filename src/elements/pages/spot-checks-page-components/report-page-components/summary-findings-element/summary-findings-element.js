@@ -43,6 +43,7 @@ Polymer({
                 return [
                     {
                         'size': 25,
+                        'name': 'finding',
                         'label': 'Finding Number',
                         'path': 'finding_number'
                     }, {
@@ -110,7 +111,6 @@ Polymer({
     },
 
     observers: [
-        '_updateFinding(dataItems, categoryOfObservation)',
         'resetDialog(dialogOpened)',
         '_setPriority(itemModel, priority)',
         '_complexErrorHandler(errorObject.findings)'
@@ -127,23 +127,6 @@ Polymer({
         return dataItems.filter((item) => {
             return item.priority === this.priority.value;
         }).length;
-    },
-
-    _updateFinding: function(data, categoryOfObservation) {
-        _.each(data, (item) => {
-            if (item.priority !== this.priority.value) {
-                return;
-            }
-            if (!_.isObject(item.category_of_observation)) {
-                categoryOfObservation.filter((category) => {
-                    if (category.value === item.category_of_observation) {
-                        item.category_of_observation = category;
-                    }
-                });
-            }
-
-            item.finding_number = ([1e15] + item.id).slice(-4);
-        });
     },
 
     _setPriority: function(itemModel, priority) {

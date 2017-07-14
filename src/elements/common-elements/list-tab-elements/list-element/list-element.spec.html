@@ -192,6 +192,18 @@
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy.calledWithExactly('percents'));
             });
+
+            it('calls _refactorFindingNumber() method when item.name="finding"', function () {
+                let spy = sinon.stub(myEl, '_refactorFindingNumber');
+                let item = {name: 'finding', path: 'path'};
+                myEl.data = {path: 'finding'};
+                spy.returns('refactored_value');
+
+                assert.isFalse(spy.called);
+                assert.equal(myEl._getValue(item), 'refactored_value');
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('finding'));
+            });
         });
 
         describe('method _refactorValue(type, value)', function () {
@@ -260,6 +272,18 @@
             it('returns number with percent symbol', function () {
                 assert.equal(myEl._refactorPercents(14.45), '14.45%');
                 assert.equal(myEl._refactorPercents('88.80'), '88.80%');
+            });
+        });
+
+        describe('method _refactorFindingNumber(value)', function () {
+            it('returns null for bad values', function () {
+                assert.isUndefined(myEl._refactorFindingNumber('sdf'));
+                assert.isUndefined(myEl._refactorFindingNumber(null));
+            });
+
+            it('returns value prefixed with "000"', function () {
+                assert.equal(myEl._refactorFindingNumber(1), '0001');
+                assert.equal(myEl._refactorFindingNumber('2'), '0002');
             });
         });
 
