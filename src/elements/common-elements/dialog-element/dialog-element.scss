@@ -47,6 +47,8 @@ paper-dialog {
     padding: 16px 24px 10px 36px !important;
     min-height: 26px;
     margin-top: 0 !important;
+    color: white;
+    background-color: var(--module-primary);
 }
 
 .close-btn {
@@ -54,12 +56,13 @@ paper-dialog {
     right: -5px;
     top: 4px;
     margin-top: 14px !important;
-    color: var(--gray-mid-dark);
+    color: white;
+    opacity: 0.7;
     cursor: pointer;
     transition: 0.15s;
     z-index: 5;
 }
-.close-btn:hover { color: #000;}
+.close-btn:hover { opacity: 1;}
 
 .loading {
     margin-top: 3px;
