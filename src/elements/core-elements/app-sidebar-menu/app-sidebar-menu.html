@@ -3,38 +3,36 @@
 
 <dom-module id="app-sidebar-menu">
 
-  <template>
+    <template>
 
-    <style include="module-styles"></style>
-    <!-- inject styles './app-sidebar-menu.scss'-->
+        <style include="module-styles"></style>
+        <!-- inject styles './app-sidebar-menu.scss'-->
 
-    <app-toolbar class="menu-header">
-      <img src$="[[getAbsolutePath('images/ap_icon_v2.svg')]]">
-    </app-toolbar>
+        <app-toolbar class="menu-header">
+            <img src$="[[getAbsolutePath('images/ap_icon_v2.svg')]]">
+        </app-toolbar>
 
-    <div class="nav-menu">
+        <div class="nav-menu">
 
-      <iron-selector selected="[[page]]"
-                     attr-for-selected="name"
-                     selectable="side-bar-item"
-                     role="navigation">
+            <iron-selector selected="[[page]]"
+                           attr-for-selected="name"
+                           selectable="side-bar-item"
+                           role="navigation">
+                <side-bar-item name="engagements" icon="av:playlist-add-check" side-bar-link="engagements/list"></side-bar-item>
+            </iron-selector>
 
-        <side-bar-item name="engagements" icon="av:playlist-add-check" side-bar-link="engagements/list"></side-bar-item>
+            <div class="divider"></div>
 
-      </iron-selector>
+            <side-bar-item class="lighter-item" name="User Support" icon="icons:help" side-bar-link="https://etools.uservoice.com" external></side-bar-item>
 
-      <div class="divider"></div>
+            <side-bar-item class="lighter-item" name="Discussion" icon="icons:question-answer" external side-bar-link="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
 
-      <side-bar-item class="lighter-item" name="User Support" icon="icons:help" side-bar-link="https://etools.uservoice.com" external></side-bar-item>
+            <side-bar-item class="lighter-item" name="Information" icon="icons:info" external side-bar-link="http://etools.unicefresults.org"></side-bar-item>
 
-      <side-bar-item class="lighter-item" name="Discussion" icon="icons:question-answer" external side-bar-link="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
+        </div>
 
-      <side-bar-item class="lighter-item" name="Information" icon="icons:info" external side-bar-link="http://etools.unicefresults.org"></side-bar-item>
+    </template>
 
-    </div>
-
-  </template>
-
-  <!-- inject scripts './app-sidebar-menu.js'-->
+    <!-- inject scripts './app-sidebar-menu.js'-->
 
 </dom-module>
