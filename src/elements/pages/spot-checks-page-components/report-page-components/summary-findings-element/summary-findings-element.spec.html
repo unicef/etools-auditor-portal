@@ -38,26 +38,6 @@
             });
         });
 
-        describe('method _updateFinding()', () => {
-            it('modify finding number by format 0000 and get category of observation from preloaded data by value', () => {
-                myEl.categoryOfObservation = [
-                    {
-                        name: 'test_name',
-                        value: 'test_value'
-                    }
-                ];
-                myEl.dataItems = [
-                    {
-                        finding_number: 1,
-                        category_of_observation: 'test_value'
-                    }
-                ];
-                myEl._updateFinding(myEl.dataItems, myEl.categoryOfObservation);
-                assert.lengthOf(myEl.dataItems[0].finding_number, 4);
-                assert.isObject(myEl.dataItems[0].category_of_observation)
-            });
-        });
-
         describe('method _setPriority()', () => {
             it('set styles and priority for itemModel', () => {
                 myEl.itemModel = {};
