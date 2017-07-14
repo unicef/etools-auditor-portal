@@ -98,8 +98,8 @@ Polymer({
         }
 
         this.originData = this.subjectAreas.blueprints[index];
+        this.originData.risk.extra = this.originData.risk.extra || {};
         this.editedArea = _.cloneDeep(this.originData);
-        this.editedArea.risk.extra = this.editedArea.risk.extra || {};
         this.dialogOpened = true;
     },
 
