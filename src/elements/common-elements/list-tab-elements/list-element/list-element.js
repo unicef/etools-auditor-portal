@@ -130,6 +130,8 @@ Polymer({
             value = this._refactorCurrency(value);
         } else if (item.name === 'percents') {
             value = this._refactorPercents(value);
+        } else if (item.name === 'finding') {
+            value = this._refactorFindingNumber(value);
         }
 
         if (bool) {
@@ -163,6 +165,11 @@ Polymer({
     _refactorPercents: function(value) {
         let regexp = /[\d]+.[\d]{2}/;
         return regexp.test(value) ? `${value}%` : null;
+    },
+
+    _refactorFindingNumber: function(value) {
+        if ((!value || isNaN(+value)) && value !== 0) { return; }
+        return `000${value}`;
     },
 
     _getAdditionalValue: function(item) {
