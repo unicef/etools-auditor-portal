@@ -30,10 +30,15 @@ Polymer({
         '_errorHandler(errorObject)',
         '_setActivePd(activePd)',
         'updateStyles(basePermissionPath, requestInProcess, partner)',
+        'setOfficers(partner)'
     ],
 
     listeners: {
         'partner-loaded': '_partnerLoaded'
+    },
+
+    setOfficers: function(partner) {
+        if (!partner || !partner.id) { return; }
     },
 
     ready: function() {

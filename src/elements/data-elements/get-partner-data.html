@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, lodash, etools-app-config]-->
+<!--import [polymer, etools-ajax, lodash, etools-app-config, static-data-behavior]-->
 
 <dom-module id="get-partner-data">
 
@@ -7,6 +7,10 @@
         <etools-ajax url="[[url]]"
                      on-success="_handleResponse"
                      on-fail="_handleError"></etools-ajax>
+
+        <etools-ajax url="[[officersUrl]]"
+                     on-success="_handleOfficersResponse"
+                     on-fail="_handleOfficersError"></etools-ajax>
     </template>
 
     <script>
@@ -16,7 +20,8 @@
             is: 'get-partner-data',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                APBehaviors.StaticDataController
             ],
 
             properties: {
@@ -34,9 +39,37 @@
             },
 
             _handleResponse: function (data, detail) {
-                this.lastData = _.clone(data.detail);
-                this.partner = data.detail;
+                if (!detail || !detail.id) {
+                    this._handleError();
+                    return;
+                }
+                this.lastData = _.clone(detail);
+                let officers = this.getData(`officers_${detail.id}`);
+                if (officers) {
+                    this.lastData.partnerOfficers = officers;
+                    this.finishRequest();
+                } else {
+                    this.officersUrl = this.getEndpoint('authorizedOfficers', {id: detail.id}).url;
+                }
+            },
+
+            _handleOfficersResponse: function(event, detail) {
+                if (!detail) {
+                    this._handleOfficersError();
+                } else {
+                    this.lastData.partnerOfficers = detail;
+                    this.finishRequest();
+                }
+            },
+
+            finishRequest: function() {
+                this.partner = _.clone(this.lastData);
                 this.fire('partner-loaded', {success: true});
+            },
+
+            _handleOfficersError: function() {
+                console.error('Can not load partner officers!');
+                this.finishRequest();
             },
 
             _handleError: function () {
