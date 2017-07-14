@@ -81,23 +81,23 @@ Polymer({
                 'path': 'display_name',
                 'align': 'center'
             }, {
-                'size': '50px',
+                'size': '80px',
                 'label': 'No. of Financial Findings',
                 'path': 'number_of_financial_findings',
                 'align': 'center'
             }, {
-                'size': '50px',
-                'label': 'No. of High Risk',
+                'size': '60px',
+                'label': 'High Risk',
                 'path': 'high_risk',
                 'align': 'center'
             }, {
-                'size': '50px',
-                'label': 'No. of Medium Risk',
+                'size': '60px',
+                'label': 'Medium Risk',
                 'path': 'medium_risk',
                 'align': 'center'
             }, {
-                'size': '50px',
-                'label': 'No. of Low Risk',
+                'size': '60px',
+                'label': 'Low Risk',
                 'path': 'low_risk',
                 'align': 'center'
             }]
@@ -119,6 +119,10 @@ Polymer({
 
     ready: function() {
         this.auditOpinions = this.getData('audit_opinions') || [];
+        let headerColumns = _.cloneDeep(this.columns),
+            group = headerColumns.slice(-3),
+            groupColumn = {'group': true, 'label': 'No. of Key Control Weaknesses', 'align': 'center', 'size': '180px', 'columns': group};
+        this.headerColumns = headerColumns.slice(0, -3).concat([groupColumn]);
     },
 
     _setDataItems: function() {
