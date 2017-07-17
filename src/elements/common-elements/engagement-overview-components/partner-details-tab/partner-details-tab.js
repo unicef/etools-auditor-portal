@@ -38,8 +38,9 @@ Polymer({
     },
 
     setOfficers: function(partner, engagement) {
-        if (!partner || !partner.id) { return; }
-        if (this.isReadOnly('partner', this.basePermissionPath) && engagement &&
+        if (!partner || !partner.id) {
+            this.set('authorizedOfficer', null);
+        } else if (this.isReadOnly('partner', this.basePermissionPath) && engagement &&
             engagement.authorized_officers && engagement.authorized_officers[0]) {
             let officer = this.engagement.authorized_officers[0];
             officer.fullName = `${officer.first_name} ${officer.last_name}`;
@@ -104,7 +105,7 @@ Polymer({
         this.set('activePd', null);
         this.set('authorizedOfficer', null);
 
-        let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || id;
+        let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || +id;
         if (!partnerId) { return; }
         if (this.isReadOnly('partner', this.basePermissionPath)) {
             this.partner = this.engagement.partner;
