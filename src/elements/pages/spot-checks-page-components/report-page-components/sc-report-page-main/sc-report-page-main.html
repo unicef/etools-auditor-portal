@@ -3,40 +3,48 @@
 
 <dom-module id="sc-report-page-main">
     <template>
-        <style></style>
+        <assign-engagement
+                id="assignEngagement"
+                data="{{engagement}}"
+                audit-type="Spot Check"
+                error-object="{{errorObject}}"
+                original-data="[[originalData]]"
+                base-permission-path="{{permissionBase}}">
+        </assign-engagement>
 
-        <assign-engagement data="{{engagement}}"
-                           audit-type="Spot Check"
-                           error-object="{{errorObject}}"
-                           original-data="[[originalData]]"
-                           base-permission-path="{{permissionBase}}"
-                           id="assignEngagement"></assign-engagement>
+        <overview-element
+                id="overviewEngagement"
+                data="{{engagement}}"
+                original-data="[[originalData]]"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+        </overview-element>
 
-        <overview-element data="{{engagement}}"
-                          id="overviewEngagement"
-                          original-data="[[originalData]]"
-                          error-object="{{errorObject}}"
-                          base-permission-path="{{permissionBase}}"></overview-element>
+        <summary-findings-element
+                id="findingsHighPriority"
+                data-items="{{engagement.findings}}"
+                error-object="{{errorObject}}"
+                original-data="[[originalData.findings]]"
+                priority="{{priorities.high}}"
+                base-permission-path="{{permissionBase}}">
+        </summary-findings-element>
 
-        <summary-findings-element data-items="{{engagement.findings}}"
-                                  id="findingsHighPriority"
-                                  error-object="{{errorObject}}"
-                                  original-data="[[originalData.findings]]"
-                                  priority="{{priorities.high}}"
-                                  base-permission-path="{{permissionBase}}"></summary-findings-element>
+        <summary-findings-element
+                id="findingsLowPriority"
+                data-items="{{engagement.findings}}"
+                error-object="{{errorObject}}"
+                original-data="[[originalData.findings]]"
+                priority="{{priorities.low}}"
+                base-permission-path="{{permissionBase}}">
+        </summary-findings-element>
 
-        <summary-findings-element data-items="{{engagement.findings}}"
-                                  id="findingsLowPriority"
-                                  error-object="{{errorObject}}"
-                                  original-data="[[originalData.findings]]"
-                                  priority="{{priorities.low}}"
-                                  base-permission-path="{{permissionBase}}"></summary-findings-element>
-
-        <internal-controls id="internalControls"
-                           error-object="{{errorObject}}"
-                           data="{{engagement.internal_controls}}"
-                           original-data="[[originalData.internal_controls]]"
-                           base-permission-path="{{permissionBase}}"></internal-controls>
+        <internal-controls
+                id="internalControls"
+                error-object="{{errorObject}}"
+                data="{{engagement.internal_controls}}"
+                original-data="[[originalData.internal_controls]]"
+                base-permission-path="{{permissionBase}}">
+        </internal-controls>
     </template>
 
     <!-- inject scripts './sc-report-page-main.js'-->

@@ -1,5 +1,4 @@
 Polymer({
-
     is: 'app-shell',
 
     behaviors: [
@@ -8,23 +7,19 @@ Polymer({
     ],
 
     properties: {
-
         page: {
             type: String,
             reflectToAttribute: true,
             observer: '_pageChanged'
         },
-
         narrow: {
             type: Boolean,
             reflectToAttribute: true
         },
-
         _toast: {
             type: Object,
             value: null
         },
-
         _toastQueue: {
             type: Array,
             value: function() {
@@ -54,26 +49,31 @@ Polymer({
         'user-profile-loaded': '_initialDataLoaded',
         'static-data-loaded': '_initialDataLoaded',
     },
+
     ready: function() {
         this.baseUrl = this.basePath;
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
     },
+
     attached: function() {
         if (this.initLoadingComplete && this.route.path === '/ap/') {
             this._configPath();
         }
         this.$.drawer.$.scrim.remove();
     },
+
     queueToast: function(e, detail) {
         let notificationList = Polymer.dom(this.root).querySelector('multi-notification-list');
         if (notificationList && detail) {
             notificationList.fire('notification-push', detail);
         }
     },
+
     _routePageChanged: function() {
         if (!this.initLoadingComplete || !this.routeData.page) { return; }
         this.page = this.routeData.page || 'engagements';
     },
+
     _pageChanged: function(page) {
         if (Polymer.isInstance(this.$[`${page}`])) { return; }
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
@@ -90,6 +90,7 @@ Polymer({
             if (this.route.path === '/ap/') { this._configPath(); }
         }, this._pageNotFound, true);
     },
+
     _pageNotFound: function(event) {
         this.page = 'not-found';
         let message = event && event.detail && event.detail.message ?
@@ -99,6 +100,7 @@ Polymer({
         this.fire('toast', {text: message});
         this.fire('global-loading', {type: 'initialisation'});
     },
+
     _initialDataLoaded: function(e) {
         if (e && e.type === 'user-profile-loaded') { this.profileLoaded = true; }
         if (e && e.type === 'static-data-loaded') { this.staticDataLoaded = true; }
@@ -106,6 +108,7 @@ Polymer({
             this.page = this.routeData.page || this._configPath();
         }
     },
+
     _handleGlobalLoading: function(event) {
         if (!event.detail || !event.detail.type) {
             console.error('Bad details object', JSON.stringify(event.detail));
@@ -126,10 +129,10 @@ Polymer({
             }
         }
     },
+
     _configPath: function() {
         let path = `${this.basePath}engagements/list`;
         this.set('route.path', path);
         return 'engagements';
     }
-
 });

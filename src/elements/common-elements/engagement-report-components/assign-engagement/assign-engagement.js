@@ -103,5 +103,4 @@ Polymer({
     _checkFieldInvalid: function(error) {
         return !!error;
     }
-
 });

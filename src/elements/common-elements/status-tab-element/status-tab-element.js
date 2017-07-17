@@ -135,5 +135,4 @@
             this.canceled = true;
         }
     });
-
 })();

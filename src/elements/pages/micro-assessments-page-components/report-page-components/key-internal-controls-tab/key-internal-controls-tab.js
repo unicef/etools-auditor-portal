@@ -178,5 +178,4 @@ Polymer({
     _showRisk: function(risk) {
         return !!(risk && risk.type === 'default');
     }
-
 });

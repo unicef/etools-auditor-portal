@@ -75,5 +75,4 @@ Polymer({
             this.partnersListQueries = queries;
         }
     }
-
 });

@@ -3,7 +3,10 @@
 Polymer({
     is: 'subject-area-element',
 
-    behaviors: [APBehaviors.StaticDataController],
+    behaviors: [
+        APBehaviors.StaticDataController
+    ],
+
     properties: {
         area: {
             type: Object,

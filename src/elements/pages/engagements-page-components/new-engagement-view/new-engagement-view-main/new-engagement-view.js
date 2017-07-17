@@ -99,5 +99,4 @@ Polymer({
             this.$.engagementDetails.resetType();
         }
     }
-
 });

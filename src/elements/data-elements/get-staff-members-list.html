@@ -1,25 +1,25 @@
-<!--import [polymer, etools-ajax, lodash, etools-app-config, permission-controller]-->
+<!--import [polymer, etools-ajax, lodash]-->
+<!--import [etools-app-config, permission-controller]-->
 
 <dom-module id="get-staff-members-list">
-
     <template>
+        <etools-ajax
+                method="GET"
+                url="{{url}}"
+                on-success="_handleDataResponse"
+                on-fail="_handleError">
+        </etools-ajax>
 
-        <etools-ajax method="GET"
-                     url="{{url}}"
-                     on-success="_handleDataResponse"
-                     on-fail="_handleError"></etools-ajax>
-
-        <etools-ajax method="OPTIONS"
-                     url="[[optionsUrl]]"
-                     on-success="_handleOptionsResponse"
-                     on-fail="_handleOptionsResponse"></etools-ajax>
-
+        <etools-ajax
+                method="OPTIONS"
+                url="[[optionsUrl]]"
+                on-success="_handleOptionsResponse"
+                on-fail="_handleOptionsResponse">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'get-staff-members-list',
 
             behaviors: [
@@ -60,7 +60,9 @@
                 }
             },
 
-            observers: ['_startRequest(organisationId, queries)'],
+            observers: [
+                '_startRequest(organisationId, queries)'
+            ],
 
             _startRequest: function(organisationId, listQueries) {
                 if (!organisationId || !listQueries) { return; }
@@ -124,9 +126,6 @@
                 this.listLoading = false;
                 this.url = null;
             }
-
         });
-
     </script>
-
 </dom-module>

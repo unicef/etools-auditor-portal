@@ -1,5 +1,6 @@
-<!--import [polymer, etools-content-panel, paper-input, tab-inputs-styles, module-styles, get-partner-data,
-            common-methods-behavior, static-data-behavior, permission-controller]-->
+<!--import [polymer, etools-content-panel, paper-input]-->
+<!--import [tab-inputs-styles, module-styles, get-partner-data, common-methods-behavior, static-data-behavior,
+            permission-controller]-->
 
 <dom-module id="partner-details-tab">
     <template>
@@ -27,22 +28,23 @@
                 <div class="input-container">
                     <!-- Partner -->
                     <etools-searchable-multiselection-menu
-                            options="[[partners]]"
-                            class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                            readonly="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
-                            disabled="[[isReadOnly('partner', basePermissionPath)]]"
-                            value="{{engagement.partner}}"
                             id="partner"
+                            class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
+                            value="{{engagement.partner}}"
+                            label="[[getLabel('partner', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
+                            options="[[partners]]"
+                            custom-object-options
+                            option-label="name"
+                            option-value="id"
+                            required$="{{_setRequired('partner', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('partner', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
                             invalid="{{_checkInvalid(errors.partner)}}"
                             error-message="{{errors.partner}}"
-                            required="{{_setRequired('partner', basePermissionPath)}}"
-                            custom-object-options dynamic-align
-                            option-value="id"
-                            option-label="name"
-                            label="[[getLabel('partner', basePermissionPath)]]"
                             on-focus="_resetFieldError"
                             on-value-change="_requestPartner"
-                            placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]">
+                            dynamic-align>
                     </etools-searchable-multiselection-menu>
 
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
@@ -50,54 +52,63 @@
 
                 <div class="input-container">
                     <!-- Partner Address -->
-                    <paper-input label="Partner Address"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 disabled readonly
-                                 value="[[partner.street_address]]"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]">
+                    <paper-input
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="[[partner.street_address]]"
+                            label="Partner Address"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled
+                            readonly>
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner City -->
-                    <paper-input label="Partner City"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.city}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.city}}"
+                            label="Partner City"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled
+                            readonly>
                     </paper-input>
                 </div>
             </div>
 
             <div class="row-h group">
-
                 <div class="input-container">
                     <!-- Partner Postal Code -->
-                    <paper-input label="Partner Postal Code"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.postal_code}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.postal_code}}"
+                            label="Partner Postal Code"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled
+                            readonly>
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner Phone Number -->
-                    <paper-input label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.phone_number}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.phone_number}}"
+                            label="[[getLabel('partner.phone_number', basePermissionPath)]]"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled
+                            readonly>
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
-                    <paper-input label="[[getLabel('partner.email', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.email}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.email}}"
+                            label="[[getLabel('partner.email', basePermissionPath)]]"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled
+                            readonly>
                     </paper-input>
                 </div>
             </div>
@@ -129,30 +140,29 @@
                 <div class="input-container input-container-m">
                     <!-- Active PD -->
                     <etools-searchable-multiselection-menu
+                            class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
+                            label="[[getLabel('active_pd', basePermissionPath)]]"
+                            placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                             options="[[partner.interventions]]"
+                            custom-object-options
+                            option-label="number"
+                            option-value="id"
                             selected-values="{{activePd}}"
                             update-selected
-                            class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
-                            readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                             required$="{{_setRequired('active_pd', basePermissionPath)}}"
+                            disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                             invalid$="{{_checkInvalid(errors.active_pd)}}"
                             error-message="{{errors.active_pd}}"
                             on-focus="_resetFieldError"
                             dynamic-align
                             multi
-                            hide-search
-                            custom-object-options
-                            option-value="id"
-                            option-label="number"
-                            label="[[getLabel('active_pd', basePermissionPath)]]"
-                            placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]">
+                            hide-search>
                     </etools-searchable-multiselection-menu>
                 </div>
             </div>
 
         </etools-content-panel>
-
     </template>
 
     <!-- inject scripts './partner-details-tab.js'-->

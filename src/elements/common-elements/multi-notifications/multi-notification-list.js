@@ -1,5 +1,6 @@
 Polymer({
     is: 'multi-notification-list',
+
     properties: {
         notifications: {
             type: Array,
@@ -19,10 +20,12 @@ Polymer({
             value: 3
         }
     },
+
     listeners: {
         'notification-push': '_onNotificationPush',
         'notification-shift': '_onNotificationShift'
     },
+
     _onNotificationShift: function() {
         this.shift('notifications');
         Polymer.dom.flush();
@@ -32,6 +35,7 @@ Polymer({
             this.moveUpNotifications();
         }
     },
+
     _onNotificationPush: function(e, notification) {
         if (this.limit > this.notifications.length) {
             this.push('notifications', notification);
@@ -40,6 +44,7 @@ Polymer({
             this.push('notificationsQueue', notification);
         }
     },
+
     moveUpNotifications: function() {
         Polymer.dom.flush();
         let notifications = Polymer.dom(this.root).querySelectorAll('multi-notification-item');

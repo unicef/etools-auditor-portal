@@ -21,16 +21,16 @@
                 <div class="input-container input-container-l">
                     <!-- Recommendation -->
                     <paper-textarea
+                            class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
+                            value="{{data.recommendation}}"
                             label="[[getLabel('recommendation', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('recommendation', basePermissionPath)]]"
-                            value="{{data.recommendation}}"
-                            on-focus="_resetFieldError"
-                            class$="validate-input disabled-as-readonly [[_setRequired('recommendation', basePermissionPath)]]"
-                            readonly$="[[isReadOnly('recommendation', basePermissionPath)]]"
-                            disabled$="[[isReadOnly('recommendation', basePermissionPath, requestInProcess)]]"
                             required$="[[_setRequired('recommendation', basePermissionPath)]]"
+                            disabled$="[[isReadOnly('recommendation', basePermissionPath, requestInProcess)]]"
+                            readonly$="[[isReadOnly('recommendation', basePermissionPath)]]"
                             invalid$="{{errors.recommendation}}"
-                            error-message="{{errors.recommendation}}">
+                            error-message="{{errors.recommendation}}"
+                            on-focus="_resetFieldError">
                     </paper-textarea>
                 </div>
             </div>
@@ -39,16 +39,16 @@
                 <div class="input-container input-container-l">
                     <!-- Audit Observation -->
                     <paper-textarea
+                            class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
+                            value="{{data.audit_observation}}"
                             label="[[getLabel('audit_observation', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('audit_observation', basePermissionPath)]]"
-                            value="{{data.audit_observation}}"
-                            on-focus="_resetFieldError"
-                            class$="validate-input disabled-as-readonly [[_setRequired('audit_observation', basePermissionPath)]]"
-                            readonly$="[[isReadOnly('audit_observation', basePermissionPath)]]"
-                            disabled$="[[isReadOnly('audit_observation', basePermissionPath, requestInProcess)]]"
                             required$="[[_setRequired('audit_observation', basePermissionPath)]]"
+                            disabled$="[[isReadOnly('audit_observation', basePermissionPath, requestInProcess)]]"
+                            readonly$="[[isReadOnly('audit_observation', basePermissionPath)]]"
                             invalid$="{{errors.audit_observation}}"
-                            error-message="{{errors.audit_observation}}">
+                            error-message="{{errors.audit_observation}}"
+                            on-focus="_resetFieldError">
                     </paper-textarea>
                 </div>
             </div>
@@ -57,16 +57,16 @@
                 <div class="input-container input-container-l">
                     <!-- IP Response -->
                     <paper-textarea
+                            class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
+                            value="{{data.ip_response}}"
                             label="[[getLabel('ip_response', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('ip_response', basePermissionPath)]]"
-                            value="{{data.ip_response}}"
-                            on-focus="_resetFieldError"
-                            class$="validate-input disabled-as-readonly [[_setRequired('ip_response', basePermissionPath)]]"
-                            readonly$="[[isReadOnly('ip_response', basePermissionPath)]]"
-                            disabled$="[[isReadOnly('ip_response', basePermissionPath, requestInProcess)]]"
                             required$="[[_setRequired('ip_response', basePermissionPath)]]"
+                            disabled$="[[isReadOnly('ip_response', basePermissionPath, requestInProcess)]]"
+                            readonly$="[[isReadOnly('ip_response', basePermissionPath)]]"
                             invalid$="{{errors.ip_response}}"
-                            error-message="{{errors.ip_response}}">
+                            error-message="{{errors.ip_response}}"
+                            on-focus="_resetFieldError">
                     </paper-textarea>
                 </div>
             </div>

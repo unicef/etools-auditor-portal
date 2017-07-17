@@ -1,6 +1,7 @@
-<!--import [polymer, iron-icons, iron-icons/av-icons, iron-flex-layout, paper-button,
-            etools-content-panel, paper-button, paper-menu-button, paper-icon-button, paper-menu, paper-item,
-            moment-element/moment-import, permission-controller, common-methods-behavior]-->
+<!--import [polymer, iron-icons, iron-icons/av-icons, iron-flex-layout, paper-button, etools-content-panel, paper-button,
+            paper-menu-button, paper-icon-button, paper-menu, paper-item, moment-element/moment-import]-->
+
+<!--import [permission-controller, common-methods-behavior]-->
 
 <dom-module id="status-tab-element">
     <template>
@@ -8,10 +9,11 @@
         <style include="module-styles"></style>
 
         <etools-content-panel panel-title="Status">
-
             <div class="status-list" id="statusList">
                 <div class="canceled-status" id="canceledStatus" hidden$="[[!canceled]]">
-                    <div class="divider canceled"><div class="status-divider"></div></div>
+                    <div class="divider canceled">
+                        <div class="status-divider"></div>
+                    </div>
 
                     <div class="status-container canceled">
                         <div class="status-icon">
@@ -19,34 +21,40 @@
                                 <iron-icon icon="warning"></iron-icon>
                             </span>
                         </div>
+
                         <div class="status">
                             <span class="status-header">Canceled</span>
                             <span class="status-date">{{_getFormattedDate('date_of_cancel', engagementData.date_of_cancel)}}</span>
                         </div>
                     </div>
                 </div>
+
                 <div class$="status-container first [[_getStatusState(1, engagementData)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(1, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(1, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status">
                         <span class="status-header">Partner Contacted</span>
                         <span class="status-date">{{_getFormattedDate('partner_contacted_at', engagementData.partner_contacted_at)}}</span>
                     </div>
                 </div>
 
-                <div class="divider"><div class="status-divider"></div></div>
+                <div class="divider">
+                    <div class="status-divider"></div>
+                </div>
 
                 <div class$="status-container [[_getStatusState(2, engagementData.date_of_field_visit)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(2, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(2, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status">
                         <span class="status-header">Field Visit</span>
                         <span class="status-date">{{_getFormattedDate('date_of_field_visit', engagementData.date_of_field_visit)}}</span>
@@ -57,11 +65,12 @@
 
                 <div class$="status-container [[_getStatusState(3, engagementData.date_of_field_visit, engagementData.date_of_draft_report_to_ip)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(3, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(3, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status multi-line">
                         <span class="status-header">Draft Report <br> Issued to IP</span>
                         <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_ip', engagementData.date_of_draft_report_to_ip)}}</span>
@@ -72,11 +81,12 @@
 
                 <div class$="status-container [[_getStatusState(4, engagementData.date_of_draft_report_to_ip, engagementData.date_of_comments_by_ip)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(4, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(4, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status multi-line">
                         <span class="status-header">Comments <br> Received from IP</span>
                         <span class="status-date">{{_getFormattedDate('date_of_comments_by_ip', engagementData.date_of_comments_by_ip)}}</span>
@@ -87,11 +97,12 @@
 
                 <div class$="status-container [[_getStatusState(5, engagementData.date_of_comments_by_ip, engagementData.date_of_draft_report_to_unicef)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(5, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(5, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status multi-line">
                         <span class="status-header">Draft Report <br> Issued to UNICEF</span>
                         <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_unicef', engagementData.date_of_draft_report_to_unicef)}}</span>
@@ -102,11 +113,12 @@
 
                 <div class$="status-container [[_getStatusState(6, engagementData.date_of_draft_report_to_unicef, engagementData.date_of_comments_by_unicef)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(6, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(6, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status multi-line">
                         <span class="status-header">Comments <br> Received from UNICEF</span>
                         <span class="status-date">{{_getFormattedDate('date_of_comments_by_unicef', engagementData.date_of_comments_by_unicef)}}</span>
@@ -117,27 +129,33 @@
 
                 <div class$="status-container [[_getStatusState(8, engagementData)]]">
                     <div class="status-icon">
-                    <span class="icon-wrapper">
-                        <span class="status-nr">[[_refactorStatusNumber(7, engagementData.status)]]</span>
-                        <iron-icon icon="check"></iron-icon>
-                    </span>
+                        <span class="icon-wrapper">
+                            <span class="status-nr">[[_refactorStatusNumber(7, engagementData.status)]]</span>
+                            <iron-icon icon="check"></iron-icon>
+                        </span>
                     </div>
+
                     <div class="status">
                         <span class="status-header">Final Report</span>
                     </div>
                 </div>
             </div>
 
-
             <template is="dom-if" if="{{_showActionButtons(engagementData)}}">
-
                 <div class="status-buttons">
                     <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]" class="status-tab-button">
                         <span>[[mainActionText]]</span>
-                        <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
 
-                            <paper-menu-button dynamic-align opened="{{statusBtnMenuOpened}}" class="option-button">
-                                <paper-icon-button icon="expand-more" class="dropdown-trigger option-button"></paper-icon-button>
+                        <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
+                            <paper-menu-button
+                                    dynamic-align
+                                    opened="{{statusBtnMenuOpened}}"
+                                    class="option-button">
+                                <paper-icon-button
+                                        icon="expand-more"
+                                        class="dropdown-trigger option-button">
+                                </paper-icon-button>
+
                                 <div class="dropdown-content">
                                     <template is="dom-repeat" items="[[otherActions]]" class="other-btns-template">
                                         <div class="other-options" on-click="closeMenu" event-name$="[[item.event]]">
@@ -145,20 +163,13 @@
                                             <span>{{item.name}}</span>
                                         </div>
                                     </template>
-
                                 </div>
                             </paper-menu-button>
-
                         </template>
-
                     </paper-button>
                 </div>
-
             </template>
-
-
         </etools-content-panel>
-
     </template>
 
     <!-- inject scripts './status-tab-element.js'-->

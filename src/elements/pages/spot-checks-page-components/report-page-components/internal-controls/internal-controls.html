@@ -1,5 +1,4 @@
 <!--import [polymer, etools-content-panel, paper-input/paper-textarea]-->
-
 <!--import [tab-inputs-styles, module-styles, textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="internal-controls">
@@ -11,6 +10,7 @@
                 margin-bottom: 20px;
             }
         </style>
+
         <etools-content-panel class="content-section clearfx" panel-title="Internal Controls">
             <div class="row-h">
                 Inquire of IP management whether there have been any changes to internal controls since the prior
@@ -19,16 +19,18 @@
                 from the micro assessment and previous assurance activities have been implemented. Document any
                 changes identified
             </div>
-            <paper-textarea label="Document any changes identified"
-                            placeholder="Enter comments"
-                            value="{{data}}"
-                            always-float-label
-                            on-focus="_resetFieldError"
-                            class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
-                            required$="[[_setRequired('internal_controls', basePermissionPath)]]"
-                            disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
-                            invalid="{{_checkInvalid(errors.internal_controls)}}"
-                            error-message="{{errors.internal_controls}}">
+
+            <paper-textarea
+                    class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
+                    value="{{data}}"
+                    label="Document any changes identified"
+                    always-float-label
+                    placeholder="Enter comments"
+                    required$="[[_setRequired('internal_controls', basePermissionPath)]]"
+                    disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
+                    invalid="{{_checkInvalid(errors.internal_controls)}}"
+                    error-message="{{errors.internal_controls}}"
+                    on-focus="_resetFieldError">
             </paper-textarea>
         </etools-content-panel>
     </template>

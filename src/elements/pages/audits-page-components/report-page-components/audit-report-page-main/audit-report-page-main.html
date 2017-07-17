@@ -7,13 +7,15 @@
             .mb-15 { margin-bottom: 15px; }
         </style>
 
-        <assign-engagement id="assignEngagement"
-                           original-data="[[originalData]]"
-                           class="mb-15"
-                           error-object="{{errorObject}}"
-                           data="{{engagement}}"
-                           audit-type="Audit"
-                           base-permission-path="{{permissionBase}}"></assign-engagement>
+        <assign-engagement
+                id="assignEngagement"
+                original-data="[[originalData]]"
+                class="mb-15"
+                error-object="{{errorObject}}"
+                data="{{engagement}}"
+                audit-type="Audit"
+                base-permission-path="{{permissionBase}}">
+        </assign-engagement>
 
         <findings-summary
                 id="findingsSummary"

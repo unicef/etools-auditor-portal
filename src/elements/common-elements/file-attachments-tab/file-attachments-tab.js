@@ -3,9 +3,11 @@
 (function() {
     Polymer({
         is: 'file-attachments-tab',
+
         behaviors: [
             APBehaviors.TableElementsBehavior
         ],
+
         properties: {
             mainProperty: {
                 type: String
@@ -79,10 +81,12 @@
                 value: 'Are you sure that you want to delete this attachment?'
             }
         },
+
         listeners: {
             'dialog-confirmed': '_addItemFromDialog',
             'delete-confirmed': 'removeItem',
         },
+
         observers: [
             '_filesChange(dataItems.*, fileTypes.*)',
             '_updateHeadings(fileTypeRequired)',
