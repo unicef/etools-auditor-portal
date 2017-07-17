@@ -6,17 +6,15 @@ App global configuration
 <script>
     'use strict';
 
-
     var etoolsCustomDexieDb = new Dexie('AP');
+
     etoolsCustomDexieDb.version(1).stores({
         collectionsList: '&name, expire',
         partners: 'id',
         auditors: 'id'
     });
 
-
     var etoolsAppConfig = {
-
         // app endpoints
         endpoints: {
             userProfile: {
@@ -63,6 +61,7 @@ App global configuration
                 url: '/users/api/changecountry/'
             }
         },
+
         localEndpoints: {
             userProfile: {
                 url: '/data/user-profile.json'
@@ -74,8 +73,6 @@ App global configuration
 
         globals: {
             // globals
-
-
             baseSite: window.location.origin,
             basePath: (window.location.port === '8080') ? '/' : '/ap/',
             serverBackend: (window.location.port !== '8080'),
@@ -107,7 +104,5 @@ App global configuration
                 return this.basePath + path;
             }
         }
-
     };
-
 </script>

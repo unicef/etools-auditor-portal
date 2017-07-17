@@ -2,11 +2,13 @@
 
 Polymer({
     is: 'partner-details-tab',
+
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         basePermissionPath: {
             type: String,
@@ -168,5 +170,4 @@ Polymer({
             !partner || !partner.partnerOfficers || !partner.partnerOfficers.length ||
             partner.partnerOfficers.length < 2;
     }
-
 });

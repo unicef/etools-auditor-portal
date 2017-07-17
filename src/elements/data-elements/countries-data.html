@@ -1,70 +1,63 @@
 <!--import [polymer, etools-ajax]-->
 
 <dom-module id="countries-data">
+    <template>
+        <etools-ajax
+                id="ajax"
+                endpoint="[[endpoint]]"
+                on-success="_handleResponse"
+                caching-storage="dexie">
+        </etools-ajax>
+    </template>
 
-  <template>
+    <script>
 
-    <etools-ajax id="ajax"
-                 endpoint="[[endpoint]]"
-                 on-success="_handleResponse"
-                 caching-storage="dexie"></etools-ajax>
+        var _data = {};
+        var _countryEls = [];
 
-  </template>
+        var _setCountryData = function(data) {
+            _data.countries = data || {};
+            this.load(_data);
+            _countryEls.forEach(function(el) {
+                if (el !== this) { el.load(_data); }
+            });
+        };
 
-  <script>
+        Polymer({
+            is: 'countries-data',
 
-    var _data = {};
-    var _countryEls = [];
+            properties: {
+                countries: {
+                    type: Array,
+                    readOnly: true,
+                    notify: true
+                }
+            },
 
-    var _setCountryData = function(data) {
-      _data.countries = data || {};
-      this.load(_data);
-      _countryEls.forEach(function(el) {
-        if (el !== this) { el.load(_data); }
-      });
-    };
+            ready: function() {
+                this.load(_data);
+            },
 
-    Polymer({
+            attached: function() {
+                if (_countryEls.length === 0 && !_data.countries) {
+                    this.endpoint = etoolsAppConfig.globals.getEndpoint('countries');
+                }
+                _countryEls.push(this);
+            },
 
-      is: 'countries-data',
+            detached: function() {
+                _countryEls.splice(_countryEls.indexOf(this), 1);
+            },
 
-      properties: {
+            load: function(data) {
+                if (data.countries) {
+                    this._setCountries(data.countries);
+                }
+            },
 
-        countries: {
-          type: Array,
-          readOnly: true,
-          notify: true
-        }
-
-      },
-
-      ready: function() {
-        this.load(_data);
-      },
-
-      attached: function() {
-        if (_countryEls.length === 0 && !_data.countries) {
-          this.endpoint = etoolsAppConfig.globals.getEndpoint('countries');
-        }
-        _countryEls.push(this);
-      },
-
-      detached: function() {
-        _countryEls.splice(_countryEls.indexOf(this), 1);
-      },
-
-      load: function(data) {
-        if (data.countries) {
-          this._setCountries(data.countries);
-        }
-      },
-
-      _handleResponse: function(res) {
-        _setCountryData.bind(this)(res.detail);
-      }
-
-    });
-
-  </script>
-
+            _handleResponse: function(res) {
+                _setCountryData.bind(this)(res.detail);
+            }
+        });
+    </script>
 </dom-module>

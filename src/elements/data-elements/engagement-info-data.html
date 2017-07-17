@@ -1,31 +1,33 @@
-<!--import [polymer, etools-ajax, lodash, last-created-behavior, permission-controller]-->
+<!--import [polymer, etools-ajax, lodash]-->
+<!--import [last-created-behavior, permission-controller]-->
 
 <dom-module id="engagement-info-data">
-
     <template>
+        <etools-ajax
+                endpoint="[[endpoint]]"
+                on-success="_handleDataResponse"
+                on-fail="_handleError">
+        </etools-ajax>
 
-        <etools-ajax endpoint="[[endpoint]]"
-                     on-success="_handleDataResponse"
-                     on-fail="_handleError"></etools-ajax>
+        <etools-ajax
+                method="OPTIONS"
+                url="[[optionsUrl]]"
+                on-success="_handleOptionsResponse"
+                on-fail="_handleOptionsResponse">
+        </etools-ajax>
 
-        <etools-ajax method="OPTIONS"
-                     url="[[optionsUrl]]"
-                     on-success="_handleOptionsResponse"
-                     on-fail="_handleOptionsResponse"></etools-ajax>
-
-        <etools-ajax method="OPTIONS"
-                     url="[[poOptionsUrl]]"
-                     on-success="_handlePoOptionsResponse"
-                     on-fail="_handlePoOptionsResponse"></etools-ajax>
-
-
+        <etools-ajax
+                method="OPTIONS"
+                url="[[poOptionsUrl]]"
+                on-success="_handlePoOptionsResponse"
+                on-fail="_handlePoOptionsResponse">
+        </etools-ajax>
     </template>
 
     <script>
         'use strict';
 
         Polymer({
-
             is: 'engagement-info-data',
 
             behaviors: [
@@ -136,9 +138,6 @@
                     this.optionsUrl = this.endpoint.url;
                 }
             }
-
         });
-
     </script>
-
 </dom-module>

@@ -1,9 +1,9 @@
-<!--import [polymer, shared-styles, page-layout-styles, etools-app-config]-->
+<!--import [polymer]-->
+<!--import [shared-styles, page-layout-styles, etools-app-config]-->
 
 <dom-module id="not-found-page-view">
     <template>
         <style include="shared-styles">
-
             :host {
                 display: block;
             }
@@ -11,7 +11,6 @@
             a.link {
                 color: #40c4ff;
             }
-
         </style>
         <style include="page-layout-styles shared-styles"></style>
 
@@ -20,7 +19,6 @@
                 404 <a href$="[[getLink()]]" class="link">Head back home.</a>
             </paper-material>
         </div>
-
     </template>
 
     <script>

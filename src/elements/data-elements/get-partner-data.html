@@ -1,22 +1,23 @@
-<!--import [polymer, etools-ajax, lodash, etools-app-config, static-data-behavior]-->
+<!--import [polymer, etools-ajax, lodash]-->
+<!--import [etools-app-config, static-data-behavior]-->
 
 <dom-module id="get-partner-data">
-
     <template>
+        <etools-ajax
+                url="[[url]]"
+                on-success="_handleResponse"
+                on-fail="_handleError">
+        </etools-ajax>
 
-        <etools-ajax url="[[url]]"
-                     on-success="_handleResponse"
-                     on-fail="_handleError"></etools-ajax>
-
-        <etools-ajax url="[[officersUrl]]"
-                     on-success="_handleOfficersResponse"
-                     on-fail="_handleOfficersError"></etools-ajax>
+        <etools-ajax
+                url="[[officersUrl]]"
+                on-success="_handleOfficersResponse"
+                on-fail="_handleOfficersError">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'get-partner-data',
 
             behaviors: [
@@ -25,7 +26,6 @@
             ],
 
             properties: {
-
                 partnerId: {
                     type: Number,
                     notify: true,
@@ -35,7 +35,6 @@
                     type: Object,
                     notify: true
                 }
-
             },
 
             _handleResponse: function (data, detail) {
@@ -97,9 +96,6 @@
                 this.url = this.getEndpoint('partnerInfo', {id: partnerId}).url;
                 this.partnerId = null;
             }
-
         });
-
     </script>
-
 </dom-module>

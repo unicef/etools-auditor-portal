@@ -3,30 +3,37 @@
 
 <dom-module id="ma-report-page-main">
     <template>
-        <assign-engagement data="{{engagement}}"
-                           original-data="[[originalData]]"
-                           error-object="{{errorObject}}"
-                           audit-type="Micro Assessment"
-                           base-permission-path="{{permissionBase}}"
-                           id="assignEngagement"></assign-engagement>
+        <assign-engagement
+                id="assignEngagement"
+                data="{{engagement}}"
+                original-data="[[originalData]]"
+                error-object="{{errorObject}}"
+                audit-type="Micro Assessment"
+                base-permission-path="{{permissionBase}}">
+        </assign-engagement>
 
-        <primary-risk-element risk-data="[[engagement.test_subject_areas.children.0]]"
-                              id="primaryRisk"
-                              dialog-opened="[[riskDialogOpened]]"
-                              error-object="{{errorObject}}"
-                              base-permission-path="{{permissionBase}}"></primary-risk-element>
+        <primary-risk-element
+                id="primaryRisk"
+                risk-data="[[engagement.test_subject_areas.children.0]]"
+                dialog-opened="[[riskDialogOpened]]"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+        </primary-risk-element>
 
-        <key-internal-controls-tab subject-areas="[[engagement.test_subject_areas]]"
-                                   id="internalControls"
-                                   dialog-opened="{{riskDialogOpened}}"
-                                   error-object="{{errorObject}}"
-                                   base-permission-path="{{permissionBase}}"></key-internal-controls-tab>
+        <key-internal-controls-tab
+                id="internalControls"
+                subject-areas="[[engagement.test_subject_areas]]"
+                dialog-opened="{{riskDialogOpened}}"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+        </key-internal-controls-tab>
 
-        <control-findings-tab data-items="{{engagement.findings}}"
-                              id="controlFindings"
-                              error-object="{{errorObject}}"
-                              base-permission-path="{{permissionBase}}"></control-findings-tab>
-
+        <control-findings-tab
+                id="controlFindings"
+                data-items="{{engagement.findings}}"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+        </control-findings-tab>
     </template>
 
     <!-- inject scripts './ma-report-page-main.js'-->

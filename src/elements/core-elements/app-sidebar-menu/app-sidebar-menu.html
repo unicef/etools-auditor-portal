@@ -2,39 +2,36 @@
 <!--import [module-styles]-->
 
 <dom-module id="app-sidebar-menu">
+    <template>
+        <style include="module-styles"></style>
+        <!-- inject styles './app-sidebar-menu.scss'-->
 
-  <template>
+        <app-toolbar class="menu-header">
+            <img src$="[[getAbsolutePath('images/ap_icon_v2.svg')]]">
+        </app-toolbar>
 
-    <style include="module-styles"></style>
-    <!-- inject styles './app-sidebar-menu.scss'-->
+        <div class="nav-menu">
+            <iron-selector
+                    selected="[[page]]"
+                    attr-for-selected="name"
+                    selectable="side-bar-item"
+                    role="navigation">
+                <side-bar-item
+                        name="engagements"
+                        icon="av:playlist-add-check"
+                        side-bar-link="engagements/list">
+                </side-bar-item>
+            </iron-selector>
 
-    <app-toolbar class="menu-header">
-      <img src$="[[getAbsolutePath('images/ap_icon_v2.svg')]]">
-    </app-toolbar>
+            <div class="divider"></div>
 
-    <div class="nav-menu">
+            <side-bar-item class="lighter-item" name="User Support" icon="icons:help" side-bar-link="https://etools.uservoice.com" external></side-bar-item>
 
-      <iron-selector selected="[[page]]"
-                     attr-for-selected="name"
-                     selectable="side-bar-item"
-                     role="navigation">
+            <side-bar-item class="lighter-item" name="Discussion" icon="icons:question-answer" external side-bar-link="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
 
-        <side-bar-item name="engagements" icon="av:playlist-add-check" side-bar-link="engagements/list"></side-bar-item>
+            <side-bar-item class="lighter-item" name="Information" icon="icons:info" external side-bar-link="http://etools.unicefresults.org"></side-bar-item>
+        </div>
+    </template>
 
-      </iron-selector>
-
-      <div class="divider"></div>
-
-      <side-bar-item class="lighter-item" name="User Support" icon="icons:help" side-bar-link="https://etools.uservoice.com" external></side-bar-item>
-
-      <side-bar-item class="lighter-item" name="Discussion" icon="icons:question-answer" external side-bar-link="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
-
-      <side-bar-item class="lighter-item" name="Information" icon="icons:info" external side-bar-link="http://etools.unicefresults.org"></side-bar-item>
-
-    </div>
-
-  </template>
-
-  <!-- inject scripts './app-sidebar-menu.js'-->
-
+    <!-- inject scripts './app-sidebar-menu.js'-->
 </dom-module>

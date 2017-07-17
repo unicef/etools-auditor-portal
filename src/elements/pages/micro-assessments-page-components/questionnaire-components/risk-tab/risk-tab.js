@@ -2,9 +2,11 @@
 
 Polymer({
     is: 'risk-tab',
+
     behaviors: [
         APBehaviors.StaticDataController
     ],
+
     properties: {
         questionnaire: {
             type: Object,
@@ -189,5 +191,4 @@ Polymer({
         if (data && data.risk && _.isJSONObj(data.risk.extra)) { data.risk.extra = JSON.parse(data.risk.extra); }
         return data;
     }
-
 });

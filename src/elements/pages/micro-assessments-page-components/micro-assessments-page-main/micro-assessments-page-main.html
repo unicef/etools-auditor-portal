@@ -1,8 +1,8 @@
 <!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash, etools-content-panel]-->
-
-<!--import [shared-styles, module-styles, main-page-styles, tab-inputs-styles, app-main-header, pages-header-element, file-attachments-tab,
-            update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior, questionnaire-page-main, ma-report-page-main, partner-details-tab, dialog-element]-->
+<!--import [shared-styles, module-styles, main-page-styles, tab-inputs-styles, app-main-header, pages-header-element,
+            file-attachments-tab, update-engagement, status-tab-element, engagement-staff-members-tab,
+            engagement-info-details, engagement-info-data, engagement-behavior, questionnaire-page-main,
+            ma-report-page-main, partner-details-tab, dialog-element]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
@@ -11,29 +11,44 @@
         <app-route
                 route="{{route}}"
                 pattern="/:id/:tab"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}">
+        </app-route>
 
-        <engagement-info-data engagement-id="{{engagementId}}"
-                              engagement-type="micro-assessments"
-                              engagement-info="{{engagement}}"></engagement-info-data>
+        <engagement-info-data
+                engagement-id="{{engagementId}}"
+                engagement-type="micro-assessments"
+                engagement-info="{{engagement}}">
+        </engagement-info-data>
 
-        <update-engagement updated-engagement-data="{{updatedEngagement}}"
-                           quiet-adding="{{quietAdding}}"
-                           engagement="{{engagement}}"
-                           error-object="{{errorObject}}"
-                           base-permission-path="{{permissionBase}}"></update-engagement>
+        <update-engagement
+                updated-engagement-data="{{updatedEngagement}}"
+                quiet-adding="{{quietAdding}}"
+                engagement="{{engagement}}"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+        </update-engagement>
 
 
         <template is="dom-if" if="{{engagement.id}}" restamp>
-            <pages-header-element show-export-button
-                                  hide-print-button
-                                  export-link="[[_setExportLink(engagement)]]"
-                                  engagement="[[engagement]]"
-                                  title$="[[engagement.partner.name]] - Micro Assessment"></pages-header-element>
+            <pages-header-element
+                    show-export-button
+                    hide-print-button
+                    export-link="[[_setExportLink(engagement)]]"
+                    engagement="[[engagement]]"
+                    title$="[[engagement.partner.name]] - Micro Assessment">
+            </pages-header-element>
+
             <div class="tab-selector">
-                <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0"
-                            selected="{{tab}}" id="pageTabs">
-                    <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
+                <paper-tabs
+                        attr-for-selected="name"
+                        noink bottom-item
+                        role="tablist"
+                        tabindex="0"
+                        selected="{{tab}}"
+                        id="pageTabs">
+                    <paper-tab name="overview">
+                        <span class="tab-content">Engagement Overview</span>
+                    </paper-tab>
 
                     <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                         <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
@@ -45,123 +60,139 @@
             </div>
 
             <template is="dom-if" if="{{_showSubmitedMessage(permissionBase, engagement)}}" restamp>
-
                 <div class="submitted-message">Engagement has been submitted to auditor</div>
-
             </template>
 
             <div class="view-container">
-
                 <div id="pageContent">
-                    <iron-pages id="info-tabs"
-                                selected="{{tab}}"
-                                attr-for-selected="name">
-
+                    <iron-pages
+                            id="info-tabs"
+                            selected="{{tab}}"
+                            attr-for-selected="name">
                         <div name="overview">
-
                             <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
                                 <etools-content-panel class="cancellation-tab" panel-title="Cancellation Reason">
                                     <div class="row-h group">
                                         <div class="input-container input-container-l">
                                             <!-- Comments -->
-                                            <paper-textarea label="Comments"
-                                                            value="{{engagement.cancel_comment}}"
-                                                            class="without-border"
-                                                            disabled readonly>
+                                            <paper-textarea
+                                                    class="without-border"
+                                                    value="{{engagement.cancel_comment}}"
+                                                    label="Comments"
+                                                    disabled
+                                                    readonly>
                                             </paper-textarea>
                                         </div>
                                     </div>
                                 </etools-content-panel>
                             </template>
 
-                            <engagement-info-details data="{{engagement}}"
-                                                     id="engagementDetails"
-                                                     original-data="[[originalData]]"
-                                                     error-object="{{errorObject}}"
-                                                     base-permission-path="{{permissionBase}}"></engagement-info-details>
+                            <engagement-info-details
+                                    id="engagementDetails"
+                                    data="{{engagement}}"
+                                    original-data="[[originalData]]"
+                                    error-object="{{errorObject}}"
+                                    base-permission-path="{{permissionBase}}">
+                            </engagement-info-details>
 
-                            <partner-details-tab original-data="[[originalData]]" id="partnerDetails"
-                                                 engagement="{{engagement}}"
-                                                 error-object="{{errorObject}}"
-                                                 base-permission-path="{{permissionBase}}"></partner-details-tab>
+                            <partner-details-tab
+                                    original-data="[[originalData]]" id="partnerDetails"
+                                    engagement="{{engagement}}"
+                                    error-object="{{errorObject}}"
+                                    base-permission-path="{{permissionBase}}">
+                            </partner-details-tab>
 
 
-                            <engagement-staff-members-tab id="staffMembers"
-                                                          engagement="{{engagement}}"
-                                                          base-permission-path="{{permissionBase}}"
-                                                          error-object="{{errorObject}}"></engagement-staff-members-tab>
+                            <engagement-staff-members-tab
+                                    id="staffMembers"
+                                    engagement="{{engagement}}"
+                                    base-permission-path="{{permissionBase}}"
+                                    error-object="{{errorObject}}">
+                            </engagement-staff-members-tab>
                         </div>
 
                         <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                             <div name="report">
-                                <ma-report-page-main id="report"
-                                                     original-data="[[originalData]]"
-                                                     engagement="{{engagement}}"
-                                                     error-object="{{errorObject}}"
-                                                     permission-base="{{permissionBase}}"></ma-report-page-main>
+                                <ma-report-page-main
+                                        id="report"
+                                        original-data="[[originalData]]"
+                                        engagement="{{engagement}}"
+                                        error-object="{{errorObject}}"
+                                        permission-base="{{permissionBase}}">
+                                </ma-report-page-main>
                             </div>
 
-
                             <div name="questionnaire">
-                                <questionnaire-page-main id="questionnaire"
-                                                         data="[[engagement.questionnaire]]"
-                                                         error-object="{{errorObject}}"
-                                                         base-permission-path="{{permissionBase}}"></questionnaire-page-main>
+                                <questionnaire-page-main
+                                        id="questionnaire"
+                                        data="[[engagement.questionnaire]]"
+                                        error-object="{{errorObject}}"
+                                        base-permission-path="{{permissionBase}}">
+                                </questionnaire-page-main>
                             </div>
                         </template>
 
                         <div name="attachments">
-                            <file-attachments-tab title="Related Documents"
-                                                  id="engagement_attachments"
-                                                  base-permission-path="{{permissionBase}}"
-                                                  main-property="engagement_attachments"
-                                                  error-object="{{errorObject}}"
-                                                  allow-download allow-edit file-type-required multiple
-                                                  data-items="[[engagement.engagement_attachments]]"
-                                                  file-types="[[engagementFileTypes]]"
-                                                  readonly$="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]">
+                            <file-attachments-tab
+                                    id="engagement_attachments"
+                                    title="Related Documents"
+                                    base-permission-path="{{permissionBase}}"
+                                    main-property="engagement_attachments"
+                                    error-object="{{errorObject}}"
+                                    data-items="[[engagement.engagement_attachments]]"
+                                    file-types="[[engagementFileTypes]]"
+                                    readonly$="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"
+                                    file-type-required
+                                    allow-download
+                                    allow-edit
+                                    multiple>
                             </file-attachments-tab>
 
                             <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
-                                <file-attachments-tab title="Report Attachments"
-                                                      id="report_attachments"
-                                                      base-permission-path="{{permissionBase}}"
-                                                      main-property="report_attachments"
-                                                      error-object="{{errorObject}}"
-                                                      allow-download allow-edit file-type-required multiple
-                                                      data-items="[[engagement.report_attachments]]"
-                                                      file-types="[[reportFileTypes]]"
-                                                      readonly$="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]">
+                                <file-attachments-tab
+                                        id="report_attachments"
+                                        title="Report Attachments"
+                                        base-permission-path="{{permissionBase}}"
+                                        main-property="report_attachments"
+                                        error-object="{{errorObject}}"
+                                        data-items="[[engagement.report_attachments]]"
+                                        file-types="[[reportFileTypes]]"
+                                        readonly$="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"
+                                        file-type-required
+                                        allow-download
+                                        allow-edit
+                                        multiple>
                                 </file-attachments-tab>
                             </template>
                         </div>
-
                     </iron-pages>
-
                 </div>
 
                 <div id="sidebar">
-                    <status-tab-element engagement-data="[[engagement]]" main-action-text="[[mainBtnText]]"
-                                        other-actions="[[otherActions]]"></status-tab-element>
+                    <status-tab-element
+                            engagement-data="[[engagement]]"
+                            main-action-text="[[mainBtnText]]"
+                            other-actions="[[otherActions]]">
+                    </status-tab-element>
                 </div>
             </div>
 
-            <dialog-element opened="{{dialogOpened}}"
-                            dialog-title="Cancellation of Engagement"
-                            confirm-btn-text="Continue">
-                <paper-textarea label="Cancellation Reason"
-                                max-rows="4"
-                                required
-                                error-message="This field is required."
-                                id="cancellationReasonInput"
-                                class="required"
-                                on-focus="_resetFieldError"
-                                placeholder="Enter reason of cancellation">
+            <dialog-element
+                    opened="{{dialogOpened}}"
+                    dialog-title="Cancellation of Engagement"
+                    confirm-btn-text="Continue">
+                <paper-textarea
+                        id="cancellationReasonInput"
+                        class="required"
+                        label="Cancellation Reason"
+                        placeholder="Enter reason of cancellation"
+                        required
+                        max-rows="4"
+                        error-message="This field is required."
+                        on-focus="_resetFieldError">
                 </paper-textarea>
             </dialog-element>
         </template>
-
-
     </template>
 
     <!-- inject scripts './micro-assessments-page-main.js'-->

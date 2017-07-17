@@ -2,121 +2,115 @@
 <!--import [module-styles]-->
 
 <dom-module id="side-bar-item">
+    <template>
+        <style include="module-styles">
+            :host {
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+            }
 
-  <template>
-    <style include="module-styles">
-      :host {
-        display: block;
-        font-size: 14px;
-        font-weight: 500;
-      }
+            :host([hidden]) {
+                display: none;
+            }
 
-      :host([hidden]) {
-        display: none;
-      }
+            :host([nested-nav]) iron-collapse {
+                display: block;
+            }
 
-      :host([nested-nav]) iron-collapse {
-        display: block;
-      }
+            :host(.iron-selected) #main {
+                background-color: #e8e8e8;
+            }
 
-      :host(.iron-selected) #main {
-        background-color: #e8e8e8;
-      }
+            :host(.iron-selected) #main:active {
+                background-color: var(--dark-divider-color);
+            }
 
-      :host(.iron-selected) #main:active {
-        background-color: var(--dark-divider-color);
-      }
+            :host(.iron-selected:not([nested-nav])) #main > * {
+                color: #72C300;
+            }
 
-      :host(.iron-selected:not([nested-nav])) #main > * {
-        color: #72C300;
-      }
+            :host(.lighter-item:not([nested-nav])) #main > * {
+                color: var(--dark-secondary-text-color);
+            }
 
-      :host(.lighter-item:not([nested-nav])) #main > * {
-        color: var(--dark-secondary-text-color);
-      }
+            #main {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
 
-      #main {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+                position: relative;
+                height: 48px;
+                cursor: pointer;
+                text-decoration: none;
+                text-transform: capitalize;
+            }
 
-        position: relative;
-        height: 48px;
-        cursor: pointer;
-        text-decoration: none;
-        text-transform: capitalize;
-      }
+            #main:active {
+                background-color: var(--dark-hover-color);
+            }
 
-      #main:active {
-        background-color: var(--dark-hover-color);
-      }
+            iron-icon {
+                width: 100%;
+                margin: 0 16px;
+                color: var(--dark-icon-color);
+                min-width: 26px;
+                min-height: 26px;
+            }
 
-      iron-icon {
-        width: 100%;
-        margin: 0 16px;
-        color: var(--dark-icon-color);
-        min-width: 26px;
-        min-height: 26px;
-      }
+            #name {
+                margin-left: 16px;
+                color: var(--dark-primary-text-color);
+            }
 
-      #name {
-        margin-left: 16px;
-        color: var(--dark-primary-text-color);
-      }
+            iron-collapse {
+                display: none;
+            }
 
-      iron-collapse {
-        display: none;
-      }
+            .content-wrapper {
+                padding-top: 8px;
+                padding-bottom: 24px;
+                font-weight: 400;
+                text-transform: capitalize;
+                color: var(--dark-secondary-text-color);
+            }
 
-      .content-wrapper {
-        padding-top: 8px;
-        padding-bottom: 24px;
-        font-weight: 400;
-        text-transform: capitalize;
-        color: var(--dark-secondary-text-color);
-      }
+            .content-wrapper ::content a {
+                display: block;
+                white-space: nowrap;
+                padding: 8px 24px 8px 72px;
+            }
+        </style>
 
-      .content-wrapper ::content a {
-        display: block;
-        white-space: nowrap;
-        padding: 8px 24px 8px 72px;
-      }
-    </style>
+        <a id="main" target$="[[_setTarget(external)]]" href$="[[sideBarLink]]" on-tap="_handleMainTap">
+            <iron-icon icon="{{icon}}"></iron-icon>
+        </a>
 
-    <a id="main" target$="[[_setTarget(external)]]" href$="[[sideBarLink]]" on-tap="_handleMainTap">
-      <iron-icon icon="{{icon}}"></iron-icon>
-    </a>
+        <iron-collapse id="collapse" opened="{{opened}}">
+            <div class="content-wrapper">
+                <content></content>
+            </div>
+        </iron-collapse>
+    </template>
 
-    <iron-collapse id="collapse" opened="{{opened}}">
-      <div class="content-wrapper">
-        <content></content>
-      </div>
-    </iron-collapse>
+    <script>
+        Polymer({
+            is: 'side-bar-item',
 
-  </template>
+            properties: {
+                external: {
+                    type: Boolean,
+                    value: false
+                }
+            },
 
-  <script>
+            _handleMainTap: function() {
+                this.fire('selected');
+            },
 
-    Polymer({
-
-      is: 'side-bar-item',
-      properties: {
-        external: {
-          type: Boolean,
-          value: false
-        }
-      },
-
-      _handleMainTap: function() {
-        this.fire('selected');
-      },
-
-      _setTarget: function() {
-        if (this.external) { return '_blank'; }
-        return '_self'
-      }
-
-    });
-
-  </script>
-
+            _setTarget: function() {
+                if (this.external) { return '_blank'; }
+                return '_self'
+            }
+        });
+    </script>
 </dom-module>

@@ -207,5 +207,4 @@ Polymer({
         }
         return [data];
     }
-
 });

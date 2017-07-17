@@ -7,6 +7,7 @@ Polymer({
         APBehaviors.TableElementsBehavior,
         APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         mainProperty: {
             type: String,
@@ -447,5 +448,4 @@ Polymer({
             }, 500);
         }
     }
-
 });

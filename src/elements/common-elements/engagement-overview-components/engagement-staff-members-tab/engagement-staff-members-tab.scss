@@ -132,14 +132,14 @@
 
 etools-content-panel {
      --ecp-content: #{'{
-            padding: 0;
-        }'};
+        padding: 0;
+    }'};
  }
 
 list-pagination {
-    --list-pagination-styles: #{'
+    --list-pagination-styles: #{'{
         margin-bottom: -8px;
-    '};
+    }'};
 }
 
 etools-loading {

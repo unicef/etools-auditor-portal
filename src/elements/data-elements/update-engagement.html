@@ -1,25 +1,25 @@
 <!--import [polymer, etools-ajax]-->
 
 <dom-module id="update-engagement">
-
     <template>
+        <etools-ajax
+                method="{{method}}"
+                url="{{url}}"
+                body="{{postData}}"
+                on-success="_handleResponse"
+                on-fail="_handleError">
+        </etools-ajax>
 
-        <etools-ajax method="{{method}}"
-                     url="{{url}}"
-                     body="{{postData}}"
-                     on-success="_handleResponse"
-                     on-fail="_handleError"></etools-ajax>
-
-        <etools-ajax method="OPTIONS"
-                     url="[[optionsUrl]]"
-                     on-success="_handleOptionsResponse"
-                     on-fail="_handleOptionsError"></etools-ajax>
+        <etools-ajax
+                method="OPTIONS"
+                url="[[optionsUrl]]"
+                on-success="_handleOptionsResponse"
+                on-fail="_handleOptionsError">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'update-engagement',
 
             behaviors: [
@@ -198,9 +198,6 @@
                 this.postData = data;
                 this.url = url;
             }
-
         });
-
     </script>
-
 </dom-module>

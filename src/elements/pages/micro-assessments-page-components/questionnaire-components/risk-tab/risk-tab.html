@@ -1,6 +1,5 @@
-<!--import [polymer, etools-content-panel, paper-icon-button, etools-searchable-multiselection-menu]-->
-
-<!--import [lodash, module-styles, list-element, list-header, static-data-behavior]-->
+<!--import [polymer, etools-content-panel, paper-icon-button, etools-searchable-multiselection-menu, lodash]-->
+<!--import [module-styles, list-element, list-header, static-data-behavior]-->
 
 <dom-module id="risk-tab">
     <template>
@@ -8,15 +7,15 @@
         <style include="tab-inputs-styles module-styles"></style>
 
         <div class="tab-container">
-            <etools-content-panel completed$="[[completed]]"
-                                  show-expand-btn
-                                  panel-title="{{setPanelTitle(questionnaire.header, completed)}}"
-                                  open="{{opened}}">
+            <etools-content-panel
+                    completed$="[[completed]]"
+                    show-expand-btn
+                    panel-title="{{setPanelTitle(questionnaire.header, completed)}}"
+                    open="{{opened}}">
 
                 <list-header no-ordered data="[[columns]]"></list-header>
 
                 <template is="dom-repeat" items="{{questionnaire.blueprints}}">
-
                     <list-element
                             class="list-element"
                             data="[[_prepareData(item)]]"
@@ -25,59 +24,74 @@
                             has-collapse multiline
                             no-animation>
                         <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                            <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                            <paper-icon-button
+                                    icon="create"
+                                    class="edit-icon"
+                                    on-tap="openEditDialog">
+                            </paper-icon-button>
                         </div>
+
                         <div slot="custom">
                             <template is="dom-if" if="{{editMode}}">
-                                <etools-searchable-multiselection-menu options="[[riskOptions]]"
-                                                                       class="disabled-as-readonly required validate-input"
-                                                                       value="{{_setRiskValue(item.risk.value, riskOptions)}}"
-                                                                       hide-search dynamic-align
-                                                                       allow-outside-scroll
-                                                                       on-focus="_resetFieldError"
-                                                                       on-value-change="_riskValueChanged"
-                                                                       placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                                <etools-searchable-multiselection-menu
+                                        class="disabled-as-readonly required validate-input"
+                                        value="{{_setRiskValue(item.risk.value, riskOptions)}}"
+                                        placeholder="&#8212;"
+                                        options="[[riskOptions]]"
+                                        on-focus="_resetFieldError"
+                                        on-value-change="_riskValueChanged"
+                                        dynamic-align
+                                        hide-search
+                                        allow-outside-scroll>
+                                </etools-searchable-multiselection-menu>
                             </template>
+
                             <template is="dom-if" if="{{!editMode}}">
                                 [[_getStringValue(item.risk.value, riskOptions, '--')]]
                             </template>
-
                         </div>
                     </list-element>
-
                 </template>
 
                 <template is="dom-repeat" items="{{questionnaire.children}}" as="category">
-
-                    <list-element class="list-element"
-                                  data="[[category]]"
-                                  headings="[[categoryHeader]]"
-                                  no-animation multiline no-hover>
+                    <list-element
+                            class="list-element"
+                            data="[[category]]"
+                            headings="[[categoryHeader]]"
+                            no-animation multiline no-hover>
                     </list-element>
 
                     <template is="dom-repeat" items="{{category.blueprints}}">
-
-                        <list-element class="list-element"
-                                      data="[[_prepareData(item)]]"
-                                      headings="[[columns]]"
-                                      details="[[details]]"
-                                      has-collapse multiline
-                                      no-animation>
+                        <list-element
+                                class="list-element"
+                                data="[[_prepareData(item)]]"
+                                headings="[[columns]]"
+                                details="[[details]]"
+                                has-collapse multiline
+                                no-animation>
                             <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                                <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog" category-id$="{{category.id}}"></paper-icon-button>
+                                <paper-icon-button
+                                        icon="create"
+                                        class="edit-icon"
+                                        on-tap="openEditDialog"
+                                        category-id$="{{category.id}}">
+                                </paper-icon-button>
                             </div>
 
                             <div slot="custom">
                                 <template is="dom-if" if="{{editMode}}">
-                                    <etools-searchable-multiselection-menu options="[[riskOptions]]"
-                                                                           class="disabled-as-readonly required validate-input"
-                                                                           value="{{_setRiskValue(item.risk.value, riskOptions)}}"
-                                                                           hide-search dynamic-align
-                                                                           allow-outside-scroll
-                                                                           category-id$="{{category.id}}"
-                                                                           on-focus="_resetFieldError"
-                                                                           on-value-change="_riskValueChanged"
-                                                                           placeholder="&#8212;"></etools-searchable-multiselection-menu>
+                                    <etools-searchable-multiselection-menu
+                                            class="disabled-as-readonly required validate-input"
+                                            value="{{_setRiskValue(item.risk.value, riskOptions)}}"
+                                            placeholder="&#8212;"
+                                            options="[[riskOptions]]"
+                                            category-id$="{{category.id}}"
+                                            on-focus="_resetFieldError"
+                                            on-value-change="_riskValueChanged"
+                                            dynamic-align
+                                            hide-search
+                                            allow-outside-scroll>
+                                    </etools-searchable-multiselection-menu>
                                 </template>
 
                                 <template is="dom-if" if="{{!editMode}}">
@@ -85,9 +99,7 @@
                                 </template>
                             </div>
                         </list-element>
-
                     </template>
-
                 </template>
             </etools-content-panel>
 
@@ -100,7 +112,6 @@
                 <!--<div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class$="value [[questionnaire.risk_rating]]">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>-->
             <!--</div>-->
         </div>
-
     </template>
 
     <!-- inject scripts './risk-tab.js'-->
