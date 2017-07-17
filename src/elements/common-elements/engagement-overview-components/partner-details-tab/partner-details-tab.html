@@ -103,6 +103,32 @@
             </div>
 
             <div class="row-h group">
+
+                <div class="input-container input-container-ms">
+                    <!-- Partner  Officers-->
+                    <etools-searchable-multiselection-menu
+                            options="[[officers]]"
+                            class$="disabled-as-readonly  [[_setRequired('authorized_officers', basePermissionPath)]]"
+                            readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+                            value="{{authorizedOfficer}}"
+                            id="authorizedOfficer"
+                            invalid="{{_checkInvalid(errors.authorized_officers)}}"
+                            error-message="{{errors.authorized_officers}}"
+                            required="{{_setRequired('authorized_officers', basePermissionPath)}}"
+                            custom-object-options dynamic-align
+                            option-value="id"
+                            option-label="name"
+                            label="[[getLabel('authorized_officers', basePermissionPath)]]"
+                            on-focus="_resetFieldError"
+                            on-value-change="_requestPartner"
+                            placeholder="[[getPlaceholderText('authorized_officers', basePermissionPath, 'dropdown')]]">
+                    </etools-searchable-multiselection-menu>
+                </div>
+
+            </div>
+
+            <div class="row-h group">
                 <div class="input-container input-container-l">
                     <!-- Active PD -->
                     <etools-searchable-multiselection-menu

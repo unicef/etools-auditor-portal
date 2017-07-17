@@ -145,6 +145,11 @@ Polymer({
 
     _setPlaceholderColor: function(partner) {
         return (!partner || !partner.id) ? 'no-data-fetched' : '';
+    },
+
+    isOfficersReadonly: function(basePermissionPath, requestInProcess, partner) {
+        return this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
+            !partner || !partner.partnerOfficers || !partner.partnerOfficers.length;
     }
 
 });
