@@ -642,7 +642,8 @@
                 behaviorObj.getElement = sinon.stub().returns({
                     getEngagementData: function() { return {test: true}; },
                     getPartnerData: function() { return {partner: true}; },
-                    getTabData: function() { return 'staffData'; }
+                    getTabData: function() { return 'staffData'; },
+                    getAuthorizedOfficer: function() { return 1; }
                 });
             });
 
@@ -666,7 +667,8 @@
                 behaviorObj.getElement.returns({
                     getEngagementData: function() { return null; },
                     getPartnerData: function() { return null; },
-                    getTabData: function() { return null; }
+                    getTabData: function() { return null; },
+                    getAuthorizedOfficer: function() { return null; }
                 });
                 var data =  behaviorObj._getBasicInfo();
 
