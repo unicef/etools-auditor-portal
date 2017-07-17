@@ -2,11 +2,10 @@
     display: block;
     margin-top: 20px;
     --paper-card: #{'{
-                    background-color: white;
-                    margin: 0 24px;
-                    width: calc(100% - 48px);
-
-                }'};
+        background-color: white;
+        margin: 0 24px;
+        width: calc(100% - 48px);
+    }'};
 
     .data-table .data-card-heading {
         display: block;
