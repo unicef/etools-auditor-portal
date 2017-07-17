@@ -41,7 +41,7 @@ Polymer({
         if (!partner || !partner.id) { return; }
         if (this.isReadOnly('partner', this.basePermissionPath) && engagement &&
             engagement.authorized_officers && engagement.authorized_officers[0]) {
-            let officer = this.engagement.authorized_officers[0]
+            let officer = this.engagement.authorized_officers[0];
             officer.fullName = `${officer.first_name} ${officer.last_name}`;
             this.partner.partnerOfficers = [officer];
             this.authorizedOfficer = officer;
@@ -142,6 +142,11 @@ Polymer({
         } else {
             return null;
         }
+    },
+
+    getAuthorizedOfficer: function() {
+        if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) { return null; }
+        return this.authorizedOfficer.id;
     },
 
     isPdReadonly: function(basePermissionPath, requestInProcess, partner) {

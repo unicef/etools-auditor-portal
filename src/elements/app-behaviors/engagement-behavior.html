@@ -279,11 +279,13 @@
 
             let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData(),
                 partnerDetailsData = this.getElement('#partnerDetails').getPartnerData(),
+                authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer(),
                 staffMembersData = this.getElement('#staffMembers').getTabData();
 
             if (engagementDetailsData) { _.assign(data, engagementDetailsData); }
             if (partnerDetailsData) { _.assign(data, partnerDetailsData); }
             if (staffMembersData) { data.staff_members = staffMembersData; }
+            if (authorizedOfficer) { data.authorized_officers = [authorizedOfficer]; }
 
             return [data, this.engagement.id];
         },
