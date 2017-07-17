@@ -158,14 +158,13 @@
                             <paper-input
                                     label$="[[getLabel('high_risk', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('high_risk', basePermissionPath)]]"
-                                    value="{{editedItem.high_risk}}"
+                                    value="{{editedItem.key_internal_weakness.high_risk_count}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('high_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('high_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
+                                    disabled readonly
                                     invalid="{{errors.high_risk}}"
                                     error-message="{{errors.high_risk}}">
                             </paper-input>
@@ -176,7 +175,7 @@
                             <paper-input
                                     label$="[[getLabel('medium_risk', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('medium_risk', basePermissionPath)]]"
-                                    value="{{editedItem.medium_risk}}"
+                                    value="{{editedItem.key_internal_weakness.medium_risk_count}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
                                     on-focus="_resetFieldError"
@@ -194,13 +193,12 @@
                             <paper-input
                                     label$="[[getLabel('low_risk', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('low_risk', basePermissionPath)]]"
-                                    value="{{editedItem.low_risk}}"
+                                    value="{{editedItem.key_internal_weakness.low_risk_count}}"
                                     allowed-pattern="[\d]"
                                     maxlength="9"
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('low_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('low_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
+                                    required disabled
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.low_risk}}"
                                     error-message="{{errors.low_risk}}">
