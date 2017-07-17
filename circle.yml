@@ -1,28 +1,26 @@
 machine:
-  pre:
-    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
-    - pip install docker-compose
-
-  services:
-    - docker
+   services:
+     - docker
 
 dependencies:
   cache_directories:
     - "~/dockercache"
 
   override:
-    - if [[ -e ~/dockercache/ap.tar ]]; then docker load -i ~/dockercache/ap.tar; fi
-    - docker-compose -f docker-compose.test.yml build
-    - mkdir -p ~/dockercache; docker save etoolsdev/etools-ap:dev > ~/dockercache/ap.tar
+    - if [[ -e ~/dockercache/auditor.tar ]]; then docker load -i ~/dockercache/auditor.tar; fi
+    - if [[ -e ~/dockercache/auditortest.tar ]]; then docker load -i ~/dockercache/auditortest.tar; fi
+    - docker build --rm=false -t unicef/etools-ap:$CIRCLE_BRANCH .
+    - docker build --rm=false -t unicef/etools-ap-test:$CIRCLE_BRANCH --file docker-test .
+    - mkdir -p ~/dockercache; docker save unicef/etools-ap-test > ~/dockercache/auditortest.tar; docker save unicef/etools-ap > ~/dockercache/auditor.tar
 
 
 test:
    override:
      - docker-compose -f docker-compose.test.yml up --abort-on-container-exit
 
-#deployment:
-#   hub:
-#     branch: [develop, staging, master]
-#     commands:
-#       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-#       - docker push unicef/etools-ap
+deployment:
+  hub:
+   branch: [develop, staging, master]
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push unicef/etools-ap
