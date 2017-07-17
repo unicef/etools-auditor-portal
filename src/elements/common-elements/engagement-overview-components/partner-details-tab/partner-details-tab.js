@@ -30,15 +30,20 @@ Polymer({
         '_errorHandler(errorObject)',
         '_setActivePd(activePd)',
         'updateStyles(basePermissionPath, requestInProcess, partner)',
-        'setOfficers(partner)'
+        'setOfficers(partner, engagement)'
     ],
 
     listeners: {
         'partner-loaded': '_partnerLoaded'
     },
 
-    setOfficers: function(partner) {
+    setOfficers: function(partner, engagement) {
         if (!partner || !partner.id) { return; }
+        if (this.isReadOnly('partner', this.basePermissionPath) && engagement && engagement.authorized_officers) {
+
+        } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
+            this.authorizedOfficer = partner.partnerOfficers[0];
+        }
     },
 
     ready: function() {
@@ -93,6 +98,7 @@ Polymer({
 
         this.set('partner', {});
         this.set('activePd', null);
+        this.set('authorizedOfficer', null);
 
         let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || id;
         if (!partnerId) { return; }
@@ -149,7 +155,8 @@ Polymer({
 
     isOfficersReadonly: function(basePermissionPath, requestInProcess, partner) {
         return this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
-            !partner || !partner.partnerOfficers || !partner.partnerOfficers.length;
+            !partner || !partner.partnerOfficers || !partner.partnerOfficers.length ||
+            partner.partnerOfficers.length < 2;
     }
 
 });

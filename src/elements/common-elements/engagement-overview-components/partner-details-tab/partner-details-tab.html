@@ -107,7 +107,7 @@
                 <div class="input-container input-container-ms">
                     <!-- Partner  Officers-->
                     <etools-searchable-multiselection-menu
-                            options="[[officers]]"
+                            options="[[partner.partnerOfficers]]"
                             class$="disabled-as-readonly  [[_setRequired('authorized_officers', basePermissionPath)]]"
                             readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
                             disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
@@ -118,11 +118,11 @@
                             required="{{_setRequired('authorized_officers', basePermissionPath)}}"
                             custom-object-options dynamic-align
                             option-value="id"
-                            option-label="name"
+                            option-label="fullName"
+                            hide-search
                             label="[[getLabel('authorized_officers', basePermissionPath)]]"
                             on-focus="_resetFieldError"
-                            on-value-change="_requestPartner"
-                            placeholder="[[getPlaceholderText('authorized_officers', basePermissionPath, 'dropdown')]]">
+                            placeholder="[[getReadonlyPlaceholder(partner)]]">
                     </etools-searchable-multiselection-menu>
                 </div>
 

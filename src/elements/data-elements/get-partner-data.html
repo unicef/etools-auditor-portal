@@ -57,7 +57,13 @@
                 if (!detail) {
                     this._handleOfficersError();
                 } else {
-                    this.lastData.partnerOfficers = detail;
+                    let data = detail.map((officer) => {
+                        let partnerOfficer = _.clone(officer);
+                        partnerOfficer.fullName = `${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
+                        return partnerOfficer;
+                    });
+                    this._setData(`officer_${this.lastData.id}`, data);
+                    this.lastData.partnerOfficers = data;
                     this.finishRequest();
                 }
             },
