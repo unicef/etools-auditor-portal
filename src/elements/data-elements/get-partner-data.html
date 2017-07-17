@@ -62,7 +62,7 @@
                         partnerOfficer.fullName = `${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
                         return partnerOfficer;
                     });
-                    this._setData(`officer_${this.lastData.id}`, data);
+                    this._setData(`officers_${this.lastData.id}`, data);
                     this.lastData.partnerOfficers = data;
                     this.finishRequest();
                 }
@@ -87,7 +87,8 @@
                 if (!partnerId) { return; }
                 if (partnerId === this.lastNumber) {
                     this.partnerId = null;
-                    this.lastError ? this._handleError() : this._handleResponse({detail: _.clone(this.lastData)});
+                    let detail = _.clone(this.lastData)
+                    this.lastError ? this._handleError() : this._handleResponse({detail: detail}, detail);
                     return;
                 }
 
