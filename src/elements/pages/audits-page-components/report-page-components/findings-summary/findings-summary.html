@@ -181,8 +181,7 @@
                                     on-focus="_resetFieldError"
                                     class$="validate-input disabled-as-readonly [[_setRequired('medium_risk', basePermissionPath)]]"
                                     required$="[[_setRequired('medium_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
+                                    disabled readonly
                                     invalid="{{errors.medium_risk}}"
                                     error-message="{{errors.medium_risk}}">
                             </paper-input>
