@@ -104,11 +104,11 @@
 
             <div class="row-h group">
 
-                <div class="input-container input-container-ms">
+                <div class="input-container">
                     <!-- Partner  Officers-->
                     <etools-searchable-multiselection-menu
                             options="[[partner.partnerOfficers]]"
-                            class$="disabled-as-readonly  [[_setRequired('authorized_officers', basePermissionPath)]]"
+                            class$="disabled-as-readonly  [[_setRequired('authorized_officers', basePermissionPath)]]  [[_setPlaceholderColor(partner)]]"
                             readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
                             disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
                             value="{{authorizedOfficer}}"
@@ -126,10 +126,7 @@
                     </etools-searchable-multiselection-menu>
                 </div>
 
-            </div>
-
-            <div class="row-h group">
-                <div class="input-container input-container-l">
+                <div class="input-container input-container-m">
                     <!-- Active PD -->
                     <etools-searchable-multiselection-menu
                             options="[[partner.interventions]]"
@@ -153,6 +150,7 @@
                     </etools-searchable-multiselection-menu>
                 </div>
             </div>
+
         </etools-content-panel>
 
     </template>

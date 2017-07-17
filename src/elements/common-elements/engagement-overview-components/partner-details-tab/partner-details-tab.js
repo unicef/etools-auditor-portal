@@ -39,8 +39,12 @@ Polymer({
 
     setOfficers: function(partner, engagement) {
         if (!partner || !partner.id) { return; }
-        if (this.isReadOnly('partner', this.basePermissionPath) && engagement && engagement.authorized_officers) {
-
+        if (this.isReadOnly('partner', this.basePermissionPath) && engagement &&
+            engagement.authorized_officers && engagement.authorized_officers[0]) {
+            let officer = this.engagement.authorized_officers[0]
+            officer.fullName = `${officer.first_name} ${officer.last_name}`;
+            this.partner.partnerOfficers = [officer];
+            this.authorizedOfficer = officer;
         } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
             this.authorizedOfficer = partner.partnerOfficers[0];
         }
