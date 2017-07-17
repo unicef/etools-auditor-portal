@@ -5,9 +5,10 @@
     <template>
         <!-- inject styles './../header-styles.scss'-->
 
-        <paper-menu-button id="dropdown" vertical-align="top"
-                           vertical-offset="56"
-                           horizontal-align="right">
+        <paper-menu-button
+                id="dropdown" vertical-align="top"
+                vertical-offset="56"
+                horizontal-align="right">
 
             <paper-button class="dropdown-trigger" on-tap="_toggleOpened">
                 <template is="dom-if" if="[[!isAdmin]]" restamp>
@@ -24,7 +25,6 @@
             </paper-button>
 
             <paper-menu id="dropdownMenu" class="dropdown-content no-focus mw-160">
-
                 <template is="dom-if" if="[[isAdmin]]" restamp>
                     <paper-item on-tap="_navigateToAdminPage">
                         <iron-icon icon="icons:settings-applications"></iron-icon>
@@ -37,10 +37,8 @@
                     Logout
                 </paper-item>
             </paper-menu>
-
         </paper-menu-button>
     </template>
 
     <!-- inject scripts './user-dropdown.js'-->
-
 </dom-module>

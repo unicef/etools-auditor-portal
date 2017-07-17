@@ -2,6 +2,7 @@
 
 Polymer({
     is: 'list-element',
+
     properties: {
         itemValues: {
             type: Object,
@@ -207,5 +208,4 @@ Polymer({
     _hasProperty: function(data, property, doNotHide) {
         return data && (doNotHide || property && this.get('data.' + property));
     }
-
 });

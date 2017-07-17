@@ -6,34 +6,51 @@
         <style include="module-styles tab-inputs-styles"></style>
         <!-- inject styles './dialog-element.scss'-->
 
-        <paper-dialog opened="{{opened}}"
-                      modal="{{requestInProcess}}"
-                      with-backdrop
-                      ok-btn-text="sync from vision">
-            <iron-icon icon="icons:close" class="close-btn" dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}"></iron-icon>
-            <h2 class="dialog-title">[[dialogTitle]]<etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="loading"></etools-loading></h2>
+        <paper-dialog
+                opened="{{opened}}"
+                modal="{{requestInProcess}}"
+                with-backdrop
+                ok-btn-text="sync from vision">
+            <iron-icon
+                    icon="icons:close"
+                    class="close-btn"
+                    dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}">
+            </iron-icon>
+
+            <h2 class="dialog-title">
+                [[dialogTitle]]
+                <etools-loading
+                        active="{{requestInProcess}}"
+                        no-overlay
+                        loading-text=""
+                        class="loading">
+                </etools-loading>
+            </h2>
 
             <template is="dom-if" if="{{!deleteDialog}}" restamp>
                 <slot></slot>
             </template>
 
             <div class="buttons group" id="buttons">
-
-
                 <!--Confirm button-->
-                <paper-button autofocus class="btn-confirm right"
-                              delete-btn$="[[deleteDialog]]"
-                              on-tap="confirmDialog"
-                              raised
-                              autofocus$="[[autofocus]]"
-                              disabled="{{requestInProcess}}">[[confirmBtnText]]</paper-button>
+                <paper-button
+                        autofocus class="btn-confirm right"
+                        delete-btn$="[[deleteDialog]]"
+                        on-tap="confirmDialog"
+                        raised
+                        autofocus$="[[autofocus]]"
+                        disabled="{{requestInProcess}}">
+                    [[confirmBtnText]]
+                </paper-button>
 
                 <!--Cancel button-->
-                <paper-button dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}"
-                              class="btn-cancel right"
-                              disabled="{{requestInProcess}}"
-                              on-tap="cancelDialog">[[cancelBtnText]]</paper-button>
-
+                <paper-button
+                        dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}"
+                        class="btn-cancel right"
+                        disabled="{{requestInProcess}}"
+                        on-tap="cancelDialog">
+                    [[cancelBtnText]]
+                </paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -43,7 +60,9 @@
 
         Polymer({
             is: 'dialog-element',
+
             behaviors: [Polymer.NeonAnimationRunnerBehavior],
+
             properties: {
                 dialogTitle: {
                     type: String,
@@ -82,9 +101,11 @@
                     value: false
                 }
             },
+
             _setDialogDismiss: function(requestInProcess, confirmDialogOpened) {
                 return !requestInProcess && !confirmDialogOpened;
             },
+
             confirmDialog: function() {
                 if (this.deleteDialog) {
                     this.fire('delete-confirmed', {dialogName: this.dialogName});
@@ -92,14 +113,17 @@
                     this.fire('dialog-confirmed', {dialogName: this.dialogName});
                 }
             },
+
             cancelDialog: function() {
                 this.fire('dialog-cancelled', {dialogName: this.dialogName});
             },
+
             _openedChanged: function(opened) {
                 if (!opened && this.requestInProcess) {
                     this.opened = true;
                 }
             },
+
             _stopPropagation: function(event) {
                 event.stopImmediatePropagation();
             }

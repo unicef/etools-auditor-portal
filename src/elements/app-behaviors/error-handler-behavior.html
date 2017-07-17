@@ -29,9 +29,11 @@
                 }
 
             },
+
             _checkInvalid: function(value) {
                 return !!value;
             },
+
             whichPageTrows: function(errorObj) {
                 let overviewError, attachmentError, reportError, questionnaireError;
 
@@ -44,6 +46,7 @@
 
                 return overviewError || attachmentError || questionnaireError || reportError || null;
             },
+
             checkNonField: function(errorObj) {
                 if (!_.isObject(errorObj)) { return null; }
 

@@ -264,5 +264,4 @@ Polymer({
         this._setRequests(count);
         return this.requests;
     }
-
 });

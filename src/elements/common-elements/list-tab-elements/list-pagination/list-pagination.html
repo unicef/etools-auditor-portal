@@ -8,9 +8,7 @@
         <!-- inject styles './list-pagination.scss'-->
         <style include="iron-flex shared-styles module-styles"></style>
 
-
         <div class="clearfix rightfloat horizontal layout center">
-
             <span class="textsec lh">Rows per page:</span>
 
             <paper-dropdown-menu
@@ -18,21 +16,17 @@
                     no-label-float
                     vertical-align="bottom"
                     horizontal-align="right">
-
                 <paper-listbox id="selecta" class="dropdown-content" attr-for-selected="name" selected="{{pageSize}}">
                     <!--on-iron-select="itemsNrChanged"-->
-
                     <template is="dom-repeat" items="[[sizesAllowed]]">
                         <paper-item name="[[item]]">[[item]]</paper-item>
                     </template>
-
                 </paper-listbox>
             </paper-dropdown-menu>
 
             <span class="textsec lh unselectable">{{showingResults}}</span>
 
             <div class="chevron-container layout around-justified horizontal">
-
                 <paper-icon-button
                         disabled$="{{_disableButton(currentPage, datalength)}}"
                         icon="pagination:first-page"
@@ -61,9 +55,7 @@
                         class$="chev next-arr [[pageMarker]]">
                 </paper-icon-button>
             </div>
-
         </div>
-
     </template>
 
     <!-- inject scripts './list-pagination.js'-->

@@ -9,7 +9,6 @@
          <!--inject styles './search-and-filter.scss'-->
 
         <paper-card class="second-header horizontal layout center">
-
             <div class="flex horizontal layout wrap">
                 <div class="layout horizontal search-input-container">
                     <paper-input
@@ -21,37 +20,35 @@
                         <iron-icon icon="search" prefix></iron-icon>
                     </paper-input>
                 </div>
+
                 <!-- FILTERS -->
                 <template is="dom-repeat" items="[[usedFilters]]">
-
                     <div class="layout horizontal">
-
-                        <etools-searchable-multiselection-menu class="filter-dropdown"
-                                                               id="[[item.query]]"
-                                                               label="[[item.label]]"
-                                                               hide-search="[[item.hideSearch]]"
-                                                               options="[[item.selection]]"
-                                                               custom-object-options
-                                                               value="[[item.value]]"
-                                                               option-label="[[item.optionLabel]]"
-                                                               option-value="[[item.optionValue]]"
-                                                               on-value-change="_changeFilterValue"
-                                                               placeholder$="Select [[item.name]]">
+                        <etools-searchable-multiselection-menu
+                                class="filter-dropdown"
+                                id="[[item.query]]"
+                                label="[[item.label]]"
+                                hide-search="[[item.hideSearch]]"
+                                options="[[item.selection]]"
+                                custom-object-options
+                                value="[[item.value]]"
+                                option-label="[[item.optionLabel]]"
+                                option-value="[[item.optionValue]]"
+                                on-value-change="_changeFilterValue"
+                                placeholder$="Select [[item.name]]">
                         </etools-searchable-multiselection-menu>
 
                         <div class="filter-reset-button" on-click="removeFilter">×</div>
                     </div>
                 </template>
-
             </div>
 
             <!-- ADD FILTERS -->
             <div id="add-filter-container">
-
                 <paper-menu-button horizontal-align="right" vertical-align="top" no-overlap>
-
                     <paper-button class="dropdown-trigger">
                         <iron-icon icon="filter-list" class="filter-list-icon"></iron-icon>
+
                         <span class="add-filter-text">ADD FILTER</span>
                     </paper-button>
 
@@ -62,9 +59,7 @@
                     </paper-menu>
                 </paper-menu-button>
             </div>
-
         </paper-card>
-
     </template>
 
     <!-- inject scripts './search-and-filter.js'-->

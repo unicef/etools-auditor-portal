@@ -2,11 +2,13 @@
 
 Polymer({
     is: 'partner-details-tab',
+
     behaviors: [
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         basePermissionPath: {
             type: String,
@@ -141,5 +143,4 @@ Polymer({
     _setPlaceholderColor: function(partner) {
         return (!partner || !partner.id) ? 'no-data-fetched' : '';
     }
-
 });

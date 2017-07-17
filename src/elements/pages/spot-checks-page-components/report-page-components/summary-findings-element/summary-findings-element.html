@@ -9,13 +9,17 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './summary-findings-element.scss'-->
 
-        <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
-                           title="Add"
-                           on-tap="openAddDialog"
-                           class="add-button"
-                           icon="add-box"></paper-icon-button>
+        <paper-icon-button
+                hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                title="Add"
+                on-tap="openAddDialog"
+                class="add-button"
+                icon="add-box">
+        </paper-icon-button>
 
-        <etools-content-panel class="content-section clearfx" panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations">
+        <etools-content-panel
+                class="content-section clearfx"
+                panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations">
             <list-header no-ordered data="[[columns]]"></list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showFindings">
@@ -38,9 +42,9 @@
                         class="list-element"
                         data="[[emptyObj]]"
                         headings="[[columns]]"
-                        no-animation></list-element>
+                        no-animation>
+                </list-element>
             </template>
-
         </etools-content-panel>
 
         <dialog-element
@@ -49,7 +53,6 @@
                 dialog-title="[[dialogTitle]]"
                 confirm-btn-text="[[confirmBtnText]]"
                 request-in-process="{{requestInProcess}}">
-
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -71,70 +74,78 @@
                                     custom-object-options
                                     value="{{editedItem.category_of_observation}}"
                                     update-selected
-                                    placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]"></etools-searchable-multiselection-menu>
+                                    placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]">
+                            </etools-searchable-multiselection-menu>
                         </div>
                     </div>
+
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="[[getLabel('findings.recommendation', basePermissionPath)]]"
-                                            max-rows="4"
-                                            value="{{editedItem.recommendation}}"
-                                            allowed-pattern="[\d\s]"
-                                            class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
-                                            disabled$="{{requestInProcess}}"
-                                            readonly$="{{requestInProcess}}"
-                                            invalid="{{errors.recommendation}}"
-                                            error-message="{{errors.recommendation}}"
-                                            on-focus="_resetFieldError"
-                                            always-float-label
-                                            required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
-                                            placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]">
+                            <paper-textarea
+                                    label="[[getLabel('findings.recommendation', basePermissionPath)]]"
+                                    max-rows="4"
+                                    value="{{editedItem.recommendation}}"
+                                    allowed-pattern="[\d\s]"
+                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.recommendation}}"
+                                    error-message="{{errors.recommendation}}"
+                                    on-focus="_resetFieldError"
+                                    always-float-label
+                                    required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
+                                    placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]">
                             </paper-textarea>
                         </div>
                     </div>
+
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
-                                            max-rows="4"
-                                            value="{{editedItem.agreed_action_by_ip}}"
-                                            allowed-pattern="[\d\s]"
-                                            class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
-                                            disabled$="{{requestInProcess}}"
-                                            readonly$="{{requestInProcess}}"
-                                            invalid="{{errors.agreed_action_by_ip}}"
-                                            error-message="{{errors.agreed_action_by_ip}}"
-                                            on-focus="_resetFieldError"
-                                            always-float-label
-                                            required$="{{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
-                                            placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]">
+                            <paper-textarea
+                                    label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
+                                    max-rows="4"
+                                    value="{{editedItem.agreed_action_by_ip}}"
+                                    allowed-pattern="[\d\s]"
+                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.agreed_action_by_ip}}"
+                                    error-message="{{errors.agreed_action_by_ip}}"
+                                    on-focus="_resetFieldError"
+                                    always-float-label
+                                    required$="{{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
+                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]">
                             </paper-textarea>
                         </div>
                     </div>
+
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Deadline of Action -->
-                            <paper-input label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
-                                         id="deadlineAction"
-                                         class$="disabled-as-readonly [[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
-                                         value="[[prettyDate(editedItem.deadline_of_action)]]"
-                                         on-down="openDatePicker"
-                                         data-selector="deadlineActionSelector"
-                                         invalid="{{errors.deadline_of_action}}"
-                                         error-message="{{errors.deadline_of_action}}"
-                                         required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
-                                         disabled$="{{requestInProcess}}"
-                                         readonly$="{{requestInProcess}}"
-                                         on-focus="_resetFieldError"
-                                         placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]">
-                                <etools-datepicker prefix
-                                                   modal="[[datepickerModal]]"
-                                                   id="deadlineActionSelector"
-                                                   date="[[prepareDate(editedItem.deadline_of_action)]]"
-                                                   format="YYYY-MM-DD"
-                                                   pretty-date="{{editedItem.deadline_of_action}}"
-                                                   no-init show-clear-btn>
+                            <paper-input
+                                    label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
+                                    id="deadlineAction"
+                                    class$="disabled-as-readonly [[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
+                                    value="[[prettyDate(editedItem.deadline_of_action)]]"
+                                    on-down="openDatePicker"
+                                    data-selector="deadlineActionSelector"
+                                    invalid="{{errors.deadline_of_action}}"
+                                    error-message="{{errors.deadline_of_action}}"
+                                    required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    on-focus="_resetFieldError"
+                                    placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]">
+                                <etools-datepicker
+                                        prefix
+                                        modal="[[datepickerModal]]"
+                                        id="deadlineActionSelector"
+                                        date="[[prepareDate(editedItem.deadline_of_action)]]"
+                                        format="YYYY-MM-DD"
+                                        pretty-date="{{editedItem.deadline_of_action}}"
+                                        no-init show-clear-btn>
                                 </etools-datepicker>
                             </paper-input>
                         </div>
@@ -143,5 +154,6 @@
             </div>
         </dialog-element>
     </template>
+
     <!-- inject scripts './summary-findings-element.js'-->
 </dom-module>

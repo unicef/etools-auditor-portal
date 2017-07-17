@@ -38,5 +38,4 @@ Polymer({
         }
         return data;
     }
-
 });

@@ -8,9 +8,11 @@
                 display: block;
             }
         </style>
+
         <template is="dom-repeat" items="[[notifications]]">
             <multi-notification-item opened text="{{item.text}}"></multi-notification-item>
         </template>
     </template>
+
     <!--inject scripts './multi-notification-list.js'-->
 </dom-module>

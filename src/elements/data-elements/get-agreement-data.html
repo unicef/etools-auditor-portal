@@ -2,23 +2,23 @@
 <!--import [etools-app-config, permission-controller]-->
 
 <dom-module id="get-agreement-data">
-
     <template>
+        <etools-ajax
+                url="[[url]]"
+                on-success="_handleResponse"
+                on-fail="_handleError">
+        </etools-ajax>
 
-        <etools-ajax url="[[url]]"
-                     on-success="_handleResponse"
-                     on-fail="_handleError"></etools-ajax>
-
-        <etools-ajax method="OPTIONS"
-                     url="[[optionsUrl]]"
-                     on-success="_handleOptionsResponse"
-                     on-fail="_handleOptionsResponse"></etools-ajax>
+        <etools-ajax
+                method="OPTIONS"
+                url="[[optionsUrl]]"
+                on-success="_handleOptionsResponse"
+                on-fail="_handleOptionsResponse">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'get-agreement-data',
 
             behaviors: [
@@ -75,9 +75,6 @@
                 if (!orderNumber || orderNumber === oldNumber) { return; }
                 this.url = this.getEndpoint('agreementData', {id: orderNumber}).url;
             }
-
         });
-
     </script>
-
 </dom-module>

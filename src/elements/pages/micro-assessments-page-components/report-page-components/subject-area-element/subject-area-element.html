@@ -14,19 +14,18 @@
             }
         </style>
 
-        <list-element class="list-element"
-                      id="listElement"
-                      data="{{areaData}}"
-                      headings="[[headings]]"
-                      details="[[details]]"
-                      has-collapse
-                      no-animation>
-            <div slot="hover" class="edit-icon-slot"  hidden$="[[!editMode]]">
+        <list-element
+                class="list-element"
+                id="listElement"
+                data="{{areaData}}"
+                headings="[[headings]]"
+                details="[[details]]"
+                has-collapse
+                no-animation>
+            <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
                 <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
             </div>
         </list-element>
-
-
     </template>
 
     <!-- inject scripts './subject-area-element.js'-->

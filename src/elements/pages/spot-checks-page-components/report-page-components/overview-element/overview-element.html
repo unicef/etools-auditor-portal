@@ -14,43 +14,49 @@
         <etools-content-panel class="content-section clearfx" panel-title="Overview">
             <div class="row-h group">
                 <div class="input-container">
-                    <paper-input label="[[getLabel('start_date', basePermissionPath)]]"
-                                 id="dateFaceStartInput"
-                                 class="disabled-as-readonly"
-                                 disabled
-                                 value="[[prettyDate(data.start_date)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="dateFaceStartSelector"
-                                 placeholder="&#8212;">
-                        <etools-datepicker prefix
-                                           modal="[[datepickerModal]]"
-                                           id="dateFaceStartSelector"
-                                           date="[[prepareDate(data.start_date)]]"
-                                           pretty-date="{{data.start_date}}"
-                                           format="YYYY-MM-DD"
-                                           no-init show-clear-btn>
+                    <paper-input
+                            label="[[getLabel('start_date', basePermissionPath)]]"
+                            id="dateFaceStartInput"
+                            class="disabled-as-readonly"
+                            disabled
+                            value="[[prettyDate(data.start_date)]]"
+                            on-down="openDatePicker"
+                            data-selector="dateFaceStartSelector"
+                            placeholder="&#8212;">
+                        <etools-datepicker
+                                prefix
+                                modal="[[datepickerModal]]"
+                                id="dateFaceStartSelector"
+                                date="[[prepareDate(data.start_date)]]"
+                                pretty-date="{{data.start_date}}"
+                                format="YYYY-MM-DD"
+                                no-init show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>
+
                 <div class="input-container">
-                    <paper-input label="[[getLabel('end_date', basePermissionPath)]]"
-                                 id="dateFaceEndInput"
-                                 class="disabled-as-readonly"
-                                 disabled
-                                 value="[[prettyDate(data.end_date)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="dateFaceEndSelector"
-                                 placeholder="&#8212;">
-                        <etools-datepicker prefix
-                                           modal="[[datepickerModal]]"
-                                           id="dateFaceEndSelector"
-                                           date="[[prepareDate(data.end_date)]]"
-                                           pretty-date="{{data.end_date}}"
-                                           format="YYYY-MM-DD"
-                                           no-init show-clear-btn>
+                    <paper-input
+                            label="[[getLabel('end_date', basePermissionPath)]]"
+                            id="dateFaceEndInput"
+                            class="disabled-as-readonly"
+                            disabled
+                            value="[[prettyDate(data.end_date)]]"
+                            on-down="openDatePicker"
+                            data-selector="dateFaceEndSelector"
+                            placeholder="&#8212;">
+                        <etools-datepicker
+                                prefix
+                                modal="[[datepickerModal]]"
+                                id="dateFaceEndSelector"
+                                date="[[prepareDate(data.end_date)]]"
+                                pretty-date="{{data.end_date}}"
+                                format="YYYY-MM-DD"
+                                no-init show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>
+
                 <div class="input-container">
                     <!-- Total Value of Selected FACE Forms -->
                     <etools-currency-amount-input
@@ -60,9 +66,11 @@
                             disabled
                             value="{{data.total_value}}"
                             on-focus="_resetFieldError"
-                            placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"></etools-currency-amount-input>
+                            placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]">
+                    </etools-currency-amount-input>
                 </div>
             </div>
+
             <div class="row-h group">
                 <div class="input-container">
                     <etools-currency-amount-input
@@ -75,8 +83,10 @@
                             error-message="{{errors.total_amount_tested}}"
                             value="{{data.total_amount_tested}}"
                             on-focus="_resetFieldError"
-                            placeholder="[[getPlaceholderText('total_amount_tested', basePermissionPath)]]"></etools-currency-amount-input>
+                            placeholder="[[getPlaceholderText('total_amount_tested', basePermissionPath)]]">
+                    </etools-currency-amount-input>
                 </div>
+
                 <div class="input-container">
                     <etools-currency-amount-input
                             label="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
@@ -88,7 +98,8 @@
                             error-message="{{errors.total_amount_of_ineligible_expenditure}}"
                             value="{{data.total_amount_of_ineligible_expenditure}}"
                             on-focus="_resetFieldError"
-                            placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure', basePermissionPath)]]"></etools-currency-amount-input>
+                            placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure', basePermissionPath)]]">
+                    </etools-currency-amount-input>
                 </div>
             </div>
         </etools-content-panel>

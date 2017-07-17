@@ -8,8 +8,9 @@
         <!-- inject styles './key-internal-controls-weaknesses.scss'-->
 
         <etools-content-panel panel-title="[[subjectAreas.header]]">
-            <list-header no-ordered
-                         data="[[columns]]">
+            <list-header
+                    no-ordered
+                    data="[[columns]]">
             </list-header>
 
             <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
@@ -25,15 +26,22 @@
                     </div>
                 </list-element>
             </template>
+
             <template is="dom-if" if="[[!subjectAreas.blueprints.length]]">
                 <list-element
                         class="list-element"
                         data="[[emptyObj]]"
                         headings="[[columns]]"
-                        no-animation></list-element>
+                        no-animation>
+                </list-element>
             </template>
         </etools-content-panel>
-        <dialog-element opened="{{dialogOpened}}" dialog-title="{{editedArea.header}}" confirm-btn-text="Save" request-in-process="{{requestInProcess}}">
+
+        <dialog-element
+                opened="{{dialogOpened}}"
+                dialog-title="{{editedArea.header}}"
+                confirm-btn-text="Save"
+                request-in-process="{{requestInProcess}}">
             <div class="container">
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">
@@ -57,6 +65,7 @@
                                 </etools-searchable-multiselection-menu>
                             </div>
                         </div>
+
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
@@ -74,6 +83,7 @@
                                 </paper-textarea>
                             </div>
                         </div>
+
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
@@ -91,6 +101,7 @@
                                 </paper-textarea>
                             </div>
                         </div>
+
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea

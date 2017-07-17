@@ -14,25 +14,27 @@
             <list-header no-ordered data="[[columns]]"></list-header>
 
             <template is="dom-repeat" items="[[subjectAreas.children]]" filter="_showRisk">
-                <subject-area-element class="area-element"
-                                      area="{{item}}"
-                                      details="[[details]]"
-                                      edit-mode="[[_canBeChanged(basePermissionPath)]]"
-                                      headings="[[columns]]"></subject-area-element>
-
+                <subject-area-element
+                        class="area-element"
+                        area="{{item}}"
+                        details="[[details]]"
+                        edit-mode="[[_canBeChanged(basePermissionPath)]]"
+                        headings="[[columns]]">
+                </subject-area-element>
             </template>
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="Edit Subject Area" confirm-btn-text="Save" request-in-process="{{requestInProcess}}">
-
+        <dialog-element
+                opened="{{dialogOpened}}"
+                dialog-title="Edit Subject Area"
+                confirm-btn-text="Save"
+                request-in-process="{{requestInProcess}}">
             <div class="container">
-
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">
                         <div class="row-h group">
                             <div class="input-container input-container-ms">
                                 <!-- Risk Assessment -->
-
                                 <etools-searchable-multiselection-menu
                                         id="riskAssessmentInput"
                                         class="disabled-as-readonly validate-input required"
@@ -45,36 +47,34 @@
                                         error-message="{{errors.children.0.blueprints.0.risk.value}}"
                                         on-focus="_resetFieldError"
                                         label="Risk Assessment"
-                                        placeholder="Select Risk Assessment"></etools-searchable-multiselection-menu>
+                                        placeholder="Select Risk Assessment">
+                                </etools-searchable-multiselection-menu>
                             </div>
                         </div>
 
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <!-- Brief Justification -->
-                                <paper-textarea label="Brief Justification for Rating (main internal control gaps)"
-                                                required
-                                                disabled="{{requestInProcess}}"
-                                                readonly$="{{requestInProcess}}"
-                                                invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                                                max-rows="4"
-                                                error-message="{{errors.children.0.blueprints.0.risk.extra}}"
-                                                id="briefJustification"
-                                                class="disabled-as-readonly validate-input required"
-                                                value="{{editedArea.blueprints.0.risk.extra.comments}}"
-                                                on-focus="_resetFieldError"
-                                                placeholder="Enter Brief Justification">
+                                <paper-textarea
+                                        label="Brief Justification for Rating (main internal control gaps)"
+                                        required
+                                        disabled="{{requestInProcess}}"
+                                        readonly$="{{requestInProcess}}"
+                                        invalid="{{errors.children.0.blueprints.0.risk.extra}}"
+                                        max-rows="4"
+                                        error-message="{{errors.children.0.blueprints.0.risk.extra}}"
+                                        id="briefJustification"
+                                        class="disabled-as-readonly validate-input required"
+                                        value="{{editedArea.blueprints.0.risk.extra.comments}}"
+                                        on-focus="_resetFieldError"
+                                        placeholder="Enter Brief Justification">
                                 </paper-textarea>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </dialog-element>
-
-
     </template>
 
     <!-- inject scripts './key-internal-controls-tab.js'-->

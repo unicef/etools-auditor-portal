@@ -1,5 +1,4 @@
 Polymer({
-
     is: 'user-dropdown',
 
     behaviors: [
@@ -40,5 +39,4 @@ Polymer({
         this.resetOldUserData();
         this._changeLocation('accounts/logout');
     }
-
 });

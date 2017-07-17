@@ -2,21 +2,18 @@
 <!--import [etools-app-config]-->
 
 <dom-module id="update-staff-members">
-
     <template>
-
-        <etools-ajax method="{{method}}"
-                     url="{{url}}"
-                     body="{{postData}}"
-                     on-success="_handleResponse"
-                     on-fail="_handleError"></etools-ajax>
-
+        <etools-ajax
+                method="{{method}}"
+                url="{{url}}"
+                body="{{postData}}"
+                on-success="_handleResponse"
+                on-fail="_handleError">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'update-staff-members',
 
             behaviors: [
@@ -57,9 +54,6 @@
 
                 this.fire('staff-updated', {error: true, errorData: response, status: status});
             }
-
         });
-
     </script>
-
 </dom-module>

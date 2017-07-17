@@ -31,6 +31,7 @@
                         headings="[[headings]]">
                     <div slot="custom">
                         <iron-icon icon="icons:attachment" class="download-icon"></iron-icon>
+
                         <a class="truncate"
                            href$="[[item.file]]"
                            download$="[[item.file_name]]"
@@ -42,6 +43,7 @@
 
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+
                         <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
                     </div>
                 </list-element>

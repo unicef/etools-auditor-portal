@@ -6,23 +6,28 @@
         <style include="shared-styles module-styles"></style>
         <!-- inject styles './list-tab-main.scss'-->
 
-
         <paper-card class="data-table">
-
             <template is="dom-if" if="[[!withoutPagination]]" restamp>
                 <span class="textprim data-card-heading">{{showingResults}} {{headerTitle}}</span>
             </template>
+
             <template is="dom-if" if="[[withoutPagination]]" restamp>
                 <span class="textprim data-card-heading table-title">{{headerTitle}}</span>
             </template>
 
-            <list-header id="list-header"
-                         data="[[headings]]"
-                         no-additional$="[[noAdditional]]"
-                         order-by="{{orderBy}}">
+            <list-header
+                    id="list-header"
+                    data="[[headings]]"
+                    no-additional$="[[noAdditional]]"
+                    order-by="{{orderBy}}">
             </list-header>
 
-            <template id="list-elements" is="dom-repeat" items="[[data]]" initial-count="10"  on-dom-change="_listDataChanged">
+            <template
+                    id="list-elements"
+                    is="dom-repeat"
+                    items="[[data]]"
+                    initial-count="10"
+                    on-dom-change="_listDataChanged">
                 <list-element
                         class="list-element"
                         data="[[item]]"
@@ -53,9 +58,7 @@
                         showing-results="{{showingResults}}">
                 </list-pagination>
             </template>
-
         </paper-card>
-
     </template>
 
     <!-- inject scripts './list-tab-main.js'-->

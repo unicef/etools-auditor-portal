@@ -2,9 +2,7 @@
 <!--import [static-data-behavior, permission-controller]-->
 
 <dom-module id="static-data">
-
     <template>
-
         <!--partners-->
         <etools-ajax
                 endpoint="[[partnersEndpoint]]"
@@ -12,7 +10,8 @@
                 dexie-db-collection="partners"
                 on-success="_partnersLoaded"
                 on-forbidden="_responseError"
-                on-fail="_responseError"></etools-ajax>
+                on-fail="_responseError">
+        </etools-ajax>
 
         <!--auditors-->
         <etools-ajax
@@ -20,18 +19,19 @@
                 caching-storage="custom"
                 dexie-db-collection="auditors"
                 on-success="_auditorsLoaded"
-                on-fail="_responseError"></etools-ajax>
+                on-fail="_responseError">
+        </etools-ajax>
 
         <!--engagement creation-->
-        <etools-ajax method="OPTIONS"
-                     url="{{newEngagementPermissions}}"
-                     on-success="_handleNewEngagementResponse"
-                     on-fail="_responseError"></etools-ajax>
-
+        <etools-ajax
+                method="OPTIONS"
+                url="{{newEngagementPermissions}}"
+                on-success="_handleNewEngagementResponse"
+                on-fail="_responseError">
+        </etools-ajax>
     </template>
 
     <script>
-
         (function() {
             'use strict';
 
@@ -46,8 +46,8 @@
             let dataLoaded = {};
 
             Polymer({
-
                 is: 'static-data',
+
                 behaviors: [
                     etoolsAppConfig.globals,
                     APBehaviors.StaticDataController,
@@ -108,11 +108,7 @@
                     if (message) { console.error(message); }
                     this.fire('static-data-loaded');
                 }
-
             });
-
         })();
-
     </script>
-
 </dom-module>

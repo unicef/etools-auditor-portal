@@ -2,12 +2,14 @@
 
 Polymer({
     is: 'engagement-info-details',
+
     behaviors: [
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior
     ],
+
     properties: {
         basePermissionPath: {
             type: String,
@@ -67,9 +69,11 @@ Polymer({
             value: null
         }
     },
+
     listeners: {
         'agreement-loaded': '_agreementLoaded'
     },
+
     observers: [
         '_errorHandler(errorObject)',
         '_setShowInput(data.type)',
@@ -217,5 +221,4 @@ Polymer({
         let today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(), new Date(minDate).getDate());
         return new Date(today - 1);
     }
-
 });

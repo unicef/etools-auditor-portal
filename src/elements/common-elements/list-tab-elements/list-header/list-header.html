@@ -8,51 +8,53 @@
 
         <div class="heading-row-header clearfix" style$="padding-right: [[paddingRight]];">
             <template is="dom-repeat" items="[[data]]">
-
                 <template is="dom-if" if="[[!item.group]]">
-
-                    <div  class$="local-headings w[[item.size]] [[item.align]]" ordered$="{{item.ordered}}" on-tap="_changeOrder">
+                    <div class$="local-headings w[[item.size]] [[item.align]]"
+                         ordered$="{{item.ordered}}"
+                         on-tap="_changeOrder">
                         <span class="textsec heading">[[item.label]]</span>
 
-                        <iron-icon class="down-icon"
-                                   icon="icons:arrow-downward">
+                        <iron-icon
+                                class="down-icon"
+                                icon="icons:arrow-downward">
                         </iron-icon>
 
-                        <iron-icon class="up-icon"
-                                   icon="icons:arrow-upward">
+                        <iron-icon
+                                class="up-icon"
+                                icon="icons:arrow-upward">
                         </iron-icon>
-
                     </div>
-
                 </template>
-                <template is="dom-if" if="[[item.group]]">
 
-                    <div  class$="local-headings group-local-headings w[[item.size]] [[item.align]]" ordered$="{{item.ordered}}" on-tap="_changeOrder">
-                        <div class$="group-heading textsec heading [[item.align]]"><span>[[item.label]]</span></div>
+                <template is="dom-if" if="[[item.group]]">
+                    <div class$="local-headings group-local-headings w[[item.size]] [[item.align]]"
+                         ordered$="{{item.ordered}}"
+                         on-tap="_changeOrder">
+                        <div class$="group-heading textsec heading [[item.align]]">
+                            <span>[[item.label]]</span>
+                        </div>
 
                         <template is="dom-repeat" items="[[item.columns]]" as="groupColumn">
-                            <div  class$="local-headings group-local-heading w[[groupColumn.size]] [[groupColumn.align]]" ordered$="{{groupColumn.ordered}}" on-tap="_changeOrder">
+                            <div class$="local-headings group-local-heading w[[groupColumn.size]] [[groupColumn.align]]"
+                                 ordered$="{{groupColumn.ordered}}"
+                                 on-tap="_changeOrder">
                                 <span class="textsec heading">[[groupColumn.label]]</span>
 
-                                <iron-icon class="down-icon"
-                                           icon="icons:arrow-downward">
+                                <iron-icon
+                                        class="down-icon"
+                                        icon="icons:arrow-downward">
                                 </iron-icon>
 
-                                <iron-icon class="up-icon"
-                                           icon="icons:arrow-upward">
+                                <iron-icon
+                                        class="up-icon"
+                                        icon="icons:arrow-upward">
                                 </iron-icon>
-
                             </div>
                         </template>
                     </div>
-
                 </template>
-
             </template>
         </div>
-
-
-
     </template>
 
     <!-- inject scripts './list-header.js'-->

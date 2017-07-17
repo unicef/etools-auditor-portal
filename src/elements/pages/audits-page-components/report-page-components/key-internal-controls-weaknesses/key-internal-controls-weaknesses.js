@@ -155,5 +155,4 @@ Polymer({
 
         return valid;
     },
-
 });

@@ -9,15 +9,15 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './control-findings-tab.scss'-->
 
-
-        <paper-icon-button hidden$="[[!_canBeChanged(basePermissionPath)]]"
-                           title="Add"
-                           on-tap="openAddDialog"
-                           class="add-button"
-                           icon="add-box"></paper-icon-button>
+        <paper-icon-button
+                hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                title="Add"
+                on-tap="openAddDialog"
+                class="add-button"
+                icon="add-box">
+        </paper-icon-button>
 
         <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations">
-
             <list-header no-ordered data="[[columns]]"></list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
@@ -40,10 +40,9 @@
                         class="list-element"
                         data="[[emptyObj]]"
                         headings="[[columns]]"
-                        no-animation></list-element>
+                        no-animation>
+                </list-element>
             </template>
-
-
         </etools-content-panel>
 
         <dialog-element
@@ -52,42 +51,44 @@
                 dialog-title="[[dialogTitle]]"
                 confirm-btn-text="[[confirmBtnText]]"
                 request-in-process="{{requestInProcess}}">
-
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Finding -->
-                            <paper-input label="[[getLabel('findings.finding', basePermissionPath)]]"
-                                         value="{{editedItem.finding}}"
-                                         placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
-                                         on-focus="_resetFieldError"
-                                         maxlength="400"
-                                         class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
-                                         required="{{_setRequired('finding', basePermissionPath)}}"
-                                         disabled="{{requestInProcess}}"
-                                         readonly$="{{requestInProcess}}"
-                                         invalid="{{errors.finding}}"
-                                         error-message="{{errors.finding}}">
+                            <paper-input
+                                    label="[[getLabel('findings.finding', basePermissionPath)]]"
+                                    value="{{editedItem.finding}}"
+                                    placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
+                                    on-focus="_resetFieldError"
+                                    maxlength="400"
+                                    class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
+                                    required="{{_setRequired('finding', basePermissionPath)}}"
+                                    disabled="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.finding}}"
+                                    error-message="{{errors.finding}}">
                             </paper-input>
                         </div>
                     </div>
+
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
-                            <paper-textarea label="[[getLabel('findings.recommendation', basePermissionPath)]]"
-                                            max-rows="4"
-                                            value="{{editedItem.recommendation}}"
-                                            allowed-pattern="[\d\s]"
-                                            placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                                            max-rows="4"
-                                            class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"
-                                            disabled="{{requestInProcess}}"
-                                            readonly$="{{requestInProcess}}"
-                                            on-focus="_resetFieldError"
-                                            invalid="{{errors.recommendation}}"
-                                            error-message="{{errors.recommendation}}"
-                                            required="{{_setRequired('recommendation', basePermissionPath)}}">
+                            <paper-textarea
+                                    label="[[getLabel('findings.recommendation', basePermissionPath)]]"
+                                    max-rows="4"
+                                    value="{{editedItem.recommendation}}"
+                                    allowed-pattern="[\d\s]"
+                                    placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
+                                    max-rows="4"
+                                    class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"
+                                    disabled="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    on-focus="_resetFieldError"
+                                    invalid="{{errors.recommendation}}"
+                                    error-message="{{errors.recommendation}}"
+                                    required="{{_setRequired('recommendation', basePermissionPath)}}">
                             </paper-textarea>
                         </div>
                     </div>

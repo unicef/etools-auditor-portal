@@ -4,43 +4,43 @@
 
 <dom-module id="engagements-page-main">
     <template>
-
         <style include="page-layout-styles shared-styles module-styles">
             :host {
                 position: relative;
                 display: block;
             }
         </style>
+
         <app-route
                 route="{{route}}"
                 pattern="/:view"
                 data="{{routeData}}"
-                tail="{{subroute}}"></app-route>
+                tail="{{subroute}}">
+        </app-route>
 
-        <iron-pages id="categoryPages"
-                    selected="{{view}}"
-                    attr-for-selected="name"
-                    role="main">
-
-            <engagements-list-view name="list"
-                                   id="listPage"
-                                   query-params="{{queryParams}}"
-                                   has-collapse
-                                   request-queries="[[partnersListQueries]]"></engagements-list-view>
+        <iron-pages
+                id="categoryPages"
+                selected="{{view}}"
+                attr-for-selected="name"
+                role="main">
+            <engagements-list-view
+                    name="list"
+                    id="listPage"
+                    query-params="{{queryParams}}"
+                    has-collapse
+                    request-queries="[[partnersListQueries]]">
+            </engagements-list-view>
 
             <template is="dom-if" if="{{actionAllowed('new_engagement', 'createEngagement')}}" restamp>
-
-                <new-engagement-view name="new"
-                                     id="creationPage"
-                                     page="{{routeData.view}}"
-                                     route="{{subroute}}"
-                                     partner="{{partnerDetails}}"></new-engagement-view>
-
+                <new-engagement-view
+                        name="new"
+                        id="creationPage"
+                        page="{{routeData.view}}"
+                        route="{{subroute}}"
+                        partner="{{partnerDetails}}">
+                </new-engagement-view>
             </template>
-
-
         </iron-pages>
-
     </template>
 
     <!-- inject scripts './engagements-page-main.js'-->

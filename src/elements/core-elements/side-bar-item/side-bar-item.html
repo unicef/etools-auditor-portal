@@ -2,7 +2,6 @@
 <!--import [module-styles]-->
 
 <dom-module id="side-bar-item">
-
     <template>
         <style include="module-styles">
             :host {
@@ -91,14 +90,12 @@
                 <content></content>
             </div>
         </iron-collapse>
-
     </template>
 
     <script>
-
         Polymer({
-
             is: 'side-bar-item',
+
             properties: {
                 external: {
                     type: Boolean,
@@ -114,9 +111,6 @@
                 if (this.external) { return '_blank'; }
                 return '_self'
             }
-
         });
-
     </script>
-
 </dom-module>

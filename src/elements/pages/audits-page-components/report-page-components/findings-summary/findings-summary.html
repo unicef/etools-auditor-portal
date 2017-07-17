@@ -25,10 +25,11 @@
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Summary of audit findings">
-            <list-header id="list-header"
-                         no-additional
-                         no-ordered
-                         data="[[headerColumns]]">
+            <list-header
+                    id="list-header"
+                    no-additional
+                    no-ordered
+                    data="[[headerColumns]]">
             </list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
@@ -44,7 +45,11 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="[[requestInProcess]]">
+        <dialog-element
+                opened="{{dialogOpened}}"
+                dialog-title="[[dialogTitle]]"
+                confirm-btn-text="[[confirmBtnText]]"
+                request-in-process="[[requestInProcess]]">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">

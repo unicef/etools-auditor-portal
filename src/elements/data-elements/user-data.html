@@ -2,21 +2,19 @@
 <!--import [permission-controller]-->
 
 <dom-module id="user-data">
-
     <template>
-
-        <etools-ajax endpoint="[[endpoint]]"
-                     caching-storage="custom"
-                     dexie-db-collection="profile"
-                     on-success="_handleResponse"
-                     on-forbidden="_forbidden"
-                     on-fail="_handleError"></etools-ajax>
+        <etools-ajax
+                endpoint="[[endpoint]]"
+                caching-storage="custom"
+                dexie-db-collection="profile"
+                on-success="_handleResponse"
+                on-forbidden="_forbidden"
+                on-fail="_handleError">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'user-data',
 
             behaviors: [
@@ -61,9 +59,6 @@
             _forbidden: function() {
                 window.location.href = window.location.origin + '/';
             }
-
         });
-
     </script>
-
 </dom-module>

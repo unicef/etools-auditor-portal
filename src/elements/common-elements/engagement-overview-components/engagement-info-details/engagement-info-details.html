@@ -25,109 +25,142 @@
             }
         </style>
 
-        <get-agreement-data agreement="{{data.agreement}}" order-number="{{orderNumber}}"></get-agreement-data>
-        <update-agreement-data agreement="{{data.agreement}}" new-date="{{contractExpiryDate}}" po-updating="{{poUpdating}}" errors="{{errors}}"></update-agreement-data>
+        <get-agreement-data
+                agreement="{{data.agreement}}"
+                order-number="{{orderNumber}}">
+        </get-agreement-data>
+
+        <update-agreement-data
+                agreement="{{data.agreement}}"
+                new-date="{{contractExpiryDate}}"
+                po-updating="{{poUpdating}}"
+                errors="{{errors}}">
+        </update-agreement-data>
 
         <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Purchase Order -->
-                    <paper-input label="[[getLabel('agreement.order_number', basePermissionPath)]]"
-                                 id="purchaseOrder"
-                                 field="agreement"
-                                 maxlength="30"
-                                 class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
-                                 value="{{data.agreement.order_number}}"
-                                 allowed-pattern="[\d]"
-                                 placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
-                                 invalid$="{{_checkInvalid(errors.agreement)}}"
-                                 error-message="{{errors.agreement}}"
-                                 required$="{{_setRequired('agreement', basePermissionPath)}}"
-                                 disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
-                                 readonly="{{requestInProcess}}"
-                                 on-focus="_resetFieldError"
-                                 on-blur="_requestAgreement"></paper-input>
-                    <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="po-loading"></etools-loading>
+                    <paper-input
+                            label="[[getLabel('agreement.order_number', basePermissionPath)]]"
+                            id="purchaseOrder"
+                            field="agreement"
+                            maxlength="30"
+                            class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
+                            value="{{data.agreement.order_number}}"
+                            allowed-pattern="[\d]"
+                            placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
+                            invalid$="{{_checkInvalid(errors.agreement)}}"
+                            error-message="{{errors.agreement}}"
+                            required$="{{_setRequired('agreement', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
+                            readonly="{{requestInProcess}}"
+                            on-focus="_resetFieldError"
+                            on-blur="_requestAgreement">
+                    </paper-input>
+
+                    <etools-loading
+                            active="{{requestInProcess}}"
+                            no-overlay
+                            loading-text=""
+                            class="po-loading">
+                    </etools-loading>
                 </div>
 
                 <div class="input-container">
                     <!-- Auditor -->
-                    <paper-input label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
-                                 disabled readonly
-                                 id="auditorInput"
-                                 value="[[data.agreement.auditor_firm.name]]"
-                                 placeholder="[[getReadonlyPlaceholder(data.agreement)]]">
+                    <paper-input
+                            label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
+                            class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
+                            disabled readonly
+                            id="auditorInput"
+                            value="[[data.agreement.auditor_firm.name]]"
+                            placeholder="[[getReadonlyPlaceholder(data.agreement)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- PO Date -->
-                    <paper-input label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
-                                 disabled readonly
-                                 id="contractStartDateInput"
-                                 value="[[prettyDate(data.agreement.contract_start_date)]]"
-                                 on-down="openDatePicker"
-                                 placeholder="[[getReadonlyPlaceholder(data.agreement)]]">
-                        <iron-icon  hidden="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
-                                    prefix icon="date-range"></iron-icon>
+                    <paper-input
+                            label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
+                            class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
+                            disabled readonly
+                            id="contractStartDateInput"
+                            value="[[prettyDate(data.agreement.contract_start_date)]]"
+                            on-down="openDatePicker"
+                            placeholder="[[getReadonlyPlaceholder(data.agreement)]]">
+                        <iron-icon
+                                hidden="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
+                                prefix
+                                icon="date-range">
+                        </iron-icon>
                     </paper-input>
                 </div>
             </div>
 
             <div class="row-h group">
-
                 <div class="input-container">
                     <!-- Contract Expiry Date -->
-                    <paper-input label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
-                                 class$="disabled-as-readonly {{_setRequired('contract_end_date', poPermissionPath)}} validate-field"
-                                 required="{{_setRequired('contract_end_date', poPermissionPath)}}"
-                                 disabled$="[[isReadOnly('contract_end_date', poPermissionPath, poUpdating)]]"
-                                 invalid="{{_checkInvalid(errors.contract_end_date)}}"
-                                 error-message="{{errors.contract_end_date}}"
-                                 id="contractEndDateInput"
-                                 field="contract_end_date"
-                                 value="[[prettyDate(data.agreement.contract_end_date)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="contractEndDate"
-                                 on-focus="_resetFieldError"
-                                 placeholder="[[getPlaceholderText('contract_end_date', poPermissionPath, 'datepicker')]]">
-                        <etools-datepicker prefix
-                                           modal="[[datepickerModal]]"
-                                           id="contractEndDate"
-                                           date="[[prepareDate(data.agreement.contract_end_date)]]"
-                                           format="YYYY-MM-DD"
-                                           pretty-date="{{contractExpiryDate}}"
-                                           min-date="{{_setExpiryMinDate(data.agreement.contract_start_date)}}"
-                                           no-init show-clear-btn></etools-datepicker>
+                    <paper-input
+                            label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
+                            class$="disabled-as-readonly {{_setRequired('contract_end_date', poPermissionPath)}} validate-field"
+                            required="{{_setRequired('contract_end_date', poPermissionPath)}}"
+                            disabled$="[[isReadOnly('contract_end_date', poPermissionPath, poUpdating)]]"
+                            invalid="{{_checkInvalid(errors.contract_end_date)}}"
+                            error-message="{{errors.contract_end_date}}"
+                            id="contractEndDateInput"
+                            field="contract_end_date"
+                            value="[[prettyDate(data.agreement.contract_end_date)]]"
+                            on-down="openDatePicker"
+                            data-selector="contractEndDate"
+                            on-focus="_resetFieldError"
+                            placeholder="[[getPlaceholderText('contract_end_date', poPermissionPath, 'datepicker')]]">
+                        <etools-datepicker
+                                prefix
+                                modal="[[datepickerModal]]"
+                                id="contractEndDate"
+                                date="[[prepareDate(data.agreement.contract_end_date)]]"
+                                format="YYYY-MM-DD"
+                                pretty-date="{{contractExpiryDate}}"
+                                min-date="{{_setExpiryMinDate(data.agreement.contract_start_date)}}"
+                                no-init show-clear-btn>
+                        </etools-datepicker>
                     </paper-input>
-                    <etools-loading active="{{poUpdating}}" no-overlay loading-text="" class="po-loading"></etools-loading>
+
+                    <etools-loading
+                            active="{{poUpdating}}"
+                            no-overlay
+                            loading-text=""
+                            class="po-loading">
+                    </etools-loading>
                 </div>
 
                 <div class="input-container">
                     <!-- Date Partner Was Contacted -->
-                    <paper-input label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
-                                 class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}} validate-field"
-                                 required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
-                                 disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
-                                 invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
-                                 error-message="{{errors.partner_contacted_at}}"
-                                 id="contactedDateInput"
-                                 field="partner_contacted_at"
-                                 value="[[prettyDate(data.partner_contacted_at)]]"
-                                 on-down="openDatePicker"
-                                 data-selector="contactedDate"
-                                 on-focus="_resetFieldError"
-                                 placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]">
-                        <etools-datepicker prefix
-                                           modal="[[datepickerModal]]"
-                                           id="contactedDate"
-                                           date="[[prepareDate(data.partner_contacted_at)]]"
-                                           format="YYYY-MM-DD"
-                                           pretty-date="{{data.partner_contacted_at}}"
-                                           max-date="{{maxDate}}"
-                                           no-init show-clear-btn></etools-datepicker>
+                    <paper-input
+                            label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
+                            class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}} validate-field"
+                            required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
+                            invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
+                            error-message="{{errors.partner_contacted_at}}"
+                            id="contactedDateInput"
+                            field="partner_contacted_at"
+                            value="[[prettyDate(data.partner_contacted_at)]]"
+                            on-down="openDatePicker"
+                            data-selector="contactedDate"
+                            on-focus="_resetFieldError"
+                            placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]">
+                        <etools-datepicker
+                                prefix
+                                modal="[[datepickerModal]]"
+                                id="contactedDate"
+                                date="[[prepareDate(data.partner_contacted_at)]]"
+                                format="YYYY-MM-DD"
+                                pretty-date="{{data.partner_contacted_at}}"
+                                max-date="{{maxDate}}"
+                                no-init show-clear-btn>
+                        </etools-datepicker>
                     </paper-input>
                 </div>
 
@@ -153,34 +186,35 @@
                             placeholder="[[getPlaceholderText('type', basePermissionPath, 'dropdown')]]">
                     </etools-searchable-multiselection-menu>
                 </div>
-
             </div>
 
             <div class="row-h group">
-
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Period Start Date -->
-                        <paper-input label="[[getLabel('start_date', basePermissionPath)]]"
-                                     class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}} validate-field"
-                                     disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
-                                     required="{{_setRequired('start_date', basePermissionPath)}}"
-                                     invalid="{{_checkInvalid(errors.start_date)}}"
-                                     error-message="{{errors.start_date}}"
-                                     id="periodStartDateInput"
-                                     field="start_date"
-                                     value="[[prettyDate(data.start_date)]]"
-                                     on-focus="_resetFieldError"
-                                     on-down="openDatePicker"
-                                     data-selector="periodStartDate"
-                                     placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]">
-                            <etools-datepicker-button prefix
-                                                      modal="[[datepickerModal]]"
-                                                      id="periodStartDate"
-                                                      date="[[prepareDate(data.start_date)]]"
-                                                      format="YYYY-MM-DD"
-                                                      pretty-date="{{data.start_date}}"
-                                                      no-init show-clear-btn></etools-datepicker-button>
+                        <paper-input
+                                label="[[getLabel('start_date', basePermissionPath)]]"
+                                class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}} validate-field"
+                                disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
+                                required="{{_setRequired('start_date', basePermissionPath)}}"
+                                invalid="{{_checkInvalid(errors.start_date)}}"
+                                error-message="{{errors.start_date}}"
+                                id="periodStartDateInput"
+                                field="start_date"
+                                value="[[prettyDate(data.start_date)]]"
+                                on-focus="_resetFieldError"
+                                on-down="openDatePicker"
+                                data-selector="periodStartDate"
+                                placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]">
+                            <etools-datepicker-button
+                                    prefix
+                                    modal="[[datepickerModal]]"
+                                    id="periodStartDate"
+                                    date="[[prepareDate(data.start_date)]]"
+                                    format="YYYY-MM-DD"
+                                    pretty-date="{{data.start_date}}"
+                                    no-init show-clear-btn>
+                            </etools-datepicker-button>
                         </paper-input>
                     </div>
                 </template>
@@ -188,26 +222,28 @@
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Period End Date -->
-                        <paper-input label="[[getLabel('end_date', basePermissionPath)]]"
-                                     class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}} validate-field"
-                                     disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
-                                     required="{{_setRequired('end_date', basePermissionPath)}}"
-                                     invalid="{{_checkInvalid(errors.end_date)}}"
-                                     error-message="{{errors.end_date}}"
-                                     id="periodEndDateInput"
-                                     field="end_date"
-                                     value="[[prettyDate(data.end_date)]]"
-                                     on-focus="_resetFieldError"
-                                     on-down="openDatePicker"
-                                     data-selector="periodEndDate"
-                                     placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]">
-                            <etools-datepicker-button prefix
-                                                      modal="[[datepickerModal]]"
-                                                      id="periodEndDate"
-                                                      date="[[prepareDate(data.end_date)]]"
-                                                      format="YYYY-MM-DD"
-                                                      pretty-date="{{data.end_date}}"
-                                                      no-init show-clear-btn>
+                        <paper-input
+                                label="[[getLabel('end_date', basePermissionPath)]]"
+                                class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}} validate-field"
+                                disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
+                                required="{{_setRequired('end_date', basePermissionPath)}}"
+                                invalid="{{_checkInvalid(errors.end_date)}}"
+                                error-message="{{errors.end_date}}"
+                                id="periodEndDateInput"
+                                field="end_date"
+                                value="[[prettyDate(data.end_date)]]"
+                                on-focus="_resetFieldError"
+                                on-down="openDatePicker"
+                                data-selector="periodEndDate"
+                                placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]">
+                            <etools-datepicker-button
+                                    prefix
+                                    modal="[[datepickerModal]]"
+                                    id="periodEndDate"
+                                    date="[[prepareDate(data.end_date)]]"
+                                    format="YYYY-MM-DD"
+                                    pretty-date="{{data.end_date}}"
+                                    no-init show-clear-btn>
                             </etools-datepicker-button>
                         </paper-input>
                     </div>
@@ -231,12 +267,8 @@
                         </etools-currency-amount-input>
                     </div>
                 </template>
-
             </div>
-
-
         </etools-content-panel>
-
     </template>
 
     <!-- inject scripts './engagement-info-details.js'-->

@@ -51,54 +51,58 @@
 
                 <div class="input-container">
                     <!-- Partner Address -->
-                    <paper-input label="Partner Address"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 disabled readonly
-                                 value="[[partner.street_address]]"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]">
+                    <paper-input
+                            label="Partner Address"
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            disabled readonly
+                            value="[[partner.street_address]]"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]">
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner City -->
-                    <paper-input label="Partner City"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.city}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            label="Partner City"
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.city}}"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled readonly>
                     </paper-input>
                 </div>
             </div>
 
             <div class="row-h group">
-
                 <div class="input-container">
                     <!-- Partner Postal Code -->
-                    <paper-input label="Partner Postal Code"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.postal_code}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            label="Partner Postal Code"
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.postal_code}}"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled readonly>
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner Phone Number -->
-                    <paper-input label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.phone_number}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            label="[[getLabel('partner.phone_number', basePermissionPath)]]"
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.phone_number}}"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled readonly>
                     </paper-input>
                 </div>
 
                 <div class="input-container">
                     <!-- Partner E-mail Address -->
-                    <paper-input label="[[getLabel('partner.email', basePermissionPath)]]"
-                                 class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                                 value="{{partner.email}}"
-                                 placeholder="[[getReadonlyPlaceholder(partner)]]"
-                                 disabled readonly>
+                    <paper-input
+                            label="[[getLabel('partner.email', basePermissionPath)]]"
+                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                            value="{{partner.email}}"
+                            placeholder="[[getReadonlyPlaceholder(partner)]]"
+                            disabled readonly>
                     </paper-input>
                 </div>
             </div>
@@ -129,7 +133,6 @@
                 </div>
             </div>
         </etools-content-panel>
-
     </template>
 
     <!-- inject scripts './partner-details-tab.js'-->
