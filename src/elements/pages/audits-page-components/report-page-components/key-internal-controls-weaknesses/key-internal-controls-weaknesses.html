@@ -51,17 +51,17 @@
                                 <etools-searchable-multiselection-menu
                                         id="riskRatingInput"
                                         class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}} validate-input"
+                                        value="{{editedArea.risk.value}}"
+                                        label="Risk rating"
+                                        placeholder="Select Risk rating"
                                         options="[[riskOptions]]"
                                         required="{{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}}"
-                                        hide-search
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"
-                                        value="{{editedArea.risk.value}}"
                                         invalid="{{errors.blueprints.0.risk.value}}"
                                         error-message="{{errors.blueprints.0.risk.value}}"
                                         on-focus="_resetFieldError"
-                                        label="Risk rating"
-                                        placeholder="Select Risk rating">
+                                        hide-search>
                                 </etools-searchable-multiselection-menu>
                             </div>
                         </div>
@@ -69,17 +69,17 @@
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
-                                        label="Key control observation"
-                                        max-rows="4"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
                                         value="{{editedArea.risk.extra.key_control_observation}}"
-                                        on-focus="_resetFieldError"
+                                        label="Key control observation"
                                         placeholder="Enter Observation"
-                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
                                         required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
+                                        max-rows="4"
                                         invalid="{{errors.blueprints.0.risk.extra}}"
-                                        error-message="{{errors.blueprints.0.risk.extra}}">
+                                        error-message="{{errors.blueprints.0.risk.extra}}"
+                                        on-focus="_resetFieldError">
                                 </paper-textarea>
                             </div>
                         </div>
@@ -87,17 +87,17 @@
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
-                                        label="Recommendation"
-                                        max-rows="4"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
                                         value="{{editedArea.risk.extra.recommendation}}"
-                                        on-focus="_resetFieldError"
+                                        label="Recommendation"
                                         placeholder="Enter Recommendation"
-                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
                                         required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
+                                        max-rows="4"
                                         invalid="{{errors.blueprints.0.risk.extra}}"
-                                        error-message="{{errors.blueprints.0.risk.extra}}">
+                                        error-message="{{errors.blueprints.0.risk.extra}}"
+                                        on-focus="_resetFieldError">
                                 </paper-textarea>
                             </div>
                         </div>
@@ -105,17 +105,17 @@
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
-                                        label="IP Response"
-                                        max-rows="4"
-                                        value="{{editedArea.risk.extra.ip_response}}"
-                                        on-focus="_resetFieldError"
-                                        placeholder="Enter Response"
                                         class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
+                                        value="{{editedArea.risk.extra.ip_response}}"
+                                        label="IP Response"
+                                        placeholder="Enter Response"
                                         required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
+                                        max-rows="4"
                                         invalid="{{errors.blueprints.0.risk.extra}}"
-                                        error-message="{{errors.blueprints.0.risk.extra}}">
+                                        error-message="{{errors.blueprints.0.risk.extra}}"
+                                        on-focus="_resetFieldError">
                                 </paper-textarea>
                             </div>
                         </div>

@@ -16,28 +16,28 @@
                 <div class="input-container">
                     <!-- Date of Field Visit -->
                     <paper-input
-                            label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
                             id="dateVisitInput"
                             class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]] validate-date"
-                            disabled$="[[_isReadOnly('date_of_field_visit', 'true', falseValue, basePermissionPath)]]"
                             value="[[prettyDate(data.date_of_field_visit)]]"
-                            on-down="openDatePicker"
+                            label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
+                            placeholder="&#8212;"
                             data-selector="dateVisit"
-                            validator="dateValidator"
+                            required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
+                            disabled$="[[_isReadOnly('date_of_field_visit', 'true', falseValue, basePermissionPath)]]"
                             invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
                             error-message="{{errors.date_of_field_visit}}"
-                            required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
                             validator="dateValidator"
                             on-focus="_resetFieldError"
-                            placeholder="&#8212;">
+                            on-down="openDatePicker">
                         <etools-datepicker
-                                prefix
-                                modal="[[datepickerModal]]"
                                 id="dateVisit"
-                                date="[[prepareDate(data.date_of_field_visit)]]"
+                                modal="[[datepickerModal]]"
+                                prefix
                                 format="YYYY-MM-DD"
+                                date="[[prepareDate(data.date_of_field_visit)]]"
                                 pretty-date="{{data.date_of_field_visit}}"
-                                no-init show-clear-btn>
+                                no-init
+                                show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>
@@ -45,29 +45,29 @@
                 <div class="input-container">
                     <!-- Draft Report Issued to IP -->
                     <paper-input
-                            label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
                             id="draftReportToIpInput"
                             class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
-                            disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip, basePermissionPath)]]"
                             value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
-                            validator="dateValidator"
+                            label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
+                            placeholder="&#8212;"
+                            data-selector="draftReportToIp"
+                            required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
+                            disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip, basePermissionPath)]]"
                             invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
                             error-message="{{errors.date_of_draft_report_to_ip}}"
-                            on-down="openDatePicker"
-                            data-selector="draftReportToIp"
                             validator="dateValidator"
                             on-focus="_resetFieldError"
-                            required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
-                            placeholder="&#8212;">
+                            on-down="openDatePicker">
                         <etools-datepicker
-                                prefix
-                                modal="[[datepickerModal]]"
                                 id="draftReportToIp"
-                                date="[[prepareDate(data.date_of_draft_report_to_ip)]]"
+                                modal="[[datepickerModal]]"
+                                prefix
                                 format="YYYY-MM-DD"
+                                date="[[prepareDate(data.date_of_draft_report_to_ip)]]"
                                 pretty-date="{{data.date_of_draft_report_to_ip}}"
-                                no-init show-clear-btn
-                                max-date="{{maxDate}}">
+                                max-date="{{maxDate}}"
+                                no-init
+                                show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>
@@ -75,30 +75,30 @@
                 <div class="input-container">
                     <!-- Comments Received by IP -->
                     <paper-input
-                            label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
                             id="commentsReceivedByIpInput"
                             class$="disabled-as-readonly [[_setRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
-                            disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                             value="[[prettyDate(data.date_of_comments_by_ip)]]"
-                            validator="dateValidator"
+                            label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
+                            placeholder="&#8212;"
+                            data-selector="commentsReceivedByIp"
+                            required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
+                            disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                             invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
                             error-message="{{errors.date_of_comments_by_ip}}"
-                            on-down="openDatePicker"
-                            data-selector="commentsReceivedByIp"
                             validator="dateValidator"
                             on-focus="_resetFieldError"
-                            required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
-                            placeholder="&#8212;">
+                            on-down="openDatePicker">
                         <etools-datepicker
-                                prefix
-                                modal="[[datepickerModal]]"
                                 id="commentsReceivedByIp"
-                                date="[[prepareDate(data.date_of_comments_by_ip)]]"
+                                modal="[[datepickerModal]]"
+                                prefix
                                 format="YYYY-MM-DD"
+                                date="[[prepareDate(data.date_of_comments_by_ip)]]"
                                 pretty-date="{{data.date_of_comments_by_ip}}"
-                                no-init show-clear-btn
+                                min-date="{{minDate(data.date_of_draft_report_to_ip)}}"
                                 max-date="{{maxDate}}"
-                                min-date="{{minDate(data.date_of_draft_report_to_ip)}}">
+                                no-init
+                                show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>
@@ -108,30 +108,30 @@
                 <div class="input-container">
                     <!-- Draft Report Issued to UNICEF -->
                     <paper-input
-                            label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
                             id="draftReportUnicefInput"
                             class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
-                            disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                             value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
-                            validator="dateValidator"
+                            label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
+                            placeholder="&#8212;"
+                            data-selector="draftReportUnicef"
+                            required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
+                            disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                             invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
                             error-message="{{errors.date_of_draft_report_to_unicef}}"
-                            on-down="openDatePicker"
-                            data-selector="draftReportUnicef"
                             validator="dateValidator"
                             on-focus="_resetFieldError"
-                            required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
-                            placeholder="&#8212;">
+                            on-down="openDatePicker">
                         <etools-datepicker
-                                prefix
-                                modal="[[datepickerModal]]"
                                 id="draftReportUnicef"
-                                date="[[prepareDate(data.date_of_draft_report_to_unicef)]]"
+                                modal="[[datepickerModal]]"
+                                prefix
                                 format="YYYY-MM-DD"
+                                date="[[prepareDate(data.date_of_draft_report_to_unicef)]]"
                                 pretty-date="{{data.date_of_draft_report_to_unicef}}"
-                                no-init show-clear-btn
+                                min-date="{{minDate(data.date_of_comments_by_ip)}}"
                                 max-date="{{maxDate}}"
-                                min-date="{{minDate(data.date_of_comments_by_ip)}}">
+                                no-init
+                                show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>
@@ -139,30 +139,30 @@
                 <div class="input-container">
                     <!-- Comments Received by UNICEF -->
                     <paper-input
-                            label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
                             id="commentsReceivedUnicefInput"
                             class$="disabled-as-readonly [[_setRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
-                            disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                             value="[[prettyDate(data.date_of_comments_by_unicef)]]"
-                            validator="dateValidator"
+                            label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
+                            placeholder="&#8212;"
+                            data-selector="commentsReceivedUnicef"
+                            required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
+                            disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                             invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
                             error-message="{{errors.date_of_comments_by_unicef}}"
-                            on-down="openDatePicker"
-                            data-selector="commentsReceivedUnicef"
                             validator="dateValidator"
                             on-focus="_resetFieldError"
-                            required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
-                            placeholder="&#8212;">
+                            on-down="openDatePicker">
                         <etools-datepicker
-                                prefix
-                                modal="[[datepickerModal]]"
                                 id="commentsReceivedUnicef"
-                                date="[[prepareDate(data.date_of_comments_by_unicef)]]"
+                                modal="[[datepickerModal]]"
+                                prefix
                                 format="YYYY-MM-DD"
+                                date="[[prepareDate(data.date_of_comments_by_unicef)]]"
                                 pretty-date="{{data.date_of_comments_by_unicef}}"
-                                no-init show-clear-btn
+                                min-date="{{minDate(data.date_of_draft_report_to_unicef)}}"
                                 max-date="{{maxDate}}"
-                                min-date="{{minDate(data.date_of_draft_report_to_unicef)}}">
+                                no-init
+                                show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
                 </div>

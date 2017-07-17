@@ -76,10 +76,11 @@
                                         <div class="input-container input-container-l">
                                             <!-- Comments -->
                                             <paper-textarea
-                                                    label="Comments"
-                                                    value="{{engagement.cancel_comment}}"
                                                     class="without-border"
-                                                    disabled readonly>
+                                                    value="{{engagement.cancel_comment}}"
+                                                    label="Comments"
+                                                    disabled
+                                                    readonly>
                                             </paper-textarea>
                                         </div>
                                     </div>
@@ -87,8 +88,8 @@
                             </template>
 
                             <engagement-info-details
-                                    data="{{engagement}}"
                                     id="engagementDetails"
+                                    data="{{engagement}}"
                                     original-data="[[originalData]]"
                                     error-object="{{errorObject}}"
                                     base-permission-path="{{permissionBase}}">
@@ -133,28 +134,34 @@
 
                         <div name="attachments">
                             <file-attachments-tab
-                                    title="Related Documents"
                                     id="engagement_attachments"
+                                    title="Related Documents"
                                     base-permission-path="{{permissionBase}}"
                                     main-property="engagement_attachments"
                                     error-object="{{errorObject}}"
-                                    allow-download allow-edit file-type-required multiple
                                     data-items="[[engagement.engagement_attachments]]"
                                     file-types="[[engagementFileTypes]]"
-                                    readonly$="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]">
+                                    readonly$="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"
+                                    file-type-required
+                                    allow-download
+                                    allow-edit
+                                    multiple>
                             </file-attachments-tab>
 
                             <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
-                                        title="Report Attachments"
                                         id="report_attachments"
+                                        title="Report Attachments"
                                         base-permission-path="{{permissionBase}}"
                                         main-property="report_attachments"
                                         error-object="{{errorObject}}"
-                                        allow-download allow-edit file-type-required multiple
                                         data-items="[[engagement.report_attachments]]"
                                         file-types="[[reportFileTypes]]"
-                                        readonly$="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]">
+                                        readonly$="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"
+                                        file-type-required
+                                        allow-download
+                                        allow-edit
+                                        multiple>
                                 </file-attachments-tab>
                             </template>
                         </div>
@@ -175,14 +182,14 @@
                     dialog-title="Cancellation of Engagement"
                     confirm-btn-text="Continue">
                 <paper-textarea
-                        label="Cancellation Reason"
-                        max-rows="4"
-                        required
-                        error-message="This field is required."
                         id="cancellationReasonInput"
                         class="required"
-                        on-focus="_resetFieldError"
-                        placeholder="Enter reason of cancellation">
+                        label="Cancellation Reason"
+                        placeholder="Enter reason of cancellation"
+                        required
+                        max-rows="4"
+                        error-message="This field is required."
+                        on-focus="_resetFieldError">
                 </paper-textarea>
             </dialog-element>
         </template>

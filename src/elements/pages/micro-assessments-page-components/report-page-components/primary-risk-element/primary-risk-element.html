@@ -29,16 +29,17 @@
                         <etools-searchable-multiselection-menu
                                 id="riskAssessmentInput"
                                 class="validate-input disabled-as-readonly required"
-                                options="[[riskOptions]]"
-                                required hide-search
-                                readonly="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
-                                disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
                                 value="{{primaryArea.risk.value}}"
+                                label="Risk Assessment"
+                                placeholder="Select Risk Assessment"
+                                options="[[riskOptions]]"
+                                required
+                                disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
+                                readonly="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
                                 invalid="{{errors.children.0.blueprints.0.risk.value}}"
                                 error-message="{{errors.children.0.blueprints.0.risk.value}}"
                                 on-focus="_resetFieldError"
-                                label="Risk Assessment"
-                                placeholder="Select Risk Assessment">
+                                hide-search>
                         </etools-searchable-multiselection-menu>
                     </div>
                 </div>
@@ -47,17 +48,17 @@
                     <div class="input-container input-container-l">
                         <!-- Brief Justification -->
                         <paper-textarea
-                                label="Brief Justification for Rating (main internal control gaps)"
-                                required
-                                invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                                error-message="{{errors.children.0.blueprints.0.risk.extra}}"
-                                max-rows="4"
                                 id="briefJustification"
                                 class="disabled-as-readonly validate-input required"
                                 value="{{primaryArea.risk.extra.comments}}"
+                                label="Brief Justification for Rating (main internal control gaps)"
+                                placeholder="Enter Brief Justification"
+                                required
                                 disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
-                                on-focus="_resetFieldError"
-                                placeholder="Enter Brief Justification">
+                                max-rows="4"
+                                invalid="{{errors.children.0.blueprints.0.risk.extra}}"
+                                error-message="{{errors.children.0.blueprints.0.risk.extra}}"
+                                on-focus="_resetFieldError">
                         </paper-textarea>
                     </div>
                 </div>

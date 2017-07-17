@@ -4,25 +4,25 @@
 <dom-module id="sc-report-page-main">
     <template>
         <assign-engagement
+                id="assignEngagement"
                 data="{{engagement}}"
                 audit-type="Spot Check"
                 error-object="{{errorObject}}"
                 original-data="[[originalData]]"
-                base-permission-path="{{permissionBase}}"
-                id="assignEngagement">
+                base-permission-path="{{permissionBase}}">
         </assign-engagement>
 
         <overview-element
-                data="{{engagement}}"
                 id="overviewEngagement"
+                data="{{engagement}}"
                 original-data="[[originalData]]"
                 error-object="{{errorObject}}"
                 base-permission-path="{{permissionBase}}">
         </overview-element>
 
         <summary-findings-element
-                data-items="{{engagement.findings}}"
                 id="findingsHighPriority"
+                data-items="{{engagement.findings}}"
                 error-object="{{errorObject}}"
                 original-data="[[originalData.findings]]"
                 priority="{{priorities.high}}"
@@ -30,8 +30,8 @@
         </summary-findings-element>
 
         <summary-findings-element
-                data-items="{{engagement.findings}}"
                 id="findingsLowPriority"
+                data-items="{{engagement.findings}}"
                 error-object="{{errorObject}}"
                 original-data="[[originalData.findings]]"
                 priority="{{priorities.low}}"

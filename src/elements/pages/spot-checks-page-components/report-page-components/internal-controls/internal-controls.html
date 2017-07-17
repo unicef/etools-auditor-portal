@@ -21,16 +21,16 @@
             </div>
 
             <paper-textarea
-                    label="Document any changes identified"
-                    placeholder="Enter comments"
-                    value="{{data}}"
-                    always-float-label
-                    on-focus="_resetFieldError"
                     class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
+                    value="{{data}}"
+                    label="Document any changes identified"
+                    always-float-label
+                    placeholder="Enter comments"
                     required$="[[_setRequired('internal_controls', basePermissionPath)]]"
                     disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
                     invalid="{{_checkInvalid(errors.internal_controls)}}"
-                    error-message="{{errors.internal_controls}}">
+                    error-message="{{errors.internal_controls}}"
+                    on-focus="_resetFieldError">
             </paper-textarea>
         </etools-content-panel>
     </template>

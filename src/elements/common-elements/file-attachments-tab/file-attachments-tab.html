@@ -80,21 +80,21 @@
                                     <etools-searchable-multiselection-menu
                                             id="fileType"
                                             class="validate-input disabled-as-readonly"
+                                            value="{{editedItem.type}}"
                                             label="[[fileTypesLabel]]"
                                             placeholder="&#8212;"
                                             options="[[fileTypes]]"
-                                            hide-search
                                             custom-object-options
-                                            option-value="value"
                                             option-label="display_name"
-                                            value="{{editedItem.type}}"
-                                            on-value-change="_setFileType"
-                                            on-focus="_resetFieldError"
+                                            option-value="value"
+                                            required$="[[fileTypeRequired]]"
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
-                                            required$="[[fileTypeRequired]]"
                                             invalid="{{errors.file_type}}"
-                                            error-message="{{errors.file_type}}">
+                                            error-message="{{errors.file_type}}"
+                                            on-focus="_resetFieldError"
+                                            on-value-change="_setFileType"
+                                            hide-search>
                                     </etools-searchable-multiselection-menu>
                             </div>
                         </div>
@@ -106,8 +106,8 @@
                                 <!-- File Upload -->
                                 <paper-input-container
                                         class="validate-input"
-                                        always-float-label
                                         title="[[uploadLabel]]"
+                                        always-float-label
                                         disabled$="[[requestInProcess]]"
                                         readonly$="[[requestInProcess]]"
                                         invalid="{{errors.file}}">
@@ -126,11 +126,11 @@
                                             id="fileInput"
                                             class="validate-input"
                                             type="file"
+                                            hidden
+                                            required
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
-                                            on-change="_fileSelected"
-                                            hidden
-                                            required>
+                                            on-change="_fileSelected">
                                 </paper-input-container>
                             </div>
                         </div>

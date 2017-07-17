@@ -12,10 +12,10 @@
             <div class="flex horizontal layout wrap">
                 <div class="layout horizontal search-input-container">
                     <paper-input
-                            inline
-                            label="[[searchLabel]]"
                             value="{{searchString}}"
-                            on-keydown="searchKeyDown">
+                            label="[[searchLabel]]"
+                            on-keydown="searchKeyDown"
+                            inline>
 
                         <iron-icon icon="search" prefix></iron-icon>
                     </paper-input>
@@ -25,17 +25,17 @@
                 <template is="dom-repeat" items="[[usedFilters]]">
                     <div class="layout horizontal">
                         <etools-searchable-multiselection-menu
-                                class="filter-dropdown"
                                 id="[[item.query]]"
+                                class="filter-dropdown"
+                                value="[[item.value]]"
                                 label="[[item.label]]"
-                                hide-search="[[item.hideSearch]]"
+                                placeholder$="Select [[item.name]]"
                                 options="[[item.selection]]"
                                 custom-object-options
-                                value="[[item.value]]"
                                 option-label="[[item.optionLabel]]"
                                 option-value="[[item.optionValue]]"
                                 on-value-change="_changeFilterValue"
-                                placeholder$="Select [[item.name]]">
+                                hide-search="[[item.hideSearch]]">
                         </etools-searchable-multiselection-menu>
 
                         <div class="filter-reset-button" on-click="removeFilter">×</div>

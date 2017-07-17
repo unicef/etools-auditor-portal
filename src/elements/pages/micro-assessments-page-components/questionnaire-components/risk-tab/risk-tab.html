@@ -34,14 +34,15 @@
                         <div slot="custom">
                             <template is="dom-if" if="{{editMode}}">
                                 <etools-searchable-multiselection-menu
-                                        options="[[riskOptions]]"
                                         class="disabled-as-readonly required validate-input"
                                         value="{{_setRiskValue(item.risk.value, riskOptions)}}"
-                                        hide-search dynamic-align
-                                        allow-outside-scroll
+                                        placeholder="&#8212;"
+                                        options="[[riskOptions]]"
                                         on-focus="_resetFieldError"
                                         on-value-change="_riskValueChanged"
-                                        placeholder="&#8212;">
+                                        dynamic-align
+                                        hide-search
+                                        allow-outside-scroll>
                                 </etools-searchable-multiselection-menu>
                             </template>
 
@@ -80,15 +81,16 @@
                             <div slot="custom">
                                 <template is="dom-if" if="{{editMode}}">
                                     <etools-searchable-multiselection-menu
-                                            options="[[riskOptions]]"
                                             class="disabled-as-readonly required validate-input"
                                             value="{{_setRiskValue(item.risk.value, riskOptions)}}"
-                                            hide-search dynamic-align
-                                            allow-outside-scroll
+                                            placeholder="&#8212;"
+                                            options="[[riskOptions]]"
                                             category-id$="{{category.id}}"
                                             on-focus="_resetFieldError"
                                             on-value-change="_riskValueChanged"
-                                            placeholder="&#8212;">
+                                            dynamic-align
+                                            hide-search
+                                            allow-outside-scroll>
                                     </etools-searchable-multiselection-menu>
                                 </template>
 

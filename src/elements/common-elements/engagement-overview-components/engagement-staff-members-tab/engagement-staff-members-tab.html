@@ -35,13 +35,13 @@
 
         <div class="search-input-container">
             <paper-input
-                    class$="search-input [[_getSearchInputClass(searchString)]]"
                     id="searchInput"
+                    class$="search-input [[_getSearchInputClass(searchString)]]"
                     value="{{searchString}}"
                     hidden$="[[!_showPagination(datalength)]]"
+                    placeholder="Search"
                     on-blur="searchBlur"
-                    on-input="_searchChanged"
-                    placeholder="Search">
+                    on-input="_searchChanged">
                 <iron-icon prefix icon="search"></iron-icon>
             </paper-input>
         </div>
@@ -109,19 +109,19 @@
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.email)}}">
                             <!-- Email address -->
                             <paper-input
-                                    label="E-mail address"
-                                    value="{{editedItem.user.email}}"
-                                    placeholder="Enter E-mail"
-                                    maxlength="45"
+                                    id="emailInput"
                                     class$="validate-input {{_setRequired('user.email', staffsBase)}} email"
+                                    value="{{editedItem.user.email}}"
+                                    label="E-mail address"
+                                    placeholder="Enter E-mail"
                                     required="{{_setRequired('user.email', staffsBase)}}"
                                     disabled="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
                                     readonly$="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
-                                    on-focus="_resetFieldError"
-                                    on-blur="_checkEmail"
-                                    id="emailInput"
+                                    maxlength="45"
                                     invalid="{{errors.user.email}}"
-                                    error-message="{{errors.user.email}}">
+                                    error-message="{{errors.user.email}}"
+                                    on-focus="_resetFieldError"
+                                    on-blur="_checkEmail">
                                 <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
 
@@ -131,16 +131,16 @@
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.first_name)}}">
                             <!-- First Name -->
                             <paper-input
-                                    label="First Name"
-                                    value="{{editedItem.user.first_name}}"
-                                    placeholder="Enter First Name"
                                     class$="validate-input {{_setRequired('user.first_name', staffsBase)}}"
-                                    maxlength="30"
+                                    value="{{editedItem.user.first_name}}"
+                                    label="First Name"
+                                    placeholder="Enter First Name"
                                     required="{{_setRequired('user.first_name', staffsBase)}}"
-                                    invalid="{{errors.user.first_name}}"
-                                    error-message="{{errors.user.first_name}}"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
+                                    maxlength="30"
+                                    invalid="{{errors.user.first_name}}"
+                                    error-message="{{errors.user.first_name}}"
                                     on-focus="_resetFieldError">
                             </paper-input>
                         </div>
@@ -148,16 +148,16 @@
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.last_name)}}">
                             <!-- Last Name -->
                             <paper-input
-                                    label="Last Name"
-                                    value="{{editedItem.user.last_name}}"
-                                    placeholder="Enter Last Name"
-                                    maxlength="30"
                                     class$="validate-input {{_setRequired('user.last_name', staffsBase)}}"
+                                    value="{{editedItem.user.last_name}}"
+                                    label="Last Name"
+                                    placeholder="Enter Last Name"
                                     required="{{_setRequired('user.last_name', staffsBase)}}"
-                                    invalid="{{errors.user.last_name}}"
-                                    error-message="{{errors.user.last_name}}"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
+                                    maxlength="30"
+                                    invalid="{{errors.user.last_name}}"
+                                    error-message="{{errors.user.last_name}}"
                                     on-focus="_resetFieldError">
                             </paper-input>
                         </div>
@@ -166,17 +166,17 @@
                     <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.job_title)}}">
                         <!-- Position -->
                         <paper-input
-                                label="Position"
-                                value="{{editedItem.user.profile.job_title}}"
-                                placeholder="Enter Position"
-                                maxlength="45"
-                                on-focus="_resetFieldError"
                                 class$="validate-input {{_setRequired('user.profile.job_title', staffsBase)}}"
+                                value="{{editedItem.user.profile.job_title}}"
+                                label="Position"
+                                placeholder="Enter Position"
+                                required="{{_setRequired('user.profile.job_title', staffsBase)}}"
                                 disabled="{{requestInProcess}}"
                                 readonly$="{{requestInProcess}}"
-                                required="{{_setRequired('user.profile.job_title', staffsBase)}}"
+                                maxlength="45"
                                 invalid="{{errors.profile.job_title}}"
-                                error-message="{{errors.profile.job_title}}">
+                                error-message="{{errors.profile.job_title}}"
+                                on-focus="_resetFieldError">
                         </paper-input>
                     </div>
 
@@ -184,17 +184,17 @@
                         <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.phone_number)}}">
                             <!-- Phone number -->
                             <paper-input
-                                    label="Phone number"
+                                    class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
                                     value="{{editedItem.user.profile.phone_number}}"
                                     allowed-pattern="[\d\s-]"
+                                    label="Phone number"
                                     placeholder="Enter Phone"
-                                    maxlength="20"
-                                    class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
+                                    required="{{_setRequired('user.profile.phone_number', staffsBase)}}"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
+                                    maxlength="20"
                                     invalid="{{errors.user.profile.phone_number}}"
-                                    error-message="{{errors.user.profile.phone_number}}"
-                                    required="{{_setRequired('user.profile.phone_number', staffsBase)}}">
+                                    error-message="{{errors.user.profile.phone_number}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
                         </div>
@@ -204,12 +204,12 @@
                         <!--receive notification-->
                         <div class="staff-check-box notify-box input-container input-container-l">
                             <etools-checkable-input
-                                    checked="{{editedItem.hasAccess}}"
-                                    label="Has Access"
-                                    disabled="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
                                     type="checkbox"
-                                    label-alignment="right">
+                                    label="Has Access"
+                                    label-alignment="right"
+                                    checked="{{editedItem.hasAccess}}"
+                                    disabled="{{requestInProcess}}"
+                                    readonly="{{requestInProcess}}">
                             </etools-checkable-input>
                         </div>
                     </div>

@@ -59,22 +59,22 @@
                         <div class="input-container input-container-l">
                             <!-- Category of Observation -->
                             <etools-searchable-multiselection-menu
-                                    options="[[categoryOfObservation]]"
                                     class$="disabled-as-readonly validate-input [[_setRequired('findings.category_of_observation', basePermissionPath)]]"
+                                    value="{{editedItem.category_of_observation}}"
+                                    label="[[getLabel('findings.category_of_observation', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]"
+                                    options="[[categoryOfObservation]]"
+                                    custom-object-options
+                                    option-label="display_name"
+                                    option-value="value"
+                                    update-selected
                                     required$="[[_setRequired('findings.category_of_observation', basePermissionPath)]]"
                                     disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
-                                    hide-search
                                     invalid="{{errors.category_of_observation}}"
                                     error-message="{{errors.category_of_observation}}"
                                     on-focus="_resetFieldError"
-                                    label="[[getLabel('findings.category_of_observation', basePermissionPath)]]"
-                                    option-value="value"
-                                    option-label="display_name"
-                                    custom-object-options
-                                    value="{{editedItem.category_of_observation}}"
-                                    update-selected
-                                    placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]">
+                                    hide-search>
                             </etools-searchable-multiselection-menu>
                         </div>
                     </div>
@@ -83,19 +83,19 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea
-                                    label="[[getLabel('findings.recommendation', basePermissionPath)]]"
-                                    max-rows="4"
+                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
                                     value="{{editedItem.recommendation}}"
                                     allowed-pattern="[\d\s]"
-                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
+                                    label="[[getLabel('findings.recommendation', basePermissionPath)]]"
+                                    always-float-label
+                                    placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
+                                    required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
                                     disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
+                                    max-rows="4"
                                     invalid="{{errors.recommendation}}"
                                     error-message="{{errors.recommendation}}"
-                                    on-focus="_resetFieldError"
-                                    always-float-label
-                                    required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
-                                    placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]">
+                                    on-focus="_resetFieldError">
                             </paper-textarea>
                         </div>
                     </div>
@@ -104,19 +104,19 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea
-                                    label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
-                                    max-rows="4"
+                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
                                     value="{{editedItem.agreed_action_by_ip}}"
                                     allowed-pattern="[\d\s]"
-                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
+                                    label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
+                                    always-float-label
+                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]"
+                                    required$="{{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
                                     disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
+                                    max-rows="4"
                                     invalid="{{errors.agreed_action_by_ip}}"
                                     error-message="{{errors.agreed_action_by_ip}}"
-                                    on-focus="_resetFieldError"
-                                    always-float-label
-                                    required$="{{_setRequired('findings.agreed_action_by_ip', basePermissionPath)}}"
-                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]">
+                                    on-focus="_resetFieldError">
                             </paper-textarea>
                         </div>
                     </div>
@@ -125,27 +125,28 @@
                         <div class="input-container input-container-l">
                             <!-- Deadline of Action -->
                             <paper-input
-                                    label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
                                     id="deadlineAction"
                                     class$="disabled-as-readonly [[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
                                     value="[[prettyDate(editedItem.deadline_of_action)]]"
-                                    on-down="openDatePicker"
+                                    label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]"
                                     data-selector="deadlineActionSelector"
-                                    invalid="{{errors.deadline_of_action}}"
-                                    error-message="{{errors.deadline_of_action}}"
                                     required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
                                     disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.deadline_of_action}}"
+                                    error-message="{{errors.deadline_of_action}}"
                                     on-focus="_resetFieldError"
-                                    placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]">
+                                    on-down="openDatePicker">
                                 <etools-datepicker
-                                        prefix
-                                        modal="[[datepickerModal]]"
                                         id="deadlineActionSelector"
-                                        date="[[prepareDate(editedItem.deadline_of_action)]]"
+                                        modal="[[datepickerModal]]"
+                                        prefix
                                         format="YYYY-MM-DD"
+                                        date="[[prepareDate(editedItem.deadline_of_action)]]"
                                         pretty-date="{{editedItem.deadline_of_action}}"
-                                        no-init show-clear-btn>
+                                        no-init
+                                        show-clear-btn>
                                 </etools-datepicker>
                             </paper-input>
                         </div>

@@ -96,17 +96,25 @@
         <etools-content-panel class="totals"
                               panel-title$="OVERAL RISK RATING - [[getRating(questionnaire.risk_rating, riskRatingOptions)]]"
                               open="{{overalRiskOpen}}">
-            <div class="risk-score result-element"><span class="text">Total number of questions:</span><span
-                    class="value">[[getScore(questionnaire.blueprint_count)]]</span></div>
-            <div class="risk-score result-element"><span class="text">Total number of applicable questions:</span><span
-                    class="value">[[getScore(questionnaire.applicable_questions)]]</span></div>
-            <div class="risk-score result-element"><span
-                    class="text">Total number of applicable key questions:</span><span class="value">[[getScore(questionnaire.applicable_key_questions)]]</span>
+            <div class="risk-score result-element">
+                <span class="text">Total number of questions:</span>
+                <span class="value">[[getScore(questionnaire.blueprint_count)]]</span>
             </div>
-            <div class="risk-score result-element"><span class="text">Total number of risk points:</span><span
-                    class="value">[[getScore(questionnaire.total_number_risk_points)]]</span></div>
-            <div class="risk-rating result-element"><span class="text">Area risk rating:</span><span
-                    class$="value [[questionnaire.risk_rating]]">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span>
+            <div class="risk-score result-element">
+                <span class="text">Total number of applicable questions:</span>
+                <span class="value">[[getScore(questionnaire.applicable_questions)]]</span>
+            </div>
+            <div class="risk-score result-element">
+                <span class="text">Total number of applicable key questions:</span>
+                <span class="value">[[getScore(questionnaire.applicable_key_questions)]]</span>
+            </div>
+            <div class="risk-score result-element">
+                <span class="text">Total number of risk points:</span>
+                <span class="value">[[getScore(questionnaire.total_number_risk_points)]]</span>
+            </div>
+            <div class="risk-rating result-element">
+                <span class="text">Area risk rating:</span>
+                <span class$="value [[questionnaire.risk_rating]]">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span>
             </div>
         </etools-content-panel>
 
@@ -138,17 +146,18 @@
                             <!-- Risk Assessment -->
                             <etools-searchable-multiselection-menu
                                     id="riskAssessmentInput"
-                                    options="[[riskOptions]]"
                                     class="disabled-as-readonly required validate-input"
-                                    readonly="[[requestInProcess]]"
-                                    disabled="[[requestInProcess]]"
-                                    required hide-search
                                     value="{{_setRiskValue(editedItem.risk.value, riskOptions)}}"
-                                    error-message="This field is required"
-                                    invalid="{{riskAssessmentInvalid}}"
-                                    on-focus="_resetFieldError"
                                     label="Risk Assessment"
-                                    placeholder="Select Risk Assessment">
+                                    placeholder="Select Risk Assessment"
+                                    options="[[riskOptions]]"
+                                    required
+                                    disabled="[[requestInProcess]]"
+                                    readonly="[[requestInProcess]]"
+                                    invalid="{{riskAssessmentInvalid}}"
+                                    error-message="This field is required"
+                                    on-focus="_resetFieldError"
+                                    hide-search>
                             </etools-searchable-multiselection-menu>
                         </div>
                     </div>
@@ -157,16 +166,15 @@
                         <div class="input-container input-container-l comment-container">
                             <!-- Comments -->
                             <paper-textarea
-                                    label="Comments"
-                                    max-rows="4"
                                     id="riskAssessmentComments"
                                     class="disabled-as-readonly validate-input"
-                                    max-rows="4"
                                     value="{{editedItem.risk.extra.comments}}"
+                                    label="Comments"
                                     placeholder="Enter Comments"
-                                    on-focus="_resetFieldError"
+                                    disabled$="[[requestInProcess]]"
+                                    max-rows="4"
                                     error-message="This field is required"
-                                    disabled$="[[requestInProcess]]">
+                                    on-focus="_resetFieldError">
                             </paper-textarea>
                         </div>
                     </div>

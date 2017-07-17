@@ -4,33 +4,33 @@
 <dom-module id="ma-report-page-main">
     <template>
         <assign-engagement
+                id="assignEngagement"
                 data="{{engagement}}"
                 original-data="[[originalData]]"
                 error-object="{{errorObject}}"
                 audit-type="Micro Assessment"
-                base-permission-path="{{permissionBase}}"
-                id="assignEngagement">
+                base-permission-path="{{permissionBase}}">
         </assign-engagement>
 
         <primary-risk-element
-                risk-data="[[engagement.test_subject_areas.children.0]]"
                 id="primaryRisk"
+                risk-data="[[engagement.test_subject_areas.children.0]]"
                 dialog-opened="[[riskDialogOpened]]"
                 error-object="{{errorObject}}"
                 base-permission-path="{{permissionBase}}">
         </primary-risk-element>
 
         <key-internal-controls-tab
-                subject-areas="[[engagement.test_subject_areas]]"
                 id="internalControls"
+                subject-areas="[[engagement.test_subject_areas]]"
                 dialog-opened="{{riskDialogOpened}}"
                 error-object="{{errorObject}}"
                 base-permission-path="{{permissionBase}}">
         </key-internal-controls-tab>
 
         <control-findings-tab
-                data-items="{{engagement.findings}}"
                 id="controlFindings"
+                data-items="{{engagement.findings}}"
                 error-object="{{errorObject}}"
                 base-permission-path="{{permissionBase}}">
         </control-findings-tab>
