@@ -58,4 +58,4 @@ gulp.task('precommit', gulp.series('lint', 'test'));
 gulp.task('devup', gulp.series('devBuild', gulp.parallel('startServer', 'watch')));
 
 //Minify scripts, run prod server and watch changes
-gulp.task('default', gulp.series([ 'prodBuild', 'startServer' ]));
+gulp.task('default', gulp.series([ 'prodBuild']));
