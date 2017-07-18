@@ -33,7 +33,7 @@ function buildElements(done) {
             })
         ))
         // combine html/js/scss
-        .pipe(builder([`${process.cwd()}/src/bower_components/`]))
+        .pipe(builder([`${process.cwd()}/bower_components/`]))
         // compile html/js/scss
         .pipe(gulpIf(
             function(file) {

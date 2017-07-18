@@ -40,7 +40,7 @@
     "lodash": "4.17.4"
   },
   "devDependencies": {
-    "web-component-tester": "^4.0.0"
+    "web-component-tester": "^v6.0.0-prerelease.9"
   },
   "resolutions": {
     "lodash": "^4.17.4"
