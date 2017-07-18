@@ -41,7 +41,7 @@ const dependencies = require('./gulp-tasks/project-dependencies');
 gulp.task('watch', function () {
   gulp.watch(['./src/elements/**/*.*'], gulp.series(jsLinter, buildElements));
   gulp.watch(['./src/*.*', './src/assets/**/*.*'], gulp.series(copyAssets));
-  gulp.watch(['./src/bower_components/**/*.*'], gulp.series(copyBower));
+  gulp.watch(['./bower_components/**/*.*'], gulp.series(copyBower));
 });
 
 gulp.task('lint', gulp.series(jsLinter));
