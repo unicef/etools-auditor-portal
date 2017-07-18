@@ -57,11 +57,11 @@
                         <div class="input-container input-container-l">
                             <!-- Finding -->
                             <paper-input
-                                    class$="validate-input {{_setRequired('finding', basePermissionPath)}}"
+                                    class$="validate-input {{_setRequired('findings.finding', basePermissionPath)}}"
                                     value="{{editedItem.finding}}"
                                     label="[[getLabel('findings.finding', basePermissionPath)]]"
                                     placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
-                                    required="{{_setRequired('finding', basePermissionPath)}}"
+                                    required="{{_setRequired('findings.finding', basePermissionPath)}}"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
                                     maxlength="400"
@@ -76,12 +76,12 @@
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea
-                                    class$="validate-input {{_setRequired('recommendation', basePermissionPath)}}"
+                                    class$="validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
                                     value="{{editedItem.recommendation}}"
                                     allowed-pattern="[\d\s]"
                                     label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                                     placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                                    required="{{_setRequired('recommendation', basePermissionPath)}}"
+                                    required="{{_setRequired('findings.recommendation', basePermissionPath)}}"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
                                     max-rows="4"
