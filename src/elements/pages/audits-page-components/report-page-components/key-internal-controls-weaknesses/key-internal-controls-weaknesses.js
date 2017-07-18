@@ -7,7 +7,7 @@ Polymer({
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior,
-        APBehaviors.TextareaMaxRowsBehavior,
+        APBehaviors.TextareaMaxRowsBehavior
     ],
 
     properties: {
@@ -70,7 +70,12 @@ Polymer({
     ],
 
     ready: function() {
-        this.riskOptions = this.getData('riskOptions');
+        this.riskOptions = [
+            {label: 'None', value: 0},
+            {label: 'Low', value: 1},
+            {label: 'Medium', value: 2},
+            {label: 'High', value: 4}
+        ];
     },
 
     _updateCategory: function(data, riskOptions) {

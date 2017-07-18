@@ -137,7 +137,7 @@ Polymer({
 
         if (bool) {
             value = !!value;
-        } else if (!value) {
+        } else if (!value && isNaN(value)) {
             value = '--';
         }
 

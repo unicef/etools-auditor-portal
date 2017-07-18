@@ -162,54 +162,33 @@
                         <div class="input-container">
                             <!-- High risk -->
                             <paper-input
-                                    class$="validate-input disabled-as-readonly [[_setRequired('high_risk', basePermissionPath)]]"
-                                    value="{{editedItem.high_risk}}"
-                                    allowed-pattern="[\d]"
-                                    label$="[[getLabel('high_risk', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('high_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('high_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    maxlength="9"
-                                    invalid="{{errors.high_risk}}"
-                                    error-message="{{errors.high_risk}}"
-                                    on-focus="_resetFieldError">
+                                    class="disabled-as-readonly"
+                                    value="{{editedItem.key_internal_weakness.high_risk_count}}"
+                                    label$="[[getLabel('key_internal_weakness.high_risk_count', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('key_internal_weakness.high_risk_count', basePermissionPath)]]"
+                                    disabled readonly>
                             </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Medium risk -->
                             <paper-input
-                                    class$="validate-input disabled-as-readonly [[_setRequired('medium_risk', basePermissionPath)]]"
-                                    value="{{editedItem.medium_risk}}"
-                                    allowed-pattern="[\d]"
-                                    label$="[[getLabel('medium_risk', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('medium_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('medium_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    maxlength="9"
-                                    invalid="{{errors.medium_risk}}"
-                                    error-message="{{errors.medium_risk}}"
-                                    on-focus="_resetFieldError">
+                                    class="disabled-as-readonly"
+                                    value="{{editedItem.key_internal_weakness.medium_risk_count}}"
+                                    label$="[[getLabel('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
+                                    disabled readonly>
                             </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Low risk -->
                             <paper-input
-                                    class$="validate-input disabled-as-readonly [[_setRequired('low_risk', basePermissionPath)]]"
-                                    value="{{editedItem.low_risk}}"
-                                    allowed-pattern="[\d]"
-                                    label$="[[getLabel('low_risk', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('low_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('low_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    maxlength="9"
-                                    invalid="{{errors.low_risk}}"
-                                    error-message="{{errors.low_risk}}"
-                                    on-focus="_resetFieldError">
+                                    class="disabled-as-readonly"
+                                    value="{{editedItem.key_internal_weakness.low_risk_count}}"
+                                    label$="[[getLabel('key_internal_weakness.low_risk_count', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('key_internal_weakness.low_risk_count', basePermissionPath)]]"
+                                    disabled readonly>
                             </paper-input>
                         </div>
                     </div>

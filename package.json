@@ -43,6 +43,7 @@
     "yargs": "^5.0.0"
   },
   "dependencies": {
+    "express": "^4.15.3",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.2",
     "gulp-compile-html-tags": "^1.0.1",

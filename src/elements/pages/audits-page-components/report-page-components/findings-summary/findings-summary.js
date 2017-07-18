@@ -88,17 +88,17 @@ Polymer({
             }, {
                 'size': '60px',
                 'label': 'High Risk',
-                'path': 'high_risk',
+                'path': 'key_internal_weakness.high_risk_count',
                 'align': 'center'
             }, {
                 'size': '60px',
                 'label': 'Medium Risk',
-                'path': 'medium_risk',
+                'path': 'key_internal_weakness.medium_risk_count',
                 'align': 'center'
             }, {
                 'size': '60px',
                 'label': 'Low Risk',
-                'path': 'low_risk',
+                'path': 'key_internal_weakness.low_risk_count',
                 'align': 'center'
             }]
         }

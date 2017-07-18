@@ -47,7 +47,7 @@ gulp.task('watch', function () {
 gulp.task('lint', gulp.series(jsLinter));
 gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower), runTests));
 
-gulp.task('startServer', function () { nodemon({ script: 'server.js' }) });
+gulp.task('startServer', function () { nodemon({ script: 'express.js' }) });
 
 gulp.task('devBuild', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower)));
 gulp.task('prodBuild', gulp.series(clean.build, buildElements, project.merge(source, dependencies)));
