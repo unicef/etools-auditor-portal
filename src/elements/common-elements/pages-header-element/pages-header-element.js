@@ -5,6 +5,12 @@ Polymer({
 
     properties: {
         title: String,
+        engagement: {
+            type: Object,
+            value: function() {
+                return {};
+            }
+        },
         showAddButton: {
             type: Boolean,
             value: false

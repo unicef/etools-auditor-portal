@@ -25,30 +25,29 @@
         <check-user-existence email="{{newEmail}}" email-checking="{{emailChecking}}" errors="{{errors}}" organisation-id="[[organisationId]]"></check-user-existence>
         <!--end requests-->
 
-        <paper-icon-button
-                hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
-                title="Add"
-                on-tap="openAddDialog"
-                class="add-button"
-                icon="add-box">
-        </paper-icon-button>
-
-        <div class="search-input-container">
-            <paper-input
-                    id="searchInput"
-                    class$="search-input [[_getSearchInputClass(searchString)]]"
-                    value="{{searchString}}"
-                    hidden$="[[!_showPagination(datalength)]]"
-                    placeholder="Search"
-                    on-blur="searchBlur"
-                    on-input="_searchChanged">
-                <iron-icon prefix icon="search"></iron-icon>
-            </paper-input>
-        </div>
-
         <etools-content-panel
                 panel-title="Audit Team Members ([[_staffLength(datalength, dataItems.length, searchQuery)]])"
                 show-expand-btn>
+            <div slot="panel-btns">
+                <div class="search-input-container">
+                    <paper-input
+                            id="searchInput"
+                            class$="search-input [[_getSearchInputClass(searchString)]]"
+                            value="{{searchString}}"
+                            hidden$="[[!_showPagination(datalength)]]"
+                            placeholder="Search"
+                            on-blur="searchBlur"
+                            on-input="_searchChanged">
+                        <iron-icon prefix icon="search"></iron-icon>
+                    </paper-input>
+                </div>
+                <paper-icon-button
+                        hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
+                        title="Add"
+                        on-tap="openAddDialog"
+                        icon="add-box">
+                </paper-icon-button>
+            </div>
             <div class="panel-content group">
                 <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading"></etools-loading>
 
