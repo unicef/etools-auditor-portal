@@ -23,4 +23,4 @@ RUN bower --allow-root install
 RUN gulp prodBuild
 
 EXPOSE 8080
-CMD ["gulp", "startServer"]
+CMD ["node", "express.js"]
