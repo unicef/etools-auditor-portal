@@ -42,7 +42,7 @@ module.exports = function testElements(done) {
         });
 
         tests.stderr.on('data', (data) => {
-            console.log(data);
+            console.log(`${data}`);
             withErrors = true;
         });
 
