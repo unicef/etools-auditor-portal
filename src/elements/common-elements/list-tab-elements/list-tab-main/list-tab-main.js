@@ -79,7 +79,7 @@ Polymer({
             }
         });
 
-        if (this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
+        if (this.queryParams && this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
     },
 
     _paramsChanged: function(newParams) {
