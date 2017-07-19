@@ -9,17 +9,19 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './summary-findings-element.scss'-->
 
-        <paper-icon-button
-                hidden$="[[!_canBeChanged(basePermissionPath)]]"
-                title="Add"
-                on-tap="openAddDialog"
-                class="add-button"
-                icon="add-box">
-        </paper-icon-button>
-
         <etools-content-panel
                 class="content-section clearfx"
                 panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations">
+
+            <div slot="panel-btns">
+                <paper-icon-button
+                        hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                        title="Add"
+                        on-tap="openAddDialog"
+                        icon="add-box">
+                </paper-icon-button>
+            </div>
+
             <list-header no-ordered data="[[columns]]"></list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showFindings">
