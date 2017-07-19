@@ -19,8 +19,7 @@ Polymer({
         },
         orderBy: {
             type: String,
-            value: '',
-            observer: '_orderChanged'
+            value: ''
         },
         listLength: Number,
         data: {
@@ -41,6 +40,10 @@ Polymer({
             type: Boolean,
             value: false
         },
+        headings: {
+            type: Array,
+            value: []
+        },
         details: {
             type: Array,
             value: function() {
@@ -52,6 +55,10 @@ Polymer({
             value: false
         }
     },
+
+    observers: [
+        '_orderChanged(orderBy, headings)'
+    ],
 
     _orderChanged: function(newOrder) {
         if (!newOrder || !(this.headings instanceof Array)) { return false; }
@@ -72,7 +79,7 @@ Polymer({
             }
         });
 
-        if (this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
+        if (this.queryParams && this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
     },
 
     _paramsChanged: function(newParams) {
