@@ -129,8 +129,7 @@
             let listHeadings = [{
                 'size': 15,
                 'label': 'Unique ID #',
-                //TODO: change ordering
-                'name': 'agreement__order_number',
+                'name': 'unique_id',
                 'link': '*engagement_type*/*data_id*/overview',
                 'ordered': false,
                 'path': 'unique_id'

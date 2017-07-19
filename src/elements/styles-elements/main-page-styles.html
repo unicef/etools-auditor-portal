@@ -36,7 +36,11 @@
                         color: var(--module-primary);
                         font-size: 14px;
                         font-weight: bold;
-                        text-transform: uppercase;
+
+
+                        span {
+                            text-transform: uppercase;
+                        }
                     }
 
                     .tab-content {
@@ -94,6 +98,12 @@
                     padding: 2px;
                     background-color: var(--module-error);
                 }'};
+            }
+            paper-tab {
+                margin-right: 10px;
+                --paper-tab-content: #{'{
+                    width: auto;
+                }'}
             }
         </style>
     </template>
