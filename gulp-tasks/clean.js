@@ -38,7 +38,15 @@ function fullClean() {
   );
 }
 
+function cleanBowerInSrc() {
+    return del(
+        ['./src/bower_components'],
+        {force: true}
+    );
+}
+
 module.exports = {
-  build: clean,
-  fullBuild: fullClean
+    build: clean,
+    fullBuild: fullClean,
+    bowerInSrc: cleanBowerInSrc
 };
