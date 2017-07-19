@@ -1,6 +1,8 @@
-<!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu, paper-input]-->
-<!--import [list-header, list-element, paper-toast, lodash]-->
-<!--import [tab-inputs-styles, module-styles, shared-styles, dialog-element, table-elements-behavior, static-data-behavior, common-methods-behavior]-->
+<!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
+            paper-input, paper-toast, lodash]-->
+
+<!--import [list-header, list-element, tab-inputs-styles, module-styles, shared-styles, dialog-element,
+            table-elements-behavior, static-data-behavior, common-methods-behavior]-->
 
 <dom-module id="findings-summary">
     <template>
@@ -23,10 +25,11 @@
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Summary of audit findings">
-            <list-header id="list-header"
-                         no-additional
-                         no-ordered
-                         data="[[headerColumns]]">
+            <list-header
+                    id="list-header"
+                    no-additional
+                    no-ordered
+                    data="[[headerColumns]]">
             </list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
@@ -42,53 +45,57 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element opened="{{dialogOpened}}" dialog-title="[[dialogTitle]]" confirm-btn-text="[[confirmBtnText]]" request-in-process="[[requestInProcess]]">
+        <dialog-element
+                opened="{{dialogOpened}}"
+                dialog-title="[[dialogTitle]]"
+                confirm-btn-text="[[confirmBtnText]]"
+                request-in-process="[[requestInProcess]]">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
                         <div class="input-container" title$="{{editedItem.partner.name}}">
                             <!-- Implementing partner name -->
                             <paper-input
+                                    class="validate-input disabled-as-readonly"
+                                    value="{{editedItem.partner.name}}"
                                     label$="[[getLabel('partner.name', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('partner.name', basePermissionPath)]]"
-                                    value="{{editedItem.partner.name}}"
-                                    class="validate-input disabled-as-readonly"
-                                    readonly
-                                    disabled>
+                                    disabled
+                                    readonly>
                             </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Audited expenditure (USD) -->
                             <etools-currency-amount-input
+                                    class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure', basePermissionPath)]]"
+                                    value="{{editedItem.audited_expenditure}}"
+                                    currency="$"
                                     label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('audited_expenditure', basePermissionPath)]]"
-                                    currency="$"
-                                    value="{{editedItem.audited_expenditure}}"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure', basePermissionPath)]]"
                                     required$="[[_setRequired('audited_expenditure', basePermissionPath)]]"
                                     disabled$="[[requestInProcess]]"
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.audited_expenditure}}"
-                                    error-message="{{errors.audited_expenditure}}">
+                                    error-message="{{errors.audited_expenditure}}"
+                                    on-focus="_resetFieldError">
                             </etools-currency-amount-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Financial findings (USD) -->
                             <etools-currency-amount-input
+                                    class$="validate-input disabled-as-readonly [[_setRequired('financial_findings', basePermissionPath)]]"
+                                    value="{{editedItem.financial_findings}}"
+                                    currency="$"
                                     label$="[[getLabel('financial_findings', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('financial_findings', basePermissionPath)]]"
-                                    currency="$"
-                                    value="{{editedItem.financial_findings}}"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('financial_findings', basePermissionPath)]]"
                                     disabled$="[[requestInProcess]]"
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.financial_findings}}"
-                                    error-message="{{errors.financial_findings}}">
+                                    error-message="{{errors.financial_findings}}"
+                                    on-focus="_resetFieldError">
                             </etools-currency-amount-input>
                         </div>
                     </div>
@@ -97,55 +104,54 @@
                         <div class="input-container">
                             <!-- % of audited expenditure -->
                             <etools-currency-amount-input
+                                    class$="validate-input disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
+                                    value="{{editedItem.percent_of_audited_expenditure}}"
+                                    currency=""
                                     label$="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
-                                    currency=""
-                                    value="{{editedItem.percent_of_audited_expenditure}}"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
                                     required$="[[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
                                     disabled$="[[requestInProcess]]"
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.percent_of_audited_expenditure}}"
-                                    error-message="{{errors.percent_of_audited_expenditure}}">
+                                    error-message="{{errors.percent_of_audited_expenditure}}"
+                                    on-focus="_resetFieldError">
                             </etools-currency-amount-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Audit opinion -->
                             <etools-searchable-multiselection-menu
+                                    class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
+                                    value="{{editedItem.opinion}}"
                                     label$="[[getLabel('audit_opinion', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
-                                    error-message="This field is required"
                                     options="[[auditOpinions]]"
-                                    hide-search
                                     custom-object-options
-                                    option-value="value"
                                     option-label="display_name"
-                                    value="{{editedItem.opinion}}"
-                                    on-value-change="_changeAuditOpinion"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
+                                    option-value="value"
                                     required$="[[_setRequired('audit_opinion', basePermissionPath)]]"
                                     disabled$="[[requestInProcess]]"
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.audit_opinion}}"
-                                    error-message="{{errors.audit_opinion}}">
+                                    error-message="{{errors.audit_opinion}}"
+                                    on-focus="_resetFieldError"
+                                    on-value-change="_changeAuditOpinion"
+                                    hide-search>
                             </etools-searchable-multiselection-menu>
                         </div>
 
                         <div class="input-container">
                             <!-- Number of financial findings -->
                             <paper-input
-                                    label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     value="{{editedItem.number_of_financial_findings}}"
                                     allowed-pattern="[\d]"
-                                    maxlength="9"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
+                                    label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
                                     required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     disabled
                                     readonly
+                                    maxlength="9"
                                     invalid="{{errors.number_of_financial_findings}}"
                                     error-message="{{errors.number_of_financial_findings}}">
                             </paper-input>
@@ -156,54 +162,33 @@
                         <div class="input-container">
                             <!-- High risk -->
                             <paper-input
-                                    label$="[[getLabel('high_risk', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('high_risk', basePermissionPath)]]"
-                                    value="{{editedItem.high_risk}}"
-                                    allowed-pattern="[\d]"
-                                    maxlength="9"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('high_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('high_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    invalid="{{errors.high_risk}}"
-                                    error-message="{{errors.high_risk}}">
+                                    class="disabled-as-readonly"
+                                    value="{{editedItem.key_internal_weakness.high_risk_count}}"
+                                    label$="[[getLabel('key_internal_weakness.high_risk_count', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('key_internal_weakness.high_risk_count', basePermissionPath)]]"
+                                    disabled readonly>
                             </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Medium risk -->
                             <paper-input
-                                    label$="[[getLabel('medium_risk', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('medium_risk', basePermissionPath)]]"
-                                    value="{{editedItem.medium_risk}}"
-                                    allowed-pattern="[\d]"
-                                    maxlength="9"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('medium_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('medium_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    invalid="{{errors.medium_risk}}"
-                                    error-message="{{errors.medium_risk}}">
+                                    class="disabled-as-readonly"
+                                    value="{{editedItem.key_internal_weakness.medium_risk_count}}"
+                                    label$="[[getLabel('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
+                                    disabled readonly>
                             </paper-input>
                         </div>
 
                         <div class="input-container">
                             <!-- Low risk -->
                             <paper-input
-                                    label$="[[getLabel('low_risk', basePermissionPath)]]"
-                                    placeholder$="[[getPlaceholderText('low_risk', basePermissionPath)]]"
-                                    value="{{editedItem.low_risk}}"
-                                    allowed-pattern="[\d]"
-                                    maxlength="9"
-                                    on-focus="_resetFieldError"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('low_risk', basePermissionPath)]]"
-                                    required$="[[_setRequired('low_risk', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    invalid="{{errors.low_risk}}"
-                                    error-message="{{errors.low_risk}}">
+                                    class="disabled-as-readonly"
+                                    value="{{editedItem.key_internal_weakness.low_risk_count}}"
+                                    label$="[[getLabel('key_internal_weakness.low_risk_count', basePermissionPath)]]"
+                                    placeholder$="[[getPlaceholderText('key_internal_weakness.low_risk_count', basePermissionPath)]]"
+                                    disabled readonly>
                             </paper-input>
                         </div>
                     </div>

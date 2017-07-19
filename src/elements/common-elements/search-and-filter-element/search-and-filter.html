@@ -1,6 +1,7 @@
-<!--import [polymer, paper-input, paper-card, iron-icon, etools-searchable-multiselection-menu,
-            paper-menu-button, paper-button, paper-menu,
-            shared-styles, module-styles, tab-inputs-styles, iron-flex-layout, query-params-controller]-->
+<!--import [polymer, paper-input, paper-card, iron-icon, etools-searchable-multiselection-menu, paper-menu-button,
+            paper-button, paper-menu, iron-flex-layout]-->
+
+<!--import [shared-styles, module-styles, tab-inputs-styles, query-params-controller]-->
 
 <dom-module id="search-and-filter">
     <template>
@@ -8,49 +9,46 @@
          <!--inject styles './search-and-filter.scss'-->
 
         <paper-card class="second-header horizontal layout center">
-
             <div class="flex horizontal layout wrap">
                 <div class="layout horizontal search-input-container">
                     <paper-input
-                            inline
-                            label="[[searchLabel]]"
                             value="{{searchString}}"
-                            on-keydown="searchKeyDown">
+                            label="[[searchLabel]]"
+                            on-keydown="searchKeyDown"
+                            inline>
 
                         <iron-icon icon="search" prefix></iron-icon>
                     </paper-input>
                 </div>
+
                 <!-- FILTERS -->
                 <template is="dom-repeat" items="[[usedFilters]]">
-
                     <div class="layout horizontal">
-
-                        <etools-searchable-multiselection-menu class="filter-dropdown"
-                                                               id="[[item.query]]"
-                                                               label="[[item.label]]"
-                                                               hide-search="[[item.hideSearch]]"
-                                                               options="[[item.selection]]"
-                                                               custom-object-options
-                                                               value="[[item.value]]"
-                                                               option-label="[[item.optionLabel]]"
-                                                               option-value="[[item.optionValue]]"
-                                                               on-value-change="_changeFilterValue"
-                                                               placeholder$="Select [[item.name]]">
+                        <etools-searchable-multiselection-menu
+                                id="[[item.query]]"
+                                class="filter-dropdown"
+                                value="[[item.value]]"
+                                label="[[item.label]]"
+                                placeholder$="Select [[item.name]]"
+                                options="[[item.selection]]"
+                                custom-object-options
+                                option-label="[[item.optionLabel]]"
+                                option-value="[[item.optionValue]]"
+                                on-value-change="_changeFilterValue"
+                                hide-search="[[item.hideSearch]]">
                         </etools-searchable-multiselection-menu>
 
                         <div class="filter-reset-button" on-click="removeFilter">×</div>
                     </div>
                 </template>
-
             </div>
 
             <!-- ADD FILTERS -->
             <div id="add-filter-container">
-
                 <paper-menu-button horizontal-align="right" vertical-align="top" no-overlap>
-
                     <paper-button class="dropdown-trigger">
                         <iron-icon icon="filter-list" class="filter-list-icon"></iron-icon>
+
                         <span class="add-filter-text">ADD FILTER</span>
                     </paper-button>
 
@@ -61,9 +59,7 @@
                     </paper-menu>
                 </paper-menu-button>
             </div>
-
         </paper-card>
-
     </template>
 
     <!-- inject scripts './search-and-filter.js'-->

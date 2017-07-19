@@ -1,21 +1,21 @@
-<!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel, static-data-behavior]-->
-<!--import [tab-inputs-styles, module-styles, shared-styles, table-elements-behavior]-->
+<!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel]-->
+<!--import [tab-inputs-styles, module-styles, shared-styles, table-elements-behavior, static-data-behavior]-->
 
 <dom-module id="file-attachments-tab">
     <template>
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
-        <paper-icon-button
-                hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
-                disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
-                title="Add"
-                on-tap="openAddDialog"
-                class="add-button"
-                icon="add-box">
-        </paper-icon-button>
-
         <etools-content-panel class="content-section clearfix" panel-title="[[title]]">
+            <div slot="panel-btns">
+                <paper-icon-button
+                        hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                        disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                        title="Add"
+                        on-tap="openAddDialog"
+                        icon="add-box">
+                </paper-icon-button>
+            </div>
             <list-header
                     id="list-header"
                     no-additional
@@ -31,6 +31,7 @@
                         headings="[[headings]]">
                     <div slot="custom">
                         <iron-icon icon="icons:attachment" class="download-icon"></iron-icon>
+
                         <a class="truncate"
                            href$="[[item.file]]"
                            download$="[[item.file_name]]"
@@ -42,6 +43,7 @@
 
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+
                         <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
                     </div>
                 </list-element>
@@ -78,21 +80,21 @@
                                     <etools-searchable-multiselection-menu
                                             id="fileType"
                                             class="validate-input disabled-as-readonly"
+                                            value="{{editedItem.type}}"
                                             label="[[fileTypesLabel]]"
                                             placeholder="&#8212;"
                                             options="[[fileTypes]]"
-                                            hide-search
                                             custom-object-options
-                                            option-value="value"
                                             option-label="display_name"
-                                            value="{{editedItem.type}}"
-                                            on-value-change="_setFileType"
-                                            on-focus="_resetFieldError"
+                                            option-value="value"
+                                            required$="[[fileTypeRequired]]"
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
-                                            required$="[[fileTypeRequired]]"
                                             invalid="{{errors.file_type}}"
-                                            error-message="{{errors.file_type}}">
+                                            error-message="{{errors.file_type}}"
+                                            on-focus="_resetFieldError"
+                                            on-value-change="_setFileType"
+                                            hide-search>
                                     </etools-searchable-multiselection-menu>
                             </div>
                         </div>
@@ -104,8 +106,8 @@
                                 <!-- File Upload -->
                                 <paper-input-container
                                         class="validate-input"
-                                        always-float-label
                                         title="[[uploadLabel]]"
+                                        always-float-label
                                         disabled$="[[requestInProcess]]"
                                         readonly$="[[requestInProcess]]"
                                         invalid="{{errors.file}}">
@@ -124,11 +126,11 @@
                                             id="fileInput"
                                             class="validate-input"
                                             type="file"
+                                            hidden
+                                            required
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
-                                            on-change="_fileSelected"
-                                            hidden
-                                            required>
+                                            on-change="_fileSelected">
                                 </paper-input-container>
                             </div>
                         </div>

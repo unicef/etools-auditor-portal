@@ -34,7 +34,7 @@ Polymer({
                     {
                         'size': 100,
                         'label': 'Description of Finding',
-                        'name': 'finding'
+                        'path': 'finding'
                     }
                 ];
             }
@@ -73,7 +73,7 @@ Polymer({
 
     listeners: {
         'dialog-confirmed': '_addItemFromDialog',
-        'delete-confirmed': 'removeItem',
+        'delete-confirmed': 'removeItem'
     },
 
     observers: [

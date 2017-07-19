@@ -99,5 +99,4 @@ Polymer({
         }
         return true;
     }
-
 });

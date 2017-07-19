@@ -1,17 +1,18 @@
-<!--import [polymer, app-route/app-location, app-route, app-layout, app-main-header, app-sidebar-menu, paper-icon-button,
-             multi-notification-list, paper-material, iron-selector, iron-pages, iron-collapse, iron-icons, iron-icons/social-icons,
-             etools-loading/etools-loading-behavior, permission-controller, iron-icons/av-icons]-->
+<!--import [polymer, app-route/app-location, app-route, app-layout, paper-icon-button, paper-material, iron-selector,
+            iron-pages, iron-collapse, iron-icons, iron-icons/social-icons, etools-loading/etools-loading-behavior,
+            iron-icons/av-icons]-->
 
-<!--import [etools-app-config, user-data, countries-data, side-bar-item, countries-dropdown, static-data]-->
-<!--import [shared-styles, page-layout-styles, app-theme]-->
+<!--import [app-main-header, app-sidebar-menu, multi-notification-list, permission-controller, etools-app-config,
+            user-data, countries-data, side-bar-item, countries-dropdown, static-data, shared-styles,
+            page-layout-styles, app-theme]-->
 
 <dom-module id="app-shell">
-
     <template>
         <!-- inject styles './app-shell.scss'-->
         <style include="page-layout-styles shared-styles"></style>
 
         <static-data></static-data>
+
         <user-data user="{{user}}"></user-data>
 
         <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
@@ -21,59 +22,63 @@
                 pattern="[[baseUrl]]:page"
                 data="{{routeData}}"
                 query-params="{{queryParams}}"
-                tail="{{subroute}}"></app-route>
+                tail="{{subroute}}">
+        </app-route>
 
         <etools-loading id="global-loading" absolute></etools-loading>
 
         <app-drawer-layout id="layout" opened-when-narrow force-narrow narrow="{{narrow}}">
-
             <!-- Drawer content -->
             <app-drawer id="drawer" transition-duration="350" disable-swipe>
-
                 <app-sidebar-menu page="[[page]]"></app-sidebar-menu>
-
             </app-drawer>
 
             <!-- Main content -->
-
             <app-header id="header" fixed shadow>
                 <app-main-header user="[[user]]"></app-main-header>
             </app-header>
 
-            <iron-pages id="pages"
-                        selected="[[page]]"
-                        attr-for-selected="name"
-                        fallback-selection="not-found"
-                        role="main">
+            <iron-pages
+                    id="pages"
+                    selected="[[page]]"
+                    attr-for-selected="name"
+                    fallback-selection="not-found"
+                    role="main">
 
-                <engagements-page-main name="engagements"
-                                       id="engagements"
-                                       route="{{subroute}}"
-                                       query-params="{{queryParams}}"></engagements-page-main>
+                <engagements-page-main
+                        name="engagements"
+                        id="engagements"
+                        route="{{subroute}}"
+                        query-params="{{queryParams}}">
+                </engagements-page-main>
 
-                <audits-page-main name="audits"
-                                       id="audits"
-                                       route="{{subroute}}"
-                                       query-params="{{queryParams}}"></audits-page-main>
+                <audits-page-main
+                        name="audits"
+                        id="audits"
+                        route="{{subroute}}"
+                        query-params="{{queryParams}}">
+                </audits-page-main>
 
-                <micro-assessments-page-main name="micro-assessments"
-                                       id="micro-assessments"
-                                       route="{{subroute}}"
-                                       query-params="{{queryParams}}"></micro-assessments-page-main>
+                <micro-assessments-page-main
+                        name="micro-assessments"
+                        id="micro-assessments"
+                        route="{{subroute}}"
+                        query-params="{{queryParams}}">
+                </micro-assessments-page-main>
 
-                <spot-checks-page-main name="spot-checks"
-                                  id="spot-checks"
-                                  route="{{subroute}}"
-                                  query-params="{{queryParams}}"></spot-checks-page-main>
+                <spot-checks-page-main
+                        name="spot-checks"
+                        id="spot-checks"
+                        route="{{subroute}}"
+                        query-params="{{queryParams}}">
+                </spot-checks-page-main>
 
                 <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
             </iron-pages>
 
             <multi-notification-list></multi-notification-list>
         </app-drawer-layout>
-
     </template>
 
     <!-- inject scripts './app-shell.js'-->
-
 </dom-module>

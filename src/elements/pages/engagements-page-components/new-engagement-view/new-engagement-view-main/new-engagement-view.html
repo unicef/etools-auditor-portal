@@ -9,14 +9,23 @@
         <style include="shared-styles module-styles main-page-styles"></style>
 
         <app-location path="{{path}}"></app-location>
+
         <app-route
                 route="{{route}}"
                 pattern="/:tab"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}">
+        </app-route>
 
-        <add-new-engagement new-engagement-data="{{newEngagementData}}" error-object="{{errorObject}}"></add-new-engagement>
+        <add-new-engagement
+                new-engagement-data="{{newEngagementData}}"
+                error-object="{{errorObject}}">
+        </add-new-engagement>
 
-        <pages-header-element hide-print-button title="Add New Engagement" engagement="[[engagement]]"></pages-header-element>
+        <pages-header-element
+                hide-print-button
+                title="Add New Engagement"
+                engagement="[[engagement]]">
+        </pages-header-element>
 
         <div class="tab-selector">
             <paper-tabs attr-for-selected="name" noink="" bottom-item="" role="tablist" tabindex="0" selected="{{routeData.tab}}">
@@ -27,49 +36,58 @@
 
         <div class="view-container">
             <div id="pageContent">
-                <iron-pages id="info-tabs"
-                            selected="{{routeData.tab}}"
-                            attr-for-selected="name">
-
+                <iron-pages
+                        id="info-tabs"
+                        selected="{{routeData.tab}}"
+                        attr-for-selected="name">
                     <div name="overview">
-                        <engagement-info-details error-object="{{errorObject}}" data="{{engagement}}" id="engagementDetails" base-permission-path="new_engagement"></engagement-info-details>
+                        <engagement-info-details
+                                error-object="{{errorObject}}"
+                                data="{{engagement}}"
+                                id="engagementDetails"
+                                base-permission-path="new_engagement">
+                        </engagement-info-details>
 
-                        <partner-details-tab id="partnerDetails" error-object="{{errorObject}}" engagement="{{engagement}}" base-permission-path="new_engagement"></partner-details-tab>
+                        <partner-details-tab
+                                id="partnerDetails"
+                                error-object="{{errorObject}}"
+                                engagement="{{engagement}}"
+                                base-permission-path="new_engagement">
+                        </partner-details-tab>
 
-                        <engagement-staff-members-tab id="staffMembers"
-                                                      error-object="{{errorObject}}"
-                                                      save-with-button
-                                                      engagement="[[engagement]]"
-                                                      base-permission-path="new_engagement"></engagement-staff-members-tab>
-
+                        <engagement-staff-members-tab
+                                id="staffMembers"
+                                error-object="{{errorObject}}"
+                                save-with-button
+                                engagement="[[engagement]]"
+                                base-permission-path="new_engagement">
+                        </engagement-staff-members-tab>
                     </div>
 
                     <div name="attachments">
-                        <file-attachments-tab title="Attachments"
-                                              id="engagement_attachments"
-                                              base-permission-path="new_engagement"
-                                              main-property="engagement_attachments"
-                                              error-object="{{errorObject}}"
-                                              data-items="[[engagement.engagement_attachments]]"
-                                              file-types="[[fileTypes]]"
-                                              readonly$="[[_attachmentsReadonly()]]"
-                                              file-type-required
-                                              allow-download
-                                              allow-edit
-                                              save-with-button
-                                              multiple>
+                        <file-attachments-tab
+                                id="engagement_attachments"
+                                title="Attachments"
+                                base-permission-path="new_engagement"
+                                main-property="engagement_attachments"
+                                error-object="{{errorObject}}"
+                                data-items="[[engagement.engagement_attachments]]"
+                                file-types="[[fileTypes]]"
+                                readonly$="[[_attachmentsReadonly()]]"
+                                file-type-required
+                                allow-download
+                                allow-edit
+                                save-with-button
+                                multiple>
                         </file-attachments-tab>
                     </div>
-
                 </iron-pages>
-
             </div>
 
             <div id="sidebar">
                 <status-tab-element engagement-data="[[engagement]]" main-action-text="Save"></status-tab-element>
             </div>
         </div>
-
     </template>
 
     <!-- inject scripts './new-engagement-view.js'-->

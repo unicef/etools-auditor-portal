@@ -12,31 +12,19 @@
         }
     }
 
-
-    .add-button {
-        position: absolute;
-        right: 15px;
-        top: 4px;
-        width: 40px;
-        height: 40px;
-        color: rgba(255, 255, 255, 0.7);
-        z-index: 10;
-    }
-
     .search-input-container {
         position: absolute;
         right: 55px;
         height: 48px;
         color: #ffffff;
         overflow: hidden;
-        z-index: 10;
 
         .search-input {
             width: 5%;
             float: right;
             box-sizing: border-box;
             min-width: 46px;
-            margin-top: -13px;
+            margin-top: -19px;
 
             &[focused] {
                 width: 100%;
@@ -132,14 +120,14 @@
 
 etools-content-panel {
      --ecp-content: #{'{
-            padding: 0;
-        }'};
+        padding: 0;
+    }'};
  }
 
 list-pagination {
-    --list-pagination-styles: #{'
+    --list-pagination-styles: #{'{
         margin-bottom: -8px;
-    '};
+    }'};
 }
 
 etools-loading {

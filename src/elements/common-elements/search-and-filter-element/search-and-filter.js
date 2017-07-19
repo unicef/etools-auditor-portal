@@ -3,7 +3,11 @@
 (function() {
     Polymer({
         is: 'search-and-filter',
-        behaviors: [APBehaviors.QueryParamsController],
+
+        behaviors: [
+            APBehaviors.QueryParamsController
+        ],
+
         properties: {
             filters: {
                 type: Array,
@@ -32,6 +36,7 @@
                 notify: true
             }
         },
+
         observers: [
             '_restoreFilters(queryParams.*)'
         ],

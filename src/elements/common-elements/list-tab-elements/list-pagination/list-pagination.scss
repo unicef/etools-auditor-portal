@@ -48,13 +48,13 @@ span.textsec.lh {
 paper-dropdown-menu {
     color: var(--gray-mid);
     --paper-input-container-input: #{'{
-                    font-size: 13px;
-                    box-sizing: border-box;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    padding-left: 3px;
-                    color: var(--gray-mid);
-                }'};
+        font-size: 13px;
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 3px;
+        color: var(--gray-mid);
+    }'};
     --paper-input-container-focus-color: var(--module-primary);
 }

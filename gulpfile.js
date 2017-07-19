@@ -41,16 +41,16 @@ const dependencies = require('./gulp-tasks/project-dependencies');
 gulp.task('watch', function () {
   gulp.watch(['./src/elements/**/*.*'], gulp.series(jsLinter, buildElements));
   gulp.watch(['./src/*.*', './src/assets/**/*.*'], gulp.series(copyAssets));
-  gulp.watch(['./src/bower_components/**/*.*'], gulp.series(copyBower));
+  gulp.watch(['./bower_components/**/*.*'], gulp.series(copyBower()));
 });
 
 gulp.task('lint', gulp.series(jsLinter));
-gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower), runTests));
+gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower()), runTests));
 
-gulp.task('startServer', function () { nodemon({ script: 'server.js' }) });
+gulp.task('startServer', function () { nodemon({ script: 'express.js' }) });
 
-gulp.task('devBuild', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower)));
-gulp.task('prodBuild', gulp.series(clean.build, buildElements, project.merge(source, dependencies)));
+gulp.task('devBuild', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower())));
+gulp.task('prodBuild', gulp.series(clean.build, copyBower('toSrc'), buildElements, project.merge(source, dependencies), clean.bowerInSrc));
 
 gulp.task('precommit', gulp.series('lint', 'test'));
 
@@ -58,4 +58,4 @@ gulp.task('precommit', gulp.series('lint', 'test'));
 gulp.task('devup', gulp.series('devBuild', gulp.parallel('startServer', 'watch')));
 
 //Minify scripts, run prod server and watch changes
-gulp.task('default', gulp.series([ 'prodBuild', 'startServer' ]));
+gulp.task('default', gulp.series([ 'prodBuild']));

@@ -11,12 +11,14 @@
         (function () {
             Polymer({
                 is: 'insert-html',
+
                 properties: {
                     html: {
                         type: String,
                         observer: '_htmlChanged'
                     }
                 },
+
                 _htmlChanged: function (html) {
                     Polymer.dom(this.root).innerHTML = html;
                 }

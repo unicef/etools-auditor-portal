@@ -70,5 +70,4 @@ Polymer({
     _handleResponse: function() {
         this.fire('main_refresh');
     }
-
 });

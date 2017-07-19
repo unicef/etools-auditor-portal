@@ -3,16 +3,6 @@
     display: block;
     margin-bottom: 20px;
 
-    .add-button {
-        position: absolute;
-        right: 15px;
-        top: 4px;
-        width: 40px;
-        height: 40px;
-        color: #ffffff;
-        z-index: 10;
-    }
-
     a {
         padding-left: 5px;
         color: #40c4ff;
@@ -49,19 +39,19 @@ paper-input-container {
     --paper-input-container-underline: #{'{
         display: none !important;
     }'};
-    --paper-input-container-underline-focus: #{"{
+    --paper-input-container-underline-focus: #{'{
         display: none;
-    }"};
-    --paper-input-container-underline-disabled: #{"{
+    }'};
+    --paper-input-container-underline-disabled: #{'{
         display: block !important;
         border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
-    }"};
+    }'};
 }
 
 etools-content-panel {
     --ecp-content: #{'{
-            padding: 0;
-        }'};
+        padding: 0;
+    }'};
 }
 
 .upload-button {

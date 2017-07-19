@@ -1,20 +1,18 @@
-<!--import [polymer, etools-ajax, etools-app-config]-->
+<!--import [polymer, etools-ajax]-->
+<!--import [etools-app-config]-->
 
 <dom-module id="check-user-existence">
-
     <template>
-
-        <etools-ajax method="GET"
-                     url="{{url}}"
-                     on-success="_handleResponse"
-                     on-fail="_handleError"></etools-ajax>
-
+        <etools-ajax
+                method="GET"
+                url="{{url}}"
+                on-success="_handleResponse"
+                on-fail="_handleError">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'check-user-existence',
 
             behaviors: [
@@ -64,9 +62,6 @@
                 this.emailChecking = false;
                 this.url = null;
             }
-
         });
-
     </script>
-
 </dom-module>

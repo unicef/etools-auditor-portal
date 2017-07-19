@@ -1,4 +1,5 @@
-<!--import [polymer, iron-flex-layout/iron-flex-layout-classes, paper-button, paper-menu-button, paper-menu, etools-ajax, paper-dialog]-->
+<!--import [polymer, iron-flex-layout/iron-flex-layout-classes, paper-button, paper-menu-button, paper-menu,
+            etools-ajax, paper-dialog]-->
 <!--import [etools-app-config, shared-styles, module-styles]-->
 
 <dom-module id="pages-header-element">
@@ -10,7 +11,6 @@
 
         <div class="header-wrapper">
             <div class="side-heading horizontal layout center">
-
                 <span class="flex title" title="[[title]]">[[_setTitle(engagement, title)]]</span>
 
                 <div class="side-heading-button-holder">
@@ -25,20 +25,26 @@
                             hidden$="[[hidePrintButton]]"
                             class="grey-buttons"
                             on-click="print">
-
                         <iron-icon icon="print"></iron-icon>
                         Print
                     </paper-button>
 
-                        <paper-button class="add-btn" raised hidden$="[[_hideAddButton(showAddButton)]]"
-                                      on-tap="addNewTap">
-                            <template is="dom-if" if="{{_showLink(link)}}"><a href="{{link}}" class="btn-link"></a></template>
-                            <iron-icon icon="add"></iron-icon>
-                            <span>[[btnText]]</span>
-                        </paper-button>
+                    <paper-button
+                            class="add-btn"
+                            raised
+                            hidden$="[[_hideAddButton(showAddButton)]]"
+                            on-tap="addNewTap">
+                        <template is="dom-if" if="{{_showLink(link)}}">
+                            <a href="{{link}}" class="btn-link"></a>
+                        </template>
 
+                        <iron-icon icon="add"></iron-icon>
+
+                        <span>[[btnText]]</span>
+                    </paper-button>
                 </div>
             </div>
+
             <content></content>
         </div>
     </template>

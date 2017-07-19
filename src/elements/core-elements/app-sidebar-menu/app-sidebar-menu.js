@@ -1,5 +1,4 @@
 Polymer({
-
     is: 'app-sidebar-menu',
 
     properties: {
@@ -9,5 +8,4 @@ Polymer({
     behaviors: [
         etoolsAppConfig.globals
     ]
-
 });

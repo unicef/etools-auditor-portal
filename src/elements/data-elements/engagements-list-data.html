@@ -1,21 +1,19 @@
-<!--import [polymer, etools-ajax, query-params-controller, lodash, etools-app-config]-->
+<!--import [polymer, etools-ajax, lodash]-->
+<!--import [query-params-controller, etools-app-config]-->
 
 <dom-module id="engagements-list-data">
-
     <template>
-
         <etools-ajax
                 endpoint="[[endpoint]]"
                 on-success="_engagementsLoaded"
-                on-fail="_responseError"></etools-ajax>
-
+                on-fail="_responseError">
+        </etools-ajax>
     </template>
 
     <script>
-
         Polymer({
-
             is: 'engagements-list-data',
+
             behaviors: [
                 etoolsAppConfig.globals,
                 APBehaviors.QueryParamsController
@@ -115,7 +113,5 @@
                 this.fire('toast', {text: 'Page not found.'});
             },
         });
-
     </script>
-
 </dom-module>

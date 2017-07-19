@@ -105,5 +105,4 @@ Polymer({
             this.$.engagementDetails.resetType();
         }
     }
-
 });

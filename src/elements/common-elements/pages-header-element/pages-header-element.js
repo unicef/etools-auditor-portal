@@ -2,8 +2,15 @@
 
 Polymer({
     is: 'pages-header-element',
+
     properties: {
         title: String,
+        engagement: {
+            type: Object,
+            value: function() {
+                return {};
+            }
+        },
         showAddButton: {
             type: Boolean,
             value: false
@@ -41,7 +48,9 @@ Polymer({
         exportList: Array
     },
 
-    behaviors: [etoolsAppConfig.globals],
+    behaviors: [
+        etoolsAppConfig.globals
+    ],
 
     attached: function() {
         this.baseUrl = this.basePath;

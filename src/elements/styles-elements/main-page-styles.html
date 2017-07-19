@@ -1,4 +1,5 @@
-<!--import [polymer, module-styles]-->
+<!--import [polymer]-->
+<!--import [module-styles]-->
 
 <dom-module id="main-page-styles">
     <template>
@@ -35,7 +36,11 @@
                         color: var(--module-primary);
                         font-size: 14px;
                         font-weight: bold;
-                        text-transform: uppercase;
+
+
+                        span {
+                            text-transform: uppercase;
+                        }
                     }
 
                     .tab-content {
@@ -84,15 +89,21 @@
             etools-content-panel.cancellation-tab {
                 margin-bottom: 20px;
                 --ecp-header-title: #{'{
-                        font-weight: 500;
-                        line-height: 51px;
-                    }'};
+                    font-weight: 500;
+                    line-height: 51px;
+                }'};
 
                 --epc-toolbar: #{'{
-                        height: 51px;
-                        padding: 2px;
-                        background-color: var(--module-error);
-                    }'};
+                    height: 51px;
+                    padding: 2px;
+                    background-color: var(--module-error);
+                }'};
+            }
+            paper-tab {
+                margin-right: 10px;
+                --paper-tab-content: #{'{
+                    width: auto;
+                }'}
             }
         </style>
     </template>
