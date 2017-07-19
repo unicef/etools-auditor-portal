@@ -34,7 +34,7 @@ function minifyHtml() {
 module.exports = function() {
     return project.splitSource()
         .pipe(gulpif('**/*.js', babel({presets: ['es2015']})))
-        .pipe(gulpif('**/*.html', builder([process.cwd() + '/src/bower_components/'])))
+        .pipe(gulpif('**/*.html', builder([{path: `${process.cwd()}/bower_components/`, new_base: `${process.cwd()}/src/bower_components/`}])))
         .pipe(gulpif(function(file) {
             return file.extname === '.html' && file.stem !== 'index';
         }, combine(

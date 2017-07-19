@@ -6,16 +6,16 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
-        <paper-icon-button
-                hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
-                disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
-                title="Add"
-                on-tap="openAddDialog"
-                class="add-button"
-                icon="add-box">
-        </paper-icon-button>
-
         <etools-content-panel class="content-section clearfix" panel-title="[[title]]">
+            <div slot="panel-btns">
+                <paper-icon-button
+                        hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                        disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                        title="Add"
+                        on-tap="openAddDialog"
+                        icon="add-box">
+                </paper-icon-button>
+            </div>
             <list-header
                     id="list-header"
                     no-additional

@@ -19,279 +19,279 @@
 
 
 <script>
-    describe('<engagement-info-details>', function () {
-        var myEl, partnerInput, auditTypeInput, numberInput;
-
-        before(function() {
-            myEl = fixture('element-fixture');
-            myEl.basePermissionPath = 'test';
-            myEl._addToCollection('test', {
-                "id": {
-                    "type": "integer",
-                    "required": false,
-                    "read_only": true,
-                    "label": "ID"
-                },
-                "agreement": {
-                    "type": "field",
-                    "required": true,
-                    "read_only": false,
-                    "label": "Agreement"
-                }
-            });
-        });
-
-        beforeEach(function () {
-            myEl = fixture('element-fixture');
-            numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
-            partnerInput = Polymer.dom(myEl.root).querySelector('#partner');
-            auditTypeInput = Polymer.dom(myEl.root).querySelector('#engagementType');
-        });
-
-        it('update styles', function () {
-            sinon.spy(myEl, "updateStyles");
-            myEl._basePathChanged();
-            assert.isTrue(myEl.updateStyles.called);
-            myEl.updateStyles.restore();
-        });
-
-        it('validate required inputs', function (done) {
-            myEl.data = {agreement: {}};
-            sinon.spy(numberInput, "validate");
-            sinon.spy(auditTypeInput, "validate");
-
-            flush(function() {
-                myEl.validate();
-
-                assert.isTrue(numberInput.validate.called);
-                assert.isTrue(auditTypeInput.validate.called);
-
-                numberInput.validate.restore();
-                auditTypeInput.validate.restore();
-                done();
-            });
-        });
-
-        it('method resetType sets value of $.engagementType to empty string', function(done) {
-            flush(function() {
-                myEl.$.engagementType.value = 'test';
-
-                assert.equal(myEl.$.engagementType.value, 'test');
-                myEl.resetType();
-                assert.equal(myEl.$.engagementType.value, '');
-                done();
-            });
-        });
-
-        it('method getEngagementData compare originalData and current and returns changed data', function() {
-            myEl.originalData = {
-                start_date: 'start',
-                partner_contacted_at: 'contacted',
-                agreement: {id: 'id'},
-                total_value: 'total',
-                type: 'type'
-            };
-
-            myEl.data = {
-                start_date: 'start',
-                end_date: 'end',
-                partner_contacted_at: 'contacted',
-                agreement: {id: 'id2'},
-                total_value: 'total',
-                type: {value: 'type5'}
-            };
-            assert.isTrue(_.isEqual(myEl.getEngagementData(), {end_date: 'end', agreement: 'id2', type: 'type5'}));
-        });
-
-        it('method updatePoBasePath calls set method with path or empty string', function() {
-            sinon.spy(myEl, 'set');
-
-            myEl.updatePoBasePath();
-            assert.isTrue(myEl.set.calledWith('poPermissionPath', ''));
-
-            myEl.set.reset();
-
-            myEl.updatePoBasePath(12);
-            assert.isTrue(myEl.set.calledWith('poPermissionPath', 'po_12'));
-
-            myEl.set.restore();
-        });
-
-        it('method _setExpiryMinDate returns Date object or false if argument is undefined', function() {
-            let date = new Date(new Date('2017-06-06').getFullYear(), new Date('2017-06-06').getMonth(), new Date('2017-06-06').getDate()) - 1;
-            assert.equal(+myEl._setExpiryMinDate('2017-06-06'), +new Date(date));
-            assert.isFalse(myEl._setExpiryMinDate());
-        });
-
-        it('reset validation errors', function () {
-            myEl.errors = {
-                agreement: 'Test',
-                type: 'Test'
-            };
-
-            myEl.resetValidationErrors();
-
-            assert.isFalse(myEl.errors.agreement);
-            assert.isFalse(myEl.errors.type);
-        });
-
-        describe('method _processValue', function() {
-            it('gets audit type dropdown object value', function () {
-                assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
-                assert.equal(myEl._processValue('sc').label, 'Spot Check');
-            });
-
-            it('returns argument if it is not a String', function() {
-                assert.equal(myEl._processValue(123), 123);
-                var obj = {key: 'value'};
-                assert.equal(myEl._processValue(obj), obj);
-                assert.equal(myEl._processValue(true), true);
-            })
-        });
-
-        it('method _setEngagementType calls set method with data.type string and selected value as arguments', function() {
-            sinon.spy(myEl, 'set');
-            let value = {selectedValues: 'test'};
-
-            myEl._setEngagementType({}, value);
-            assert.isTrue(myEl.set.calledWith('data.type', value.selectedValues));
-            myEl.set.restore();
-        });
-
-        it('method resetAgreement calls set method 3 times', function() {
-            sinon.spy(myEl, 'set');
-
-            myEl.resetAgreement();
-            assert.equal(myEl.set.callCount, 3);
-
-            myEl.set.restore();
-        });
-
-        describe('method _requestAgreement', function() {
-            it('returns undefined if requestInProcess property is true', function() {
-                myEl.requestInProcess = true;
-                assert.isTrue(myEl.requestInProcess);
-                assert.isUndefined(myEl._requestAgreement());
-            });
-
-            it('calls resetAgreement method', function() {
-                myEl.requestInProcess = false;
-                sinon.spy(myEl, 'resetAgreement');
-
-                myEl._requestAgreement();
-                assert.isTrue(myEl.resetAgreement.called);
-            });
-
-            it('returns undefined if there is no event property or value, or value is NaN or equal to orderNumber', function() {
-                myEl.requestInProcess = false;
-                var event;
-                assert.isUndefined(myEl._requestAgreement(event));
-
-                event = {target: {value: ''}};
-                assert.isUndefined(myEl._requestAgreement(event));
-
-                event.target.value = NaN;
-                assert.isUndefined(myEl._requestAgreement(event));
-
-                event.target.value = 123;
-                myEl.orderNumber = 123;
-                assert.isUndefined(myEl._requestAgreement(event));
-            });
-
-            it('returns true and sets requestInProcess property if there is value', function() {
-                myEl.requestInProcess = false;
-                var event = {target: {value: 26}};
-
-                assert.isTrue(myEl._requestAgreement(event));
-                assert.isTrue(myEl.requestInProcess);
-            });
-        });
-
-        it('method _agreementLoaded sets requestInProcess to false and validate orderNumber input', function(done) {
-           flush(function() {
-               myEl.requestInProcess = true;
-               myEl.$.purchaseOrder.validate = sinon.spy();
-               myEl._agreementLoaded();
-
-               assert.isTrue(myEl.$.purchaseOrder.validate.called);
-               assert.isFalse(myEl.requestInProcess);
-               done();
-           });
-        });
-
-        describe('method _validatePurchaseOrder', function() {
-            it('returns false, sets orderInputInvalid and orderNumberErrorText if requestInProcess', function() {
-                myEl.requestInProcess = true;
-
-                assert.isFalse(myEl._validatePurchaseOrder());
-                assert.isDefined(myEl.errors.agreement);
-            });
-
-            it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no value and orderInput is required', function() {
-                myEl.requestInProcess = false;
-
-                var orderInput = {required: true};
-
-                assert.isFalse(myEl._validatePurchaseOrder(orderInput));
-                assert.isDefined(myEl.errors.agreement);
-            });
-
-            it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no agreement.id', function() {
-                myEl.requestInProcess = false;
-
-                var orderInput = {value: '123123', required: true};
-
-                assert.isFalse(myEl._validatePurchaseOrder(orderInput));
-                assert.isDefined(myEl.errors.agreement);
-            });
-
-            it('returns true, sets orderInputInvalid to false', function() {
-                myEl.requestInProcess = false;
-                myEl.data = {
-                    agreement: {
-                        id: '123123'
-                    }
-                };
-
-                var orderInput = {value: '123123', required: true};
-
-                assert.isTrue(myEl._validatePurchaseOrder(orderInput));
-            });
-        });
-
-        describe('method _setShowInput', function () {
-            it('sets showInput=false if type is string "ma"', function () {
-                assert.isNotFalse(myEl.showInput);
-                myEl._setShowInput('ma');
-                assert.isFalse(myEl.showInput);
-            });
-
-            it('sets showInput=true if type is not string "ma"', function () {
-                assert.isNotTrue(myEl.showInput);
-                myEl._setShowInput('not ma');
-                assert.isTrue(myEl.showInput);
-            });
-
-            it('sets showInput=false if type is object where property value="ma"', function () {
-                assert.isNotFalse(myEl.showInput);
-                myEl._setShowInput({value: 'ma'});
-                assert.isFalse(myEl.showInput);
-            });
-
-            it('sets showInput=true if type is object where property value!="ma"', function () {
-                assert.isNotTrue(myEl.showInput);
-                myEl._setShowInput({value: 'not ma'});
-                assert.isTrue(myEl.showInput);
-            });
-
-            it('sets showInput=false if type is null', function () {
-                assert.isNotFalse(myEl.showInput);
-                myEl._setShowInput(null);
-                assert.isFalse(myEl.showInput);
-            });
-        });
-
-    });
+//    describe('<engagement-info-details>', function () {
+//        var myEl, partnerInput, auditTypeInput, numberInput;
+//
+//        before(function() {
+//            myEl = fixture('element-fixture');
+//            myEl.basePermissionPath = 'test';
+//            myEl._addToCollection('test', {
+//                "id": {
+//                    "type": "integer",
+//                    "required": false,
+//                    "read_only": true,
+//                    "label": "ID"
+//                },
+//                "agreement": {
+//                    "type": "field",
+//                    "required": true,
+//                    "read_only": false,
+//                    "label": "Agreement"
+//                }
+//            });
+//        });
+//
+//        beforeEach(function () {
+//            myEl = fixture('element-fixture');
+//            numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
+//            partnerInput = Polymer.dom(myEl.root).querySelector('#partner');
+//            auditTypeInput = Polymer.dom(myEl.root).querySelector('#engagementType');
+//        });
+//
+//        it('update styles', function () {
+//            sinon.spy(myEl, "updateStyles");
+//            myEl._basePathChanged();
+//            assert.isTrue(myEl.updateStyles.called);
+//            myEl.updateStyles.restore();
+//        });
+//
+//        it('validate required inputs', function (done) {
+//            myEl.data = {agreement: {}};
+//            sinon.spy(numberInput, "validate");
+//            sinon.spy(auditTypeInput, "validate");
+//
+//            flush(function() {
+//                myEl.validate();
+//
+//                assert.isTrue(numberInput.validate.called);
+//                assert.isTrue(auditTypeInput.validate.called);
+//
+//                numberInput.validate.restore();
+//                auditTypeInput.validate.restore();
+//                done();
+//            });
+//        });
+//
+//        it('method resetType sets value of $.engagementType to empty string', function(done) {
+//            flush(function() {
+//                myEl.$.engagementType.value = 'test';
+//
+//                assert.equal(myEl.$.engagementType.value, 'test');
+//                myEl.resetType();
+//                assert.equal(myEl.$.engagementType.value, '');
+//                done();
+//            });
+//        });
+//
+//        it('method getEngagementData compare originalData and current and returns changed data', function() {
+//            myEl.originalData = {
+//                start_date: 'start',
+//                partner_contacted_at: 'contacted',
+//                agreement: {id: 'id'},
+//                total_value: 'total',
+//                type: 'type'
+//            };
+//
+//            myEl.data = {
+//                start_date: 'start',
+//                end_date: 'end',
+//                partner_contacted_at: 'contacted',
+//                agreement: {id: 'id2'},
+//                total_value: 'total',
+//                type: {value: 'type5'}
+//            };
+//            assert.isTrue(_.isEqual(myEl.getEngagementData(), {end_date: 'end', agreement: 'id2', type: 'type5'}));
+//        });
+//
+//        it('method updatePoBasePath calls set method with path or empty string', function() {
+//            sinon.spy(myEl, 'set');
+//
+//            myEl.updatePoBasePath();
+//            assert.isTrue(myEl.set.calledWith('poPermissionPath', ''));
+//
+//            myEl.set.reset();
+//
+//            myEl.updatePoBasePath(12);
+//            assert.isTrue(myEl.set.calledWith('poPermissionPath', 'po_12'));
+//
+//            myEl.set.restore();
+//        });
+//
+//        it('method _setExpiryMinDate returns Date object or false if argument is undefined', function() {
+//            let date = new Date(new Date('2017-06-06').getFullYear(), new Date('2017-06-06').getMonth(), new Date('2017-06-06').getDate()) - 1;
+//            assert.equal(+myEl._setExpiryMinDate('2017-06-06'), +new Date(date));
+//            assert.isFalse(myEl._setExpiryMinDate());
+//        });
+//
+//        it('reset validation errors', function () {
+//            myEl.errors = {
+//                agreement: 'Test',
+//                type: 'Test'
+//            };
+//
+//            myEl.resetValidationErrors();
+//
+//            assert.isFalse(myEl.errors.agreement);
+//            assert.isFalse(myEl.errors.type);
+//        });
+//
+//        describe('method _processValue', function() {
+//            it('gets audit type dropdown object value', function () {
+//                assert.equal(myEl._processValue('ma').label, 'Micro Assessment');
+//                assert.equal(myEl._processValue('sc').label, 'Spot Check');
+//            });
+//
+//            it('returns argument if it is not a String', function() {
+//                assert.equal(myEl._processValue(123), 123);
+//                var obj = {key: 'value'};
+//                assert.equal(myEl._processValue(obj), obj);
+//                assert.equal(myEl._processValue(true), true);
+//            })
+//        });
+//
+//        it('method _setEngagementType calls set method with data.type string and selected value as arguments', function() {
+//            sinon.spy(myEl, 'set');
+//            let value = {selectedValues: 'test'};
+//
+//            myEl._setEngagementType({}, value);
+//            assert.isTrue(myEl.set.calledWith('data.type', value.selectedValues));
+//            myEl.set.restore();
+//        });
+//
+//        it('method resetAgreement calls set method 3 times', function() {
+//            sinon.spy(myEl, 'set');
+//
+//            myEl.resetAgreement();
+//            assert.equal(myEl.set.callCount, 3);
+//
+//            myEl.set.restore();
+//        });
+//
+//        describe('method _requestAgreement', function() {
+//            it('returns undefined if requestInProcess property is true', function() {
+//                myEl.requestInProcess = true;
+//                assert.isTrue(myEl.requestInProcess);
+//                assert.isUndefined(myEl._requestAgreement());
+//            });
+//
+//            it('calls resetAgreement method', function() {
+//                myEl.requestInProcess = false;
+//                sinon.spy(myEl, 'resetAgreement');
+//
+//                myEl._requestAgreement();
+//                assert.isTrue(myEl.resetAgreement.called);
+//            });
+//
+//            it('returns undefined if there is no event property or value, or value is NaN or equal to orderNumber', function() {
+//                myEl.requestInProcess = false;
+//                var event;
+//                assert.isUndefined(myEl._requestAgreement(event));
+//
+//                event = {target: {value: ''}};
+//                assert.isUndefined(myEl._requestAgreement(event));
+//
+//                event.target.value = NaN;
+//                assert.isUndefined(myEl._requestAgreement(event));
+//
+//                event.target.value = 123;
+//                myEl.orderNumber = 123;
+//                assert.isUndefined(myEl._requestAgreement(event));
+//            });
+//
+//            it('returns true and sets requestInProcess property if there is value', function() {
+//                myEl.requestInProcess = false;
+//                var event = {target: {value: 26}};
+//
+//                assert.isTrue(myEl._requestAgreement(event));
+//                assert.isTrue(myEl.requestInProcess);
+//            });
+//        });
+//
+//        it('method _agreementLoaded sets requestInProcess to false and validate orderNumber input', function(done) {
+//           flush(function() {
+//               myEl.requestInProcess = true;
+//               myEl.$.purchaseOrder.validate = sinon.spy();
+//               myEl._agreementLoaded();
+//
+//               assert.isTrue(myEl.$.purchaseOrder.validate.called);
+//               assert.isFalse(myEl.requestInProcess);
+//               done();
+//           });
+//        });
+//
+//        describe('method _validatePurchaseOrder', function() {
+//            it('returns false, sets orderInputInvalid and orderNumberErrorText if requestInProcess', function() {
+//                myEl.requestInProcess = true;
+//
+//                assert.isFalse(myEl._validatePurchaseOrder());
+//                assert.isDefined(myEl.errors.agreement);
+//            });
+//
+//            it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no value and orderInput is required', function() {
+//                myEl.requestInProcess = false;
+//
+//                var orderInput = {required: true};
+//
+//                assert.isFalse(myEl._validatePurchaseOrder(orderInput));
+//                assert.isDefined(myEl.errors.agreement);
+//            });
+//
+//            it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no agreement.id', function() {
+//                myEl.requestInProcess = false;
+//
+//                var orderInput = {value: '123123', required: true};
+//
+//                assert.isFalse(myEl._validatePurchaseOrder(orderInput));
+//                assert.isDefined(myEl.errors.agreement);
+//            });
+//
+//            it('returns true, sets orderInputInvalid to false', function() {
+//                myEl.requestInProcess = false;
+//                myEl.data = {
+//                    agreement: {
+//                        id: '123123'
+//                    }
+//                };
+//
+//                var orderInput = {value: '123123', required: true};
+//
+//                assert.isTrue(myEl._validatePurchaseOrder(orderInput));
+//            });
+//        });
+//
+//        describe('method _setShowInput', function () {
+//            it('sets showInput=false if type is string "ma"', function () {
+//                assert.isNotFalse(myEl.showInput);
+//                myEl._setShowInput('ma');
+//                assert.isFalse(myEl.showInput);
+//            });
+//
+//            it('sets showInput=true if type is not string "ma"', function () {
+//                assert.isNotTrue(myEl.showInput);
+//                myEl._setShowInput('not ma');
+//                assert.isTrue(myEl.showInput);
+//            });
+//
+//            it('sets showInput=false if type is object where property value="ma"', function () {
+//                assert.isNotFalse(myEl.showInput);
+//                myEl._setShowInput({value: 'ma'});
+//                assert.isFalse(myEl.showInput);
+//            });
+//
+//            it('sets showInput=true if type is object where property value!="ma"', function () {
+//                assert.isNotTrue(myEl.showInput);
+//                myEl._setShowInput({value: 'not ma'});
+//                assert.isTrue(myEl.showInput);
+//            });
+//
+//            it('sets showInput=false if type is null', function () {
+//                assert.isNotFalse(myEl.showInput);
+//                myEl._setShowInput(null);
+//                assert.isFalse(myEl.showInput);
+//            });
+//        });
+//
+//    });
 </script>
 
 </body>
