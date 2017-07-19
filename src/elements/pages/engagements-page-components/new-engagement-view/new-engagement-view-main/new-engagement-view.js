@@ -64,6 +64,8 @@ Polymer({
             //save response data before redirecting
             this._setLastEngagementData(event.detail.data);
 
+            this.reloadEngagementsList();
+
             //redirect
             let path = `${this.engagement.type.link}/${event.detail.data.id}/overview`;
             this.set('path', this.getAbsolutePath(path));
@@ -75,6 +77,10 @@ Polymer({
                 type: {}
             };
         }
+    },
+
+    reloadEngagementsList: function() {
+        this.set('requestQueries.reload', true);
     },
 
     _pageChanged: function(page) {

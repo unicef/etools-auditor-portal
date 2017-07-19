@@ -52,6 +52,15 @@
             });
         });
 
+        describe('method reloadEngagementsList()', function () {
+            it('sets requestQueries.reload to true', function () {
+                myEl.requestQueries = {};
+                assert.isUndefined(myEl.requestQueries.reload);
+                myEl.reloadEngagementsList();
+                assert.isTrue(myEl.requestQueries.reload);
+            });
+        });
+
         describe('event \'engagement-created\'', () => {
             it('call method _setLastEngagementData()', () => {
                 sinon.spy(myEl, '_setLastEngagementData');

@@ -52,12 +52,13 @@
 
                 this._setEngagementsList(detail.results);
                 this.listLength = detail.count;
+                this.requestQueries.reload = false;
 
                 this.fire('global-loading', {type: 'engagements-list'});
             },
 
             getEngagementsList: function() {
-                let reloadRequired = this.reloadRequired();
+                let reloadRequired = this.reloadRequired() || this.requestQueries.reload;
 
                 this.lastState = _.cloneDeep(this.requestQueries);
 
@@ -70,6 +71,7 @@
 
                 let endpoint = this.getEndpoint('engagementsList');
                 endpoint.url += this.getQueriesString();
+                if (this.requestQueries.reload) { endpoint.url += `&reload=${new Date().getTime()}`; }
                 this.endpoint = endpoint;
             },
 
@@ -108,6 +110,7 @@
                     return;
                 }
 
+                this.requestQueries.reload = false;
                 this.fire('global-loading', {type: 'engagements-list'});
                 this.fire('toast', {text: 'Page not found.'});
             },
