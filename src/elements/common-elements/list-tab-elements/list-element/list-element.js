@@ -50,6 +50,9 @@ Polymer({
             type: Object,
             notify: true
         },
+        itemIndex: {
+            type: Number
+        },
         multiline: {
             type: Boolean,
             value: false
@@ -132,7 +135,7 @@ Polymer({
         } else if (item.name === 'percents') {
             value = this._refactorPercents(value);
         } else if (item.name === 'finding') {
-            value = this._refactorFindingNumber(value);
+            value = this._refactorFindingNumber();
         }
 
         if (bool) {
@@ -168,9 +171,10 @@ Polymer({
         return regexp.test(value) ? `${value}%` : null;
     },
 
-    _refactorFindingNumber: function(value) {
-        if ((!value || isNaN(+value)) && value !== 0) { return; }
-        return `000${value}`;
+    _refactorFindingNumber: function() {
+        let value = this.itemIndex;
+        if (!value && value !== 0) { return; }
+        return `000${value + 1}`;
     },
 
     _getAdditionalValue: function(item) {

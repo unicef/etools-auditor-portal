@@ -201,14 +201,12 @@
 
             it('calls _refactorFindingNumber() method when item.name="finding"', function () {
                 let spy = sinon.stub(myEl, '_refactorFindingNumber');
-                let item = {name: 'finding', path: 'path'};
-                myEl.data = {path: 'finding'};
+                let item = {name: 'finding'};
                 spy.returns('refactored_value');
 
                 assert.isFalse(spy.called);
                 assert.equal(myEl._getValue(item), 'refactored_value');
                 assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy.calledWithExactly('finding'));
             });
         });
 
@@ -283,15 +281,18 @@
             });
         });
 
-        describe('method _refactorFindingNumber(value)', function () {
-            it('returns null for bad values', function () {
-                assert.isUndefined(myEl._refactorFindingNumber('sdf'));
+        describe('method _refactorFindingNumber()', function () {
+            it('returns undefined for bad values', function () {
+                assert.isUndefined(myEl._refactorFindingNumber(undefined));
                 assert.isUndefined(myEl._refactorFindingNumber(null));
             });
 
-            it('returns value prefixed with "000"', function () {
-                assert.equal(myEl._refactorFindingNumber(1), '0001');
-                assert.equal(myEl._refactorFindingNumber('2'), '0002');
+            it('returns itemIndex property increased by 1 and prefixed with "000"', function () {
+                myEl.itemIndex = 0;
+                assert.equal(myEl._refactorFindingNumber(), '0001');
+
+                myEl.itemIndex = 1;
+                assert.equal(myEl._refactorFindingNumber(), '0002');
             });
         });
 

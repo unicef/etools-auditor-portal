@@ -37,7 +37,6 @@ Polymer({
                 'size': 20,
                 'name': 'finding',
                 'label': 'Finding Number',
-                'path': 'finding_number'
             }, {
                 'size': 40,
                 'label': 'Title (Category)',
