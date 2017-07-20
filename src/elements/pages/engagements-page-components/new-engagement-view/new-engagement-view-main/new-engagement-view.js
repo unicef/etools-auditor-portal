@@ -39,8 +39,7 @@ Polymer({
     },
 
     observers: [
-        '_pageChanged(page)',
-        '_routeConfig(route)'
+        '_pageChanged(page)'
     ],
 
     listeners: {
@@ -48,18 +47,16 @@ Polymer({
         'engagement-created': '_engagementCreated',
     },
 
-    ready: function() {
+    attached: function() {
         this.fileTypes = this.getData('engagement_attachments_types');
+        this._routeConfig();
     },
 
-    _routeConfig: function(route) {
-        if (route && !~route.prefix.indexOf('new')) {
-            return;
-        }
-        let tab = this.routeData ? this.routeData.tab : route.path.split('/')[1];
-        if (tab === '' || _.isUndefined(tab)) {
+    _routeConfig: function() {
+        let currentTab = this.routeData && this.routeData.tab;
+        if (currentTab === '' || _.isUndefined(currentTab)) {
             this.set('route.path', '/overview');
-        } else if (!_.includes(this.tabsList, tab)) {
+        } else if (!_.includes(this.tabsList, currentTab)) {
             this.fire('404');
         }
     },
@@ -105,6 +102,7 @@ Polymer({
     },
 
     _pageChanged: function(page) {
+        console.log('_pageChanged')
         if (page === 'new' || page === 'list') {
             this.set('engagement', {
                 status: '',
