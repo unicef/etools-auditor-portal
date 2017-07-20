@@ -25,9 +25,8 @@ module.exports = function testElements(done) {
         if (argv.noxvfb) {
             tests = spawn('node', ['./node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
         } else {
-            tests = spawn('xvfb-run', ['./node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
+            tests = spawn('xvfb-run', ['-a', './node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
         }
-
 
         console.log(`\x1b[32mRunning ${indexFileName}.\x1b[0m`);
 
@@ -42,7 +41,7 @@ module.exports = function testElements(done) {
         });
 
         tests.stderr.on('data', (data) => {
-            console.log(`${data}`);
+            console.log(`\x1b[31m${data}\x1b[0m`);
             withErrors = true;
         });
 
