@@ -164,6 +164,7 @@
 
         describe('method _routeConfig', function() {
             it('reset errorObject if prefix correct', function () {
+                behaviorObj.set = sinon.stub();
                 behaviorObj.fire = sinon.spy();
                 behaviorObj.engagementPrefix = '/micro-assessments';
                 behaviorObj.route = {
@@ -179,6 +180,7 @@
             });
 
             it('fire event if engagement id is not provided or incorrect', function () {
+                behaviorObj.set = sinon.stub();
                 behaviorObj.fire = sinon.spy();
                 behaviorObj.engagementPrefix = '/micro-assessments';
                 behaviorObj.route = {
@@ -192,7 +194,9 @@
             });
 
             it('set engagementId if id is correct', function () {
+                behaviorObj.set = sinon.stub();
                 behaviorObj.fire = sinon.spy();
+                behaviorObj.tabsList = ['overview'];
                 behaviorObj.engagementPrefix = '/micro-assessments';
                 behaviorObj.route = {
                     prefix: '/micro-assessments',

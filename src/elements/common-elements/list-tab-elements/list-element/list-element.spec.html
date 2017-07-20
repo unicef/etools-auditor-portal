@@ -265,6 +265,8 @@
 
             it('refactores value to currency format', function () {
                 assert.equal(myEl._refactorCurrency(123456.78), '123,456.78');
+                assert.equal(myEl._refactorCurrency(0.00), '0.00');
+                assert.equal(myEl._refactorCurrency('0.00'), '0.00');
             });
         });
 
