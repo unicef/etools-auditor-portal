@@ -33,6 +33,8 @@ Polymer({
         } else if (view === 'new' && this.actionAllowed('new_engagement', 'createEngagement')) {
             this.clearQueries();
             this.view = 'new';
+        } else if (view === '' || _.isUndefined(view)) {
+            this.set('route.path', '/list');
         } else {
             this.clearQueries();
             this.fire('404');

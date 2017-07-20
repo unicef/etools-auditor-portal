@@ -41,7 +41,11 @@
 
             let id = this.routeData ? this.routeData.id : route.path.split('/')[1];
             let tab = this.routeData ? this.routeData.tab : route.path.split('/')[2];
-            if (!id || isNaN(+id) || (tab && !_.includes(this.tabsList, tab))) {
+            if (tab === '' || _.isUndefined(tab)) {
+                this.set('route.path', `/${id}/overview`);
+                tab = 'overview';
+            }
+            if (!id || isNaN(+id) || !_.includes(this.tabsList, tab)) {
                 this.fire('404');
             } else {
                 this.engagementId = +id;

@@ -29,10 +29,19 @@ Polymer({
                     partner_contacted_at: null
                 };
             }
-        }
+        },
+        tabsList: {
+            type: Array,
+            value: function() {
+                return ['overview', 'attachments'];
+            }
+        },
     },
 
-    observers: ['_pageChanged(page)'],
+    observers: [
+        '_pageChanged(page)',
+        '_routeConfig(route)'
+    ],
 
     listeners: {
         'main-action-activated': '_saveNewEngagement',
@@ -41,6 +50,18 @@ Polymer({
 
     ready: function() {
         this.fileTypes = this.getData('engagement_attachments_types');
+    },
+
+    _routeConfig: function(route) {
+        if (route && !~route.prefix.indexOf('new')) {
+            return;
+        }
+        let tab = this.routeData ? this.routeData.tab : route.path.split('/')[1];
+        if (tab === '' || _.isUndefined(tab)) {
+            this.set('route.path', '/overview');
+        } else if (!_.includes(this.tabsList, tab)) {
+            this.fire('404');
+        }
     },
 
     _attachmentsReadonly: function() {
