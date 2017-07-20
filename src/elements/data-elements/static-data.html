@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax]-->
+<!--import [polymer, etools-ajax, lodash]-->
 <!--import [static-data-behavior, permission-controller]-->
 
 <dom-module id="static-data">
@@ -69,7 +69,8 @@
                 },
 
                 _partnersLoaded: function(data) {
-                    this._setData('partners', data.detail);
+                    let partners = _.sortBy(data.detail, ['name']);
+                    this._setData('partners', partners);
                     dataLoaded.partners = true;
                     this._allDataLoaded();
                 },
