@@ -41,6 +41,7 @@
                         <iron-icon prefix icon="search"></iron-icon>
                     </paper-input>
                 </div>
+
                 <paper-icon-button
                         hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
                         title="Add"
@@ -48,6 +49,7 @@
                         icon="add-box">
                 </paper-icon-button>
             </div>
+
             <div class="panel-content group">
                 <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading"></etools-loading>
 
