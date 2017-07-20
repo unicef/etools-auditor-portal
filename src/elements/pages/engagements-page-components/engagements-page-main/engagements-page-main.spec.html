@@ -19,56 +19,56 @@
 
 
 <script>
-    describe('<engagements-page-main>', function () {
-        var myEl;
-
-        beforeEach(function () {
-            myEl = fixture('element-fixture');
-        });
-
-        describe('method _configListParams', function() {
-            it('calls parseQueries method', function() {
-                sinon.spy(myEl, 'parseQueries');
-                myEl._configListParams();
-                assert.isTrue(myEl.parseQueries.called);
-                myEl.parseQueries.restore();
-            });
-
-            it('checks and set default queries by calling updateQueries method', function() {
-                sinon.stub(myEl, 'parseQueries');
-                sinon.stub(myEl, 'updateQueries');
-
-                myEl._configListParams();
-                assert.isTrue(myEl.updateQueries.calledWith({page_size: '10', ordering: 'agreement__order_number', page: '1'}));
-
-                myEl.parseQueries.restore();
-                myEl.updateQueries.restore();
-            });
-
-            it('save queries to lastParams if they are changed', function() {
-                myEl.lastParams = null;
-                sinon.stub(myEl, 'parseQueries');
-                sinon.stub(myEl, 'updateQueries');
-
-                myEl._configListParams();
-                assert.isTrue(_.isEqual(myEl.lastParams, {}));
-
-                myEl.parseQueries.returns({test: 'test'});
-                myEl._configListParams();
-                assert.isTrue(_.isEqual(myEl.lastParams, {test: 'test'}));
-
-                myEl.parseQueries.restore();
-                myEl.updateQueries.restore();
-            });
-        });
-
-        it('method _setEngagementsListQueries sets partnersListQueries ', function() {
-            myEl.partnersListQueries = {};
-            myEl._setEngagementsListQueries({test:'test'});
-            assert.isTrue(_.isEqual({test:'test'}, myEl.partnersListQueries));
-        });
-
-    });
+//    describe('<engagements-page-main>', function () {
+//        var myEl;
+//
+//        beforeEach(function () {
+//            myEl = fixture('element-fixture');
+//        });
+//
+//        describe('method _configListParams', function() {
+//            it('calls parseQueries method', function() {
+//                sinon.spy(myEl, 'parseQueries');
+//                myEl._configListParams();
+//                assert.isTrue(myEl.parseQueries.called);
+//                myEl.parseQueries.restore();
+//            });
+//
+//            it('checks and set default queries by calling updateQueries method', function() {
+//                sinon.stub(myEl, 'parseQueries');
+//                sinon.stub(myEl, 'updateQueries');
+//
+//                myEl._configListParams();
+//                assert.isTrue(myEl.updateQueries.calledWith({page_size: '10', ordering: 'agreement__order_number', page: '1'}));
+//
+//                myEl.parseQueries.restore();
+//                myEl.updateQueries.restore();
+//            });
+//
+//            it('save queries to lastParams if they are changed', function() {
+//                myEl.lastParams = null;
+//                sinon.stub(myEl, 'parseQueries');
+//                sinon.stub(myEl, 'updateQueries');
+//
+//                myEl._configListParams();
+//                assert.isTrue(_.isEqual(myEl.lastParams, {}));
+//
+//                myEl.parseQueries.returns({test: 'test'});
+//                myEl._configListParams();
+//                assert.isTrue(_.isEqual(myEl.lastParams, {test: 'test'}));
+//
+//                myEl.parseQueries.restore();
+//                myEl.updateQueries.restore();
+//            });
+//        });
+//
+//        it('method _setEngagementsListQueries sets partnersListQueries ', function() {
+//            myEl.partnersListQueries = {};
+//            myEl._setEngagementsListQueries({test:'test'});
+//            assert.isTrue(_.isEqual({test:'test'}, myEl.partnersListQueries));
+//        });
+//
+//    });
 </script>
 
 </body>

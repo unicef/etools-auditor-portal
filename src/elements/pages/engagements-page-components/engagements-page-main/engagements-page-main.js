@@ -46,7 +46,7 @@ Polymer({
             queries = this.parseQueries() || {};
 
         if (!queries.page_size) { queriesUpdates.page_size = '10'; }
-        if (!queries.ordering) { queriesUpdates.ordering = 'agreement__order_number'; }
+        if (!queries.ordering) { queriesUpdates.ordering = 'unique_id'; }
         if (!queries.page) { queriesUpdates.page = '1'; }
 
         let page = +queries.page;

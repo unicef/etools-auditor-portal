@@ -56,28 +56,28 @@
                     selection: []
                 },
                 {
-                    name: 'partner',
-                    query: 'partner',
-                    optionValue: 'id',
-                    optionLabel: 'name',
-                    selection: []
-                },
-                {
                     name: 'engagement type',
                     query: 'type',
                     hideSearch: true,
                     optionValue: 'value',
                     optionLabel: 'label',
                     selection: [{
-                        label: 'Micro Assessment',
-                        value: 'ma'
-                    }, {
                         label: 'Audit',
                         value: 'audit'
+                    }, {
+                        label: 'Micro Assessment',
+                        value: 'ma'
                     }, {
                         label: 'Spot Check',
                         value: 'sc'
                     }]
+                },
+                {
+                    name: 'partner',
+                    query: 'partner',
+                    optionValue: 'id',
+                    optionLabel: 'name',
+                    selection: []
                 },
                 {
                     name: 'status',
@@ -128,23 +128,23 @@
 
             let listHeadings = [{
                 'size': 15,
-                'label': 'Purchase Order #',
-                'name': 'agreement__order_number',
+                'label': 'Unique ID #',
+                'name': 'unique_id',
                 'link': '*engagement_type*/*data_id*/overview',
                 'ordered': false,
-                'path': 'agreement.order_number'
-            }, {
-                'size': 20,
-                'label': 'Partner Name',
-                'name': 'partner__name',
-                'ordered': false,
-                'path': 'partner.name'
+                'path': 'unique_id'
             }, {
                 'size': 20,
                 'label': 'Auditor',
                 'name': 'agreement__auditor_firm__name',
                 'ordered': false,
                 'path': 'agreement.auditor_firm.name'
+            }, {
+                'size': 20,
+                'label': 'Partner Name',
+                'name': 'partner__name',
+                'ordered': false,
+                'path': 'partner.name'
             }, {
                 'size': 15,
                 'label': 'Engagement Type',

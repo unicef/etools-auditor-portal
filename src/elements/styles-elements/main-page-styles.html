@@ -36,7 +36,11 @@
                         color: var(--module-primary);
                         font-size: 14px;
                         font-weight: bold;
-                        text-transform: uppercase;
+
+
+                        span {
+                            text-transform: uppercase;
+                        }
                     }
 
                     .tab-content {
@@ -90,10 +94,58 @@
                 }'};
 
                 --epc-toolbar: #{'{
-                    height: 51px;
+                    height: 4px;
                     padding: 2px;
-                    background-color: var(--module-error);
+                    background-color: var(--module-warning);
                 }'};
+
+                --ecp-content: #{'{
+                    padding-left: 100px;
+                }'};
+
+                --ecp-header-btns-wrapper: #{'{
+                    opacity: 1;
+                }'};
+
+                .cancellation-title {
+                    font-weight: 500;
+                    font-size: 19px;
+                    text-transform: uppercase;
+                    color: var(--module-warning);
+                    margin: 15px 0 26px;
+                }
+
+                .cancellation-text {
+                    font-size: 17px;
+                    white-space: pre-wrap;
+                    color: var(--gray-darkest);
+                }
+            }
+
+            div[slot="panel-btns"].bookmark {
+                position: absolute;
+                top: 2px;
+                right: auto;
+                left: 20px;
+                color: var(--module-warning);
+                -webkit-transform: scale(0.9, 1.5);
+                -moz-transform: scale(0.9, 1.5);
+                -ms-transform: scale(0.9, 1.5);
+                -o-transform: scale(0.9, 1.5);
+                transform: scale(0.9, 1.5);
+
+
+                iron-icon {
+                    width: 70px !important;
+                    height: 70px !important;
+                }
+            }
+
+            paper-tab {
+                margin-right: 10px;
+                --paper-tab-content: #{'{
+                    width: auto;
+                }'}
             }
         </style>
     </template>

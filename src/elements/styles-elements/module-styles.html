@@ -14,24 +14,25 @@
                 --gray-mid: rgba(0,0,0,.54);
                 --gray-mid-dark: rgba(0,0,0,.70);
                 --gray-dark: rgba(0,0,0,.87);
+                --gray-darkest: #000000;
 
                 --gray-border: rgba(0,0,0,.15);
 
                 /*--module-primary: #00AEEF;*/
-                --module-primary: #4893ff;
+                --module-primary: #0099ff;
                 /*--module-primary-dark: #4893ff;*/
 
-                --module-sec-blue: #1E86BF;
-                --module-sec-green: #00A651;
-                --module-sec-lightgreen: #8DC63F;
-                --module-sec-gray: #43525A;
+                --module-sec-blue: #0061e9;
+                --module-sec-green: #009a54;
+                --module-sec-lightgreen: #72c300;
+                --module-sec-gray: #233944;
 
                 --module-error: #EA4022;
                 --module-error-2: #f1B8AE;
-                --module-warning: #FF9640;
-                --module-warning-2: #FFCA9E;
-                --module-success: #8DC63F;
-                --module-success-2: #C3E88B;
+                --module-warning: #FF9044;
+                --module-warning-2: #FFC8a2;
+                --module-success: #72c300;
+                --module-success-2: #bef078;
                 --module-info: #CEBC06;
                 --module-info-2: #FFF176;
 
@@ -95,16 +96,6 @@
                 --paper-radio-button-checked-color: var(--module-primary);
             }
 
-            /** /deep/ *[starred] /deep/ label::after {*/
-                /*content: " *";*/
-                /*font-weight: bold;*/
-                /*color: var(--module-error);*/
-            /*}*/
-
-            /** /deep/ *[starred] /deep/ .search-input /deep/ label::after {*/
-                /*content: "";*/
-            /*}*/
-
             etools-content-panel {
                 position: relative;
 
@@ -118,7 +109,18 @@
                     left: 13px;
                     width: 45px;
                     height: 45px;
-                }'}
+                }'};
+
+                --ecp-header-title: #{'{
+                    font-weight: 500;
+                    line-height: 48px;
+                }'};
+            }
+
+            div[slot="panel-btns"] {
+                position: absolute;
+                top: 4px;
+                right: 16px;
             }
 
             .pr-25 { padding-right: 25px !important; }

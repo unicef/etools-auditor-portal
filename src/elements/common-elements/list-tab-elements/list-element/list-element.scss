@@ -46,9 +46,13 @@
             &.center { text-align: center; }
         }
         a.col-data {
-            color: #40c4ff;
+            color: var(--module-primary);
+            font-weight: 500;
+            cursor: pointer;
 
             &[href="#"] {
+                cursor: default;
+                font-weight: 400;
                 color: initial;
                 pointer-events: none;
             }

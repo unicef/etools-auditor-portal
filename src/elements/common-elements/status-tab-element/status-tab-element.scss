@@ -165,7 +165,8 @@
                 iron-icon {
                     width: 25px;
                     height: 25px;
-                    color: var(--module-error);
+                    //color: var(--module-warning);
+                    color: var(--gray-darkest);
                 }
             }
             .status {
