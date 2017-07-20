@@ -102,7 +102,6 @@ Polymer({
     },
 
     _pageChanged: function(page) {
-        console.log('_pageChanged')
         if (page === 'new' || page === 'list') {
             this.set('engagement', {
                 status: '',
