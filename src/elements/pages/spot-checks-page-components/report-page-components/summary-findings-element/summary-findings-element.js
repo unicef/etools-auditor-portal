@@ -30,10 +30,6 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    category_of_observation: '',
-                    deadline_of_action: null,
-                    recommendation: '',
-                    agreed_action_by_ip: ''
                 };
             }
         },
@@ -48,10 +44,13 @@ Polymer({
                     }, {
                         'size': 50,
                         'label': 'Subject Area',
-                        'path': 'category_of_observation.display_name'
+                        'custom': true,
+                        'property': 'category_of_observation',
+                        'doNotHide': true
                     },
                     {
                         'size': 25,
+                        'name': 'date',
                         'label': 'Deadline of Action',
                         'path': 'deadline_of_action'
                     }
@@ -122,6 +121,11 @@ Polymer({
         return `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
     },
 
+    getCategoryDisplayName: function(value) {
+        let categoryOfObservation = _.find(this.categoryOfObservation, ['value', value]);
+        return categoryOfObservation ? categoryOfObservation.display_name : '--';
+    },
+
     _getLength: function(dataItems) {
         return dataItems.filter((item) => {
             return item.priority === this.priority.value;
@@ -165,29 +169,11 @@ Polymer({
             } else {
                 dataItem = item;
             }
-
             let compareItems = (changedObj, originalObj) => {
-                if (changedObj.category_of_observation) {
-                    if (changedObj.category_of_observation !== originalObj.category_of_observation) {
-                        return false;
-                    }
-                }
-                if (changedObj.deadline_of_action) {
-                    if (changedObj.deadline_of_action !== originalObj.deadline_of_action) {
-                        return false;
-                    }
-                }
-                if (changedObj.recommendation) {
-                    if (changedObj.recommendation !== originalObj.recommendation) {
-                        return false;
-                    }
-                }
-                if (changedObj.agreed_action_by_ip) {
-                    if (changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip) {
-                        return false;
-                    }
-                }
-                return true;
+                return !((changedObj.category_of_observation && changedObj.category_of_observation !== originalObj.category_of_observation) ||
+                (changedObj.deadline_of_action && changedObj.deadline_of_action !== originalObj.deadline_of_action) ||
+                (changedObj.recommendation && changedObj.recommendation !== originalObj.recommendation) ||
+                (changedObj.agreed_action_by_ip && changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip));
             };
             if (!_.isEqualWith(dataItem, this.originalData[index], compareItems)) {
                 data.push(dataItem);
@@ -200,10 +186,12 @@ Polymer({
         if (!this.dialogOpened) {
             return null;
         }
-        let data = _.clone(this.editedItem);
-        if (data.category_of_observation && data.category_of_observation.value) {
-            data.category_of_observation = data.category_of_observation.value;
-        }
+        let data = _.cloneWith(this.editedItem, (item) => {
+            if (item.category_of_observation && item.category_of_observation.value) {
+                item.category_of_observation = item.category_of_observation.value;
+            }
+            return item;
+        });
         return [data];
     }
 });
