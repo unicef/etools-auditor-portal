@@ -74,18 +74,14 @@
                             attr-for-selected="name">
                         <div name="overview">
                             <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
-                                <etools-content-panel class="cancellation-tab" panel-title="Cancellation Reason">
-                                    <div class="row-h group">
-                                        <div class="input-container input-container-l">
-                                            <!-- Comments -->
-                                            <paper-textarea
-                                                    class="without-border"
-                                                    value="{{engagement.cancel_comment}}"
-                                                    label="Comments"
-                                                    disabled
-                                                    readonly>
-                                            </paper-textarea>
-                                        </div>
+                                <etools-content-panel class="cancellation-tab" panel-title="">
+                                    <div slot="panel-btns" class="bookmark">
+                                        <iron-icon icon="bookmark"></iron-icon>
+                                    </div>
+
+                                    <div class="cancellation-title">Cancellation Note</div>
+                                    <div class="cancellation-text">
+                                        [[engagement.cancel_comment]]
                                     </div>
                                 </etools-content-panel>
                             </template>

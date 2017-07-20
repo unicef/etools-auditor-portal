@@ -175,6 +175,6 @@ Polymer({
         if (!partner || !((partner.address || partner.street_address) && partner.postal_code && partner.city)) { return ''; }
 
         let address = partner.street_address || partner.address;
-        return `${partner.city ? partner.city + ', ' : ''} ${address ? address + ', ' : ''} ${partner.postal_code || ''}`
+        return `${partner.city ? partner.city + ', ' : ''} ${address ? address + ', ' : ''} ${partner.postal_code || ''}`;
     }
 });

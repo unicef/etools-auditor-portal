@@ -94,11 +94,47 @@
                 }'};
 
                 --epc-toolbar: #{'{
-                    height: 51px;
+                    height: 4px;
                     padding: 2px;
-                    background-color: var(--module-error);
+                    background-color: var(--module-warning);
                 }'};
+
+                --ecp-content: #{'{
+                    padding-left: 100px;
+                }'};
+
+                --ecp-header-btns-wrapper: #{'{
+                    opacity: 1;
+                }'};
+
+                .cancellation-title {
+                    font-weight: 500;
+                    font-size: 19px;
+                    text-transform: uppercase;
+                    color: var(--module-warning);
+                    margin: 15px 0 26px;
+                }
+
+                .cancellation-text {
+                    font-size: 17px;
+                    white-space: pre-line;
+                    color: var(--gray-darkest);
+                }
             }
+
+            div[slot="panel-btns"].bookmark {
+                position: absolute;
+                top: -11px;
+                right: auto;
+                left: 20px;
+                color: var(--module-warning);
+
+                iron-icon {
+                    width: 70px !important;
+                    height: 70px !important;
+                }
+            }
+
             paper-tab {
                 margin-right: 10px;
                 --paper-tab-content: #{'{
