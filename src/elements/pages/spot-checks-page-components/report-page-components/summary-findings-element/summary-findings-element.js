@@ -41,7 +41,6 @@ Polymer({
                         'size': 25,
                         'name': 'finding',
                         'label': 'Finding Number',
-                        'path': 'finding_number'
                     }, {
                         'size': 50,
                         'label': 'Subject Area',
