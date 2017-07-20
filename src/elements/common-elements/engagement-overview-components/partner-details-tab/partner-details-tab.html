@@ -50,24 +50,12 @@
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                 </div>
 
-                <div class="input-container">
+                <div class="input-container input-container-ms">
                     <!-- Partner Address -->
                     <paper-input
                             class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                            value="[[partner.street_address]]"
+                            value="[[_setPartnerAddres(partner)]]"
                             label="Partner Address"
-                            placeholder="[[getReadonlyPlaceholder(partner)]]"
-                            disabled
-                            readonly>
-                    </paper-input>
-                </div>
-
-                <div class="input-container">
-                    <!-- Partner City -->
-                    <paper-input
-                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                            value="{{partner.city}}"
-                            label="Partner City"
                             placeholder="[[getReadonlyPlaceholder(partner)]]"
                             disabled
                             readonly>
@@ -76,18 +64,6 @@
             </div>
 
             <div class="row-h group">
-                <div class="input-container">
-                    <!-- Partner Postal Code -->
-                    <paper-input
-                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                            value="{{partner.postal_code}}"
-                            label="Partner Postal Code"
-                            placeholder="[[getReadonlyPlaceholder(partner)]]"
-                            disabled
-                            readonly>
-                    </paper-input>
-                </div>
-
                 <div class="input-container">
                     <!-- Partner Phone Number -->
                     <paper-input
@@ -111,9 +87,6 @@
                             readonly>
                     </paper-input>
                 </div>
-            </div>
-
-            <div class="row-h group">
 
                 <div class="input-container">
                     <!-- Partner  Officers-->
@@ -136,8 +109,11 @@
                             placeholder="[[getReadonlyPlaceholder(partner)]]">
                     </etools-searchable-multiselection-menu>
                 </div>
+            </div>
 
-                <div class="input-container input-container-m">
+            <div class="row-h group">
+
+                <div class="input-container input-container-l">
                     <!-- Active PD -->
                     <etools-searchable-multiselection-menu
                             class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"

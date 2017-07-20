@@ -169,5 +169,12 @@ Polymer({
         return this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
             !partner || !partner.partnerOfficers || !partner.partnerOfficers.length ||
             partner.partnerOfficers.length < 2;
+    },
+
+    _setPartnerAddres: function(partner) {
+        if (!partner || !((partner.address || partner.street_address) && partner.postal_code && partner.city)) { return ''; }
+
+        let address = partner.street_address || partner.address;
+        return `${partner.city ? partner.city + ', ' : ''} ${address ? address + ', ' : ''} ${partner.postal_code || ''}`
     }
 });
