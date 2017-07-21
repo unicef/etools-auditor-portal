@@ -68,35 +68,29 @@
                 request-in-process="[[requestInProcess]]">
 
             <div class="row-h repeatable-item-container" without-line>
-                <template is="dom-if" if="[[editedItem.file_name]]">
-                    <div class="form-title" title$="[[editedItem.file_name]]">
-                        <div class="text truncate">[[editedItem.file_name]]</div>
-                    </div>
-                </template>
-
                 <div class="repeatable-item-content">
                     <template is="dom-if" if="[[fileTypeRequired]]">
                         <div class="row-h group">
                             <div class="input-container input-container-ms">
-                                    <etools-searchable-multiselection-menu
-                                            id="fileType"
-                                            class="validate-input disabled-as-readonly"
-                                            value="{{editedItem.type}}"
-                                            label="[[fileTypesLabel]]"
-                                            placeholder="&#8212;"
-                                            options="[[fileTypes]]"
-                                            custom-object-options
-                                            option-label="display_name"
-                                            option-value="value"
-                                            required$="[[fileTypeRequired]]"
-                                            disabled$="[[requestInProcess]]"
-                                            readonly$="[[requestInProcess]]"
-                                            invalid="{{errors.file_type}}"
-                                            error-message="{{errors.file_type}}"
-                                            on-focus="_resetFieldError"
-                                            on-value-change="_setFileType"
-                                            hide-search>
-                                    </etools-searchable-multiselection-menu>
+                                <etools-searchable-multiselection-menu
+                                        id="fileType"
+                                        class$="validate-input disabled-as-readonly [[_setRequiredClass(fileTypeRequired)]]"
+                                        value="{{editedItem.type}}"
+                                        label="[[fileTypesLabel]]"
+                                        placeholder="&#8212;"
+                                        options="[[fileTypes]]"
+                                        custom-object-options
+                                        option-label="display_name"
+                                        option-value="value"
+                                        required$="[[fileTypeRequired]]"
+                                        disabled$="[[requestInProcess]]"
+                                        readonly$="[[requestInProcess]]"
+                                        invalid="{{errors.file_type}}"
+                                        error-message="{{errors.file_type}}"
+                                        on-focus="_resetFieldError"
+                                        on-value-change="_setFileType"
+                                        hide-search>
+                                </etools-searchable-multiselection-menu>
                             </div>
                         </div>
                     </template>
@@ -104,35 +98,51 @@
                     <template is="dom-if" if="[[addDialog]]">
                         <div class="row-h group">
                             <div class="input-container input-container-ms">
-                                <!-- File Upload -->
-                                <paper-input-container
-                                        class="validate-input"
-                                        title="[[uploadLabel]]"
-                                        always-float-label
-                                        disabled$="[[requestInProcess]]"
-                                        readonly$="[[requestInProcess]]"
-                                        invalid="{{errors.file}}">
-                                    <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
-
-                                    <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
-                                        <iron-icon icon="file-upload"></iron-icon>
-                                        [[uploadLabel]]
-                                    </paper-button>
-
-                                    <template is="dom-if" if="[[errors.file]]">
-                                        <paper-input-error aria-live="assertive">[[errors.file]]</paper-input-error>
-                                    </template>
-
-                                    <input
-                                            id="fileInput"
+                                <template is="dom-if" if="[[!editedItem.file_name]]">
+                                    <!-- File Upload -->
+                                    <paper-input-container
                                             class="validate-input"
-                                            type="file"
-                                            hidden
-                                            required
+                                            title="[[uploadLabel]]"
+                                            always-float-label
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
-                                            on-change="_fileSelected">
-                                </paper-input-container>
+                                            invalid="{{errors.file}}">
+                                        <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
+
+                                        <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
+                                            <iron-icon icon="file-upload"></iron-icon>
+                                            [[uploadLabel]]
+                                        </paper-button>
+
+                                        <template is="dom-if" if="[[errors.file]]">
+                                            <paper-input-error aria-live="assertive">[[errors.file]]</paper-input-error>
+                                        </template>
+
+                                        <input id="fileInput"
+                                               class="validate-input"
+                                               type="file"
+                                               hidden
+                                               required
+                                               disabled$="[[requestInProcess]]"
+                                               readonly$="[[requestInProcess]]"
+                                               on-change="_fileSelected">
+                                    </paper-input-container>
+                                </template>
+
+                                <template is="dom-if" if="[[editedItem.file_name]]">
+                                    <paper-input
+                                            class="disabled-as-readonly validate-input"
+                                            value="{{editedItem.file_name}}"
+                                            label="[[uploadLabel]]"
+                                            required
+                                            disabled$="[[requestInProcess]]"
+                                            readonly
+                                            invalid="{{errors.file}}"
+                                            error-message="{{errors.file}}"
+                                            on-tap="_openFileChooser">
+                                        <iron-icon prefix icon="icons:attachment"></iron-icon>
+                                    </paper-input>
+                                </template>
                             </div>
                         </div>
                     </template>

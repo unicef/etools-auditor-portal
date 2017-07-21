@@ -92,6 +92,7 @@
             '_updateHeadings(fileTypeRequired)',
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject)',
+            'updateStyles(requestInProcess, editedItem)',
         ],
 
         _getFileType: function(fileType) {
@@ -114,6 +115,10 @@
             }
 
             return true;
+        },
+
+        _setRequiredClass: function(required) {
+            return required ? 'required' : '';
         },
 
         _updateHeadings: function(fileTypeRequired) {
@@ -147,6 +152,7 @@
                 let evt = document.createEvent('MouseEvents');
                 evt.initEvent('click', true, false);
                 elem.dispatchEvent(evt);
+                this.set('errors.file', '');
             }
         },
 
@@ -156,16 +162,16 @@
             let files = e.target.files || {};
             let file = files[0];
 
-            if (this._checkAlreadySelected()) {
-                return false;
-            }
-
             if (file && file instanceof File) {
+                let blob = new Blob([file]);
+                let url  = URL.createObjectURL(blob);
+
                 this.set('editedItem.file_name', file.name);
                 this.editedItem.raw = file;
+                this.editedItem.file = url;
                 this.editedItem.created = new Date().toISOString();
 
-                return true;
+                return !this._fileAlreadySelected();
             }
         },
 
@@ -277,7 +283,7 @@
             });
         },
 
-        _checkAlreadySelected: function() {
+        _fileAlreadySelected: function() {
             if (!this.dataItems) {return false;}
 
             let alreadySelectedIndex = this.dataItems.findIndex((file) => {
@@ -310,7 +316,7 @@
                 valid = false;
             }
 
-            if (this.addDialog && this._checkAlreadySelected()) {
+            if (this.addDialog && this._fileAlreadySelected()) {
                 valid = false;
             }
 
