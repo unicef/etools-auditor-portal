@@ -113,19 +113,19 @@
             if (!details || !details.type) { throw 'Event type is not provided!'; }
             switch (details.type) {
                 case 'save':
-                    this._saveProgress();
+                    this._saveProgress(event, details);
                     break;
                 case 'create':
-                    this._saveNewEngagement();
+                    this._saveNewEngagement(event, details);
                     break;
                 case 'submit':
-                    this._submitReport();
+                    this._submitReport(event, details);
                     break;
                 case 'finalize':
-                    this._finalizeReport();
+                    this._finalizeReport(event, details);
                     break;
                 case 'cancel':
-                    this._openCancelDialog();
+                    this._openCancelDialog(event, details);
                     break;
                 default:
                     throw `Unknown event type: ${details.type}`;

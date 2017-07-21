@@ -154,7 +154,7 @@ Polymer({
 
         if (this.dialogOpened && !this.saveWithButton) {
             this.requestInProcess = true;
-            this.fire('save-progress', {quietAdding: true});
+            this.fire('action-activated', {type: 'save', quietAdding: true});
             return;
         }
 
