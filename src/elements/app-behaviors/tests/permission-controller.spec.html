@@ -330,12 +330,40 @@
         });
 
         it('check allowed actions with actionAllowed method', function() {
-            assert.isTrue(behaviorObj.actionAllowed('test', 'saveEngagement'));
-            assert.isTrue(behaviorObj.actionAllowed('test', 'createEngagement'));
+            assert.isTrue(behaviorObj.actionAllowed('test', 'save'));
+            assert.isTrue(behaviorObj.actionAllowed('test', 'save'));
             assert.isFalse(behaviorObj.actionAllowed('test', 'submit'));
             assert.isFalse(behaviorObj.actionAllowed('test2', 'submit'));
             assert.isFalse(behaviorObj.actionAllowed('test3', 'submit'));
-        })
+        });
+
+        describe('method noActionsAllowed', function() {
+            it('returns true if no collection argument provided', function() {
+                assert.isTrue(behaviorObj.noActionsAllowed());
+                assert.isTrue(behaviorObj.noActionsAllowed(false));
+                assert.isTrue(behaviorObj.noActionsAllowed(''));
+            });
+
+            it('throws if argument is not a string', function() {
+                var foo = behaviorObj.noActionsAllowed.bind(behaviorObj, {});
+                var bar = behaviorObj.noActionsAllowed.bind(behaviorObj, 2389);
+                var baz = behaviorObj.noActionsAllowed.bind(behaviorObj, '234');
+
+                assert.throws(foo);
+                assert.throws(bar);
+                assert.doesNotThrow(baz);
+            });
+
+            it('returns true if collection exists and allowed_actions.length is 0', function() {
+                assert.isTrue(behaviorObj.noActionsAllowed('is true'));
+
+                behaviorObj._addToCollection('test', test_data);
+                behaviorObj._addToCollection('test2', test_data2);
+
+                assert.isTrue(behaviorObj.noActionsAllowed('test2'));
+                assert.isFalse(behaviorObj.noActionsAllowed('test'));
+            });
+        });
 
     });
 </script>
