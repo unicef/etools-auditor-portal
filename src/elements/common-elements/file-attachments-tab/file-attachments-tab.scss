@@ -64,12 +64,13 @@ etools-content-panel {
 
 .upload-button {
     --paper-button: #{'{
-        @apply(--layout-flex);
-        @apply(--layout-start-justified);
+        display: block;
+        width: 120px;
         font-weight: bold;
         font-size: 14px;
         margin: 0;
-        padding-right: 19px;
+        padding-left: 0;
+        padding-right: 4px;
         height: 36px;
         color: var(--module-primary);
         background-color: #ffffff;
