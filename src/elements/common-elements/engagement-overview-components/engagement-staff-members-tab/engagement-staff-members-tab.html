@@ -38,10 +38,11 @@
                             placeholder="Search"
                             on-blur="searchBlur"
                             on-input="_searchChanged">
-                        <iron-icon prefix icon="search"></iron-icon>
+                        <iron-icon class="panel-button" prefix icon="search"></iron-icon>
                     </paper-input>
                 </div>
                 <paper-icon-button
+                        class="panel-button"
                         hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
                         title="Add"
                         on-tap="openAddDialog"
