@@ -1,4 +1,4 @@
-<!--import [polymer, iron-flex-layout, moment-element/moment-import, paper-checkbox]-->
+<!--import [polymer, iron-flex-layout, moment-element/moment-import, paper-checkbox, paper-tooltip]-->
 <!--import [shared-styles, tab-inputs-styles, module-styles, insert-html]-->
 
 <dom-module id="list-element">
@@ -29,10 +29,10 @@
                 <template is="dom-repeat" items="[[headings]]">
                     <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
                         <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
-                           href$="[[_getLink(item.link, data)]]"
-                           title="[[_getValue(item, data)]]">
+                           href$="[[_getLink(item.link, data)]]">
                             [[_getValue(item, data)]]
                         </a>
+                        <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                     </template>
 
                     <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>

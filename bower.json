@@ -38,10 +38,10 @@
     "etools-currency-amount-input": "^1.0.7",
     "etools-app-selector": "^1.0.3",
     "lodash": "4.17.4",
-    "web-component-tester": "^v6.0.0-prerelease.9"
+    "web-component-tester": "^v6.0.0-prerelease.9",
+    "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "resolutions": {
     "lodash": "^4.17.4"
   }

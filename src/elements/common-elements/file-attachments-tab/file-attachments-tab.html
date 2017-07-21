@@ -1,4 +1,4 @@
-<!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel]-->
+<!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel, paper-tooltip]-->
 <!--import [tab-inputs-styles, module-styles, shared-styles, table-elements-behavior, static-data-behavior]-->
 
 <dom-module id="file-attachments-tab">
@@ -6,16 +6,18 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
-        <etools-content-panel class="content-section clearfix" panel-title="[[title]]">
+        <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
-                <paper-icon-button
-                        class="panel-button"
-                        hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
-                        disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
-                        title="Add"
-                        on-tap="openAddDialog"
-                        icon="add-box">
-                </paper-icon-button>
+                <div>
+                    <paper-icon-button
+                            class="panel-button"
+                            hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                            disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
+                </div>
             </div>
             <list-header
                     id="list-header"
@@ -36,10 +38,10 @@
                         <a class="truncate"
                            href$="[[item.file]]"
                            download$="[[item.file_name]]"
-                           target="_blank"
-                           title$="[[item.file_name]]">
+                           target="_blank">
                             [[item.file_name]]
                         </a>
+                        <paper-tooltip offset="0">[[item.file_name]]</paper-tooltip>
                     </div>
 
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
@@ -102,7 +104,6 @@
                                     <!-- File Upload -->
                                     <paper-input-container
                                             class="validate-input"
-                                            title="[[uploadLabel]]"
                                             always-float-label
                                             disabled$="[[requestInProcess]]"
                                             readonly$="[[requestInProcess]]"
@@ -126,6 +127,7 @@
                                                disabled$="[[requestInProcess]]"
                                                readonly$="[[requestInProcess]]"
                                                on-change="_fileSelected">
+                                        <paper-tooltip offset="0">[[uploadLabel]]</paper-tooltip>
                                     </paper-input-container>
                                 </template>
 
