@@ -23,7 +23,7 @@
                     return {};
                 }
             },
-            otherActions: {
+            actions: {
                 type: Array,
                 value: function() {
                     return [];
@@ -31,7 +31,15 @@
             }
         },
 
-        observers: ['checkCanceled(engagementData.status)'],
+        observers: [
+            'checkCanceled(engagementData.status)',
+            'setActions(permissionBase)'
+        ],
+
+        setActions: function(permissionBase) {
+            let actions = permissionBase ? this.getActions(permissionBase) : [];
+            this.set('actions', actions);
+        },
 
         _getStatusState: function(statusNumber) {
             if (!this.engagementData || this.engagementData.status === undefined) { return; }
@@ -65,10 +73,6 @@
             return (status === 'canceled' && !this.engagementData[statusFields[+number]]) ? +number + 1 : number;
         },
 
-        closeMenu: function() {
-            this.statusBtnMenuOpened = false;
-        },
-
         _getFormattedDate: function(field) {
             if (!this.engagementData || !this.engagementData[field]) { return; }
             let date = new Date(this.engagementData[field]),
@@ -77,34 +81,8 @@
             return moment.utc(date).format(format);
         },
 
-        _btnClicked: function(e) {
-            if (!e || !e.target) { return; }
-            let target = e.target.classList.contains('other-options') ? e.target : e.target.parentElement,
-                isMainAction = !target.classList.contains('other-options') && !target.classList.contains('option-button') ;
-
-            if (isMainAction) {
-                this.fire('main-action-activated');
-                return;
-            }
-            if (target && target.hasAttribute('event-name')) {
-                this.fire(target.getAttribute('event-name'));
-            }
-        },
-
-        _showOtherActions: function(actions) {
-            return !!actions.length;
-        },
-
-        _setBtnClass: function(actions) {
-            if (actions.length) { return 'with-actions'; }
-        },
-
-        _showActionButtons: function(engagementData) {
-            let collectionName = engagementData.id ? `engagement_${engagementData.id}` : 'new_engagement';
-            return this.actionAllowed(collectionName, 'createEngagement') ||
-                this.actionAllowed(collectionName, 'saveEngagement') ||
-                this.actionAllowed(collectionName, 'submit') ||
-                this.actionAllowed(collectionName, 'finalize');
+        _showActionButtons: function(actions) {
+            return !!(actions && actions.length);
         },
 
         checkCanceled: function(status) {

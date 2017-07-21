@@ -43,7 +43,7 @@
         },
 
         _showAddButton: function() {
-            return this.actionAllowed('new_engagement', 'createEngagement');
+            return this.actionAllowed('new_engagement', 'create');
         },
 
         setupFiltersAndHeadings: function() {

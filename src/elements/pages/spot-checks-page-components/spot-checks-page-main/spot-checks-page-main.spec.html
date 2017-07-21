@@ -26,19 +26,6 @@
             myEl = fixture('element-fixture');
         });
 
-        describe('saving report', function() {
-            it('run _saveProgress method on second action event', function() {
-                sinon.spy(myEl, '_saveProgress');
-                sinon.stub(myEl, '_validateBasicInfo').returns(false);
-                myEl.fire('save-progress');
-
-                assert.isTrue(myEl._saveProgress.called);
-                myEl._saveProgress.restore();
-                myEl._validateBasicInfo.restore();
-            });
-
-        });
-
         describe('_validateEngagement method', function() {
             it('calls _validateBasicInfo method and validate method for report tab', function() {
                 var validate = sinon.spy();

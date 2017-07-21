@@ -543,58 +543,45 @@
 
         });
 
-        it('method _configButtonsData returns btn text and other actions depending on engagement status and permissions', function() {
-            behaviorObj.engagement = {};
-            behaviorObj.actionAllowed = sinon.stub().returns(false);
+        describe('method _processAction', function() {
+            it('throws if details.type argument evaluates to false', function() {
+                var f = behaviorObj._processAction.bind(behaviorObj, '', {});
+                var f2 = behaviorObj._processAction.bind(behaviorObj, '', {type: ''});
 
-            behaviorObj._configButtonsData();
+                assert.throws(behaviorObj._processAction);
+                assert.throws(f);
+                assert.throws(f2);
+            });
 
-            assert.equal(behaviorObj.mainBtnText, 'Save');
-            assert.equal(behaviorObj.otherActions.length, 1);
+            it('calls methods depending on type', function() {
+                sinon.stub(behaviorObj, '_saveProgress');
+                behaviorObj._saveNewEngagement = sinon.spy();
+                sinon.stub(behaviorObj, '_submitReport');
+                sinon.stub(behaviorObj, '_finalizeReport');
+                sinon.stub(behaviorObj, '_openCancelDialog');
 
-            behaviorObj.engagement.status = 'report_submitted';
+                behaviorObj._processAction({}, {type: 'save'});
+                behaviorObj._processAction({}, {type: 'submit'});
+                behaviorObj._processAction({}, {type: 'finalize'});
+                behaviorObj._processAction({}, {type: 'cancel'});
+                behaviorObj._processAction({}, {type: 'create'});
 
-            behaviorObj._configButtonsData();
-            assert.equal(behaviorObj.mainBtnText, 'Finalize');
-            assert.equal(behaviorObj.otherActions.length, 1);
+                assert.isTrue(behaviorObj._saveProgress.calledOnce);
+                assert.isTrue(behaviorObj._saveNewEngagement.calledOnce);
+                assert.isTrue(behaviorObj._submitReport.calledOnce);
+                assert.isTrue(behaviorObj._finalizeReport.calledOnce);
+                assert.isTrue(behaviorObj._openCancelDialog.calledOnce);
 
-            behaviorObj.engagement.status = 'other';
-            behaviorObj.actionAllowed.returns(true);
-            behaviorObj.push = sinon.spy();
+                behaviorObj._saveProgress.restore();
+                behaviorObj._submitReport.restore();
+                behaviorObj._finalizeReport.restore();
+                behaviorObj._openCancelDialog.restore();
+            });
 
-            behaviorObj._configButtonsData();
-            assert.equal(behaviorObj.mainBtnText, 'Submit');
-            assert.isTrue(behaviorObj.push.called);
-            assert.equal(behaviorObj.otherActions.length, 2);
-
-
-        });
-
-        it('method _mainActionActivated run methods depending on engagement status', function() {
-            sinon.stub(behaviorObj, '_submitReport');
-            sinon.stub(behaviorObj, '_finalizeReport');
-            sinon.stub(behaviorObj, '_saveProgress');
-            behaviorObj.actionAllowed = sinon.stub().returns(false);
-            behaviorObj.engagement = {};
-
-            behaviorObj._mainActionActivated();
-
-            assert.isTrue(behaviorObj._saveProgress.called);
-            assert.isFalse(behaviorObj._submitReport.called);
-            assert.isFalse(behaviorObj._finalizeReport.called);
-
-            behaviorObj.engagement.status = 'report_submitted';
-
-            behaviorObj._mainActionActivated();
-
-            assert.isTrue(behaviorObj._finalizeReport.called);
-
-            behaviorObj.engagement.status = 'other';
-            behaviorObj.actionAllowed.returns(true);
-
-            behaviorObj._mainActionActivated();
-
-            assert.isTrue(behaviorObj._submitReport.called);
+            it('throws for unknown type', function() {
+                var f = behaviorObj._processAction.bind(behaviorObj, '', {type: 'test'});
+                assert.throws(f);
+            });
         });
 
         it('method _attachmentsReadonly run isReadonly method and return readonly status', function() {

@@ -30,7 +30,7 @@ Polymer({
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
             this.view = 'list';
-        } else if (view === 'new' && this.actionAllowed('new_engagement', 'createEngagement')) {
+        } else if (view === 'new' && this.actionAllowed('new_engagement', 'create')) {
             this.clearQueries();
             this.view = 'new';
         } else if (view === '' || _.isUndefined(view)) {

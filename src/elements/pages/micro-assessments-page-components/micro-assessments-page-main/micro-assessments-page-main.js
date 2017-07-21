@@ -33,17 +33,12 @@ Polymer({
     observers: [
         '_routeConfig(route)',
         '_setPermissionBase(engagement.id)',
-        '_tabChanged(tab)',
-        '_configButtonsData(engagement, permissionBase)'
+        '_tabChanged(tab)'
     ],
 
     listeners: {
         'engagement-info-loaded': '_infoLoaded',
         'engagement-updated': '_engagementUpdated',
-        'save-progress': '_saveProgress',
-        'finalize-engagement': '_finalizeReport',
-        'submit-engagement': '_submitReport',
-        'cancel-engagement': '_openCancelDialog',
         'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
     },
