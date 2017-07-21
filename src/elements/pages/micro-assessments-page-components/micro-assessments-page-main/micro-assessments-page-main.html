@@ -35,7 +35,7 @@
                     hide-print-button
                     export-link="[[_setExportLink(engagement)]]"
                     engagement="[[engagement]]"
-                    title$="[[engagement.partner.name]] - Micro Assessment">
+                    page-title="[[engagement.partner.name]] - Micro Assessment">
             </pages-header-element>
 
             <div class="tab-selector">
@@ -129,7 +129,7 @@
                         <div name="attachments">
                             <file-attachments-tab
                                     id="engagement_attachments"
-                                    title="Related Documents"
+                                    tab-title="Related Documents"
                                     base-permission-path="{{permissionBase}}"
                                     main-property="engagement_attachments"
                                     error-object="{{errorObject}}"
@@ -145,7 +145,7 @@
                             <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
-                                        title="Report Attachments"
+                                        tab-title="Report Attachments"
                                         base-permission-path="{{permissionBase}}"
                                         main-property="report_attachments"
                                         error-object="{{errorObject}}"

@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
-            paper-input, paper-toast, lodash]-->
+            paper-input, paper-toast, lodash, paper-tooltip]-->
 
 <!--import [list-header, list-element, tab-inputs-styles, module-styles, shared-styles, dialog-element,
             table-elements-behavior, static-data-behavior, common-methods-behavior]-->
@@ -53,7 +53,7 @@
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
-                        <div class="input-container" title$="{{editedItem.partner.name}}">
+                        <div class="input-container">
                             <!-- Implementing partner name -->
                             <paper-input
                                     class="validate-input disabled-as-readonly"
@@ -63,6 +63,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.partner.name]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">

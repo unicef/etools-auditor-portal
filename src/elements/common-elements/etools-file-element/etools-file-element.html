@@ -1,4 +1,4 @@
-<!--import [polymer, paper-toast, etools-searchable-multiselection-menu]-->
+<!--import [polymer, paper-toast, etools-searchable-multiselection-menu, paper-tooltip]-->
 <!--import [etools-file-styles, tab-inputs-styles]-->
 
 <dom-module id="etools-file-element">
@@ -30,7 +30,8 @@
                             <div class$="selected-file-container [[_getFileSelectedClass(file, allowDownload)]]">
                                 <iron-icon class="file-icon" icon="attachment"></iron-icon>
                                 <div class="file-name-wrapper">
-                                    <span class="file-name" title="[[file.file_name]]">[[file.file_name]]</span>
+                                    <span class="file-name">[[file.file_name]]</span>
+                                    <paper-tooltip offset="0">[[file.file_name]]</paper-tooltip>
                                 </div>
 
                                 <template is="dom-if" if="[[activateFileTypes]]">
@@ -56,14 +57,16 @@
                             </div>
                             <div class$="file-actions [[_getFileSelectedClass(file, allowDownload)]]">
                                 <!-- download btn if file was uploaded -->
-                                <paper-button class="download-button"
-                                              disabled$="[[!_showDownloadBtn(file, allowDownload)]]"
-                                              hidden$="[[!_showDownloadBtn(file, allowDownload)]]"
-                                              on-tap="_downloadFile"
-                                              title="Download">
-                                    <iron-icon icon="cloud-download"></iron-icon>
-                                    Download
-                                </paper-button>
+                                <div>
+                                    <paper-button class="download-button"
+                                                  disabled$="[[!_showDownloadBtn(file, allowDownload)]]"
+                                                  hidden$="[[!_showDownloadBtn(file, allowDownload)]]"
+                                                  on-tap="_downloadFile">
+                                        <iron-icon icon="cloud-download"></iron-icon>
+                                        Download
+                                    </paper-button>
+                                    <paper-tooltip offset="0">Download</paper-tooltip>
+                                </div>
 
                                 <paper-button class="change-button"
                                               on-tap="_changeFile"
@@ -96,12 +99,12 @@
                   <span>
                     <paper-button class="upload-button"
                                   on-tap="_openFileChooser"
-                                  title="[[uploadLabel]]"
                                   disabled$="[[readonly]]"
                                   raised>
                         <iron-icon icon="file-upload"></iron-icon>
                         [[uploadLabel]]
                     </paper-button>
+                    <paper-tooltip offset="0">[[uploadLabel]]</paper-tooltip>
                   </span>
                 </div>
             </div>
