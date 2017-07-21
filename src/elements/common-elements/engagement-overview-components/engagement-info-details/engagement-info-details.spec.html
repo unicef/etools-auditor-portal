@@ -20,7 +20,7 @@
 
 <script>
     describe('<engagement-info-details>', function () {
-        var myEl, partnerInput, auditTypeInput, numberInput;
+        var myEl, partnerInput, auditTypeInput, numberInput, server;
 
         before(function() {
             myEl = fixture('element-fixture');
@@ -39,6 +39,8 @@
                     "label": "Agreement"
                 }
             });
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
         });
 
         beforeEach(function () {
@@ -46,6 +48,10 @@
             numberInput = Polymer.dom(myEl.root).querySelector('#purchaseOrder');
             partnerInput = Polymer.dom(myEl.root).querySelector('#partner');
             auditTypeInput = Polymer.dom(myEl.root).querySelector('#engagementType');
+        });
+
+        after(function() {
+            server.restore();
         });
 
         it('update styles', function () {
@@ -168,13 +174,13 @@
         });
 
         describe('method _requestAgreement', function() {
-            xit('returns undefined if requestInProcess property is true', function() {
+            it('returns undefined if requestInProcess property is true', function() {
                 myEl.requestInProcess = true;
                 assert.isTrue(myEl.requestInProcess);
                 assert.isUndefined(myEl._requestAgreement());
             });
 
-            xit('calls resetAgreement method', function() {
+            it('calls resetAgreement method', function() {
                 myEl.requestInProcess = false;
                 sinon.spy(myEl, 'resetAgreement');
 
@@ -182,7 +188,7 @@
                 assert.isTrue(myEl.resetAgreement.called);
             });
 
-            xit('returns undefined if there is no event property or value, or value is NaN or equal to orderNumber', function() {
+            it('returns undefined if there is no event property or value, or value is NaN or equal to orderNumber', function() {
                 myEl.requestInProcess = false;
                 var event;
                 assert.isUndefined(myEl._requestAgreement(event));
@@ -198,7 +204,7 @@
                 assert.isUndefined(myEl._requestAgreement(event));
             });
 
-            xit('returns true and sets requestInProcess property if there is value', function() {
+            it('returns true and sets requestInProcess property if there is value', function() {
                 myEl.requestInProcess = false;
                 var event = {target: {value: 26}};
 

@@ -42,6 +42,14 @@ Polymer({
             value: function() {
                 return [
                     {
+                        'size': 10,
+                        'label': 'Has Access',
+                        'name': 'hasAccess',
+                        'align': 'center',
+                        'property': 'hasAccess',
+                        'checkbox': true
+                    },
+                    {
                         'size': 18,
                         'label': 'Position',
                         'name': 'user.profile.job_title'
@@ -61,14 +69,6 @@ Polymer({
                         'size': 18,
                         'label': 'E-mail Address',
                         'name': 'user.email'
-                    },
-                    {
-                        'size': 10,
-                        'label': 'Has Access',
-                        'name': 'hasAccess',
-                        'align': 'center',
-                        'property': 'hasAccess',
-                        'checkbox': true
                     }
                 ];
             }
@@ -152,14 +152,14 @@ Polymer({
 
     changePermission: function(basePermissionPath) {
         if (!basePermissionPath) { return; }
-        let editObj = this.columns && this.columns[this.columns.length - 1];
+        let editObj = this.columns && this.columns[0];
         if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
             _.each(this.columns, (value, index) => {
                 this.set(`columns.${index}.size`, 18);
             });
-            this.push('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
+            this.unshift('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
         } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
-            this.pop('columns');
+            this.shift('columns');
             _.each(this.columns, (value, index) => {
                 this.set(`columns.${index}.size`, 20);
             });

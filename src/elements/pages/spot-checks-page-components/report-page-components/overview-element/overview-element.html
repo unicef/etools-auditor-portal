@@ -17,8 +17,8 @@
                     <paper-input
                             id="dateFaceStartInput"
                             class="disabled-as-readonly"
-                            value="[[prettyDate(data.start_date)]]"
-                            label="[[getLabel('start_date', basePermissionPath)]]"
+                            value="[[prettyDate(data.face_form_start_date)]]"
+                            label="[[getLabel('face_form_start_date', basePermissionPath)]]"
                             placeholder="&#8212;"
                             data-selector="dateFaceStartSelector"
                             disabled
@@ -28,8 +28,8 @@
                                 modal="[[datepickerModal]]"
                                 prefix
                                 format="YYYY-MM-DD"
-                                date="[[prepareDate(data.start_date)]]"
-                                pretty-date="{{data.start_date}}"
+                                date="[[prepareDate(data.face_form_start_date)]]"
+                                pretty-date="{{data.face_form_start_date}}"
                                 no-init
                                 show-clear-btn>
                         </etools-datepicker>
@@ -40,8 +40,8 @@
                     <paper-input
                             id="dateFaceEndInput"
                             class="disabled-as-readonly"
-                            value="[[prettyDate(data.end_date)]]"
-                            label="[[getLabel('end_date', basePermissionPath)]]"
+                            value="[[prettyDate(data.face_form_end_date)]]"
+                            label="[[getLabel('face_form_end_date', basePermissionPath)]]"
                             placeholder="&#8212;"
                             data-selector="dateFaceEndSelector"
                             disabled
@@ -51,8 +51,8 @@
                                 modal="[[datepickerModal]]"
                                 prefix
                                 format="YYYY-MM-DD"
-                                date="[[prepareDate(data.end_date)]]"
-                                pretty-date="{{data.end_date}}"
+                                date="[[prepareDate(data.face_form_end_date)]]"
+                                pretty-date="{{data.face_form_end_date}}"
                                 no-init
                                 show-clear-btn>
                         </etools-datepicker>

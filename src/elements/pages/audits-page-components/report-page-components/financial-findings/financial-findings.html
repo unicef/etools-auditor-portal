@@ -19,6 +19,7 @@
                         icon="add-box">
                 </paper-icon-button>
             </div>
+
             <list-header
                     id="list-header"
                     no-ordered
@@ -29,6 +30,7 @@
                 <list-element
                         class="list-element"
                         data="[[item]]"
+                        item-index="[[index]]"
                         headings="[[columns]]"
                         details="[[details]]"
                         has-collapse

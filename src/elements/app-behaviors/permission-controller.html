@@ -1,5 +1,4 @@
 <!--import [lodash]-->
-
 <script>
     'use strict';
     (function () {
@@ -26,6 +25,7 @@
                 if (_permissionCollection[collectionName]) { return false; }
 
                 _permissionCollection[collectionName] = data;
+                this._manageActions(collectionName);
 
                 return true;
             },
@@ -41,6 +41,26 @@
                 }
 
                 _permissionCollection[collectionName] = data;
+                this._manageActions(collectionName);
+                return true;
+            },
+
+            _manageActions: function(collectionName) {
+                let collection = _permissionCollection[collectionName];
+                if (!collection) {
+                    console.warn(`Collection ${collectionName} does not exist!`);
+                    return false;
+                }
+
+                let actions = [];
+                if (this.isValidCollection(collection.PUT)) {
+                    actions.push('save');
+                }
+                if (this.isValidCollection(collection.POST)) {
+                    actions.push('create');
+                }
+
+                collection.allowed_actions = actions.concat(collection.allowed_FSM_transitions || []);
                 return true;
             },
 
@@ -115,7 +135,26 @@
                 collection = _permissionCollection[collection];
 
                 return !!(collection && collection.allowed_actions && ~collection.allowed_actions.indexOf(action));
+            },
+
+            noActionsAllowed: function(collection) {
+                if (!collection) { return true; }
+                if (typeof collection !== 'string') { throw new Error('Collection argument must be a string'); }
+                collection = _permissionCollection[collection];
+
+                return !(collection && collection.allowed_actions && collection.allowed_actions.length);
+            },
+
+            getActions: function(collection) {
+                if (!collection) { return null; }
+                if (typeof collection !== 'string') { throw new Error('Collection argument must be a string'); }
+                collection = _permissionCollection[collection];
+
+                return collection && collection.allowed_actions || null;
             }
+
         };
     })()
+
+
 </script>

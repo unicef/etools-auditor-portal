@@ -19,7 +19,16 @@
 
 <script>
     describe('<user-dropdown>', function () {
-        let myEl;
+        var myEl, server;
+
+        before(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
+        });
+
+        after(function() {
+            server.restore();
+        });
 
         beforeEach(function () {
             myEl = fixture('user-dropdown-fixture');
@@ -55,7 +64,7 @@
         });
 
         describe('method _logout()', function () {
-            xit('resets user data', function () {
+            it('resets user data', function () {
                 let spy = sinon.spy(myEl, 'resetOldUserData');
                 sinon.stub(myEl, '_changeLocation');
 
