@@ -12,13 +12,23 @@
         }
     }
 
+    etools-content-panel {
+        div[slot="panel-btns"] {
+            width: 100%;
+        }
+
+        .add-button-container {
+            float: right;
+        }
+    }
+
     .search-input-container {
         position: absolute;
         right: 40px;
         height: 48px;
         color: #fff;
         overflow: hidden;
-        width: 260px;
+        width: 22%;
 
         .search-input {
             width: 5%;
