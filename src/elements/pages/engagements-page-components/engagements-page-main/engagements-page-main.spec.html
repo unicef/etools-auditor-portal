@@ -20,32 +20,41 @@
 
 <script>
     describe('<engagements-page-main>', function () {
-        var myEl;
+        var myEl, server;
+
+        before(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
+        });
 
         beforeEach(function () {
             myEl = fixture('element-fixture');
         });
 
+        after(function() {
+            server.restore();
+        });
+
         describe('method _configListParams', function() {
-            xit('calls parseQueries method', function() {
+            it('calls parseQueries method', function() {
                 sinon.spy(myEl, 'parseQueries');
                 myEl._configListParams();
                 assert.isTrue(myEl.parseQueries.called);
                 myEl.parseQueries.restore();
             });
 
-            xit('checks and set default queries by calling updateQueries method', function() {
+            it('checks and set default queries by calling updateQueries method', function() {
                 sinon.stub(myEl, 'parseQueries');
                 sinon.stub(myEl, 'updateQueries');
 
                 myEl._configListParams();
-                assert.isTrue(myEl.updateQueries.calledWith({page_size: '10', ordering: 'agreement__order_number', page: '1'}));
+                assert.isTrue(myEl.updateQueries.calledWith({page_size: '10', ordering: 'unique_id', page: '1'}));
 
                 myEl.parseQueries.restore();
                 myEl.updateQueries.restore();
             });
 
-            xit('save queries to lastParams if they are changed', function() {
+            it('save queries to lastParams if they are changed', function() {
                 myEl.lastParams = null;
                 sinon.stub(myEl, 'parseQueries');
                 sinon.stub(myEl, 'updateQueries');
@@ -62,7 +71,7 @@
             });
         });
 
-        xit('method _setEngagementsListQueries sets partnersListQueries ', function() {
+        it('method _setEngagementsListQueries sets partnersListQueries ', function() {
             myEl.partnersListQueries = {};
             myEl._setEngagementsListQueries({test:'test'});
             assert.isTrue(_.isEqual({test:'test'}, myEl.partnersListQueries));

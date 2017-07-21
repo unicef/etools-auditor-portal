@@ -19,7 +19,16 @@
 
 <script>
     describe('<app-shell>', () => {
-        let myEl;
+        var myEl, server;
+
+        before(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
+        });
+
+        after(function() {
+            server.restore();
+        });
 
         beforeEach(() => {
             myEl = fixture('element-fixture');
@@ -36,7 +45,7 @@
         });
 
         describe('method _routePageChanged()', () => {
-            xit('called when route.path changed and changes property page', () => {
+            it('called when route.path changed and changes property page', () => {
                 myEl.initLoadingComplete = true;
                 myEl.routeData.page = 'test';
                 sinon.spy(myEl, '_routePageChanged');
@@ -48,9 +57,10 @@
         });
 
         describe('method _pageChanged()', () => {
-            xit('called when property page changed', () => {
-                sinon.stub(myEl, '_pageChanged');
+            it('called when property page changed', () => {
+                sinon.spy(myEl, '_pageChanged');
                 sinon.spy(myEl, 'fire');
+                Polymer.isInstance = sinon.stub().returns(false);
                 myEl.page = 'test';
                 assert.isTrue(myEl._pageChanged.called);
                 assert.isTrue(myEl.fire.called);
@@ -58,7 +68,7 @@
                 myEl.fire.restore();
             });
 
-            xit('call importHref method', () => {
+            it('call importHref method', () => {
                 sinon.spy(myEl, 'importHref');
                 myEl.page = 'test';
                 assert.isTrue(myEl.importHref.called);
@@ -67,7 +77,7 @@
         });
 
         describe('listener ', () => {
-            xit('\'404\' call method _pageNotFound', () => {
+            it('\'404\' call method _pageNotFound', () => {
                 sinon.spy(myEl, '_pageNotFound');
                 sinon.spy(myEl, 'queueToast');
                 myEl.fire('404');
@@ -77,7 +87,7 @@
                 myEl.queueToast.restore();
             });
 
-            xit('\'static-data-loaded\' or \'user-profile-loaded\' call method _initialDataLoaded', () => {
+            it('\'static-data-loaded\' or \'user-profile-loaded\' call method _initialDataLoaded', () => {
                 sinon.spy(myEl, '_initialDataLoaded');
                 assert.isFalse(myEl._initialDataLoaded.called);
                 myEl.fire('user-profile-loaded');
@@ -87,7 +97,7 @@
                 myEl._initialDataLoaded.restore();
             });
 
-            xit('\'global-loading\' call method _handleGlobalLoading', () => {
+            it('\'global-loading\' call method _handleGlobalLoading', () => {
                 sinon.spy(myEl, '_handleGlobalLoading');
                 myEl.fire('global-loading', {type: 'test', active: true});
                 assert.isTrue(myEl._handleGlobalLoading.called);
@@ -96,21 +106,21 @@
         });
 
         describe('method _handleGlobalLoading()', () => {
-            xit('push message in globalLoading when global-loading element is active and pushed message is active', () => {
+            it('push message in globalLoading when global-loading element is active and pushed message is active', () => {
                 let loadingEl = myEl.$['global-loading'];
                 loadingEl.active = true;
                 myEl.fire('global-loading', {type: 'test', active: true});
                 assert.lengthOf(myEl.globalLoadingQueue, 1);
             });
 
-            xit('show message when global-loading element is not active and pushed message not active', () => {
+            it('show message when global-loading element is not active and pushed message not active', () => {
                 let loadingEl = myEl.$['global-loading'];
                 loadingEl.active = false;
                 myEl.fire('global-loading', {type: 'test', message: 'test', active: true});
                 assert.equal(loadingEl.loadingText, 'test');
             });
 
-            xit('filter message when no text message or text is not string', () => {
+            it('filter message when no text message or text is not string', () => {
                 let loadingEl = myEl.$['global-loading'];
                 loadingEl.active = true;
                 myEl.fire('global-loading', {type: 'test'});

@@ -20,10 +20,19 @@
 
 <script>
     describe('<engagement-staff-members-tab>', function () {
-        var myEl;
+        var myEl, server;
+
+        before(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
+        });
 
         beforeEach(function () {
             myEl = fixture('element-fixture');
+        });
+
+        after(function() {
+            server.restore();
         });
 
         describe('method _organizationChanged', function() {
@@ -77,6 +86,7 @@
 
                 myEl._organizationChanged('666');
                 assert.equal(myEl.organisationId, 666);
+                myEl._canBeChanged.restore();
             });
         });
 
@@ -115,7 +125,7 @@
         });
 
         describe('method manageEngagementStaff', function() {
-            xit('add staff to engagementStaffs if it hasAccess property is true', function() {
+            it('add staff to engagementStaffs if it hasAccess property is true', function() {
                 assert.isObject(myEl.engagementStaffs);
                 var staff = {
                     user: {email: 'test_staff'},
@@ -138,7 +148,7 @@
                 assert.isUndefined(myEl.engagementStaffs[staff2.user.email]);
             });
 
-            xit('remove staff from engagementStaffs if it hasAccess property is false', function() {
+            it('remove staff from engagementStaffs if it hasAccess property is false', function() {
                 myEl.engagementStaffs = {};
                 var staff = {
                     user: {email: 'test_staff'},
@@ -173,13 +183,13 @@
         });
 
         describe('method _staffLength', function() {
-            xit('returns second argument or 0 if third argument is true', function() {
+            it('returns second argument or 0 if third argument is true', function() {
                 assert.equal(myEl._staffLength(false, false, true), 0);
                 assert.equal(myEl._staffLength(false, 12, true), 12);
                 assert.equal(myEl._staffLength(false, 'test', true), 'test');
             });
 
-            xit('returns first or second argument or 0 if third argument is false', function() {
+            it('returns first or second argument or 0 if third argument is false', function() {
                 assert.equal(myEl._staffLength(false, false), 0);
                 assert.equal(myEl._staffLength(false, 12), 12);
                 assert.equal(myEl._staffLength(11, 12), 11);
@@ -216,7 +226,7 @@
         });
 
         describe('method _checkEmail', function() {
-            xit('returns if emailChecking is true', function() {
+            it('returns if emailChecking is true', function() {
                 myEl.emailChecking = true;
                 sinon.spy(myEl, '_validEmailAddress');
 
@@ -227,7 +237,7 @@
                 myEl._validEmailAddress.restore();
             });
 
-            xit('sets newEmail property if value is defined and _validEmailAddress returns true', function() {
+            it('sets newEmail property if value is defined and _validEmailAddress returns true', function() {
                 var event = {target: {value: ''}};
                 myEl.emailChecking = false;
                 sinon.stub(myEl, '_validEmailAddress').returns(false);
@@ -255,7 +265,7 @@
         });
 
         describe('method _isActive', function() {
-            xit('throw an error if event.model.item is not defined', function() {
+            it('throw an error if event.model.item is not defined', function() {
                 sinon.stub(myEl, 'manageEngagementStaff');
                 var foo = myEl._isActive.bind(myEl);
                 assert.throws(foo);
@@ -267,7 +277,7 @@
                 myEl.manageEngagementStaff.restore();
             });
 
-            xit('calls manageEngagementStaff method', function() {
+            it('calls manageEngagementStaff method', function() {
                 sinon.stub(myEl, 'manageEngagementStaff');
                 var event = {model: {item: 'test'}};
 
@@ -279,19 +289,19 @@
         });
 
         describe('method getTabData', function() {
-            xit('returns null if _canBeChanged method returns false', function() {
+            it('returns null if _canBeChanged method returns false', function() {
                 sinon.stub(myEl, '_canBeChanged').returns(false);
                 assert.isNull(myEl.getTabData());
                 myEl._canBeChanged.restore();
             });
 
-            xit('returns staffs ids if staff_members changed or null', function() {
+            it('returns staffs ids if staff_members changed or null', function() {
                 myEl.engagementStaffs = {
                     'test1': 1,
                     'test2': 2,
                     'test3': 3
                 };
-                myEl.engagement = {staff_members: [{id: 1}, {id: 2}, {id: 3}]};
+                myEl.engagement = {staff_members: [{id: 1, user: {}}, {id: 2, user: {}}, {id: 3, user: {}}]};
                 sinon.stub(myEl, '_canBeChanged').returns(true);
 
                 assert.isNull(myEl.getTabData());
@@ -325,19 +335,19 @@
         });
 
         describe('method _validEmailAddress', function() {
-            xit('check if email is valid', function() {
+            it('check if email is valid', function() {
                 var email = {value: 'we'};
                 assert.isFalse(myEl._validEmailAddress(email));
                 assert.equal(myEl.errors.user.email, 'Email is incorrect')
             });
 
-            xit('return false if value is empty and email is required', function() {
+            it('return false if value is empty and email is required', function() {
                 var email = {value: '', required: true};
                 assert.isFalse(myEl._validEmailAddress(email));
                 assert.equal(myEl.errors.user.email, 'Email is required')
             });
 
-            xit('return false if saveWithButton is true and email is not unique', function() {
+            it('return false if saveWithButton is true and email is not unique', function() {
                 myEl.saveWithButton = true;
                 myEl.editedItem = {id: 1, user: {email: 'test@test.test'}};
                 myEl.dataItems = [{id: 1, user: {email: 'test@test.test'}}];
@@ -349,7 +359,7 @@
                 assert.isTrue(myEl._validEmailAddress(email));
             });
 
-            xit('returns true if email is valid', function() {
+            it('returns true if email is valid', function() {
                 myEl.saveWithButton = false;
                 var email = {value: 'test@test.test', required: true};
                 assert.isTrue(myEl._validEmailAddress(email));
@@ -357,18 +367,18 @@
         });
 
         describe('method _staffUpdated', function() {
-            xit('throws if detail are not provided', function() {
+            it('throws if detail are not provided', function() {
                 assert.throws(myEl._staffUpdated);
             });
 
-            xit('runs _handleUpdateError method if details.error is true', function() {
+            it('runs _handleUpdateError method if details.error is true', function() {
                 sinon.stub(myEl, '_handleUpdateError');
                 myEl._staffUpdated({}, {error: true});
                 assert.isTrue(myEl._handleUpdateError.called);
                 myEl._handleUpdateError.restore();
             });
 
-            xit('runs methods depending on details.action', function() {
+            it('runs methods depending on details.action', function() {
                 sinon.stub(myEl, 'set');
                 sinon.stub(myEl, 'splice');
                 sinon.stub(myEl, 'manageEngagementStaff');
@@ -393,7 +403,7 @@
                 myEl.resetDialog.restore();
             });
 
-            xit('sets requestInProcess and dialogOpened to false', function() {
+            it('sets requestInProcess and dialogOpened to false', function() {
                 sinon.stub(myEl, 'splice');
                 sinon.stub(myEl, 'manageEngagementStaff');
                 sinon.stub(myEl, 'resetDialog');
