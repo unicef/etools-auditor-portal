@@ -69,7 +69,12 @@
 
                 let endpoint = this.getEndpoint('engagementsList');
                 endpoint.url += this.getQueriesString();
-                if (this.requestQueries.reload) { endpoint.url += `&reload=${new Date().getTime()}`; }
+
+                if (this.requestQueries.reload) {
+                    endpoint.url += `&reload=${new Date().getTime()}`;
+                }
+
+                endpoint.url = endpoint.url.replace(/[&?]{1}/, '?');
                 this.endpoint = endpoint;
             },
 
