@@ -1,7 +1,17 @@
 :host([delete-dialog]) {
     .dialog-title {
         font-size: 17px;
+        color: var(--gray-dark);
+        background-color: transparent;
     }
+
+    #buttons {
+        border-top: none;
+    }
+}
+
+:host {
+    --divider-color: none;
 }
 
 paper-dialog {
@@ -9,6 +19,12 @@ paper-dialog {
     border-radius: 4px;
     width: 96%;
     max-width: 700px !important;
+}
+
+paper-dialog-scrollable {
+    --paper-dialog-scrollable: #{'{
+        padding: 0;
+    }'};
 }
 
 #buttons {
@@ -65,7 +81,7 @@ paper-dialog {
 .close-btn:hover { opacity: 1;}
 
 .loading {
-    margin-top: 3px;
+    margin-top: 8px;
     vertical-align: top;
     margin-left: 15px;
 }
