@@ -297,6 +297,10 @@
                     engagement.status === 'final';
         },
 
+        _showFollowUpTabs: function(permissionBase) {
+            return this.collectionExists(`${permissionBase}.action_points`, 'GET');
+        },
+
         _showCancellationReason: function(engagement) {
             return engagement.status === 'canceled';
         },

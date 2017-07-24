@@ -21,7 +21,7 @@ Polymer({
         tabsList: {
             type: Array,
             value: function() {
-                return ['overview', 'report', 'questionnaire', 'attachments'];
+                return ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
             }
         },
         engagementPrefix: {
@@ -77,6 +77,11 @@ Polymer({
         data.test_subject_areas = subjectAreas || {};
         let findingsData = reportTab && reportTab.getFindingsData();
         if (findingsData && findingsData.length) { data.findings = findingsData; }
+
+        //FollowUp data
+        let followUpPage = this.getElement('#follow-up'),
+            followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+        _.assign(data, followUpData);
 
         return data;
     },

@@ -110,7 +110,8 @@
                 var getDataMethods = {
                     getQuestionnaireData: sinon.spy(),
                     getRisksData: sinon.spy(),
-                    getFindingsData: sinon.spy()
+                    getFindingsData: sinon.spy(),
+                    getFollowUpData: sinon.spy()
                 };
                 sinon.stub(myEl, 'getElement').returns(getDataMethods);
 
@@ -127,7 +128,8 @@
                 var getDataMethods = {
                     getQuestionnaireData: sinon.stub().returns(['test1']),
                     getRisksData: sinon.stub().returns({test2: 'test2'}),
-                    getFindingsData: sinon.stub().returns(['test3'])
+                    getFindingsData: sinon.stub().returns(['test3']),
+                    getFollowUpData: sinon.spy()
                 };
                 sinon.stub(myEl, 'getElement').returns(getDataMethods);
 

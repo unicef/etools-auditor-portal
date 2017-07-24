@@ -28,11 +28,11 @@ Polymer({
     },
 
     observers: [
-        '_engagementChanged(engagement.partner)',
+        '_engagementChanged(engagement, basePermissionPath)',
         '_errorHandler(errorObject)',
         '_setActivePd(activePd)',
         'updateStyles(basePermissionPath, requestInProcess, partner)',
-        'setOfficers(partner, engagement)'
+        'setOfficers(partner, engagement, basePermissionPath)'
     ],
 
     listeners: {
@@ -42,14 +42,21 @@ Polymer({
     setOfficers: function(partner, engagement) {
         if (!partner || !partner.id) {
             this.set('authorizedOfficer', null);
-        } else if (this.isReadOnly('partner', this.basePermissionPath) && engagement &&
-            engagement.authorized_officers && engagement.authorized_officers[0]) {
-            let officer = this.engagement.authorized_officers[0];
-            officer.fullName = `${officer.first_name} ${officer.last_name}`;
-            this.partner.partnerOfficers = [officer];
-            this.authorizedOfficer = officer;
+            return;
+        }
+        let engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0],
+            partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
+        if (engagementOfficer) { engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`; }
+
+        if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
+            this.partner.partnerOfficers = [engagementOfficer];
+            this.authorizedOfficer = engagementOfficer;
         } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-            this.authorizedOfficer = partner.partnerOfficers[0];
+            let officerIndex = ~_.findIndex(partner.partnerOfficers, officer => {
+                return officer.id === engagementOfficer.id;
+            });
+
+            this.authorizedOfficer = !!(engagementOfficer && officerIndex) ? engagementOfficer : partnerOfficer;
         }
     },
 
@@ -125,12 +132,12 @@ Polymer({
         this.validate();
     },
 
-    _engagementChanged: function(partner) {
-        if (!partner) {
+    _engagementChanged: function(engagement) {
+        if (!engagement || !engagement.partner) {
             this.set('partner', {});
             this.set('activePd', null);
         } else {
-            this._requestPartner(null, partner.id);
+            this._requestPartner(null, engagement.partner.id);
         }
     },
 

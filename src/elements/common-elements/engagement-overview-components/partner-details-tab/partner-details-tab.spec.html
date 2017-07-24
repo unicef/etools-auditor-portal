@@ -64,9 +64,9 @@
 
             it('calls _requestPartner method with partner.id as second argument', function() {
                 sinon.stub(myEl, '_requestPartner');
-                var partner = {id: 2};
-                myEl._engagementChanged(partner);
-                assert.isTrue(myEl._requestPartner.calledWith(null, partner.id));
+                var engagement = {partner: {id: 2}};
+                myEl._engagementChanged(engagement);
+                assert.isTrue(myEl._requestPartner.calledWith(null, engagement.partner.id));
                 myEl._requestPartner.restore();
             });
         });
