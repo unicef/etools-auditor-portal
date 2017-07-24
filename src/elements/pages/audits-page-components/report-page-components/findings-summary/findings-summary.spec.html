@@ -62,30 +62,6 @@
             });
         });
 
-        describe('method _computeFFNumber(lowRisk, mediumRisk, highRisk)', function () {
-            it('computes FF number', function () {
-                myEl._computeFFNumber(1, 2, 3);
-                assert.equal(myEl.editedItem.number_of_financial_findings, 6);
-            });
-
-            it('computes FF number if some arguments are undefined', function () {
-                myEl._computeFFNumber(1, undefined, 3);
-                assert.equal(myEl.editedItem.number_of_financial_findings, 4);
-            });
-
-            it('observer calls method after properties changing', function () {
-                let spy = sinon.spy(myEl, '_computeFFNumber');
-
-                assert.isFalse(spy.called);
-                myEl.set('editedItem.low_risk', 1);
-                myEl.set('editedItem.medium_risk', 2);
-                myEl.set('editedItem.high_risk', 3);
-
-                assert.isTrue(spy.calledOnce);
-                assert.equal(myEl.editedItem.number_of_financial_findings, 6);
-            });
-        });
-
         describe('method getFindingsSummaryData()', function () {
             it('returns undefined if editedItem and itemModel are equal', function () {
                 let spy = sinon.spy(_, 'isEqual');
@@ -101,10 +77,8 @@
             describe('dialogOpened=true', function () {
                 beforeEach(function () {
                     myEl.editedItem = {
-                        number_of_financial_findings: 6,
-                        high_risk: 1,
-                        medium_risk: 2,
-                        low_risk: 3,
+                        audited_expenditure: 1.23,
+                        financial_findings: 2.34,
                     };
                     myEl.dialogOpened = true;
                 });
@@ -117,19 +91,17 @@
 
                 it('returns object with changed properties', function () {
                     myEl.originalData = [_.cloneDeep(myEl.editedItem)];
-                    myEl.originalData[0].medium_risk = 4;
+                    myEl.originalData[0].audited_expenditure = 0;
 
-                    assert.deepEqual(myEl.getFindingsSummaryData(), {medium_risk: 2});
+                    assert.deepEqual(myEl.getFindingsSummaryData(), {audited_expenditure: 1.23});
                 });
             });
 
             describe('dialogOpened=false', function () {
                 beforeEach(function () {
                     myEl.editedItem = {
-                        number_of_financial_findings: 6,
-                        high_risk: 1,
-                        medium_risk: 2,
-                        low_risk: 3,
+                        audited_expenditure: 1.23,
+                        financial_findings: 2.34,
                     };
                     myEl.dialogOpened = false;
                 });
@@ -138,21 +110,6 @@
                     myEl.originalData = [_.cloneDeep(myEl.editedItem)];
 
                     assert.isUndefined(myEl.getFindingsSummaryData());
-                });
-
-                it('replaces empty strings with null where needed and returns object with changed properties', function () {
-                    myEl.originalData = [_.cloneDeep(myEl.editedItem)];
-                    myEl.originalData[0].number_of_financial_findings = '';
-                    myEl.originalData[0].high_risk = '';
-                    myEl.originalData[0].medium_risk = '';
-                    myEl.originalData[0].low_risk = '';
-
-                    assert.deepEqual(myEl.getFindingsSummaryData(), {
-                        number_of_financial_findings: null,
-                        high_risk: null,
-                        medium_risk: null,
-                        low_risk: null,
-                    });
                 });
 
                 it('replaces null with 0 where needed and returns object with changed properties', function () {
@@ -253,7 +210,7 @@
             });
 
             it('fires toast with error message when trying to submit not filled data and edit dialog is closed', function () {
-                let errorData = {low_risk: 'This field is required.'};
+                let errorData = {audited_expenditure: 'This field is required.'};
                 let spy = sinon.spy(myEl, 'fire');
                 myEl.dialogOpened = false;
 
@@ -265,11 +222,11 @@
             });
 
             it('updates errors object when edit dialog is opened', function () {
-                let errorData = {number_of_financial_findings:['Ensure this value is less than or equal to 2147483647.']};
-                let refactoredData = {number_of_financial_findings:'Ensure this value is less than or equal to 2147483647.'};
+                let errorData = {audited_expenditure:['Ensure this value is less than or equal to 2147483647.']};
+                let refactoredData = {audited_expenditure:'Ensure this value is less than or equal to 2147483647.'};
                 myEl.dialogOpened = true;
 
-                assert.isFalse(myEl.errors.number_of_financial_findings);
+                assert.isFalse(myEl.errors.audited_expenditure);
                 myEl._errorHandler(errorData);
 
                 assert.deepEqual(myEl.errors, refactoredData);

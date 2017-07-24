@@ -144,17 +144,12 @@
                         <div class="input-container">
                             <!-- Number of financial findings -->
                             <paper-input
-                                    class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
+                                    class="disabled-as-readonly"
                                     value="{{editedItem.number_of_financial_findings}}"
-                                    allowed-pattern="[\d]"
                                     label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
-                                    required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     disabled
-                                    readonly
-                                    maxlength="9"
-                                    invalid="{{errors.number_of_financial_findings}}"
-                                    error-message="{{errors.number_of_financial_findings}}">
+                                    readonly>
                             </paper-input>
                         </div>
                     </div>

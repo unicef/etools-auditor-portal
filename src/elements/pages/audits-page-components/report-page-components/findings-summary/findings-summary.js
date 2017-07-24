@@ -25,10 +25,6 @@ Polymer({
                     financial_findings: undefined,
                     percent_of_audited_expenditure: undefined,
                     audit_opinion: undefined,
-                    number_of_financial_findings: undefined,
-                    high_risk: undefined,
-                    medium_risk: undefined,
-                    low_risk: undefined,
                     partner: {
                         name: undefined
                     },
@@ -113,7 +109,6 @@ Polymer({
         '_errorHandler(errorObject)',
         '_setDataItems(data)',
         '_setAuditOpinion(data.audit_opinion, auditOpinions)',
-        '_computeFFNumber(editedItem.low_risk, editedItem.medium_risk, editedItem.high_risk)',
         'updateStyles(basePermissionPath, requestInProcess)',
     ],
 
@@ -129,11 +124,6 @@ Polymer({
         this.set('dataItems', [this.data]);
         this.set('itemModel.audit_opinion', this.data.audit_opinion);
         this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
-    },
-
-    _computeFFNumber: function(lowRisk = 0, mediumRisk = 0, highRisk = 0) {
-        let FFNumber = Number(lowRisk) + Number(mediumRisk) + Number(highRisk);
-        this.set('editedItem.number_of_financial_findings', FFNumber);
     },
 
     getFindingsSummaryData: function() {
@@ -153,11 +143,6 @@ Polymer({
             data = _.pick(this.originalData && this.originalData[0], itemModelKeys);
         }
         originalData = _.pick(this.originalData && this.originalData[0], itemModelKeys);
-
-        data.number_of_financial_findings = data.number_of_financial_findings || null;
-        data.high_risk = data.high_risk || null;
-        data.medium_risk = data.medium_risk || null;
-        data.low_risk = data.low_risk || null;
 
         data.audited_expenditure = data.audited_expenditure || 0;
         data.financial_findings = data.financial_findings || 0;
