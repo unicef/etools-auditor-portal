@@ -1,10 +1,18 @@
 <!--import [polymer]-->
 
+<!--import [follow-up-actions, lodash]-->
+
 <dom-module id="follow-up-main">
     <template>
         <!-- inject styles './follow-up-main.scss'-->
 
-        Follow-Up tabs
+        <follow-up-actions
+                id="actions"
+                data-items="{{engagement.action_points}}"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+
+        </follow-up-actions>
 
     </template>
 

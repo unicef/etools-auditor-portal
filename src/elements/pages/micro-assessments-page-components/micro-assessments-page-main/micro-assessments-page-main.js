@@ -78,6 +78,11 @@ Polymer({
         let findingsData = reportTab && reportTab.getFindingsData();
         if (findingsData && findingsData.length) { data.findings = findingsData; }
 
+        //FollowUp data
+        let followUpPage = this.getElement('#follow-up'),
+            followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+        _.assign(data, followUpData);
+
         return data;
     },
 

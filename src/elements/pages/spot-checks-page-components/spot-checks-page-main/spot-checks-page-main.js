@@ -61,17 +61,22 @@ Polymer({
 
     customDataPrepare: function(data) {
         data = data || {};
+        //Rport data
         let reportPage = this.getElement('#report');
-        if (!reportPage) { return data; }
 
-        let findingData = reportPage.getFindingsData();
+        let findingData = reportPage && reportPage.getFindingsData();
         if (findingData) { data.findings = findingData; }
 
-        let internalControlsData = reportPage.getInternalControlsData();
+        let internalControlsData = reportPage && reportPage.getInternalControlsData();
         if (!_.isNull(internalControlsData)) { data.internal_controls = internalControlsData; }
 
-        let overviewData = reportPage.getOverviewData() || {};
+        let overviewData = reportPage && reportPage.getOverviewData() || {};
         _.assign(data, overviewData);
+
+        //FollowUp data
+        let followUpPage = this.getElement('#follow-up'),
+            followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+        _.assign(data, followUpData);
 
         return data;
     },

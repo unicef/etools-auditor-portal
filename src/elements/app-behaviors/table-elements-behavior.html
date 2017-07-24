@@ -89,6 +89,7 @@
         },
 
         validate: function() {
+            if (this.editedItem && this.editedItem._delete) { return true; }
             let elements = Polymer.dom(this.root).querySelectorAll('.validate-input'),
                     valid = true;
 
