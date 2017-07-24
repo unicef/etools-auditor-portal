@@ -23,7 +23,7 @@
             .input-container {
                 position: relative;
                 float: left;
-                margin-right: 5%;
+                margin-right: 0;
                 width: 30%;
             }
 
@@ -44,7 +44,7 @@
             .input-container.input-container-l { width: 100%; }
 
             .row-h {
-                margin-bottom: 20px;
+                margin-bottom: 8px;
                 &:last-child { margin-bottom: 0; }
             }
 
@@ -406,6 +406,12 @@
             etools-currency-amount-input {
                 padding: 0 12px;
                 box-sizing: border-box;
+            }
+
+            etools-content-panel {
+                --ecp-content: #{'{
+                    padding: 0 12px 8px 12px;
+                }'};
             }
         </style>
     </template>

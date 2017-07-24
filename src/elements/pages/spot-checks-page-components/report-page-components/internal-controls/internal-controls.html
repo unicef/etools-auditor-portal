@@ -9,30 +9,37 @@
                 display: block;
                 margin-bottom: 20px;
             }
+            .internal-control-message {
+                padding: 8px 12px;
+            }
         </style>
 
         <etools-content-panel class="content-section clearfx" panel-title="Internal Controls">
-            <div class="row-h">
-                Inquire of IP management whether there have been any changes to internal controls since the prior
-                micro assessment from the current programme cycle.<br>
-                Inquire whether the high priority recommendations
-                from the micro assessment and previous assurance activities have been implemented. Document any
-                changes identified
+            <div class="row-h" group>
+                <div class="internal-control-message">
+                    Inquire of IP management whether there have been any changes to internal controls since the prior
+                    micro assessment from the current programme cycle.<br>
+                    Inquire whether the high priority recommendations
+                    from the micro assessment and previous assurance activities have been implemented. Document any
+                    changes identified
+                </div>
             </div>
 
-            <paper-textarea
-                    class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
-                    value="{{data}}"
-                    label="Document any changes identified"
-                    always-float-label
-                    placeholder="Enter comments"
-                    required$="[[_setRequired('internal_controls', basePermissionPath)]]"
-                    disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
-                    invalid="{{_checkInvalid(errors.internal_controls)}}"
-                    error-message="{{errors.internal_controls}}"
-                    on-focus="_resetFieldError">
-            </paper-textarea>
-            <paper-tooltip offset="0">[[data]]</paper-tooltip>
+            <div class="row-h group">
+                <paper-textarea
+                        class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
+                        value="{{data}}"
+                        label="Document any changes identified"
+                        always-float-label
+                        placeholder="Enter comments"
+                        required$="[[_setRequired('internal_controls', basePermissionPath)]]"
+                        disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
+                        invalid="{{_checkInvalid(errors.internal_controls)}}"
+                        error-message="{{errors.internal_controls}}"
+                        on-focus="_resetFieldError">
+                </paper-textarea>
+                <paper-tooltip offset="0">[[data]]</paper-tooltip>
+            </div>
         </etools-content-panel>
     </template>
 
