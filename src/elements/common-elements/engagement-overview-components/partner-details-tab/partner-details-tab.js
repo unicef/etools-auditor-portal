@@ -130,7 +130,7 @@ Polymer({
     },
 
     _engagementChanged: function(engagement) {
-        if (!engagement.partner) {
+        if (!engagement || !engagement.partner) {
             this.set('partner', {});
             this.set('activePd', null);
         } else {
