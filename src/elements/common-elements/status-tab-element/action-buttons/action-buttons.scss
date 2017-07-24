@@ -4,10 +4,10 @@
     text-align: center;
 
     paper-button {
+        padding-right: 0;
         height: 34px;
         color: #ffffff;
         background-color: var(--module-primary);
-        &.with-actions { padding-right: 0; }
 
         span { padding: 0 29px; }
     }

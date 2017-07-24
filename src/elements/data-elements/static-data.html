@@ -29,6 +29,14 @@
                 on-success="_handleNewEngagementResponse"
                 on-fail="_responseError">
         </etools-ajax>
+
+        <!--users-->
+        <etools-ajax
+                method="GET"
+                url="{{usersEndpoint}}"
+                on-success="_handleUsersResponse"
+                on-fail="_responseError">
+        </etools-ajax>
     </template>
 
     <script>
@@ -45,6 +53,12 @@
 
             let dataLoaded = {};
 
+            function iterate_async (arr, callback, timeout) {
+                return new Promise((resolve, reject) => {
+
+                });
+            }
+
             Polymer({
                 is: 'static-data',
 
@@ -60,10 +74,11 @@
                     this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
                     this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
+                    this.usersEndpoint = this.getEndpoint('users').url;
                 },
 
                 _allDataLoaded: function() {
-                    if (dataLoaded.partners && dataLoaded.auditors && dataLoaded.engagementOptions) {
+                    if (dataLoaded.partners && dataLoaded.auditors && dataLoaded.engagementOptions && dataLoaded.users) {
                         this.fire('static-data-loaded');
                     }
                 },
@@ -97,6 +112,16 @@
                     this._setData('riskOptions', riskOptions);
 
                     dataLoaded.engagementOptions = true;
+                    this._allDataLoaded();
+                },
+
+                _handleUsersResponse: function(event, details) {
+                    if (!details) { this._responseError('Can not load users'); }
+                    _.each(details, (user) => {
+                        user.full_name = `${user.first_name} ${user.last_name}`;
+                    });
+                    this._setData('users', details);
+                    dataLoaded.users = true;
                     this._allDataLoaded();
                 },
 

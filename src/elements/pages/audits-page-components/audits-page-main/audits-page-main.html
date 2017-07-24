@@ -1,7 +1,7 @@
 <!--import [polymer, app-route, app-layout, paper-tabs, iron-pages, app-route/app-location, lodash, etools-content-panel]-->
 <!--import [shared-styles, module-styles, main-page-styles, tab-inputs-styles, app-main-header, pages-header-element,
             file-attachments-tab, update-engagement, status-tab-element, engagement-staff-members-tab, engagement-info-details,
-            engagement-info-data, engagement-behavior, audit-report-page-main, partner-details-tab, dialog-element]-->
+            engagement-info-data, engagement-behavior, audit-report-page-main, partner-details-tab, dialog-element, follow-up-main]-->
 
 <dom-module id="audits-page-main">
     <template>
@@ -52,6 +52,12 @@
                     <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                         <paper-tab name="report">
                             <span class="tab-content">Report</span>
+                        </paper-tab>
+                    </template>
+
+                    <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
+                        <paper-tab name="follow-up">
+                            <span class="tab-content">Follow-Up</span>
                         </paper-tab>
                     </template>
 
@@ -115,6 +121,18 @@
                                         engagement="{{engagement}}"
                                         permission-base="{{permissionBase}}">
                                 </audit-report-page-main>
+                            </div>
+                        </template>
+
+                        <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
+                            <div name="follow-up">
+                                <follow-up-main
+                                        id="follow-up"
+                                        original-data="[[originalData]]"
+                                        error-object="{{errorObject}}"
+                                        engagement="{{engagement}}"
+                                        permission-base="{{permissionBase}}">
+                                </follow-up-main>
                             </div>
                         </template>
 

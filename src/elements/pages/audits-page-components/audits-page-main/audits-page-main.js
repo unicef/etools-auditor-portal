@@ -18,7 +18,7 @@ Polymer({
         tabsList: {
             type: Array,
             value: function() {
-                return ['overview', 'report', 'attachments'];
+                return ['overview', 'report', 'attachments', 'follow-up'];
             }
         },
         engagementPrefix: {
@@ -55,6 +55,13 @@ Polymer({
 
     customDataPrepare: function(data) {
         data = data || {};
+
+        //FollowUp data
+        let followUpPage = this.getElement('#follow-up'),
+            followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+        _.assign(data, followUpData);
+
+        //Report Data
         let reportPage = this.getElement('#report');
         if (!reportPage) { return data; }
 
