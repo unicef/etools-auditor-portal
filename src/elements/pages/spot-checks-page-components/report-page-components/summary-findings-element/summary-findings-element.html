@@ -106,6 +106,7 @@
                                     error-message="{{errors.recommendation}}"
                                     on-focus="_resetFieldError">
                             </paper-textarea>
+                            <paper-tooltip offset="0">[[editedItem.recommendation]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -127,6 +128,7 @@
                                     error-message="{{errors.agreed_action_by_ip}}"
                                     on-focus="_resetFieldError">
                             </paper-textarea>
+                            <paper-tooltip offset="0">[[editedItem.agreed_action_by_ip]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -158,6 +160,7 @@
                                         show-clear-btn>
                                 </etools-datepicker>
                             </paper-input>
+                            <paper-tooltip offset="0">[[prettyDate(editedItem.deadline_of_action)]]</paper-tooltip>
                         </div>
                     </div>
                 </div>

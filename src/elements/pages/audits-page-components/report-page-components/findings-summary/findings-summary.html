@@ -81,6 +81,7 @@
                                     error-message="{{errors.audited_expenditure}}"
                                     on-focus="_resetFieldError">
                             </etools-currency-amount-input>
+                            <paper-tooltip offset="0">[[editedItem.audited_expenditure]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -98,6 +99,7 @@
                                     error-message="{{errors.financial_findings}}"
                                     on-focus="_resetFieldError">
                             </etools-currency-amount-input>
+                            <paper-tooltip offset="0">[[editedItem.financial_findings]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -117,6 +119,7 @@
                                     error-message="{{errors.percent_of_audited_expenditure}}"
                                     on-focus="_resetFieldError">
                             </etools-currency-amount-input>
+                            <paper-tooltip offset="0">[[editedItem.percent_of_audited_expenditure]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -156,6 +159,7 @@
                                     invalid="{{errors.number_of_financial_findings}}"
                                     error-message="{{errors.number_of_financial_findings}}">
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.number_of_financial_findings]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -170,6 +174,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.key_internal_weakness.high_risk_count]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -182,6 +187,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.key_internal_weakness.medium_risk_count]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -194,6 +200,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.key_internal_weakness.low_risk_count]]</paper-tooltip>
                         </div>
                     </div>
                 </div>
