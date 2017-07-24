@@ -105,8 +105,8 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        '_errorHandler(errorObject.action_points)',
-        '_checkNonField(errorObject.action_points)',
+        '_errorHandler(errorObject)',
+        '_checkNonField(errorObject)',
         'setDescriptionChoices(basePermissionPath)',
         'setFullName(dataItems)'
     ],
