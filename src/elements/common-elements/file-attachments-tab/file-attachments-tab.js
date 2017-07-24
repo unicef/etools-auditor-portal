@@ -52,7 +52,7 @@
             },
             uploadLabel: {
                 type: String,
-                value: 'File Attachment'
+                value: 'Upload File'
             },
             readonly: {
                 type: Boolean,

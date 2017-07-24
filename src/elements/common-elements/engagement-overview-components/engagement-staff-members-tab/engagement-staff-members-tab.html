@@ -1,5 +1,5 @@
 <!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icon,
-            iron-icons, iron-icons/communication-icons, etools-loading]-->
+            iron-icons, iron-icons/communication-icons, etools-loading, paper-tooltip]-->
 
 <!--import [tab-inputs-styles, permission-controller, list-header, list-element, list-pagination,
             dialog-element, lodash, table-elements-behavior, error-handler-behavior, update-staff-members,
@@ -42,13 +42,15 @@
                     </paper-input>
                 </div>
 
-                <paper-icon-button
-                        class="panel-button"
-                        hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
-                        title="Add"
-                        on-tap="openAddDialog"
-                        icon="add-box">
-                </paper-icon-button>
+                <div class="add-button-container">
+                    <paper-icon-button
+                            class="panel-button"
+                            hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
+                </div>
             </div>
 
             <div class="panel-content group">
@@ -108,7 +110,7 @@
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
-                        <div class="input-container" title="{{_getTitleValue(editedItem.user.email)}}">
+                        <div class="input-container">
                             <!-- Email address -->
                             <paper-input
                                     id="emailInput"
@@ -126,11 +128,12 @@
                                     on-blur="_checkEmail">
                                 <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
+                            <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.email)]]</paper-tooltip>
 
                             <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading"></etools-loading>
                         </div>
 
-                        <div class="input-container" title="{{_getTitleValue(editedItem.user.first_name)}}">
+                        <div class="input-container">
                             <!-- First Name -->
                             <paper-input
                                     class$="validate-input {{_setRequired('user.first_name', staffsBase)}}"
@@ -145,9 +148,10 @@
                                     error-message="{{errors.user.first_name}}"
                                     on-focus="_resetFieldError">
                             </paper-input>
+                            <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.first_name)]]</paper-tooltip>
                         </div>
 
-                        <div class="input-container" title="{{_getTitleValue(editedItem.user.last_name)}}">
+                        <div class="input-container">
                             <!-- Last Name -->
                             <paper-input
                                     class$="validate-input {{_setRequired('user.last_name', staffsBase)}}"
@@ -162,10 +166,11 @@
                                     error-message="{{errors.user.last_name}}"
                                     on-focus="_resetFieldError">
                             </paper-input>
+                            <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.last_name)]]</paper-tooltip>
                         </div>
                     </div>
 
-                    <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.job_title)}}">
+                    <div class="input-container">
                         <!-- Position -->
                         <paper-input
                                 class$="validate-input {{_setRequired('user.profile.job_title', staffsBase)}}"
@@ -180,10 +185,11 @@
                                 error-message="{{errors.profile.job_title}}"
                                 on-focus="_resetFieldError">
                         </paper-input>
+                        <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.profile.job_title)]]</paper-tooltip>
                     </div>
 
                     <div class="row-h group">
-                        <div class="input-container" title="{{_getTitleValue(editedItem.user.profile.phone_number)}}">
+                        <div class="input-container">
                             <!-- Phone number -->
                             <paper-input
                                     class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
@@ -199,6 +205,7 @@
                                     error-message="{{errors.user.profile.phone_number}}">
                                 <iron-icon prefix icon="communication:phone"></iron-icon>
                             </paper-input>
+                            <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.profile.phone_number)]]</paper-tooltip>
                         </div>
                     </div>
 

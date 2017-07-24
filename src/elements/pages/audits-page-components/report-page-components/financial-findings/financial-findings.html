@@ -1,5 +1,5 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons, etools-content-panel,
-            etools-currency-amount-input, etools-searchable-multiselection-menu, lodash]-->
+            etools-currency-amount-input, etools-searchable-multiselection-menu, lodash, paper-tooltip]-->
 
 <!--import [list-header, list-element, common-methods-behavior, tab-inputs-styles, module-styles, dialog-element,
             table-elements-behavior, permission-controller, textarea-max-rows-behavior]-->
@@ -11,13 +11,15 @@
 
         <etools-content-panel class="content-section clearfix" panel-title="Financial Findings">
             <div slot="panel-btns">
-                <paper-icon-button
-                        class="panel-button"
-                        hidden$="[[!_canBeChanged(basePermissionPath)]]"
-                        title="Add"
-                        on-tap="openAddDialog"
-                        icon="add-box">
-                </paper-icon-button>
+                <div>
+                    <paper-icon-button
+                            class="panel-button"
+                            hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
+                </div>
             </div>
 
             <list-header
