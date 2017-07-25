@@ -8,7 +8,10 @@ Polymer({
         APBehaviors.PermissionController
     ],
 
-    observers: ['setAuditOpinionChoices(basePermissionPath, engagement)'],
+    observers: [
+        'setAuditOpinionChoices(basePermissionPath, engagement)',
+        '_errorHandler(errorObject)'
+    ],
 
     setAuditOpinionChoices: function(basePermissionPath) {
         if (!basePermissionPath) { return []; }

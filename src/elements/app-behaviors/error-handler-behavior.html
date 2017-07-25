@@ -10,7 +10,9 @@
                     'date_of_comments_by_unicef', 'date_of_draft_report_to_ip', 'date_of_draft_report_to_unicef', 'date_of_field_visit', 'findings', 'internal_controls',
                     'justification_provided_and_accepted', 'pending_unsupported_amount', 'total_amount_of_ineligible_expenditure', 'total_amount_tested', 'write_off_required',
                     'audit_observation', 'audit_opinion', 'audited_expenditure', 'financial_finding_set', 'financial_findings', 'high_risk', 'ip_response', 'key_internal_weakness',
-                    'low_risk', 'medium_risk', 'number_of_financial_findings', 'pending_unsupported_amount', 'percent_of_audited_expenditure', 'recommendation'];
+                    'low_risk', 'medium_risk', 'number_of_financial_findings', 'pending_unsupported_amount', 'percent_of_audited_expenditure', 'recommendation'],
+                FollowUpProperties = ['additional_supporting_documentation_provided', 'amount_refunded',
+                    'justification_provided_and_accepted', 'write_off_required', 'explanation_for_additional_information', 'action_points'];
 
         window.APBehaviors = window.APBehaviors || {};
         APBehaviors.ErrorHandlerBehavior = {
@@ -42,6 +44,7 @@
                     if (~AttachmentsProperties.indexOf(key)) { attachmentError = 'attachments'; }
                     if (~ReportProperties.indexOf(key)) { reportError = 'report'; }
                     if (key === 'questionnaire')  { questionnaireError = 'questionnaire'; }
+                    if (~FollowUpProperties.indexOf(key)) { reportError = 'follow-up'; }
                 });
 
                 return overviewError || attachmentError || questionnaireError || reportError || null;
