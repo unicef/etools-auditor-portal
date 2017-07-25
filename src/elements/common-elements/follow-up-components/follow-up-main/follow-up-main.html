@@ -1,10 +1,18 @@
 <!--import [polymer]-->
 
-<!--import [follow-up-actions, lodash]-->
+<!--import [follow-up-actions, lodash, audit-financial-findings]-->
 
 <dom-module id="follow-up-main">
     <template>
         <!-- inject styles './follow-up-main.scss'-->
+
+        <audit-financial-findings
+                id="auditFF"
+                engagement="[[engagement]]"
+                original-data="[[originalData]]"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}"
+        ></audit-financial-findings>
 
         <follow-up-actions
                 id="actions"
