@@ -40,6 +40,8 @@
                             <span class="truncate">
                                 [[_getValue(item, data)]]
 
+                                <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+
                                 <template is="dom-if" if="[[item.additional]]">
                                     <span class="additional">([[_getAdditionalValue(item, data)]])</span>
                                 </template>

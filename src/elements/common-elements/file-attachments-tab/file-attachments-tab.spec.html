@@ -20,6 +20,7 @@
 <script>
     describe('<file-attachments-tab>', function () {
         let myEl;
+        let server;
         let fileTypes = [
             {value: 1, display_name: 'Training materials'},
             {value: 2, display_name: 'ToRs'},
@@ -32,6 +33,24 @@
 
         beforeEach(function () {
             myEl = fixture('file-attachments-tab-fixture');
+        });
+
+        describe('listeners', function () {
+            it('"dialog-confirmed" event calls _addItemFromDialog() method', function () {
+                let spy = sinon.stub(myEl, '_addItemFromDialog');
+
+                assert.isFalse(spy.called);
+                myEl.fire('dialog-confirmed');
+                assert.isTrue(spy.calledOnce);
+            });
+
+            it('"delete-confirmed" event calls removeItem() method', function () {
+                let spy = sinon.stub(myEl, 'removeItem');
+
+                assert.isFalse(spy.called);
+                myEl.fire('delete-confirmed');
+                assert.isTrue(spy.calledOnce);
+            });
         });
 
         describe('method _getFileType(fileType)', function () {
@@ -86,6 +105,16 @@
 
             it('returns false when readonly = true', function () {
                 assert.equal(myEl._showAddBtn(1, true), false);
+            });
+        });
+
+        describe('method _setRequiredClass(required)', function () {
+            it('returns string "required" if argument is true', function () {
+                assert.equal(myEl._setRequiredClass(true), 'required');
+            });
+
+            it('returns empty string if argument is false', function () {
+                assert.equal(myEl._setRequiredClass(false), '');
             });
         });
 
@@ -153,21 +182,8 @@
                 assert.isFalse(myEl._fileSelected({}));
             });
 
-            it('calls _checkAlreadySelected() method', function () {
-                let spy = sinon.spy(myEl, '_checkAlreadySelected');
-
-                assert.isFalse(spy.called);
-                myEl._fileSelected(e);
-                assert.isTrue(spy.calledOnce);
-            });
-
-            it('returns false if _checkAlreadySelected() method returns true', function () {
-                sinon.stub(myEl, '_checkAlreadySelected').returns(true);
-                assert.isFalse(myEl._fileSelected(e));
-            });
-
             it('not sets editedItem properties if file is undefined or has invalid type', function () {
-                sinon.stub(myEl, '_checkAlreadySelected').returns(false);
+                sinon.stub(myEl, '_fileAlreadySelected').returns(false);
                 assert.isUndefined(myEl.editedItem.file_name);
                 assert.isUndefined(myEl._fileSelected({target: {}}));
                 assert.isUndefined(myEl.editedItem.file_name);
@@ -178,12 +194,30 @@
             });
 
             it('sets editedItem properties if file is correct', function () {
-                sinon.stub(myEl, '_checkAlreadySelected').returns(false);
+                sinon.stub(myEl, '_fileAlreadySelected').returns(false);
 
                 assert.isTrue(myEl._fileSelected(e));
                 assert.equal(myEl.editedItem.file_name, file.name);
                 assert.deepEqual(myEl.editedItem.raw, file);
+                assert.isDefined(myEl.editedItem.file);
                 assert.isDefined(myEl.editedItem.created);
+            });
+
+            it('calls _fileAlreadySelected() method', function () {
+                let spy = sinon.spy(myEl, '_fileAlreadySelected');
+
+                assert.isFalse(spy.called);
+                myEl._fileSelected(e);
+                assert.isTrue(spy.calledOnce);
+            });
+
+            it('returns result opposite to value returned by _fileAlreadySelected() method', function () {
+                let stub = sinon.stub(myEl, '_fileAlreadySelected');
+                stub.returns(true);
+                assert.isFalse(myEl._fileSelected(e));
+
+                stub.returns(false);
+                assert.isTrue(myEl._fileSelected(e));
             });
         });
 
@@ -466,10 +500,10 @@
             });
         });
 
-        describe('method _checkAlreadySelected()', function () {
+        describe('method _fileAlreadySelected()', function () {
             it('returns false if dataItems is undefined', function () {
                 myEl.dataItems = undefined;
-                assert.isFalse(myEl._checkAlreadySelected());
+                assert.isFalse(myEl._fileAlreadySelected());
             });
 
             it('returns true and sets invalid state if editedItem.file_name already in use', function () {
@@ -478,7 +512,7 @@
                 myEl.editedItem.file_name = myEl.dataItems[0].file_name;
 
                 assert.isUndefined(myEl.errors.file);
-                assert.isTrue(myEl._checkAlreadySelected());
+                assert.isTrue(myEl._fileAlreadySelected());
                 assert.equal(myEl.errors.file, 'File already selected');
             });
 
@@ -489,7 +523,7 @@
                 myEl.errors.file = 'errorMessage';
 
                 assert.equal(myEl.errors.file, 'errorMessage');
-                assert.isFalse(myEl._checkAlreadySelected());
+                assert.isFalse(myEl._fileAlreadySelected());
                 assert.equal(myEl.errors.file, '');
             });
         });
@@ -573,7 +607,7 @@
 
             it('returns false if addDialog is true and such file already selected', function () {
                 myEl.addDialog = true;
-                sinon.stub(myEl, '_checkAlreadySelected').returns(true);
+                sinon.stub(myEl, '_fileAlreadySelected').returns(true);
                 //file is selected:
                 _.assign(myEl.editedItem, {file_name: 'file_name', raw: 'raw'});
 
@@ -582,7 +616,7 @@
 
             it('returns false and sets fileInvalid if addDialog is true and file is not selected', function () {
                 myEl.addDialog = true;
-                sinon.stub(myEl, '_checkAlreadySelected').returns(false);
+                sinon.stub(myEl, '_fileAlreadySelected').returns(false);
                 //file is not selected:
                 _.assign(myEl.editedItem, {file_name: undefined, raw: undefined});
 

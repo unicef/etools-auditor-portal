@@ -7,7 +7,7 @@
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
 
-    <!--import [status-tab-element]-->
+    <!--import [status-tab-element, lodash]-->
 </head>
 <body>
 
@@ -30,7 +30,6 @@
             assert.isDefined(myEl.engagementData);
             assert.isDefined(myEl._getStatusState);
             assert.isDefined(myEl._getStatusNumber);
-            assert.isDefined(myEl.closeMenu);
             assert.isDefined(myEl._getFormattedDate);
         });
 
@@ -57,66 +56,41 @@
             });
         });
 
-        it('close menu', function () {
-            myEl.statusBtnMenuOpened = true;
-            myEl.closeMenu();
-            assert.isFalse(myEl.statusBtnMenuOpened);
-        });
-
         it('return formatted date', function () {
             myEl.engagementData = {'date_of_draft_report_to_ip': 'Tue Apr 18 2017 11:59:35 GMT+0300 (+03)'};
             myEl._getFormattedDate('date_of_draft_report_to_ip');
             assert.equal(myEl._getFormattedDate('date_of_draft_report_to_ip'), 'on 18 April, 2017');
         });
 
-        it('return false if no other actions provided', function () {
-            assert.isFalse(myEl._showOtherActions([]));
-        });
 
-        it('return true if other actions provided', function () {
-            myEl.otherActions = [{}, {}];
-            assert.isTrue(myEl._showOtherActions(myEl.otherActions));
-        });
 
-        it('set btn class depending on other actions', function () {
-            myEl.otherActions = [{}, {}];
-            assert.equal(myEl._setBtnClass(myEl.otherActions), 'with-actions');
-            assert.isUndefined(myEl._setBtnClass([]));
-        });
+        describe('method setActions', function() {
+            it('it calls getActions method if first argument evaluates to true', function() {
+                sinon.spy(myEl, 'getActions');
 
-        it('fire submit event on main btn click', function (done) {
-            sinon.stub(myEl, '_showActionButtons').returns(true);
-            myEl.engagementData = {};
+                myEl.setActions();
+                assert.isFalse(myEl.getActions.called);
 
-            flush(function() {
-                var btn = Polymer.dom(myEl.root).querySelector('.status-buttons paper-button');
-                myEl.addEventListener('main-action-activated', () => {
-                    myEl._showActionButtons.restore();
-                    done();
-                });
+                myEl.setActions('test');
+                assert.isTrue(myEl.getActions.called);
 
-                assert.isTrue(!!btn);
-                btn.click();
+                myEl.getActions.restore();
             });
 
-        });
+            it('calls set method with \'actions\' as first argument and getActions method result or empty array as second', function() {
+                var actions = ['test', 'test1'];
+                sinon.stub(myEl, 'getActions').returns(actions);
+                sinon.spy(myEl, 'set');
 
-        it('fire specified event on other action btn click', function (done) {
-            sinon.stub(myEl, '_showActionButtons').returns(true);
-            myEl.engagementData = {};
-            myEl.set('otherActions', [{event: 'test-event', name: 'test'}]);
+                myEl.setActions();
+                assert.isTrue(myEl.set.calledWith('actions', []));
 
-            flush(function() {
-                var otherBtnsTemplate = Polymer.dom(myEl.root).querySelector('.other-btns-template');
-                otherBtnsTemplate.render();
-                var btn = Polymer.dom(myEl.root).querySelector('.status-buttons .other-options');
-                btn.click();
-            });
+                myEl.set.reset();
+                myEl.setActions('test');
+                assert.isTrue(_.isEqual(myEl.set.args[0][1], actions));
 
-
-            myEl.addEventListener('test-event', () => {
-                myEl._showActionButtons.restore();
-                done();
+                myEl.getActions.restore();
+                myEl.set.restore();
             });
         });
 
@@ -176,14 +150,10 @@
             assert.equal(myEl._refactorStatusNumber(number, status), number);
         });
 
-        it('method _showActionButtons returns true if one of actionAllowed calls returns true', function() {
-            sinon.stub(myEl, 'actionAllowed').returns(true);
-            assert.isTrue(myEl._showActionButtons({}));
-
-            myEl.actionAllowed.returns(false);
-            assert.isFalse(myEl._showActionButtons({}));
-
-            myEl.actionAllowed.restore();
+        it('method _showActionButtons returns true if if actions are defined and actions.length > 0', function() {
+            assert.isTrue(myEl._showActionButtons(['test']));
+            assert.isFalse(myEl._showActionButtons([]));
+            assert.isFalse(myEl._showActionButtons());
         });
     });
 </script>

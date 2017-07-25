@@ -1,0 +1,164 @@
+<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel,
+            iron-icons, lodash, paper-tooltip]-->
+
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
+            textarea-max-rows-behavior]-->
+
+<dom-module id="follow-up-actions">
+    <template>
+        <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
+        <!-- inject styles './follow-up-actions.scss'-->
+
+        <etools-content-panel panel-title="UNICEF Follow-Up Actions">
+            <div slot="panel-btns">
+                <div>
+                    <paper-icon-button
+                            class="panel-button"
+                            hidden$="[[!_canBeChanged(basePermissionPath)]]"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
+                </div>
+            </div>
+
+            <list-header no-ordered data="[[columns]]"></list-header>
+
+            <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
+                <list-element
+                        class="list-element"
+                        data="[[item]]"
+                        headings="[[columns]]"
+                        details="[[details]]"
+                        has-collapse
+                        no-animation>
+                    <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
+                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                    </div>
+                </list-element>
+            </template>
+
+            <template is="dom-if" if="[[!dataItems.length]]">
+                <list-element
+                        class="list-element"
+                        data="[[emptyObj]]"
+                        headings="[[columns]]"
+                        no-animation>
+                </list-element>
+            </template>
+        </etools-content-panel>
+
+        <dialog-element
+                opened="{{dialogOpened}}"
+                delete-dialog="[[deleteDialog]]"
+                dialog-title="[[dialogTitle]]"
+                confirm-btn-text="[[confirmBtnText]]"
+                request-in-process="{{requestInProcess}}">
+            <div class="row-h repeatable-item-container" without-line>
+                <div class="repeatable-item-content">
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Description -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.description', basePermissionPath)]]"
+                                    label="[[getLabel('action_points.description', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.description', basePermissionPath)]]"
+                                    options="[[descriptionOptions]]"
+                                    custom-object-options
+                                    option-label="display_name"
+                                    option-value="value"
+                                    selected="{{editedItem.description}}"
+                                    update-selected
+                                    required$="[[_setRequired('action_points.description', basePermissionPath)]]"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.action_points.0.description}}"
+                                    error-message="{{errors.action_points.0.description}}"
+                                    on-focus="_resetFieldError"
+                                    hide-search>
+                            </etools-searchable-multiselection-menu>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Due Date -->
+                            <paper-input
+                                    id="deadlineAction"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.due_date', basePermissionPath)]]"
+                                    value="[[prettyDate(editedItem.due_date)]]"
+                                    label="[[getLabel('action_points.due_date', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.due_date', basePermissionPath)]]"
+                                    data-selector="deadlineActionSelector"
+                                    required$="[[_setRequired('action_points.due_date', basePermissionPath)]]"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.action_points.0.due_date}}"
+                                    error-message="{{errors.action_points.0.due_date}}"
+                                    on-focus="_resetFieldError"
+                                    on-down="openDatePicker">
+                                <etools-datepicker
+                                        id="deadlineActionSelector"
+                                        modal="[[datepickerModal]]"
+                                        prefix
+                                        format="YYYY-MM-DD"
+                                        date="[[prepareDate(editedItem.due_date)]]"
+                                        pretty-date="{{editedItem.due_date}}"
+                                        no-init
+                                        show-clear-btn>
+                                </etools-datepicker>
+                            </paper-input>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Person Responsible -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.person_responsible', basePermissionPath)]]"
+                                    value="{{editedItem.person_responsible}}"
+                                    label="[[getLabel('action_points.person_responsible', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.person_responsible', basePermissionPath)]]"
+                                    options="[[users]]"
+                                    custom-object-options
+                                    option-label="full_name"
+                                    option-value="id"
+                                    update-selected
+                                    required$="[[_setRequired('action_points.person_responsible', basePermissionPath)]]"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.action_points.0.person_responsible}}"
+                                    error-message="{{errors.action_points.0.person_responsible}}"
+                                    on-focus="_resetFieldError"
+                                    hide-search>
+                            </etools-searchable-multiselection-menu>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Comments -->
+                            <paper-textarea
+                                    class$="validate-input {{_setRequired('action_points.comments', basePermissionPath)}}"
+                                    value="{{editedItem.comments}}"
+                                    allowed-pattern="[\d\s]"
+                                    label="[[getLabel('action_points.comments', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.comments', basePermissionPath)]]"
+                                    required="{{_setRequired('action_points.comments', basePermissionPath)}}"
+                                    disabled="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    max-rows="4"
+                                    invalid="{{errors.action_points.0.comments}}"
+                                    error-message="{{errors.action_points.0.comments}}"
+                                    on-focus="_resetFieldError">
+                            </paper-textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog-element>
+    </template>
+
+    <!-- inject scripts './follow-up-actions.js'-->
+</dom-module>

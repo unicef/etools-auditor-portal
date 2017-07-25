@@ -1,18 +1,12 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
             paper-input, paper-toast, lodash, paper-tooltip]-->
 
-<!--import [list-header, list-element, tab-inputs-styles, module-styles, shared-styles, dialog-element,
+<!--import [list-header, list-element, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, dialog-element,
             table-elements-behavior, static-data-behavior, common-methods-behavior]-->
 
 <dom-module id="findings-summary">
     <template>
-        <style include="module-styles tab-inputs-styles">
-            :host {
-                position: relative;
-                display: block;
-                margin-bottom: 20px;
-            }
-
+        <style include="module-styles tab-layout-styles tab-inputs-styles">
             etools-content-panel {
                 --ecp-content: #{'{
                     padding: 0;
@@ -81,6 +75,7 @@
                                     error-message="{{errors.audited_expenditure}}"
                                     on-focus="_resetFieldError">
                             </etools-currency-amount-input>
+                            <paper-tooltip offset="0">[[editedItem.audited_expenditure]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -98,6 +93,7 @@
                                     error-message="{{errors.financial_findings}}"
                                     on-focus="_resetFieldError">
                             </etools-currency-amount-input>
+                            <paper-tooltip offset="0">[[editedItem.financial_findings]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -117,6 +113,7 @@
                                     error-message="{{errors.percent_of_audited_expenditure}}"
                                     on-focus="_resetFieldError">
                             </etools-currency-amount-input>
+                            <paper-tooltip offset="0">[[editedItem.percent_of_audited_expenditure]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -144,18 +141,14 @@
                         <div class="input-container">
                             <!-- Number of financial findings -->
                             <paper-input
-                                    class$="validate-input disabled-as-readonly [[_setRequired('number_of_financial_findings', basePermissionPath)]]"
+                                    class="disabled-as-readonly"
                                     value="{{editedItem.number_of_financial_findings}}"
-                                    allowed-pattern="[\d]"
                                     label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
-                                    required$="[[_setRequired('number_of_financial_findings', basePermissionPath)]]"
                                     disabled
-                                    readonly
-                                    maxlength="9"
-                                    invalid="{{errors.number_of_financial_findings}}"
-                                    error-message="{{errors.number_of_financial_findings}}">
+                                    readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.number_of_financial_findings]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -170,6 +163,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.key_internal_weakness.high_risk_count]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -182,6 +176,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.key_internal_weakness.medium_risk_count]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">
@@ -194,6 +189,7 @@
                                     disabled
                                     readonly>
                             </paper-input>
+                            <paper-tooltip offset="0">[[editedItem.key_internal_weakness.low_risk_count]]</paper-tooltip>
                         </div>
                     </div>
                 </div>

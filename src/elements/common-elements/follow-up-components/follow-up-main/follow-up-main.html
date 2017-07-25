@@ -1,0 +1,30 @@
+<!--import [polymer]-->
+
+<!--import [follow-up-actions, lodash, follow-up-financial-findings]-->
+
+<dom-module id="follow-up-main">
+    <template>
+        <!-- inject styles './follow-up-main.scss'-->
+
+        <template is="dom-if" if="[[showFindings(engagement.type)]]" restamp>
+            <follow-up-financial-findings
+                    id="followUpFF"
+                    engagement="[[engagement]]"
+                    original-data="[[originalData]]"
+                    error-object="{{errorObject}}"
+                    base-permission-path="{{permissionBase}}"
+            ></follow-up-financial-findings>
+        </template>
+
+        <follow-up-actions
+                id="actions"
+                data-items="{{engagement.action_points}}"
+                error-object="{{errorObject}}"
+                base-permission-path="{{permissionBase}}">
+
+        </follow-up-actions>
+
+    </template>
+
+    <!-- inject scripts './follow-up-main.js'-->
+</dom-module>

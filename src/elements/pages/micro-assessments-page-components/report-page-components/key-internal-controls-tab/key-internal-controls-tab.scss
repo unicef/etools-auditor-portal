@@ -7,15 +7,12 @@
     }
 
     .row-h.repeatable-item-container[without-line] {
-        padding: 0 !important;
+        padding: 0 24px !important;
+        margin-bottom: 0 !important;
     }
 
     .repeatable-item-container .repeatable-item-content {
         margin-left: 25px;
-    }
-
-    .container {
-        margin-bottom: 0 !important;
     }
 
     .form-title {

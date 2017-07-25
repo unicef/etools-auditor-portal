@@ -9,8 +9,8 @@
                 caching-storage="custom"
                 dexie-db-collection="partners"
                 on-success="_partnersLoaded"
-                on-forbidden="_responseError"
-                on-fail="_responseError">
+                on-forbidden="_partnersLoaded"
+                on-fail="_partnersLoaded">
         </etools-ajax>
 
         <!--auditors-->
@@ -19,7 +19,8 @@
                 caching-storage="custom"
                 dexie-db-collection="auditors"
                 on-success="_auditorsLoaded"
-                on-fail="_responseError">
+                on-forbidden="_auditorsLoaded"
+                on-fail="_auditorsLoaded">
         </etools-ajax>
 
         <!--engagement creation-->
@@ -27,7 +28,17 @@
                 method="OPTIONS"
                 url="{{newEngagementPermissions}}"
                 on-success="_handleNewEngagementResponse"
-                on-fail="_responseError">
+                on-forbidden="_handleNewEngagementResponse"
+                on-fail="_handleNewEngagementResponse">
+        </etools-ajax>
+
+        <!--users-->
+        <etools-ajax
+                method="GET"
+                url="{{usersEndpoint}}"
+                on-success="_handleUsersResponse"
+                on-forbidden="_handleUsersResponse"
+                on-fail="_handleUsersResponse">
         </etools-ajax>
     </template>
 
@@ -60,54 +71,72 @@
                     this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
                     this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
+                    this.usersEndpoint = this.getEndpoint('users').url;
                 },
 
                 _allDataLoaded: function() {
-                    if (dataLoaded.partners && dataLoaded.auditors && dataLoaded.engagementOptions) {
+                    if (dataLoaded.partners && dataLoaded.auditors && dataLoaded.engagementOptions && dataLoaded.users) {
                         this.fire('static-data-loaded');
                     }
                 },
 
-                _partnersLoaded: function(data) {
-                    let partners = _.sortBy(data.detail, ['name']);
-                    this._setData('partners', partners);
+                _partnersLoaded: function(event, details) {
+                    if (!details || details.error) {
+                        this._responseError('Partners', event && event.type);
+                    } else {
+                        let partners = _.sortBy(details, ['name']);
+                        this._setData('partners', partners);
+                    }
                     dataLoaded.partners = true;
                     this._allDataLoaded();
                 },
 
-                _auditorsLoaded: function(e, detail) {
-                    let auditors = detail && detail.results || [];
-                    this._setData('auditors', auditors);
+                _auditorsLoaded: function(event, details) {
+                    if (!details || details.error) {
+                        this._responseError('Auditors', event && event.type);
+                    } else {
+                        let auditors = details && details.results || [];
+                        this._setData('auditors', auditors);
+                    }
                     dataLoaded.auditors = true;
                     this._allDataLoaded();
                 },
 
-                _handleNewEngagementResponse: function(data) {
-                    let actions = data && data.detail && data.detail.actions;
-                    if (!this.isValidCollection(actions)) { this._responseError(); }
+                _handleNewEngagementResponse: function(event, details) {
+                    let actions = details && details.actions;
+                    if (!details || details.error || !this.isValidCollection(actions)) {
+                        this._responseError('Engagement Permissions', event && event.type);
+                    } else {
+                        this._addToCollection('new_engagement', actions);
 
-                    if (this.isValidCollection(actions.POST)) {
-                        actions.allowed_actions = ['createEngagement'].concat(actions.allowed_FSM_transitions || []);
+                        let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
+
+                        if (!engagementAttachmentsTypes) {
+                            this._responseError('Attachments types', 'Access denied');
+                        }
+                        this._setData('engagement_attachments_types', engagementAttachmentsTypes);
+                        this._setData('riskOptions', riskOptions);
                     }
-
-                    this._addToCollection('new_engagement', data.detail.actions);
-
-                    let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
-
-                    if (!engagementAttachmentsTypes) {
-                        this._responseError('Can not load attachments types');
-                    }
-                    this._setData('engagement_attachments_types', engagementAttachmentsTypes);
-                    this._setData('riskOptions', riskOptions);
 
                     dataLoaded.engagementOptions = true;
                     this._allDataLoaded();
                 },
 
-                _responseError: function(message) {
-                    console.error('Can not load initial data');
-                    if (message) { console.error(message); }
-                    this.fire('static-data-loaded');
+                _handleUsersResponse: function(event, details) {
+                    if (!details || details.error) {
+                        this._responseError('Users', event && event.type);
+                    } else {
+                        _.each(details, (user) => {
+                            user.full_name = `${user.first_name} ${user.last_name}`;
+                        });
+                        this._setData('users', details);
+                    }
+                    dataLoaded.users = true;
+                    this._allDataLoaded();
+                },
+
+                _responseError: function(message, type) {
+                    console.error(`Can not load initial data: ${message || '?'}. Reason: ${type || '?'}`);
                 }
             });
         })();

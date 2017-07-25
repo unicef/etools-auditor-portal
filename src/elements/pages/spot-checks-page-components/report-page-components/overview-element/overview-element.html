@@ -1,14 +1,9 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-datepicker, etools-currency-amount-input]-->
-<!--import [tab-inputs-styles, module-styles, date-behavior, custom-validator, common-methods-behavior]-->
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, date-behavior, custom-validator, common-methods-behavior]-->
 
 <dom-module id="overview-element">
     <template>
-        <style include="tab-inputs-styles module-styles">
-            :host {
-                position: relative;
-                display: block;
-                margin-bottom: 20px;
-            }
+        <style include="tab-inputs-styles tab-layout-styles module-styles">
         </style>
 
         <etools-content-panel class="content-section clearfx" panel-title="Overview">
@@ -34,6 +29,7 @@
                                 show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
+                    <paper-tooltip offset="0">[[prettyDate(data.face_form_start_date)]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -57,6 +53,7 @@
                                 show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
+                    <paper-tooltip offset="0">[[prettyDate(data.face_form_end_date)]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -70,6 +67,7 @@
                             disabled
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[data.total_value]]</paper-tooltip>
                 </div>
             </div>
 
@@ -87,6 +85,7 @@
                             error-message="{{errors.total_amount_tested}}"
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[data.total_amount_tested]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -102,6 +101,7 @@
                             error-message="{{errors.total_amount_of_ineligible_expenditure}}"
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[data.total_amount_of_ineligible_expenditure]]</paper-tooltip>
                 </div>
             </div>
         </etools-content-panel>

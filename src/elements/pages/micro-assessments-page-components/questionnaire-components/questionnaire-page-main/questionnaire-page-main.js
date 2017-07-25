@@ -143,7 +143,7 @@ Polymer({
             children: [detail.data]
         });
         this.requestsCount(1);
-        this.fire('save-progress', {quietAdding: true});
+        this.fire('action-activated', {type: 'save', quietAdding: true});
     },
 
     _addItemFromDialog: function() {
@@ -159,7 +159,7 @@ Polymer({
         }
 
         this.requestInProcess = true;
-        this.fire('save-progress', {quietAdding: true});
+        this.fire('action-activated', {type: 'save', quietAdding: true});
     },
 
     validate: function() {

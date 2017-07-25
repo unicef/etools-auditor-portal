@@ -31,6 +31,7 @@
             this.reportFileTypes = this.getData('report_attachments_types');
             this._addObserverEffect("errorObject", '_errorOccurred');
             this._addObserverEffect("dialogOpened", 'resetDialog');
+            this.listen(this, 'action-activated', '_processAction');
         },
 
         _routeConfig: function(route) {
@@ -106,6 +107,29 @@
 
         _resetFieldError: function(event) {
             event.target.invalid = false;
+        },
+
+        _processAction: function(event, details) {
+            if (!details || !details.type) { throw 'Event type is not provided!'; }
+            switch (details.type) {
+                case 'save':
+                    this._saveProgress(event, details);
+                    break;
+                case 'create':
+                    this._saveNewEngagement(event, details);
+                    break;
+                case 'submit':
+                    this._submitReport(event, details);
+                    break;
+                case 'finalize':
+                    this._finalizeReport(event, details);
+                    break;
+                case 'cancel':
+                    this._openCancelDialog(event, details);
+                    break;
+                default:
+                    throw `Unknown event type: ${details.type}`;
+            }
         },
 
         _saveProgress: function(event) {
@@ -216,7 +240,7 @@
 
         _setExportLink: function(engagement) {
             if (!engagement || !engagement.type || !engagement.id) { return ''; }
-            return this.getEndpoint('engagementInfo', {id: engagement.id, type: this.getType(engagement.type)}).url + '?format=csv'
+            return this.getEndpoint('engagementInfo', {id: engagement.id, type: 'engagements'}).url + '/pdf'
         },
 
         _validateBasicInfo: function(property) {
@@ -241,36 +265,6 @@
 
         getElement: function(selector) {
             return Polymer.dom(this.root).querySelector(selector);
-        },
-
-        _configButtonsData: function() {
-            if (!this.engagement) { return; }
-            let collectionName = `engagement_${this.engagement.id}`;
-            if (this.engagement.status === 'report_submitted') {
-                this.otherActions = [{name: 'finalize', event: 'finalize-engagement', icon: 'assignment-turned-in'}];
-                this.mainBtnText = 'Finalize';
-            } else if (this.actionAllowed(collectionName, 'submit')) {
-                this.otherActions = [{name: 'submit', event: 'submit-engagement', icon: 'assignment-turned-in'}, {name: 'save', event: 'save-progress', icon: 'save'}];
-                this.mainBtnText = 'Submit';
-            } else {
-                this.otherActions = [{name: 'save', event: 'save-progress', icon: 'save'}];
-                this.mainBtnText = 'Save';
-            }
-            if (this.actionAllowed(collectionName, 'cancel')) {
-                this.push('otherActions', {name: 'cancel engagement', event: 'cancel-engagement', icon: 'cancel'});
-            }
-        },
-
-        _mainActionActivated: function() {
-            if (!this.engagement) { return; }
-            let collectionName = `engagement_${this.engagement.id}`;
-            if (this.engagement.status === 'report_submitted') {
-                this._finalizeReport();
-            } else  if (this.actionAllowed(collectionName, 'submit')) {
-                this._submitReport();
-            } else {
-                this._saveProgress();
-            }
         },
 
         _attachmentsReadonly: function(base, type) {
@@ -301,6 +295,10 @@
             return this.actionAllowed(permissionBase, 'submit') ||
                     engagement.status === 'report_submitted' ||
                     engagement.status === 'final';
+        },
+
+        _showFollowUpTabs: function(permissionBase) {
+            return this.collectionExists(`${permissionBase}.action_points`, 'GET');
         },
 
         _showCancellationReason: function(engagement) {

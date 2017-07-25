@@ -26,19 +26,6 @@
             myEl = fixture('element-fixture');
         });
 
-        describe('saving report', function() {
-            it('run _saveProgress method on second action event', function() {
-                sinon.spy(myEl, '_saveProgress');
-                sinon.stub(myEl, '_validateBasicInfo').returns(false);
-                myEl.fire('save-progress');
-
-                assert.isTrue(myEl._saveProgress.called);
-                myEl._saveProgress.restore();
-                myEl._validateBasicInfo.restore();
-            });
-
-        });
-
         describe('_validateEngagement method', function() {
             it('calls _validateBasicInfo method and validate method for report tab', function() {
                 var validate = sinon.spy();
@@ -164,7 +151,8 @@
                 var reportPage = {
                     getFindingsData: sinon.spy(),
                     getInternalControlsData: sinon.spy(),
-                    getOverviewData: sinon.spy()
+                    getOverviewData: sinon.spy(),
+                    getFollowUpData: sinon.spy()
                 };
                 sinon.stub(myEl, 'getElement').returns(reportPage);
 
@@ -181,7 +169,8 @@
                 var reportPage = {
                     getFindingsData: sinon.stub().returns(['test1']),
                     getInternalControlsData: sinon.stub().returns(['test3']),
-                    getOverviewData: sinon.stub().returns({test2: 'test2'})
+                    getOverviewData: sinon.stub().returns({test2: 'test2'}),
+                    getFollowUpData: sinon.spy()
                 };
                 sinon.stub(myEl, 'getElement').returns(reportPage);
 

@@ -43,8 +43,7 @@ Polymer({
     ],
 
     listeners: {
-        'main-action-activated': '_saveNewEngagement',
-        'engagement-created': '_engagementCreated',
+        'engagement-created': '_engagementCreated'
     },
 
     attached: function() {

@@ -21,7 +21,7 @@ Polymer({
         tabsList: {
             type: Array,
             value: function() {
-                return ['overview', 'report', 'questionnaire', 'attachments'];
+                return ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
             }
         },
         engagementPrefix: {
@@ -33,17 +33,12 @@ Polymer({
     observers: [
         '_routeConfig(route)',
         '_setPermissionBase(engagement.id)',
-        '_tabChanged(tab)',
-        '_configButtonsData(engagement, permissionBase)'
+        '_tabChanged(tab)'
     ],
 
     listeners: {
         'engagement-info-loaded': '_infoLoaded',
         'engagement-updated': '_engagementUpdated',
-        'save-progress': '_saveProgress',
-        'finalize-engagement': '_finalizeReport',
-        'submit-engagement': '_submitReport',
-        'cancel-engagement': '_openCancelDialog',
         'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
     },
@@ -82,6 +77,11 @@ Polymer({
         data.test_subject_areas = subjectAreas || {};
         let findingsData = reportTab && reportTab.getFindingsData();
         if (findingsData && findingsData.length) { data.findings = findingsData; }
+
+        //FollowUp data
+        let followUpPage = this.getElement('#follow-up'),
+            followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+        _.assign(data, followUpData);
 
         return data;
     },

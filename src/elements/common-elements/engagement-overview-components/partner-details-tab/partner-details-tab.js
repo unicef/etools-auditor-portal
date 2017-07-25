@@ -28,11 +28,11 @@ Polymer({
     },
 
     observers: [
-        '_engagementChanged(engagement.partner)',
+        '_engagementChanged(engagement, basePermissionPath)',
         '_errorHandler(errorObject)',
-        '_setActivePd(activePd)',
+        '_setActivePd(engagement, partner.interventions)',
         'updateStyles(basePermissionPath, requestInProcess, partner)',
-        'setOfficers(partner, engagement)'
+        'setOfficers(partner, engagement, basePermissionPath)'
     ],
 
     listeners: {
@@ -42,14 +42,21 @@ Polymer({
     setOfficers: function(partner, engagement) {
         if (!partner || !partner.id) {
             this.set('authorizedOfficer', null);
-        } else if (this.isReadOnly('partner', this.basePermissionPath) && engagement &&
-            engagement.authorized_officers && engagement.authorized_officers[0]) {
-            let officer = this.engagement.authorized_officers[0];
-            officer.fullName = `${officer.first_name} ${officer.last_name}`;
-            this.partner.partnerOfficers = [officer];
-            this.authorizedOfficer = officer;
+            return;
+        }
+        let engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0],
+            partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
+        if (engagementOfficer) { engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`; }
+
+        if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
+            this.partner.partnerOfficers = [engagementOfficer];
+            this.authorizedOfficer = engagementOfficer;
         } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-            this.authorizedOfficer = partner.partnerOfficers[0];
+            let officerIndex = !!(engagementOfficer && ~_.findIndex(partner.partnerOfficers, officer => {
+                return officer.id === engagementOfficer.id;
+            }));
+
+            this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
         }
     },
 
@@ -89,15 +96,22 @@ Polymer({
     },
 
     _setActivePd: function() {
-        if (this.isReadOnly('partner', this.basePermissionPath) && !this.activePd) {
-            if (!this.engagement || !this.engagement.active_pd) { return; }
-
-            let activePd = this.engagement.active_pd.map((pd) => {
-                return pd.id;
-            });
-            this.set('activePd', activePd);
-            return true;
+        //check <etools-searchable-multiselection-menu> debouncer state
+        if (this.$.activePd.isDebouncerActive('selectionChanged')) {
+            this.async(this._setActivePd, 50);
+            return false;
         }
+
+        let originalPartnerId = this.originalData && this.originalData.partner && this.originalData.partner.id;
+        let partnerId = this.partner && this.partner.id;
+
+        if (!originalPartnerId || !partnerId || originalPartnerId !== partnerId) { return false; }
+
+        let activePd = this.engagement && this.engagement.active_pd || [];
+        let selectedActivePd = activePd.map((pd) => {
+            return pd.id;
+        });
+        this.set('activePd', selectedActivePd);
     },
 
     _requestPartner: function(event, id) {
@@ -125,26 +139,39 @@ Polymer({
         this.validate();
     },
 
-    _engagementChanged: function(partner) {
-        if (!partner) {
+    _engagementChanged: function(engagement) {
+        if (!engagement || !engagement.partner) {
             this.set('partner', {});
             this.set('activePd', null);
         } else {
-            this._requestPartner(null, partner.id);
+            this._requestPartner(null, engagement.partner.id);
         }
     },
 
     getPartnerData: function() {
-        if (!this.originalData || this.originalData.partner.id !== this.engagement.partner.id) {
-            let partnerId = this.engagement.partner.id;
+        let data = {};
+        let originalPartnerId = this.originalData && this.originalData.partner && this.originalData.partner.id;
+        let partnerId = this.engagement && this.engagement.partner && this.engagement.partner.id;
+        let originalActivePd = this.originalData && this.originalData.active_pd || [];
+        let activePd = this.activePd || [];
 
-            return {
-                partner: partnerId,
-                active_pd: this.activePd
-            };
-        } else {
+        originalActivePd = originalActivePd.map((pd) => {
+            return `${pd.id}`;
+        });
+
+        if (originalPartnerId !== partnerId) {
+            data.partner = partnerId;
+        }
+
+        if (!_.isEqual(originalActivePd.sort(), activePd.sort())) {
+            data.active_pd = this.activePd;
+        }
+
+        if (_.isEqual(data, {})) {
             return null;
         }
+
+        return data;
     },
 
     getAuthorizedOfficer: function() {

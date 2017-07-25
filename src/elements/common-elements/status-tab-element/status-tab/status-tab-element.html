@@ -1,7 +1,7 @@
 <!--import [polymer, iron-icons, iron-icons/av-icons, iron-flex-layout, paper-button, etools-content-panel, paper-button,
             paper-menu-button, paper-icon-button, paper-menu, paper-item, moment-element/moment-import]-->
 
-<!--import [permission-controller, common-methods-behavior]-->
+<!--import [permission-controller, common-methods-behavior, action-buttons]-->
 
 <dom-module id="status-tab-element">
     <template>
@@ -141,32 +141,9 @@
                 </div>
             </div>
 
-            <template is="dom-if" if="{{_showActionButtons(engagementData)}}">
+            <template is="dom-if" if="{{_showActionButtons(actions)}}">
                 <div class="status-buttons">
-                    <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(otherActions)]]" class="status-tab-button">
-                        <span>[[mainActionText]]</span>
-
-                        <template is="dom-if" if="{{_showOtherActions(otherActions)}}">
-                            <paper-menu-button
-                                    dynamic-align
-                                    opened="{{statusBtnMenuOpened}}"
-                                    class="option-button">
-                                <paper-icon-button
-                                        icon="expand-more"
-                                        class="dropdown-trigger option-button">
-                                </paper-icon-button>
-
-                                <div class="dropdown-content">
-                                    <template is="dom-repeat" items="[[otherActions]]" class="other-btns-template">
-                                        <div class="other-options" on-click="closeMenu" event-name$="[[item.event]]">
-                                            <iron-icon icon="[[item.icon]]" class="option-icon"></iron-icon>
-                                            <span>{{item.name}}</span>
-                                        </div>
-                                    </template>
-                                </div>
-                            </paper-menu-button>
-                        </template>
-                    </paper-button>
+                   <action-buttons actions="{{actions}}"></action-buttons>
                 </div>
             </template>
         </etools-content-panel>

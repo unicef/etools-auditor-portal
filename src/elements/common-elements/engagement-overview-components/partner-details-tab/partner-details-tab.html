@@ -1,19 +1,15 @@
-<!--import [polymer, etools-content-panel, paper-input]-->
-<!--import [tab-inputs-styles, module-styles, get-partner-data, common-methods-behavior, static-data-behavior,
+<!--import [polymer, etools-content-panel, paper-input, lodash]-->
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, get-partner-data, common-methods-behavior, static-data-behavior,
             permission-controller]-->
 
 <dom-module id="partner-details-tab">
     <template>
-        <style include="tab-inputs-styles module-styles">
-            etools-content-panel {
-                margin-bottom: 20px;
-            }
-
+        <style include="tab-inputs-styles tab-layout-styles module-styles">
             .partner-loading {
                 position: absolute;
-                right: -32px;
                 top: 28px;
                 left: auto;
+                background-color: #fff;
             }
 
             .partner-loading:not([active]) {
@@ -31,6 +27,7 @@
                             id="partner"
                             class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
                             value="{{engagement.partner}}"
+                            selected="{{engagement.partner}}"
                             label="[[getLabel('partner', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
                             options="[[partners]]"
@@ -48,9 +45,10 @@
                     </etools-searchable-multiselection-menu>
 
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
+                    <!--<paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>-->
                 </div>
 
-                <div class="input-container input-container-ms">
+                <div class="input-container input-container-m">
                     <!-- Partner Address -->
                     <paper-input
                             class$="without-border [[_setReadonlyFieldClass(partner)]]"
@@ -60,6 +58,7 @@
                             disabled
                             readonly>
                     </paper-input>
+                    <paper-tooltip offset="0">[[_setPartnerAddres(partner)]]</paper-tooltip>
                 </div>
             </div>
 
@@ -74,6 +73,7 @@
                             disabled
                             readonly>
                     </paper-input>
+                    <paper-tooltip offset="0">[[partner.phone_number]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -86,6 +86,7 @@
                             disabled
                             readonly>
                     </paper-input>
+                    <paper-tooltip offset="0">[[partner.email]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -109,6 +110,7 @@
                             dynamic-align
                             hide-search>
                     </etools-searchable-multiselection-menu>
+                    <!--<paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>-->
                 </div>
             </div>
 
@@ -116,6 +118,7 @@
                 <div class="input-container input-container-l">
                     <!-- Active PD -->
                     <etools-searchable-multiselection-menu
+                            id="activePd"
                             class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
                             label="[[getLabel('active_pd', basePermissionPath)]]"
                             placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
@@ -135,6 +138,7 @@
                             multi
                             hide-search>
                     </etools-searchable-multiselection-menu>
+                    <!--<paper-tooltip offset="0">[[activePd]]</paper-tooltip>-->
                 </div>
             </div>
         </etools-content-panel>

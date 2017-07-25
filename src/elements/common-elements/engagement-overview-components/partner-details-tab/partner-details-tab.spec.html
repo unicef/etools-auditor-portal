@@ -56,6 +56,8 @@
         describe('method _engagementChanged', function() {
             it('calls set method if partner argument is not provided', function() {
                 sinon.spy(myEl, 'set');
+                sinon.stub(myEl, '_setActivePd');
+
                 myEl._engagementChanged();
                 assert.isTrue(myEl.set.calledWith('partner', {}));
                 assert.isTrue(myEl.set.calledWith('activePd', null));
@@ -64,9 +66,9 @@
 
             it('calls _requestPartner method with partner.id as second argument', function() {
                 sinon.stub(myEl, '_requestPartner');
-                var partner = {id: 2};
-                myEl._engagementChanged(partner);
-                assert.isTrue(myEl._requestPartner.calledWith(null, partner.id));
+                var engagement = {partner: {id: 2}};
+                myEl._engagementChanged(engagement);
+                assert.isTrue(myEl._requestPartner.calledWith(null, engagement.partner.id));
                 myEl._requestPartner.restore();
             });
         });
@@ -86,75 +88,86 @@
             });
         });
 
-        describe('method getPartnerData', function () {
-            it('returns null if originalData.partner.id === engagement.partner.id', function() {
-                myEl.originalData = {partner: {id: 666}};
-                myEl.engagement = {partner: {id: 666}};
+        describe('method getPartnerData()', function () {
+            beforeEach(function () {
+                myEl.originalData = {partner: {id: 1}, active_pd: [{id: 1}, {id: 2}]};
+                myEl.engagement = {partner: {id: 1}};
+                myEl.activePd = ['1', '2'];
+            });
+
+            it('returns object with partner id if id was changed', function () {
+                myEl.engagement.partner.id = 2;
+                assert.deepEqual(myEl.getPartnerData(), {partner: 2});
+            });
+
+            it('returns object with activePd array if activePd was changed', function () {
+                myEl.activePd = ['3'];
+                assert.deepEqual(myEl.getPartnerData(), {active_pd: ['3']});
+            });
+
+            it('returns object with partner id and activePd if they was changed', function () {
+                myEl.engagement.partner.id = 2;
+                myEl.activePd = ['3'];
+                assert.deepEqual(myEl.getPartnerData(), {partner: 2, active_pd: ['3']});
+            });
+
+            it('returns null if partner id and activePd wasn\'t changed', function () {
                 assert.isNull(myEl.getPartnerData());
-            });
-
-            it('returns object with partner id and active_pd if originalData.partner.id !== engagement.partner.id', function() {
-                let returnedData = {
-                    partner: 9,
-                    active_pd: [1, 2, 3]
-                };
-                myEl.originalData = {partner: {id: 666}};
-                myEl.engagement = {partner: {id: 9}};
-                myEl.activePd = [1, 2, 3];
-
-                assert.deepEqual(myEl.getPartnerData(), returnedData);
-            });
-
-            it('returns object with partner id and active_pd if originalData is not defined', function() {
-                let returnedData = {
-                    partner: 9,
-                    active_pd: [1, 2, 3]
-                };
-                myEl.originalData = null;
-                myEl.engagement = {partner: {id: 9}};
-                myEl.activePd = [1, 2, 3];
-
-                assert.deepEqual(myEl.getPartnerData(), returnedData);
             });
         });
 
         describe('method _setActivePd()', function () {
-            it('returns when method isReadOnly() returns false', function () {
-                sinon.stub(myEl, 'isReadOnly').returns(false);
-                myEl.activePd = null;
-
-                assert.isUndefined(myEl._setActivePd());
+            beforeEach(function () {
+                myEl.$.activePd.isDebouncerActive = sinon.stub().returns(false);
+                myEl.originalData = {partner: {id: 1}};
+                myEl.partner = {id: 1};
             });
 
-            it('returns when activePd is defined', function () {
-                sinon.stub(myEl, 'isReadOnly').returns(true);
-                myEl.activePd = [];
-
-                assert.isUndefined(myEl._setActivePd());
+            it('returns false if isDebouncerActive() method of #activePd element returns true', function () {
+                myEl.$.activePd.isDebouncerActive = sinon.stub().returns(true);
+                assert.isFalse(myEl._setActivePd());
             });
 
-            it('returns if isReadOnly() returns true, activePd is not defined, but engagement is not defined', function () {
-                sinon.stub(myEl, 'isReadOnly').returns(true);
-                myEl.activePd = null;
-                myEl.engagement = null;
+            it('calls async() if isDebouncerActive() method of #activePd element returns true', function () {
+                myEl.$.activePd.isDebouncerActive = sinon.stub().returns(true);
+                let spy = sinon.spy(myEl, 'async');
 
-                assert.isUndefined(myEl._setActivePd());
+                assert.isFalse(spy.called);
+                myEl._setActivePd();
+                assert.isTrue(spy.called);
+                assert.isTrue(spy.calledWithExactly(myEl._setActivePd, 50));
             });
 
-            it('returns if isReadOnly() returns true, activePd is not defined, but engagement.active_pd is not defined', function () {
-                sinon.stub(myEl, 'isReadOnly').returns(true);
-                myEl.activePd = null;
+            it('returns false if originalData.partner.id is not defined', function () {
+                myEl.originalData = null;
+                assert.isFalse(myEl._setActivePd());
+            });
+
+            it('returns false if partner.id is not defined', function () {
+                myEl.partner = null;
+                assert.isFalse(myEl._setActivePd());
+            });
+
+            it('returns false if new partner was loaded', function () {
+                myEl.partner = {id: 2};
+                assert.isFalse(myEl._setActivePd());
+            });
+
+            it('sets activePd property equal to empty array if engagement.active_pd has bad value', function () {
                 myEl.engagement = {active_pd: null};
+                myEl.activePd = null;
 
-                assert.isUndefined(myEl._setActivePd());
+                assert.isNull(myEl.activePd);
+                myEl._setActivePd();
+                assert.deepEqual(myEl.activePd, []);
             });
 
-            it('sets activePd property and returns true', function () {
-                sinon.stub(myEl, 'isReadOnly').returns(true);
-                myEl.activePd = null;
+            it('sets activePd property equal to Array of engagement.active_pd ids', function () {
                 myEl.engagement = {active_pd: [{id: 1}, {id: 2}, {id: 3}]};
+                myEl.activePd = null;
 
-                assert.isTrue(myEl._setActivePd());
+                assert.isNull(myEl.activePd);
+                myEl._setActivePd();
                 assert.deepEqual(myEl.activePd, [1, 2, 3]);
             });
         });
@@ -191,6 +204,7 @@
 
             it('sets partner equal to engagement data if isReadOnly returns true, sets partner.interventions', function() {
                 sinon.stub(myEl, 'isReadOnly').returns(true);
+                sinon.stub(myEl, '_setActivePd');
                 var partner = {
                     id: 1,
                     foo: 'bar'
@@ -203,6 +217,8 @@
 
             it('returns true, sets requestInProcess to true, partnerId if isReadOnly returns false', function() {
                 sinon.stub(myEl, 'isReadOnly').returns(false);
+                sinon.stub(myEl, '_setActivePd');
+
                 assert.isTrue(myEl._requestPartner(null, 12));
                 assert.isTrue(myEl.requestInProcess);
             })

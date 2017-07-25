@@ -15,16 +15,10 @@ Polymer({
                 return {};
             }
         },
-        otherActions: {
-            type: Array,
-            value: function() {
-                return [];
-            }
-        },
         tabsList: {
             type: Array,
             value: function() {
-                return ['overview', 'report', 'attachments'];
+                return ['overview', 'report', 'attachments', 'follow-up'];
             }
         },
         engagementPrefix: {
@@ -36,17 +30,12 @@ Polymer({
     observers: [
         '_routeConfig(route)',
         '_setPermissionBase(engagement.id)',
-        '_tabChanged(tab)',
-        '_configButtonsData(engagement, permissionBase)'
+        '_tabChanged(tab)'
     ],
 
     listeners: {
         'engagement-info-loaded': '_infoLoaded',
         'engagement-updated': '_engagementUpdated',
-        'save-progress': '_saveProgress',
-        'finalize-engagement': '_finalizeReport',
-        'submit-engagement': '_submitReport',
-        'cancel-engagement': '_openCancelDialog',
         'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
     },
@@ -66,6 +55,13 @@ Polymer({
 
     customDataPrepare: function(data) {
         data = data || {};
+
+        //FollowUp data
+        let followUpPage = this.getElement('#follow-up'),
+            followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+        _.assign(data, followUpData);
+
+        //Report Data
         let reportPage = this.getElement('#report');
         if (!reportPage) { return data; }
 

@@ -5,14 +5,13 @@
     <template>
         <style include="module-styles"></style>
         <!-- inject styles './action-buttons.scss'-->
-        <paper-button raised on-tap="_btnClicked" class$="[[_setBtnClass(actions.length)]]" class="status-tab-button">
+        <paper-button class$="status-tab-button [[_setBtnClass(actions.length)]]" raised on-tap="_btnClicked">
             <span>[[_setButtonText(actions.0)]]</span>
-            <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
 
-                <paper-menu-button dynamic-align opened="{{statusBtnMenuOpened}}" class="option-button">
-                    <paper-icon-button icon="expand-more" class="dropdown-trigger option-button"></paper-icon-button>
+                <paper-menu-button class="option-button" dynamic-align opened="{{statusBtnMenuOpened}}">
+                    <paper-icon-button class="dropdown-trigger option-button" icon="expand-more"></paper-icon-button>
                     <div class="dropdown-content">
-                        <template is="dom-repeat" items="[[actions]]" class="other-btns-template">
+                        <template class="other-btns-template" is="dom-repeat" items="[[actions]]">
                             <div class="other-options" on-click="closeMenu" event-name$="[[item]]">
                                 <iron-icon icon="[[_setIcon(item, icons)]]" class="option-icon"></iron-icon>
                                 <span>{{_setButtonText(item)}}</span>
@@ -21,8 +20,6 @@
 
                     </div>
                 </paper-menu-button>
-
-            </template>
 
         </paper-button>
 
