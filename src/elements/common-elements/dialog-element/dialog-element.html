@@ -1,4 +1,4 @@
-<!--import [polymer, iron-icon, paper-dialog, paper-dialog-scrollable, neon-animation]-->
+<!--import [polymer, iron-icon, paper-dialog, neon-animation]-->
 <!--import [tab-inputs-styles, module-styles]-->
 
 <dom-module id="dialog-element">
@@ -20,9 +20,7 @@
             <h2 class="dialog-title">[[dialogTitle]]</h2>
 
             <template is="dom-if" if="{{!deleteDialog}}" restamp>
-                <paper-dialog-scrollable>
-                    <slot></slot>
-                </paper-dialog-scrollable>
+                <slot></slot>
             </template>
 
             <div class="buttons group" id="buttons">
