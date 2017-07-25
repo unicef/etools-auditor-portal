@@ -32,7 +32,7 @@ Polymer({
             type: Array,
             value: function() {
                 return [{
-                    'label': 'Recommendation and IP Management Response',
+                    'label': 'Brief Justification for Rating (main internal control gaps)',
                     'path': 'risk.extra.comments',
                     'size': 100
                 }];
