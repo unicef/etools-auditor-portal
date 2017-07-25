@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel, paper-input]-->
+<!--import [polymer, etools-content-panel, paper-input, lodash]-->
 <!--import [tab-inputs-styles, module-styles, get-partner-data, common-methods-behavior, static-data-behavior,
             permission-controller]-->
 
@@ -122,6 +122,7 @@
                 <div class="input-container input-container-l">
                     <!-- Active PD -->
                     <etools-searchable-multiselection-menu
+                            id="activePd"
                             class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
                             label="[[getLabel('active_pd', basePermissionPath)]]"
                             placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
