@@ -6,13 +6,26 @@
     <template>
         <!-- inject styles './follow-up-main.scss'-->
 
-        <audit-financial-findings
-                id="auditFF"
-                engagement="[[engagement]]"
-                original-data="[[originalData]]"
-                error-object="{{errorObject}}"
-                base-permission-path="{{permissionBase}}"
-        ></audit-financial-findings>
+        <template is="dom-if" if="[[showFindings(engagement.type, 'audit')]]" restamp>
+            <audit-financial-findings
+                    id="auditFF"
+                    engagement="[[engagement]]"
+                    original-data="[[originalData]]"
+                    error-object="{{errorObject}}"
+                    base-permission-path="{{permissionBase}}"
+            ></audit-financial-findings>
+        </template>
+
+        <template is="dom-if" if="[[showFindings(engagement.type, 'sc')]]" restamp>
+            <spot-check-financial-findings
+                    id="auditFF"
+                    engagement="[[engagement]]"
+                    original-data="[[originalData]]"
+                    error-object="{{errorObject}}"
+                    base-permission-path="{{permissionBase}}"
+            ></spot-check-financial-findings>
+        </template>
+
 
         <follow-up-actions
                 id="actions"
