@@ -126,7 +126,7 @@
                                 value: 'final'
                             },
                             {
-                                label: 'Canceled',
+                                label: 'Cancelled',
                                 value: 'canceled'
                             }
                         ]
