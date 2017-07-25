@@ -30,7 +30,7 @@ Polymer({
     observers: [
         '_engagementChanged(engagement, basePermissionPath)',
         '_errorHandler(errorObject)',
-        '_setActivePd(activePd)',
+        '_setActivePd(partner.interventions)',
         'updateStyles(basePermissionPath, requestInProcess, partner)',
         'setOfficers(partner, engagement, basePermissionPath)'
     ],
@@ -52,11 +52,11 @@ Polymer({
             this.partner.partnerOfficers = [engagementOfficer];
             this.authorizedOfficer = engagementOfficer;
         } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-            let officerIndex = ~_.findIndex(partner.partnerOfficers, officer => {
+            let officerIndex = !!(engagementOfficer && ~_.findIndex(partner.partnerOfficers, officer => {
                 return officer.id === engagementOfficer.id;
-            });
+            }));
 
-            this.authorizedOfficer = !!(engagementOfficer && officerIndex) ? engagementOfficer : partnerOfficer;
+            this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
         }
     },
 
@@ -96,15 +96,17 @@ Polymer({
     },
 
     _setActivePd: function() {
-        if (this.isReadOnly('partner', this.basePermissionPath) && !this.activePd) {
-            if (!this.engagement || !this.engagement.active_pd) { return; }
-
-            let activePd = this.engagement.active_pd.map((pd) => {
-                return pd.id;
-            });
-            this.set('activePd', activePd);
-            return true;
+        //check <etools-searchable-multiselection-menu> debouncer state
+        if (this.$.activePd.isDebouncerActive('selectionChanged')) {
+            this.async(this._setActivePd, 50);
+            return false;
         }
+
+        let activePd = this.engagement && this.engagement.active_pd || [];
+        let selectedActivePd = activePd.map((pd) => {
+            return pd.id;
+        });
+        this.set('activePd', selectedActivePd);
     },
 
     _requestPartner: function(event, id) {
@@ -142,16 +144,29 @@ Polymer({
     },
 
     getPartnerData: function() {
-        if (!this.originalData || this.originalData.partner.id !== this.engagement.partner.id) {
-            let partnerId = this.engagement.partner.id;
+        let data = {};
+        let originalPartnerId = this.originalData && this.originalData.partner && this.originalData.partner.id;
+        let partnerId = this.engagement && this.engagement.partner && this.engagement.partner.id;
+        let originalActivePd = this.originalData && this.originalData.active_pd || [];
+        let activePd = this.activePd || [];
 
-            return {
-                partner: partnerId,
-                active_pd: this.activePd
-            };
-        } else {
+        originalActivePd = originalActivePd.map((pd) => {
+            return `${pd.id}`;
+        });
+
+        if (originalPartnerId !== partnerId) {
+            data.partner = partnerId;
+        }
+
+        if (!_.isEqual(originalActivePd.sort(), activePd.sort())) {
+            data.active_pd = this.activePd;
+        }
+
+        if (_.isEqual(data, {})) {
             return null;
         }
+
+        return data;
     },
 
     getAuthorizedOfficer: function() {
