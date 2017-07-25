@@ -165,32 +165,31 @@
         });
 
         describe('method setupFiltersAndHeadings()', function () {
-            it('removes partners filter if partners Array is empty', function () {
+            beforeEach(function () {
+                myEl.filters = _.cloneDeep(filters);
+                myEl.listHeadings = _.cloneDeep(listHeadings);
+            });
+
+            it('removes partners filter if partners Array is empty and filter is found', function () {
                 sinon.stub(myEl, 'getData').withArgs('partners').returns([]);
+                assert.lengthOf(myEl.filters, 4);
                 myEl.setupFiltersAndHeadings();
                 assert.lengthOf(myEl.filters, 3);
             });
 
-            it('not removes partners filter if partners Array is not empty', function () {
-                sinon.stub(myEl, 'getData').withArgs('partners').returns([{}, {}]);
+            it('not removes partners filter if partners Array is empty but filter not found', function () {
+                sinon.stub(myEl, 'getData').withArgs('partners').returns([]);
+                sinon.stub(myEl, '_getFilterIndex').withArgs('partner').returns(-1);
+                assert.lengthOf(myEl.filters, 4);
                 myEl.setupFiltersAndHeadings();
                 assert.lengthOf(myEl.filters, 4);
             });
 
-            it('sets listHeadings', function () {
-                myEl.listHeadings = null;
-
-                assert.isNull(myEl.listHeadings);
+            it('not removes partners filter if partners Array is not empty and filter is found', function () {
+                sinon.stub(myEl, 'getData').withArgs('partners').returns([{}, {}]);
+                assert.lengthOf(myEl.filters, 4);
                 myEl.setupFiltersAndHeadings();
-                assert.lengthOf(myEl.listHeadings, 5);
-            });
-
-            it('sets filters', function () {
-                myEl.filters = null;
-
-                assert.isNull(myEl.filters);
-                myEl.setupFiltersAndHeadings();
-                assert.lengthOf(myEl.filters, 3);
+                assert.lengthOf(myEl.filters, 4);
             });
         });
 
@@ -210,6 +209,10 @@
         });
 
         describe('method setFiltersSelections()', function () {
+            beforeEach(function () {
+                myEl.filters = _.cloneDeep(filters);
+            });
+
             it('sets partners filter selection property', function () {
                 let partnersFilterIndex = myEl._getFilterIndex('partner');
                 let partners = [{}, {}];
