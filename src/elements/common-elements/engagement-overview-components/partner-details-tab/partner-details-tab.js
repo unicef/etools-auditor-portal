@@ -52,11 +52,11 @@ Polymer({
             this.partner.partnerOfficers = [engagementOfficer];
             this.authorizedOfficer = engagementOfficer;
         } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-            let officerIndex = ~_.findIndex(partner.partnerOfficers, officer => {
+            let officerIndex = !!(engagementOfficer && ~_.findIndex(partner.partnerOfficers, officer => {
                 return officer.id === engagementOfficer.id;
-            });
+            }));
 
-            this.authorizedOfficer = !!(engagementOfficer && officerIndex) ? engagementOfficer : partnerOfficer;
+            this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
         }
     },
 
