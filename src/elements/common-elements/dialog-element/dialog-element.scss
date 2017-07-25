@@ -5,6 +5,10 @@
         background-color: transparent;
     }
 
+    .close-btn {
+        color: inherit;
+    }
+
     #buttons {
         border-top: none;
     }
@@ -60,7 +64,7 @@ paper-dialog-scrollable {
 }
 
 .dialog-title {
-    padding: 16px 24px 10px 36px !important;
+    padding: 16px 24px 10px !important;
     min-height: 26px;
     margin-top: 0 !important;
     color: white;
