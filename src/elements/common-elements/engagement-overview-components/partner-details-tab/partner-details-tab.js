@@ -30,7 +30,7 @@ Polymer({
     observers: [
         '_engagementChanged(engagement, basePermissionPath)',
         '_errorHandler(errorObject)',
-        '_setActivePd(partner.interventions)',
+        '_setActivePd(engagement, partner.interventions)',
         'updateStyles(basePermissionPath, requestInProcess, partner)',
         'setOfficers(partner, engagement, basePermissionPath)'
     ],
@@ -101,6 +101,11 @@ Polymer({
             this.async(this._setActivePd, 50);
             return false;
         }
+
+        let originalPartnerId = this.originalData && this.originalData.partner && this.originalData.partner.id;
+        let partnerId = this.partner && this.partner.id;
+
+        if (!originalPartnerId || !partnerId || originalPartnerId !== partnerId) { return false; }
 
         let activePd = this.engagement && this.engagement.active_pd || [];
         let selectedActivePd = activePd.map((pd) => {

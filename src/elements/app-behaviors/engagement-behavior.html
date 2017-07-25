@@ -240,7 +240,7 @@
 
         _setExportLink: function(engagement) {
             if (!engagement || !engagement.type || !engagement.id) { return ''; }
-            return this.getEndpoint('engagementInfo', {id: engagement.id, type: this.getType(engagement.type)}).url + '?format=csv'
+            return this.getEndpoint('engagementInfo', {id: engagement.id, type: 'engagements'}).url + '/pdf'
         },
 
         _validateBasicInfo: function(property) {

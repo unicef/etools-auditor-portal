@@ -108,7 +108,7 @@
                     color: var(--gray-dark);
                 }'};
                 --paper-input-container-label: #{'{
-                    color: var(--gray-50) ;
+                    color: var(--gray-50) !important;
                 }'};
 
 
@@ -130,7 +130,7 @@
             }
 
             etools-currency-amount-input {
-                --etools-currency-container-label: #{'{ color: var(--gray-50); }'};
+                --etools-currency-container-label: #{'{ color: var(--gray-50) !important; }'};
                 --paper-input-container-color: var(--gray-20);
                 --paper-input-container-focus-color: var(--module-primary);
             }
@@ -199,7 +199,7 @@
                     width: auto !important;
                     right: auto;
                     padding-right: 15px;
-                    color: var(--gray-50);
+                    color: var(--gray-50) !important;
                  }'};
             }
 
@@ -259,10 +259,11 @@
                     border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
                 }'};
                 --etools-currency-container-label: #{'{
-                    color: rgba(0, 0, 0, 0.38);
+                    color: var(--gray-50);
                 }'};
                 --paper-input-container: #{'{
                     opacity: 1 !important;
+                    color: var(--gray-dark) !important;
                 }'};
             }
 

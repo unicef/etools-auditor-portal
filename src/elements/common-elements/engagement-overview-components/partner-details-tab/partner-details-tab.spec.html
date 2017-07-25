@@ -119,6 +119,8 @@
         describe('method _setActivePd()', function () {
             beforeEach(function () {
                 myEl.$.activePd.isDebouncerActive = sinon.stub().returns(false);
+                myEl.originalData = {partner: {id: 1}};
+                myEl.partner = {id: 1};
             });
 
             it('returns false if isDebouncerActive() method of #activePd element returns true', function () {
@@ -134,6 +136,21 @@
                 myEl._setActivePd();
                 assert.isTrue(spy.called);
                 assert.isTrue(spy.calledWithExactly(myEl._setActivePd, 50));
+            });
+
+            it('returns false if originalData.partner.id is not defined', function () {
+                myEl.originalData = null;
+                assert.isFalse(myEl._setActivePd());
+            });
+
+            it('returns false if partner.id is not defined', function () {
+                myEl.partner = null;
+                assert.isFalse(myEl._setActivePd());
+            });
+
+            it('returns false if new partner was loaded', function () {
+                myEl.partner = {id: 2};
+                assert.isFalse(myEl._setActivePd());
             });
 
             it('sets activePd property equal to empty array if engagement.active_pd has bad value', function () {
