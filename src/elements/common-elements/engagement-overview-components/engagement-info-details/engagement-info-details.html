@@ -1,21 +1,14 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, iron-icons,
             etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
 
-<!--import [tab-inputs-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data,
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data,
             common-methods-behavior, update-agreement-data]-->
 
 <dom-module id="engagement-info-details">
     <template>
-        <style include="tab-inputs-styles module-styles">
-            :host {
-                position: relative;
-                display: block;
-                margin-bottom: 20px;
-            }
-
+        <style include="tab-inputs-styles module-styles tab-layout-styles">
             .po-loading {
                 position: absolute;
-                right: -32px;
                 top: 25px;
                 left: auto;
             }

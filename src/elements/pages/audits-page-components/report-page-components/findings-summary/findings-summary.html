@@ -1,18 +1,12 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
             paper-input, paper-toast, lodash, paper-tooltip]-->
 
-<!--import [list-header, list-element, tab-inputs-styles, module-styles, shared-styles, dialog-element,
+<!--import [list-header, list-element, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, dialog-element,
             table-elements-behavior, static-data-behavior, common-methods-behavior]-->
 
 <dom-module id="findings-summary">
     <template>
-        <style include="module-styles tab-inputs-styles">
-            :host {
-                position: relative;
-                display: block;
-                margin-bottom: 20px;
-            }
-
+        <style include="module-styles tab-layout-styles tab-inputs-styles">
             etools-content-panel {
                 --ecp-content: #{'{
                     padding: 0;

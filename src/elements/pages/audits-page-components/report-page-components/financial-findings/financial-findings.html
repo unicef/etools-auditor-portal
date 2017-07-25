@@ -6,7 +6,7 @@
 
 <dom-module id="financial-findings">
     <template>
-        <style include="tab-inputs-styles module-styles"></style>
+        <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
         <!-- inject styles './financial-findings.scss'-->
 
         <etools-content-panel class="content-section clearfix" panel-title="Financial Findings">
@@ -82,7 +82,7 @@
                     </div>
 
                     <div class="row-h group">
-                        <div class="input-container input-container-45">
+                        <div class="input-container input-container-ms">
                             <!-- Amount (local) -->
                             <etools-currency-amount-input
                                     class$="disabled-as-readonly validate-input {{_setRequired('financial_finding_set.local_amount', basePermissionPath)}}"
@@ -100,7 +100,7 @@
                             <paper-tooltip offset="0">[[editedItem.local_amount]]</paper-tooltip>
                         </div>
 
-                        <div class="input-container input-container-45">
+                        <div class="input-container input-container-ms">
                             <!-- Amount USD -->
                             <etools-currency-amount-input
                                     class$="disabled-as-readonly validate-input {{_setRequired('financial_finding_set.amount', basePermissionPath)}}"
