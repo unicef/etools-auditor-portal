@@ -8,6 +8,7 @@
         left: auto;
         &:not([active]) {
             display: none !important;
+            background-color: #fff;
         }
     }
 
@@ -112,7 +113,6 @@
 
     .repeatable-item-container {
         margin-bottom: 0 !important;
-        width: 720px !important;
     }
 
     .panel-content {
