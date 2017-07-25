@@ -9,21 +9,21 @@ Polymer({
             followUp = Polymer.dom(this.root).querySelector('#actions'),
             followUpData = followUp && followUp.getActionsData(),
             //Audit Financial Findings
-            auditFindings = Polymer.dom(this.root).querySelector('#auditFF'),
-            auditFindingsData = auditFindings && auditFindings.getFindingsData();
+            followUpFindings = Polymer.dom(this.root).querySelector('#followUpFF'),
+            followUpFindingsData = followUpFindings && followUpFindings.getFindingsData();
 
         if (followUpData) {
             data.action_points = followUpData;
         }
-        if (auditFindingsData) {
-            _.assign(data, auditFindingsData);
+        if (followUpFindingsData) {
+            _.assign(data, followUpFindingsData);
         }
 
         return _.isEmpty(data) ? null : data;
     },
 
-    showFindings: function(type, expectedType) {
-        return type === expectedType;
+    showFindings: function(type) {
+        return !!type && type !== 'ma';
     }
 
 });

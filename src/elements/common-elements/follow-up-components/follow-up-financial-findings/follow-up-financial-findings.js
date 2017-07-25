@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-    is: 'audit-financial-findings',
+    is: 'follow-up-financial-findings',
 
     behaviors: [
         APBehaviors.CommonMethodsBehavior,
@@ -22,6 +22,10 @@ Polymer({
         return _.pickBy(this.engagement, (value, key) => {
             return ~fields.indexOf(key) && (this.originalData[key] !== this.engagement[key]);
         });
+    },
+
+    showFields: function(type, expectedType) {
+        return type === expectedType;
     }
 
 });
