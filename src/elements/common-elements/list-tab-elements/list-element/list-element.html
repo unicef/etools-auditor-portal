@@ -31,8 +31,8 @@
                         <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
                            href$="[[_getLink(item.link, data)]]">
                             [[_getValue(item, data)]]
+                            <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                         </a>
-                        <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                     </template>
 
                     <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
@@ -43,7 +43,9 @@
                                 <template is="dom-if" if="[[item.additional]]">
                                     <span class="additional">([[_getAdditionalValue(item, data)]])</span>
                                 </template>
+
                             </span>
+                            <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                         </span>
                     </template>
 
