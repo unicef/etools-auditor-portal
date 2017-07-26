@@ -1,4 +1,4 @@
-<!--import [polymer, etools-content-panel]-->
+<!--import [polymer, etools-content-panel, paper-tooltip]-->
 
 <!--import [tab-inputs-styles, module-styles]-->
 
@@ -21,6 +21,7 @@
                         <etools-searchable-multiselection-menu
                                 id="test"
                                 class="disabled-as-readonly"
+                                value="{{auditOpinion}}"
                                 label="[[getLabel('audit_opinion', basePermissionPath)]]"
                                 placeholder="[[getReadonlyPlaceholder(engagement)]]"
                                 options="[[auditOpinionChoices]]"
@@ -31,6 +32,7 @@
                                 update-selected
                                 disabled readonly>
                         </etools-searchable-multiselection-menu>
+                        <paper-tooltip offset="0">[[auditOpinion.display_name]]</paper-tooltip>
                     </div>
                 </div>
             </template>
@@ -48,6 +50,7 @@
                                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
                                 disabled readonly>
                         </etools-currency-amount-input>
+                        <paper-tooltip offset="0">[[engagement.audited_expenditure]]</paper-tooltip>
                     </div>
 
                     <div class="input-container">
@@ -60,6 +63,7 @@
                                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
                                 disabled readonly>
                         </etools-currency-amount-input>
+                        <paper-tooltip offset="0">[[engagement.financial_findings]]</paper-tooltip>
                     </div>
                 </template>
 
@@ -75,6 +79,7 @@
                                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
                                 disabled readonly>
                         </etools-currency-amount-input>
+                        <paper-tooltip offset="0">[[engagement.total_amount_tested]]</paper-tooltip>
                     </div>
 
                     <div class="input-container">
@@ -87,6 +92,7 @@
                                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
                                 disabled readonly>
                         </etools-currency-amount-input>
+                        <paper-tooltip offset="0">[[engagement.total_amount_of_ineligible_expenditure]]</paper-tooltip>
                     </div>
                 </template>
 
@@ -106,6 +112,7 @@
                             error-message="{{errors.amount_refunded}}"
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[engagement.amount_refunded]]</paper-tooltip>
                 </div>
             </div>
 
@@ -125,6 +132,7 @@
                             error-message="{{errors.additional_supporting_documentation_provided}}"
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[engagement.additional_supporting_documentation_provided]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -142,6 +150,7 @@
                             error-message="{{errors.justification_provided_and_accepted}}"
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[engagement.justification_provided_and_accepted]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -159,6 +168,7 @@
                             error-message="{{errors.write_off_required}}"
                             on-focus="_resetFieldError">
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[engagement.write_off_required]]</paper-tooltip>
                 </div>
             </div>
 
@@ -173,12 +183,13 @@
                             placeholder$="[[getReadonlyPlaceholder(engagement)]]"
                             disabled readonly>
                     </etools-currency-amount-input>
+                    <paper-tooltip offset="0">[[engagement.pending_unsupported_amount]]</paper-tooltip>
                 </div>
             </div>
 
             <div class="row-h group">
                 <div class="input-container input-container-l">
-                    <!-- Comments -->
+                    <!-- explanation_for_additional_information -->
                     <paper-textarea
                             class$="validate-input {{_setRequired('explanation_for_additional_information', basePermissionPath)}}"
                             value="{{engagement.explanation_for_additional_information}}"
