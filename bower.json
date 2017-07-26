@@ -40,7 +40,7 @@
     "lodash": "4.17.4",
     "web-component-tester": "^v6.0.0-prerelease.9",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0",
-    "paper-dialog-scrollable": "^2.1.0"
+    "perfect-scrollbar": "^0.7.0"
   },
   "devDependencies": {},
   "resolutions": {
