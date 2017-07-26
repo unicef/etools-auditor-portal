@@ -1,9 +1,9 @@
 <!--import [polymer, iron-icon, paper-dialog, neon-animation]-->
-<!--import [tab-inputs-styles, module-styles]-->
+<!--import [tab-inputs-styles, module-styles, perfect-scrollbar-behavior, ps-styles]-->
 
 <dom-module id="dialog-element">
     <template>
-        <style include="module-styles tab-inputs-styles"></style>
+        <style include="module-styles tab-inputs-styles ps-styles"></style>
         <!-- inject styles './dialog-element.scss'-->
 
         <paper-dialog
@@ -19,9 +19,11 @@
 
             <h2 class="dialog-title">[[dialogTitle]]</h2>
 
-            <template is="dom-if" if="{{!deleteDialog}}" restamp>
-                <slot></slot>
-            </template>
+            <div id="scrollbarContainer">
+                <template is="dom-if" if="{{!deleteDialog}}" restamp>
+                    <slot></slot>
+                </template>
+            </div>
 
             <div class="buttons group" id="buttons">
                 <etools-loading
@@ -60,7 +62,10 @@
         Polymer({
             is: 'dialog-element',
 
-            behaviors: [Polymer.NeonAnimationRunnerBehavior],
+            behaviors: [
+                Polymer.NeonAnimationRunnerBehavior,
+                APBehaviors.PerfectScrollbarBehavior
+            ],
 
             properties: {
                 dialogTitle: {

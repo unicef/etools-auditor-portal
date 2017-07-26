@@ -1,0 +1,15 @@
+<!--import [polymer, perfect-scrollbar]-->
+
+<script>
+window.APBehaviors = window.APBehaviors || {};
+APBehaviors.PerfectScrollbarBehavior = {
+    ready: function () {
+        let scrollbarContainer = this.$.scrollbarContainer;
+        if (!scrollbarContainer) { return; }
+        let options = {
+            handlers: ['click-rail', 'drag-scrollbar', 'wheel', 'touch']
+        };
+        Ps.initialize(scrollbarContainer, options);
+    },
+};
+</script>
