@@ -177,7 +177,7 @@
                     <!-- Pending Unsupported Amount -->
                     <etools-currency-amount-input
                             class="disabled-as-readonly"
-                            value="{{engagement.pending_unsupported_amount}}"
+                            value="[[setUnsupportedAmount(engagement, engagement.additional_supporting_documentation_provided, engagement.amount_refunded, engagement.justification_provided_and_accepted, engagement.write_off_required)]]"
                             currency="$"
                             label$="[[getLabel('pending_unsupported_amount', basePermissionPath)]]"
                             placeholder$="[[getReadonlyPlaceholder(engagement)]]"

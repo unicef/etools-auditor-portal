@@ -29,6 +29,17 @@ Polymer({
 
     showFields: function(type, expectedType) {
         return type === expectedType;
+    },
+
+    setUnsupportedAmount: function(engagement, ...properties) {
+        engagement = engagement || {};
+        let value = engagement.financial_findings || engagement.total_amount_of_ineligible_expenditure || 0;
+
+        _.each(properties, property => {
+            value -= property;
+        });
+
+        return value.toFixed(2);
     }
 
 });
