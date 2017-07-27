@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, iron-icons,
-            etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading]-->
+            etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading, etools-info-tooltip]-->
 
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data,
             common-methods-behavior, update-agreement-data]-->
@@ -16,6 +16,20 @@
 
             .po-loading:not([active]) {
                 display: none !important;
+            }
+
+            etools-info-tooltip {
+                span[slot="message"] {
+                    white-space: nowrap;
+                    line-height: 15px;
+                }
+
+                --etools-tooltip-trigger-icon: #{'{
+                    margin-left: -2px;
+                    margin-top: 12px;
+                    color: var(--gray-50);
+                    cursor: pointer;
+                }'}
             }
         </style>
 
@@ -168,27 +182,34 @@
                 </div>
 
                 <div class="input-container">
-                    <!-- Engagement Type -->
-                    <etools-searchable-multiselection-menu
-                            id="engagementType"
-                            class$="disabled-as-readonly {{_setRequired('type', basePermissionPath)}}"
-                            field="type"
-                            value="{{_processValue(data.type)}}"
-                            label="[[getLabel('type', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('type', basePermissionPath, 'dropdown')]]"
-                            options="[[engagementTypes]]"
-                            custom-object-options
-                            option-label="label"
-                            option-value="value"
-                            required="{{_setRequired('type', basePermissionPath)}}"
-                            disabled="[[isReadOnly('type', basePermissionPath)]]"
-                            readonly="[[isReadOnly('type', basePermissionPath)]]"
-                            invalid="{{_checkInvalid(errors.type)}}"
-                            error-message="{{errors.type}}"
-                            on-focus="_resetFieldError"
-                            on-value-change="_setEngagementType"
-                            hide-search>
-                    </etools-searchable-multiselection-menu>
+                    <etools-info-tooltip hide-tooltip="{{!showInput}}">
+                        <!-- Engagement Type -->
+                        <etools-searchable-multiselection-menu
+                                slot="field"
+                                id="engagementType"
+                                class$="disabled-as-readonly {{_setRequired('type', basePermissionPath)}}"
+                                field="type"
+                                value="{{_processValue(data.type)}}"
+                                label="[[getLabel('type', basePermissionPath)]]"
+                                placeholder="[[getPlaceholderText('type', basePermissionPath, 'dropdown')]]"
+                                options="[[engagementTypes]]"
+                                custom-object-options
+                                option-label="label"
+                                option-value="value"
+                                required="{{_setRequired('type', basePermissionPath)}}"
+                                disabled="[[isReadOnly('type', basePermissionPath)]]"
+                                readonly="[[isReadOnly('type', basePermissionPath)]]"
+                                invalid="{{_checkInvalid(errors.type)}}"
+                                error-message="{{errors.type}}"
+                                on-focus="_resetFieldError"
+                                on-value-change="_setEngagementType"
+                                hide-search>
+                        </etools-searchable-multiselection-menu>
+                        <span slot="message">Attach FACE Form Requesting Funding, <br>
+                                ICE Form, FACE Form Reporting,<br>
+                                Statement of Expenditure</span>
+                    </etools-info-tooltip>
+
                     <!--<paper-tooltip for="engagementType" offset="0">[[_getEngagementTypeLabel(data.type)]]</paper-tooltip>-->
                 </div>
             </div>

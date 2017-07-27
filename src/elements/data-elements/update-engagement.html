@@ -83,14 +83,14 @@
                 this.fire('global-loading', {type: 'update-permissions'});
 
                 let action;
-                if (data.detail.status === 'report_submitted') {
+                if (this.method === 'PATCH') {
+                    action = 'saved';
+                } else if (data.detail.status === 'report_submitted') {
                     action = 'submitted';
                 } else if (data.detail.status === 'final') {
                     action = 'finalized';
                 } else if (data.detail.status === 'canceled') {
                     action = 'canceled';
-                } else {
-                    action = 'saved';
                 }
 
                 if (!this.quietAdding) {
@@ -162,7 +162,7 @@
                 } else if (this.actionUrl && ~this.actionUrl.indexOf('submit')) {
                     //Finish data updating, run submitting if submit url has been saved
                     this.method = 'POST';
-                    this.fire('global-loading', {type: 'submit-engagement', active: true, message: 'Submiting engagement...'});
+                    this.fire('global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
                     this.fire('global-loading', {type: 'update-engagement'});
                     this.url = this.actionUrl;
                 } else if (engagement.finalize) {

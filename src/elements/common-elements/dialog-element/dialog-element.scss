@@ -5,6 +5,10 @@
         background-color: transparent;
     }
 
+    .close-btn {
+        color: inherit;
+    }
+
     #buttons {
         border-top: none;
     }
@@ -17,6 +21,7 @@
 paper-dialog {
     background-color: #ffffff;
     border-radius: 4px;
+    max-height: 90vh;
     width: 96%;
     max-width: 700px !important;
 }
@@ -29,7 +34,6 @@ paper-dialog-scrollable {
 
 #buttons {
     display: block;
-    margin-top: 25px;
     padding: 10px 8px 10px 24px;
     overflow: hidden;
     border-top: 1px solid var(--gray-lighter);
@@ -60,9 +64,10 @@ paper-dialog-scrollable {
 }
 
 .dialog-title {
-    padding: 16px 24px 10px 36px !important;
+    padding: 16px 24px 10px !important;
     min-height: 26px;
     margin-top: 0 !important;
+    margin-bottom: 10px !important;
     color: white;
     background-color: var(--module-primary);
 }
@@ -98,3 +103,11 @@ paper-button.btn-cancel[disabled] {
 paper-button[disabled]:not(.btn-cancel) {
      opacity: 0.7;
  }
+
+#scrollbarContainer {
+    position: relative;
+    height: 100%;
+    max-height: calc(90vh - 147px);
+    margin: 0;
+    padding: 0;
+}

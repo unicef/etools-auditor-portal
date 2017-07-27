@@ -62,6 +62,7 @@
                             <!-- Description -->
                             <etools-searchable-multiselection-menu
                                     class$="disabled-as-readonly validate-input [[_setRequired('action_points.description', basePermissionPath)]]"
+                                    value="{{description}}"
                                     label="[[getLabel('action_points.description', basePermissionPath)]]"
                                     placeholder="[[getPlaceholderText('action_points.description', basePermissionPath)]]"
                                     options="[[descriptionOptions]]"
@@ -78,6 +79,7 @@
                                     on-focus="_resetFieldError"
                                     hide-search>
                             </etools-searchable-multiselection-menu>
+                            <!--<paper-tooltip offset="0">[[description.display_name]]</paper-tooltip>-->
                         </div>
                     </div>
 
@@ -109,6 +111,7 @@
                                         show-clear-btn>
                                 </etools-datepicker>
                             </paper-input>
+                            <paper-tooltip offset="0">[[prettyDate(editedItem.due_date)]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -133,6 +136,7 @@
                                     on-focus="_resetFieldError"
                                     hide-search>
                             </etools-searchable-multiselection-menu>
+                            <!--<paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>-->
                         </div>
                     </div>
 

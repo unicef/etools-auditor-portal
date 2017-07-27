@@ -1,8 +1,5 @@
 {
-  "name": "Etools frontend template - based on polymer starter kit 2",
-  "authors": [
-    "The eTools team"
-  ],
+  "name": "Etools Auditor Portal module",
   "private": true,
   "license": "https://github.com/unicef-polymer/etools-frontend-template/blob/master/LICENSE.md",
   "dependencies": {
@@ -40,10 +37,13 @@
     "lodash": "4.17.4",
     "web-component-tester": "^v6.0.0-prerelease.9",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0",
-    "paper-dialog-scrollable": "^2.1.0"
+    "perfect-scrollbar": "^0.7.0",
+    "etools-info-tooltip": "^1.0.3",
+    "neon-animation": "2.0.1"
   },
   "devDependencies": {},
   "resolutions": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "neon-animation": "2.0.1"
   }
 }
