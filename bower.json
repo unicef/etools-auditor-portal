@@ -37,7 +37,6 @@
     "lodash": "4.17.4",
     "web-component-tester": "^v6.0.0-prerelease.9",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0",
-    "perfect-scrollbar": "^0.7.0",
     "etools-info-tooltip": "^1.0.3",
     "neon-animation": "2.0.1"
   },
