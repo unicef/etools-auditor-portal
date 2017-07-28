@@ -220,5 +220,9 @@ Polymer({
         if (!minDate) { return false; }
         let today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(), new Date(minDate).getDate());
         return new Date(today - 1);
+    },
+
+    _hideTooltip: function(basePermissionPath, showInput) {
+        return this.isReadOnly('type', basePermissionPath) || !showInput;
     }
 });
