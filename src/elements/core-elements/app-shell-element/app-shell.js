@@ -3,6 +3,7 @@ Polymer({
 
     behaviors: [
         etoolsBehaviors.LoadingBehavior,
+        Polymer.IronScrollTargetBehavior,
         etoolsAppConfig.globals
     ],
 
@@ -72,6 +73,7 @@ Polymer({
     _routePageChanged: function() {
         if (!this.initLoadingComplete || !this.routeData.page) { return; }
         this.page = this.routeData.page || 'engagements';
+        this.scroll(0, 0);
     },
 
     _pageChanged: function(page) {

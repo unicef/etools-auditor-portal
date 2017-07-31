@@ -198,7 +198,7 @@ Polymer({
             partner.partnerOfficers.length < 2;
     },
 
-    _setPartnerAddres: function(partner) {
+    _setPartnerAddress: function(partner) {
         if (!partner || !((partner.address || partner.street_address) && partner.postal_code && partner.city)) { return ''; }
 
         let address = partner.street_address || partner.address;
