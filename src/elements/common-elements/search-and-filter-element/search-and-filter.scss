@@ -85,9 +85,11 @@
     .filter-dropdown {
         margin-left: 20px;
         width: 200px;
+
         --esmm-list-wrapper: #{'{
             margin-top: 0;
             padding-top: 12px;
+            -ms-overflow-style: auto;
         }'}
     }
     .filter-reset-button {

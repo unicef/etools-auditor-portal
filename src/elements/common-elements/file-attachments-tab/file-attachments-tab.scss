@@ -15,6 +15,7 @@
 #fileType {
     --esmm-list-wrapper: #{"{
         max-height: 180px;
+        -ms-overflow-style: auto;
     }"};
 }
 
