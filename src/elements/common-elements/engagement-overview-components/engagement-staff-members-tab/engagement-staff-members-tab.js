@@ -42,7 +42,7 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 5,
+                        'size': '100px',
                         'label': 'Has Access',
                         'name': 'hasAccess',
                         'align': 'center',
@@ -50,23 +50,23 @@ Polymer({
                         'checkbox': true
                     },
                     {
-                        'size': 19,
+                        'size': 20,
                         'label': 'Position',
                         'name': 'user.profile.job_title'
                     }, {
-                        'size': 19,
+                        'size': 20,
                         'label': 'First Name',
                         'name': 'user.first_name'
                     }, {
-                        'size': 19,
+                        'size': 20,
                         'label': 'Last Name',
                         'name': 'user.last_name'
                     }, {
-                        'size': 19,
+                        'size': 20,
                         'label': 'Phone Number',
                         'name': 'user.profile.phone_number'
                     }, {
-                        'size': 19,
+                        'size': 20,
                         'label': 'E-mail Address',
                         'name': 'user.email'
                     }
