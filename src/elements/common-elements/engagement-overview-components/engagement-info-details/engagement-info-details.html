@@ -116,14 +116,14 @@
                     <!-- Contract Expiry Date -->
                     <paper-input
                             id="contractEndDateInput"
-                            class$="disabled-as-readonly {{_setRequired('contract_end_date', poPermissionPath)}} validate-field"
+                            class$="disabled-as-readonly {{_setRequired('related_agreement.contract_end_date', basePermissionPath)}} validate-field"
                             field="contract_end_date"
                             value="[[prettyDate(data.agreement.contract_end_date)]]"
                             label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('contract_end_date', poPermissionPath, 'datepicker')]]"
+                            placeholder="[[getPlaceholderText('agreement.contract_end_date', basePermissionPath, 'datepicker')]]"
                             data-selector="contractEndDate"
-                            required="{{_setRequired('contract_end_date', poPermissionPath)}}"
-                            disabled$="[[isReadOnly('contract_end_date', poPermissionPath, poUpdating)]]"
+                            required="{{_setRequired('related_agreement.contract_end_date', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.contract_end_date)}}"
                             error-message="{{errors.contract_end_date}}"
                             on-down="openDatePicker"
