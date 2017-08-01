@@ -1,19 +1,9 @@
 <!--import [polymer, etools-content-panel, paper-input, paper-input/paper-textarea]-->
-<!--import [tab-inputs-styles, module-styles, table-elements-behavior, textarea-max-rows-behavior, common-methods-behavior]-->
+<!--import [tab-inputs-styles, module-styles, tab-layout-styles, table-elements-behavior, textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="assessment-of-controls">
     <template>
-        <style include="tab-inputs-styles module-styles">
-            :host {
-                position: relative;
-                display: block;
-            }
-
-            etools-content-panel {
-                --ecp-content: #{'{
-                    padding: 20px 0 50px;
-                }'};
-            }
+        <style include="tab-inputs-styles tab-layout-styles module-styles">
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Assessment of Key Internal Controls">
