@@ -1,5 +1,5 @@
 <!--import [polymer, lodash]-->
-<!--import [error-handler-behavior, permission-controller]-->
+<!--import [error-handler-behavior, permission-controller, static-data-behavior]-->
 
 <script>
     'use strict';
@@ -72,6 +72,18 @@
             return this.getFieldAttribute(`${base}.${path}`, 'label', 'GET');
         },
 
+        getDisplayName: function(path, base, value) {
+            if (!base) { return ''; }
+
+            let choices = this._getSavedChoices(`${base}.${path}`);
+            if (!choices) { return ''; }
+
+            let choice = choices.find((choice) => {
+                return choice && choice.value === value;
+            });
+            return (choice && choice.display_name) ? choice.display_name : '';
+        },
+
         getMaxLength: function(path, base) {
             if (!base) { return ''; }
             return this.getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
@@ -89,6 +101,20 @@
             return !!(data && data.id) ? 'Empty Field' : '-';
         },
 
+        _getSavedChoices: function (path) {
+            if (!path) { return; }
+
+            let choices = this.getData(`${path}_choices`);
+            if (!choices) {
+                choices = this.getChoices(path);
+            }
+
+            if (choices instanceof Array) {
+                this._setData(`${path}_choices`, choices);
+                return choices;
+            }
+        },
+
         _setReadonlyFieldClass: function(data) {
             return !data || !data.id ? 'no-data-fetched' : '';
         },
@@ -101,7 +127,7 @@
     APBehaviors.CommonMethodsBehavior = [
         APBehaviors.CommonMethodsBehaviorImpl,
         APBehaviors.PermissionController,
-        APBehaviors.ErrorHandlerBehavior
-
+        APBehaviors.ErrorHandlerBehavior,
+        APBehaviors.StaticDataController,
     ];
 </script>

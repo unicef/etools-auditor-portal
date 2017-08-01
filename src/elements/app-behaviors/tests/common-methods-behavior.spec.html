@@ -7,7 +7,7 @@
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
 
-    <!--import [common-methods-behavior]-->
+    <!--import [lodash, common-methods-behavior]-->
 </head>
 <body>
 
@@ -242,6 +242,75 @@
             });
         });
 
+        describe('method getDisplayName(path, base, value)', function() {
+            let choices = [
+                {display_name: 'dn_1', value: '1'},
+                {display_name: 'dn_2', value: '2'},
+                {display_name: 'dn_3', value: '3'},
+            ];
+
+            it('returns empty string when argument base is not defined', function() {
+                let spy = sinon.stub(behaviorObj, '_getSavedChoices');
+
+                assert.isFalse(spy.called);
+                let returnedValue = behaviorObj.getDisplayName('path', undefined, '1');
+                assert.equal(returnedValue, '');
+                assert.isFalse(spy.called);
+                spy.restore();
+            });
+
+            it('returns empty string when method _getSavedChoices() returns bad value', function() {
+                let spy = sinon.stub(behaviorObj, '_getSavedChoices');
+                spy.withArgs('base.path').returns(undefined);
+
+                assert.isFalse(behaviorObj._getSavedChoices.called);
+                let returnedValue = behaviorObj.getDisplayName('path', 'base', '1');
+                assert.equal(returnedValue, '');
+                assert.isTrue(behaviorObj._getSavedChoices.calledOnce);
+                assert.isTrue(behaviorObj._getSavedChoices.calledWithExactly('base.path'));
+                spy.restore();
+            });
+
+            it('returns empty string when choice is not found', function() {
+                let choicesCopy = _.cloneDeep(choices);
+                let spy = sinon.stub(behaviorObj, '_getSavedChoices');
+                spy.withArgs('base.path').returns(choicesCopy);
+
+                assert.isFalse(spy.called);
+                let returnedValue = behaviorObj.getDisplayName('path', 'base', '4');
+                assert.equal(returnedValue, '');
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('base.path'));
+                spy.restore();
+            });
+
+            it('returns empty string when choice.display_name has bad value', function() {
+                let choicesCopy = _.cloneDeep(choices).concat([{display_name: null, value: '5'}]);
+                let spy = sinon.stub(behaviorObj, '_getSavedChoices');
+                spy.withArgs('base.path').returns(choicesCopy);
+
+                assert.isFalse(spy.called);
+                let returnedValue = behaviorObj.getDisplayName('path', 'base', '5');
+                assert.equal(returnedValue, '');
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('base.path'));
+                spy.restore();
+            });
+
+            it('returns choice display_name property by value property', function() {
+                let choicesCopy = _.cloneDeep(choices);
+                let spy = sinon.stub(behaviorObj, '_getSavedChoices');
+                spy.withArgs('base.path').returns(choicesCopy);
+
+                assert.isFalse(spy.called);
+                let returnedValue = behaviorObj.getDisplayName('path', 'base', '3');
+                assert.equal(returnedValue, 'dn_3');
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('base.path'));
+                spy.restore();
+            });
+        });
+
         describe('method getPlaceholderText', function() {
             it('calls isReadonly method with combined path arguments', function() {
                 behaviorObj.isReadonly = sinon.spy();
@@ -286,6 +355,86 @@
             });
         });
 
+        describe('method _getSavedChoices(path)', function () {
+            it('returns undefined when path has bad value', function () {
+                behaviorObj.getData = sinon.stub();
+
+                assert.isFalse(behaviorObj.getData.called);
+                assert.isUndefined(behaviorObj._getSavedChoices(undefined));
+                assert.isFalse(behaviorObj.getData.called);
+            });
+
+            it('calls getChoices() method when getData() returns bad value', function () {
+                behaviorObj.getData = sinon.stub();
+                behaviorObj.getData.withArgs('path_choices').returns(undefined);
+                behaviorObj.getChoices = sinon.stub();
+
+                assert.isFalse(behaviorObj.getData.called);
+                assert.isFalse(behaviorObj.getChoices.called);
+
+                behaviorObj._getSavedChoices('path');
+
+                assert.isTrue(behaviorObj.getData.calledOnce);
+                assert.isTrue(behaviorObj.getChoices.calledOnce);
+                assert.isTrue(behaviorObj.getChoices.calledWithExactly('path'));
+            });
+
+            it('not calls getChoices() method when getData() returns truthy value', function () {
+                behaviorObj.getData = sinon.stub();
+                behaviorObj.getData.withArgs('path_choices').returns([]);
+                behaviorObj._setData = sinon.stub();
+                behaviorObj.getChoices = sinon.stub();
+
+                assert.isFalse(behaviorObj.getData.called);
+                assert.isFalse(behaviorObj.getChoices.called);
+
+                behaviorObj._getSavedChoices('path');
+
+                assert.isTrue(behaviorObj.getData.calledOnce);
+                assert.isFalse(behaviorObj.getChoices.called);
+            });
+
+            it('returns unefined when getData() and getChoices() methods returns bad values', function () {
+                behaviorObj.getData = sinon.stub();
+                behaviorObj.getData.withArgs('path_choices').returns(undefined);
+                behaviorObj.getChoices = sinon.stub();
+                behaviorObj.getChoices.withArgs('path').returns(undefined);
+
+                assert.isFalse(behaviorObj.getData.called);
+                assert.isFalse(behaviorObj.getChoices.called);
+
+                assert.isUndefined(behaviorObj._getSavedChoices('path'));
+
+                assert.isTrue(behaviorObj.getData.calledOnce);
+                assert.isTrue(behaviorObj.getData.calledWithExactly('path_choices'));
+                assert.isTrue(behaviorObj.getChoices.calledOnce);
+                assert.isTrue(behaviorObj.getChoices.calledWithExactly('path'));
+            });
+
+            it('calls _setData() method when choices is Array', function () {
+                behaviorObj.getData = sinon.stub();
+                behaviorObj.getData.withArgs('path_choices').returns([]);
+                behaviorObj._setData = sinon.stub();
+
+                assert.isFalse(behaviorObj.getData.called);
+                assert.isFalse(behaviorObj._setData.called);
+
+                behaviorObj._getSavedChoices('path');
+
+                assert.isTrue(behaviorObj.getData.calledOnce);
+                assert.isTrue(behaviorObj._setData.calledOnce);
+                assert.isTrue(behaviorObj._setData.calledWithExactly('path_choices', []));
+            });
+
+            it('returns choices when choices is Array', function () {
+                behaviorObj.getData = sinon.stub();
+                behaviorObj.getData.withArgs('path_choices').returns([]);
+                behaviorObj._setData = sinon.stub();
+
+                assert.deepEqual(behaviorObj._getSavedChoices('path'), []);
+            });
+        });
+
         describe('method _showPrefix', function() {
             it('calls isReadonly method with combined path arguments', function() {
                 behaviorObj.isReadonly = sinon.spy();
@@ -316,7 +465,6 @@
             });
 
         });
-
     });
 </script>
 

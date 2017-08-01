@@ -23,7 +23,7 @@
                         </div>
 
                         <div class="status">
-                            <span class="status-header">Cancelled</span>
+                            <span class="status-header">[[getDisplayName('status', permissionBase, 'canceled')]]</span>
                             <span class="status-date">{{_getFormattedDate('date_of_cancel', engagementData.date_of_cancel)}}</span>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="status">
-                        <span class="status-header">Partner Contacted</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'partner_contacted')]]</span>
                         <span class="status-date">{{_getFormattedDate('partner_contacted_at', engagementData.partner_contacted_at)}}</span>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="status">
-                        <span class="status-header">Field Visit</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'field_visit')]]</span>
                         <span class="status-date">{{_getFormattedDate('date_of_field_visit', engagementData.date_of_field_visit)}}</span>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="status multi-line">
-                        <span class="status-header">Draft Report <br> Issued to IP</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'draft_issued_to_partner')]]</span>
                         <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_ip', engagementData.date_of_draft_report_to_ip)}}</span>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                     </div>
 
                     <div class="status multi-line">
-                        <span class="status-header">Comments <br> Received from IP</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'comments_received_by_partner')]]</span>
                         <span class="status-date">{{_getFormattedDate('date_of_comments_by_ip', engagementData.date_of_comments_by_ip)}}</span>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                     </div>
 
                     <div class="status multi-line">
-                        <span class="status-header">Draft Report <br> Issued to UNICEF</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'draft_issued_to_unicef')]]</span>
                         <span class="status-date">{{_getFormattedDate('date_of_draft_report_to_unicef', engagementData.date_of_draft_report_to_unicef)}}</span>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                     </div>
 
                     <div class="status multi-line">
-                        <span class="status-header">Comments <br> Received from UNICEF</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'comments_received_by_unicef')]]</span>
                         <span class="status-date">{{_getFormattedDate('date_of_comments_by_unicef', engagementData.date_of_comments_by_unicef)}}</span>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                     </div>
 
                     <div class="status">
-                        <span class="status-header">Final Report</span>
+                        <span class="status-header">[[getDisplayName('status', permissionBase, 'final')]]</span>
                     </div>
                 </div>
             </div>

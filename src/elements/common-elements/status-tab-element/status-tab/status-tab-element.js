@@ -13,7 +13,8 @@
         is: 'status-tab-element',
 
         behaviors: [
-            APBehaviors.PermissionController
+            APBehaviors.PermissionController,
+            APBehaviors.CommonMethodsBehavior
         ],
 
         properties: {
