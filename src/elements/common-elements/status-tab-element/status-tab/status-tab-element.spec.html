@@ -39,6 +39,113 @@
             assert.equal(myEl._getStatusNumber('test'), 0);
         });
 
+        describe('method setStatusStates()', function () {
+            it('defines subproperties of statusStates object', function () {
+                assert.deepEqual(myEl.statusStates, {});
+                myEl.setStatusStates();
+                assert.isObject(myEl.statusStates.partner_contacted);
+                assert.isObject(myEl.statusStates.field_visit);
+            });
+
+            it('calls getDisplayName(), _getStatusText() and _getStatusClass() methods', function () {
+                let spy = sinon.spy(myEl, 'getDisplayName');
+                let spy2 = sinon.spy(myEl, '_getStatusText');
+                let spy3 = sinon.spy(myEl, '_getStatusClass');
+
+                assert.isFalse(spy.called);
+                assert.isFalse(spy2.called);
+                assert.isFalse(spy3.called);
+
+                myEl.setStatusStates();
+
+                assert.isTrue(spy.called);
+                assert.isTrue(spy2.called);
+                assert.isTrue(spy3.called);
+            });
+
+            it('sets "statusText" property for each statusStates subproperty', function () {
+                sinon.stub(myEl, '_getStatusText').returns('status text');
+                myEl.statusStates = {};
+
+                assert.isUndefined(myEl.statusStates.partner_contacted);
+                assert.isUndefined(myEl.statusStates.field_visit);
+                myEl.setStatusStates();
+                assert.equal(myEl.statusStates.partner_contacted.statusText, 'status text');
+                assert.equal(myEl.statusStates.field_visit.statusText, 'status text');
+            });
+
+            it('sets "class" property for each statusStates subproperty', function () {
+                sinon.stub(myEl, '_getStatusClass').returns('class');
+                myEl.statusStates = {};
+
+                assert.isUndefined(myEl.statusStates.partner_contacted);
+                assert.isUndefined(myEl.statusStates.field_visit);
+                myEl.setStatusStates();
+                assert.equal(myEl.statusStates.partner_contacted.class, 'class');
+                assert.equal(myEl.statusStates.field_visit.class, 'class');
+            });
+
+            it('calls set() method', function () {
+                let spy = sinon.spy(myEl, 'set');
+
+                assert.isFalse(spy.called);
+                myEl.setStatusStates();
+                assert.isTrue(spy.calledTwice);
+                assert.isTrue(spy.calledWithExactly('statusStates', {}));
+                assert.isTrue(spy.calledWithExactly('statusStates', myEl.statusStates));
+            });
+
+            it('', function () {
+
+            });
+        });
+
+        describe('method _getStatusText(displayName)', function () {
+            let breakingLength = 15;
+
+            it('returns empty string when typeof displayName is not a string', function () {
+                let returnedValue = myEl._getStatusText({});
+                assert.equal(returnedValue, '');
+            });
+
+            it('trims provided value', function () {
+                let returnedValue = myEl._getStatusText('  value  ');
+                assert.equal(returnedValue, 'value');
+            });
+
+            it('returns provided value when it has length < breakingLength', function () {
+                let returnedValue = myEl._getStatusText('value');
+                assert.equal(returnedValue, 'value');
+            });
+
+            it('returns provided value when it has length < breakingLength and has no new words after this point', function () {
+                let returnedValue = myEl._getStatusText('01234 67890 2345678');
+                assert.equal(returnedValue, '01234 67890 2345678');
+            });
+
+            it('adds <br> tag into string when it is long and has multiple words', function () {
+                let returnedValue = myEl._getStatusText('01234 67890 2345 678');
+                assert.equal(returnedValue, '01234 67890 2345<br>678');
+            });
+        });
+
+        describe('method _getStatusClass(displayName)', function () {
+            it('returns empty string when typeof displayName is not a string', function () {
+                let returnedValue = myEl._getStatusClass({});
+                assert.equal(returnedValue, '');
+            });
+
+            it('returns empty string when displayName not contains "<br>"', function () {
+                let returnedValue = myEl._getStatusClass('no br tag');
+                assert.equal(returnedValue, '');
+            });
+
+            it('returns "multi-line" when displayName contains "<br>"', function () {
+                let returnedValue = myEl._getStatusClass('has <br> tag');
+                assert.equal(returnedValue, 'multi-line');
+            });
+        });
+
         describe('status change methods', function() {
 
             it('method _classByStatus compare arguments and return status class', function() {

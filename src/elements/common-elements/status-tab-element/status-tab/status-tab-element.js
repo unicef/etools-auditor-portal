@@ -29,17 +29,60 @@
                 value: function() {
                     return [];
                 }
+            },
+            statusStates: {
+                type: Object,
+                value: {}
             }
         },
 
         observers: [
             'checkCanceled(engagementData.status)',
-            'setActions(permissionBase)'
+            'setActions(permissionBase)',
+            'setStatusStates(permissionBase, engagementData)',
         ],
 
         setActions: function(permissionBase) {
             let actions = permissionBase ? this.getActions(permissionBase) : [];
             this.set('actions', actions);
+        },
+
+        setStatusStates: function() {
+            let displayName;
+            statuses.forEach((statusKey) => {
+                if (!this.statusStates[statusKey]) {
+                    this.statusStates[statusKey] = {};
+                }
+
+                displayName = this.getDisplayName('status', this.permissionBase, statusKey);
+                displayName = this._getStatusText(displayName);
+
+                this.statusStates[statusKey].statusText = displayName;
+                this.statusStates[statusKey].class = this._getStatusClass(displayName);
+            });
+
+            let temp = this.statusStates;
+            this.set('statusStates', {});
+            this.set('statusStates', temp);
+        },
+
+        _getStatusText: function(displayName) {
+            if (typeof displayName !== 'string') { return ''; }
+
+            let breakLength = 15;
+            displayName = displayName.trim();
+
+            if (displayName.length < breakLength) { return displayName; }
+
+            let nextWordIndex = displayName.indexOf(' ', breakLength);
+            if (nextWordIndex === -1) { return displayName; }
+
+            return displayName.slice(0, nextWordIndex) + '<br>' + displayName.slice(nextWordIndex + 1);
+        },
+
+        _getStatusClass: function(displayName) {
+            if (typeof displayName !== 'string') { return ''; }
+            return (displayName.indexOf('<br>') !== -1) ? 'multi-line' : '';
         },
 
         _getStatusState: function(statusNumber) {
