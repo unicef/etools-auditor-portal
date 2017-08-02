@@ -61,7 +61,7 @@
                         <div class="input-container input-container-l">
                             <!-- Description -->
                             <etools-searchable-multiselection-menu
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.description', basePermissionPath)]]"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.description', basePermissionPath)]] fua-description"
                                     value="{{description}}"
                                     label="[[getLabel('action_points.description', basePermissionPath)]]"
                                     placeholder="[[getPlaceholderText('action_points.description', basePermissionPath)]]"
@@ -119,7 +119,7 @@
                         <div class="input-container input-container-l">
                             <!-- Person Responsible -->
                             <etools-searchable-multiselection-menu
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.person_responsible', basePermissionPath)]]"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.person_responsible', basePermissionPath)]] fua-person"
                                     value="{{editedItem.person_responsible}}"
                                     label="[[getLabel('action_points.person_responsible', basePermissionPath)]]"
                                     placeholder="[[getPlaceholderText('action_points.person_responsible', basePermissionPath)]]"
@@ -133,8 +133,7 @@
                                     readonly$="{{requestInProcess}}"
                                     invalid="{{errors.action_points.0.person_responsible}}"
                                     error-message="{{errors.action_points.0.person_responsible}}"
-                                    on-focus="_resetFieldError"
-                                    hide-search>
+                                    on-focus="_resetFieldError">
                             </etools-searchable-multiselection-menu>
                             <!--<paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>-->
                         </div>
