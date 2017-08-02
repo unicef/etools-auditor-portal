@@ -57,6 +57,8 @@
                 overflow: visible !important;
             }
 
+
+
             paper-dropdown-menu,
             paper-textarea,
             paper-input {
@@ -127,6 +129,29 @@
                 --paper-input-char-counter: #{'{
                     color: var(--gray-light);
                 }'};
+
+                //IE11 collapsed label fix
+                --paper-input-container-label-floating: #{'{
+                    -webkit-transform: none;
+                    -moz-transform: none;
+                    -ms-transform: none;
+                    -o-transform: none;
+                    transform: none;
+                    top: -21px;
+                    width: 100%;
+                    font-size: 12px;
+                }'};
+
+                --etools-currency-container-label-floating: #{'{
+                    -webkit-transform: none;
+                    -moz-transform: none;
+                    -ms-transform: none;
+                    -o-transform: none;
+                    transform: none;
+                    top: -21px;
+                    width: 100%;
+                    font-size: 12px;
+                }'}
             }
 
             etools-searchable-multiselection-menu.no-data-fetched,
