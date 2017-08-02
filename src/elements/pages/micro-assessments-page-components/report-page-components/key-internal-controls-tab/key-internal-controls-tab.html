@@ -16,6 +16,7 @@
             <template is="dom-repeat" items="[[subjectAreas.children]]" filter="_showRisk">
                 <subject-area-element
                         class="area-element"
+                        base-permission-path="{{basePermissionPath}}"
                         area="{{item}}"
                         details="[[details]]"
                         edit-mode="[[_canBeChanged(basePermissionPath)]]"
@@ -41,6 +42,9 @@
                                         label="Risk Assessment"
                                         placeholder="Select Risk Assessment"
                                         options="[[riskOptions]]"
+                                        custom-object-options
+                                        option-label="display_name"
+                                        option-value="value"
                                         required
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"

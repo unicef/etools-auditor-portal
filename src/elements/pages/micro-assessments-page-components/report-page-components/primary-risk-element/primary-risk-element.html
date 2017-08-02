@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea, lodash]-->
-<!--import [textarea-max-rows-behavior, common-methods-behavior, static-data-behavior]-->
+<!--import [textarea-max-rows-behavior, common-methods-behavior, static-data-behavior, permission-controller]-->
 
 <dom-module id="primary-risk-element">
     <template>
@@ -33,6 +33,9 @@
                                 label="Risk Assessment"
                                 placeholder="Select Risk Assessment"
                                 options="[[riskOptions]]"
+                                custom-object-options
+                                option-label="display_name"
+                                option-value="value"
                                 required
                                 disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
                                 readonly="[[isReadOnly('test_subject_areas', basePermissionPath)]]"

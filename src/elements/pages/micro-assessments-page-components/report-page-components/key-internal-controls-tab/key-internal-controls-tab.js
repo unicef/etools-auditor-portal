@@ -23,7 +23,7 @@ Polymer({
                     }, {
                         'size': 30,
                         'label': 'Risk Assessment',
-                        'path': 'risk.value.label'
+                        'path': 'risk.value.display_name'
                     }
                 ];
             }
@@ -61,7 +61,8 @@ Polymer({
     ],
 
     ready: function() {
-        this.riskOptions = this.getData('riskOptions');
+        let riskOptions = this.getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+        this.set('riskOptions', riskOptions);
     },
 
     _canBeChanged: function(basePermissionPath) {

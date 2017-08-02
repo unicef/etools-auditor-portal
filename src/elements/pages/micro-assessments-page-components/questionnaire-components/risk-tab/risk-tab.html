@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-icon-button, etools-searchable-multiselection-menu, lodash]-->
-<!--import [module-styles, list-element, list-header, static-data-behavior]-->
+<!--import [module-styles, list-element, list-header, static-data-behavior, permission-controller]-->
 
 <dom-module id="risk-tab">
     <template>
@@ -39,6 +39,9 @@
                                         value="{{_setRiskValue(item.risk.value, riskOptions)}}"
                                         placeholder="&#8212;"
                                         options="[[riskOptions]]"
+                                        custom-object-options
+                                        option-label="display_name"
+                                        option-value="value"
                                         on-focus="_resetFieldError"
                                         on-value-change="_riskValueChanged"
                                         dynamic-align
@@ -86,6 +89,9 @@
                                             value="{{_setRiskValue(item.risk.value, riskOptions)}}"
                                             placeholder="&#8212;"
                                             options="[[riskOptions]]"
+                                            custom-object-options
+                                            option-label="display_name"
+                                            option-value="value"
                                             category-id$="{{category.id}}"
                                             on-focus="_resetFieldError"
                                             on-value-change="_riskValueChanged"

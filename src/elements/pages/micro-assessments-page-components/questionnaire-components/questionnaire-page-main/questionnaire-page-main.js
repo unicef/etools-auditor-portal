@@ -71,7 +71,8 @@ Polymer({
     },
 
     ready: function() {
-        this.riskOptions = this.getData('riskOptions');
+        let riskOptions = this.getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+        this.set('riskOptions', riskOptions);
     },
 
     _dataChanged: function(data) {

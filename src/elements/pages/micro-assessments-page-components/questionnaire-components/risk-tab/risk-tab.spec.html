@@ -125,10 +125,10 @@
                 assert.equal(myEl._getStringValue(23, null, 'test'), 'test');
             });
 
-            it('use first argument as index for second if it is a number and return element label or third argument', function() {
-                var options = [{label: 'test1'}, {label: 'test2'}];
-                assert.equal(myEl._getStringValue(0, options), options[0].label);
-                assert.equal(myEl._getStringValue(1, options), options[1].label);
+            it('use first argument as index for second if it is a number and return element display_name or third argument', function() {
+                var options = [{display_name: 'test1'}, {display_name: 'test2'}];
+                assert.equal(myEl._getStringValue(0, options), options[0].display_name);
+                assert.equal(myEl._getStringValue(1, options), options[1].display_name);
                 assert.equal(myEl._getStringValue(3, options, 'test'), 'test');
             });
         });

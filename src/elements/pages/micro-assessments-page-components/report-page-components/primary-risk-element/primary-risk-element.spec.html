@@ -20,6 +20,13 @@
 
 <script>
     describe('<primary-risk-element>', function () {
+        var riskOptions = [
+            {"display_name": "N/A", "value": 0},
+            {"display_name": "Low", "value": 1},
+            {"display_name": "Medium", "value": 2},
+            {"display_name": "Significant", "value": 3},
+            {"display_name": "High", "value": 4}
+        ];
         var myEl;
 
         beforeEach(function () {
@@ -65,6 +72,10 @@
         });
 
         describe('method getRiskData', function() {
+            beforeEach(function () {
+                myEl.riskOptions = riskOptions;
+            });
+
             it('returns null if there is no primaryArea.risk.value', function() {
                 myEl.primaryArea = {risk: {value: null}};
                 assert.isNull(myEl.getRiskData());

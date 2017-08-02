@@ -4,7 +4,8 @@ Polymer({
     is: 'subject-area-element',
 
     behaviors: [
-        APBehaviors.StaticDataController
+        APBehaviors.StaticDataController,
+        APBehaviors.PermissionController,
     ],
 
     properties: {
@@ -17,7 +18,8 @@ Polymer({
     observers: ['_setData(area, riskOptions)'],
 
     ready: function() {
-        this.riskOptions = this.getData('riskOptions');
+        let riskOptions = this.getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+        this.set('riskOptions', riskOptions);
     },
 
     _setData: function(data) {

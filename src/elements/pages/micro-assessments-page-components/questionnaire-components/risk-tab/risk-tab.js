@@ -4,7 +4,8 @@ Polymer({
     is: 'risk-tab',
 
     behaviors: [
-        APBehaviors.StaticDataController
+        APBehaviors.StaticDataController,
+        APBehaviors.PermissionController,
     ],
 
     properties: {
@@ -90,7 +91,8 @@ Polymer({
     ],
 
     ready: function() {
-        this.riskOptions = this.getData('riskOptions');
+        let riskOptions = this.getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+        this.set('riskOptions', riskOptions);
     },
 
     showResults: function(completed, open) {
@@ -184,7 +186,7 @@ Polymer({
 
     _getStringValue: function(value, options, defaultValue) {
         if (!options || !_.isNumber(value)) { return defaultValue; }
-        return options[value] && options[value].label || defaultValue;
+        return options[value] && options[value].display_name || defaultValue;
     },
 
     _prepareData: function(data) {

@@ -20,6 +20,13 @@
 
 <script>
     describe('<subject-area-element>', function () {
+        var riskOptions = [
+            {"display_name": "N/A", "value": 0},
+            {"display_name": "Low", "value": 1},
+            {"display_name": "Medium", "value": 2},
+            {"display_name": "Significant", "value": 3},
+            {"display_name": "High", "value": 4}
+        ];
         var myEl;
 
         beforeEach(function () {
@@ -63,7 +70,7 @@
             });
 
             it('returns null if value and extra are not changed', function() {
-                myEl.area = {blueprints:[{risk: {value: {value: 4}, extra: '{"comments":""}'}}]};
+                myEl.area = {blueprints:[{risk: {value: 4, extra: '{"comments":""}'}}]};
                 myEl.originalData = {
                     blueprints:[{risk: {value: 4, extra: '{"comments":""}'}}]
                 };
@@ -71,6 +78,7 @@
             });
 
             it('returns prepared data', function() {
+                myEl.riskOptions = riskOptions;
                 myEl.area = {blueprints:[{risk: {value: 4, extra: '{"comments":""}'}}], id: 666};
                 myEl.originalData = {
                     blueprints:[{risk: {value: 5, extra: ''}}]
@@ -95,6 +103,7 @@
         });
 
         it('method validate checks value and extra properties existence', function() {
+            myEl.riskOptions = riskOptions;
             myEl.area = {blueprints:[{risk: {value: null, extra: '{"comments":""}'}}], id: 666};
             assert.isFalse(myEl.validate());
 

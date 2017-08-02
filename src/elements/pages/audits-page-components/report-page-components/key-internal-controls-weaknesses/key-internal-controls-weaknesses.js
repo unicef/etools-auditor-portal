@@ -29,7 +29,7 @@ Polymer({
                 }, {
                     'size': 30,
                     'label': 'Risk rating',
-                    'path': 'risk.value.label'
+                    'path': 'risk.value.display_name'
                 }];
             }
         },
@@ -70,12 +70,8 @@ Polymer({
     ],
 
     ready: function() {
-        this.riskOptions = [
-            {label: 'None', value: 0},
-            {label: 'Low', value: 1},
-            {label: 'Medium', value: 2},
-            {label: 'High', value: 4}
-        ];
+        let riskOptions = this.getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risk.value`) || [];
+        this.set('riskOptions', riskOptions);
     },
 
     _updateCategory: function(data, riskOptions) {

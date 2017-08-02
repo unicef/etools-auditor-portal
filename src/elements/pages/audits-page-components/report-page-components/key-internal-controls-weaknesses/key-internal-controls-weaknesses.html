@@ -54,6 +54,9 @@
                                         label="Risk rating"
                                         placeholder="Select Risk rating"
                                         options="[[riskOptions]]"
+                                        custom-object-options
+                                        option-label="display_name"
+                                        option-value="value"
                                         required="{{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"

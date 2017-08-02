@@ -121,6 +121,7 @@
         <template is="dom-repeat" items="{{questionnaire.children}}">
             <risk-tab
                     questionnaire="{{item}}"
+                    base-permission-path="{{basePermissionPath}}"
                     class="validatable-tab risk-tab"
                     index="{{index}}"
                     first-run="[[firstRun]]"
@@ -151,6 +152,9 @@
                                     label="Risk Assessment"
                                     placeholder="Select Risk Assessment"
                                     options="[[riskOptions]]"
+                                    custom-object-options
+                                    option-label="display_name"
+                                    option-value="value"
                                     required
                                     disabled="[[requestInProcess]]"
                                     readonly="[[requestInProcess]]"
