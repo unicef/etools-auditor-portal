@@ -101,6 +101,26 @@
             return !!(data && data.id) ? 'Empty Field' : '-';
         },
 
+        setHeadingsLabels: function (base, headingsPath) {
+            if (!base || ! headingsPath) { return; }
+            let headings = this.get(headingsPath);
+            if (!(headings instanceof Array)) { return; }
+
+            let label;
+            let labelPath;
+            headings.forEach((heading) => {
+                if (heading) {
+                    labelPath = heading.path || heading.labelPath;
+                    label = this.getLabel(labelPath, base);
+                    if (label && typeof label === 'string') {
+                        heading.label = label;
+                    }
+                }
+            });
+
+            this.set(headingsPath, headings);
+        },
+
         _getSavedChoices: function (path) {
             if (!path) { return; }
 

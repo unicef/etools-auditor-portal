@@ -52,22 +52,27 @@ Polymer({
                     {
                         'size': 20,
                         'label': 'Position',
+                        'labelPath': 'staff_members.user.profile.job_title',
                         'name': 'user.profile.job_title'
                     }, {
                         'size': 20,
                         'label': 'First Name',
+                        'labelPath': 'staff_members.user.first_name',
                         'name': 'user.first_name'
                     }, {
                         'size': 20,
                         'label': 'Last Name',
+                        'labelPath': 'staff_members.user.last_name',
                         'name': 'user.last_name'
                     }, {
                         'size': 20,
                         'label': 'Phone Number',
+                        'labelPath': 'staff_members.user.profile.phone_number',
                         'name': 'user.profile.phone_number'
                     }, {
                         'size': 20,
                         'label': 'E-mail Address',
+                        'labelPath': 'staff_members.user.email',
                         'name': 'user.email'
                     }
                 ];
@@ -141,7 +146,8 @@ Polymer({
         '_queriesChanged(listSize, listPage, searchQuery)',
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-        'updateStyles(emailChecking, staffsBase, addDialog)'
+        'updateStyles(emailChecking, staffsBase, addDialog)',
+        'setHeadingsLabels(basePermissionPath, "columns")'
     ],
 
     attached: function() {
