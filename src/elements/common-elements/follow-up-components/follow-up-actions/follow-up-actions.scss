@@ -15,9 +15,16 @@ etools-content-panel {
     }'};
 }
 
-etools-searchable-multiselection-menu {
+etools-searchable-multiselection-menu.fua-description {
     --esmm-list-wrapper: #{'{
-        max-height: 360px;
+        max-height: 348px;
+        -ms-overflow-style: auto;
+    }'};
+}
+
+etools-searchable-multiselection-menu.fua-person {
+    --esmm-list-wrapper: #{'{
+        max-height: 148px;
         -ms-overflow-style: auto;
     }'};
 }
