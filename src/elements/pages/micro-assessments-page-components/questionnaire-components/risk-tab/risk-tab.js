@@ -50,11 +50,13 @@ Polymer({
                         'size': 100,
                         'class': 'pr-45',
                         'label': 'Question',
+                        'labelPath': 'questionnaire.blueprints.header',
                         'name': 'header',
                         'html': true
                     }, {
                         'size': '160px',
                         'label': 'Risk Assessment',
+                        'labelPath': 'questionnaire.blueprints.risk',
                         'name': 'value',
                         'property': 'risk.value',
                         'custom': true,
