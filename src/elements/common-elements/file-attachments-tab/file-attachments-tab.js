@@ -89,7 +89,7 @@
 
         observers: [
             '_filesChange(dataItems.*, fileTypes.*)',
-            '_updateHeadings(fileTypeRequired)',
+            '_updateHeadings(fileTypeRequired, mainProperty)',
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject)',
             'updateStyles(requestInProcess, editedItem)',
@@ -122,14 +122,17 @@
         },
 
         _updateHeadings: function(fileTypeRequired) {
+            let mainProperty = this.mainProperty;
             let headings = [{
                 'size': '100px',
                 'name': 'date',
                 'label': 'Date Uploaded',
+                'labelPath': `${mainProperty}.created`,
                 'path': 'created'
             }, {
                 'size': 65,
                 'label': 'File Attachment',
+                'labelPath': `${mainProperty}.file`,
                 'property': 'file_name',
                 'custom': true,
                 'doNotHide': true
@@ -139,6 +142,7 @@
                 headings.splice(1, 0, {
                     'size': 35,
                     'label': 'Document Type',
+                    'labelPath': `${mainProperty}.file_type`,
                     'path': 'display_name'
                 });
             }

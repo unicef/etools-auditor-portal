@@ -8,6 +8,10 @@ Polymer({
     ],
 
     properties: {
+        basePermissionPath: {
+            type: String,
+            value: ''
+        },
         orderBy: {
             type: String,
             notify: true
@@ -55,11 +59,12 @@ Polymer({
     },
 
     getHeadingLabel: function(base, item) {
-        if (!base || !item) { return; }
+        if (!item) { return ''; }
+        if (!base) { return item.label || ''; }
 
-        let labelPath = item.path || item.labelPath;
+        let labelPath = item.labelPath || item.path;
         let label = this.getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
 
-        return (label && typeof label === 'string') ? label : item.label;
+        return (label && typeof label === 'string') ? label : (item.label || '');
     },
 });

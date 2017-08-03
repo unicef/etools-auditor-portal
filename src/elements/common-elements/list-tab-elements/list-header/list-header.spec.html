@@ -91,6 +91,74 @@
                 assert.equal(myEl.orderBy, orderByProp);
             });
         });
+
+        describe('method getHeadingLabel(base, item)', function () {
+            it('returns empty string when item argument is falsy', function () {
+                let spy = sinon.spy(myEl, 'getFieldAttribute');
+
+                assert.isFalse(spy.called);
+                let returnedValue = myEl.getHeadingLabel('base', undefined);
+                assert.equal(returnedValue, '');
+                assert.isFalse(spy.called);
+            });
+
+            it('returns item.label when base argument is falsy', function () {
+                let spy = sinon.spy(myEl, 'getFieldAttribute');
+
+                assert.isFalse(spy.called);
+                let returnedValue = myEl.getHeadingLabel(undefined, {label: 'label'});
+                assert.equal(returnedValue, 'label');
+                assert.isFalse(spy.called);
+            });
+
+            it('returns empty string when base argument is falsy and item.label is bad', function () {
+                let spy = sinon.spy(myEl, 'getFieldAttribute');
+
+                assert.isFalse(spy.called);
+                let returnedValue = myEl.getHeadingLabel(undefined, {label: null});
+                assert.equal(returnedValue, '');
+                assert.isFalse(spy.called);
+            });
+
+            it('calls getFieldAttribute() method using item.labelPath if defined', function () {
+                let spy = sinon.spy(myEl, 'getFieldAttribute');
+
+                assert.isFalse(spy.called);
+                myEl.getHeadingLabel('base', {path: 'path', labelPath: 'labelPath'});
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('base.labelPath', 'label', 'GET'));
+            });
+
+            it('calls getFieldAttribute() method using item.path if item.labelPath is not defined', function () {
+                let spy = sinon.spy(myEl, 'getFieldAttribute');
+
+                assert.isFalse(spy.called);
+                myEl.getHeadingLabel('base', {path: 'path'});
+                assert.isTrue(spy.calledOnce);
+                assert.isTrue(spy.calledWithExactly('base.path', 'label', 'GET'));
+            });
+
+            it('returns result of getFieldAttribute() when it is not empty string', function () {
+                sinon.stub(myEl, 'getFieldAttribute').returns('returned label');
+
+                let returnedValue = myEl.getHeadingLabel('base', {label: 'label'});
+                assert.equal(returnedValue, 'returned label');
+            });
+
+            it('returns item.label when getFieldAttribute() method returns bad value', function () {
+                sinon.stub(myEl, 'getFieldAttribute').returns('');
+
+                let returnedValue = myEl.getHeadingLabel('base', {label: 'label'});
+                assert.equal(returnedValue, 'label');
+            });
+
+            it('returns empty string when item.label has bad value and getFieldAttribute() method returns bad value', function () {
+                sinon.stub(myEl, 'getFieldAttribute').returns('');
+
+                let returnedValue = myEl.getHeadingLabel('base', {label: null});
+                assert.equal(returnedValue, '');
+            });
+        });
     });
 </script>
 

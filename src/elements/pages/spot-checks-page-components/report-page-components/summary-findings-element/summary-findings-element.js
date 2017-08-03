@@ -44,6 +44,7 @@ Polymer({
                     }, {
                         'size': 50,
                         'label': 'Subject Area',
+                        'labelPath': 'findings.category_of_observation',
                         'custom': true,
                         'property': 'category_of_observation',
                         'doNotHide': true
@@ -52,6 +53,7 @@ Polymer({
                         'size': 25,
                         'name': 'date',
                         'label': 'Deadline of Action',
+                        'labelPath': 'findings.deadline_of_action',
                         'path': 'deadline_of_action'
                     }
                 ];

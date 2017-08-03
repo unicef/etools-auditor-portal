@@ -36,21 +36,24 @@ Polymer({
             value: [{
                 'size': 20,
                 'name': 'finding',
-                'label': 'Finding Number',
+                'label': 'asd Number',
             }, {
                 'size': 40,
                 'label': 'Title (Category)',
+                'labelPath': 'financial_finding_set.title',
                 'path': 'title'
             }, {
                 'size': 20,
                 'name': 'currency',
                 'label': 'Amount (local)',
+                'labelPath': 'financial_finding_set.local_amount',
                 'path': 'local_amount',
                 'align': 'right'
             }, {
                 'size': 20,
                 'name': 'currency',
                 'label': 'Amount USD',
+                'labelPath': 'financial_finding_set.amount',
                 'path': 'amount',
                 'align': 'right'
             }]

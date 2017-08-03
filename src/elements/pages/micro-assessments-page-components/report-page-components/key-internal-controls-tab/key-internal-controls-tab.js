@@ -19,10 +19,12 @@ Polymer({
                     {
                         'size': 70,
                         'label': 'Subject area',
+                        'labelPath': 'test_subject_areas.header',
                         'path': 'header'
                     }, {
                         'size': 30,
                         'label': 'Risk Assessment',
+                        'labelPath': 'test_subject_areas.risk_rating',
                         'path': 'risk.value.display_name'
                     }
                 ];

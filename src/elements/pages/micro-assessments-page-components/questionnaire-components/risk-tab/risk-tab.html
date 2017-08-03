@@ -14,7 +14,7 @@
                     panel-title="{{setPanelTitle(questionnaire.header, completed)}}"
                     open="{{opened}}">
 
-                <list-header no-ordered data="[[columns]]"></list-header>
+                <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
                 <template is="dom-repeat" items="{{questionnaire.blueprints}}">
                     <list-element

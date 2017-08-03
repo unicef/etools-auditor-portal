@@ -34,6 +34,7 @@ Polymer({
                     {
                         'size': 100,
                         'label': 'Description of Finding',
+                        'labelPath': 'findings.finding',
                         'path': 'finding'
                     }
                 ];

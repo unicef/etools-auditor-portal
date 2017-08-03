@@ -25,10 +25,12 @@ Polymer({
                 return [{
                     'size': 70,
                     'label': 'Subject area',
+                    'labelPath': 'key_internal_weakness.header',
                     'path': 'header'
                 }, {
                     'size': 30,
                     'label': 'Risk rating',
+                    'labelPath': 'key_internal_weakness.risk_rating',
                     'path': 'risk.value.display_name'
                 }];
             }

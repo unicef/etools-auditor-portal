@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <list-header no-ordered data="[[columns]]"></list-header>
+            <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showFindings">
                 <list-element
