@@ -36,7 +36,7 @@ Polymer({
             value: [{
                 'size': 20,
                 'name': 'finding',
-                'label': 'asd Number',
+                'label': 'Finding Number',
             }, {
                 'size': 40,
                 'label': 'Title (Category)',
