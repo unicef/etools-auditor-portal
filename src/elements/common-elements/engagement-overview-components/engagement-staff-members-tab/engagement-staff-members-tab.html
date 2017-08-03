@@ -56,7 +56,12 @@
             <div class="panel-content group">
                 <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading"></etools-loading>
 
-                <list-header no-additional no-ordered data="[[columns]]"></list-header>
+                <list-header
+                        no-additional
+                        no-ordered
+                        data="[[columns]]"
+                        base-permission-path="[[basePermissionPath]]">
+                </list-header>
 
                 <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
                     <list-element

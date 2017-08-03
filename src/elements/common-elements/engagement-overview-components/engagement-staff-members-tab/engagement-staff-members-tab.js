@@ -147,7 +147,6 @@ Polymer({
         '_dataItemsChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
         'updateStyles(emailChecking, staffsBase, addDialog)',
-        'setHeadingsLabels(basePermissionPath, "columns")'
     ],
 
     attached: function() {

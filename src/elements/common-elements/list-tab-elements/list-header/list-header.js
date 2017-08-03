@@ -3,6 +3,10 @@
 Polymer({
     is: 'list-header',
 
+    behaviors: [
+        APBehaviors.PermissionController,
+    ],
+
     properties: {
         orderBy: {
             type: String,
@@ -48,5 +52,14 @@ Polymer({
         }
 
         this.orderBy = `${direction}${newOrderName}`;
-    }
+    },
+
+    getHeadingLabel: function(base, item) {
+        if (!base || !item) { return; }
+
+        let labelPath = item.path || item.labelPath;
+        let label = this.getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
+
+        return (label && typeof label === 'string') ? label : item.label;
+    },
 });

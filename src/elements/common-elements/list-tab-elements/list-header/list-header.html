@@ -1,5 +1,5 @@
 <!--import [polymer, iron-icon, iron-flex-layout]-->
-<!--import [shared-styles, module-styles]-->
+<!--import [shared-styles, module-styles, permission-controller]-->
 
 <dom-module id="list-header">
     <template>
@@ -12,7 +12,7 @@
                     <div class$="local-headings w[[item.size]] [[item.align]]"
                          ordered$="{{item.ordered}}"
                          on-tap="_changeOrder">
-                        <span class="textsec heading">[[item.label]]</span>
+                        <span class="textsec heading">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
                         <iron-icon
                                 class="down-icon"
