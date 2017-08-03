@@ -62,6 +62,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Comments',
+                    'labelPath': 'action_points.comments',
                     'path': 'comments',
                     'size': 100
                 }];

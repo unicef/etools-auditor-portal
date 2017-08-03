@@ -4,7 +4,7 @@ Polymer({
     is: 'list-header',
 
     behaviors: [
-        APBehaviors.PermissionController,
+        APBehaviors.LocalizationBehavior,
     ],
 
     properties: {
@@ -56,15 +56,5 @@ Polymer({
         }
 
         this.orderBy = `${direction}${newOrderName}`;
-    },
-
-    getHeadingLabel: function(base, item) {
-        if (!item) { return ''; }
-        if (!base) { return item.label || ''; }
-
-        let labelPath = item.labelPath || item.path;
-        let label = this.getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
-
-        return (label && typeof label === 'string') ? label : (item.label || '');
     },
 });

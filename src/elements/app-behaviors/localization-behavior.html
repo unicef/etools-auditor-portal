@@ -1,0 +1,25 @@
+<!--import [polymer]-->
+<!--import [permission-controller]-->
+
+<script>
+    'use strict';
+    (function () {
+        window.APBehaviors = window.APBehaviors || {};
+        window.APBehaviors.LocalizationBehaviorImpl = {
+            getHeadingLabel: function(base, item) {
+                if (!item) { return ''; }
+                if (!base) { return item.label || ''; }
+
+                let labelPath = item.labelPath || item.path;
+                let label = this.getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
+
+                return (label && typeof label === 'string') ? label : (item.label || '');
+            },
+        };
+
+        APBehaviors.LocalizationBehavior = [
+            APBehaviors.LocalizationBehaviorImpl,
+            APBehaviors.PermissionController,
+        ];
+    })();
+</script>

@@ -68,6 +68,7 @@ Polymer({
                     'size': 100
                 }, {
                     'label': 'Agreed Action by IP',
+                    'labelPath': 'findings.agreed_action_by_ip',
                     'path': 'agreed_action_by_ip',
                     'size': 100
                 }];

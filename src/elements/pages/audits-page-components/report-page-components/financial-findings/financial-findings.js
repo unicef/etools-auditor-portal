@@ -64,14 +64,17 @@ Polymer({
                 return [{
                     'size': 100,
                     'label': 'Description',
+                    'labelPath': 'financial_finding_set.description',
                     'path': 'description'
                 }, {
                     'size': 100,
                     'label': 'Recommendation',
+                    'labelPath': 'financial_finding_set.recommendation',
                     'path': 'recommendation'
                 }, {
                     'size': 100,
                     'label': 'IP comments',
+                    'labelPath': 'financial_finding_set.ip_comments',
                     'path': 'ip_comments'
                 }];
             }

@@ -28,7 +28,8 @@
                     id="listPage"
                     query-params="{{queryParams}}"
                     has-collapse
-                    request-queries="[[partnersListQueries]]">
+                    request-queries="[[partnersListQueries]]"
+                    base-permission-path="new_engagement">
             </engagements-list-view>
 
             <template is="dom-if" if="{{actionAllowed('new_engagement', 'create')}}" restamp>

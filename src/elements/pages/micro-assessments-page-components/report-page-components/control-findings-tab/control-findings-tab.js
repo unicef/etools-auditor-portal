@@ -45,6 +45,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Recommendation and IP Management Response',
+                    'labelPath': 'findings.recommendation',
                     'path': 'recommendation',
                     'size': 100
                 }];

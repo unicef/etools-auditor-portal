@@ -40,14 +40,17 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Key control observation',
+                    'labelPath': 'audit_observation',
                     'path': 'risk.extra.key_control_observation',
                     'size': 100
                 }, {
                     'label': 'Recommendation',
+                    'labelPath': 'recommendation',
                     'path': 'risk.extra.recommendation',
                     'size': 100
                 }, {
                     'label': 'IP response',
+                    'labelPath': 'ip_response',
                     'path': 'risk.extra.ip_response',
                     'size': 100
                 }];
