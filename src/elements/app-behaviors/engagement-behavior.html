@@ -244,7 +244,8 @@
 
         _setExportLink: function(engagement) {
             if (!engagement || !engagement.type || !engagement.id) { return ''; }
-            return this.getEndpoint('engagementInfo', {id: engagement.id, type: 'engagements'}).url + 'pdf/'
+            let type = this.getType(engagement.type) || 'engagements';
+            return this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/'
         },
 
         _validateBasicInfo: function(property) {
