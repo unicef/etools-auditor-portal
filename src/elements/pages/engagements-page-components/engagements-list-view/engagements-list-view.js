@@ -127,7 +127,7 @@
                             },
                             {
                                 label: 'Cancelled',
-                                value: 'canceled'
+                                value: 'cancelled'
                             }
                         ]
                     }
