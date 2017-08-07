@@ -46,14 +46,6 @@
         (function() {
             'use strict';
 
-            let riskOptions = [
-                {label: 'N/A', value: 0},
-                {label: 'Low', value: 1},
-                {label: 'Medium', value: 2},
-                {label: 'Significant', value: 3},
-                {label: 'High', value: 4}
-            ];
-
             let dataLoaded = {};
 
             Polymer({
@@ -115,7 +107,6 @@
                             this._responseError('Attachments types', 'Access denied');
                         }
                         this._setData('engagement_attachments_types', engagementAttachmentsTypes);
-                        this._setData('riskOptions', riskOptions);
                     }
 
                     dataLoaded.engagementOptions = true;
