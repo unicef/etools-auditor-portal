@@ -239,13 +239,13 @@
             });
         });
 
-        it('method _refactorStatusNumber increase number if current status is canceled and status number is not completed', function() {
+        it('method _refactorStatusNumber increase number if current status is cancelled and status number is not completed', function() {
             myEl.engagementData = {
                 date_of_field_visit: '2017-05-05',
                 date_of_draft_report_to_ip: null
             };
 
-            var status = 'canceled',
+            var status = 'cancelled',
                     number = 2;
 
             assert.equal(myEl._refactorStatusNumber(number, status), number);

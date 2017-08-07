@@ -63,7 +63,7 @@
                 "total_ct_cy": null,
                 "hidden": true
             },
-            "type": "ma",
+            "engagement_type": "ma",
             "total_value": "12314.00",
             "staff_members": [],
             "status": "partner_contacted",
@@ -500,7 +500,7 @@
                     behaviorObj._prepareData(true)
                             .then(function(data) {
                                 assert.isObject(data);
-                                assert.equal(data.type, 'micro-assessments');
+                                assert.equal(data.engagement_type, 'micro-assessments');
                                 assert.equal(data.id, '35');
                                 assert.equal(data.submit, 'submit/');
                                 assert.isObject(data.data);
@@ -719,13 +719,13 @@
             assert.equal(behaviorObj.getType('audit'), 'audits');
         });
 
-        it('method _setExportLink calls getEndpoint method if engagement type and id are provided', function() {
+        it('method _setExportLink calls getEndpoint method if engagement_type and id are provided', function() {
             assert.equal(behaviorObj._setExportLink(), '');
-            assert.equal(behaviorObj._setExportLink({type: 'test'}), '');
+            assert.equal(behaviorObj._setExportLink({engagement_type: 'test'}), '');
             assert.equal(behaviorObj._setExportLink({id: 12}), '');
 
             behaviorObj.getEndpoint = sinon.stub().returns({url: ''});
-            behaviorObj._setExportLink({type: 'test', id: 12});
+            behaviorObj._setExportLink({engagement_type: 'test', id: 12});
 
             assert.isTrue(behaviorObj.getEndpoint.called);
         });

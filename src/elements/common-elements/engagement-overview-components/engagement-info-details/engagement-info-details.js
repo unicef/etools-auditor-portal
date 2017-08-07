@@ -76,7 +76,7 @@ Polymer({
 
     observers: [
         '_errorHandler(errorObject)',
-        '_setShowInput(data.type)',
+        '_setShowInput(data.engagement_type)',
         'updateStyles(poPermissionPath, poUpdating)',
         'updatePoBasePath(data.agreement.id)'
     ],
@@ -90,7 +90,7 @@ Polymer({
             orderValid = this.$.purchaseOrder.validate();
 
         if (!typeValid) {
-            this.set('errors.type', 'AuditType is required');
+            this.set('errors.engagement_type', 'AuditType is required');
         }
 
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-field');
@@ -118,7 +118,7 @@ Polymer({
     },
 
     resetValidationErrors: function() {
-        this.set('errors.type', false);
+        this.set('errors.engagement_type', false);
         this.set('errors.agreement', false);
     },
 
@@ -133,7 +133,7 @@ Polymer({
     },
 
     _setEngagementType: function(e, value) {
-        this.set('data.type', value.selectedValues);
+        this.set('data.engagement_type', value.selectedValues);
     },
 
     _requestAgreement: function(event) {
@@ -196,7 +196,7 @@ Polymer({
         if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) { data.partner_contacted_at = this.data.partner_contacted_at; }
         if (!this.originalData.agreement || this.originalData.agreement.id !== this.data.agreement.id) { data.agreement = this.data.agreement.id; }
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
-        if (this.originalData.type !== this.data.type.value) { data.type = this.data.type.value; }
+        if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
 
         return data;
     },

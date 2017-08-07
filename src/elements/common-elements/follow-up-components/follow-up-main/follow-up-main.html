@@ -6,7 +6,7 @@
     <template>
         <!-- inject styles './follow-up-main.scss'-->
 
-        <template is="dom-if" if="[[showFindings(engagement.type)]]" restamp>
+        <template is="dom-if" if="[[showFindings(engagement.engagement_type)]]" restamp>
             <follow-up-financial-findings
                     id="followUpFF"
                     engagement="[[engagement]]"

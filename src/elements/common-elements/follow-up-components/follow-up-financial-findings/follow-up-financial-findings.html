@@ -14,7 +14,7 @@
 
         <etools-content-panel panel-title="Financial Findings">
 
-            <template is="dom-if" if="[[showFields(engagement.type, 'audit')]]" restamp>
+            <template is="dom-if" if="[[showFields(engagement.engagement_type, 'audit')]]" restamp>
                 <div class="row-h group">
                     <div class="input-container">
                         <!-- Audit Opinion -->
@@ -39,7 +39,7 @@
 
             <div class="row-h group">
                 <!--Audit engagement fields-->
-                <template is="dom-if" if="[[showFields(engagement.type, 'audit')]]" restamp>
+                <template is="dom-if" if="[[showFields(engagement.engagement_type, 'audit')]]" restamp>
                     <div class="input-container">
                         <!-- Audited expenditure (USD)-->
                         <etools-currency-amount-input
@@ -68,7 +68,7 @@
                 </template>
 
                 <!--Spot-Check engagement fields-->
-                <template is="dom-if" if="[[showFields(engagement.type, 'sc')]]" restamp>
+                <template is="dom-if" if="[[showFields(engagement.engagement_type, 'sc')]]" restamp>
                     <div class="input-container">
                         <!-- Total amount tested-->
                         <etools-currency-amount-input

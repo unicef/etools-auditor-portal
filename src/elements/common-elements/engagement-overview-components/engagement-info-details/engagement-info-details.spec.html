@@ -95,7 +95,7 @@
                 partner_contacted_at: 'contacted',
                 agreement: {id: 'id'},
                 total_value: 'total',
-                type: 'type'
+                engagement_type: 'type'
             };
 
             myEl.data = {
@@ -104,9 +104,9 @@
                 partner_contacted_at: 'contacted',
                 agreement: {id: 'id2'},
                 total_value: 'total',
-                type: {value: 'type5'}
+                engagement_type: {value: 'type5'}
             };
-            assert.isTrue(_.isEqual(myEl.getEngagementData(), {end_date: 'end', agreement: 'id2', type: 'type5'}));
+            assert.isTrue(_.isEqual(myEl.getEngagementData(), {end_date: 'end', agreement: 'id2', engagement_type: 'type5'}));
         });
 
         it('method updatePoBasePath calls set method with path or empty string', function() {
@@ -132,13 +132,13 @@
         it('reset validation errors', function () {
             myEl.errors = {
                 agreement: 'Test',
-                type: 'Test'
+                engagement_type: 'Test'
             };
 
             myEl.resetValidationErrors();
 
             assert.isFalse(myEl.errors.agreement);
-            assert.isFalse(myEl.errors.type);
+            assert.isFalse(myEl.errors.engagement_type);
         });
 
         describe('method _processValue', function() {
@@ -160,7 +160,7 @@
             let value = {selectedValues: 'test'};
 
             myEl._setEngagementType({}, value);
-            assert.isTrue(myEl.set.calledWith('data.type', value.selectedValues));
+            assert.isTrue(myEl.set.calledWith('data.engagement_type', value.selectedValues));
             myEl.set.restore();
         });
 

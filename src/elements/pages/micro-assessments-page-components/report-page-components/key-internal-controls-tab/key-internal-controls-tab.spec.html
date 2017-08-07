@@ -151,9 +151,9 @@
         });
 
         it('method _showRisk returns true if risk.type === default', function() {
-            assert.isTrue(myEl._showRisk({type: 'default'}));
-            assert.isFalse(myEl._showRisk({type: 'default2'}));
-            assert.isFalse(myEl._showRisk({type: ''}));
+            assert.isTrue(myEl._showRisk({category_type: 'default'}));
+            assert.isFalse(myEl._showRisk({category_type: 'default2'}));
+            assert.isFalse(myEl._showRisk({category_type: ''}));
             assert.isFalse(myEl._showRisk({}));
             assert.isFalse(myEl._showRisk());
         });

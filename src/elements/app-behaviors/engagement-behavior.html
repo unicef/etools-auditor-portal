@@ -94,6 +94,10 @@
         },
 
         _openCancelDialog: function() {
+            let input = this.getElement('#cancellationReasonInput');
+            if (input) {
+                this.setMaxHeight(input);
+            }
             this.dialogOpened = true;
         },
 
@@ -169,7 +173,7 @@
             if (!input) { throw 'Can not find input!'}
             if(!input.validate()) { return; }
 
-            let type = this.getType(this.engagement.type);
+            let type = this.getType(this.engagement.engagement_type);
 
             this.updatedEngagement = {
                 type: type,
@@ -210,10 +214,10 @@
                 _.assign(data, assignReportData);
             }
 
-            let type = this.getType(this.engagement.type);
+            let type = this.getType(this.engagement.engagement_type);
             if (!type) {
-                type = this.engagement.type.link;
-                data.type = this.engagement.type.value;
+                type = this.engagement.engagement_type.link;
+                data.engagement_type = this.engagement.engagement_type.value;
             }
 
             if (this.customDataPrepare) {
@@ -229,7 +233,7 @@
                         if (uploadedFiles && uploadedFiles[0]) {data.engagement_attachments = uploadedFiles[0]; }
                         if (uploadedFiles && uploadedFiles[1]) {data.report_attachments = uploadedFiles[1]; }
                         return {
-                            type: type,
+                            engagement_type: type,
                             id: engagementId,
                             data: data,
                             submit: submit ? 'submit/' : null,
@@ -239,8 +243,9 @@
         },
 
         _setExportLink: function(engagement) {
-            if (!engagement || !engagement.type || !engagement.id) { return ''; }
-            return this.getEndpoint('engagementInfo', {id: engagement.id, type: 'engagements'}).url + '/pdf'
+            if (!engagement || !engagement.engagement_type || !engagement.id) { return ''; }
+            let type = this.getType(engagement.engagement_type) || 'engagements';
+            return this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/'
         },
 
         _validateBasicInfo: function(property) {
@@ -302,7 +307,7 @@
         },
 
         _showCancellationReason: function(engagement) {
-            return engagement.status === 'canceled';
+            return engagement.status === 'cancelled';
         },
 
         _showSubmitedMessage: function(permissionBase, engagement) {
