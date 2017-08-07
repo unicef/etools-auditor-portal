@@ -39,7 +39,7 @@
                 }, {
                     'size': 15,
                     'label': 'Engagement Type',
-                    'name': 'type',
+                    'name': 'engagement_type',
                     'ordered': false
                 }, {
                     'size': 30,

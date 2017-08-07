@@ -8,7 +8,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    type: {
+                    engagement_type: {
                         ma: 'Micro Assessment',
                         audit: 'Audit',
                         sc: 'Spot Check'
@@ -126,7 +126,7 @@ Polymer({
             value = this.get('data.' + item.path);
         }
 
-        if (item.name === 'type' || item.name === 'status') {
+        if (item.name === 'engagement_type' || item.name === 'status') {
             value = this._refactorValue(item.name, value);
         } else if (item.name === 'date') {
             value = this._refactorTime(value);
@@ -200,7 +200,7 @@ Polymer({
 
         let link = pattern
             .replace('*data_id*', this.data.id)
-            .replace('*engagement_type*', this._refactorValue('link_type', this.data.type));
+            .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
 
         return link.indexOf('undefined') === -1 ? link : '#';
     },
