@@ -94,6 +94,10 @@
         },
 
         _openCancelDialog: function() {
+            let input = this.getElement('#cancellationReasonInput');
+            if (input) {
+                this.setMaxHeight(input);
+            }
             this.dialogOpened = true;
         },
 
