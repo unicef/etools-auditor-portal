@@ -18,7 +18,7 @@ Polymer({
                 return {
                     status: '',
                     staff_members: [],
-                    type: {},
+                    engagement_type: {},
                     engagement_attachments: [],
                     agreement: {},
                     date_of_field_visit: null,
@@ -84,7 +84,7 @@ Polymer({
             this.reloadEngagementsList();
 
             //redirect
-            let path = `${this.engagement.type.link}/${event.detail.data.id}/overview`;
+            let path = `${this.engagement.engagement_type.link}/${event.detail.data.id}/overview`;
             this.set('path', this.getAbsolutePath(path));
 
             //reset data

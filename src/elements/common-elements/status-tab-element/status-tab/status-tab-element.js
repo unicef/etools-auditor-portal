@@ -3,7 +3,7 @@
 (function() {
     let statuses = ['partner_contacted', 'field_visit', 'draft_issued_to_unicef',
         'comments_received_by_partner', 'draft_issued_to_partner',
-        'comments_received_by_unicef', 'report_submitted', 'final', 'canceled'];
+        'comments_received_by_unicef', 'report_submitted', 'final', 'cancelled'];
 
     let statusFields = [null, null, 'date_of_field_visit', 'date_of_draft_report_to_ip',
         'date_of_comments_by_ip', 'date_of_draft_report_to_unicef',
@@ -37,7 +37,7 @@
         },
 
         observers: [
-            'checkCanceled(engagementData.status)',
+            'checkCancelled(engagementData.status)',
             'setActions(permissionBase)',
             'setStatusStates(permissionBase, engagementData)',
         ],
@@ -114,7 +114,7 @@
         },
 
         _refactorStatusNumber: function(number, status) {
-            return (status === 'canceled' && !this.engagementData[statusFields[+number]]) ? +number + 1 : number;
+            return (status === 'cancelled' && !this.engagementData[statusFields[+number]]) ? +number + 1 : number;
         },
 
         _getFormattedDate: function(field) {
@@ -129,9 +129,9 @@
             return !!(actions && actions.length);
         },
 
-        checkCanceled: function(status) {
-            if (!status || status !== 'canceled') {
-                this.canceled = false;
+        checkCancelled: function(status) {
+            if (!status || status !== 'cancelled') {
+                this.cancelled = false;
                 return;
             }
 
@@ -144,17 +144,17 @@
             });
 
             if (isNaN(number)) {
-                Polymer.dom(this.$.statusList).appendChild(this.$.canceledStatus);
+                Polymer.dom(this.$.statusList).appendChild(this.$.cancelledStatus);
             } else {
-                let statuses = Polymer.dom(this.root).querySelectorAll('.divider:not(.canceled)'),
+                let statuses = Polymer.dom(this.root).querySelectorAll('.divider:not(.cancelled)'),
                     lastComplited = statuses && statuses[number];
 
                 if (!lastComplited) {throw 'Can not find last complited status element!'; }
-                if (!this.$.statusList || !this.$.canceledStatus) {throw 'Can not find elements!'; }
-                Polymer.dom(this.$.statusList).insertBefore(this.$.canceledStatus, lastComplited);
+                if (!this.$.statusList || !this.$.cancelledStatus) {throw 'Can not find elements!'; }
+                Polymer.dom(this.$.statusList).insertBefore(this.$.cancelledStatus, lastComplited);
             }
 
-            this.canceled = true;
+            this.cancelled = true;
         }
     });
 })();

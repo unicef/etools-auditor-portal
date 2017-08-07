@@ -139,9 +139,9 @@
                 assert.equal(myEl._getValue(item), 0);
             });
 
-            it('calls _refactorValue() method when item.name="type"', function () {
+            it('calls _refactorValue() method when item.name="engagement_type"', function () {
                 let spy = sinon.stub(myEl, '_refactorValue');
-                let item = {name: 'type', path: 'path'};
+                let item = {name: 'engagement_type', path: 'path'};
                 myEl.data = {path: 'type_name'};
                 spy.returns('refactored_value');
 
@@ -372,8 +372,8 @@
             });
 
             it('replaces occurrences of *engagement_type* in pattern with refactored data.type value', function () {
-                myEl.data = {type: 'audit'};
-                sinon.stub(myEl, '_refactorValue').withArgs('link_type', myEl.data.type).returns('refactored_audit');
+                myEl.data = {engagement_type: 'audit'};
+                sinon.stub(myEl, '_refactorValue').withArgs('link_type', myEl.data.engagement_type).returns('refactored_audit');
                 assert.equal(myEl._getLink('path/*engagement_type*/path'), 'path/refactored_audit/path');
             });
         });

@@ -89,8 +89,8 @@
                     action = 'submitted';
                 } else if (data.detail.status === 'final') {
                     action = 'finalized';
-                } else if (data.detail.status === 'canceled') {
-                    action = 'canceled';
+                } else if (data.detail.status === 'cancelled') {
+                    action = 'cancelled';
                 }
 
                 if (!this.quietAdding) {
@@ -110,7 +110,7 @@
                     this.fire('global-loading', {type: 'cancel-engagement'});
                 }
                 this.actionUrl = '';
-                this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.type}).url;
+                this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type}).url;
             },
 
             _handleError: function (event, error) {
@@ -155,7 +155,7 @@
 
                 if (engagement.submit && !this.actionUrl) {
                     //Prepare submit request. Save submit url, update engagement data at first
-                    let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url;
+                    let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
                     this.actionUrl = url + engagement.submit;
                     this.method = 'PATCH';
                     this._saveEngagement(engagement.data, url);
@@ -168,7 +168,7 @@
                 } else if (engagement.finalize) {
                     //Run finalizing
                     this.fire('global-loading', {type: 'finalize-engagement', active: true, message: 'Finalizing engagement...'});
-                    let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url + engagement.finalize;
+                    let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.finalize;
                     this.method = 'POST';
                     this.actionUrl = url;
                     this.url = url;
@@ -176,14 +176,14 @@
                 } else if (engagement.cancel) {
                     //Run finalizing
                     this.fire('global-loading', {type: 'cancel-engagement', active: true, message: 'Canceling engagement...'});
-                    let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url + engagement.cancel;
+                    let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.cancel;
                     this.method = 'POST';
                     this.actionUrl = url;
                     this.url = url;
                     this.postData = engagement.data;
                 } else {
                     //Simple engagement data updating
-                    let url = this.getEndpoint('engagementInfo', {type: engagement.type, id: engagement.id}).url;
+                    let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
                     this.method = 'PATCH';
                     this._saveEngagement(engagement.data, url);
                 }
