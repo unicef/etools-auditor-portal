@@ -6,7 +6,11 @@
 
 <dom-module id="micro-assessments-page-main">
     <template>
-        <style include="shared-styles module-styles main-page-styles tab-inputs-styles"></style>
+        <style include="shared-styles module-styles main-page-styles tab-inputs-styles">
+            .repeatable-item-container {
+                margin-bottom: 0 !important;
+            }
+        </style>
 
         <app-route
                 route="{{route}}"
