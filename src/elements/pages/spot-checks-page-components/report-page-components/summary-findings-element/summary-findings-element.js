@@ -46,7 +46,7 @@ Polymer({
                         'label': 'Subject Area',
                         'custom': true,
                         'property': 'category_of_observation',
-                        'doNotHide': true
+                        'doNotHide': false
                     },
                     {
                         'size': 25,
