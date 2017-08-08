@@ -69,8 +69,7 @@ Polymer({
             type: Array,
             value: function() {
                 return [{
-                    'label': 'asd',
-                    'labelPath': 'questionnaire.blueprints.description',
+                    'label': 'Comments',
                     'path': 'risk.extra.comments',
                     'size': 100
                 }];

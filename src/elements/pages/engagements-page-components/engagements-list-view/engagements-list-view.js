@@ -31,6 +31,7 @@
                 }, {
                     'size': 20,
                     'label': 'Auditor',
+                    'labelPath': 'agreement.auditor_firm',
                     'name': 'agreement__auditor_firm__name',
                     'ordered': false,
                     'path': 'agreement.auditor_firm.name'
