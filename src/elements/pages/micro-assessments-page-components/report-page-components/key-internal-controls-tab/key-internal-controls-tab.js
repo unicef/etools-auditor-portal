@@ -19,12 +19,10 @@ Polymer({
                     {
                         'size': 70,
                         'label': 'Subject area',
-                        'labelPath': 'test_subject_areas.blueprints.header',
                         'path': 'header'
                     }, {
                         'size': 30,
                         'label': 'Risk Assessment',
-                        'labelPath': 'test_subject_areas.blueprints.risk',
                         'path': 'risk.value.display_name'
                     }
                 ];
@@ -35,7 +33,6 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Brief Justification for Rating (main internal control gaps)',
-                    'labelPath': 'test_subject_areas.blueprints.description',
                     'path': 'risk.extra.comments',
                     'size': 100
                 }];

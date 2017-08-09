@@ -25,12 +25,10 @@ Polymer({
                 return [{
                     'size': 70,
                     'label': 'Subject area',
-                    'labelPath': 'key_internal_weakness.header',
                     'path': 'header'
                 }, {
                     'size': 30,
                     'label': 'Risk rating',
-                    'labelPath': 'key_internal_weakness.risk_rating',
                     'path': 'risk.value.display_name'
                 }];
             }
@@ -40,17 +38,14 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Key control observation',
-                    'labelPath': 'audit_observation',
                     'path': 'risk.extra.key_control_observation',
                     'size': 100
                 }, {
                     'label': 'Recommendation',
-                    'labelPath': 'recommendation',
                     'path': 'risk.extra.recommendation',
                     'size': 100
                 }, {
                     'label': 'IP response',
-                    'labelPath': 'ip_response',
                     'path': 'risk.extra.ip_response',
                     'size': 100
                 }];
