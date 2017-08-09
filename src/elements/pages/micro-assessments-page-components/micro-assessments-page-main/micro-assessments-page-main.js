@@ -3,7 +3,10 @@
 Polymer({
     is: 'micro-assessments-page-main',
 
-    behaviors: [APBehaviors.EngagementBehavior],
+    behaviors: [
+        APBehaviors.EngagementBehavior,
+        APBehaviors.CommonMethodsBehavior,
+    ],
 
     properties: {
         engagement: {

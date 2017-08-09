@@ -8,7 +8,8 @@ Polymer({
         APBehaviors.LastCreatedController,
         APBehaviors.EngagementBehavior,
         APBehaviors.StaticDataController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        APBehaviors.CommonMethodsBehavior,
     ],
 
     properties: {

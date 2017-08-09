@@ -146,7 +146,7 @@
                         <div name="attachments">
                             <file-attachments-tab
                                     id="engagement_attachments"
-                                    tab-title="Related Documents"
+                                    tab-title="[[getLabel('engagement_attachments', permissionBase)]]"
                                     base-permission-path="{{permissionBase}}"
                                     main-property="engagement_attachments"
                                     error-object="{{errorObject}}"
@@ -162,7 +162,7 @@
                             <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
-                                        tab-title="Report Attachments"
+                                        tab-title="[[getLabel('report_attachments', permissionBase)]]"
                                         base-permission-path="{{permissionBase}}"
                                         main-property="report_attachments"
                                         error-object="{{errorObject}}"
