@@ -44,11 +44,13 @@
                 }, {
                     'size': 15,
                     'label': 'Engagement Type',
+                    'labelPath': 'engagement_type',
                     'name': 'engagement_type',
                     'ordered': false
                 }, {
                     'size': 30,
                     'label': 'Status',
+                    'labelPath': 'status',
                     'name': 'status',
                     'ordered': false,
                     'additional': {

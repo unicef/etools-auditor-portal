@@ -64,6 +64,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Recommendation',
+                    'labelPath': 'findings.recommendation',
                     'path': 'recommendation',
                     'size': 100
                 }, {

@@ -74,6 +74,7 @@ Polymer({
             }, {
                 'size': 20,
                 'label': 'Audit Opinion',
+                'labelPath': 'audit_opinion',
                 'path': 'display_name',
                 'align': 'center'
             }, {
