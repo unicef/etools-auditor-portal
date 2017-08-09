@@ -157,6 +157,7 @@
                                     error-object="{{errorObject}}"
                                     data-items="[[engagement.engagement_attachments]]"
                                     file-types="[[engagementFileTypes]]"
+                                    file-types-label="[[getLabel('engagement_attachments.file_type', permissionBase)]]"
                                     readonly$="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"
                                     file-type-required
                                     allow-download
@@ -173,6 +174,7 @@
                                         error-object="{{errorObject}}"
                                         data-items="[[engagement.report_attachments]]"
                                         file-types="[[reportFileTypes]]"
+                                        file-types-label="[[getLabel('report_attachments.file_type', permissionBase)]]"
                                         readonly$="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"
                                         file-type-required
                                         allow-download

@@ -38,7 +38,7 @@
                             <div class$="local-headings group-local-heading w[[groupColumn.size]] [[groupColumn.align]]"
                                  ordered$="{{groupColumn.ordered}}"
                                  on-tap="_changeOrder">
-                                <span class="textsec heading">[[groupColumn.label]]</span>
+                                <span class="textsec heading">[[getHeadingLabel(basePermissionPath, groupColumn)]]</span>
 
                                 <iron-icon
                                         class="down-icon"
