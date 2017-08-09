@@ -5,7 +5,11 @@
 
 <dom-module id="audits-page-main">
     <template>
-        <style include="shared-styles module-styles main-page-styles tab-inputs-styles"></style>
+        <style include="shared-styles module-styles main-page-styles tab-inputs-styles">
+            .repeatable-item-container {
+                margin-bottom: 0 !important;
+            }
+        </style>
 
         <app-route
                 route="{{route}}"
@@ -184,16 +188,24 @@
                     opened="{{dialogOpened}}"
                     dialog-title="Cancellation of Engagement"
                     confirm-btn-text="Continue">
-                <paper-textarea
-                        id="cancellationReasonInput"
-                        class="required"
-                        label="Cancellation Reason"
-                        placeholder="Enter reason of cancellation"
-                        required
-                        max-rows="4"
-                        error-message="This field is required."
-                        on-focus="_resetFieldError">
-                </paper-textarea>
+                    <div class="row-h repeatable-item-container" without-line>
+                        <div class="repeatable-item-content">
+                            <div class="row-h group">
+                                <div class="input-container input-container-l">
+                                    <paper-textarea
+                                            id="cancellationReasonInput"
+                                            class="required"
+                                            label="Cancellation Reason"
+                                            placeholder="Enter reason of cancellation"
+                                            required
+                                            max-rows="4"
+                                            error-message="This field is required."
+                                            on-focus="_resetFieldError">
+                                    </paper-textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </dialog-element>
         </template>
     </template>

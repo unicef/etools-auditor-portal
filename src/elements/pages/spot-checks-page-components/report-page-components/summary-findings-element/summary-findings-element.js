@@ -47,7 +47,7 @@ Polymer({
                         'labelPath': 'findings.category_of_observation',
                         'custom': true,
                         'property': 'category_of_observation',
-                        'doNotHide': true
+                        'doNotHide': false
                     },
                     {
                         'size': 25,
