@@ -741,7 +741,7 @@ function bindMouseWheelHandler(element, i) {
   }
 
   function shouldBeConsumedByChild(deltaX, deltaY, e) {
-    var child = element.querySelector('.list-wrapper:hover');
+    var child = element.querySelector('.list-wrapper:hover, textarea:hover');
     if (child) {
       var style = window.getComputedStyle(child);
       var overflow = [
@@ -770,7 +770,8 @@ function bindMouseWheelHandler(element, i) {
     }
 
     var target = e && e.target || {};
-    var targetScrollable = (target.tagName === 'ETOOLS-SEARCHABLE-MULTISELECTION-MENU' && target.dropdownOpened);
+    var targetScrollable = (target.tagName === 'ETOOLS-SEARCHABLE-MULTISELECTION-MENU' && target.dropdownOpened)
+        || target.tagName === 'PAPER-TEXTAREA';
     if (!targetScrollable) {
       e.stopPropagation();
       e.preventDefault();
