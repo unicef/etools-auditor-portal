@@ -4,6 +4,7 @@ var app = express();
 var ROOT = __dirname + '/build/';
 
 app.use('/ap/', express.static(ROOT));
+app.use('/', express.static(ROOT));
 
 app.get('[^.]+', function(req, res) {
   res.sendFile(ROOT + 'index.html');
