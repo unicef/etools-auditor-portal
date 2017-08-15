@@ -135,7 +135,7 @@
                 'labelPath': `${mainProperty}.file`,
                 'property': 'file_name',
                 'custom': true,
-                'doNotHide': true
+                'doNotHide': false
             }];
 
             if (fileTypeRequired) {
