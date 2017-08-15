@@ -199,7 +199,7 @@ Polymer({
     },
 
     _setPartnerAddress: function(partner) {
-        if (!partner || !(partner.address || partner.street_address) && !partner.postal_code && !partner.city) { return ''; }
+        if (!partner) { return ''; }
 
         let address = partner.street_address || partner.address;
         return [partner.city, address, partner.postal_code]
