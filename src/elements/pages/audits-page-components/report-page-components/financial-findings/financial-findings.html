@@ -9,7 +9,9 @@
         <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
         <!-- inject styles './financial-findings.scss'-->
 
-        <etools-content-panel class="content-section clearfix" panel-title="Financial Findings">
+        <etools-content-panel
+                class="content-section clearfix"
+                panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]">
             <div slot="panel-btns">
                 <div>
                     <paper-icon-button
@@ -25,13 +27,15 @@
             <list-header
                     id="list-header"
                     no-ordered
-                    data="[[columns]]">
+                    data="[[columns]]"
+                    base-permission-path="[[basePermissionPath]]">
             </list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
                 <list-element
                         class="list-element"
                         data="[[item]]"
+                        base-permission-path="[[basePermissionPath]]"
                         item-index="[[index]]"
                         headings="[[columns]]"
                         details="[[details]]"

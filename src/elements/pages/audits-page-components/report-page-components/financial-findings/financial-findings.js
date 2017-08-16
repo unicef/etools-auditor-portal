@@ -40,17 +40,20 @@ Polymer({
             }, {
                 'size': 40,
                 'label': 'Title (Category)',
+                'labelPath': 'financial_finding_set.title',
                 'path': 'title'
             }, {
                 'size': 20,
                 'name': 'currency',
                 'label': 'Amount (local)',
+                'labelPath': 'financial_finding_set.local_amount',
                 'path': 'local_amount',
                 'align': 'right'
             }, {
                 'size': 20,
                 'name': 'currency',
                 'label': 'Amount USD',
+                'labelPath': 'financial_finding_set.amount',
                 'path': 'amount',
                 'align': 'right'
             }]
@@ -61,14 +64,17 @@ Polymer({
                 return [{
                     'size': 100,
                     'label': 'Description',
+                    'labelPath': 'financial_finding_set.description',
                     'path': 'description'
                 }, {
                     'size': 100,
                     'label': 'Recommendation',
+                    'labelPath': 'financial_finding_set.recommendation',
                     'path': 'recommendation'
                 }, {
                     'size': 100,
                     'label': 'IP comments',
+                    'labelPath': 'financial_finding_set.ip_comments',
                     'path': 'ip_comments'
                 }];
             }

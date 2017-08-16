@@ -38,16 +38,19 @@ Polymer({
                     {
                         'size': 50,
                         'label': 'Description',
+                        'labelPath': 'action_points.description',
                         'path': 'description'
                     }, {
                         'size': 25,
                         'label': 'Due Date',
+                        'labelPath': 'action_points.due_date',
                         'path': 'due_date',
                         'name': 'date',
                         'align': 'right'
                     }, {
                         'size': 25,
                         'label': 'Person Responsible',
+                        'labelPath': 'action_points.person_responsible',
                         'path': 'person_responsible.full_name',
                         'align': 'right'
                     }
@@ -59,6 +62,7 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Comments',
+                    'labelPath': 'action_points.comments',
                     'path': 'comments',
                     'size': 100
                 }];

@@ -44,6 +44,7 @@ Polymer({
                     }, {
                         'size': 50,
                         'label': 'Subject Area',
+                        'labelPath': 'findings.category_of_observation',
                         'custom': true,
                         'property': 'category_of_observation',
                         'doNotHide': false
@@ -52,6 +53,7 @@ Polymer({
                         'size': 25,
                         'name': 'date',
                         'label': 'Deadline of Action',
+                        'labelPath': 'findings.deadline_of_action',
                         'path': 'deadline_of_action'
                     }
                 ];
@@ -62,10 +64,12 @@ Polymer({
             value: function() {
                 return [{
                     'label': 'Recommendation',
+                    'labelPath': 'findings.recommendation',
                     'path': 'recommendation',
                     'size': 100
                 }, {
                     'label': 'Agreed Action by IP',
+                    'labelPath': 'findings.agreed_action_by_ip',
                     'path': 'agreed_action_by_ip',
                     'size': 100
                 }];

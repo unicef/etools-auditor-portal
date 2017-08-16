@@ -8,6 +8,10 @@ Polymer({
     ],
 
     properties: {
+        basePermissionPath: {
+            type: String,
+            value: ''
+        },
         queryParams: {
             type: Object,
             notify: true,

@@ -3,7 +3,15 @@
 Polymer({
     is: 'list-header',
 
+    behaviors: [
+        APBehaviors.LocalizationBehavior,
+    ],
+
     properties: {
+        basePermissionPath: {
+            type: String,
+            value: ''
+        },
         orderBy: {
             type: String,
             notify: true
@@ -48,5 +56,5 @@ Polymer({
         }
 
         this.orderBy = `${direction}${newOrderName}`;
-    }
+    },
 });

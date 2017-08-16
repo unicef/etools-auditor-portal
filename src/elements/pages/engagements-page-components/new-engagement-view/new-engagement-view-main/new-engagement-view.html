@@ -67,12 +67,13 @@
                     <div name="attachments">
                         <file-attachments-tab
                                 id="engagement_attachments"
-                                tab-title="Attachments"
+                                tab-title="[[getLabel('engagement_attachments', 'new_engagement')]]"
                                 base-permission-path="new_engagement"
                                 main-property="engagement_attachments"
                                 error-object="{{errorObject}}"
                                 data-items="[[engagement.engagement_attachments]]"
                                 file-types="[[fileTypes]]"
+                                file-types-label="[[getLabel('engagement_attachments.file_type', 'new_engagement')]]"
                                 readonly$="[[_attachmentsReadonly()]]"
                                 file-type-required
                                 allow-download

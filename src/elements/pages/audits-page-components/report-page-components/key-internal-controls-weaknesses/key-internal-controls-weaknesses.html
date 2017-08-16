@@ -7,10 +7,11 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './key-internal-controls-weaknesses.scss'-->
 
-        <etools-content-panel panel-title="[[subjectAreas.header]]">
+        <etools-content-panel panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]">
             <list-header
                     no-ordered
-                    data="[[columns]]">
+                    data="[[columns]]"
+                    base-permission-path="[[basePermissionPath]]">
             </list-header>
 
             <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
@@ -56,7 +57,7 @@
                                         options="[[riskOptions]]"
                                         custom-object-options
                                         option-label="display_name"
-                                        option-value="value"
+                                        option-value="display_name"
                                         required="{{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"

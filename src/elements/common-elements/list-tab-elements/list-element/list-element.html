@@ -1,5 +1,5 @@
 <!--import [polymer, iron-flex-layout, moment-element/moment-import, paper-checkbox, paper-tooltip]-->
-<!--import [shared-styles, tab-inputs-styles, module-styles, insert-html]-->
+<!--import [shared-styles, tab-inputs-styles, module-styles, insert-html, localization-behavior]-->
 
 <dom-module id="list-element">
     <template>
@@ -116,7 +116,7 @@
                     <div class="partners-data-details group">
                         <template is="dom-repeat" items="[[details]]">
                             <div class$="row-details-content w[[item.size]]">
-                                <span class="rdc-title">[[item.label]]</span>
+                                <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
                                 <span class="data">[[_getValue(item, data)]]</span>
                             </div>

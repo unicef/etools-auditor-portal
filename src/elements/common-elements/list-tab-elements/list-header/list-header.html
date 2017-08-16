@@ -1,5 +1,5 @@
 <!--import [polymer, iron-icon, iron-flex-layout]-->
-<!--import [shared-styles, module-styles]-->
+<!--import [shared-styles, module-styles, localization-behavior]-->
 
 <dom-module id="list-header">
     <template>
@@ -12,7 +12,7 @@
                     <div class$="local-headings w[[item.size]] [[item.align]]"
                          ordered$="{{item.ordered}}"
                          on-tap="_changeOrder">
-                        <span class="textsec heading">[[item.label]]</span>
+                        <span class="textsec heading">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
                         <iron-icon
                                 class="down-icon"
@@ -38,7 +38,7 @@
                             <div class$="local-headings group-local-heading w[[groupColumn.size]] [[groupColumn.align]]"
                                  ordered$="{{groupColumn.ordered}}"
                                  on-tap="_changeOrder">
-                                <span class="textsec heading">[[groupColumn.label]]</span>
+                                <span class="textsec heading">[[getHeadingLabel(basePermissionPath, groupColumn)]]</span>
 
                                 <iron-icon
                                         class="down-icon"

@@ -124,21 +124,25 @@
                 'size': '100px',
                 'name': 'date',
                 'label': 'Date Uploaded',
+                'labelPath': `report_attachments.created`,
                 'path': 'created'
             }, {
                 'size': 65,
                 'label': 'File Attachment',
+                'labelPath': `report_attachments.file`,
                 'property': 'file_name',
                 'custom': true,
-                'doNotHide': true
+                'doNotHide': false
             }];
             let documentTypeOptions = {
                 'size': 35,
                 'label': 'Document Type',
+                'labelPath': `report_attachments.file_type`,
                 'path': 'display_name'
             };
 
             beforeEach(function () {
+                myEl.mainProperty = 'report_attachments';
                 headingsTemp = _.cloneDeep(headings);
             });
 
@@ -697,6 +701,10 @@
         });
 
         describe('method _errorHandler(errorData)', function () {
+            beforeEach(function () {
+                myEl.mainProperty = 'report_attachments';
+            });
+
             it('resets requestInProcess property', function () {
                 myEl.requestInProcess = true;
                 assert.isTrue(myEl.requestInProcess);
@@ -715,7 +723,6 @@
             it('updates errors object when refactoredData is object and dialog is opened', function () {
                 let errorData = {report_attachments: [{file: ['Incorrect base64 format.']}]};
                 let refactoredData = [{file: 'Incorrect base64 format.'}];
-                myEl.mainProperty = 'report_attachments';
                 myEl.dialogOpened = true;
 
                 assert.deepEqual(myEl.errors, {});
@@ -727,7 +734,6 @@
             it('fires toast with error string', function () {
                 let spy = sinon.spy(myEl, 'fire');
                 let errorData = {report_attachments: 'String with error.'};
-                myEl.mainProperty = 'report_attachments';
 
                 assert.isFalse(spy.called);
                 myEl._errorHandler(errorData);
@@ -739,7 +745,6 @@
             it('fires toast with nonField error', function () {
                 let spy = sinon.spy(myEl, 'fire');
                 let errorData = {report_attachments: [{non_field_errors: ['Please provide file or hyperlink.']}]};
-                myEl.mainProperty = 'report_attachments';
 
                 assert.isFalse(spy.called);
                 myEl._errorHandler(errorData);
@@ -758,7 +763,6 @@
                 let spy = sinon.spy(myEl, 'fire');
 
                 sinon.stub(myEl, 'getFilesErrors').withArgs(refactoredData).returns(filesErrors);
-                myEl.mainProperty = 'report_attachments';
                 myEl.dialogOpened = false;
 
                 assert.isFalse(spy.called);

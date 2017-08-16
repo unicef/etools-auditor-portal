@@ -151,12 +151,13 @@
                         <div name="attachments">
                             <file-attachments-tab
                                     id="engagement_attachments"
-                                    tab-title="Related Documents"
+                                    tab-title="[[getLabel('engagement_attachments', permissionBase)]]"
                                     base-permission-path="{{permissionBase}}"
                                     main-property="engagement_attachments"
                                     error-object="{{errorObject}}"
                                     data-items="[[engagement.engagement_attachments]]"
                                     file-types="[[engagementFileTypes]]"
+                                    file-types-label="[[getLabel('engagement_attachments.file_type', permissionBase)]]"
                                     readonly$="[[_attachmentsReadonly(permissionBase, 'engagement_attachments')]]"
                                     file-type-required
                                     allow-download
@@ -167,12 +168,13 @@
                             <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
-                                        tab-title="Report Attachments"
+                                        tab-title="[[getLabel('report_attachments', permissionBase)]]"
                                         base-permission-path="{{permissionBase}}"
                                         main-property="report_attachments"
                                         error-object="{{errorObject}}"
                                         data-items="[[engagement.report_attachments]]"
                                         file-types="[[reportFileTypes]]"
+                                        file-types-label="[[getLabel('report_attachments.file_type', permissionBase)]]"
                                         readonly$="[[_attachmentsReadonly(permissionBase, 'report_attachments')]]"
                                         file-type-required
                                         allow-download
