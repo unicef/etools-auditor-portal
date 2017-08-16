@@ -141,7 +141,7 @@ Polymer({
         if (bool) {
             value = !!value;
         } else if (!value && value !== 0) {
-            value = '--';
+            value = '–';
         }
 
         return value;
@@ -188,7 +188,7 @@ Polymer({
             value = this._refactorTime(value);
         }
 
-        return value || '--';
+        return value || '–';
     },
 
     _getStatus: function(synced) {

@@ -130,7 +130,7 @@
             it('returns "--" if value is falsy, not equal to 0 and bool argument is false', function () {
                 let item = {name: 'path'};
                 myEl.data = {path: null};
-                assert.equal(myEl._getValue(item), '--');
+                assert.equal(myEl._getValue(item), '–');
             });
 
             it('returns 0 if value is equal to 0 and bool argument is false', function () {
@@ -328,7 +328,7 @@
             it('returns "--" if value is falsy', function () {
                 let item = {additional: {path: 'path'}};
                 myEl.data = {path: null};
-                assert.equal(myEl._getAdditionalValue(item), '--')
+                assert.equal(myEl._getAdditionalValue(item), '–')
             });
 
             it('calls _refactorTime() method when item.additional.type="date"', function () {

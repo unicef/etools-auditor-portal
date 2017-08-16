@@ -123,7 +123,7 @@ Polymer({
 
     getCategoryDisplayName: function(value) {
         let categoryOfObservation = _.find(this.categoryOfObservation, ['value', value]);
-        return categoryOfObservation ? categoryOfObservation.display_name : '--';
+        return categoryOfObservation ? categoryOfObservation.display_name : '–';
     },
 
     _getLength: function(dataItems) {
