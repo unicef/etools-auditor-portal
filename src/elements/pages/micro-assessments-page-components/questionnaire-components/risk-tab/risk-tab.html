@@ -42,7 +42,7 @@
                                         options="[[riskOptions]]"
                                         custom-object-options
                                         option-label="display_name"
-                                        option-value="value"
+                                        option-value="display_name"
                                         on-focus="_resetFieldError"
                                         on-value-change="_riskValueChanged"
                                         dynamic-align
@@ -93,7 +93,7 @@
                                             options="[[riskOptions]]"
                                             custom-object-options
                                             option-label="display_name"
-                                            option-value="value"
+                                            option-value="display_name"
                                             category-id$="{{category.id}}"
                                             on-focus="_resetFieldError"
                                             on-value-change="_riskValueChanged"
@@ -111,15 +111,6 @@
                     </template>
                 </template>
             </etools-content-panel>
-
-            <!--TODO: remove later-->
-            <!--<div class="risk-result-container" hidden_results$="[[!showResults(completed, opened)]]">-->
-                <!--<div class="risk-score result-element"><span class="text">Total number of questions:</span><span class="value">[[getScore(questionnaire.blueprint_count)]]</span></div>-->
-                <!--<div class="risk-score result-element"><span class="text">Total number of applicable questions:</span><span class="value">[[getScore(questionnaire.applicable_questions)]]</span></div>-->
-                <!--<div class="risk-score result-element"><span class="text">Total number of applicable key questions:</span><span class="value">[[getScore(questionnaire.applicable_key_questions)]]</span></div>-->
-                <!--<div class="risk-score result-element"><span class="text">Total number of risk points:</span><span class="value">[[getScore(questionnaire.total_number_risk_points)]]</span></div>-->
-                <!--<div class="risk-rating result-element"><span class="text">Area risk rating:</span><span class$="value [[questionnaire.risk_rating]]">[[getRating(questionnaire.risk_rating, riskRatingOptions)]]</span></div>-->
-            <!--</div>-->
         </div>
     </template>
 
