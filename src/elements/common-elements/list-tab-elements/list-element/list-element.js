@@ -149,7 +149,7 @@ Polymer({
         if (bool) {
             value = !!value;
         } else if (!value && value !== 0) {
-            value = '–';
+            return false;
         }
 
         return value;

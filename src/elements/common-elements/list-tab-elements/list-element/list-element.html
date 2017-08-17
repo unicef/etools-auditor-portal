@@ -31,8 +31,14 @@
                         <a class$="col-data w[[item.size]] [[item.align]] [[item.class]]"
                            href$="[[_getLink(item.link, data)]]">
                             <span class="truncate">
-                                [[_getValue(item, data)]]
-                                <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                                <template is="dom-if" if="[[_getValue(item, data)]]">
+                                    [[_getValue(item, data)]]
+                                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                                </template>
+
+                                <template is="dom-if" if="[[!_getValue(item, data)]]">
+                                    <span class="">–</span>
+                                </template>
                             </span>
                         </a>
                     </template>
@@ -40,8 +46,14 @@
                     <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
                         <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                             <span class="truncate">
-                                [[_getValue(item, data)]]
-                                <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                                <template is="dom-if" if="[[_getValue(item, data)]]">
+                                    [[_getValue(item, data)]]
+                                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                                </template>
+
+                                <template is="dom-if" if="[[!_getValue(item, data)]]">
+                                    <span class="">–</span>
+                                </template>
 
                                 <template is="dom-if" if="[[item.additional]]">
                                     <span class="additional">([[_getAdditionalValue(item, data)]])</span>
