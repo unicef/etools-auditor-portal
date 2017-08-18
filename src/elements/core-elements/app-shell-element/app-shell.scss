@@ -6,6 +6,7 @@
 app-drawer {
     visibility: visible;
     right: auto;
+    z-index: 65 !important;
 
     --app-drawer-width: 70px;
     --app-drawer-content-container: #{'{
@@ -20,4 +21,5 @@ app-drawer-layout {
 
 app-header {
     padding-left: 70px;
+    z-index: 60 !important;
 }
