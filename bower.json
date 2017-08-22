@@ -26,7 +26,6 @@
     "etools-loading": "^1.0.3",
     "etools-page-refresh": "^1.0.0",
     "etools-content-panel": "^1.0.1",
-    "etools-searchable-multiselection-menu": "^2.1.0",
     "paper-card": "PolymerElements/paper-card#^1.1.4",
     "etools-checkable-input": "^1.0.3",
     "etools-datepicker": "^1.0.13",
@@ -38,7 +37,8 @@
     "web-component-tester": "^v6.0.0-prerelease.9",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0",
     "etools-info-tooltip": "^1.0.3",
-    "neon-animation": "2.0.1"
+    "neon-animation": "2.0.1",
+    "etools-searchable-multiselection-menu": "^2.2.3"
   },
   "devDependencies": {},
   "resolutions": {
