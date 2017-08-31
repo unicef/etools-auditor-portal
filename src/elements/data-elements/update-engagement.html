@@ -131,9 +131,15 @@
 
                 let {status, response} = responseData || {};
 
-                if (status === 400) { this.set('errorObject', response); }
+                if (status === 400) {
+                    this.set('errorObject', response);
+                } else if(status === 413) {
+                    this.errorObject = {};
+                    this.fire('toast', {text: `Error: Exceeded the maximum size of the uploaded file.`});
+                } else {
+                    this.errorObject = {};
+                }
 
-                if (status === 500) { this.errorObject = {}; }
                 this.fire('engagement-updated');
                 if (!this.quietAdding) {
                     this.fire('toast', {text: 'Can not save engagement data. Please check all fields and try again later!'});

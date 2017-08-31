@@ -50,7 +50,7 @@
 
                 this._setEngagementsList(detail.results);
                 this.listLength = detail.count;
-                this.requestQueries.reload = false;
+                this.updateQueries({reload: false});
 
                 this.fire('global-loading', {type: 'engagements-list'});
             },
@@ -81,11 +81,12 @@
             reloadRequired: function () {
                 let lastKeys = _.keys(this.lastState);
                 let requestQueriesKeys = _.keys(this.requestQueries);
-                let filtersKeys = ['agreement__auditor_firm', 'partner', 'type', 'status'];
+                let filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status'];
                 let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
                 queriesKeys = _.uniq(queriesKeys);
                 queriesKeys = _.difference(queriesKeys, filtersKeys);
+                _.pull(queriesKeys, 'reload');
 
                 let otherQueriesChanged = queriesKeys.some((key) => {
                     let lastValue = this.lastState[key];
@@ -113,7 +114,7 @@
                     return;
                 }
 
-                this.requestQueries.reload = false;
+                this.updateQueries({reload: false});
                 this.fire('global-loading', {type: 'engagements-list'});
                 this.fire('toast', {text: 'Page not found.'});
             },

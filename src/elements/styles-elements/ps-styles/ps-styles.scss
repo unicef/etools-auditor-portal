@@ -150,6 +150,10 @@ $ps-scrollbar-y-hover-width: 6px !default;
             }
         }
     }
+
+    .input-container {
+        -ms-overflow-style: auto;
+    }
 }
 
 $ps-theme-default: (

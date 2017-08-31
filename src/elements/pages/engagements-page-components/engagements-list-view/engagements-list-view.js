@@ -71,7 +71,7 @@
                     },
                     {
                         name: 'engagement type',
-                        query: 'type',
+                        query: 'engagement_type',
                         hideSearch: true,
                         optionValue: 'value',
                         optionLabel: 'label',
