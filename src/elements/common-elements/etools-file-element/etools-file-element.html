@@ -51,8 +51,10 @@
                                                 hide-search
                                                 on-focus="_resetFieldError"
                                                 value="[[_getFileType(file.file_type)]]"
-                                                on-value-change="_setFileType">
+                                                on-value-change="_setFileType"
+                                                no-title-attr>
                                     </etools-searchable-multiselection-menu>
+                                    <paper-tooltip offset="0">[[file.file_type.display_name]]</paper-tooltip>
                                 </template>
                             </div>
                             <div class$="file-actions [[_getFileSelectedClass(file, allowDownload)]]">

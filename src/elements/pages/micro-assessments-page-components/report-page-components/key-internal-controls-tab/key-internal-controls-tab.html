@@ -51,8 +51,10 @@
                                         invalid="{{errors.children.0.blueprints.0.risk.value}}"
                                         error-message="{{errors.children.0.blueprints.0.risk.value}}"
                                         on-focus="_resetFieldError"
-                                        hide-search>
+                                        hide-search
+                                        no-title-attr>
                                 </etools-searchable-multiselection-menu>
+                                <paper-tooltip offset="0">[[editedArea.blueprints.0.risk.value.display_name]]</paper-tooltip>
                             </div>
                         </div>
 

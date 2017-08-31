@@ -47,8 +47,10 @@
                                         on-value-change="_riskValueChanged"
                                         dynamic-align
                                         hide-search
-                                        allow-outside-scroll>
+                                        allow-outside-scroll
+                                        no-title-attr>
                                 </etools-searchable-multiselection-menu>
+                                <paper-tooltip offset="0">[[item.risk.value]]</paper-tooltip>
                             </template>
 
                             <template is="dom-if" if="{{!editMode}}">
@@ -99,8 +101,10 @@
                                             on-value-change="_riskValueChanged"
                                             dynamic-align
                                             hide-search
-                                            allow-outside-scroll>
+                                            allow-outside-scroll
+                                            no-title-attr>
                                     </etools-searchable-multiselection-menu>
+                                    <paper-tooltip offset="0">[[item.risk.value]]</paper-tooltip>
                                 </template>
 
                                 <template is="dom-if" if="{{!editMode}}">

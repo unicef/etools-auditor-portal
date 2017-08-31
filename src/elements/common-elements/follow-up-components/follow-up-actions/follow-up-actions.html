@@ -78,9 +78,10 @@
                                     invalid="{{errors.action_points.0.description}}"
                                     error-message="{{errors.action_points.0.description}}"
                                     on-focus="_resetFieldError"
-                                    hide-search>
+                                    hide-search
+                                    no-title-attr>
                             </etools-searchable-multiselection-menu>
-                            <!--<paper-tooltip offset="0">[[description.display_name]]</paper-tooltip>-->
+                            <paper-tooltip offset="0">[[description.display_name]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -134,9 +135,10 @@
                                     readonly$="{{requestInProcess}}"
                                     invalid="{{errors.action_points.0.person_responsible}}"
                                     error-message="{{errors.action_points.0.person_responsible}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    no-title-attr>
                             </etools-searchable-multiselection-menu>
-                            <!--<paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>-->
+                            <paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>
                         </div>
                     </div>
 

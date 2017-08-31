@@ -131,8 +131,10 @@
                                     error-message="{{errors.audit_opinion}}"
                                     on-focus="_resetFieldError"
                                     on-value-change="_changeAuditOpinion"
-                                    hide-search>
+                                    hide-search
+                                    no-title-attr>
                             </etools-searchable-multiselection-menu>
+                            <paper-tooltip offset="0">[[editedItem.opinion.display_name]]</paper-tooltip>
                         </div>
 
                         <div class="input-container">

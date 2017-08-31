@@ -41,11 +41,12 @@
                             error-message="{{errors.partner}}"
                             on-focus="_resetFieldError"
                             on-value-change="_requestPartner"
-                            dynamic-align>
+                            dynamic-align
+                            no-title-attr>
                     </etools-searchable-multiselection-menu>
 
                     <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
-                    <!--<paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>-->
+                    <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
                 </div>
 
                 <div class="input-container input-container-m">
@@ -108,9 +109,10 @@
                             error-message="{{errors.authorized_officers}}"
                             on-focus="_resetFieldError"
                             dynamic-align
-                            hide-search>
+                            hide-search
+                            no-title-attr>
                     </etools-searchable-multiselection-menu>
-                    <!--<paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>-->
+                    <paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>
                 </div>
             </div>
 
@@ -136,9 +138,10 @@
                             on-focus="_resetFieldError"
                             dynamic-align
                             multi
-                            hide-search>
+                            hide-search
+                            no-title-attr>
                     </etools-searchable-multiselection-menu>
-                    <!--<paper-tooltip offset="0">[[activePd]]</paper-tooltip>-->
+                    <paper-tooltip offset="0">[[getTooltipText(activePd, partner.interventions)]]</paper-tooltip>
                 </div>
             </div>
         </etools-content-panel>

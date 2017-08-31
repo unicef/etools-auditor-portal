@@ -92,8 +92,10 @@
                                         error-message="{{errors.file_type}}"
                                         on-focus="_resetFieldError"
                                         on-value-change="_setFileType"
-                                        hide-search>
+                                        hide-search
+                                        no-title-attr>
                                 </etools-searchable-multiselection-menu>
+                                <paper-tooltip offset="0">[[editedItem.type.display_name]]</paper-tooltip>
                             </div>
                         </div>
                     </template>

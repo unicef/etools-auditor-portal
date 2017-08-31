@@ -203,8 +203,10 @@
                                 error-message="{{errors.engagement_type}}"
                                 on-focus="_resetFieldError"
                                 on-value-change="_setEngagementType"
-                                hide-search>
+                                hide-search
+                                no-title-attr>
                         </etools-searchable-multiselection-menu>
+                        <paper-tooltip offset="0">[[_processValue(data.engagement_type).label]]</paper-tooltip>
                         <span slot="message">Attach FACE Form Requesting Funding, <br>
                                 ICE Form, FACE Form Reporting,<br>
                                 Statement of Expenditure</span>

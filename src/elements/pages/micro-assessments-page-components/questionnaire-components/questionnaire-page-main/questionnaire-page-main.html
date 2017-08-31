@@ -161,8 +161,10 @@
                                     invalid="{{riskAssessmentInvalid}}"
                                     error-message="This field is required"
                                     on-focus="_resetFieldError"
-                                    hide-search>
+                                    hide-search
+                                    no-title-attr>
                             </etools-searchable-multiselection-menu>
+                            <paper-tooltip offset="0">[[editedItem.risk.value]]</paper-tooltip>
                         </div>
                     </div>
 

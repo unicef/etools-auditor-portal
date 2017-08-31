@@ -84,8 +84,10 @@
                                     invalid="{{errors.category_of_observation}}"
                                     error-message="{{errors.category_of_observation}}"
                                     on-focus="_resetFieldError"
-                                    hide-search>
+                                    hide-search
+                                    no-title-attr>
                             </etools-searchable-multiselection-menu>
+                            <paper-tooltip offset="0">[[editedItem.category_of_observation.display_name]]</paper-tooltip>
                         </div>
                     </div>
 
