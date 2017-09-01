@@ -205,16 +205,5 @@ Polymer({
         return [partner.city, address, partner.postal_code]
             .filter((info) => !!info)
             .join(', ');
-    },
-
-    getTooltipText: function(selectedValues, options) {
-        let tooltip = '';
-        _.each(selectedValues, (value) => {
-            let displayValue = _.filter(options, ['id', +value]);
-            if (displayValue.length > 0) {
-                tooltip += displayValue[0].number;
-            }
-        });
-        return tooltip;
     }
 });

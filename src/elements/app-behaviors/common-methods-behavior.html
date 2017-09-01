@@ -121,6 +121,17 @@
 
         _showPrefix: function(path, base, value, readonly) {
             return (!this.isReadonly(`${base}.${path}`) && !readonly) || !!value;
+        },
+
+        getTooltipText: function(selectedValues, options, field) {
+            let tooltip = [];
+            _.each(selectedValues, (value) => {
+                let displayValue = _.filter(options, ['id', +value]);
+                if (displayValue.length > 0) {
+                    tooltip.push(displayValue[0][field]);
+                }
+            });
+            return tooltip.join(', ');
         }
     };
 
