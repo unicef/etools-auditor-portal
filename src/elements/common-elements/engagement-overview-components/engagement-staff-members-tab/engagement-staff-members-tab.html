@@ -29,12 +29,11 @@
                 panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])"
                 show-expand-btn>
             <div slot="panel-btns">
-                <div class="search-input-container">
+                <div class="search-input-container" hidden$="[[!_showPagination(datalength)]]">
                     <paper-input
                             id="searchInput"
                             class$="search-input [[_getSearchInputClass(searchString)]]"
                             value="{{searchString}}"
-                            hidden$="[[!_showPagination(datalength)]]"
                             placeholder="Search"
                             on-blur="searchBlur"
                             on-input="_searchChanged">

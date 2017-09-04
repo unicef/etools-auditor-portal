@@ -8,10 +8,9 @@
 
         <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
-                <div>
+                <div hidden$="[[!_showAddBtn(dataItems.length, readonly)]]">
                     <paper-icon-button
                             class="panel-button"
-                            hidden$="[[!_showAddBtn(dataItems.length, readonly)]]"
                             disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
                             on-tap="openAddDialog"
                             icon="add-box">

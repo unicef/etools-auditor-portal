@@ -11,10 +11,9 @@
 
         <etools-content-panel panel-title="UNICEF Follow-Up Actions">
             <div slot="panel-btns">
-                <div>
+                <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
                     <paper-icon-button
                             class="panel-button"
-                            hidden$="[[!_canBeChanged(basePermissionPath)]]"
                             on-tap="openAddDialog"
                             icon="add-box">
                     </paper-icon-button>

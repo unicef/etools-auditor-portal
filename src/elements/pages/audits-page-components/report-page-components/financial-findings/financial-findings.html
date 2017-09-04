@@ -13,10 +13,9 @@
                 class="content-section clearfix"
                 panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]">
             <div slot="panel-btns">
-                <div>
+                <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
                     <paper-icon-button
                             class="panel-button"
-                            hidden$="[[!_canBeChanged(basePermissionPath)]]"
                             on-tap="openAddDialog"
                             icon="add-box">
                     </paper-icon-button>
