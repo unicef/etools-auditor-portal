@@ -52,16 +52,26 @@
                     return false;
                 }
 
+                let allowed_actions = collection.allowed_FSM_transitions || [];
+
                 let actions = [];
                 if (this.isValidCollection(collection.PUT)) {
-                    actions.push('save');
+                    actions.push(this._createAction('save', allowed_actions[0]));
                 }
                 if (this.isValidCollection(collection.POST)) {
-                    actions.push('create');
+                    actions.push(this._createAction('create', allowed_actions[0]));
                 }
 
-                collection.allowed_actions = actions.concat(collection.allowed_FSM_transitions || []);
+                collection.allowed_actions = actions.concat(allowed_actions);
                 return true;
+            },
+
+            _createAction: function(action, existedAction) {
+                if (!existedAction || typeof existedAction === 'string') { return action; }
+                return {
+                    code: action,
+                    display_name: action
+                };
             },
 
             getFieldAttribute: function(path, attribute, actionType) {
@@ -134,7 +144,14 @@
                 if (typeof action !== 'string') { throw new Error('action argument must be a string'); }
                 collection = _permissionCollection[collection];
 
-                return !!(collection && collection.allowed_actions && ~collection.allowed_actions.indexOf(action));
+                let actions = collection && collection.allowed_actions;
+
+                if (!actions || !actions.length) { return false; }
+                if (typeof actions[0] !== 'string') {
+                    actions = actions.map(action => action.code);
+                }
+
+                return !!~actions.indexOf(action);
             },
 
             noActionsAllowed: function(collection) {
