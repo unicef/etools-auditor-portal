@@ -10,34 +10,13 @@ Polymer({
     properties: {
         basePermissionPath: {
             type: String,
-            value: ''
+            value: '',
+            observer: '_setItemValues'
         },
         itemValues: {
             type: Object,
             value: function() {
-                return {
-                    engagement_type: {
-                        ma: 'Micro Assessment',
-                        audit: 'Audit',
-                        sc: 'Spot Check'
-                    },
-                    link_type: {
-                        ma: 'micro-assessments',
-                        audit: 'audits',
-                        sc: 'spot-checks'
-                    },
-                    status: {
-                        partner_contacted: 'Partner was Contacted',
-                        field_visit: 'Field Visit',
-                        draft_issued_to_unicef: 'Draft Report Issued To IP',
-                        comments_received_by_partner: 'Comments Received By IP',
-                        draft_issued_to_partner: 'Draft Report Issued To UNICEF',
-                        comments_received_by_unicef: 'Comments Received By UNICEF',
-                        report_submitted: 'Report Submitted',
-                        final: 'Final Report',
-                        cancelled: 'Cancelled'
-                    }
-                };
+                return {};
             }
         },
         details: {
@@ -219,5 +198,29 @@ Polymer({
 
     _hasProperty: function(data, property, doNotHide) {
         return data && (doNotHide || property && this.get('data.' + property));
+    },
+
+    _setItemValues: function(base) {
+        if (!base) { return; }
+        if (!this.get('itemValues')) { this.set('itemValues', {}); console.log('test') }
+        this.setField(this.getChoices(`${base}.engagement_type`), 'engagement_type');
+        this.setField(this.getChoices(`${base}.status`), 'status');
+        this.set('itemValues.link_type', {
+            ma: 'micro-assessments',
+            audit: 'audits',
+            sc: 'spot-checks'
+        })
+    },
+
+    setField: function(choices, field) {
+        if (!choices || !field) { return; }
+
+        let data = {};
+        _.each(choices, (choice) => {
+            data[choice.value] = choice.display_name
+        });
+
+        this.set(`itemValues.${field}`, data);
     }
+
 });

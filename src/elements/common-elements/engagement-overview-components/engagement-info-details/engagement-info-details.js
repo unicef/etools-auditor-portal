@@ -31,7 +31,8 @@ Polymer({
                     link: 'spot-checks',
                     value: 'sc'
                 }];
-            }
+            },
+            computed: '_setEngagementTypes(basePermissionPath)'
         },
         data: {
             type: Object,
@@ -224,5 +225,25 @@ Polymer({
 
     _hideTooltip: function(basePermissionPath, showInput) {
         return this.isReadOnly('type', basePermissionPath) || !showInput;
+    },
+
+    _setEngagementTypes: function(basePermissionPath) {
+        let types = this.getChoices(`${basePermissionPath}.engagement_type`);
+        if (!types) { return; }
+
+        let links = {
+            ma: 'micro-assessments',
+            audit: 'audits',
+            sc: 'spot-checks'
+        };
+
+        return types.map((typeObject) => {
+            return {
+                value: typeObject.value,
+                label: typeObject.display_name,
+                link: links[typeObject.value]
+            }
+        })
     }
+
 });
