@@ -138,7 +138,7 @@
             myEl = fixture('engagements-list-view-fixture');
         });
 
-        describe('method ready()', function () {
+        describe('method setupFilters() if first argument provided', function () {
             it('calls setupFiltersAndHeadings() and setFiltersSelections() methods', function () {
                 let spy = sinon.spy(myEl, 'setupFiltersAndHeadings');
                 let spy2 = sinon.spy(myEl, 'setFiltersSelections');
@@ -146,7 +146,12 @@
                 assert.isFalse(spy.called);
                 assert.isFalse(spy2.called);
 
-                myEl.ready();
+                myEl.setupFilters('');
+
+                assert.isFalse(spy.called);
+                assert.isFalse(spy2.called);
+
+                myEl.setupFilters('test');
 
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy2.calledOnce);

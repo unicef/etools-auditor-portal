@@ -74,17 +74,8 @@
                         query: 'engagement_type',
                         hideSearch: true,
                         optionValue: 'value',
-                        optionLabel: 'label',
-                        selection: [{
-                            label: 'Audit',
-                            value: 'audit'
-                        }, {
-                            label: 'Micro Assessment',
-                            value: 'ma'
-                        }, {
-                            label: 'Spot Check',
-                            value: 'sc'
-                        }]
+                        optionLabel: 'display_name',
+                        selection: []
                     },
                     {
                         name: 'partner',
@@ -98,45 +89,8 @@
                         query: 'status',
                         hideSearch: true,
                         optionValue: 'value',
-                        optionLabel: 'label',
-                        selection: [
-                            {
-                                label: 'Partner was Contacted',
-                                value: 'partner_contacted'
-                            },
-                            {
-                                label: 'Field Visit',
-                                value: 'field_visit'
-                            },
-                            {
-                                label: 'Draft Report Issued To IP',
-                                value: 'draft_issued_to_unicef'
-                            },
-                            {
-                                label: 'Comments Received By IP',
-                                value: 'comments_received_by_partner'
-                            },
-                            {
-                                label: 'Draft Report Issued To UNICEF',
-                                value: 'draft_issued_to_partner'
-                            },
-                            {
-                                label: 'Comments Received By UNICEF',
-                                value: 'comments_received_by_unicef'
-                            },
-                            {
-                                label: 'Report Submitted',
-                                value: 'report_submitted'
-                            },
-                            {
-                                label: 'Final Report',
-                                value: 'final'
-                            },
-                            {
-                                label: 'Cancelled',
-                                value: 'cancelled'
-                            }
-                        ]
+                        optionLabel: 'display_name',
+                        selection: []
                     }
                 ]
             },
@@ -154,8 +108,11 @@
             }
         },
 
-        ready: function() {
-            this.setupFiltersAndHeadings();
+        observers: ['setupFilters(basePermissionPath, filters)'],
+
+        setupFilters: function(base) {
+            if (!base) { return; }
+            this.setupFiltersAndHeadings(base);
             this.setFiltersSelections();
         },
 
@@ -163,7 +120,7 @@
             return this.actionAllowed('new_engagement', 'create');
         },
 
-        setupFiltersAndHeadings: function() {
+        setupFiltersAndHeadings: function(base) {
             if (false) { //TODO: check that user is auditor
                 let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
                 let auditorHeadingIndex = this.listHeadings.findIndex((heading) => {
@@ -184,6 +141,15 @@
                     this.filters.splice(partnersFilterIndex, 1);
                 }
             }
+
+            let statuses = this.getChoices(`${base}.status`),
+                types = this.getChoices(`${base}.engagement_type`);
+
+            let statusFilterIndex = this._getFilterIndex('status'),
+                typeFilterIndex = this._getFilterIndex('engagement_type');
+
+            this.set(`filters.${statusFilterIndex}.selection`, statuses || []);
+            this.set(`filters.${typeFilterIndex}.selection`, types || []);
         },
 
         _getFilterIndex: function(query) {

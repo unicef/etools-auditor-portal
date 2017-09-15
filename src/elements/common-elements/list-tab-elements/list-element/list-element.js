@@ -202,14 +202,14 @@ Polymer({
 
     _setItemValues: function(base) {
         if (!base) { return; }
-        if (!this.get('itemValues')) { this.set('itemValues', {}); console.log('test') }
+        if (!this.get('itemValues')) { this.set('itemValues', {}); }
         this.setField(this.getChoices(`${base}.engagement_type`), 'engagement_type');
         this.setField(this.getChoices(`${base}.status`), 'status');
         this.set('itemValues.link_type', {
             ma: 'micro-assessments',
             audit: 'audits',
             sc: 'spot-checks'
-        })
+        });
     },
 
     setField: function(choices, field) {
@@ -217,7 +217,7 @@ Polymer({
 
         let data = {};
         _.each(choices, (choice) => {
-            data[choice.value] = choice.display_name
+            data[choice.value] = choice.display_name;
         });
 
         this.set(`itemValues.${field}`, data);

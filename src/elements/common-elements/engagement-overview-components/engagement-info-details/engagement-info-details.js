@@ -242,8 +242,8 @@ Polymer({
                 value: typeObject.value,
                 label: typeObject.display_name,
                 link: links[typeObject.value]
-            }
-        })
+            };
+        });
     }
 
 });
