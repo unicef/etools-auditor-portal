@@ -185,7 +185,8 @@ Polymer({
 
     activePdPlaceholder: function(basePermissionPath, partner) {
         if (!partner || !partner.id) { return '-'; }
-        return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
+        return this.isReadonly(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s)';
+        // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
     },
 
     _setPlaceholderColor: function(partner) {
