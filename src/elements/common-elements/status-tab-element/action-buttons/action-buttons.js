@@ -54,6 +54,14 @@ Polymer({
         return length > 1;
     },
 
+    withActionsMenu: function(length) {
+        return length > 1 ? 'with-menu' : '';
+    },
+
+    _filterActions: function(action) {
+        return !_.isEqual(action, this.actions[0]);
+    },
+
     _setIcon: function(item, icons) {
         if (!icons || !item) { return ''; }
         return icons[(item.code || item)] || '';
