@@ -24,11 +24,6 @@ Polymer({
         datepickerModal: {
             type: Boolean,
             value: false
-        },
-        falseValue: {
-            type: Boolean,
-            value: false,
-            readOnly: true
         }
     },
 
