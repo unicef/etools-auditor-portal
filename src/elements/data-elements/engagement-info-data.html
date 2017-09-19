@@ -4,7 +4,7 @@
 <dom-module id="engagement-info-data">
     <template>
         <etools-ajax
-                endpoint="[[endpoint]]"
+                url="[[url]]"
                 on-success="_handleDataResponse"
                 on-fail="_handleError">
         </etools-ajax>
@@ -45,7 +45,8 @@
                 engagementType: String,
                 engagementInfo: {
                     type: Object,
-                    notify: true
+                    notify: true,
+                    observer: '_setToResponse'
                 },
                 lastId: Number,
                 requestsCompleted: {
@@ -110,6 +111,12 @@
                 this.lastError = true;
             },
 
+            _setToResponse: function(engagement) {
+                if (engagement && engagement.id && !_.isEqual(this.responseData, engagement)) {
+                    this.responseData = engagement;
+                }
+            },
+
             _idChanged: function(id) {
                 if (!id || isNaN(id) || !this.engagementType) { return; }
                 if (+id === this.lastId) {
@@ -129,12 +136,12 @@
                     return;
                 }
 
-                this.endpoint = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType});
+                this.url = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType}).url;
 
                 if (this.collectionExists(`engagement_${id}`)) {
                     this.requestsCompleted.options = true;
                 } else {
-                    this.optionsUrl = this.endpoint.url;
+                    this.optionsUrl = this.url;
                 }
             }
         });
