@@ -95,23 +95,31 @@ Polymer({
         }
     },
 
+    _showActivePd: function(partnerType) {
+        return partnerType !== 'Government';
+    },
+
     _setActivePd: function() {
+        let esmm = Polymer.dom(this.root).querySelector('#activePd');
+        let partnerType = this.get('engagement.partner.partner_type');
+
         //check <etools-searchable-multiselection-menu> debouncer state
-        if (this.$.activePd.isDebouncerActive('selectionChanged')) {
+        if ((!esmm || esmm.isDebouncerActive('selectionChanged')) && partnerType !== 'Government') {
             this.async(this._setActivePd, 50);
             return false;
         }
 
-        let originalPartnerId = this.originalData && this.originalData.partner && this.originalData.partner.id;
-        let partnerId = this.partner && this.partner.id;
+        let originalPartnerId = this.get('originalData.partner.id');
+        let partnerId = this.get('partner.id');
 
-        if (!originalPartnerId || !partnerId || originalPartnerId !== partnerId) { return false; }
+        if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
+            this.set('activePd', []);
+            return false;
+        }
 
-        let activePd = this.engagement && this.engagement.active_pd || [];
-        let selectedActivePd = activePd.map((pd) => {
-            return pd.id;
-        });
-        this.set('activePd', selectedActivePd);
+        let activePd = this.get('engagement.active_pd') || [];
+        this.set('activePd', activePd);
+        return true;
     },
 
     _requestPartner: function(event, id) {
@@ -150,21 +158,21 @@ Polymer({
 
     getPartnerData: function() {
         let data = {};
-        let originalPartnerId = this.originalData && this.originalData.partner && this.originalData.partner.id;
-        let partnerId = this.engagement && this.engagement.partner && this.engagement.partner.id;
-        let originalActivePd = this.originalData && this.originalData.active_pd || [];
+        let originalPartnerId = this.get('originalData.partner.id');
+        let partnerId = this.get('engagement.partner.id');
+        let partnerType = this.get('engagement.partner.partner_type');
+        let originalActivePd = this.get('originalData.active_pd') || [];
         let activePd = this.activePd || [];
 
-        originalActivePd = originalActivePd.map((pd) => {
-            return `${pd.id}`;
-        });
+        originalActivePd = originalActivePd.map(pd => +pd.id);
+        activePd = activePd.map(pd => +pd.id);
 
         if (originalPartnerId !== partnerId) {
             data.partner = partnerId;
         }
 
-        if (!_.isEqual(originalActivePd.sort(), activePd.sort())) {
-            data.active_pd = this.activePd;
+        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && partnerType !== 'Government') {
+            data.active_pd = activePd;
         }
 
         if (_.isEqual(data, {})) {

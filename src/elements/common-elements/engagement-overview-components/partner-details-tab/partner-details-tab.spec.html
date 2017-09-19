@@ -88,11 +88,21 @@
             });
         });
 
+        describe('method _showActivePd(partnerType)', function() {
+            it('should return true if partnerType is not equal to"Government"', function() {
+                assert.isTrue(myEl._showActivePd('Not Government'));
+            });
+
+            it('should return false if partnerType is equal to"Government"', function() {
+                assert.isFalse(myEl._showActivePd('Government'));
+            });
+        });
+
         describe('method getPartnerData()', function () {
             beforeEach(function () {
                 myEl.originalData = {partner: {id: 1}, active_pd: [{id: 1}, {id: 2}]};
                 myEl.engagement = {partner: {id: 1}};
-                myEl.activePd = ['1', '2'];
+                myEl.activePd = [{id: '1'}, {id: '2'}];
             });
 
             it('returns object with partner id if id was changed', function () {
@@ -100,75 +110,26 @@
                 assert.deepEqual(myEl.getPartnerData(), {partner: 2});
             });
 
-            it('returns object with activePd array if activePd was changed', function () {
-                myEl.activePd = ['3'];
-                assert.deepEqual(myEl.getPartnerData(), {active_pd: ['3']});
+            it('returns object with activePd array if activePd was changed and partnerType is not "Government', function () {
+                myEl.activePd = [{id: '3'}];
+                myEl.engagement.partner.partner_type = 'Not Government';
+                assert.deepEqual(myEl.getPartnerData(), {active_pd: [3]});
+            });
+
+            it('returns object without active_pd if activePd was changed but partnerType is "Government', function () {
+                myEl.activePd = [{id: '3'}];
+                myEl.engagement.partner.partner_type = 'Government';
+                assert.isNull(myEl.getPartnerData());
             });
 
             it('returns object with partner id and activePd if they was changed', function () {
                 myEl.engagement.partner.id = 2;
-                myEl.activePd = ['3'];
-                assert.deepEqual(myEl.getPartnerData(), {partner: 2, active_pd: ['3']});
+                myEl.activePd = [{id: '3'}];
+                assert.deepEqual(myEl.getPartnerData(), {partner: 2, active_pd: [3]});
             });
 
             it('returns null if partner id and activePd wasn\'t changed', function () {
                 assert.isNull(myEl.getPartnerData());
-            });
-        });
-
-        describe('method _setActivePd()', function () {
-            beforeEach(function () {
-                myEl.$.activePd.isDebouncerActive = sinon.stub().returns(false);
-                myEl.originalData = {partner: {id: 1}};
-                myEl.partner = {id: 1};
-            });
-
-            it('returns false if isDebouncerActive() method of #activePd element returns true', function () {
-                myEl.$.activePd.isDebouncerActive = sinon.stub().returns(true);
-                assert.isFalse(myEl._setActivePd());
-            });
-
-            it('calls async() if isDebouncerActive() method of #activePd element returns true', function () {
-                myEl.$.activePd.isDebouncerActive = sinon.stub().returns(true);
-                let spy = sinon.spy(myEl, 'async');
-
-                assert.isFalse(spy.called);
-                myEl._setActivePd();
-                assert.isTrue(spy.called);
-                assert.isTrue(spy.calledWithExactly(myEl._setActivePd, 50));
-            });
-
-            it('returns false if originalData.partner.id is not defined', function () {
-                myEl.originalData = null;
-                assert.isFalse(myEl._setActivePd());
-            });
-
-            it('returns false if partner.id is not defined', function () {
-                myEl.partner = null;
-                assert.isFalse(myEl._setActivePd());
-            });
-
-            it('returns false if new partner was loaded', function () {
-                myEl.partner = {id: 2};
-                assert.isFalse(myEl._setActivePd());
-            });
-
-            it('sets activePd property equal to empty array if engagement.active_pd has bad value', function () {
-                myEl.engagement = {active_pd: null};
-                myEl.activePd = null;
-
-                assert.isNull(myEl.activePd);
-                myEl._setActivePd();
-                assert.deepEqual(myEl.activePd, []);
-            });
-
-            it('sets activePd property equal to Array of engagement.active_pd ids', function () {
-                myEl.engagement = {active_pd: [{id: 1}, {id: 2}, {id: 3}]};
-                myEl.activePd = null;
-
-                assert.isNull(myEl.activePd);
-                myEl._setActivePd();
-                assert.deepEqual(myEl.activePd, [1, 2, 3]);
             });
         });
 
