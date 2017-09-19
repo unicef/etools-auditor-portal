@@ -63,6 +63,7 @@
                             invalid$="{{_checkInvalid(errors.agreement)}}"
                             error-message="{{errors.agreement}}"
                             on-focus="_resetFieldError"
+                            on-keydown="poKeydown"
                             on-blur="_requestAgreement">
                     </paper-input>
 

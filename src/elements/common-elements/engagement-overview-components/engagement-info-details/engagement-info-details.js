@@ -137,6 +137,12 @@ Polymer({
         this.set('data.engagement_type', value.selectedValues);
     },
 
+    poKeydown: function(event) {
+        if (event.keyCode === 13) {
+            this._requestAgreement(event);
+        }
+    },
+
     _requestAgreement: function(event) {
         if (this.requestInProcess) { return; }
 
