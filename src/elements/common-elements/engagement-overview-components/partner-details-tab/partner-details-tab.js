@@ -79,7 +79,8 @@ Polymer({
     },
 
     resetValidationErrors: function() {
-        this.$.partner.invalid = false;
+        this.set('errors.partner', '');
+        // this.$.partner.invalid = false;
     },
 
     _resetFieldError: function() {

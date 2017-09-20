@@ -116,8 +116,13 @@ Polymer({
     },
 
     resetValidationErrors: function() {
-        this.set('errors.engagement_type', false);
         this.set('errors.agreement', false);
+
+        let elements = Polymer.dom(this.root).querySelectorAll('.validate-field');
+        _.each(elements, element => {
+            element.errorMessage = '';
+            element.invalid = false;
+        });
     },
 
     _processValue: function(value) {
