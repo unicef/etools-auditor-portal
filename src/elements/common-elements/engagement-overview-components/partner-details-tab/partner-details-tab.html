@@ -122,7 +122,7 @@
                         <!-- Active PD -->
                         <etools-searchable-multiselection-menu
                                 id="activePd"
-                                class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
+                                class$="disabled-as-readonly required [[_setPlaceholderColor(partner)]]"
                                 value="{{activePd}}"
                                 label="[[getLabel('active_pd', basePermissionPath)]]"
                                 placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
@@ -131,7 +131,7 @@
                                 option-label="number"
                                 option-value="id"
                                 update-selected
-                                required$="{{_setRequired('active_pd', basePermissionPath)}}"
+                                required
                                 disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                                 readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                                 invalid$="{{_checkInvalid(errors.active_pd)}}"
