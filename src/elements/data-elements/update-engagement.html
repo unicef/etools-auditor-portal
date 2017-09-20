@@ -130,6 +130,7 @@
                                     error.request.detail.request && error.request.detail.request.xhr;
 
                 let {status, response} = responseData || {};
+                if (typeof response === 'string') { response = JSON.parse(response); }
 
                 if (status === 400) {
                     this.set('errorObject', response);
