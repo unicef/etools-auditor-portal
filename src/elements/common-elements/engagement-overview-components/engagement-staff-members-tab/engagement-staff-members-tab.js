@@ -398,11 +398,11 @@ Polymer({
         this.set('errors', error);
         this.requestInProcess = false;
         if (_.isString(error)) {
-            let text = !!~error.indexOf('required') ? 'Please, select at least one staff member.' : error;
-            this.fire('toast', {text: `Staff Members: ${text}`});
+            let text = !!~error.indexOf('required') ? 'Please select at least one staff member.' : error;
+            this.fire('toast', {text: `Audit Staff Team Members: ${text}`});
         }
         if (nonField) {
-            this.fire('toast', {text: `Staff Members: ${nonField}`});
+            this.fire('toast', {text: `Audit Staff Team Members: ${nonField}`});
         }
     },
 
