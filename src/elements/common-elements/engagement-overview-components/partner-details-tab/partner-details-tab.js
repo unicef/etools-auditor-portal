@@ -65,6 +65,16 @@ Polymer({
     },
 
     validate: function() {
+        let activePd = Polymer.dom(this.root).querySelector('#activePd');
+        let partnerType = this.get('engagement.partner.partner_type');
+        let activePdValid = activePd ? activePd.validate() : false;
+
+        if (!activePdValid) { this.set('errors.active_pd', 'Active PD is required'); }
+
+        return this.validatePartner() && (activePdValid || !this._showActivePd(partnerType));
+    },
+
+    validatePartner: function() {
         if (!this.$.partner || !this.$.partner.required) { return true; }
         if (!this.engagement || !this.engagement.partner || !this.engagement.partner.id) {
             this.set('errors.partner', 'Partner is required');
@@ -97,7 +107,7 @@ Polymer({
     },
 
     _showActivePd: function(partnerType) {
-        return partnerType !== 'Government';
+        return typeof partnerType === 'string' && partnerType !== 'Government';
     },
 
     _setActivePd: function() {
@@ -145,7 +155,7 @@ Polymer({
 
     _partnerLoaded: function() {
         this.requestInProcess = false;
-        this.validate();
+        this.validatePartner();
     },
 
     _engagementChanged: function(engagement) {
@@ -158,6 +168,8 @@ Polymer({
     },
 
     getPartnerData: function() {
+        if (!this.validate()) { return null; }
+
         let data = {};
         let originalPartnerId = this.get('originalData.partner.id');
         let partnerId = this.get('engagement.partner.id');

@@ -41,16 +41,16 @@
             myEl.set.restore();
         });
 
-        it('method _partnerLoaded sets requestInProcess to false and calls validate method', function() {
-            sinon.stub(myEl, 'validate');
+        it('method _partnerLoaded sets requestInProcess to false and calls validatePartner method', function() {
+            sinon.stub(myEl, 'validatePartner');
             myEl.requestInProcess = true;
 
             myEl._partnerLoaded();
 
             assert.isFalse(myEl.requestInProcess);
-            assert.isTrue(myEl.validate.called);
+            assert.isTrue(myEl.validatePartner.called);
 
-            myEl.validate.restore();
+            myEl.validatePartner.restore();
         });
 
         describe('method _engagementChanged', function() {
@@ -89,20 +89,30 @@
         });
 
         describe('method _showActivePd(partnerType)', function() {
-            it('should return true if partnerType is not equal to"Government"', function() {
+            it('should return true if partnerType is string and not equal to"Government"', function() {
                 assert.isTrue(myEl._showActivePd('Not Government'));
             });
 
-            it('should return false if partnerType is equal to"Government"', function() {
+            it('should return false if partnerType is string and equal to"Government"', function() {
                 assert.isFalse(myEl._showActivePd('Government'));
+            });
+
+            it('should return false if partnerType is not string', function() {
+                assert.isFalse(myEl._showActivePd(undefined));
             });
         });
 
         describe('method getPartnerData()', function () {
             beforeEach(function () {
+                myEl.validate = sinon.stub().returns(true);
                 myEl.originalData = {partner: {id: 1}, active_pd: [{id: 1}, {id: 2}]};
                 myEl.engagement = {partner: {id: 1}};
                 myEl.activePd = [{id: '1'}, {id: '2'}];
+            });
+
+            it('should return true if validate() returns false', function () {
+                myEl.validate = sinon.stub().returns(false);
+                assert.isNull(myEl.getPartnerData());
             });
 
             it('returns object with partner id if id was changed', function () {
