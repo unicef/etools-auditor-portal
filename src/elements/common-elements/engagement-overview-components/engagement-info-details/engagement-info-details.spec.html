@@ -64,16 +64,13 @@
         it('validate required inputs', function (done) {
             myEl.data = {agreement: {}};
             sinon.spy(numberInput, "validate");
-            sinon.spy(auditTypeInput, "validate");
 
             flush(function() {
                 myEl.validate();
 
                 assert.isTrue(numberInput.validate.called);
-                assert.isTrue(auditTypeInput.validate.called);
 
                 numberInput.validate.restore();
-                auditTypeInput.validate.restore();
                 done();
             });
         });
@@ -131,14 +128,12 @@
 
         it('reset validation errors', function () {
             myEl.errors = {
-                agreement: 'Test',
-                engagement_type: 'Test'
+                agreement: 'Test'
             };
 
             myEl.resetValidationErrors();
 
             assert.isFalse(myEl.errors.agreement);
-            assert.isFalse(myEl.errors.engagement_type);
         });
 
         describe('method _processValue', function() {
