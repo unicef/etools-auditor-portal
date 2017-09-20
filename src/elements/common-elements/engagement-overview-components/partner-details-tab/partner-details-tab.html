@@ -116,34 +116,36 @@
                 </div>
             </div>
 
-            <div class="row-h group">
-                <div class="input-container input-container-l">
-                    <!-- Active PD -->
-                    <etools-searchable-multiselection-menu
-                            id="activePd"
-                            class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
-                            label="[[getLabel('active_pd', basePermissionPath)]]"
-                            placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
-                            options="[[partner.interventions]]"
-                            custom-object-options
-                            option-label="number"
-                            option-value="id"
-                            selected-values="{{activePd}}"
-                            update-selected
-                            required$="{{_setRequired('active_pd', basePermissionPath)}}"
-                            disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            invalid$="{{_checkInvalid(errors.active_pd)}}"
-                            error-message="{{errors.active_pd}}"
-                            on-focus="_resetFieldError"
-                            dynamic-align
-                            multi
-                            hide-search
-                            no-title-attr>
-                    </etools-searchable-multiselection-menu>
-                    <paper-tooltip offset="0">[[getTooltipText(activePd, partner.interventions, 'number')]]</paper-tooltip>
+            <template is="dom-if" if="[[_showActivePd(partner.partner_type)]]">
+                <div class="row-h group">
+                    <div class="input-container input-container-l">
+                        <!-- Active PD -->
+                        <etools-searchable-multiselection-menu
+                                id="activePd"
+                                class$="disabled-as-readonly [[_setRequired('active_pd', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
+                                value="{{activePd}}"
+                                label="[[getLabel('active_pd', basePermissionPath)]]"
+                                placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
+                                options="[[partner.interventions]]"
+                                custom-object-options
+                                option-label="number"
+                                option-value="id"
+                                update-selected
+                                required$="{{_setRequired('active_pd', basePermissionPath)}}"
+                                disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                                readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                                invalid$="{{_checkInvalid(errors.active_pd)}}"
+                                error-message="{{errors.active_pd}}"
+                                on-focus="_resetFieldError"
+                                dynamic-align
+                                multi
+                                hide-search
+                                no-title-attr>
+                        </etools-searchable-multiselection-menu>
+                        <paper-tooltip offset="0">[[getTooltipText(activePd, partner.interventions, 'number')]]</paper-tooltip>
+                    </div>
                 </div>
-            </div>
+            </template>
         </etools-content-panel>
     </template>
 
