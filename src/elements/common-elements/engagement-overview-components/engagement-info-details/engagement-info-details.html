@@ -60,6 +60,7 @@
                             disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
                             readonly="{{requestInProcess}}"
                             maxlength="30"
+                            required
                             invalid$="{{_checkInvalid(errors.agreement)}}"
                             error-message="{{errors.agreement}}"
                             on-focus="_resetFieldError"
@@ -188,7 +189,7 @@
                         <etools-searchable-multiselection-menu
                                 slot="field"
                                 id="engagementType"
-                                class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}}"
+                                class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
                                 field="engagement_type"
                                 value="{{_processValue(data.engagement_type)}}"
                                 label="[[getLabel('engagement_type', basePermissionPath)]]"

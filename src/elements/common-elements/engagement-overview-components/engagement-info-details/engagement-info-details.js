@@ -87,18 +87,15 @@ Polymer({
     },
 
     validate: function() {
-        let typeValid = this.$.engagementType.validate(),
-            orderValid = this.$.purchaseOrder.validate();
-
-        if (!typeValid) {
-            this.set('errors.engagement_type', 'AuditType is required');
-        }
+        let orderField = this.$.purchaseOrder,
+            orderValid = orderField && orderField.validate(orderField);
 
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-field');
         let valid = true;
         _.each(elements, element => {
             if (element.required && !element.validate()) {
-                element.errorMessage = 'Field is required';
+                let label = element.label || 'Field';
+                element.errorMessage = `${label} is required`;
                 element.invalid = true;
                 valid = false;
             }
@@ -115,7 +112,7 @@ Polymer({
             valid = false;
         }
 
-        return typeValid && orderValid && valid;
+        return orderValid && valid;
     },
 
     resetValidationErrors: function() {
