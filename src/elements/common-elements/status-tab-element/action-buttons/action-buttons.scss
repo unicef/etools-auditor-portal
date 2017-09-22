@@ -2,11 +2,14 @@
     position: relative;
     display: block;
     text-align: center;
+    width: 100%;
 
     paper-button {
         height: 34px;
         color: #ffffff;
         background-color: var(--module-primary);
+        margin: 0;
+        width: 100%;
 
         span { padding: 0 29px; }
     }

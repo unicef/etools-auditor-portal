@@ -34,17 +34,6 @@
         color: var(--gray-light)
     }'};
 
-    #pageContent {
-        flex: 10;
-    }
-
-    #sidebar {
-        flex: 2;
-        padding-left: 25px;
-        min-width: 215px;
-        max-width: 230px;
-    }
-
     --ecp-header-bg: var(--module-primary);
 
 }
