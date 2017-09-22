@@ -40,7 +40,7 @@
     "polytempl": "^1.0.3",
     "stream-combiner2": "^1.1.1",
     "through2": "^2.0.3",
-    "web-component-tester": "^6.0.0",
+    "web-component-tester": "6.1.2",
     "css-slam": "^1.1.0",
     "del": "^2.2.1",
     "gulp-csslint": "^1.0.0",
