@@ -7,5 +7,9 @@ Polymer({
 
     behaviors: [
         etoolsAppConfig.globals
-    ]
+    ],
+
+    _toggleDrawer: function() {
+        this.fire('drawer-toggle-tap');
+    }
 });

@@ -7,7 +7,9 @@
         <!-- inject styles './app-sidebar-menu.scss'-->
 
         <app-toolbar class="menu-header">
-            <img src$="[[getAbsolutePath('images/ap_icon_v2.svg')]]">
+            <img src$="[[getAbsolutePath('images/ap_icon_v2.svg')]]" on-tap="_toggleDrawer">
+            <div main-title>Auditor<br>Portal</div>
+            <paper-icon-button id="close-drawer" on-tap="_toggleDrawer" icon="icons:chevron-left" drawer-toggle></paper-icon-button>
         </app-toolbar>
 
         <div class="nav-menu">
@@ -25,6 +27,8 @@
             </iron-selector>
 
             <div class="divider"></div>
+
+            <div class="secondary-header">eTools Community Channels</div>
 
             <side-bar-item class="lighter-item" name="User Support" icon="icons:help" side-bar-link="https://etools.uservoice.com" external></side-bar-item>
 
