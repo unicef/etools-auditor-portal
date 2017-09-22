@@ -60,10 +60,6 @@
                     return filter.query === query;
                 });
 
-                this.set('availableFilters', this.availableFilters.filter((filter) => {
-                    return filter.query !== newFilter.query;
-                }));
-
                 this._setFilterValue(newFilter);
                 this.push('usedFilters', newFilter);
 
@@ -76,19 +72,17 @@
         },
 
         removeFilter: function(e) {
-            let query = e.model.item.query;
-            let removedFilter = this.filters.find((filter) => {
+            let query = (typeof e === 'string') ? e : e.model.item.query;
+            let indexToRemove = this.usedFilters.findIndex((filter) => {
                 return filter.query === query;
             });
-
-            this.push('availableFilters', removedFilter);
-
-            let indexToRemove = this.usedFilters.indexOf(e.model.item);
             let queryObject = {};
             queryObject[query] = undefined;
             queryObject.page = '1';
 
-            this.splice('usedFilters', indexToRemove, 1);
+            if (indexToRemove !== -1) {
+                this.splice('usedFilters', indexToRemove, 1);
+            }
             this.updateQueries(queryObject);
         },
 
@@ -100,20 +94,25 @@
                     return;
                 }
 
-                this.availableFilters = this.filters;
-                this.usedFilters = [];
+                let availableFilters = [];
+
+                this.filters.forEach((filter) => {
+                    let usedFilter = this.usedFilters.find(used => used.query === filter.query);
+
+                    if (!usedFilter && queryParams[filter.query] !== undefined) {
+                        this.addFilter(filter.query);
+                    } else if (queryParams[filter.query] === undefined) {
+                        this.removeFilter(filter.query);
+                        availableFilters.push(filter);
+                    }
+                });
+                this.set('availableFilters', availableFilters);
 
                 if (queryParams.search) {
                     this.set('searchString', queryParams.search);
                 } else {
                     this.set('searchString', '');
                 }
-
-                this.filters.forEach((filter) => {
-                    if (queryParams[filter.query] !== undefined) {
-                        this.addFilter(filter.query);
-                    }
-                });
             }, 50);
         },
 
