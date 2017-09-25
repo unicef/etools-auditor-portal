@@ -54,10 +54,10 @@
         },
 
         _checkAvailableTab: function (engagement, permissionBase, route) {
-            let tab = route.path.split('/')[2];
-            if (!permissionBase || !engagement || !_.includes(['report', 'follow-up'], tab)) {
+            if (!route || !permissionBase || !engagement) {
                 return;
             }
+            let tab = route.path.split('/')[2];
             if ((tab === 'report') && !this._showReportTabs(permissionBase, engagement) ||
                 (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
                 this.fire('404');
