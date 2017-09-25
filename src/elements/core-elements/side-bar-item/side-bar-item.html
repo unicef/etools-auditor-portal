@@ -50,17 +50,13 @@
             }
 
             iron-icon {
-                width: 100%;
-                margin: 0 16px;
+                margin: 0 22px;
                 color: var(--dark-icon-color);
                 min-width: 26px;
                 min-height: 26px;
             }
 
-            #name {
-                margin-left: 16px;
-                color: var(--dark-primary-text-color);
-            }
+            #name { color: var(--dark-primary-text-color); }
 
             iron-collapse {
                 display: none;
@@ -87,6 +83,7 @@
 
         <a id="main" target$="[[_setTarget(external)]]" href$="[[sideBarLink]]" on-tap="_handleMainTap">
             <iron-icon icon="{{icon}}"></iron-icon>
+            <div id="name">[[name]]</div>
         </a>
         <paper-tooltip position="right" offset="-10">[[name]]</paper-tooltip>
 
