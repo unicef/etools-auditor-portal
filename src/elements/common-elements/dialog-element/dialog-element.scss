@@ -24,6 +24,13 @@ paper-dialog {
     max-height: 90vh;
     width: 96%;
     max-width: 700px !important;
+
+    --paper-font-body1: #{'{
+        font-family: "Roboto", "Noto", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-size: 14px;
+        font-weight: 400;
+    }'};
 }
 
 #buttons {
