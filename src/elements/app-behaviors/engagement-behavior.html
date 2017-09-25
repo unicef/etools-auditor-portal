@@ -310,10 +310,6 @@
             return engagement.status === 'cancelled';
         },
 
-        _showSubmitedMessage: function(permissionBase, engagement) {
-            return !this._showCancellationReason(engagement) && !this._showReportTabs(permissionBase, engagement);
-        },
-
         _errorOccurred: function(errorObj) {
             if (!errorObj || !_.isObject(errorObj)) { return; }
             let page = this.whichPageTrows(errorObj);
