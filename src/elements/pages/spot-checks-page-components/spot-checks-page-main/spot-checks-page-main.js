@@ -25,7 +25,7 @@ Polymer({
         tabsList: {
             type: Array,
             value: function() {
-                return ['overview', 'attachments'];
+                return ['overview', 'report', 'attachments', 'follow-up'];
             }
         },
         engagementPrefix: {
@@ -36,6 +36,7 @@ Polymer({
 
     observers: [
         '_routeConfig(route)',
+        '_checkAvailableTab(engagement, permissionBase, route)',
         '_setPermissionBase(engagement.id)',
         '_tabChanged(tab)'
     ],

@@ -53,6 +53,17 @@
             }
         },
 
+        _checkAvailableTab: function (engagement, permissionBase, route) {
+            let tab = route.path.split('/')[2];
+            if (!permissionBase || !engagement || !_.includes(['report', 'follow-up'], tab)) {
+                return;
+            }
+            if ((tab === 'report') && !this._showReportTabs(permissionBase, engagement) ||
+                (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
+                this.fire('404');
+            }
+        },
+
         _infoLoaded: function() {
             //save data copy
             this._setOriginalData(_.cloneDeep(this.engagement));
@@ -296,27 +307,13 @@
 
         _showReportTabs: function(permissionBase, engagement) {
             if (!permissionBase || !engagement) { return false; }
-            let isVisible = this.actionAllowed(permissionBase, 'submit') ||
-                    engagement.status === 'report_submitted' ||
-                    engagement.status === 'final';
-            this._setAvailableTab('report', isVisible);
-            return isVisible;
+            return this.actionAllowed(permissionBase, 'submit') ||
+                engagement.status === 'report_submitted' ||
+                engagement.status === 'final';
         },
 
         _showFollowUpTabs: function(permissionBase) {
-            let isVisible = this.collectionExists(`${permissionBase}.action_points`, 'GET');
-            this._setAvailableTab('follow-up', isVisible);
-            return isVisible;
-        },
-
-        _setAvailableTab: function(tabName, isVisible) {
-            if (!this.tabsList) return;
-            let tabIndex = this.tabsList.indexOf(tabName);
-            if (isVisible) {
-                this.push('tabsList', tabName);
-            } else if (tabIndex > -1) {
-                this.splice('tabsList', tabIndex, 1);
-            }
+            return this.collectionExists(`${permissionBase}.action_points`, 'GET');
         },
 
         _showCancellationReason: function(engagement) {
