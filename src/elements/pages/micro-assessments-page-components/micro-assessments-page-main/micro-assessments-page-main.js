@@ -24,7 +24,7 @@ Polymer({
         tabsList: {
             type: Array,
             value: function() {
-                return ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
+                return ['overview', 'questionnaire', 'attachments'];
             }
         },
         engagementPrefix: {

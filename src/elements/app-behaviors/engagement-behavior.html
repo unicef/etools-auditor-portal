@@ -296,14 +296,26 @@
 
         _showReportTabs: function(permissionBase, engagement) {
             if (!permissionBase || !engagement) { return false; }
-
-            return this.actionAllowed(permissionBase, 'submit') ||
+            let isShow = this.actionAllowed(permissionBase, 'submit') ||
                     engagement.status === 'report_submitted' ||
                     engagement.status === 'final';
+            this._setAvailableTab('report', isShow);
+            return isShow;
         },
 
         _showFollowUpTabs: function(permissionBase) {
-            return this.collectionExists(`${permissionBase}.action_points`, 'GET');
+            let isShow = this.collectionExists(`${permissionBase}.action_points`, 'GET');
+            this._setAvailableTab('follow-up', isShow);
+            return isShow;
+        },
+
+        _setAvailableTab: function(tabName, isShow) {
+            let tabIndex = this.tabsList.indexOf(tabName);
+            if (isShow) {
+                this.push('tabsList', tabName);
+            } else if (tabIndex > -1) {
+                this.splice('tabsList', tabIndex, 1);
+            }
         },
 
         _showCancellationReason: function(engagement) {
