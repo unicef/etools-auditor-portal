@@ -76,9 +76,14 @@
             let indexToRemove = this.usedFilters.findIndex((filter) => {
                 return filter.query === query;
             });
+            if (indexToRemove === -1) { return; }
+
             let queryObject = {};
             queryObject[query] = undefined;
-            queryObject.page = '1';
+
+            if (this.queryParams[query]) {
+                queryObject.page = '1';
+            }
 
             if (indexToRemove !== -1) {
                 this.splice('usedFilters', indexToRemove, 1);

@@ -9,21 +9,22 @@
     paper-button {
         height: 60px;
         margin: 0;
+        padding: 12px 12px 12px 12px;
         min-width: 50px;
         text-transform: none;
         font-weight: normal !important;
 
         .dropdown-text {
             margin-left: 5px;
-            color: var(--light-primary-text-color);
+            color: var(--light-secondary-text-color);
         }
 
         .arrow-down,
-        .arrow-up { color: var(--light-disabled-text-color); }
+        .arrow-up { color: var(--light-ink-color); }
     }
 
     iron-icon {
-        color: var(--light-secondary-text-color);
+        color: var(--light-ink-color);
 
         &.mr-8 { margin-right: 8px; }
         &.b-3 { bottom: 3px; }
@@ -34,17 +35,17 @@
         &.mw-220 { min-width: 180px; }
 
         iron-icon {
-            margin-right: 20px;
-            color: var(--dark-secondary-text-color);
+            margin-right: 13px;
+            color: var(--dark-icon-color);
         }
 
         paper-item {
             height: 48px;
             min-height: initial;
             font-weight: bold;
-            color: #233944;
+            color: var(--dark-primary-text-color);
             cursor: pointer;
-            padding: 0px 30px;
+            padding: 0 16px;
         }
     }
 }
@@ -54,17 +55,20 @@
 
     .arrow-down { display: none; }
 
+    iron-icon {
+        color: var(--dark-icon-color);
+    }
+
     paper-menu-button {
-        color: #233944;
+        color: var(--dark-icon-color);
         background-color: var(--primary-background-color);
     }
 
     paper-button {
-        iron-icon,
-        .dropdown-text { color: #233944; }
+        .dropdown-text { color: var(--dark-primary-text-color); }
 
         .arrow-down,
-        .arrow-up { color: var(--dark-secondary-text-color); }
+        .arrow-up { color: var(--dark-icon-color); }
     }
 }
 
