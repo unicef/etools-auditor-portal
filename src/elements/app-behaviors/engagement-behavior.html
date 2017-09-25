@@ -296,22 +296,23 @@
 
         _showReportTabs: function(permissionBase, engagement) {
             if (!permissionBase || !engagement) { return false; }
-            let isShow = this.actionAllowed(permissionBase, 'submit') ||
+            let isVisible = this.actionAllowed(permissionBase, 'submit') ||
                     engagement.status === 'report_submitted' ||
                     engagement.status === 'final';
-            this._setAvailableTab('report', isShow);
-            return isShow;
+            this._setAvailableTab('report', isVisible);
+            return isVisible;
         },
 
         _showFollowUpTabs: function(permissionBase) {
-            let isShow = this.collectionExists(`${permissionBase}.action_points`, 'GET');
-            this._setAvailableTab('follow-up', isShow);
-            return isShow;
+            let isVisible = this.collectionExists(`${permissionBase}.action_points`, 'GET');
+            this._setAvailableTab('follow-up', isVisible);
+            return isVisible;
         },
 
-        _setAvailableTab: function(tabName, isShow) {
+        _setAvailableTab: function(tabName, isVisible) {
+            if (!this.tabsList) return;
             let tabIndex = this.tabsList.indexOf(tabName);
-            if (isShow) {
+            if (isVisible) {
                 this.push('tabsList', tabName);
             } else if (tabIndex > -1) {
                 this.splice('tabsList', tabIndex, 1);
