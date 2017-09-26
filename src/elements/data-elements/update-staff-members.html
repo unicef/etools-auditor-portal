@@ -51,7 +51,13 @@
                         error.request.detail.request && error.request.detail.request.xhr;
 
                 let {status, response} = responseData || {};
-                if (typeof response === 'string') { response = JSON.parse(response); }
+                if (typeof response === 'string') {
+                    try {
+                        response = JSON.parse(response);
+                    } catch (e) {
+                        response = {};
+                    }
+                }
 
                 this.fire('staff-updated', {error: true, errorData: response, status: status});
             }
