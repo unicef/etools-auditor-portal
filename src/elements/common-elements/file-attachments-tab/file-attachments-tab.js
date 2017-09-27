@@ -219,7 +219,14 @@
                 return;
             }
 
-            return url.split('/').pop();
+            let queriesPos = url.indexOf('?');
+            let slashPos;
+
+            queriesPos = (queriesPos === -1) ? (url.length + 1) : queriesPos;
+            url = url.slice(0, queriesPos);
+            slashPos = url.lastIndexOf('/');
+
+            return url.slice(slashPos + 1);
         },
 
         _getUploadedFile: function(fileModel) {

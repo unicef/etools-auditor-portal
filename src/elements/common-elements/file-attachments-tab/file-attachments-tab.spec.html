@@ -349,6 +349,8 @@
         describe('method _getFilenameFromUrl(url)', function () {
             it('returns filename', function () {
                 assert.equal(myEl._getFilenameFromUrl('path/to/file/filename'), 'filename');
+                assert.equal(myEl._getFilenameFromUrl('path/to/file/filename?asd=asd&as=as'), 'filename');
+                assert.equal(myEl._getFilenameFromUrl('path/to/file/filename?asd=asd/&as=/as'), 'filename');
             });
 
             it('returns undefined', function () {
