@@ -149,7 +149,9 @@ Polymer({
 
     setPanelTitle: function(header, complited) {
         if (!complited) { return header; }
-        return `${header} - ${this.riskRatingOptions[this.questionnaire.risk_rating].toUpperCase()}`;
+        let label = this.riskRatingOptions && this.riskRatingOptions[this.questionnaire.risk_rating];
+        if (!label) { return header; }
+        return `${header} - ${label.toUpperCase()}`;
     },
 
     getElements: function(className) {
