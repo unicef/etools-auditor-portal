@@ -65,7 +65,8 @@
                             label="[[getLabel('total_value', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
                             disabled
-                            on-focus="_resetFieldError">
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError">
                     </etools-currency-amount-input>
                     <paper-tooltip offset="0">[[data.total_value]]</paper-tooltip>
                 </div>
@@ -83,7 +84,8 @@
                             disabled$="[[isReadOnly('total_amount_tested', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.total_amount_tested)}}"
                             error-message="{{errors.total_amount_tested}}"
-                            on-focus="_resetFieldError">
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError">
                     </etools-currency-amount-input>
                     <paper-tooltip offset="0">[[data.total_amount_tested]]</paper-tooltip>
                 </div>
@@ -99,7 +101,8 @@
                             disabled$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
                             error-message="{{errors.total_amount_of_ineligible_expenditure}}"
-                            on-focus="_resetFieldError">
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError">
                     </etools-currency-amount-input>
                     <paper-tooltip offset="0">[[data.total_amount_of_ineligible_expenditure]]</paper-tooltip>
                 </div>

@@ -71,7 +71,8 @@
                                     maxlength="400"
                                     invalid="{{errors.0.finding}}"
                                     error-message="{{errors.0.finding}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-input>
                             <paper-tooltip offset="0">[[editedItem.finding]]</paper-tooltip>
                         </div>
@@ -92,7 +93,8 @@
                                     max-rows="4"
                                     invalid="{{errors.0.recommendation}}"
                                     error-message="{{errors.0.recommendation}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-textarea>
                             <paper-tooltip offset="0">[[editedItem.recommendation]]</paper-tooltip>
                         </div>

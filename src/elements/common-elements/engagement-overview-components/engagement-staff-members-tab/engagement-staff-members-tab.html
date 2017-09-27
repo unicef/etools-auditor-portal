@@ -129,6 +129,7 @@
                                     invalid="{{errors.user.email}}"
                                     error-message="{{errors.user.email}}"
                                     on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
                                     on-blur="_checkEmail">
                                 <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
@@ -150,7 +151,8 @@
                                     maxlength="30"
                                     invalid="{{errors.user.first_name}}"
                                     error-message="{{errors.user.first_name}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-input>
                             <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.first_name)]]</paper-tooltip>
                         </div>
@@ -168,7 +170,8 @@
                                     maxlength="30"
                                     invalid="{{errors.user.last_name}}"
                                     error-message="{{errors.user.last_name}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-input>
                             <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.last_name)]]</paper-tooltip>
                         </div>
@@ -187,7 +190,8 @@
                                 maxlength="45"
                                 invalid="{{errors.profile.job_title}}"
                                 error-message="{{errors.profile.job_title}}"
-                                on-focus="_resetFieldError">
+                                on-focus="_resetFieldError"
+                                on-tap="_resetFieldError">
                         </paper-input>
                         <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.profile.job_title)]]</paper-tooltip>
                     </div>

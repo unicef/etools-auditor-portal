@@ -33,7 +33,8 @@
                         disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
                         invalid="{{_checkInvalid(errors.internal_controls)}}"
                         error-message="{{errors.internal_controls}}"
-                        on-focus="_resetFieldError">
+                        on-focus="_resetFieldError"
+                        on-tap="_resetFieldError">
                 </paper-textarea>
                 <paper-tooltip offset="0">[[data]]</paper-tooltip>
             </div>

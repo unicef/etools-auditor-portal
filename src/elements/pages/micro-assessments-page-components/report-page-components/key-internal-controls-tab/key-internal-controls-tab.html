@@ -51,6 +51,7 @@
                                         invalid="{{errors.children.0.blueprints.0.risk.value}}"
                                         error-message="{{errors.children.0.blueprints.0.risk.value}}"
                                         on-focus="_resetFieldError"
+                                        on-tap="_resetFieldError"
                                         hide-search
                                         no-title-attr>
                                 </etools-searchable-multiselection-menu>
@@ -73,7 +74,8 @@
                                         max-rows="4"
                                         error-message="{{errors.children.0.blueprints.0.risk.extra}}"
                                         invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                                        on-focus="_resetFieldError">
+                                        on-focus="_resetFieldError"
+                                        on-tap="_resetFieldError">
                                 </paper-textarea>
                                 <paper-tooltip offset="0">[[editedArea.blueprints.0.risk.extra.comments]]</paper-tooltip>
                             </div>

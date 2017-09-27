@@ -83,6 +83,7 @@
                                     invalid="{{errors.category_of_observation}}"
                                     error-message="{{errors.category_of_observation}}"
                                     on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
                                     hide-search
                                     no-title-attr>
                             </etools-searchable-multiselection-menu>
@@ -106,7 +107,8 @@
                                     max-rows="4"
                                     invalid="{{errors.recommendation}}"
                                     error-message="{{errors.recommendation}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-textarea>
                             <paper-tooltip offset="0">[[editedItem.recommendation]]</paper-tooltip>
                         </div>
@@ -128,7 +130,8 @@
                                     max-rows="4"
                                     invalid="{{errors.agreed_action_by_ip}}"
                                     error-message="{{errors.agreed_action_by_ip}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-textarea>
                             <paper-tooltip offset="0">[[editedItem.agreed_action_by_ip]]</paper-tooltip>
                         </div>
@@ -150,6 +153,7 @@
                                     invalid="{{errors.deadline_of_action}}"
                                     error-message="{{errors.deadline_of_action}}"
                                     on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
                                     on-down="openDatePicker">
                                 <etools-datepicker
                                         id="deadlineActionSelector"
