@@ -77,6 +77,7 @@
                                     invalid="{{errors.action_points.0.description}}"
                                     error-message="{{errors.action_points.0.description}}"
                                     on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
                                     hide-search
                                     no-title-attr>
                             </etools-searchable-multiselection-menu>
@@ -100,6 +101,7 @@
                                     invalid="{{errors.action_points.0.due_date}}"
                                     error-message="{{errors.action_points.0.due_date}}"
                                     on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
                                     on-down="openDatePicker">
                                 <etools-datepicker
                                         id="deadlineActionSelector"
@@ -135,6 +137,7 @@
                                     invalid="{{errors.action_points.0.person_responsible}}"
                                     error-message="{{errors.action_points.0.person_responsible}}"
                                     on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
                                     no-title-attr>
                             </etools-searchable-multiselection-menu>
                             <paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>
@@ -156,7 +159,8 @@
                                     max-rows="4"
                                     invalid="{{errors.action_points.0.comments}}"
                                     error-message="{{errors.action_points.0.comments}}"
-                                    on-focus="_resetFieldError">
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
                             </paper-textarea>
                         </div>
                     </div>

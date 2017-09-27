@@ -64,6 +64,7 @@
                             invalid$="{{_checkInvalid(errors.agreement)}}"
                             error-message="{{errors.agreement}}"
                             on-focus="_resetFieldError"
+                            on-tap="_resetFieldError"
                             on-keydown="poKeydown"
                             on-blur="_requestAgreement">
                     </paper-input>
@@ -129,7 +130,8 @@
                             invalid="{{_checkInvalid(errors.contract_end_date)}}"
                             error-message="{{errors.contract_end_date}}"
                             on-down="openDatePicker"
-                            on-focus="_resetFieldError">
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError">
                         <etools-datepicker
                                 id="contractEndDate"
                                 modal="[[datepickerModal]]"
@@ -167,7 +169,8 @@
                             invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
                             error-message="{{errors.partner_contacted_at}}"
                             on-down="openDatePicker"
-                            on-focus="_resetFieldError">
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError">
                         <etools-datepicker
                                 id="contactedDate"
                                 modal="[[datepickerModal]]"
@@ -204,6 +207,7 @@
                                 invalid="{{_checkInvalid(errors.engagement_type)}}"
                                 error-message="{{errors.engagement_type}}"
                                 on-focus="_resetFieldError"
+                                on-tap="_resetFieldError"
                                 on-value-change="_setEngagementType"
                                 hide-search
                                 no-title-attr>
@@ -235,6 +239,7 @@
                                 invalid="{{_checkInvalid(errors.start_date)}}"
                                 error-message="{{errors.start_date}}"
                                 on-focus="_resetFieldError"
+                                on-tap="_resetFieldError"
                                 on-down="openDatePicker">
                             <etools-datepicker-button
                                     id="periodStartDate"
@@ -267,6 +272,7 @@
                                 invalid="{{_checkInvalid(errors.end_date)}}"
                                 error-message="{{errors.end_date}}"
                                 on-focus="_resetFieldError"
+                                on-tap="_resetFieldError"
                                 on-down="openDatePicker">
                             <etools-datepicker-button
                                     id="periodEndDate"
@@ -297,7 +303,8 @@
                                 disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
                                 invalid="{{_checkInvalid(errors.total_value)}}"
                                 error-message="{{errors.total_value}}"
-                                on-focus="_resetFieldError">
+                                on-focus="_resetFieldError"
+                                on-tap="_resetFieldError">
                         </etools-currency-amount-input>
                         <paper-tooltip offset="0">[[data.total_value]]</paper-tooltip>
                     </div>
