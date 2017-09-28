@@ -53,6 +53,10 @@ Polymer({
     },
 
     _routeConfig: function() {
+        if (!this.route || !~this.route.prefix.indexOf('new')) {
+            return;
+        }
+
         let currentTab = this.routeData && this.routeData.tab;
         if (currentTab === '' || _.isUndefined(currentTab)) {
             this.set('route.path', '/overview');
