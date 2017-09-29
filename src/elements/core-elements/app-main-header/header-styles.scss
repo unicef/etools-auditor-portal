@@ -41,12 +41,12 @@
         paper-item {
             height: 48px;
             min-height: initial;
-            font-weight: bold;
+            font-weight: 500 !important;
             color: var(--dark-primary-text-color);
             cursor: pointer;
             padding: 0 16px;
             white-space: nowrap;
-            min-width: 100px;
+            min-width: 140px;
         }
     }
 }
