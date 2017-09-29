@@ -31,8 +31,7 @@
     }
 
     paper-menu {
-        &.mw-160 { min-width: 160px; }
-        &.mw-220 { min-width: 180px; }
+        max-height: 296px;
 
         iron-icon {
             margin-right: 13px;
@@ -46,6 +45,8 @@
             color: var(--dark-primary-text-color);
             cursor: pointer;
             padding: 0 16px;
+            white-space: nowrap;
+            min-width: 100px;
         }
     }
 }
