@@ -25,7 +25,7 @@ Polymer({
             value: function() {
                 return {
                     description: '',
-                    person_responsible: '',
+                    person_responsible: { full_name: '' },
                     due_date: '',
                     comments: ''
                 };
@@ -144,17 +144,31 @@ Polymer({
     getActionsData: function() {
         if (!this.dialogOpened) { return null; }
 
-        this.editedItem.person_responsible = this.editedItem.person_responsible.id;
-        if (this.addDialog) { return [_.clone(this.editedItem)]; }
+        this.editedItem.person_responsible = this.editedItem.person_responsible && this.editedItem.person_responsible.id;
+        if (this.addDialog) {
+            let data = _.clone(this.editedItem) || {};
+            if (!data.person_responsible) { delete data.person_responsible; }
+            return [data];
+        }
         //add changed data except person_responsible
         let data = _.pickBy(this.editedItem, (value, key) => {
             return (this.originalEditedObj[key] !== value && key !== 'person_responsible');
         });
         //check person_responsible
-        if (this.editedItem.person_responsible !== this.originalEditedObj.person_responsible.id) {
+        if (this.editedItem.description !== 'Escalate to Investigation' &&
+            this.editedItem.person_responsible !== this.originalEditedObj.person_responsible.id) {
             data.person_responsible = this.editedItem.person_responsible;
         }
 
         return _.isEmpty(data) ? null : [_.set(data, 'id', this.editedItem.id)];
+    },
+
+    _showPersonField: function(description) {
+        return !description || description.value !== 'Escalate to Investigation';
+    },
+    
+    isValidateInput: function(description) {
+        return this._showPersonField(description) ? 'validate-input' : '';
     }
+
 });

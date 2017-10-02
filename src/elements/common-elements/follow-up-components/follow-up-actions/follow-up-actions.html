@@ -42,7 +42,7 @@
             <template is="dom-if" if="[[!dataItems.length]]">
                 <list-element
                         class="list-element"
-                        data="[[emptyObj]]"
+                        data="[[itemModel]]"
                         headings="[[columns]]"
                         no-animation>
                 </list-element>
@@ -118,31 +118,33 @@
                         </div>
                     </div>
 
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
-                            <!-- Person Responsible -->
-                            <etools-searchable-multiselection-menu
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.person_responsible', basePermissionPath)]] fua-person"
-                                    value="{{editedItem.person_responsible}}"
-                                    label="[[getLabel('action_points.person_responsible', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.person_responsible', basePermissionPath)]]"
-                                    options="[[users]]"
-                                    custom-object-options
-                                    option-label="full_name"
-                                    option-value="id"
-                                    update-selected
-                                    required$="[[_setRequired('action_points.person_responsible', basePermissionPath)]]"
-                                    disabled$="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
-                                    invalid="{{errors.action_points.0.person_responsible}}"
-                                    error-message="{{errors.action_points.0.person_responsible}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError"
-                                    no-title-attr>
-                            </etools-searchable-multiselection-menu>
-                            <paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>
+                    <template is="dom-if" if="[[_showPersonField(description)]]" restamp>
+                        <div class="row-h group">
+                            <div class="input-container input-container-l">
+                                <!-- Person Responsible -->
+                                <etools-searchable-multiselection-menu
+                                        class$="disabled-as-readonly [[isValidateInput(description)]] [[_setRequired('action_points.person_responsible', basePermissionPath)]] fua-person"
+                                        value="{{editedItem.person_responsible}}"
+                                        label="[[getLabel('action_points.person_responsible', basePermissionPath)]]"
+                                        placeholder="[[getPlaceholderText('action_points.person_responsible', basePermissionPath)]]"
+                                        options="[[users]]"
+                                        custom-object-options
+                                        option-label="full_name"
+                                        option-value="id"
+                                        update-selected
+                                        required$="[[_setRequired('action_points.person_responsible', basePermissionPath)]]"
+                                        disabled$="{{requestInProcess}}"
+                                        readonly$="{{requestInProcess}}"
+                                        invalid="{{errors.action_points.0.person_responsible}}"
+                                        error-message="{{errors.action_points.0.person_responsible}}"
+                                        on-focus="_resetFieldError"
+                                        on-tap="_resetFieldError"
+                                        no-title-attr>
+                                </etools-searchable-multiselection-menu>
+                                <paper-tooltip offset="0">[[editedItem.person_responsible.full_name]]</paper-tooltip>
+                            </div>
                         </div>
-                    </div>
+                    </template>
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
