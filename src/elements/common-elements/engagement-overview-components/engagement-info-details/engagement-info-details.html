@@ -94,6 +94,22 @@
                 </div>
 
                 <div class="input-container">
+                    <!-- Auditor -->
+                    <paper-input
+                            id="poItemNumber"
+                            class$="without-border [[_setReadonlyFieldClass(data.agreement.item_number)]]"
+                            value="[[data.agreement.item_number]]"
+                            label="[[getLabel('agreement.item_number', basePermissionPath)]]"
+                            placeholder="[[getReadonlyPlaceholder(data.agreement.item_number)]]"
+                            disabled
+                            readonly>
+                    </paper-input>
+                    <paper-tooltip offset="0">[[data.agreement.item_number]]</paper-tooltip>
+                </div>
+            </div>
+
+            <div class="row-h group">
+                <div class="input-container">
                     <!-- PO Date -->
                     <paper-input
                             id="contractStartDateInput"
@@ -112,9 +128,7 @@
                     </paper-input>
                     <paper-tooltip offset="0">[[prettyDate(data.agreement.contract_start_date)]]</paper-tooltip>
                 </div>
-            </div>
 
-            <div class="row-h group">
                 <div class="input-container">
                     <!-- Contract Expiry Date -->
                     <paper-input
@@ -186,6 +200,9 @@
                     <paper-tooltip offset="0">[[prettyDate(data.partner_contacted_at)]]</paper-tooltip>
                 </div>
 
+            </div>
+
+            <div class="row-h group">
                 <div class="input-container">
                     <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput)}}">
                         <!-- Engagement Type -->
@@ -220,9 +237,7 @@
 
                     <!--<paper-tooltip for="engagementType" offset="0">[[_getEngagementTypeLabel(data.type)]]</paper-tooltip>-->
                 </div>
-            </div>
 
-            <div class="row-h group">
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Period Start Date -->
@@ -289,6 +304,8 @@
                     </div>
                 </template>
 
+            </div>
+            <div class="row-h group">
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Total Value of Selected FACE Forms -->
