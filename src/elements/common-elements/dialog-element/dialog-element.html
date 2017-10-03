@@ -126,6 +126,10 @@
                 if (!opened && this.requestInProcess) {
                     this.opened = true;
                 }
+
+                if (this.$.scrollbarContainer) {
+                    Ps.update(this.$.scrollbarContainer);
+                }
             },
 
             _stopPropagation: function(event) {
