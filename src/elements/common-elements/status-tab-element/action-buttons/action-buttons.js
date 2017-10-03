@@ -41,7 +41,7 @@ Polymer({
     _btnClicked: function(event) {
         if (!event || !event.target) { return; }
         let target = event.target.classList.contains('other-options') ? event.target : event.target.parentElement || event.target,
-            isMainAction = !target.classList.contains('other-options') && !target.classList.contains('option-button') ;
+            isMainAction = event.target.classList.contains('main-action');
 
         let action = isMainAction ?
             (this.actions[0].code || this.actions[0]) :

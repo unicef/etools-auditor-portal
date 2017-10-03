@@ -124,9 +124,7 @@ Polymer({
         } else if (item.name === 'finding') {
             value = this._refactorFindingNumber();
         }
-
         // if (typeof value === 'string') { value = value.trim(); }
-        
         if (bool) {
             value = !!value;
         } else if (!value && value !== 0) {
