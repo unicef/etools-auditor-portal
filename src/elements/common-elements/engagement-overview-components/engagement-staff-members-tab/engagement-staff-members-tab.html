@@ -29,6 +29,16 @@
                 panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])"
                 show-expand-btn>
             <div slot="panel-btns">
+                <div class="add-button-container">
+                    <paper-icon-button
+                            class="panel-button"
+                            hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
+                </div>
+
                 <div class="search-input-container" hidden$="[[!_showPagination(datalength)]]">
                     <paper-input
                             id="searchInput"
@@ -39,16 +49,6 @@
                             on-input="_searchChanged">
                         <iron-icon class="panel-button" prefix icon="search"></iron-icon>
                     </paper-input>
-                </div>
-
-                <div class="add-button-container">
-                    <paper-icon-button
-                            class="panel-button"
-                            hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
-                            on-tap="openAddDialog"
-                            icon="add-box">
-                    </paper-icon-button>
-                    <paper-tooltip offset="0">Add</paper-tooltip>
                 </div>
             </div>
 

@@ -16,16 +16,17 @@
     etools-content-panel {
         div[slot="panel-btns"] {
             width: 100%;
+            top: 0;
         }
 
         .add-button-container {
             float: right;
+            line-height: 48px;
         }
     }
 
     .search-input-container {
-        position: absolute;
-        right: 40px;
+        float: right;
         height: 48px;
         color: #fff;
         overflow: hidden;
@@ -36,7 +37,7 @@
             float: right;
             box-sizing: border-box;
             min-width: 46px;
-            margin-top: -19px;
+            margin-top: -13px;
 
             &[focused] {
                 width: 100%;
