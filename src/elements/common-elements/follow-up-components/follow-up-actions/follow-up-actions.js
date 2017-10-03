@@ -25,7 +25,7 @@ Polymer({
             value: function() {
                 return {
                     description: '',
-                    person_responsible: { full_name: '' },
+                    person_responsible: {full_name: ''},
                     due_date: '',
                     comments: ''
                 };
@@ -166,7 +166,7 @@ Polymer({
     _showPersonField: function(description) {
         return !description || description.value !== 'Escalate to Investigation';
     },
-    
+
     isValidateInput: function(description) {
         return this._showPersonField(description) ? 'validate-input' : '';
     }
