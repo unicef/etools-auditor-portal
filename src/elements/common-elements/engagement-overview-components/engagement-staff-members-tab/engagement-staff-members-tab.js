@@ -128,6 +128,10 @@ Polymer({
         deleteTitle: {
             type: String,
             value: 'Are you sure that you want to delete this staff member?'
+        },
+        saveWithButton: {
+            type: Boolean,
+            value: false
         }
     },
 
@@ -392,6 +396,7 @@ Polymer({
         } else {
             delete this.engagementStaffs[staff.user.email];
         }
+        this.engagementStaffs = _.cloneDeep(this.engagementStaffs);
     },
 
     _updateEngagement: function(quiet) {
@@ -461,5 +466,10 @@ Polymer({
                 this.set('searchQuery', value);
             }, 500);
         }
+    },
+
+    _isCheckboxReadonly: function(checked, staffs, buttonSave) {
+        return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
     }
+
 });

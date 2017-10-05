@@ -76,6 +76,7 @@
 
                         <div slot="checkbox" class="checkbox">
                             <paper-checkbox
+                                    disabled="{{_isCheckboxReadonly(item.hasAccess, engagementStaffs, saveWithButton)}}"
                                     on-tap="_isActive"
                                     checked="{{item.hasAccess}}"
                                     label="">
@@ -225,8 +226,8 @@
                                     label="Has Access"
                                     label-alignment="right"
                                     checked="{{editedItem.hasAccess}}"
-                                    disabled="{{requestInProcess}}"
-                                    readonly="{{requestInProcess}}">
+                                    disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}"
+                                    readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}">
                             </etools-checkable-input>
                         </div>
                     </div>
