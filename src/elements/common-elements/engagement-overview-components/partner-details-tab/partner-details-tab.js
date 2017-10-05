@@ -65,9 +65,9 @@ Polymer({
     },
 
     validate: function() {
-        let activePd = Polymer.dom(this.root).querySelector('#activePd');
+        // let activePd = Polymer.dom(this.root).querySelector('#activePd');
         let partnerType = this.get('engagement.partner.partner_type');
-        let activePdValid = activePd ? activePd.validate() : false;
+        let activePdValid = true; //activePd ? activePd.validate() : false; TODO: fix front-end PD validation (added by UU)
 
         if (!activePdValid) { this.set('errors.active_pd', 'Active PD is required'); }
 
@@ -184,7 +184,7 @@ Polymer({
             data.partner = partnerId;
         }
 
-        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && partnerType !== 'Government') {
+        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && partnerType !== 'Government' && activePd.length) {
             data.active_pd = activePd;
         }
 

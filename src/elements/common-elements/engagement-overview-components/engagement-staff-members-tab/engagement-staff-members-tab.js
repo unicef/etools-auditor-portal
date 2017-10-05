@@ -282,6 +282,7 @@ Polymer({
         if (!item) { throw 'Cann not get item model!'; }
 
         this.manageEngagementStaff(item);
+        this._updateEngagement(true);
     },
 
     _emailDisabled: function(request, createPopup, emailChecking) {
@@ -363,10 +364,12 @@ Polymer({
 
         details.data.hasAccess = this.editedItem.hasAccess;
         if (details.action === 'patch') {
-            this.manageEngagementStaff(details.data);
+            this.manageEngagementStaff(details.data, details.hasAccess);
+            this._updateEngagement();
             this.splice('dataItems', details.index, 1, details.data);
         } else if (details.action === 'post') {
-            this.manageEngagementStaff(details.data);
+            this.manageEngagementStaff(details.data, details.hasAccess);
+            this._updateEngagement();
             this.set('listPage', 0);
             this.set('listPage', 1);
         } else if (details.action === 'delete') {
@@ -383,11 +386,17 @@ Polymer({
         this.resetDialog();
     },
 
-    manageEngagementStaff: function(staff) {
-        if (staff.hasAccess) {
+    manageEngagementStaff: function(staff, hasAccess) {
+        if (hasAccess || staff.hasAccess) {
             this.engagementStaffs[staff.user.email] = staff.id;
         } else {
             delete this.engagementStaffs[staff.user.email];
+        }
+    },
+
+    _updateEngagement: function(quiet) {
+        if (!this.saveWithButton) {
+            this.fire('action-activated', {type: 'save', quietAdding: quiet});
         }
     },
 

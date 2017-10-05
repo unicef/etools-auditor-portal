@@ -43,7 +43,12 @@
             },
 
             _handleResponse: function(event, detail) {
-                this.fire('staff-updated', {action: this.lastRequestData.method.toLowerCase(), data: detail, index: this.lastRequestData.staffIndex});
+                this.fire('staff-updated', {
+                    action: this.lastRequestData.method.toLowerCase(),
+                    data: detail,
+                    hasAccess: this.lastRequestData.data.hasAccess,
+                    index: this.lastRequestData.staffIndex
+                });
             },
 
             _handleError: function(event, error) {
