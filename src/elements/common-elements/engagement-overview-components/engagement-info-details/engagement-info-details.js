@@ -159,6 +159,12 @@ Polymer({
             return;
         }
 
+        if (!this._validatePOLength(value)) {
+            this.set('errors.agreement', 'Purchase order number must be 10 digits');
+            this.orderNumber = null;
+            return;
+        }
+
         this.requestInProcess = true;
         this.orderNumber = value;
         return true;
@@ -185,12 +191,20 @@ Polymer({
             this.set('errors.agreement', 'Purchase order is required');
             return false;
         }
+        if (!this._validatePOLength(value)) {
+            this.set('errors.agreement', 'Purchase order number must be 10 digits');
+            return false;
+        }
         if (!this.data || !this.data.agreement || !this.data.agreement.id) {
             this.set('errors.agreement', 'Purchase order not found');
             return false;
         }
         this.set('errors.agreement', false);
         return true;
+    },
+
+    _validatePOLength: function(po) {
+        return !po || po.length === 10;
     },
 
     resetType: function() {
