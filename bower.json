@@ -43,6 +43,8 @@
   "devDependencies": {},
   "resolutions": {
     "lodash": "^4.17.4",
-    "neon-animation": "2.0.1"
+    "neon-animation": "2.0.1",
+    "etools-ajax": "1.2.2",
+    "webcomponentsjs": "0.7.24"
   }
 }
