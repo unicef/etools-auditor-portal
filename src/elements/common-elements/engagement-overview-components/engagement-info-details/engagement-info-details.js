@@ -93,7 +93,7 @@ Polymer({
         let elements = Polymer.dom(this.root).querySelectorAll('.validate-field');
         let valid = true;
         _.each(elements, element => {
-            if (element.required && !element.validate()) {
+            if (element.required && !element.disabled && !element.validate()) {
                 let label = element.label || 'Field';
                 element.errorMessage = `${label} is required`;
                 element.invalid = true;
