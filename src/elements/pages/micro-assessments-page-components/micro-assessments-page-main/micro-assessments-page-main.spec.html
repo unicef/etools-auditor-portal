@@ -71,7 +71,7 @@
                 myEl.getElement.restore();
             });
 
-            it('calls set and fire methods if report or questionnaire are not valid', function() {
+            it('calls set methods if report or questionnaire are not valid', function() {
                 var validateReport = sinon.stub().returns(true),
                         validateQ = sinon.stub().returns(true);
 
@@ -90,13 +90,12 @@
                 validateReport.returns(false);
                 myEl._validateEngagement();
                 assert.isTrue(myEl.set.called);
-                assert.isTrue(myEl.fire.called);
 
                 validateReport.returns(true);
                 validateQ.returns(false);
                 myEl._validateEngagement();
                 assert.isTrue(myEl.set.calledTwice);
-                assert.isTrue(myEl.fire.calledTwice);
+                assert.isTrue(myEl.fire.calledOnce);
 
                 myEl._validateBasicInfo.restore();
                 myEl.getElement.restore();

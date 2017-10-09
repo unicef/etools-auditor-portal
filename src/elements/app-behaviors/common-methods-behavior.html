@@ -37,7 +37,7 @@
             if (this.requestInProcess) { this.requestInProcess = false; }
             this.set('errors', _.clone(this.refactorErrorObject(errorData)));
             if (this.tabTexts && this.tabTexts.fields.some(field => !!this.errors[field])) {
-                this.fire('toast', {text: `Please fill in the ${this.tabTexts.name}`});
+                this.fire('toast', {text: `${this.tabTexts.name}: Please correct errors`});
             }
         },
 

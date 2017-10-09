@@ -149,9 +149,8 @@
                 }
 
                 this.fire('engagement-updated');
-                if (!this.quietAdding) {
 
-                } else {
+                if (this.quietAdding) {
                     this.quietAdding = false;
                 }
             },

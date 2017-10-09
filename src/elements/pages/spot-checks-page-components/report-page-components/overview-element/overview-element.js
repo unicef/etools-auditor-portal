@@ -22,6 +22,13 @@ Polymer({
         datepickerModal: {
             type: Boolean,
             value: false
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Audit Overview',
+                fields: ['face_form_start_date', 'face_form_end_date', 'total_value', 'total_amount_tested', 'total_amount_of_ineligible_expenditure']
+            }
         }
     },
 

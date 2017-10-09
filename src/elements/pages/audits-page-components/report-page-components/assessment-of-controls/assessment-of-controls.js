@@ -14,6 +14,13 @@ Polymer({
         },
         data: {
             type: Object
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Assessment of Key Internal Controls',
+                fields: ['recommendation', 'audit_observation', 'ip_response']
+            }
         }
     },
 

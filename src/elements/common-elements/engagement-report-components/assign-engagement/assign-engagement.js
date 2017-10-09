@@ -81,7 +81,7 @@ Polymer({
             }
         });
 
-        if (!valid) { this.fire('toast', {text: `Please fill in the ${this.tabTexts.name}`}); }
+        if (!valid) { this.fire('toast', {text: `${this.tabTexts.name}: Please correct errors`}); }
         return valid;
     },
 

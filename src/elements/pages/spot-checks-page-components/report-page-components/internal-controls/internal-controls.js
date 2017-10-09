@@ -28,6 +28,13 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Internal controls',
+                fields: ['internal_controls']
+            }
         }
     },
 
