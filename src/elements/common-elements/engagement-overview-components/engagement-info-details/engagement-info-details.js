@@ -182,6 +182,7 @@ Polymer({
     },
 
     _validatePurchaseOrder: function(orderInput) {
+        if (orderInput.readonly) { return true; }
         if (this.requestInProcess) {
             this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
             return false;
