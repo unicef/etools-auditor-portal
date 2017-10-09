@@ -82,7 +82,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Add new Staff Member'
+                    title: 'Add new Audit Team Member'
                 };
             }
         },
@@ -90,7 +90,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Edit Staff Member'
+                    title: 'Edit Audit Team Member'
                 };
             }
         },
@@ -127,7 +127,7 @@ Polymer({
         },
         deleteTitle: {
             type: String,
-            value: 'Are you sure that you want to delete this staff member?'
+            value: 'Are you sure that you want to delete this Audit Team Member?'
         },
         saveWithButton: {
             type: Boolean,
