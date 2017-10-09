@@ -19,10 +19,19 @@
 
 <script>
     describe('<new-engagement-view>', () => {
-        let myEl;
+        var myEl, server;
 
-        beforeEach(() => {
+        before(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
+        });
+
+        beforeEach(function () {
             myEl = fixture('element-fixture');
+        });
+
+        after(function() {
+            server.restore();
         });
 
         describe('method _attachmentsReadonly()', () => {
