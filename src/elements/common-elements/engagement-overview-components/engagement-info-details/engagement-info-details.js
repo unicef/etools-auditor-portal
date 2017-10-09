@@ -151,7 +151,7 @@ Polymer({
         let input = event && event.target,
             value = input && input.value;
 
-        if (+value && value === this.orderNumber) { return; }
+        if ((+value || +value === 0) && value === this.orderNumber) { return; }
         this.resetAgreement();
 
         if (!value) {
