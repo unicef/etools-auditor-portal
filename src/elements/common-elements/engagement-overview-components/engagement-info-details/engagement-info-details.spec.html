@@ -201,7 +201,7 @@
 
             it('returns true and sets requestInProcess property if there is value', function() {
                 myEl.requestInProcess = false;
-                var event = {target: {value: 26}};
+                var event = {target: {value: 1231231231}};
 
                 assert.isTrue(myEl._requestAgreement(event));
                 assert.isTrue(myEl.requestInProcess);
@@ -240,7 +240,7 @@
             it('returns false, sets orderInputInvalid and orderNumberErrorText if there is no agreement.id', function() {
                 myEl.requestInProcess = false;
 
-                var orderInput = {value: '123123', required: true};
+                var orderInput = {value: '1231231231', required: true};
 
                 assert.isFalse(myEl._validatePurchaseOrder(orderInput));
                 assert.isDefined(myEl.errors.agreement);
@@ -250,11 +250,11 @@
                 myEl.requestInProcess = false;
                 myEl.data = {
                     agreement: {
-                        id: '123123'
+                        id: '1231231231'
                     }
                 };
 
-                var orderInput = {value: '123123', required: true};
+                var orderInput = {value: '7897897897', required: true};
 
                 assert.isTrue(myEl._validatePurchaseOrder(orderInput));
             });

@@ -204,7 +204,7 @@ Polymer({
     },
 
     _validatePOLength: function(po) {
-        return !po || po.length === 10;
+        return !po || `${po}`.length === 10;
     },
 
     resetType: function() {
