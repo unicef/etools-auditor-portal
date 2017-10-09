@@ -145,11 +145,12 @@
                     this.fire('toast', {text: `Error: Exceeded the maximum size of the uploaded file.`});
                 } else {
                     this.errorObject = {};
+                    this.fire('toast', {text: 'Can not save engagement data. Please try again later!'});
                 }
 
                 this.fire('engagement-updated');
                 if (!this.quietAdding) {
-                    this.fire('toast', {text: 'Can not save engagement data. Please check all fields and try again later!'});
+
                 } else {
                     this.quietAdding = false;
                 }

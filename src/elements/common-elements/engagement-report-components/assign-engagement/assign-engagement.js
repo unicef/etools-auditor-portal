@@ -29,6 +29,15 @@ Polymer({
             type: Boolean,
             value: false,
             readOnly: true
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Engagement Status',
+                fields: [
+                    'date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip', 'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef'
+                ]
+            }
         }
     },
 
@@ -72,6 +81,7 @@ Polymer({
             }
         });
 
+        if (!valid) { this.fire('toast', {text: `Please fill in the ${this.tabTexts.name}`}); }
         return valid;
     },
 

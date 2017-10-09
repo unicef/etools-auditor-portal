@@ -49,7 +49,6 @@ Polymer({
         if (!basicInfoValid) { return false; }
         if (!reportValid) {
             this.set('tab', 'report');
-            this.fire('toast', {text: 'Fill report before submiting!'});
             return false;
         }
         return true;
