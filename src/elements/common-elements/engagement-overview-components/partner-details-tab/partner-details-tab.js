@@ -224,7 +224,7 @@ Polymer({
         if (!partner) { return ''; }
 
         let address = partner.street_address || partner.address;
-        return [partner.city, address, partner.postal_code]
+        return [address, partner.postal_code, partner.city, partner.country]
             .filter((info) => !!info)
             .join(', ');
     }
