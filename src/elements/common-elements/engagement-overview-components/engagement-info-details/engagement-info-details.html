@@ -69,8 +69,6 @@
                             on-blur="_requestAgreement">
                     </paper-input>
 
-                    <paper-tooltip offset="0">[[data.agreement.order_number]]</paper-tooltip>
-
                     <etools-loading
                             active="{{requestInProcess}}"
                             no-overlay
@@ -126,7 +124,6 @@
                                 icon="date-range">
                         </iron-icon>
                     </paper-input>
-                    <paper-tooltip offset="0">[[prettyDate(data.agreement.contract_start_date)]]</paper-tooltip>
                 </div>
 
                 <div class="input-container">
@@ -158,7 +155,6 @@
                                 show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
-                    <paper-tooltip offset="0">[[prettyDate(data.agreement.contract_end_date)]]</paper-tooltip>
 
                     <etools-loading
                             active="{{poUpdating}}"
@@ -197,7 +193,6 @@
                                 show-clear-btn>
                         </etools-datepicker>
                     </paper-input>
-                    <paper-tooltip offset="0">[[prettyDate(data.partner_contacted_at)]]</paper-tooltip>
                 </div>
 
             </div>
@@ -229,13 +224,10 @@
                                 hide-search
                                 no-title-attr>
                         </etools-searchable-multiselection-menu>
-                        <paper-tooltip offset="0">[[_processValue(data.engagement_type).label]]</paper-tooltip>
                         <span slot="message">Attach FACE Form Requesting Funding, <br>
                                 ICE Form, FACE Form Reporting,<br>
                                 Statement of Expenditure</span>
                     </etools-info-tooltip>
-
-                    <!--<paper-tooltip for="engagementType" offset="0">[[_getEngagementTypeLabel(data.type)]]</paper-tooltip>-->
                 </div>
 
                 <template is="dom-if" if="{{showInput}}" restamp>
@@ -267,7 +259,6 @@
                                     show-clear-btn>
                             </etools-datepicker-button>
                         </paper-input>
-                        <paper-tooltip offset="0">[[prettyDate(data.start_date)]]</paper-tooltip>
                     </div>
                 </template>
 
@@ -300,7 +291,6 @@
                                     show-clear-btn>
                             </etools-datepicker-button>
                         </paper-input>
-                        <paper-tooltip offset="0">[[prettyDate(data.end_date)]]</paper-tooltip>
                     </div>
                 </template>
 
@@ -323,7 +313,6 @@
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError">
                         </etools-currency-amount-input>
-                        <paper-tooltip offset="0">[[data.total_value]]</paper-tooltip>
                     </div>
                 </template>
             </div>
