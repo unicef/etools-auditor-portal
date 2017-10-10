@@ -108,48 +108,12 @@
             }
         },
 
-        observers: ['setupFilters(basePermissionPath, filters)'],
-
-        setupFilters: function(base) {
-            if (!base) { return; }
-            this.setupFiltersAndHeadings(base);
-            this.setFiltersSelections();
-        },
+        observers: [
+            'setFiltersSelections(basePermissionPath, filters)'
+        ],
 
         _showAddButton: function() {
             return this.actionAllowed('new_engagement', 'create');
-        },
-
-        setupFiltersAndHeadings: function(base) {
-            if (false) { //TODO: check that user is auditor
-                let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
-                let auditorHeadingIndex = this.listHeadings.findIndex((heading) => {
-                    return heading.name === 'agreement__auditor_firm__name';
-                });
-
-                this.filters.splice(auditorsFilterIndex, 1);
-                this.listHeadings.splice(auditorHeadingIndex, 1);
-                this.listHeadings.forEach((heading) => {
-                    heading.size += 5;
-                });
-            }
-
-            let partners = this.getData('partners');
-            if (!partners || !partners.length) {
-                let partnersFilterIndex = this._getFilterIndex('partner');
-                if (partnersFilterIndex !== -1) {
-                    this.filters.splice(partnersFilterIndex, 1);
-                }
-            }
-
-            let statuses = this.getChoices(`${base}.status`),
-                types = this.getChoices(`${base}.engagement_type`);
-
-            let statusFilterIndex = this._getFilterIndex('status'),
-                typeFilterIndex = this._getFilterIndex('engagement_type');
-
-            this.set(`filters.${statusFilterIndex}.selection`, statuses || []);
-            this.set(`filters.${typeFilterIndex}.selection`, types || []);
         },
 
         _getFilterIndex: function(query) {
@@ -160,16 +124,29 @@
             });
         },
 
-        setFiltersSelections: function() {
+        setFiltersSelections: function(base) {
+            if (!base) { return; }
+
             let partnersFilterIndex = this._getFilterIndex('partner');
             let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
+            let statusFilterIndex = this._getFilterIndex('status');
+            let typeFilterIndex = this._getFilterIndex('engagement_type');
 
-            if (partnersFilterIndex !== -1) {
-                this.set(`filters.${partnersFilterIndex}.selection`, this.getData('partners') || []);
-            }
+            let partners = this.getData('partners') || [];
+            let auditors = this.getData('auditors') || [];
+            let statuses = this.getChoices(`${base}.status`) || [];
+            let types = this.getChoices(`${base}.engagement_type`) || [];
 
-            if (auditorsFilterIndex !== -1) {
-                this.set(`filters.${auditorsFilterIndex}.selection`, this.getData('auditors') || []);
+            this.setFilterSelection(partnersFilterIndex, partners);
+            this.setFilterSelection(auditorsFilterIndex, auditors);
+            this.setFilterSelection(statusFilterIndex, statuses);
+            this.setFilterSelection(typeFilterIndex, types);
+        },
+
+        setFilterSelection: function(filterIndex, data) {
+            if (filterIndex !== undefined && filterIndex !== -1) {
+                this.set(`filters.${filterIndex}.selection`, data);
+                return true;
             }
         },
 

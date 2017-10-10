@@ -138,26 +138,6 @@
             myEl = fixture('engagements-list-view-fixture');
         });
 
-        describe('method setupFilters() if first argument provided', function () {
-            it('calls setupFiltersAndHeadings() and setFiltersSelections() methods', function () {
-                let spy = sinon.spy(myEl, 'setupFiltersAndHeadings');
-                let spy2 = sinon.spy(myEl, 'setFiltersSelections');
-
-                assert.isFalse(spy.called);
-                assert.isFalse(spy2.called);
-
-                myEl.setupFilters('');
-
-                assert.isFalse(spy.called);
-                assert.isFalse(spy2.called);
-
-                myEl.setupFilters('test');
-
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy2.calledOnce);
-            });
-        });
-
         describe('method _showAddButton()', function () {
             it('returns result of actionAllowed() method', function () {
                 let spy = sinon.stub(myEl, 'actionAllowed');
@@ -166,35 +146,6 @@
                 assert.equal(myEl._showAddButton(), 'returned_value');
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy.calledWithExactly('new_engagement', 'create'));
-            });
-        });
-
-        describe('method setupFiltersAndHeadings()', function () {
-            beforeEach(function () {
-                myEl.filters = _.cloneDeep(filters);
-                myEl.listHeadings = _.cloneDeep(listHeadings);
-            });
-
-            it('removes partners filter if partners Array is empty and filter is found', function () {
-                sinon.stub(myEl, 'getData').withArgs('partners').returns([]);
-                assert.lengthOf(myEl.filters, 4);
-                myEl.setupFiltersAndHeadings();
-                assert.lengthOf(myEl.filters, 3);
-            });
-
-            it('not removes partners filter if partners Array is empty but filter not found', function () {
-                sinon.stub(myEl, 'getData').withArgs('partners').returns([]);
-                sinon.stub(myEl, '_getFilterIndex').withArgs('partner').returns(-1);
-                assert.lengthOf(myEl.filters, 4);
-                myEl.setupFiltersAndHeadings();
-                assert.lengthOf(myEl.filters, 4);
-            });
-
-            it('not removes partners filter if partners Array is not empty and filter is found', function () {
-                sinon.stub(myEl, 'getData').withArgs('partners').returns([{}, {}]);
-                assert.lengthOf(myEl.filters, 4);
-                myEl.setupFiltersAndHeadings();
-                assert.lengthOf(myEl.filters, 4);
             });
         });
 
@@ -213,47 +164,47 @@
             });
         });
 
-        describe('method setFiltersSelections()', function () {
+        describe('method setFiltersSelections(base)', function () {
             beforeEach(function () {
                 myEl.filters = _.cloneDeep(filters);
             });
 
-            it('sets partners filter selection property', function () {
-                let partnersFilterIndex = myEl._getFilterIndex('partner');
-                let partners = [{}, {}];
-                sinon.stub(myEl, 'getData').withArgs('partners').returns(partners);
-                myEl.filters[partnersFilterIndex].selection = null;
+            it('shouldn\'t call setFilterSelection() method when base is empty', function () {
+                let spy = sinon.spy(myEl, 'setFilterSelection');
 
+                assert.isFalse(spy.called);
+                myEl.setFiltersSelections('');
                 myEl.setFiltersSelections();
-                assert.deepEqual(myEl.filters[partnersFilterIndex].selection, partners);
+                assert.isFalse(spy.called);
             });
 
-            it('sets auditors filter selection property', function () {
+            it('should call setFilterSelection() method for each filter', function () {
+                let spy = sinon.spy(myEl, 'setFilterSelection');
+
+                assert.isFalse(spy.called);
+                myEl.setFiltersSelections('base');
+                assert.equal(spy.callCount, 4);
+            });
+        });
+
+        describe('method setFilterSelection(filterIndex, data)', function () {
+            beforeEach(function () {
+                myEl.filters = _.cloneDeep(filters);
+            });
+            
+            it('should set filter selection data by filterIndex', function () {
                 let auditorsFilterIndex = myEl._getFilterIndex('agreement__auditor_firm');
                 let auditors = [{}, {}];
-                sinon.stub(myEl, 'getData').withArgs('auditors').returns(auditors);
                 myEl.filters[auditorsFilterIndex].selection = null;
 
-                myEl.setFiltersSelections();
+                assert.isNull(myEl.filters[auditorsFilterIndex].selection, auditors);
+                assert.isTrue(myEl.setFilterSelection(auditorsFilterIndex, auditors));
                 assert.deepEqual(myEl.filters[auditorsFilterIndex].selection, auditors);
             });
 
-            it('sets partners filter selection=[] if getData() returns bad value', function () {
-                let partnersFilterIndex = myEl._getFilterIndex('partner');
-                sinon.stub(myEl, 'getData').withArgs('partners').returns(null);
-                myEl.filters[partnersFilterIndex].selection = null;
-
-                myEl.setFiltersSelections();
-                assert.deepEqual(myEl.filters[partnersFilterIndex].selection, []);
-            });
-
-            it('sets auditors filter selection=[] if getData() returns bad value', function () {
-                let auditorsFilterIndex = myEl._getFilterIndex('agreement__auditor_firm');
-                sinon.stub(myEl, 'getData').withArgs('auditors').returns(null);
-                myEl.filters[auditorsFilterIndex].selection = null;
-
-                myEl.setFiltersSelections();
-                assert.deepEqual(myEl.filters[auditorsFilterIndex].selection, []);
+            it('shouldn\'t set filter selection when filterIndex is undefined or -1', function () {
+                assert.isUndefined(myEl.setFilterSelection(-1, []));
+                assert.isUndefined(myEl.setFilterSelection(undefined, []));
             });
         });
 

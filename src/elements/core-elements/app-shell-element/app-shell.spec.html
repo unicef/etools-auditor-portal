@@ -87,11 +87,9 @@
                 myEl.queueToast.restore();
             });
 
-            it('\'static-data-loaded\' or \'user-profile-loaded\' call method _initialDataLoaded', () => {
+            it('\'static-data-loaded\' should call method _initialDataLoaded()', () => {
                 sinon.spy(myEl, '_initialDataLoaded');
                 assert.isFalse(myEl._initialDataLoaded.called);
-                myEl.fire('user-profile-loaded');
-                assert.isTrue(myEl._initialDataLoaded.called);
                 myEl.fire('static-data-loaded');
                 assert.isTrue(myEl._initialDataLoaded.called);
                 myEl._initialDataLoaded.restore();
