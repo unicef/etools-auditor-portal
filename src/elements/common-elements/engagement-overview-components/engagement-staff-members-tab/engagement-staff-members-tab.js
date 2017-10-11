@@ -82,7 +82,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Add new Audit Team Member'
+                    title: 'Add new Audit Staff Team Member'
                 };
             }
         },
@@ -90,7 +90,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Edit Audit Team Member'
+                    title: 'Edit Audit Staff Team Member'
                 };
             }
         },
