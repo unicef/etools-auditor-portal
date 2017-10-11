@@ -37,7 +37,8 @@
                         has-collapse
                         no-animation>
                     <div slot="custom">
-                        [[getCategoryDisplayName(item.category_of_observation)]]
+                        [[getCategoryDisplayName(item.category_of_observation, '--')]]
+                        <paper-tooltip offset="0">[[getCategoryDisplayName(item.category_of_observation)]]</paper-tooltip>
                     </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
@@ -87,7 +88,7 @@
                                     hide-search
                                     no-title-attr>
                             </etools-searchable-multiselection-menu>
-                            <paper-tooltip offset="0">[[editedItem.category_of_observation.display_name]]</paper-tooltip>
+                            <paper-tooltip offset="0">[[getCategoryDisplayName(editedItem.category_of_observation)]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -110,7 +111,6 @@
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError">
                             </paper-textarea>
-                            <paper-tooltip offset="0">[[editedItem.recommendation]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -133,7 +133,6 @@
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError">
                             </paper-textarea>
-                            <paper-tooltip offset="0">[[editedItem.agreed_action_by_ip]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -166,7 +165,6 @@
                                         show-clear-btn>
                                 </etools-datepicker>
                             </paper-input>
-                            <paper-tooltip offset="0">[[prettyDate(editedItem.deadline_of_action)]]</paper-tooltip>
                         </div>
                     </div>
                 </div>
