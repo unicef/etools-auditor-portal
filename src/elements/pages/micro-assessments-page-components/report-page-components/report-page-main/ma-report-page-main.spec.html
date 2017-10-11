@@ -39,15 +39,6 @@
             assert.isTrue(myEl.$.controlFindings.getTabData.called);
         });
 
-        describe('method getRisksData', () => {
-            it('calls getRiskData from Internal Controls and Primary Risk', () => {
-                sinon.spy(myEl.$.internalControls, 'getRiskData');
-                sinon.spy(myEl.$.primaryRisk, 'getRiskData');
-                myEl.getRisksData();
-                assert.isTrue(myEl.$.internalControls.getRiskData.called);
-                assert.isTrue(myEl.$.primaryRisk.getRiskData.called);
-            });
-        });
     });
 </script>
 </body>

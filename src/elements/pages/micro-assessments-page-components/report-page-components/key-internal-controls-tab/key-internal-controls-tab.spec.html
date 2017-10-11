@@ -20,10 +20,19 @@
 
 <script>
     describe('<key-internal-controls-tab>', function () {
-        var myEl;
+        var myEl, server;
+
+        before(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith('test' );
+        });
 
         beforeEach(function () {
             myEl = fixture('element-fixture');
+        });
+
+        after(function() {
+            server.restore();
         });
 
         describe('method getCurrentData', function() {
@@ -79,18 +88,6 @@
                 assert.isUndefined(myEl.originalEditedObj);
                 assert.isUndefined(myEl.editedAreaIndex);
                 assert.isFalse(myEl.dialogOpened);
-            });
-
-            it('sets properties', function() {
-                var data = {test: 'test', foo: 'bar', id: 666};
-                myEl.subjectAreas = {children: [data]};
-
-                myEl.openEditDialog({detail: {data: data}});
-
-                assert.isTrue(_.isEqual(myEl.editedArea, data));
-                assert.isTrue(_.isEqual(myEl.originalEditedObj, data));
-                assert.equal(myEl.editedAreaIndex, myEl.subjectAreas.children.indexOf(data));
-                assert.isTrue(myEl.dialogOpened);
             });
         });
 
@@ -150,13 +147,6 @@
             });
         });
 
-        it('method _showRisk returns true if risk.type === default', function() {
-            assert.isTrue(myEl._showRisk({category_type: 'default'}));
-            assert.isFalse(myEl._showRisk({category_type: 'default2'}));
-            assert.isFalse(myEl._showRisk({category_type: ''}));
-            assert.isFalse(myEl._showRisk({}));
-            assert.isFalse(myEl._showRisk());
-        });
     });
 </script>
 

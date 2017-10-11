@@ -108,7 +108,8 @@
             it('calls getData methods for report and questionnaire pages', function() {
                 var getDataMethods = {
                     getQuestionnaireData: sinon.spy(),
-                    getRisksData: sinon.spy(),
+                    getInternalControlsData: sinon.spy(),
+                    getPrimaryRiskData: sinon.spy(),
                     getFindingsData: sinon.spy(),
                     getFollowUpData: sinon.spy()
                 };
@@ -117,7 +118,8 @@
                 myEl.customDataPrepare();
 
                 assert.isTrue(getDataMethods.getQuestionnaireData.called);
-                assert.isTrue(getDataMethods.getRisksData.called);
+                assert.isTrue(getDataMethods.getInternalControlsData.called);
+                assert.isTrue(getDataMethods.getPrimaryRiskData.called);
                 assert.isTrue(getDataMethods.getFindingsData.called);
 
                 myEl.getElement.restore();
@@ -126,7 +128,8 @@
             it('save data from pages to data object and return it', function() {
                 var getDataMethods = {
                     getQuestionnaireData: sinon.stub().returns(['test1']),
-                    getRisksData: sinon.stub().returns({test2: 'test2'}),
+                    getInternalControlsData: sinon.stub().returns({test2: 'test2'}),
+                    getPrimaryRiskData: sinon.stub().returns({test2: 'test2'}),
                     getFindingsData: sinon.stub().returns(['test3']),
                     getFollowUpData: sinon.spy()
                 };
