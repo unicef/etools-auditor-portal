@@ -59,7 +59,8 @@
                     this._finishPostResponse();
                     return;
                 } else if (this.actionUrl) {
-                    this._engagementChanged({});
+                    let engagement = data && data.detail ? data.detail : {};
+                    this._engagementChanged(engagement);
                     return;
                 }
                 this.finishResponse(data);
@@ -174,6 +175,7 @@
                     this._saveEngagement(engagement.data, url);
                 } else if (this.actionUrl && ~this.actionUrl.indexOf('submit')) {
                     //Finish data updating, run submitting if submit url has been saved
+                    this.fire('engagement-updated', {success: true, data: engagement});
                     this.method = 'POST';
                     this.fire('global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
                     this.fire('global-loading', {type: 'update-engagement'});
