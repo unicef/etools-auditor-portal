@@ -247,7 +247,7 @@ Polymer({
     },
 
     _hideTooltip: function(basePermissionPath, showInput) {
-        return this.isReadOnly('type', basePermissionPath) || !showInput;
+        return this.isReadOnly('engagement_type', basePermissionPath) || !showInput;
     },
 
     _setEngagementTypes: function(basePermissionPath) {
@@ -267,6 +267,11 @@ Polymer({
                 link: links[typeObject.value]
             };
         });
+    },
+
+    _getEngagementTypeLabel: function(type) {
+        let value = this._processValue(type) || {};
+        return value.label || '';
     }
 
 });
