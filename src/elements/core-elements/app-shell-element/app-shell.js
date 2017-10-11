@@ -4,7 +4,8 @@ Polymer({
     behaviors: [
         etoolsBehaviors.LoadingBehavior,
         Polymer.IronScrollTargetBehavior,
-        etoolsAppConfig.globals
+        etoolsAppConfig.globals,
+        APBehaviors.UserController,
     ],
 
     properties: {
@@ -48,7 +49,6 @@ Polymer({
         'toast': 'queueToast',
         'drawer-toggle-tap': 'toggleDrawer',
         '404': '_pageNotFound',
-        'user-profile-loaded': '_initialDataLoaded',
         'static-data-loaded': '_initialDataLoaded',
     },
 
@@ -126,9 +126,9 @@ Polymer({
     },
 
     _initialDataLoaded: function(e) {
-        if (e && e.type === 'user-profile-loaded') { this.profileLoaded = true; }
         if (e && e.type === 'static-data-loaded') { this.staticDataLoaded = true; }
-        if (this.routeData && this.profileLoaded && this.staticDataLoaded) {
+        if (this.routeData && this.staticDataLoaded) {
+            this.user = this.getUserData();
             this.page = this.routeData.page || this._configPath();
         }
     },

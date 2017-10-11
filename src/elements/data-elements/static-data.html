@@ -1,8 +1,10 @@
 <!--import [polymer, etools-ajax, lodash]-->
-<!--import [static-data-behavior, permission-controller]-->
+<!--import [static-data-behavior, permission-controller, user-controller, user-data]-->
 
 <dom-module id="static-data">
     <template>
+        <user-data></user-data>
+
         <!--partners-->
         <etools-ajax
                 endpoint="[[partnersEndpoint]]"
@@ -54,16 +56,29 @@
                 behaviors: [
                     etoolsAppConfig.globals,
                     APBehaviors.StaticDataController,
-                    APBehaviors.PermissionController
+                    APBehaviors.PermissionController,
+                    APBehaviors.UserController,
                 ],
 
                 properties: {},
 
-                ready: function () {
+                listeners: {
+                    'user-profile-loaded': 'loadStaticData'
+                },
+
+                loadStaticData: function () {
+                    let isAuditor = this.isAuditor();
+
+                    if (isAuditor) {
+                        this.partnersEndpoint = this.getEndpoint('auditorPartners');
+                        dataLoaded.users = true;
+                    } else {
+                        this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
+                        this.usersEndpoint = this.getEndpoint('users').url;
+                    }
+
                     this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
-                    this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
-                    this.usersEndpoint = this.getEndpoint('users').url;
                 },
 
                 _allDataLoaded: function() {

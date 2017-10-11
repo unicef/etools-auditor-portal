@@ -1,5 +1,5 @@
 <!--import [polymer, etools-ajax, lodash]-->
-<!--import [permission-controller]-->
+<!--import [permission-controller, user-controller]-->
 
 <dom-module id="user-data">
     <template>
@@ -19,19 +19,11 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
-                APBehaviors.PermissionController
+                APBehaviors.PermissionController,
+                APBehaviors.UserController,
             ],
 
-            properties: {
-                user: {
-                    type: Object,
-                    readOnly: true,
-                    notify: true,
-                    value: function() {
-                        return {};
-                    }
-                }
-            },
+            properties: {},
 
             ready: function () {
                 this.endpoint = this.getEndpoint('userProfile');
@@ -45,14 +37,13 @@
                 countriesAvailable = _.sortBy(countriesAvailable, ['name']);
                 _.set(user, 'profile.countries_available', countriesAvailable);
 
-                this._setUser(user);
-
                 if (!previousUserId || previousUserId !== user.id) {
                     this.resetOldUserData();
                 }
 
                 localStorage.setItem('userId', user.id);
 
+                this._setUserData(user);
                 this.fire('user-profile-loaded');
             },
 
