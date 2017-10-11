@@ -224,10 +224,13 @@
                                 hide-search
                                 no-title-attr>
                         </etools-searchable-multiselection-menu>
+                        <paper-tooltip offset="0">[[_processValue(data.engagement_type).label]]</paper-tooltip>
                         <span slot="message">Attach FACE Form Requesting Funding, <br>
                                 ICE Form, FACE Form Reporting,<br>
                                 Statement of Expenditure</span>
                     </etools-info-tooltip>
+
+                    <!--<paper-tooltip for="engagementType" offset="0">[[_getEngagementTypeLabel(data.type)]]</paper-tooltip>-->
                 </div>
 
                 <template is="dom-if" if="{{showInput}}" restamp>

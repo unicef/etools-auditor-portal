@@ -134,7 +134,7 @@
                                     on-blur="_checkEmail">
                                 <iron-icon prefix icon="communication:email"></iron-icon>
                             </paper-input>
-
+                            <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.email)]]</paper-tooltip>
                             <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading"></etools-loading>
                         </div>
 
@@ -191,6 +191,7 @@
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError">
                         </paper-input>
+                        <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.profile.job_title)]]</paper-tooltip>
                     </div>
 
                     <div class="row-h group">

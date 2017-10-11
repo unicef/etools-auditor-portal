@@ -125,9 +125,9 @@ Polymer({
         return `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
     },
 
-    getCategoryDisplayName: function(value) {
+    getCategoryDisplayName: function(value, emptyValue) {
         let categoryOfObservation = _.find(this.categoryOfObservation, ['value', value]);
-        return categoryOfObservation ? categoryOfObservation.display_name : '–';
+        return categoryOfObservation ? categoryOfObservation.display_name : emptyValue || '';
     },
 
     _getLength: function(dataItems) {
