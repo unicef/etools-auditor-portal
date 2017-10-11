@@ -59,7 +59,7 @@
                     this._finishPostResponse();
                     return;
                 } else if (this.actionUrl) {
-                    let engagement = data && data.detail ? data.detail : {};
+                    let engagement = data && data.detail || {};
                     this._engagementChanged(engagement);
                     return;
                 }
