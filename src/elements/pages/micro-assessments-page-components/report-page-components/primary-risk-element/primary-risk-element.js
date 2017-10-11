@@ -15,17 +15,28 @@ Polymer({
             value: function() {
                 return {risk: {extra: {}}};
             }
+        },
+        errorBaseText: {
+            type: String,
+            value: 'Overall Risk Assessment: '
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Overall Risk Assessment',
+                fields: ['overall_risk_assessment']
+            }
         }
     },
 
     observers: [
         '_setValues(riskData, riskOptions)',
         'updateStyles(basePermissionPath)',
-        'errorHandler(errorObject.test_subject_areas)'
+        '_complexErrorHandler(errorObject.overall_risk_assessment)'
     ],
 
     ready: function() {
-        let riskOptions = this.getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+        let riskOptions = this.getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
         this.set('riskOptions', riskOptions);
     },
 
@@ -51,14 +62,16 @@ Polymer({
     validate: function(forSave) {
         if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
             this.set('errors', {children: [{blueprints: [{risk: {value: 'Please, select Risk Assessment'}}]}]});
+            this.fire('toast', {text: `${this.tabTexts.name}: Please correct errors`});
             return false;
         }
         if (!this.basePermissionPath || forSave) { return true; }
-        let required = this.isRequired(`${this.basePermissionPath}.test_subject_areas`);
+        let required = this.isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
         if (!required) { return true; }
 
         let riskValid = this.$.riskAssessmentInput.validate(),
-            commentsValid = this.$.briefJustification.validate();
+            commentsValid = this.$.briefJustification.validate(),
+            valid = riskValid && commentsValid;
 
         let errors = {
             children: [{
@@ -71,8 +84,9 @@ Polymer({
             }]
         };
         this.set('errors', errors);
+        if (!valid) { this.fire('toast', {text: `${this.tabTexts.name}: Please correct errors`}); }
 
-        return riskValid && commentsValid;
+        return valid;
     },
 
     getRiskData: function() {

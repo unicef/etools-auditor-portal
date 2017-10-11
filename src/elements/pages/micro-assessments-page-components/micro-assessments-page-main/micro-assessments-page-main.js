@@ -102,7 +102,6 @@ Polymer({
 
         if (!reportValid) {
             this.set('tab', 'report');
-            this.fire('toast', {text: 'Fix invalid fields before saving'});
             return false;
         }
         return true;
