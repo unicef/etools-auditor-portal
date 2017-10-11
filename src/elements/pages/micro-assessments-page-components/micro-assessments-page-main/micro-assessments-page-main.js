@@ -76,8 +76,13 @@ Polymer({
         }
 
         let reportTab = this.getElement('#report');
-        let subjectAreas = reportTab && reportTab.getRisksData();
-        data.test_subject_areas = subjectAreas || {};
+
+        let subjectAreas = reportTab && reportTab.getInternalControlsData();
+        if (subjectAreas) { data.test_subject_areas = subjectAreas; }
+
+        let overallRisk = reportTab && reportTab.getPrimaryRiskData();
+        if (overallRisk) { data.overall_risk_assessment = overallRisk; }
+
         let findingsData = reportTab && reportTab.getFindingsData();
         if (findingsData && findingsData.length) { data.findings = findingsData; }
 

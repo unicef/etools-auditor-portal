@@ -21,14 +21,16 @@ Polymer({
         return assignTabValid && primaryValid && internalControlsValid;
     },
 
-    getRisksData: function() {
-        let internalControls = this.$.internalControls,
-            primaryRisk = this.$.primaryRisk;
-
+    getInternalControlsData: function() {
+        let internalControls = this.$.internalControls;
         let data = internalControls && internalControls.getRiskData() || [];
-        let primaryRiskData = primaryRisk && primaryRisk.getRiskData();
-        if (primaryRiskData) { data.unshift(primaryRiskData); }
         return data.length ? {children: data} : null;
+    },
+
+    getPrimaryRiskData: function() {
+        let primaryRisk = this.$.primaryRisk;
+        let primaryRiskData = primaryRisk && primaryRisk.getRiskData();
+        return primaryRiskData || null;
     },
 
     getAssignVisitData: function() {

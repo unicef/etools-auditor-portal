@@ -13,7 +13,7 @@
         <etools-content-panel panel-title="[[subjectAreas.header]]">
             <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
-            <template is="dom-repeat" items="[[subjectAreas.children]]" filter="_showRisk">
+            <template is="dom-repeat" items="[[subjectAreas.children]]">
                 <subject-area-element
                         class="area-element"
                         base-permission-path="{{basePermissionPath}}"
