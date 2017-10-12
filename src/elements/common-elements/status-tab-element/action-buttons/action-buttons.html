@@ -6,7 +6,7 @@
         <style include="module-styles"></style>
         <!-- inject styles './action-buttons.scss'-->
         <paper-button class$="main-action status-tab-button {{withActionsMenu(actions.length)}}" raised on-tap="_btnClicked">
-            <span class="main-action">[[_setButtonText(actions.0)]]</span>
+            <span class="main-action text">[[_setButtonText(actions.0)]]</span>
             <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
 
                 <paper-menu-button class="option-button" dynamic-align opened="{{statusBtnMenuOpened}}">
