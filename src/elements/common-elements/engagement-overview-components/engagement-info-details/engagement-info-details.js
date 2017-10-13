@@ -68,6 +68,15 @@ Polymer({
         contractExpiryDate: {
             type: String,
             value: null
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Engagement Overview',
+                fields: [
+                    'agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value'
+                ]
+            }
         }
     },
 

@@ -24,6 +24,15 @@ Polymer({
             value: function() {
                 return {};
             }
+        },
+        tabTexts: {
+            type: Object,
+            value: {
+                name: 'Partner Details',
+                fields: [
+                    'authorized_officers', 'active_pd', 'partner'
+                ]
+            }
         }
     },
 
