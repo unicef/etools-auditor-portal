@@ -55,6 +55,5 @@
     "yargs": "^5.0.0"
   },
   "scripts": {
-    "postinstall": "export AP_CODE_HOME=`pwd` && export AP_GIT_HOME=`git rev-parse --git-dir` && ln -s -f $AP_CODE_HOME/hooks/pre-commit $AP_GIT_HOME/hooks/pre-commit && chmod +x $AP_GIT_HOME/hooks/pre-commit"
   }
 }
