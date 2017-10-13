@@ -52,8 +52,6 @@ gulp.task('startServer', function () { nodemon({ script: 'express.js' }) });
 gulp.task('devBuild', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower())));
 gulp.task('prodBuild', gulp.series(clean.build, copyBower('toSrc'), buildElements, project.merge(source, dependencies), clean.bowerInSrc));
 
-gulp.task('precommit', gulp.series('lint', 'test'));
-
 //Run dev server and watch changes
 gulp.task('devup', gulp.series('devBuild', gulp.parallel('startServer', 'watch')));
 
