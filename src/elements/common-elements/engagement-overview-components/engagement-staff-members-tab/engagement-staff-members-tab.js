@@ -127,7 +127,7 @@ Polymer({
         },
         deleteTitle: {
             type: String,
-            value: 'Are you sure that you want to delete this Audit Team Member?'
+            value: 'Are you sure that you want to delete this Audit Staff Team Member?'
         },
         saveWithButton: {
             type: Boolean,
