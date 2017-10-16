@@ -87,7 +87,7 @@ Polymer({
         let blueprint = _.pick(this.editedArea.blueprints[0], ['id', 'risk']);
         blueprint.risk = {
             value: blueprint.risk.value.value,
-            extra: JSON.stringify({comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''})
+            extra: {comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''}
         };
 
         return [{

@@ -189,7 +189,7 @@ Polymer({
     getDataFromDialog: function() {
         let blueprintRisk = {
                 value: this.$.riskAssessmentInput.value.value,
-                extra: JSON.stringify((this.editedItem.risk && this.editedItem.risk.extra) || '')
+                extra: this.editedItem.risk && this.editedItem.risk.extra || {}
             };
         let data = {
             id: this.editedItem.id,

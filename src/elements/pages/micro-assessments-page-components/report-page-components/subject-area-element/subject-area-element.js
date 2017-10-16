@@ -32,11 +32,11 @@ Polymer({
             this.area.blueprints[0].risk.value = this.riskOptions[this.area.blueprints[0].risk.value];
         }
 
-        if (data.blueprints[0].risk && _.isJSONObj(data.blueprints[0].risk.extra)) {
-            data.blueprints[0].risk.extra = JSON.parse(data.blueprints[0].risk.extra);
-        } else if (!data.blueprints[0].risk) {
-            data.blueprints[0].risk = {extra: {}};
+        let risk = _.get(data, 'blueprints[0].risk') || {extra: {}};
+        if (_.isJSONObj(risk.extra)) {
+            risk.extra = JSON.parse(risk.extra)
         }
+        data.blueprints[0].risk = risk;
 
         this.areaData = _.clone(data.blueprints[0]);
     },

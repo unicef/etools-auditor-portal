@@ -50,9 +50,9 @@ Polymer({
             return;
         }
 
-        let extra = {comments: ''};
-        if (_.isJSONObj(this.riskData.blueprints[0].risk.extra)) {
-            extra = JSON.parse(this.riskData.blueprints[0].risk.extra);
+        let extra = _.get(this, 'riskData.blueprints[0].risk.extra', {comments: ''});
+        if (_.isJSONObj(extra)) {
+            extra = JSON.parse(extra)
         }
 
         this.set('primaryArea.risk.value', this.riskOptions[this.riskData.blueprints[0].risk.value]);
@@ -93,15 +93,23 @@ Polymer({
         if (!this.primaryArea.risk.value) {
             return null;
         }
+
+        let extra = _.isJSONObj(this.primaryArea.risk.extra) ?
+            JSON.parse(this.primaryArea.risk.extra) :
+            this.primaryArea.risk.extra;
+
+        let originalExtra = _.get(this, 'originalData.blueprints[0].risk.extra');
+        if (_.isJSONObj(originalExtra)) { originalExtra = JSON.parse(originalExtra); }
+
         if (this.originalData.blueprints[0].risk &&
             this.primaryArea.risk.value.value === this.originalData.blueprints[0].risk.value &&
-            JSON.stringify(this.primaryArea.risk.extra) === this.originalData.blueprints[0].risk.extra) {
+            _.isEqual(extra, originalExtra)) {
             return null;
         }
 
         let risk = {
             value: this.primaryArea.risk.value.value,
-            extra: JSON.stringify(this.primaryArea.risk.extra || '')
+            extra: this.primaryArea.risk.extra || {}
         };
 
         let blueprint = {
