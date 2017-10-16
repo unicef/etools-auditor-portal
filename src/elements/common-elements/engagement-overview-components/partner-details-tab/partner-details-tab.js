@@ -206,7 +206,8 @@ Polymer({
 
     getAuthorizedOfficer: function() {
         if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) { return null; }
-        return this.authorizedOfficer.id;
+        let engagementOfficer = _.get(this, 'engagement.authorized_officers[0].id');
+        return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
     },
 
     isPdReadonly: function(basePermissionPath, requestInProcess, partner) {
