@@ -115,8 +115,8 @@ Polymer({
         }
     },
 
-    _showActivePd: function(partnerType) {
-        return typeof partnerType === 'string' && partnerType !== 'Government';
+    _showActivePd: function(partnerType, ...types) {
+        return typeof partnerType === 'string' && types.every(type => !~partnerType.indexOf(type));
     },
 
     _setActivePd: function() {
