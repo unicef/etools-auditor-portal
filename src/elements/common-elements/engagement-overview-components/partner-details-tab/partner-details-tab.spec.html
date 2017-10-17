@@ -89,12 +89,16 @@
         });
 
         describe('method _showActivePd(partnerType)', function() {
-            it('should return true if partnerType is string and not equal to"Government"', function() {
-                assert.isTrue(myEl._showActivePd('Not Government'));
+            it('should return true if partnerType is string and not equal to types arguments', function() {
+                var currentType = 'Civil org';
+                var type = 'Government';
+                assert.isTrue(myEl._showActivePd(currentType, type));
             });
 
             it('should return false if partnerType is string and equal to"Government"', function() {
-                assert.isFalse(myEl._showActivePd('Government'));
+                var currentType = 'Government';
+                var type = 'Government';
+                assert.isFalse(myEl._showActivePd(currentType, type));
             });
 
             it('should return false if partnerType is not string', function() {
