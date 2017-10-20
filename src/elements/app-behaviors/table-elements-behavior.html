@@ -79,10 +79,11 @@
             return [_.cloneDeep(this.editedItem)];
         },
 
-        _canBeChanged: function() {
-            if (!this.basePermissionPath) { return true; }
+        _canBeChanged: function(basePath) {
+            let path = basePath || this.basePermissionPath;
+            if (!path) { return true; }
 
-            let readOnly = this.isReadonly(`${this.basePermissionPath}.${this.mainProperty}`);
+            let readOnly = this.isReadonly(`${path}.${this.mainProperty}`);
             if (readOnly === null) { readOnly = true; }
 
             return !readOnly;

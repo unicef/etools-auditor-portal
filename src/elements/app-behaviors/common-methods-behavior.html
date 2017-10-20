@@ -135,6 +135,10 @@
                 }
             });
             return tooltip.join(', ');
+        },
+
+        isSpecialAudit: function(type) {
+            return type === 'sa' || type && type.value === 'sa';
         }
     };
 

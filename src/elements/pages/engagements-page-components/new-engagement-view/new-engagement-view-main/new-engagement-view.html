@@ -1,7 +1,7 @@
 <!--import [polymer, app-route, paper-tabs, iron-pages, app-route/app-location, lodash]-->
 <!--import [shared-styles, module-styles, main-page-styles, pages-header-element, file-attachments-tab, last-created-behavior,
             status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement,
-            engagement-behavior, partner-details-tab]-->
+            engagement-behavior, partner-details-tab, specific-procedure]-->
 
 <dom-module id="new-engagement-view">
     <template>
@@ -47,6 +47,18 @@
                                 id="engagementDetails"
                                 base-permission-path="new_engagement">
                         </engagement-info-details>
+
+                        <template is="dom-if" if="[[isSpecialAudit(engagement.engagement_type)]]" restamp>
+                            <specific-procedure
+                                    id="specificProcedures"
+                                    class="mb-15"
+                                    without-finding-column
+                                    error-object="{{errorObject}}"
+                                    save-with-button
+                                    data-items="{{engagement.specific_procedures}}"
+                                    base-permission-path="new_engagement">
+                            </specific-procedure>
+                        </template>
 
                         <partner-details-tab
                                 id="partnerDetails"

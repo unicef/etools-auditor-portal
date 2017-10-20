@@ -262,7 +262,7 @@ Polymer({
 
     _hideTooltip: function(basePermissionPath, showInput, type) {
         return this.isReadOnly('engagement_type', basePermissionPath) ||
-            (type === 'sa' || type && type.value === 'sa') ||
+            this.isSpecialAudit(type) ||
             !showInput;
     },
 
@@ -292,7 +292,7 @@ Polymer({
     },
 
     _isAdditionalFieldRequired: function(field, basePath, type) {
-        if (type === 'sa' || type && type.value === 'sa') { return ''; }
+        if (this.isSpecialAudit(type)) { return ''; }
         return this._setRequired(field, basePath);
     }
 

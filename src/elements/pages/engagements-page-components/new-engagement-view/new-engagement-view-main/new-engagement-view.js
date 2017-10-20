@@ -27,7 +27,8 @@ Polymer({
                     date_of_comments_by_ip: null,
                     date_of_draft_report_to_unicef: null,
                     date_of_comments_by_unicef: null,
-                    partner_contacted_at: null
+                    partner_contacted_at: null,
+                    specific_procedures: []
                 };
             }
         },
@@ -80,6 +81,15 @@ Polymer({
             });
     },
 
+    customDataPrepare: function(data) {
+        if (this.isSpecialAudit(this.engagement.engagement_type)) {
+            let specificProcedures = this.getElement('#specificProcedures');
+            let specificProceduresData = specificProcedures && specificProcedures.getTabData();
+            specificProceduresData ? data.specific_procedures = specificProceduresData : null;
+        }
+        return data;
+    },
+
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
         if (event.detail.success && event.detail.data) {
@@ -110,7 +120,7 @@ Polymer({
             this.set('engagement', {
                 status: '',
                 staff_members: [],
-                type: {},
+                engagement_type: {},
                 engagement_attachments: [],
                 agreement: {},
                 date_of_field_visit: null,
@@ -118,7 +128,8 @@ Polymer({
                 date_of_comments_by_ip: null,
                 date_of_draft_report_to_unicef: null,
                 date_of_comments_by_unicef: null,
-                partner_contacted_at: null
+                partner_contacted_at: null,
+                specific_procedures: []
             });
 
             this.$.engagementDetails.resetValidationErrors();
