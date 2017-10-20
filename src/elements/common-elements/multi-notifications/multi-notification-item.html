@@ -1,4 +1,4 @@
-<!--import [polymer]-->
+<!--import [polymer, paper-button]-->
 
 <dom-module id="multi-notification-item">
     <template>
@@ -12,7 +12,7 @@
                 color: var(--paper-toast-color, #f1f1f1);
                 min-height: 48px;
                 min-width: 288px;
-                padding: 16px 24px;
+                padding: 16px 0 16px 24px;
                 box-sizing: border-box;
                 box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
                 border-radius: 2px;
@@ -29,9 +29,14 @@
             :host(.notification-open) {
                 opacity: 1;
             }
+
+            paper-button {
+                color: #0099FF;
+            }
         </style>
 
         <span>{{text}}</span>
+        <paper-button on-tap="close">OK</paper-button>
     </template>
 
     <!--inject scripts './multi-notification-item.js'-->
