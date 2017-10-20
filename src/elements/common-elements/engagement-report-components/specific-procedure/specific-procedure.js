@@ -98,8 +98,8 @@
             if (!error) { return; }
 
             let nonField = this.checkNonField(error);
-            if (nonField) {
-                this.fire('toast', {text: `Specific Procedures: ${nonField}`});
+            if (nonField || _.isString(error)) {
+                this.fire('toast', {text: `Specific Procedures: ${nonField || error}`});
             }
         },
 
