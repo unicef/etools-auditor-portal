@@ -95,10 +95,10 @@
                     <!-- PO Item Number -->
                     <paper-input
                             id="poItemNumber"
-                            class$="without-border [[_setReadonlyFieldClass(data.agreement.item_number)]]"
+                            class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
                             value="[[data.agreement.item_number]]"
                             label="[[getLabel('agreement.item_number', basePermissionPath)]]"
-                            placeholder="[[getReadonlyPlaceholder(data.agreement.item_number)]]"
+                            placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
                             disabled
                             readonly>
                     </paper-input>
@@ -199,7 +199,7 @@
 
             <div class="row-h group">
                 <div class="input-container">
-                    <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput)}}">
+                    <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput, data.engagement_type)}}">
                         <!-- Engagement Type -->
                         <etools-searchable-multiselection-menu
                                 slot="field"
@@ -237,13 +237,13 @@
                         <!-- Period Start Date -->
                         <paper-input
                                 id="periodStartDateInput"
-                                class$="disabled-as-readonly {{_setRequired('start_date', basePermissionPath)}} validate-field"
+                                class$="disabled-as-readonly {{_isAdditionalFieldRequired('start_date', basePermissionPath, data.engagement_type)}} validate-field"
                                 field="start_date"
                                 value="[[prettyDate(data.start_date)]]"
                                 label="[[getLabel('start_date', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
                                 data-selector="periodStartDate"
-                                required="{{_setRequired('start_date', basePermissionPath)}}"
+                                required="{{_isAdditionalFieldRequired('start_date', basePermissionPath, data.engagement_type)}}"
                                 disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
                                 invalid="{{_checkInvalid(errors.start_date)}}"
                                 error-message="{{errors.start_date}}"
@@ -269,13 +269,13 @@
                         <!-- Period End Date -->
                         <paper-input
                                 id="periodEndDateInput"
-                                class$="disabled-as-readonly {{_setRequired('end_date', basePermissionPath)}} validate-field"
+                                class$="disabled-as-readonly {{_isAdditionalFieldRequired('end_date', basePermissionPath, data.engagement_type)}} validate-field"
                                 field="end_date"
                                 value="[[prettyDate(data.end_date)]]"
                                 label="[[getLabel('end_date', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
                                 data-selector="periodEndDate"
-                                required="{{_setRequired('end_date', basePermissionPath)}}"
+                                required="{{_isAdditionalFieldRequired('end_date', basePermissionPath, data.engagement_type)}}"
                                 disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
                                 invalid="{{_checkInvalid(errors.end_date)}}"
                                 error-message="{{errors.end_date}}"
@@ -302,13 +302,13 @@
                     <div class="input-container">
                         <!-- Total Value of Selected FACE Forms -->
                         <etools-currency-amount-input
-                                class$="disabled-as-readonly {{_setRequired('total_value', basePermissionPath)}} validate-field"
+                                class$="disabled-as-readonly {{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}} validate-field"
                                 field="total_value"
                                 value="{{data.total_value}}"
                                 currency="$"
                                 label="[[getLabel('total_value', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
-                                required$="{{_setRequired('total_value', basePermissionPath)}}"
+                                required$="{{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}}"
                                 disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
                                 invalid="{{_checkInvalid(errors.total_value)}}"
                                 error-message="{{errors.total_value}}"

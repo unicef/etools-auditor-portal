@@ -1,0 +1,32 @@
+<!--import [polymer]-->
+<!--import [assign-engagement, specific-procedure]-->
+
+<dom-module id="sa-report-page-main">
+    <template>
+        <style>
+            .mb-15 { margin-bottom: 15px; }
+        </style>
+
+        <assign-engagement
+                id="assignEngagement"
+                original-data="[[originalData]]"
+                class="mb-15"
+                error-object="{{errorObject}}"
+                data="{{engagement}}"
+                audit-type="Special Audit"
+                base-permission-path="{{permissionBase}}">
+        </assign-engagement>
+
+        <specific-procedure
+                id="specificProcedures"
+                class="mb-15"
+                error-object="{{errorObject}}"
+                data-items="{{engagement.specific_procedures}}"
+                base-permission-path="{{permissionBase}}">
+        </specific-procedure>
+
+
+    </template>
+
+    <!-- inject scripts './sa-report-page-main.js'-->
+</dom-module>

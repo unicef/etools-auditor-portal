@@ -52,7 +52,7 @@ Polymer({
 
         let extra = _.get(this, 'riskData.blueprints[0].risk.extra', {comments: ''});
         if (_.isJSONObj(extra)) {
-            extra = JSON.parse(extra)
+            extra = JSON.parse(extra);
         }
 
         this.set('primaryArea.risk.value', this.riskOptions[this.riskData.blueprints[0].risk.value]);

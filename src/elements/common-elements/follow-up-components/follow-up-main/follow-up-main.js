@@ -23,7 +23,7 @@ Polymer({
     },
 
     showFindings: function(type) {
-        return !!type && type !== 'ma';
+        return !!type && !~['ma', 'sa'].indexOf(type);
     }
 
 });

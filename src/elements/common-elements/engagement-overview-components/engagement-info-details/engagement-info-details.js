@@ -30,6 +30,10 @@ Polymer({
                     label: 'Spot Check',
                     link: 'spot-checks',
                     value: 'sc'
+                }, {
+                    label: 'Special Audit',
+                    link: 'special-audits',
+                    value: 'sa'
                 }];
             },
             computed: '_setEngagementTypes(basePermissionPath)'
@@ -88,6 +92,7 @@ Polymer({
         '_errorHandler(errorObject)',
         '_setShowInput(data.engagement_type)',
         'updateStyles(poPermissionPath, poUpdating)',
+        'updateStyles(data.engagement_type)',
         'updatePoBasePath(data.agreement.id)'
     ],
 
@@ -255,8 +260,10 @@ Polymer({
         return new Date(today - 1);
     },
 
-    _hideTooltip: function(basePermissionPath, showInput) {
-        return this.isReadOnly('engagement_type', basePermissionPath) || !showInput;
+    _hideTooltip: function(basePermissionPath, showInput, type) {
+        return this.isReadOnly('engagement_type', basePermissionPath) ||
+            (type === 'sa' || type && type.value === 'sa') ||
+            !showInput;
     },
 
     _setEngagementTypes: function(basePermissionPath) {
@@ -266,7 +273,8 @@ Polymer({
         let links = {
             ma: 'micro-assessments',
             audit: 'audits',
-            sc: 'spot-checks'
+            sc: 'spot-checks',
+            sa: 'special-audits'
         };
 
         return types.map((typeObject) => {
@@ -281,6 +289,11 @@ Polymer({
     _getEngagementTypeLabel: function(type) {
         let value = this._processValue(type) || {};
         return value.label || '';
+    },
+
+    _isAdditionalFieldRequired: function(field, basePath, type) {
+        if (type === 'sa' || type && type.value === 'sa') { return ''; }
+        return this._setRequired(field, basePath);
     }
 
 });

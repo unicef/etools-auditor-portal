@@ -208,7 +208,8 @@ Polymer({
         this.set('itemValues.link_type', {
             ma: 'micro-assessments',
             audit: 'audits',
-            sc: 'spot-checks'
+            sc: 'spot-checks',
+            sa: 'special-audits'
         });
     },
 
