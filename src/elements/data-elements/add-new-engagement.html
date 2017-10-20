@@ -51,7 +51,12 @@
                     }
                 }
 
-                if (status === 400) { this.set('errorObject', response); }
+                if (status === 400) {
+                    this.set('errorObject', response);
+                } else if(status === 413) {
+                    this.set('errorObject', {});
+                    this.fire('toast', {text: `Error: Exceeded the maximum size of uploaded file(s).`});
+                }
 
                 this.fire('engagement-created');
                 this.fire('global-loading', {type: 'create-engagement'});
