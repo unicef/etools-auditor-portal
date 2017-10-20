@@ -1,16 +1,16 @@
 <!--import [polymer]-->
-<!--import [assign-engagement, specific-procedure]-->
+<!--import [assign-engagement, specific-procedure, other-recommendations]-->
 
 <dom-module id="sa-report-page-main">
     <template>
         <style>
-            .mb-15 { margin-bottom: 15px; }
+            .mb-24 { margin-bottom: 24px; }
         </style>
 
         <assign-engagement
                 id="assignEngagement"
                 original-data="[[originalData]]"
-                class="mb-15"
+                class="mb-24"
                 error-object="{{errorObject}}"
                 data="{{engagement}}"
                 audit-type="Special Audit"
@@ -19,12 +19,19 @@
 
         <specific-procedure
                 id="specificProcedures"
-                class="mb-15"
+                class="mb-24"
                 error-object="{{errorObject}}"
                 data-items="{{engagement.specific_procedures}}"
                 base-permission-path="{{permissionBase}}">
         </specific-procedure>
 
+        <other-recommendations
+                id="otherRecommendations"
+                class="mb-24"
+                error-object="{{errorObject}}"
+                data-items="{{engagement.other_recommendations}}"
+                base-permission-path="{{permissionBase}}">
+        </other-recommendations>
 
     </template>
 

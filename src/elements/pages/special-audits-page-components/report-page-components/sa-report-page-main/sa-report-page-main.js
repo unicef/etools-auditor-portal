@@ -22,6 +22,10 @@ Polymer({
 
     getSpecificProceduresData: function() {
         return this.$.specificProcedures.getTabData();
+    },
+
+    getOtherRecommendationsData: function() {
+        return this.$.otherRecommendations.getTabData();
     }
 
 });

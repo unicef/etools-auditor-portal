@@ -109,6 +109,11 @@
             } else if (!removeFinding && columns.length === 2) {
                 this.splice('columns', 2, 0, findingColumn);
             }
+        },
+
+        _hideEditIcon: function() {
+            return !this._canBeChanged('new_engagement') && this.withoutFindingColumn;
         }
+
     });
 })();

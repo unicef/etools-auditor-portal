@@ -4,13 +4,13 @@
 <dom-module id="audit-report-page-main">
     <template>
         <style>
-            .mb-15 { margin-bottom: 15px; }
+            .mb-24 { margin-bottom: 24px; }
         </style>
 
         <assign-engagement
                 id="assignEngagement"
                 original-data="[[originalData]]"
-                class="mb-15"
+                class="mb-24"
                 error-object="{{errorObject}}"
                 data="{{engagement}}"
                 audit-type="Audit"
@@ -19,7 +19,7 @@
 
         <findings-summary
                 id="findingsSummary"
-                class="mb-15"
+                class="mb-24"
                 data="{{engagement}}"
                 error-object="{{errorObject}}"
                 base-permission-path="{{permissionBase}}">
@@ -27,7 +27,7 @@
 
         <financial-findings
                 id="financialFindings"
-                class="mb-15"
+                class="mb-24"
                 error-object="{{errorObject}}"
                 data-items="{{engagement.financial_finding_set}}"
                 base-permission-path="{{permissionBase}}">
@@ -35,7 +35,7 @@
 
         <assessment-of-controls
                 id="assessmentOfControls"
-                class="mb-15"
+                class="mb-24"
                 data="{{engagement}}"
                 error-object="{{errorObject}}"
                 base-permission-path="{{permissionBase}}">
@@ -43,7 +43,7 @@
 
         <key-internal-controls-weaknesses
                 id="keyInternalControlsWeaknesses"
-                class="mb-15"
+                class="mb-24"
                 error-object="{{errorObject}}"
                 subject-areas="[[engagement.key_internal_weakness]]"
                 base-permission-path="{{permissionBase}}">

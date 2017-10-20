@@ -36,7 +36,6 @@ Polymer({
     ],
 
     listeners: {
-        'engagement-info-loaded': '_infoLoaded',
         'engagement-updated': '_engagementUpdated',
         'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
@@ -65,21 +64,17 @@ Polymer({
         //Report Data
         let reportPage = this.getElement('#report');
         if (!reportPage) { return data; }
-        //
-        // let findingsSummaryData = reportPage.getFindingsSummaryData();
-        // let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
-        let specificProceduresData = reportPage.getSpecificProceduresData();
-        // let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
 
-        // _.assign(data, findingsSummaryData, assessmentOfControlsData);
+        let specificProceduresData = reportPage.getSpecificProceduresData();
+        let otherRecommendationsData = reportPage.getOtherRecommendationsData();
 
         if (!_.isNull(specificProceduresData)) {
             data.specific_procedures = specificProceduresData;
         }
-        //
-        // if (!_.isNull(keyInternalWeaknessData)) {
-        //     data.key_internal_weakness = keyInternalWeaknessData;
-        // }
+
+        if (!_.isNull(otherRecommendationsData)) {
+            data.other_recommendations = otherRecommendationsData;
+        }
 
         return data;
     },
@@ -94,10 +89,6 @@ Polymer({
             return false;
         }
         return true;
-    },
-
-    infoLoaded: function() {
-
     }
 
 });

@@ -3,24 +3,22 @@
 <!--import [list-header, list-element, common-methods-behavior, tab-inputs-styles, module-styles, dialog-element,
             table-elements-behavior, permission-controller, textarea-max-rows-behavior]-->
 
-<dom-module id="specific-procedure">
+<dom-module id="other-recommendations">
     <template>
         <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
-        <!-- inject styles './specific-procedure.scss'-->
+        <!-- inject styles './other-recommendations.scss'-->
 
         <etools-content-panel
                 class="content-section clearfix"
-                panel-title="[[getLabel('specific_procedures', basePermissionPath)]]">
+                panel-title="[[getLabel('other_recommendations', basePermissionPath)]]">
             <div slot="panel-btns">
                 <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                    <div hidden$="[[!_canBeChanged('new_engagement', basePermissionPath)]]">
-                        <paper-icon-button
-                                class="panel-button"
-                                on-tap="openAddDialog"
-                                icon="add-box">
-                        </paper-icon-button>
-                        <paper-tooltip offset="0">Add</paper-tooltip>
-                    </div>
+                    <paper-icon-button
+                            class="panel-button"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
                 </div>
             </div>
 
@@ -43,10 +41,8 @@
                         multiline
                         no-animation>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" hidden$="[[_hideEditIcon(basePermissionPath)]]"
-                                           on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"
-                                           hidden$="[[!_canBeChanged('new_engagement', basePermissionPath)]]"></paper-icon-button>
+                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -71,17 +67,16 @@
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
 
-                    <template is="dom-if" if="[[_canBeChanged('new_engagement', basePermissionPath)]]" restamp>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <!-- Description -->
                                 <paper-textarea
-                                        class$="disabled-as-readonly fixed-width validate-input [[_setRequired('specific_procedures.description', basePermissionPath)]]"
+                                        class$="disabled-as-readonly fixed-width validate-input [[_setRequired('other_recommendations.description', basePermissionPath)]]"
                                         value="{{editedItem.description}}"
                                         allowed-pattern="[\d\s]"
-                                        label="[[getLabel('specific_procedures.description', basePermissionPath)]]"
-                                        placeholder="[[getPlaceholderText('specific_procedures.description', basePermissionPath)]]"
-                                        required$="[[_setRequired('specific_procedures.description', basePermissionPath)]]"
+                                        label="[[getLabel('other_recommendations.description', basePermissionPath)]]"
+                                        placeholder="[[getPlaceholderText('other_recommendations.description', basePermissionPath)]]"
+                                        required$="[[_setRequired('other_recommendations.description', basePermissionPath)]]"
                                         disabled$="[[requestInProcess]]"
                                         readonly$="[[requestInProcess]]"
                                         max-rows="4"
@@ -92,36 +87,11 @@
                                 </paper-textarea>
                             </div>
                         </div>
-                    </template>
-
-                    <template is="dom-if" if="[[!_canBeChanged('new_engagement', basePermissionPath)]]" restamp>
-                        <div class="row-h group">
-                            <div class="input-container input-container-l">
-                                <!-- Finding -->
-                                <paper-textarea
-                                        class$="disabled-as-readonly fixed-width validate-input [[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                                        value="{{editedItem.finding}}"
-                                        allowed-pattern="[\d\s]"
-                                        label="[[getLabel('specific_procedures.finding', basePermissionPath)]]"
-                                        placeholder="[[getPlaceholderText('specific_procedures.finding', basePermissionPath)]]"
-                                        required$="[[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                                        disabled$="[[requestInProcess]]"
-                                        readonly$="[[requestInProcess]]"
-                                        max-rows="4"
-                                        invalid="[[_checkInvalid(errors.0.finding)]]"
-                                        error-message="[[errors.0.finding]]"
-                                        on-focus="_resetFieldError"
-                                        on-tap="_resetFieldError">
-                                </paper-textarea>
-                            </div>
-                        </div>
-                    </template>
-
 
                 </div>
             </div>
         </dialog-element>
     </template>
 
-    <!-- inject scripts './specific-procedure.js'-->
+    <!-- inject scripts './other-recommendations.js'-->
 </dom-module>

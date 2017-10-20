@@ -82,10 +82,12 @@ Polymer({
     },
 
     customDataPrepare: function(data) {
-        if (this.isSpecialAudit(this.engagement.engagement_type)) {
-            let specificProcedures = this.getElement('#specificProcedures');
-            let specificProceduresData = specificProcedures && specificProcedures.getTabData();
-            specificProceduresData ? data.specific_procedures = specificProceduresData : null;
+        if (!this.isSpecialAudit(this.engagement.engagement_type)) { return data; }
+
+        let specificProcedures = this.getElement('#specificProcedures');
+        let specificProceduresData = specificProcedures && specificProcedures.getTabData();
+        if (specificProceduresData) {
+            _.assign(data, {specific_procedures: specificProceduresData});
         }
         return data;
     },
