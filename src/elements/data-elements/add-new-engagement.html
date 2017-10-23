@@ -35,7 +35,6 @@
 
             _handleResponse: function (data) {
                 this.fire('engagement-created', {success: true, data: data.detail});
-                this.fire('global-loading', {type: 'create-engagement'});
             },
 
             _handleError: function (event, error) {
