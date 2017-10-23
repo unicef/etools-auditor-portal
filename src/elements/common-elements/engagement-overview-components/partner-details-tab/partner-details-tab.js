@@ -233,8 +233,7 @@ Polymer({
     _setPartnerAddress: function(partner) {
         if (!partner) { return ''; }
 
-        let address = partner.street_address || partner.address;
-        return [address, partner.postal_code, partner.city, partner.country]
+        return [partner.street_address, partner.postal_code, partner.city, partner.country]
             .filter((info) => !!info)
             .join(', ');
     }
