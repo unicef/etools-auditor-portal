@@ -81,6 +81,13 @@ Polymer({
                     'agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value'
                 ]
             }
+        },
+        sharedIpWithOptions: {
+            type: Array,
+            value: function() {
+                return [];
+            },
+            computed: '_setSharedIpWith(basePermissionPath)'
         }
     },
 
@@ -98,6 +105,11 @@ Polymer({
 
     ready: function() {
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+    },
+
+    _setSharedIpWith: function(basePermissionPath) {
+        let sharedIpWith = this.getChoices(`${basePermissionPath}.shared_ip_with`);
+        return sharedIpWith || [];
     },
 
     validate: function() {
@@ -235,6 +247,8 @@ Polymer({
         if (!this.originalData.agreement || this.originalData.agreement.id !== this.data.agreement.id) { data.agreement = this.data.agreement.id; }
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
         if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
+        if (this.originalData.shared_ip_with !== this.shared_ip_with.value) { data.shared_ip_with = this.shared_ip_with.value; }
+        if (this.originalData.joint_audit !== this.data.joint_audit) { data.joint_audit = this.data.joint_audit; }
 
         return data;
     },

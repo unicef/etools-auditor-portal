@@ -31,6 +31,20 @@
                     cursor: pointer;
                 }'}
             }
+
+            .join-audit {
+                padding-left: 12px;
+                margin-top: 24px;
+                box-sizing: border-box;
+            }
+
+            .row-h.float {
+                margin-bottom: 0;
+            }
+
+            .row-h.float .input-container {
+                margin-bottom: 8px;
+            }
         </style>
 
         <get-agreement-data
@@ -197,7 +211,7 @@
 
             </div>
 
-            <div class="row-h group">
+            <div class="row-h group float">
                 <div class="input-container">
                     <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput, data.engagement_type)}}">
                         <!-- Engagement Type -->
@@ -296,8 +310,6 @@
                     </div>
                 </template>
 
-            </div>
-            <div class="row-h group">
                 <template is="dom-if" if="{{showInput}}" restamp>
                     <div class="input-container">
                         <!-- Total Value of Selected FACE Forms -->
@@ -317,6 +329,36 @@
                         </etools-currency-amount-input>
                     </div>
                 </template>
+                <div class="input-container">
+                    <etools-searchable-multiselection-menu
+                            class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
+                            value="{{shared_ip_with}}"
+                            label="[[getLabel('shared_ip_with', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
+                            options="[[sharedIpWithOptions]]"
+                            custom-object-options
+                            option-label="display_name"
+                            option-value="value"
+                            selected="{{data.shared_ip_with}}"
+                            update-selected
+                            required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                            invalid="{{errors.shared_ip_with}}"
+                            error-message="{{errors.shared_ip_with}}"
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError"
+                            hide-search
+                            no-title-attr>
+                    </etools-searchable-multiselection-menu>
+                </div>
+                <div class="input-container join-audit">
+                    <etools-checkable-input
+                            checked="{{data.joint_audit}}"
+                            label="[[getLabel('joint_audit', basePermissionPath)]]"
+                            disabled="[[isReadOnly('joint_audit', basePermissionPath)]]">
+                    </etools-checkable-input>
+                </div>
             </div>
         </etools-content-panel>
     </template>
