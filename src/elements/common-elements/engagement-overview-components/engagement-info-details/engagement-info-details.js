@@ -242,7 +242,7 @@ Polymer({
         if (!this.originalData.agreement || this.originalData.agreement.id !== this.data.agreement.id) { data.agreement = this.data.agreement.id; }
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
         if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
-        if (this.originalData.shared_ip_with !== this.shared_ip_with.value) { data.shared_ip_with = this.shared_ip_with.value; }
+        if (this.shared_ip_with && (this.originalData.shared_ip_with !== this.shared_ip_with.value)) { data.shared_ip_with = this.shared_ip_with.value; }
         if (this.originalData.joint_audit !== this.data.joint_audit) { data.joint_audit = this.data.joint_audit; }
 
         return data;
