@@ -110,6 +110,8 @@ Polymer({
                 staff_members: [],
                 type: {}
             };
+
+            this.fire('global-loading', {type: 'create-engagement'});
         }
     },
 
