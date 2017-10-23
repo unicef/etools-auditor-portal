@@ -1,5 +1,6 @@
 Polymer({
     is: 'multi-notification-list',
+
     properties: {
         notifications: {
             type: Array,
@@ -23,11 +24,13 @@ Polymer({
             value: 1
         }
     },
+
     listeners: {
         'notification-push': '_onNotificationPush',
         'notification-shift': '_onNotificationShift',
         'reset-notifications': '_resetNotifications',
     },
+
     _onNotificationShift: function(e, id) {
         let index = this.notifications.findIndex((notification) => {
             return notification.id === id;
@@ -43,6 +46,7 @@ Polymer({
             this.push('notifications', this.shift('notificationsQueue'));
         }
     },
+
     _onNotificationPush: function(e, notification = {}) {
         notification.id = `toast___${this.count++}`;
 
@@ -52,6 +56,7 @@ Polymer({
             this.push('notificationsQueue', notification);
         }
     },
+
     _resetNotifications: function() {
         this.set('notifications', []);
         this.set('notificationsQueue', []);

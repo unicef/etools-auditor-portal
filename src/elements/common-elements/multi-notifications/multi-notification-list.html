@@ -11,9 +11,11 @@
                 z-index: 105;
             }
         </style>
+
         <template is="dom-repeat" items="[[notifications]]">
             <multi-notification-item id="[[item.id]]" opened text="{{item.text}}"></multi-notification-item>
         </template>
     </template>
+
     <!--inject scripts './multi-notification-list.js'-->
 </dom-module>
