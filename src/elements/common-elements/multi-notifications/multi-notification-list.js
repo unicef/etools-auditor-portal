@@ -18,41 +18,49 @@ Polymer({
         limit: {
             type: Number,
             value: 3
+        },
+        count: {
+            type: Number,
+            value: 1
         }
     },
 
     listeners: {
         'notification-push': '_onNotificationPush',
-        'notification-shift': '_onNotificationShift'
+        'notification-shift': '_onNotificationShift',
+        'reset-notifications': '_resetNotifications',
     },
 
-    _onNotificationShift: function() {
-        this.shift('notifications');
+    _onNotificationShift: function(e, id) {
+        let index = this.notifications.findIndex((notification) => {
+            return notification.id === id;
+        });
+
+        if (index !== undefined) {
+            this.splice('notifications', index, 1);
+        }
+
         Polymer.dom.flush();
         //Check and show notifications from queue
         if (this.notificationsQueue.length) {
             this.push('notifications', this.shift('notificationsQueue'));
-            this.moveUpNotifications();
         }
     },
 
-    _onNotificationPush: function(e, notification) {
+    _onNotificationPush: function(e, notification = {}) {
+        notification.id = `toast___${this.count++}`;
+
         if (this.limit > this.notifications.length) {
             this.push('notifications', notification);
-            this.moveUpNotifications();
         } else {
             this.push('notificationsQueue', notification);
         }
     },
 
-    moveUpNotifications: function() {
-        Polymer.dom.flush();
-        let notifications = Polymer.dom(this.root).querySelectorAll('multi-notification-item');
-        notifications.forEach((notification) => {
-            notification.fire('move-up');
-        });
-
-    }
+    _resetNotifications: function() {
+        this.set('notifications', []);
+        this.set('notificationsQueue', []);
+    },
 
     /**
      * Fired when notification added in queue
