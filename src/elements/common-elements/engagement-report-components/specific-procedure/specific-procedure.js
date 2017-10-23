@@ -95,7 +95,7 @@
         ],
 
         _checkNonField: function(error) {
-            if (!error) { return; }
+            if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) { return; }
 
             let nonField = this.checkNonField(error);
             if (nonField || _.isString(error)) {
