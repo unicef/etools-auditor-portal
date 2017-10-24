@@ -47,7 +47,10 @@ Polymer({
             (this.actions[0].code || this.actions[0]) :
             target && target.getAttribute('action-code');
 
-        if (action) { this.fire(`action-activated`, {type: action}); }
+        if (action) {
+            this.fire(`toast`, {reset: true});
+            this.fire(`action-activated`, {type: action});
+        }
     },
 
     _showOtherActions: function(length) {
