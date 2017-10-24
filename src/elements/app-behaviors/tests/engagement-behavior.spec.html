@@ -206,7 +206,6 @@
                 behaviorObj._routeConfig(behaviorObj.route);
 
                 assert.equal(behaviorObj.engagementId, 26);
-                assert.isFalse(behaviorObj.fire.called);
             });
 
             it('doesn\'t make any action if prefix is not correct', function () {
