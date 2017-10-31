@@ -169,7 +169,7 @@
                 let paperInput = Polymer.dom(myEl.root).querySelector('.search-input-container paper-input');
 
                 assert.isFalse(spy.called);
-                paperInput.fire('keydown');
+                paperInput.fire('value-changed');
                 assert.isTrue(spy.called);
             });
         });
