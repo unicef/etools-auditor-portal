@@ -61,7 +61,7 @@ Polymer({
 
     validate: function(forSave) {
         if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
-            this.set('errors', {children: [{blueprints: [{risk: {value: 'Please, select Risk Assessment'}}]}]});
+            this.set('errors', {children: [{blueprints: [{risk: {value: 'Field is required'}}]}]});
             this.fire('toast', {text: `${this.tabTexts.name}: Please correct errors`});
             return false;
         }
@@ -77,8 +77,8 @@ Polymer({
             children: [{
                 blueprints: [{
                     risk: {
-                        value: !riskValid ? 'Please, select Risk Assessment' : false,
-                        extra: !commentsValid ? 'Please, enter Brief Justification' : false
+                        value: !riskValid ? 'Field is required' : false,
+                        extra: !commentsValid ? 'Field is required' : false
                     }
                 }]
             }]
