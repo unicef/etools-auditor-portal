@@ -350,6 +350,15 @@ Polymer({
     },
 
     removeStaff: function() {
+        let hasAccess = this.get('editedItem.hasAccess');
+        let removalForbidden = this._isCheckboxReadonly(hasAccess, this.engagementStaffs, this.saveWithButton);
+
+        if (removalForbidden) {
+            this.fire('toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
+            this.dialogOpened = false;
+            return false;
+        }
+
         this.requestInProcess = true;
         this.set('newData', {
             method: 'DELETE',

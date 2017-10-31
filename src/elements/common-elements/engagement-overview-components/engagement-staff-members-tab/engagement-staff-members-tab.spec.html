@@ -169,6 +169,7 @@
         it('method removeStaff sets requestInProcess to true and calls set method', function() {
             myEl.requestInProcess = false;
             sinon.stub(myEl, 'set');
+            sinon.stub(myEl, '_isCheckboxReadonly').returns(false);
             myEl.editedIndex = 666;
             myEl.editedItem = {id: 'test'};
 
