@@ -56,13 +56,16 @@
                 if (!detail) {
                     this._handleOfficersError();
                 } else {
-                    let data = detail.map((officer) => {
+                    let activePartnerOfficers = detail.filter((officer) => {
+                        return officer && officer.active;
+                    });
+                    activePartnerOfficers = activePartnerOfficers.map((officer) => {
                         let partnerOfficer = _.clone(officer);
                         partnerOfficer.fullName = `${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
                         return partnerOfficer;
                     });
-                    this._setData(`officers_${this.lastData.id}`, data);
-                    this.lastData.partnerOfficers = data;
+                    this._setData(`officers_${this.lastData.id}`, activePartnerOfficers);
+                    this.lastData.partnerOfficers = activePartnerOfficers;
                     this.finishRequest();
                 }
             },
