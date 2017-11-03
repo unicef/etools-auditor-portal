@@ -52,17 +52,6 @@
             });
         });
 
-        describe('method _navigateToAdminPage()', function () {
-            it('calls _changeLocation() method with admin page url', function () {
-                let spy = sinon.stub(myEl, '_changeLocation');
-
-                assert.isFalse(spy.called);
-                myEl._navigateToAdminPage();
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy.calledWithExactly('admin'));
-            });
-        });
-
         describe('method _logout()', function () {
             it('resets user data', function () {
                 let spy = sinon.spy(myEl, 'resetOldUserData');
