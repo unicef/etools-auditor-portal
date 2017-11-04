@@ -107,16 +107,26 @@
 
                 <div class="input-container">
                     <!-- PO Item Number -->
-                    <paper-input
-                            id="poItemNumber"
-                            class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
-                            value="[[data.agreement.item_number]]"
-                            label="[[getLabel('agreement.item_number', basePermissionPath)]]"
-                            placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
-                            disabled
-                            readonly>
-                    </paper-input>
-                    <paper-tooltip offset="0">[[data.agreement.item_number]]</paper-tooltip>
+                    <etools-searchable-multiselection-menu
+                            class$="validate-field disabled-as-readonly [[_setRequired('po_item', basePermissionPath)]]"
+                            value="{{data.po_item}}"
+                            label="[[getLabel('po_item', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('po_item', basePermissionPath)]]"
+                            options="[[data.agreement.items]]"
+                            custom-object-options
+                            option-label="number"
+                            option-value="id"
+                            required$="{{_setRequired('po_item', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('po_item', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('po_item', basePermissionPath)]]"
+                            invalid="{{_checkInvalid(errors.po_item)}}"
+                            error-message="{{errors.po_item}}"
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError"
+                            hide-search
+                            no-title-attr>
+                    </etools-searchable-multiselection-menu>
+                    <paper-tooltip offset="0">[[data.po_item]]</paper-tooltip>
                 </div>
             </div>
 
