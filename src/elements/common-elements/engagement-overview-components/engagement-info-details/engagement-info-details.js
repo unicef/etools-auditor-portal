@@ -166,11 +166,11 @@ Polymer({
     },
 
     poKeydown: function(event) {
-        let orderNumber = this.get('data.agreement.order_number') || '';
-        if (event.keyCode === 13 || orderNumber.length === 10) {
+        if (event.keyCode === 13) {
             this._requestAgreement(event);
         }
     },
+
 
     _requestAgreement: function(event) {
         if (this.requestInProcess) { return; }
