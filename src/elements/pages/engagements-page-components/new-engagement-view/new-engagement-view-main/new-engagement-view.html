@@ -48,6 +48,13 @@
                                 base-permission-path="new_engagement">
                         </engagement-info-details>
 
+                        <partner-details-tab
+                                id="partnerDetails"
+                                error-object="{{errorObject}}"
+                                engagement="{{engagement}}"
+                                base-permission-path="new_engagement">
+                        </partner-details-tab>
+
                         <template is="dom-if" if="[[isSpecialAudit(engagement.engagement_type)]]" restamp>
                             <specific-procedure
                                     id="specificProcedures"
@@ -59,13 +66,6 @@
                                     base-permission-path="new_engagement">
                             </specific-procedure>
                         </template>
-
-                        <partner-details-tab
-                                id="partnerDetails"
-                                error-object="{{errorObject}}"
-                                engagement="{{engagement}}"
-                                base-permission-path="new_engagement">
-                        </partner-details-tab>
 
                         <engagement-staff-members-tab
                                 id="staffMembers"

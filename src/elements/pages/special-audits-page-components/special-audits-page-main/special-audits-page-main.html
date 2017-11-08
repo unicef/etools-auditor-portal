@@ -95,15 +95,6 @@
                                     base-permission-path="{{permissionBase}}">
                             </engagement-info-details>
 
-                            <specific-procedure
-                                    id="specificProcedures"
-                                    class="mb-15"
-                                    without-finding-column
-                                    error-object="{{errorObject}}"
-                                    data-items="{{engagement.specific_procedures}}"
-                                    base-permission-path="{{permissionBase}}">
-                            </specific-procedure>
-
                             <partner-details-tab
                                     id="partnerDetails"
                                     original-data="[[originalData]]"
@@ -112,6 +103,14 @@
                                     base-permission-path="{{permissionBase}}">
                             </partner-details-tab>
 
+                            <specific-procedure
+                                    id="specificProcedures"
+                                    class="mb-15"
+                                    without-finding-column
+                                    error-object="{{errorObject}}"
+                                    data-items="{{engagement.specific_procedures}}"
+                                    base-permission-path="{{permissionBase}}">
+                            </specific-procedure>
 
                             <engagement-staff-members-tab
                                     id="staffMembers"
