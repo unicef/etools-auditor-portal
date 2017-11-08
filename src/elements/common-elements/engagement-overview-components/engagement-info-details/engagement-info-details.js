@@ -249,6 +249,7 @@ Polymer({
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
         if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
         if (this.shared_ip_with && (this.originalData.shared_ip_with !== this.shared_ip_with.value)) { data.shared_ip_with = this.shared_ip_with.value; }
+        if (this.data.po_item && (this.originalData.po_item !== this.data.po_item.id)) { data.po_item = this.data.po_item.id; }
         if (this.originalData.joint_audit !== this.data.joint_audit) { data.joint_audit = this.data.joint_audit; }
 
         return data;
