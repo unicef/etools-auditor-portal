@@ -310,6 +310,12 @@ Polymer({
     _isAdditionalFieldRequired: function(field, basePath, type) {
         if (this.isSpecialAudit(type)) { return ''; }
         return this._setRequired(field, basePath);
+    },
+    _getPoItems: function(agreement) {
+        return agreement && agreement.items ? agreement.items : [];
+    },
+    _isDataAgreementReaonly: function(field, basePermissionPath, agreement) {
+        return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
     }
 
 });

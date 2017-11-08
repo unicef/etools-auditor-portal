@@ -112,13 +112,13 @@
                             value="{{data.po_item}}"
                             label="[[getLabel('po_item', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('po_item', basePermissionPath)]]"
-                            options="[[data.agreement.items]]"
+                            options="[[_getPoItems(data.agreement)]]"
                             custom-object-options
                             option-label="number"
                             option-value="id"
                             required$="{{_setRequired('po_item', basePermissionPath)}}"
-                            disabled$="[[isReadOnly('po_item', basePermissionPath)]]"
-                            readonly$="[[isReadOnly('po_item', basePermissionPath)]]"
+                            disabled$="[[_isDataAgreementReaonly('po_item', basePermissionPath, data.agreement)]]"
+                            readonly$="[[_isDataAgreementReaonly('po_item', basePermissionPath, data.agreement)]]"
                             invalid="{{_checkInvalid(errors.po_item)}}"
                             error-message="{{errors.po_item}}"
                             on-focus="_resetFieldError"
@@ -126,7 +126,7 @@
                             hide-search
                             no-title-attr>
                     </etools-searchable-multiselection-menu>
-                    <paper-tooltip offset="0">[[data.po_item]]</paper-tooltip>
+                    <paper-tooltip offset="0">[[data.po_item.number]]</paper-tooltip>
                 </div>
             </div>
 
