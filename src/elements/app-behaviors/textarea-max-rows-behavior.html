@@ -6,6 +6,7 @@
     window.APBehaviors = window.APBehaviors || {};
     APBehaviors.TextareaMaxRowsBehavior = {
         attached: function() {
+            Polymer.dom.flush();
             let paperTextareas = Polymer.dom(this.root).querySelectorAll('paper-textarea') || [];
 
             paperTextareas.forEach((paperTextarea) => {
