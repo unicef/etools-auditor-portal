@@ -171,7 +171,6 @@ Polymer({
         }
     },
 
-
     _requestAgreement: function(event) {
         if (this.requestInProcess) { return; }
 
