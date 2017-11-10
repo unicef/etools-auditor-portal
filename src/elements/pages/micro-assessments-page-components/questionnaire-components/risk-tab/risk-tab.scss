@@ -5,6 +5,9 @@
     .edit-icon-slot {
         overflow: visible !important;
         line-height: 57px;
+        display: flex;
+        align-items: center;
+        height: 100%;
     }
 
     .tab-container {

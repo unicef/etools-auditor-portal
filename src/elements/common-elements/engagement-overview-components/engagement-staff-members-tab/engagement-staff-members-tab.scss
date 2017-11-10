@@ -61,7 +61,12 @@
         height: 33px;
         color: var(--gray-mid);
     }
-    .edit-icon-slot { overflow: visible !important; }
+    .edit-icon-slot {
+        overflow: visible !important;
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
 
     .check-icon {
         margin-left: -3%;
