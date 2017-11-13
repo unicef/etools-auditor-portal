@@ -339,36 +339,38 @@
                         </etools-currency-amount-input>
                     </div>
                 </template>
-                <div class="input-container">
-                    <etools-searchable-multiselection-menu
-                            class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
-                            value="{{shared_ip_with}}"
-                            label="[[getLabel('shared_ip_with', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
-                            options="[[sharedIpWithOptions]]"
-                            custom-object-options
-                            option-label="display_name"
-                            option-value="value"
-                            selected="{{data.shared_ip_with}}"
-                            update-selected
-                            required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
-                            disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                            readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                            invalid="{{errors.shared_ip_with}}"
-                            error-message="{{errors.shared_ip_with}}"
-                            on-focus="_resetFieldError"
-                            on-tap="_resetFieldError"
-                            hide-search
-                            no-title-attr>
-                    </etools-searchable-multiselection-menu>
-                </div>
-                <div class="input-container join-audit">
-                    <etools-checkable-input
-                            checked="{{data.joint_audit}}"
-                            label="[[getLabel('joint_audit', basePermissionPath)]]"
-                            readonly="[[isReadOnly('joint_audit', basePermissionPath)]]">
-                    </etools-checkable-input>
-                </div>
+                <template is="dom-if" if="{{showAdditionalInput}}" restamp>
+                    <div class="input-container">
+                        <etools-searchable-multiselection-menu
+                                class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
+                                value="{{shared_ip_with}}"
+                                label="[[getLabel('shared_ip_with', basePermissionPath)]]"
+                                placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
+                                options="[[sharedIpWithOptions]]"
+                                custom-object-options
+                                option-label="display_name"
+                                option-value="value"
+                                selected="{{data.shared_ip_with}}"
+                                update-selected
+                                required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
+                                disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                                readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                                invalid="{{errors.shared_ip_with}}"
+                                error-message="{{errors.shared_ip_with}}"
+                                on-focus="_resetFieldError"
+                                on-tap="_resetFieldError"
+                                hide-search
+                                no-title-attr>
+                        </etools-searchable-multiselection-menu>
+                    </div>
+                    <div class="input-container join-audit">
+                        <etools-checkable-input
+                                checked="{{data.joint_audit}}"
+                                label="[[getLabel('joint_audit', basePermissionPath)]]"
+                                readonly="[[isReadOnly('joint_audit', basePermissionPath)]]">
+                        </etools-checkable-input>
+                    </div>
+                </template>
             </div>
         </etools-content-panel>
     </template>
