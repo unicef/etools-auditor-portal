@@ -94,6 +94,7 @@ Polymer({
     observers: [
         '_errorHandler(errorObject)',
         '_setShowInput(data.engagement_type)',
+        '_setAdditionalInput(data.engagement_type)',
         'updateStyles(poPermissionPath, poUpdating)',
         'updatePoBasePath(data.agreement.id)'
     ],
@@ -255,6 +256,16 @@ Polymer({
             this.showInput = true;
         } else {
             this.showInput = false;
+        }
+    },
+
+    _setAdditionalInput: function(type) {
+        if (typeof type === 'string' && type !== 'sc') {
+            this.showAdditionalInput = true;
+        } else if (typeof type === 'object' && type && type.value && type.value !== 'sc') {
+            this.showAdditionalInput = true;
+        } else {
+            this.showAdditionalInput = false;
         }
     },
 
