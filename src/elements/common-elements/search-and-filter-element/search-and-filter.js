@@ -91,6 +91,11 @@
             this.updateQueries(queryObject);
         },
 
+        _reloadFilters: function() {
+            this.set('usedFilters', []);
+            this._restoreFilters();
+        },
+
         _restoreFilters: function() {
             this.debounce('_restoreFilters', () => {
                 let queryParams = this.queryParams;

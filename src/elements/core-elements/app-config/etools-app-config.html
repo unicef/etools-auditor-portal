@@ -11,7 +11,6 @@ App global configuration
     etoolsCustomDexieDb.version(1).stores({
         collectionsList: '&name, expire',
         partners: 'id',
-        auditors: 'id'
     });
 
     var etoolsAppConfig = {
@@ -34,19 +33,17 @@ App global configuration
                 exp: 24 * 60 * 60 * 1000, // 24h
                 cachingKey: 'partners'
             },
-            auditorPartners: {
-                url: '/api/audit/engagements/partners/',
-            },
             partnerInfo: {
                 template: '/api/v2/partners/<%=id%>/'
             },
             authorizedOfficers: {
                 template: '/api/v2/partners/<%=id%>/staff-members/'
             },
-            auditOrganisations: {
-                url: '/api/audit/audit-firms/',
-                exp: 24 * 60 * 60 * 1000, // 24h
-                cachingKey: 'auditors'
+            filterAuditors: {
+                url: '/api/audit/audit-firms/'
+            },
+            filterPartners : {
+                url: '/api/audit/engagements/partners/'
             },
             agreementData: {
                 template: '/api/audit/purchase-orders/sync/<%=id%>/'
@@ -102,7 +99,6 @@ App global configuration
 
                 etoolsCustomDexieDb.collectionsList.clear();
                 etoolsCustomDexieDb.partners.clear();
-                etoolsCustomDexieDb.auditors.clear();
             },
 
             getAbsolutePath: function(path) {

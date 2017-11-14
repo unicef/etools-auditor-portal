@@ -33,6 +33,7 @@ Polymer({
         if (view === 'list') {
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
+            this._fireUpdateEngagementsFilters();
             this.view = 'list';
         } else if (view === 'new' && this.actionAllowed('new_engagement', 'create')) {
             this.clearQueries();
@@ -52,6 +53,12 @@ Polymer({
 
     resetLastView: function() {
         if (this.lastView) { this.lastView = null; }
+    },
+
+    _fireUpdateEngagementsFilters: function() {
+        this.debounce('updateEngagementsFiltersDebouncer', () => {
+            document.dispatchEvent(new CustomEvent('update-engagements-filters'));
+        }, 100);
     },
 
     _configListParams: function(noNotify) {
