@@ -15,14 +15,20 @@
                 on-fail="_partnersLoaded">
         </etools-ajax>
 
-        <!--auditors-->
+        <!--filterAuditors-->
         <etools-ajax
-                endpoint="[[auditorsEndpoint]]"
-                caching-storage="custom"
-                dexie-db-collection="auditors"
-                on-success="_auditorsLoaded"
-                on-forbidden="_auditorsLoaded"
-                on-fail="_auditorsLoaded">
+                url="[[filterAuditorsUrl]]"
+                on-success="_filterAuditorsLoaded"
+                on-forbidden="_filterAuditorsLoaded"
+                on-fail="_filterAuditorsLoaded">
+        </etools-ajax>
+
+        <!--filterPartners-->
+        <etools-ajax
+                url="[[filterPartnersUrl]]"
+                on-success="_filterPartnersLoaded"
+                on-forbidden="_filterPartnersLoaded"
+                on-fail="_filterPartnersLoaded">
         </etools-ajax>
 
         <!--engagement creation-->
@@ -66,25 +72,55 @@
                     'user-profile-loaded': 'loadStaticData'
                 },
 
+                attached: function() {
+                    document.addEventListener('update-engagements-filters', this._updateEngagementsFilters.bind(this));
+                },
+
+                detached: function() {
+                    document.removeEventListener('update-engagements-filters', this._updateEngagementsFilters);
+                },
+
                 loadStaticData: function () {
                     let isAuditor = this.isAuditor();
 
                     if (isAuditor) {
-                        this.partnersEndpoint = this.getEndpoint('auditorPartners');
+                        dataLoaded.partners = true;
                         dataLoaded.users = true;
                     } else {
                         this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                         this.usersEndpoint = this.getEndpoint('users').url;
                     }
 
-                    this.auditorsEndpoint = this.getEndpoint('auditOrganisations');
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
                 },
 
                 _allDataLoaded: function() {
-                    if (dataLoaded.partners && dataLoaded.auditors && dataLoaded.engagementOptions && dataLoaded.users) {
+                    if (dataLoaded.partners && dataLoaded.engagementOptions && dataLoaded.users) {
                         this.fire('static-data-loaded');
                     }
+                },
+
+                _filtersDataLoaded: function() {
+                    if (dataLoaded.filterAuditors && dataLoaded.filterPartners) {
+                        this._triggerGlobalEvent('engagements-filters-updated');
+
+                        dataLoaded.filters = true;
+                        dataLoaded.filterAuditors = false;
+                        dataLoaded.filterPartners = false;
+                    }
+                },
+
+                _triggerGlobalEvent: function(eventName, data) {
+                    let detail = {detail: data};
+                    let event = new CustomEvent(eventName, detail);
+                    document.dispatchEvent(event);
+                },
+
+                _updateEngagementsFilters: function() {
+                    let time = new Date().getTime();
+
+                    this.filterAuditorsUrl = this.getEndpoint('filterAuditors').url + `?reload=${time}`;
+                    this.filterPartnersUrl = this.getEndpoint('filterPartners').url + `?reload=${time}`;
                 },
 
                 _partnersLoaded: function(event, details) {
@@ -98,15 +134,36 @@
                     this._allDataLoaded();
                 },
 
-                _auditorsLoaded: function(event, details) {
+                _filterAuditorsLoaded: function(event, details) {
                     if (!details || details.error) {
                         this._responseError('Auditors', event && event.type);
-                    } else {
-                        let auditors = details && details.results || [];
-                        this._setData('auditors', auditors);
                     }
-                    dataLoaded.auditors = true;
-                    this._allDataLoaded();
+
+                    let filterAuditors = details && details.results || [];
+                    if (dataLoaded.filters) {
+                        this._updateData('filterAuditors', filterAuditors);
+                    } else {
+                        this._setData('filterAuditors', filterAuditors);
+                    }
+
+                    dataLoaded.filterAuditors = true;
+                    this._filtersDataLoaded();
+                },
+
+                _filterPartnersLoaded: function(event, details) {
+                    if (!details || details.error) {
+                        this._responseError('Partners', event && event.type);
+                    }
+
+                    let filterPartners = details || [];
+                    if (dataLoaded.filters) {
+                        this._updateData('filterPartners', filterPartners);
+                    } else {
+                        this._setData('filterPartners', filterPartners);
+                    }
+
+                    dataLoaded.filterPartners = true;
+                    this._filtersDataLoaded();
                 },
 
                 _handleNewEngagementResponse: function(event, details) {
@@ -117,11 +174,16 @@
                         this._addToCollection('new_engagement', actions);
 
                         let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
+                        let statuses = this.getChoices('new_engagement.status') || [];
+                        let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
 
-                        if (!engagementAttachmentsTypes) {
-                            this._responseError('Attachments types', 'Access denied');
-                        }
+                        if (!engagementAttachmentsTypes) { this._responseError('Attachments types', 'Access denied'); }
+                        if (!statuses) { this._responseError('Statuses', 'Can not load engagement statuses data'); }
+                        if (!engagementTypes) { this._responseError('Engagement types', 'Can not load engagement types data'); }
+
                         this._setData('engagement_attachments_types', engagementAttachmentsTypes);
+                        this._setData('statuses', statuses);
+                        this._setData('engagementTypes', engagementTypes);
                     }
 
                     dataLoaded.engagementOptions = true;

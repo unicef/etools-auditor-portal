@@ -108,9 +108,22 @@
             }
         },
 
-        observers: [
-            'setFiltersSelections(basePermissionPath, filters)'
-        ],
+        attached: function() {
+            document.addEventListener('engagements-filters-updated', this._engagementsFiltersUpdated.bind(this));
+        },
+
+        detached: function() {
+            document.removeEventListener('engagements-filters-updated', this._engagementsFiltersUpdated);
+        },
+
+        _engagementsFiltersUpdated: function() {
+            let filtersElement = this.$.filters;
+            this.setFiltersSelections();
+
+            if (filtersElement) {
+                filtersElement._reloadFilters();
+            }
+        },
 
         _showAddButton: function() {
             return this.actionAllowed('new_engagement', 'create');
@@ -124,23 +137,19 @@
             });
         },
 
-        setFiltersSelections: function(base) {
-            if (!base) { return; }
+        setFiltersSelections: function() {
+            let queryAndKeyPairs = [
+                {query: 'partner', dataKey: 'filterPartners'},
+                {query: 'agreement__auditor_firm', dataKey: 'filterAuditors'},
+                {query: 'status', dataKey: 'statuses'},
+                {query: 'engagement_type', dataKey: 'engagementTypes'},
+            ];
 
-            let partnersFilterIndex = this._getFilterIndex('partner');
-            let auditorsFilterIndex = this._getFilterIndex('agreement__auditor_firm');
-            let statusFilterIndex = this._getFilterIndex('status');
-            let typeFilterIndex = this._getFilterIndex('engagement_type');
-
-            let partners = this.getData('partners') || [];
-            let auditors = this.getData('auditors') || [];
-            let statuses = this.getChoices(`${base}.status`) || [];
-            let types = this.getChoices(`${base}.engagement_type`) || [];
-
-            this.setFilterSelection(partnersFilterIndex, partners);
-            this.setFilterSelection(auditorsFilterIndex, auditors);
-            this.setFilterSelection(statusFilterIndex, statuses);
-            this.setFilterSelection(typeFilterIndex, types);
+            queryAndKeyPairs.forEach((pair) => {
+                let filterIndex = this._getFilterIndex(pair.query);
+                let data = this.getData(pair.dataKey) || [];
+                this.setFilterSelection(filterIndex, data);
+            });
         },
 
         setFilterSelection: function(filterIndex, data) {

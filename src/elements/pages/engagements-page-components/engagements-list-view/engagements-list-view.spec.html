@@ -164,29 +164,6 @@
             });
         });
 
-        describe('method setFiltersSelections(base)', function () {
-            beforeEach(function () {
-                myEl.filters = _.cloneDeep(filters);
-            });
-
-            it('shouldn\'t call setFilterSelection() method when base is empty', function () {
-                let spy = sinon.spy(myEl, 'setFilterSelection');
-
-                assert.isFalse(spy.called);
-                myEl.setFiltersSelections('');
-                myEl.setFiltersSelections();
-                assert.isFalse(spy.called);
-            });
-
-            it('should call setFilterSelection() method for each filter', function () {
-                let spy = sinon.spy(myEl, 'setFilterSelection');
-
-                assert.isFalse(spy.called);
-                myEl.setFiltersSelections('base');
-                assert.equal(spy.callCount, 4);
-            });
-        });
-
         describe('method setFilterSelection(filterIndex, data)', function () {
             beforeEach(function () {
                 myEl.filters = _.cloneDeep(filters);
