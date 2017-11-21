@@ -13,7 +13,6 @@
     }
 
     .partner-data {
-        position: relative;
         display: table-cell;
         vertical-align: middle;
         width: 100%;
@@ -61,7 +60,7 @@
         .hover-icons-block {
             position: absolute;
             top: 0;
-            right: 0;
+            right: 14px;
             bottom: 0;
             line-height: 48px;
             opacity: 0;
@@ -116,7 +115,7 @@ paper-material {
     font-size: 13px;
     color: var(--gray-dark, rgba(0, 0, 0, 0.87));
     background-color: var(--primary-background-color, #FFFFFF);
-    padding: 0 15px 0 72px !important;
+    padding: 0 14px 0 72px !important;
     box-sizing: border-box;
 }
 
