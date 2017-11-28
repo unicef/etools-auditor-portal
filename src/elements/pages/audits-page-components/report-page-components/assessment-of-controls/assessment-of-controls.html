@@ -4,6 +4,11 @@
 <dom-module id="assessment-of-controls">
     <template>
         <style include="tab-inputs-styles tab-layout-styles module-styles">
+            paper-textarea {
+                --iron-autogrow-textarea: #{'{
+                    overflow: hidden;
+                }'};
+            }
         </style>
 
         <etools-content-panel class="content-section clearfix" panel-title="Assessment of Key Internal Controls">
