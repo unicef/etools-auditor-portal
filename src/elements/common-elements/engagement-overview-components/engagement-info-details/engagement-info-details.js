@@ -101,11 +101,23 @@ Polymer({
         '_setAdditionalInput(data.engagement_type)',
         'updateStyles(poPermissionPath, poUpdating)',
         'updateStyles(data.engagement_type)',
-        'updatePoBasePath(data.agreement.id)'
+        'updatePoBasePath(data.agreement.id)',
+        '_prepareData(data)',
     ],
 
     ready: function() {
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+    },
+
+    _prepareData: function(data) {
+        let poItem = this.get('data.po_item');
+        if (!poItem) { return; }
+
+        poItem = {
+            id: poItem.id,
+            number: `${poItem.number}`
+        };
+        this.set('data.po_item', poItem);
     },
 
     _setSharedIpWith: function(basePermissionPath) {
@@ -249,7 +261,7 @@ Polymer({
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
         if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
         if (this.shared_ip_with && (this.originalData.shared_ip_with !== this.shared_ip_with.value)) { data.shared_ip_with = this.shared_ip_with.value; }
-        if (this.data.po_item && (this.originalData.po_item !== this.data.po_item.id)) { data.po_item = this.data.po_item.id; }
+        if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) { data.po_item = this.data.po_item.id; }
         if (this.originalData.joint_audit !== this.data.joint_audit) { data.joint_audit = this.data.joint_audit; }
 
         return data;
@@ -321,8 +333,22 @@ Polymer({
         if (this.isSpecialAudit(type)) { return ''; }
         return this._setRequired(field, basePath);
     },
+
     _getPoItems: function(agreement) {
-        return agreement && agreement.items ? agreement.items : [];
+        let poItems = [];
+
+        if (agreement && Array.isArray(agreement.items)) {
+            agreement.items = agreement.items.filter(item => item);
+
+            poItems = agreement.items.map((item) => {
+                return {
+                    id: item.id,
+                    number: `${item.number}`
+                };
+            });
+        }
+
+        return poItems;
     },
     _isDataAgreementReaonly: function(field, basePermissionPath, agreement) {
         return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
