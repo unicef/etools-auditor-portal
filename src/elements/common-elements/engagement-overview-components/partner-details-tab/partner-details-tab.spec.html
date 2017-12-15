@@ -7,7 +7,7 @@
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
 
-    <!--import [partner-details-tab]-->
+    <!--import [partner-details-tab, lodash]-->
 </head>
 <body>
 
@@ -26,19 +26,13 @@
             myEl = fixture('element-fixture');
         });
 
-        it('method resetValidationErrors sets $.partner.invalid to false', function() {
-            myEl.$.partner.invalid = true;
-            myEl.resetValidationErrors();
-            assert.isFalse(myEl.$.partner.invalid);
-        });
+        it('method resetValidationErrors sets errors to empty object', function() {
+            var errors = {partner: 'error'};
+            myEl.errors = _.clone(errors);
 
-        it('method _resetFieldError sets errors.partner and errors.active_pd equal to false', function() {
-            sinon.spy(myEl, 'set');
-            myEl._resetFieldError();
-            assert.isTrue(myEl.set.calledTwice);
-            assert.isTrue(myEl.set.calledWith('errors.active_pd', false));
-            assert.isTrue(myEl.set.calledWith('errors.partner', false));
-            myEl.set.restore();
+            assert.deepEqual(myEl.errors, errors);
+            myEl.resetValidationErrors();
+            assert.deepEqual(myEl.errors, {});
         });
 
         it('method _partnerLoaded sets requestInProcess to false and calls validatePartner method', function() {
@@ -92,13 +86,13 @@
             it('should return true if partnerType is string and not equal to types arguments', function() {
                 var currentType = 'Civil org';
                 var type = 'Government';
-                assert.isTrue(myEl._showActivePd(currentType, type));
+                assert.isTrue(myEl._showActivePd(currentType, [type]));
             });
 
             it('should return false if partnerType is string and equal to"Government"', function() {
                 var currentType = 'Government';
                 var type = 'Government';
-                assert.isFalse(myEl._showActivePd(currentType, type));
+                assert.isFalse(myEl._showActivePd(currentType, [type]));
             });
 
             it('should return false if partnerType is not string', function() {
