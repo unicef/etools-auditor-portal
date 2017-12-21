@@ -109,7 +109,7 @@ Polymer({
         this.$.purchaseOrder.validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     },
 
-    _prepareData: function(data) {
+    _prepareData: function() {
         let poItem = this.get('data.po_item');
         if (!poItem) { return; }
 

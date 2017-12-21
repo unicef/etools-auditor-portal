@@ -78,18 +78,21 @@ Polymer({
     },
 
     validate: function() {
+        return this.validatePartner() && this.validateActivePd();
+    },
+
+    validateActivePd: function() {
         let activePdInput = Polymer.dom(this.root).querySelector('#activePd');
         let partnerType = this.get('engagement.partner.partner_type');
         let partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
-        let activePdValid = true;
 
         if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
             activePdInput.invalid = 'Active PD is required';
             activePdInput.errorMessage = 'Active PD is required';
-            activePdValid = false;
+            return false;
         }
 
-        return this.validatePartner() && activePdValid;
+        return true;
     },
 
     validatePartner: function() {
@@ -138,11 +141,13 @@ Polymer({
 
         if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
             this.set('activePd', []);
+            this.validateActivePd();
             return false;
         }
 
         let activePd = this.get('engagement.active_pd') || [];
         this.set('activePd', activePd);
+        this.validateActivePd();
         return true;
     },
 
