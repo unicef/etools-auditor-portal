@@ -15,6 +15,10 @@ Polymer({
             observer: '_basePathChanged'
         },
         partners: Array,
+        specialPartnerTypes: {
+            type: Array,
+            value: ['Bilateral / Multilateral', 'Government'],
+        },
         requestInProcess: {
             type: Boolean,
             value: false
@@ -74,19 +78,28 @@ Polymer({
     },
 
     validate: function() {
-        // let activePd = Polymer.dom(this.root).querySelector('#activePd');
+        return this.validatePartner() && this.validateActivePd();
+    },
+
+    validateActivePd: function() {
+        let activePdInput = Polymer.dom(this.root).querySelector('#activePd');
         let partnerType = this.get('engagement.partner.partner_type');
-        let activePdValid = true; //activePd ? activePd.validate() : false; TODO: fix front-end PD validation (added by UU)
+        let partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
 
-        if (!activePdValid) { this.set('errors.active_pd', 'Active PD is required'); }
+        if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
+            activePdInput.invalid = 'Active PD is required';
+            activePdInput.errorMessage = 'Active PD is required';
+            return false;
+        }
 
-        return this.validatePartner() && (activePdValid || !this._showActivePd(partnerType));
+        return true;
     },
 
     validatePartner: function() {
         if (!this.$.partner || !this.$.partner.required) { return true; }
         if (!this.engagement || !this.engagement.partner || !this.engagement.partner.id) {
             this.set('errors.partner', 'Partner is required');
+            this.$.partner.invalid = true;
             return false;
         } else if (!this.partner.id) {
             this.set('errors.partner', 'Can not find partner data');
@@ -98,13 +111,7 @@ Polymer({
     },
 
     resetValidationErrors: function() {
-        this.set('errors.partner', '');
-        // this.$.partner.invalid = false;
-    },
-
-    _resetFieldError: function() {
-        this.set('errors.partner', false);
-        this.set('errors.active_pd', false);
+        this.set('errors', {});
     },
 
     _setReadonlyClass: function(inProcess, basePermissionPath) {
@@ -115,7 +122,7 @@ Polymer({
         }
     },
 
-    _showActivePd: function(partnerType, ...types) {
+    _showActivePd: function(partnerType, types) {
         return typeof partnerType === 'string' && types.every(type => !~partnerType.indexOf(type));
     },
 
@@ -124,7 +131,7 @@ Polymer({
         let partnerType = this.get('engagement.partner.partner_type');
 
         //check <etools-searchable-multiselection-menu> debouncer state
-        if ((!esmm || esmm.isDebouncerActive('selectionChanged')) && partnerType !== 'Government') {
+        if ((!esmm || esmm.isDebouncerActive('selectionChanged')) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
             this.async(this._setActivePd, 50);
             return false;
         }
@@ -134,11 +141,13 @@ Polymer({
 
         if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
             this.set('activePd', []);
+            this.validateActivePd();
             return false;
         }
 
         let activePd = this.get('engagement.active_pd') || [];
         this.set('activePd', activePd);
+        this.validateActivePd();
         return true;
     },
 
@@ -163,6 +172,7 @@ Polymer({
     },
 
     _partnerLoaded: function() {
+        this.set('errors', {});
         this.requestInProcess = false;
         this.validatePartner();
     },
@@ -193,7 +203,7 @@ Polymer({
             data.partner = partnerId;
         }
 
-        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && partnerType !== 'Government' && activePd.length) {
+        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1 && activePd.length) {
             data.active_pd = activePd;
         }
 

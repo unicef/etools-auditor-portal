@@ -37,7 +37,7 @@
                             required$="{{_setRequired('partner', basePermissionPath)}}"
                             disabled$="[[isReadOnly('partner', basePermissionPath)]]"
                             readonly$="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
-                            invalid="{{_checkInvalid(errors.partner)}}"
+                            invalid="{{errors.partner}}"
                             error-message="{{errors.partner}}"
                             on-focus="_resetFieldError"
                             on-tap="_resetFieldError"
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <template is="dom-if" if="[[_showActivePd(partner.partner_type, 'Government', 'Bilateral', 'Multilateral')]]">
+            <template is="dom-if" if="[[_showActivePd(partner.partner_type, specialPartnerTypes)]]">
                 <div class="row-h group">
                     <div class="input-container input-container-l">
                         <!-- Active PD -->
@@ -136,7 +136,7 @@
                                 required
                                 disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                                 readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                                invalid$="{{_checkInvalid(errors.active_pd)}}"
+                                invalid="{{errors.active_pd}}"
                                 error-message="{{errors.active_pd}}"
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError"
