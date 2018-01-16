@@ -24,7 +24,7 @@ function buildElements(done) {
             },
             // move test files into /tests folder
             through2(function(file, enc, callback){
-                file.base = path.normalize(file.base + '..');
+                file.base = path.normalize(file.base + '/..');
                 file.path = `${file.base}/tests/${file.basename}`;
 
                 testSources.push(file.basename);
