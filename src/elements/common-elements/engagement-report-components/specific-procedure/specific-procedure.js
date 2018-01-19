@@ -41,7 +41,7 @@
                     return [{
                         'size': 20,
                         'name': 'finding',
-                        'label': 'Finding Number',
+                        'label': 'Procedure',
                     }, {
                         'size': 40,
                         'label': 'Description',
@@ -59,7 +59,7 @@
                 type: Object,
                 value: function() {
                     return {
-                        title: 'Add new Finding'
+                        title: 'Add New Procedure'
                     };
                 }
             },
