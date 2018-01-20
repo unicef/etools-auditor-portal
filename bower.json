@@ -23,7 +23,7 @@
     "paper-toast": "^1.3.0",
     "paper-tabs": "^1.6.2",
     "paper-listbox": "^1.1.2",
-    "etools-loading": "1.0.9",
+    "etools-loading": "^2.0.0",
     "etools-page-refresh": "^1.0.0",
     "etools-content-panel": "^1.0.1",
     "paper-card": "PolymerElements/paper-card#^1.1.4",
