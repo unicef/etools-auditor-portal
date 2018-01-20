@@ -59,29 +59,29 @@
                 <div class="repeatable-item-content">
                     <div class="row-h group">
                         <div class="input-container input-container-l">
-                            <!-- Description -->
+                            <!-- Category -->
                             <etools-searchable-multiselection-menu
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.description', basePermissionPath)]] fua-description"
-                                    value="{{description}}"
-                                    label="[[getLabel('action_points.description', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.description', basePermissionPath)]]"
-                                    options="[[descriptionOptions]]"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.category', basePermissionPath)]] fua-category"
+                                    value="{{category}}"
+                                    label="[[getLabel('action_points.category', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.category', basePermissionPath)]]"
+                                    options="[[categoryOptions]]"
                                     custom-object-options
                                     option-label="display_name"
                                     option-value="value"
-                                    selected="{{editedItem.description}}"
+                                    selected="{{editedItem.category}}"
                                     update-selected
-                                    required$="[[_setRequired('action_points.description', basePermissionPath)]]"
+                                    required$="[[_setRequired('action_points.category', basePermissionPath)]]"
                                     disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
-                                    invalid="{{errors.action_points.0.description}}"
-                                    error-message="{{errors.action_points.0.description}}"
+                                    invalid="{{errors.action_points.0.category}}"
+                                    error-message="{{errors.action_points.0.category}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError"
                                     hide-search
                                     no-title-attr>
                             </etools-searchable-multiselection-menu>
-                            <paper-tooltip offset="0">[[description.display_name]]</paper-tooltip>
+                            <paper-tooltip offset="0">[[category.display_name]]</paper-tooltip>
                         </div>
                     </div>
 
@@ -117,12 +117,12 @@
                         </div>
                     </div>
 
-                    <template is="dom-if" if="[[_showPersonField(description)]]" restamp>
+                    <template is="dom-if" if="[[_showPersonField(category)]]" restamp>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <!-- Person Responsible -->
                                 <etools-searchable-multiselection-menu
-                                        class$="disabled-as-readonly [[isValidateInput(description)]] [[_setRequired('action_points.person_responsible', basePermissionPath)]] fua-person"
+                                        class$="disabled-as-readonly [[isValidateInput(category)]] [[_setRequired('action_points.person_responsible', basePermissionPath)]] fua-person"
                                         value="{{editedItem.person_responsible}}"
                                         label="[[getLabel('action_points.person_responsible', basePermissionPath)]]"
                                         placeholder="[[getPlaceholderText('action_points.person_responsible', basePermissionPath)]]"
@@ -146,19 +146,83 @@
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
-                            <!-- Comments -->
+                            <!-- Description -->
                             <paper-textarea
-                                    class$="validate-input {{_setRequired('action_points.comments', basePermissionPath)}}"
-                                    value="{{editedItem.comments}}"
+                                    class$="validate-input {{_setRequired('action_points.description', basePermissionPath)}}"
+                                    value="{{editedItem.description}}"
                                     allowed-pattern="[\d\s]"
-                                    label="[[getLabel('action_points.comments', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.comments', basePermissionPath)]]"
-                                    required="{{_setRequired('action_points.comments', basePermissionPath)}}"
+                                    label="[[getLabel('action_points.description', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.description', basePermissionPath)]]"
+                                    required="{{_setRequired('action_points.description', basePermissionPath)}}"
                                     disabled="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
                                     max-rows="4"
-                                    invalid="{{errors.action_points.0.comments}}"
-                                    error-message="{{errors.action_points.0.comments}}"
+                                    invalid="{{errors.action_points.0.description}}"
+                                    error-message="{{errors.action_points.0.description}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError">
+                            </paper-textarea>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Status -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.status', basePermissionPath)]] fua-category"
+                                    value="{{status}}"
+                                    label="[[getLabel('action_points.status', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.status', basePermissionPath)]]"
+                                    options="[[statusOptions]]"
+                                    custom-object-options
+                                    option-label="display_name"
+                                    option-value="value"
+                                    selected="{{editedItem.status}}"
+                                    update-selected
+                                    required$="[[_setRequired('action_points.status', basePermissionPath)]]"
+                                    disabled$="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    invalid="{{errors.action_points.0.status}}"
+                                    error-message="{{errors.action_points.0.status}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    hide-search
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
+                            <paper-tooltip offset="0">[[status.display_name]]</paper-tooltip>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <!-- High Priority -->
+                        <div class="input-container input-container-l checkbox-container">
+                            <etools-checkable-input
+                                    class="disabled-as-readonly"
+                                    type="checkbox"
+                                    label="[[getLabel('action_points.high_priority', basePermissionPath)]]"
+                                    label-alignment="right"
+                                    checked="{{editedItem.high_priority}}"
+                                    disabled="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}">
+                            </etools-checkable-input>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Description -->
+                            <paper-textarea
+                                    class$="validate-input {{_setRequired('action_points.action_taken', basePermissionPath)}}"
+                                    value="{{editedItem.action_taken}}"
+                                    allowed-pattern="[\d\s]"
+                                    label="[[getLabel('action_points.action_taken', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('action_points.action_taken', basePermissionPath)]]"
+                                    required="{{_setRequired('action_points.action_taken', basePermissionPath)}}"
+                                    disabled="{{requestInProcess}}"
+                                    readonly$="{{requestInProcess}}"
+                                    max-rows="4"
+                                    invalid="{{errors.action_points.0.action_taken}}"
+                                    error-message="{{errors.action_points.0.action_taken}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError">
                             </paper-textarea>

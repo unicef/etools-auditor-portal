@@ -24,10 +24,13 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    description: '',
+                    category: '',
                     person_responsible: {full_name: ''},
                     due_date: '',
-                    comments: ''
+                    description: '',
+                    status: '',
+                    high_priority: '',
+                    action_taken: ''
                 };
             }
         },
@@ -37,9 +40,9 @@ Polymer({
                 return [
                     {
                         'size': 50,
-                        'label': 'Description',
-                        'labelPath': 'action_points.description',
-                        'path': 'description'
+                        'label': 'Category',
+                        'labelPath': 'action_points.category',
+                        'path': 'category'
                     }, {
                         'size': 25,
                         'label': 'Due Date',
@@ -61,9 +64,9 @@ Polymer({
             type: Array,
             value: function() {
                 return [{
-                    'label': 'Comments',
-                    'labelPath': 'action_points.comments',
-                    'path': 'comments',
+                    'label': 'Description',
+                    'labelPath': 'action_points.description',
+                    'path': 'description',
                     'size': 100
                 }];
             }
@@ -88,7 +91,13 @@ Polymer({
             type: String,
             value: 'Are you sure that you want to delete this action?'
         },
-        descriptionOptions: {
+        categoryOptions: {
+            type: Array,
+            value: function() {
+                return [];
+            }
+        },
+        statusOptions: {
             type: Array,
             value: function() {
                 return [];
@@ -111,7 +120,7 @@ Polymer({
         'resetDialog(dialogOpened)',
         '_errorHandler(errorObject)',
         '_checkNonField(errorObject)',
-        'setDescriptionChoices(basePermissionPath)',
+        'setChoices(basePermissionPath)',
         'setFullName(dataItems)'
     ],
 
@@ -120,9 +129,11 @@ Polymer({
         this.set('users', this.getData('users') || []);
     },
 
-    setDescriptionChoices: function(basePath) {
-        let choices = this.getChoices(`${basePath}.action_points.description`);
-        this.set('descriptionOptions', choices || []);
+    setChoices: function(basePath) {
+        let category = this.getChoices(`${basePath}.action_points.category`);
+        let status = this.getChoices(`${basePath}.action_points.status`);
+        this.set('categoryOptions', category || []);
+        this.set('statusOptions', status || []);
     },
 
     setFullName: function(actions) {
@@ -155,7 +166,7 @@ Polymer({
             return (this.originalEditedObj[key] !== value && key !== 'person_responsible');
         });
         //check person_responsible
-        if (this.editedItem.description !== 'Escalate to Investigation' &&
+        if (this.editedItem.category !== 'Escalate to Investigation' &&
             this.editedItem.person_responsible !== this.originalEditedObj.person_responsible.id) {
             data.person_responsible = this.editedItem.person_responsible;
         }
@@ -163,12 +174,12 @@ Polymer({
         return _.isEmpty(data) ? null : [_.set(data, 'id', this.editedItem.id)];
     },
 
-    _showPersonField: function(description) {
-        return !description || description.value !== 'Escalate to Investigation';
+    _showPersonField: function(category) {
+        return !category || category.value !== 'Escalate to Investigation';
     },
 
-    isValidateInput: function(description) {
-        return this._showPersonField(description) ? 'validate-input' : '';
+    isValidateInput: function(category) {
+        return this._showPersonField(category) ? 'validate-input' : '';
     }
 
 });

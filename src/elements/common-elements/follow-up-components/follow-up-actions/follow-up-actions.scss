@@ -15,7 +15,7 @@ etools-content-panel {
     }'};
 }
 
-etools-searchable-multiselection-menu.fua-description {
+etools-searchable-multiselection-menu.fua-category {
     --esmm-list-wrapper: #{'{
         max-height: 340px;
         -ms-overflow-style: auto;
@@ -27,4 +27,9 @@ etools-searchable-multiselection-menu.fua-person {
         max-height: 140px;
         -ms-overflow-style: auto;
     }'};
+}
+
+.checkbox-container {
+    padding-left: 12px;
+    box-sizing: border-box;
 }
