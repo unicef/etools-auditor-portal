@@ -42,7 +42,7 @@
                         no-animation>
                     <div slot="custom">
                         [[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
-                        <paper-tooltip offset="0">[[getDisplayName(basePermissionPath, 'financial_finding_set.title', item.title)]]</paper-tooltip>
+                        <paper-tooltip offset="0">[[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]</paper-tooltip>
                     </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
