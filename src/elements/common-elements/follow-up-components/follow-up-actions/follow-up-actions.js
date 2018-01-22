@@ -39,7 +39,7 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 40,
+                        'size': 35,
                         'label': 'Category',
                         'labelPath': 'action_points.category',
                         'path': 'category'
@@ -52,7 +52,7 @@ Polymer({
                         'custom': true,
                         'doNotHide': false
                     }, {
-                        'size': 5,
+                        'size': 10,
                         'label': 'High Priority',
                         'labelPath': 'action_points.high_priority',
                         'path': 'high_priority',
