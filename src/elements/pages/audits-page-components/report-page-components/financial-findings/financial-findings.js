@@ -4,6 +4,7 @@ Polymer({
     is: 'financial-findings',
 
     behaviors: [
+        APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior,
         APBehaviors.TextareaMaxRowsBehavior,
         APBehaviors.CommonMethodsBehavior
@@ -41,7 +42,9 @@ Polymer({
                 'size': 40,
                 'label': 'Title (Category)',
                 'labelPath': 'financial_finding_set.title',
-                'path': 'title'
+                'property': 'title',
+                'custom': true,
+                'doNotHide': false
             }, {
                 'size': 20,
                 'name': 'currency',
@@ -98,7 +101,13 @@ Polymer({
         deleteTitle: {
             type: String,
             value: 'Are you sure that you want to delete this finding?'
-        }
+        },
+        titleOptions: {
+            type: Array,
+            value: function() {
+                return [];
+            }
+        },
     },
 
     listeners: {
@@ -109,8 +118,14 @@ Polymer({
     observers: [
         'resetDialog(dialogOpened)',
         '_errorHandler(errorObject.financial_finding_set)',
-        '_checkNonField(errorObject.financial_finding_set)'
+        '_checkNonField(errorObject.financial_finding_set)',
+        'setChoices(basePermissionPath)'
     ],
+
+    setChoices: function(basePath) {
+        let titleOptions = this.getChoices(`${basePath}.financial_finding_set.title`);
+        this.set('titleOptions', titleOptions || []);
+    },
 
     _checkNonField: function(error) {
         if (!error) { return; }

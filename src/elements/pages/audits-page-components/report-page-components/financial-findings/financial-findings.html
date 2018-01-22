@@ -40,6 +40,10 @@
                         details="[[details]]"
                         has-collapse
                         no-animation>
+                    <div slot="custom">
+                        [[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
+                        <paper-tooltip offset="0">[[getDisplayName(basePermissionPath, 'financial_finding_set.title', item.title)]]</paper-tooltip>
+                    </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                         <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
@@ -68,19 +72,28 @@
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Title -->
-                            <paper-input
+                            <etools-searchable-multiselection-menu
                                     class$="disabled-as-readonly validate-input [[_setRequired('financial_finding_set.title', basePermissionPath)]]"
-                                    value="{{editedItem.title}}"
+                                    value="{{title}}"
                                     label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
                                     placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
+                                    options="[[titleOptions]]"
+                                    custom-object-options
+                                    option-label="display_name"
+                                    option-value="value"
+                                    selected="{{editedItem.title}}"
+                                    update-selected
                                     required$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]"
                                     disabled$="[[requestInProcess]]"
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.title}}"
                                     error-message="{{errors.title}}"
                                     on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </paper-input>
+                                    on-tap="_resetFieldError"
+                                    hide-search
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
+                            <paper-tooltip offset="0">[[title.display_name]]</paper-tooltip>
                         </div>
                     </div>
 
