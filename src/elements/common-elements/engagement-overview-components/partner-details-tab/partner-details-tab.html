@@ -95,7 +95,7 @@
                     <!-- Partner  Officers-->
                     <etools-searchable-multiselection-menu
                             id="authorizedOfficer"
-                            class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]]  [[_setPlaceholderColor(partner)]]"
+                            class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
                             value="{{authorizedOfficer}}"
                             label="[[getLabel('authorized_officers', basePermissionPath)]]"
                             placeholder="[[getReadonlyPlaceholder(partner)]]"
@@ -124,7 +124,7 @@
                         <!-- Active PD -->
                         <etools-searchable-multiselection-menu
                                 id="activePd"
-                                class$="disabled-as-readonly required [[_setPlaceholderColor(partner)]]"
+                                class$="disabled-as-readonly [[isPdRequired(engagement.engagement_type)]] [[_setPlaceholderColor(partner)]]"
                                 value="{{activePd}}"
                                 label="[[getLabel('active_pd', basePermissionPath)]]"
                                 placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
@@ -133,7 +133,7 @@
                                 option-label="number"
                                 option-value="id"
                                 update-selected
-                                required
+                                required="{{isPdRequired(engagement.engagement_type)}}"
                                 disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                                 readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                                 invalid="{{errors.active_pd}}"

@@ -44,7 +44,7 @@ Polymer({
         '_engagementChanged(engagement, basePermissionPath)',
         '_errorHandler(errorObject)',
         '_setActivePd(engagement, partner.interventions)',
-        'updateStyles(basePermissionPath, requestInProcess, partner)',
+        'updateStyles(basePermissionPath, requestInProcess, partner, engagement.engagement_type)',
         'setOfficers(partner, engagement, basePermissionPath)'
     ],
 
@@ -246,5 +246,8 @@ Polymer({
         return [partner.street_address, partner.postal_code, partner.city, partner.country]
             .filter((info) => !!info)
             .join(', ');
+    },
+    isPdRequired: function(type) {
+        return type && _.isEqual(type.value, 'sa') ? 'required' : '';
     }
 });
