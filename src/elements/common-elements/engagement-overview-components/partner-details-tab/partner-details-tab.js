@@ -248,6 +248,6 @@ Polymer({
             .join(', ');
     },
     isPdRequired: function(type) {
-        return type && _.isEqual(type.value, 'sa') ? 'required' : '';
+        return type && !_.isEqual(type.value, 'sa') ? 'required' : '';
     }
 });
