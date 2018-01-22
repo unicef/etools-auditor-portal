@@ -28,8 +28,8 @@ Polymer({
                     person_responsible: {full_name: ''},
                     due_date: '',
                     description: '',
-                    status: '',
-                    high_priority: '',
+                    status: 'open',
+                    high_priority: false,
                     action_taken: ''
                 };
             }
@@ -39,10 +39,25 @@ Polymer({
             value: function() {
                 return [
                     {
-                        'size': 50,
+                        'size': 40,
                         'label': 'Category',
                         'labelPath': 'action_points.category',
                         'path': 'category'
+                    }, {
+                        'size': 5,
+                        'label': 'Status',
+                        'labelPath': 'action_points.status',
+                        'align': 'right',
+                        'property': 'status',
+                        'custom': true,
+                        'doNotHide': false
+                    }, {
+                        'size': 5,
+                        'label': 'High Priority',
+                        'labelPath': 'action_points.high_priority',
+                        'path': 'high_priority',
+                        'align': 'right',
+                        'checkbox': true
                     }, {
                         'size': 25,
                         'label': 'Due Date',
@@ -67,6 +82,11 @@ Polymer({
                     'label': 'Description',
                     'labelPath': 'action_points.description',
                     'path': 'description',
+                    'size': 100
+                }, {
+                    'label': 'Action Taken',
+                    'labelPath': 'action_points.action_taken',
+                    'path': 'action_taken',
                     'size': 100
                 }];
             }

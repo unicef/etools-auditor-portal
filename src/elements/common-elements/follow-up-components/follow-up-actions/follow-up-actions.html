@@ -32,6 +32,17 @@
                         details="[[details]]"
                         has-collapse
                         no-animation>
+                    <div slot="custom">
+                        [[getDisplayName('action_points.status', basePermissionPath, item.status)]]
+                        <paper-tooltip offset="0">[[getDisplayName('action_points.status', basePermissionPath, item.status)]]</paper-tooltip>
+                    </div>
+                    <div slot="checkbox" class="checkbox">
+                        <paper-checkbox
+                                disabled="disabled"
+                                checked="{{item.high_priority}}"
+                                label="">
+                        </paper-checkbox>
+                    </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
                         <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
@@ -45,6 +56,12 @@
                         data="[[itemModel]]"
                         headings="[[columns]]"
                         no-animation>
+                    <div slot="custom">
+                        <span>–</span>
+                    </div>
+                    <div slot="checkbox" class="checkbox">
+                        <span>–</span>
+                    </div>
                 </list-element>
             </template>
         </etools-content-panel>
@@ -210,7 +227,7 @@
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
-                            <!-- Description -->
+                            <!-- Action Taken -->
                             <paper-textarea
                                     class$="validate-input {{_setRequired('action_points.action_taken', basePermissionPath)}}"
                                     value="{{editedItem.action_taken}}"
