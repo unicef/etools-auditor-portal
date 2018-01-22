@@ -45,7 +45,6 @@ Polymer({
     ],
 
     listeners: {
-        'global-loading': '_handleGlobalLoading',
         'toast': 'queueToast',
         'drawer-toggle-tap': 'toggleDrawer',
         '404': '_pageNotFound',
@@ -137,7 +136,7 @@ Polymer({
         }
     },
 
-    _handleGlobalLoading: function(event) {
+    handleLoading: function(event) {
         if (!event.detail || !event.detail.type) {
             console.error('Bad details object', JSON.stringify(event.detail));
             return;
@@ -153,7 +152,7 @@ Polymer({
             loadingElement.active = false;
             this.globalLoadingQueue = this.globalLoadingQueue.filter((element) => {return element.detail.type !== event.detail.type;});
             if (this.globalLoadingQueue.length) {
-                this._handleGlobalLoading(this.globalLoadingQueue.shift());
+                this.handleLoading(this.globalLoadingQueue.shift());
             }
         }
     },

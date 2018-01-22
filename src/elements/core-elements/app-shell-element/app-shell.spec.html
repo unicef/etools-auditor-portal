@@ -95,15 +95,15 @@
                 myEl._initialDataLoaded.restore();
             });
 
-            it('\'global-loading\' call method _handleGlobalLoading', () => {
-                sinon.spy(myEl, '_handleGlobalLoading');
+            it('\'global-loading\' call method handleLoading', () => {
+                sinon.spy(myEl, 'handleLoading');
                 myEl.fire('global-loading', {type: 'test', active: true});
-                assert.isTrue(myEl._handleGlobalLoading.called);
-                myEl._handleGlobalLoading.restore();
+                assert.isTrue(myEl.handleLoading.called);
+                myEl.handleLoading.restore();
             });
         });
 
-        describe('method _handleGlobalLoading()', () => {
+        describe('method handleLoading()', () => {
             it('push message in globalLoading when global-loading element is active and pushed message is active', () => {
                 let loadingEl = myEl.$['global-loading'];
                 loadingEl.active = true;
