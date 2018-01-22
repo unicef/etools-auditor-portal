@@ -343,15 +343,15 @@
                     <div class="input-container">
                         <etools-searchable-multiselection-menu
                                 class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
-                                value="{{shared_ip_with}}"
+                                value="{{sharedIpWith}}"
                                 label="[[getLabel('shared_ip_with', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
                                 options="[[sharedIpWithOptions]]"
                                 custom-object-options
                                 option-label="display_name"
                                 option-value="value"
-                                selected="{{data.shared_ip_with}}"
                                 update-selected
+                                selected="{{data.shared_ip_with}}"
                                 required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
                                 disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
                                 readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
@@ -359,6 +359,8 @@
                                 error-message="{{errors.shared_ip_with}}"
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError"
+                                dynamic-align
+                                multi
                                 hide-search
                                 no-title-attr>
                         </etools-searchable-multiselection-menu>

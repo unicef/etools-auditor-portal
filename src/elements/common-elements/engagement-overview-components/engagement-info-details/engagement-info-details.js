@@ -88,6 +88,12 @@ Polymer({
                 return [];
             },
             computed: '_setSharedIpWith(basePermissionPath)'
+        },
+        sharedIpWith: {
+            type: Array,
+            value: function() {
+                return [];
+            }
         }
     },
 
@@ -102,7 +108,7 @@ Polymer({
         'updateStyles(poPermissionPath, poUpdating)',
         'updateStyles(data.engagement_type)',
         'updatePoBasePath(data.agreement.id)',
-        '_prepareData(data)',
+        '_prepareData(data)'
     ],
 
     ready: function() {
@@ -121,8 +127,8 @@ Polymer({
     },
 
     _setSharedIpWith: function(basePermissionPath) {
-        let sharedIpWith = this.getChoices(`${basePermissionPath}.shared_ip_with`);
-        return sharedIpWith || [];
+        let sharedIpWithOptions = this.getChoices(`${basePermissionPath}.shared_ip_with.child`);
+        return sharedIpWithOptions || [];
     },
 
     validate: function() {
@@ -260,9 +266,15 @@ Polymer({
         if (!this.originalData.agreement || this.originalData.agreement.id !== this.data.agreement.id) { data.agreement = this.data.agreement.id; }
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
         if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
-        if (this.shared_ip_with && (this.originalData.shared_ip_with !== this.shared_ip_with.value)) { data.shared_ip_with = this.shared_ip_with.value; }
         if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) { data.po_item = this.data.po_item.id; }
         if (this.originalData.joint_audit !== this.data.joint_audit) { data.joint_audit = this.data.joint_audit; }
+
+        let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
+        let sharedIpWith = this.sharedIpWith || [];
+        sharedIpWith = sharedIpWith.map(shared => shared.value);
+        if (!_.isEqual(originalSharedIpWith.sort(), sharedIpWith.sort()) && sharedIpWith.length) {
+            data.shared_ip_with = sharedIpWith;
+        }
 
         return data;
     },
