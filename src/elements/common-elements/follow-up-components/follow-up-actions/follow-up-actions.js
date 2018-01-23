@@ -28,7 +28,7 @@ Polymer({
                     person_responsible: {full_name: ''},
                     due_date: '',
                     description: '',
-                    status: 'open',
+                    status: null,
                     high_priority: false,
                     action_taken: ''
                 };
@@ -179,6 +179,7 @@ Polymer({
         if (this.addDialog) {
             let data = _.clone(this.editedItem) || {};
             if (!data.person_responsible) { delete data.person_responsible; }
+            if (!data.status) { delete data.status; }
             return [data];
         }
         //add changed data except person_responsible
