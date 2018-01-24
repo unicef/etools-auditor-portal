@@ -7,7 +7,12 @@
         <style include="tab-inputs-styles module-styles"></style>
         <!-- inject styles './key-internal-controls-weaknesses.scss'-->
 
-        <etools-content-panel panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]">
+        <etools-content-panel class="content-section clearfix" panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]">
+            <div class="header-content">
+                <div class="static-text">
+                    We have reviewed the implementation of applicable key internal controls and noted the following weaknesses:
+                </div>
+            </div>
             <list-header
                     no-ordered
                     data="[[columns]]"
