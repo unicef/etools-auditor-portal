@@ -4,43 +4,94 @@ Polymer({
     is: 'assessment-of-controls',
 
     behaviors: [
+        APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior,
+        APBehaviors.TextareaMaxRowsBehavior,
         APBehaviors.CommonMethodsBehavior
     ],
 
     properties: {
-        basePermissionPath: {
-            type: String
+        dataItems: {
+            type: Array,
+            notify: true
         },
-        data: {
-            type: Object
+        mainProperty: {
+            type: String,
+            value: 'key_internal_controls'
         },
-        tabTexts: {
+        itemModel: {
             type: Object,
-            value: {
-                name: 'Assessment of Key Internal Controls',
-                fields: ['recommendation', 'audit_observation', 'ip_response']
+            value: function() {
+                return {
+                    audit_observation: '',
+                    recommendation: '',
+                    ip_response: ''
+                };
             }
-        }
+        },
+        columns: {
+            type: Array,
+            value: function() {
+                return [{
+                    'label': 'Audit Observation',
+                    'path': 'audit_observation',
+                    'size': 100
+                }];
+            }
+        },
+        details: {
+            type: Array,
+            value: function() {
+                return [{
+                    'label': 'Recommendation',
+                    'path': 'recommendation',
+                    'size': 100
+                }, {
+                    'label': 'IP response',
+                    'path': 'ip_response',
+                    'size': 100
+                }];
+            }
+        },
+        addDialogTexts: {
+            type: Object,
+            value: function() {
+                return {
+                    title: 'Add new Assessment of Key Internal Controls'
+                };
+            }
+        },
+        editDialogTexts: {
+            type: Object,
+            value: function() {
+                return {
+                    title: 'Edit Assessment of Key Internal Controls'
+                };
+            }
+        },
+        deleteTitle: {
+            type: String,
+            value: 'Are you sure that you want to delete this assessment?'
+        },
+    },
+
+    listeners: {
+        'dialog-confirmed': '_addItemFromDialog',
+        'delete-confirmed': 'removeItem',
     },
 
     observers: [
-        '_errorHandler(errorObject)',
-        '_setDataItems(data)',
-        'updateStyles(basePermissionPath, requestInProcess)',
+        'resetDialog(dialogOpened)',
+        '_errorHandler(errorObject.key_internal_controls)',
+        '_checkNonField(errorObject.key_internal_controls)',
     ],
 
-    _setDataItems: function() {
-        this.set('dataItems', [this.data]);
-    },
+    _checkNonField: function(error) {
+        if (!error) { return; }
 
-    getAssessmentOfControlsData: function() {
-        let keys = ['recommendation', 'audit_observation', 'ip_response'];
-        let data = _.pick(this.data, keys);
-        let originalData = _.pick(this.originalData && this.originalData[0], keys);
-
-        if (!_.isEqual(data, originalData)) {
-            return data;
+        let nonField = this.checkNonField(error);
+        if (nonField) {
+            this.fire('toast', {text: `Assessment of Key Internal Controls: ${nonField}`});
         }
     }
 });

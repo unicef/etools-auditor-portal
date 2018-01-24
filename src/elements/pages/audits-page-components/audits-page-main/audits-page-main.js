@@ -67,7 +67,7 @@ Polymer({
         if (!reportPage) { return data; }
 
         let findingsSummaryData = reportPage.getFindingsSummaryData();
-        let assessmentOfControlsData = reportPage.getAssessmentOfControlsData() || [];
+        let assessmentOfControlsData = reportPage.getAssessmentOfControlsData();
         let financialFindingData = reportPage.getFinancialFindingsData();
         let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
 
@@ -75,6 +75,10 @@ Polymer({
 
         if (!_.isNull(financialFindingData)) {
             data.financial_finding_set = financialFindingData;
+        }
+
+        if (!_.isNull(assessmentOfControlsData)) {
+            data.key_internal_controls = assessmentOfControlsData;
         }
 
         if (!_.isNull(keyInternalWeaknessData)) {

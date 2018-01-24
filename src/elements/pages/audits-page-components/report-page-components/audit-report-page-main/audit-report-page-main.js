@@ -29,7 +29,7 @@ Polymer({
     },
 
     getAssessmentOfControlsData: function() {
-        return this.$.assessmentOfControls.getAssessmentOfControlsData();
+        return this.$.assessmentOfControls.getTabData();
     },
 
     getKeyInternalWeaknessData: function() {

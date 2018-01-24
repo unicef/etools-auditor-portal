@@ -1,0 +1,16 @@
+:host {
+    .repeatable-item-container[without-line] {
+        min-width: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .confirm-text {
+        padding: 5px 86px 0 23px !important;
+    }
+}
+
+etools-content-panel {
+    --ecp-content: #{'{
+        padding: 0;
+    }'};
+}

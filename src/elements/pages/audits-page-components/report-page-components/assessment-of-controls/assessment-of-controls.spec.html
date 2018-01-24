@@ -24,38 +24,6 @@
         beforeEach(function () {
             myEl = fixture('assessment-of-controls-fixture');
         });
-
-        describe('method _setDataItems()', function () {
-            it('observer sets dataItems array', function () {
-                let spy = sinon.spy(myEl, '_setDataItems');
-                let data = {key: 'value'};
-
-                assert.isUndefined(myEl.dataItems);
-                assert.isFalse(spy.called);
-                myEl.data = _.clone(data);
-
-                assert.isTrue(spy.calledOnce);
-                assert.deepEqual(myEl.dataItems, [data]);
-
-            });
-        });
-
-        describe('method getAssessmentOfControlsData()', function () {
-            it('returns data if it was changed', function () {
-                myEl.originalData = [{recommendation: 'str', audit_observation: 'str2', ip_response: 'str3'}];
-                myEl.data = _.clone(myEl.originalData[0]);
-                myEl.data.ip_response = 'changed str';
-
-                assert.deepEqual(myEl.getAssessmentOfControlsData(), myEl.data);
-            });
-
-            it('returns undefined if data was not changed', function () {
-                myEl.originalData = [{recommendation: 'str', audit_observation: 'str2', ip_response: 'str3'}];
-                myEl.data = _.clone(myEl.originalData[0]);
-
-                assert.isUndefined(myEl.getAssessmentOfControlsData());
-            });
-        });
     });
 </script>
 
