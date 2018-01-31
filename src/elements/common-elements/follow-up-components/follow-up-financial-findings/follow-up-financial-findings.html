@@ -10,6 +10,13 @@
                 margin-bottom: 24px;
                 display: block;
             }
+
+            paper-input {
+                --paper-input-prefix: #{'{
+                    margin-right: 5px;
+                    color: var(--gray-dark);
+                }'};
+            }
         </style>
 
         <etools-content-panel panel-title="Financial Findings">
@@ -171,14 +178,14 @@
             <div class="row-h group">
                 <div class="input-container">
                     <!-- Pending Unsupported Amount -->
-                    <etools-currency-amount-input
+                    <paper-input
                             class="disabled-as-readonly"
                             value="[[setUnsupportedAmount(engagement, engagement.additional_supporting_documentation_provided, engagement.amount_refunded, engagement.justification_provided_and_accepted, engagement.write_off_required)]]"
-                            currency="$"
                             label$="[[getLabel('pending_unsupported_amount', basePermissionPath)]]"
                             placeholder$="[[getReadonlyPlaceholder(engagement)]]"
                             disabled readonly>
-                    </etools-currency-amount-input>
+                        <div prefix>$</div>
+                    </paper-input>
                 </div>
             </div>
 
