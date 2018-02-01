@@ -45,10 +45,12 @@
             assert.isTrue(myEl.$.findingsSummary.getFindingsSummaryData.called);
         });
 
-        it('calls getAssessmentOfControlsData method', () => {
-            sinon.spy(myEl.$.assessmentOfControls, 'getAssessmentOfControlsData');
+        it('calls getTabData method for Assessment Of Controls', () => {
+            myEl.$.assessmentOfControls.originalData = [{test: 'test'}];
+            myEl.$.assessmentOfControls.dataItems = [{test: 'test'}];
+            sinon.spy(myEl.$.assessmentOfControls, 'getTabData');
             myEl.getAssessmentOfControlsData();
-            assert.isTrue(myEl.$.assessmentOfControls.getAssessmentOfControlsData.called);
+            assert.isTrue(myEl.$.assessmentOfControls.getTabData.called);
         });
 
         it('calls getKeyInternalWeaknessData method', () => {
