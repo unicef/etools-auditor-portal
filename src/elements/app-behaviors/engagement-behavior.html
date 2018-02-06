@@ -90,6 +90,10 @@
         _engagementUpdated: function(event) {
             let data = event && event.detail && event.detail.data;
             if (data) { this._setOriginalData(_.cloneDeep(this.engagement)); }
+
+            if (data && data.detail.status === 'final') {
+                this.tab = 'follow-up';
+            }
         },
 
         _tabChanged: function(tab) {
@@ -176,7 +180,6 @@
             return this._prepareData(false, true)
                     .then((data) => {
                         this.updatedEngagement = data;
-                        this.tab = 'follow-up';
                     });
         },
 
