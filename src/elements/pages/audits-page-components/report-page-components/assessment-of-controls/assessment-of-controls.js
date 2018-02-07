@@ -23,9 +23,6 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    audit_observation: '',
-                    recommendation: '',
-                    ip_response: ''
                 };
             }
         },

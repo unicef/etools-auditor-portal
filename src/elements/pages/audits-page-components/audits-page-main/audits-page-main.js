@@ -71,7 +71,7 @@ Polymer({
         let financialFindingData = reportPage.getFinancialFindingsData();
         let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
 
-        _.assign(data, findingsSummaryData, assessmentOfControlsData);
+        _.assign(data, findingsSummaryData);
 
         if (!_.isNull(financialFindingData)) {
             data.financial_finding_set = financialFindingData;
