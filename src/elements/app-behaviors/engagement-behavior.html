@@ -89,9 +89,10 @@
 
         _engagementUpdated: function(event) {
             let data = event && event.detail && event.detail.data;
+            let success = event && event.detail.success;
             if (data) { this._setOriginalData(_.cloneDeep(this.engagement)); }
 
-            if (data && data.detail.status === 'final') {
+            if (!_.isNil(success) && data && data.status === 'final') {
                 this.tab = 'follow-up';
             }
         },
