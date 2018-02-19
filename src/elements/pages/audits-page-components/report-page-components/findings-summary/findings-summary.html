@@ -98,18 +98,13 @@
                         <div class="input-container">
                             <!-- % of audited expenditure -->
                             <etools-currency-amount-input
-                                    class$="validate-input disabled-as-readonly [[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
+                                    class$="validate-input disabled-as-readonly"
                                     value="{{editedItem.percent_of_audited_expenditure}}"
                                     currency=""
                                     label$="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
                                     placeholder$="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
-                                    required$="[[_setRequired('percent_of_audited_expenditure', basePermissionPath)]]"
-                                    disabled$="[[requestInProcess]]"
-                                    readonly$="[[requestInProcess]]"
-                                    invalid="{{errors.percent_of_audited_expenditure}}"
-                                    error-message="{{errors.percent_of_audited_expenditure}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    disabled="disabled"
+                                    readonly>
                             </etools-currency-amount-input>
                         </div>
 
