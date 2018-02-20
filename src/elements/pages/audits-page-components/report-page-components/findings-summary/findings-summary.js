@@ -177,7 +177,7 @@ Polymer({
     _setAuditedExpenditure: function(financialFindings, auditedExpenditure) {
         let ffNumber = _.toNumber(financialFindings);
         let aeNumber = _.toNumber(auditedExpenditure);
-        let val = aeNumber === 0 ? 0 : Math.round(ffNumber / aeNumber) * 100;
+        let val = aeNumber === 0 ? 0 : Math.floor(ffNumber / aeNumber * 100);
         this.set('editedItem.percent_of_audited_expenditure', val);
     },
 
