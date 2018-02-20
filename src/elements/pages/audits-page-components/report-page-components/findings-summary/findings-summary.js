@@ -122,7 +122,9 @@ Polymer({
     },
 
     _setDataItems: function() {
-        this.set('data.percent_of_audited_expenditure', this.data.percent_of_audited_expenditure.toFixed(2));
+        if (this.data.percent_of_audited_expenditure > 0) {
+            this.set('data.percent_of_audited_expenditure', this.data.percent_of_audited_expenditure.toFixed(2));
+        }
         this.set('dataItems', [this.data]);
         this.set('itemModel.audit_opinion', this.data.audit_opinion);
         this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
@@ -148,6 +150,7 @@ Polymer({
 
         data.audited_expenditure = data.audited_expenditure || 0;
         data.financial_findings = data.financial_findings || 0;
+        data.percent_of_audited_expenditure = data.percent_of_audited_expenditure || 0;
 
         if (!_.isEqual(data, originalData)) {
             //return only changed values
@@ -175,7 +178,7 @@ Polymer({
     },
 
     _setAuditedExpenditure: function(financialFindings, auditedExpenditure) {
-        let val = Math.round(financialFindings / auditedExpenditure) * 100;
+        let val = auditedExpenditure === 0 ? 0.00 : Math.round(financialFindings / auditedExpenditure) * 100;
         this.set('editedItem.percent_of_audited_expenditure', val);
     },
 
