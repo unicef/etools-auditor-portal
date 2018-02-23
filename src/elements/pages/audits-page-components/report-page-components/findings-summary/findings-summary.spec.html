@@ -116,12 +116,10 @@
                     myEl.originalData = [_.cloneDeep(myEl.editedItem)];
                     myEl.originalData[0].audited_expenditure = null;
                     myEl.originalData[0].financial_findings = null;
-                    myEl.originalData[0].percent_of_audited_expenditure = null;
 
                     assert.deepEqual(myEl.getFindingsSummaryData(), {
                         audited_expenditure: 0,
                         financial_findings: 0,
-                        percent_of_audited_expenditure: 0,
                     });
                 });
             });
