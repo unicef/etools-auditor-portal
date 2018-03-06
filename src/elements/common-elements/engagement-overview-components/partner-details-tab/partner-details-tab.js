@@ -248,7 +248,7 @@ Polymer({
             .join(', ');
     },
     isPdRequired: function(type) {
-        if (!type || type && _.isEqual(type, 'sa') || (type && type.value && _.isEqual(type.value, 'sa'))) {
+        if (_.isEmpty(type) || type && _.isEqual(type, 'sa') || (type && type.value && _.isEqual(type.value, 'sa'))) {
             this.set('errors.active_pd', false);
             return '';
         } else {
