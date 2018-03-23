@@ -97,7 +97,7 @@ Polymer({
     getAssignVisitData: function() {
         let data = _.pickBy(this.data, (value, key) => {
             let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
-                                'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef'];
+                                'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'exchange_rate'];
             if (!~properties.indexOf(key)) { return false; }
 
             return !this.originalData || this.originalData[key] !== value;
@@ -112,5 +112,9 @@ Polymer({
 
     _checkFieldInvalid: function(error) {
         return !!error;
+    },
+
+    showExchange: function(basePath) {
+        return basePath && this.collectionExists(`${basePath}.exchange_rate`);
     }
 });

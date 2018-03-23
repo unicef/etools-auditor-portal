@@ -166,6 +166,27 @@
                         </etools-datepicker>
                     </paper-input>
                 </div>
+
+                <template is="dom-if" if="[[showExchange(basePermissionPath)]]">
+                    <div class="input-container">
+                        <!-- Exchange Rate -->
+                        <etools-currency-amount-input
+                                class$="validate-input disabled-as-readonly [[_setRequired('exchange_rate', basePermissionPath)]]"
+                                value="{{data.exchange_rate}}"
+                                currency="$"
+                                label$="[[getLabel('exchange_rate', basePermissionPath)]]"
+                                placeholder$="[[getPlaceholderText('exchange_rate', basePermissionPath)]]"
+                                required$="[[_setRequired('exchange_rate', basePermissionPath)]]"
+                                disabled$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
+                                readonly$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
+                                invalid="{{_checkInvalid(errors.exchange_rate)}}"
+                                error-message="{{errors.exchange_rate}}"
+                                on-focus="_resetFieldError"
+                                on-tap="_resetFieldError">
+                        </etools-currency-amount-input>
+                    </div>
+                </template>
+
             </div>
         </etools-content-panel>
 
