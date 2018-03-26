@@ -115,6 +115,6 @@ Polymer({
     },
 
     showExchange: function(basePath) {
-        return basePath && this.collectionExists(`${basePath}.exchange_rate`);
+        return basePath && this.collectionExists(`${basePath}.exchange_rate`, 'GET');
     }
 });
