@@ -94,6 +94,11 @@ Polymer({
             value: function() {
                 return [];
             }
+        },
+        showJoinAudit: {
+            type: Boolean,
+            value: false,
+            computed: '_showJoinAudit(showInput, showAdditionalInput)'
         }
     },
 
@@ -297,6 +302,10 @@ Polymer({
         } else {
             this.showAdditionalInput = false;
         }
+    },
+
+    _showJoinAudit: function(showInput, showAdditionalInput) {
+        return showAdditionalInput && showInput;
     },
 
     updatePoBasePath: function(id) {

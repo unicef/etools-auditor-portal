@@ -339,6 +339,17 @@
                         </etools-currency-amount-input>
                     </div>
                 </template>
+
+                <template is="dom-if" if="{{showJoinAudit}}" restamp>
+                    <div class="input-container join-audit">
+                        <etools-checkable-input
+                                checked="{{data.joint_audit}}"
+                                label="[[getLabel('joint_audit', basePermissionPath)]]"
+                                readonly="[[isReadOnly('joint_audit', basePermissionPath)]]">
+                        </etools-checkable-input>
+                    </div>
+                </template>
+
                 <template is="dom-if" if="{{showAdditionalInput}}" restamp>
                     <div class="input-container">
                         <etools-searchable-multiselection-menu
@@ -365,14 +376,8 @@
                                 no-title-attr>
                         </etools-searchable-multiselection-menu>
                     </div>
-                    <div class="input-container join-audit">
-                        <etools-checkable-input
-                                checked="{{data.joint_audit}}"
-                                label="[[getLabel('joint_audit', basePermissionPath)]]"
-                                readonly="[[isReadOnly('joint_audit', basePermissionPath)]]">
-                        </etools-checkable-input>
-                    </div>
                 </template>
+
             </div>
         </etools-content-panel>
     </template>
