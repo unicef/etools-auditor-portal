@@ -56,6 +56,10 @@ Polymer({
             type: Number,
             value: 0,
             readOnly: true
+        },
+        riskAssessment: {
+            type: String,
+            value: ''
         }
     },
 
@@ -229,7 +233,8 @@ Polymer({
     },
 
     getRating: function(rating) {
-        return this.riskRatingOptions[rating] || rating;
+        let ratingString = this.riskRatingOptions[rating] || rating;
+        return ratingString ? `- ${rating}` : '';
     },
 
     resetDialog: function(opened) {
