@@ -91,6 +91,14 @@
                         optionValue: 'value',
                         optionLabel: 'display_name',
                         selection: []
+                    },
+                    {
+                        name: 'joint audit',
+                        query: 'joint_audit',
+                        hideSearch: true,
+                        optionValue: 'value',
+                        optionLabel: 'display_name',
+                        selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
                     }
                 ]
             },
