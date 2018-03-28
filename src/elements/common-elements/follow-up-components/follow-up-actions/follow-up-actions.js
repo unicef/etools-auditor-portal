@@ -95,7 +95,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Add new Action'
+                    title: 'Add New Action'
                 };
             }
         },

@@ -86,7 +86,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Add new Finding'
+                    title: 'Add New Finding'
                 };
             }
         },

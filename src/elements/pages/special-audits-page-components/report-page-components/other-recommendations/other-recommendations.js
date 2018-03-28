@@ -45,7 +45,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    title: 'Add new Recommendation'
+                    title: 'Add New Recommendation'
                 };
             }
         },
