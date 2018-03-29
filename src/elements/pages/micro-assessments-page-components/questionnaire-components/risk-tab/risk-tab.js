@@ -4,8 +4,7 @@ Polymer({
     is: 'risk-tab',
 
     behaviors: [
-        APBehaviors.StaticDataController,
-        APBehaviors.PermissionController,
+        APBehaviors.CommonMethodsBehavior
     ],
 
     properties: {
@@ -170,7 +169,7 @@ Polymer({
         }
         let data = _.cloneDeep(item);
         if (!data.risk) { data.risk = {}; }
-        if (_.isJSONObj(data.risk.extra)) {
+        if (this.isJSONObj(data.risk.extra)) {
             data.risk.extra = JSON.parse(data.risk.extra);
         } else {
             data.risk.extra = {comments: (data.risk.extra && data.risk.extra.comments) || ''};
@@ -192,7 +191,7 @@ Polymer({
     },
 
     _prepareData: function(data) {
-        if (data && data.risk && _.isJSONObj(data.risk.extra)) { data.risk.extra = JSON.parse(data.risk.extra); }
+        if (data && data.risk && this.isJSONObj(data.risk.extra)) { data.risk.extra = JSON.parse(data.risk.extra); }
         return data;
     }
 });

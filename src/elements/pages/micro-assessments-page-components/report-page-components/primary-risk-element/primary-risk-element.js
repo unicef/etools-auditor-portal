@@ -4,9 +4,7 @@ Polymer({
     is: 'primary-risk-element',
 
     behaviors: [
-        APBehaviors.StaticDataController,
         APBehaviors.CommonMethodsBehavior,
-        APBehaviors.PermissionController,
     ],
 
     properties: {
@@ -51,7 +49,7 @@ Polymer({
         }
 
         let extra = _.get(this, 'riskData.blueprints[0].risk.extra', {comments: ''});
-        if (_.isJSONObj(extra)) {
+        if (this.isJSONObj(extra)) {
             extra = JSON.parse(extra);
         }
 
@@ -94,12 +92,12 @@ Polymer({
             return null;
         }
 
-        let extra = _.isJSONObj(this.primaryArea.risk.extra) ?
+        let extra = this.isJSONObj(this.primaryArea.risk.extra) ?
             JSON.parse(this.primaryArea.risk.extra) :
             this.primaryArea.risk.extra;
 
         let originalExtra = _.get(this, 'originalData.blueprints[0].risk.extra');
-        if (_.isJSONObj(originalExtra)) { originalExtra = JSON.parse(originalExtra); }
+        if (this.isJSONObj(originalExtra)) { originalExtra = JSON.parse(originalExtra); }
 
         if (this.originalData.blueprints[0].risk &&
             this.primaryArea.risk.value.value === this.originalData.blueprints[0].risk.value &&

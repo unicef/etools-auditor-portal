@@ -139,6 +139,16 @@
 
         isSpecialAudit: function(type) {
             return type === 'sa' || type && type.value === 'sa';
+        },
+
+        isJSONObj: function(str) {
+            var json;
+            try {
+                json = JSON.parse(str);
+            } catch (e) {
+                return false;
+            }
+            return _.isObject(json);
         }
     };
 
