@@ -72,7 +72,8 @@
 
         getLabel: function(path, base) {
             if (!base) { return ''; }
-            return this.getFieldAttribute(`${base}.${path}`, 'label', 'GET');
+            return this.getFieldAttribute(`${base}.${path}`, 'label', 'POST') ||
+                this.getFieldAttribute(`${base}.${path}`, 'label', 'GET');
         },
 
         getDisplayName: function(path, base, value) {
