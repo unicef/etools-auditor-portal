@@ -93,8 +93,7 @@
 
             isRequired: function(path) {
                 return this.getFieldAttribute(path, 'required', 'POST') ||
-                    this.getFieldAttribute(path, 'required', 'PUT') ||
-                    this.getFieldAttribute(path, 'required', 'GET');
+                    this.getFieldAttribute(path, 'required', 'PUT');
             },
 
             collectionExists: function(path, actionType) {
