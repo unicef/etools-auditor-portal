@@ -104,7 +104,8 @@
             },
 
             getChoices: function(path) {
-                return this.getFieldAttribute(path, 'choices', 'GET');
+                return this.getFieldAttribute(path, 'choices', 'GET') ||
+                    this.getFieldAttribute(path, 'choices', 'POST');
             },
 
             _getCollection: function(path, actionType) {
