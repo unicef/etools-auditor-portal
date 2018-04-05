@@ -177,7 +177,7 @@
                         let statuses = this.getChoices('new_engagement.status') || [];
                         let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
 
-                        if (!engagementAttachmentsTypes) { this._responseError('Attachments types', 'Access denied'); }
+                        if (!engagementAttachmentsTypes) { this._responseError('Attachments types', 'Access denied', 'warn'); }
                         if (!statuses) { this._responseError('Statuses', 'Can not load engagement statuses data'); }
                         if (!engagementTypes) { this._responseError('Engagement types', 'Can not load engagement types data'); }
 
@@ -203,8 +203,8 @@
                     this._allDataLoaded();
                 },
 
-                _responseError: function(message, type) {
-                    console.error(`Can not load initial data: ${message || '?'}. Reason: ${type || '?'}`);
+                _responseError: function(message, type, eventType = 'error') {
+                    console[eventType](`Can not load initial data: ${message || '?'}. Reason: ${type || '?'}`);
                 }
             });
         })();
