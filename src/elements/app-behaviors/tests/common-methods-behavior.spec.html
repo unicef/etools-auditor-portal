@@ -238,7 +238,7 @@
                 var label = behaviorObj.getLabel('field', 'testLabel');
 
                 assert.equal(label, 'test');
-                assert.isTrue(behaviorObj.getFieldAttribute.calledWith('testLabel.field', 'label', 'GET'));
+                assert.isTrue(behaviorObj.getFieldAttribute.calledWith('testLabel.field', 'label'));
             });
         });
 
