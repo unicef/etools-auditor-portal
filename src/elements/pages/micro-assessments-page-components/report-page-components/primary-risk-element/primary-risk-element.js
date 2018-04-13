@@ -53,7 +53,7 @@ Polymer({
             extra = JSON.parse(extra);
         }
 
-        this.set('primaryArea.risk.value', this.riskOptions[this.riskData.blueprints[0].risk.value]);
+        this.set('primaryArea.risk.value', _.find(this.riskOptions, risk => risk.value === this.riskData.blueprints[0].risk.value));
         this.set('primaryArea.risk.extra', extra);
     },
 
