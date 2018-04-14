@@ -147,16 +147,6 @@
                 assert.isFalse(myEl._checkDisabled(1));
             });
 
-            it('return true if previous risk tab is not completed', function(done) {
-                myEl.set('questionnaire', { children: [testRisk, testRisk, testRisk, incompleteRisk, testRisk] });
-
-                flush(function() {
-                    assert.isFalse(myEl._checkDisabled(1));
-                    assert.isFalse(myEl._checkDisabled(3));
-                    assert.isTrue(myEl._checkDisabled(4));
-                    done();
-                })
-            });
         });
 
 
@@ -303,8 +293,8 @@
             var value = 'test_value';
             myEl.riskRatingOptions.test = value;
 
-            assert.equal(myEl.getRating('test'), value);
-            assert.equal(myEl.getRating('test2'), 'test2');
+            assert.equal(myEl.getRating('test'), '- test');
+            assert.equal(myEl.getRating('test2'), '- test2');
         });
 
         it('method getScore returns argument or 0', function() {
