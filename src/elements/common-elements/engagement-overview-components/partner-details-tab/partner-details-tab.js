@@ -246,13 +246,5 @@ Polymer({
         return [partner.street_address, partner.postal_code, partner.city, partner.country]
             .filter((info) => !!info)
             .join(', ');
-    },
-    isPdRequired: function(type) {
-        if (_.isEmpty(type) || type && _.isEqual(type, 'sa') || (type && type.value && _.isEqual(type.value, 'sa'))) {
-            this.set('errors.active_pd', false);
-            return '';
-        } else {
-            return 'required';
-        }
     }
 });
