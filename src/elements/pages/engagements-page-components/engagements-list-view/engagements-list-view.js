@@ -167,8 +167,11 @@
             }
         },
 
-        _setExportLink: function() {
-            return this.getEndpoint('engagementsList').url + '?format=csv&page_size=all';
+        _setExportLinks: function() {
+            return [{
+                name: 'Export Engagements',
+                url: this.getEndpoint('engagementsList').url + '?format=csv&page_size=all'
+            }];
         }
 
     });

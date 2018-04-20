@@ -15,22 +15,11 @@ Polymer({
             type: Boolean,
             value: false
         },
-        showExportButton: {
-            type: Boolean,
-            value: false
-        },
         hidePrintButton: {
             type: Boolean,
             value: false
         },
         data: Object,
-        exportParams: {
-            type: Object
-        },
-        loadCSV: {
-            type: Boolean,
-            value: false
-        },
         csvEndpoint: {
             type: String,
         },
@@ -38,14 +27,14 @@ Polymer({
             type: String,
             value: null
         },
-        exportType: {
-            type: String
-        },
         link: {
             type: String,
             value: ''
         },
-        exportList: Array
+        exportLinks: {
+            type: Array,
+            value: []
+        }
     },
 
     behaviors: [
@@ -77,8 +66,18 @@ Polymer({
         return engagement.unique_id;
     },
 
-    exportData: function() {
-        if (!this.exportLink) { throw 'Can not find export link!'; }
-        window.open(this.exportLink, '_blank');
+    exportData: function(e) {
+        if (this.exportLinks < 1) { throw 'Can not find export link!'; }
+        let url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
+        window.open(url, '_blank');
+    },
+
+    _isDropDown: function(exportLinks) {
+        return exportLinks && (exportLinks.length > 1 ||
+            (exportLinks[0] && exportLinks[0].useDropdown));
+    },
+
+    _toggleOpened: function() {
+        this.$.dropdownMenu.select(null);
     }
 });
