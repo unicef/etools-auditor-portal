@@ -104,22 +104,11 @@
             it('throws if exportLink property has bad value', function () {
                 let error = 'Can not find export link!';
 
-                myEl.exportLink = null;
+                myEl.exportLinks = null;
                 assert.throws(function() {myEl.exportData(); }, error);
 
-                myEl.exportLink = '';
+                myEl.exportLinks = '';
                 assert.throws(function() {myEl.exportData(); }, error);
-            });
-
-            it('opens exportLink in new tab', function () {
-                let spy = sinon.stub(window, 'open');
-                spy.returns(null);
-                myEl.exportLink = 'link';
-
-                assert.isFalse(spy.called);
-                myEl.exportData();
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy.calledWithExactly(myEl.exportLink, '_blank'));
             });
         });
     });

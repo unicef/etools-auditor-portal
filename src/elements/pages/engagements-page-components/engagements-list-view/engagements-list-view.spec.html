@@ -184,15 +184,6 @@
                 assert.isUndefined(myEl.setFilterSelection(undefined, []));
             });
         });
-
-        describe('method _setExportLink()', function () {
-            it('returns export link for engagements list', function () {
-                let url = 'engagementsListUrl';
-                sinon.stub(myEl, 'getEndpoint').withArgs('engagementsList').returns({url: url});
-
-                assert.equal(myEl._setExportLink(), url + '?format=csv&page_size=all');
-            });
-        });
     });
 </script>
 
