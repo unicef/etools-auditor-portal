@@ -719,12 +719,12 @@
         });
 
         it('method _setExportLink calls getEndpoint method if engagement_type and id are provided', function() {
-            assert.equal(behaviorObj._setExportLink(), '');
-            assert.equal(behaviorObj._setExportLink({engagement_type: 'test'}), '');
-            assert.equal(behaviorObj._setExportLink({id: 12}), '');
+            assert.equal(behaviorObj._setExportLinks(), '');
+            assert.equal(behaviorObj._setExportLinks({engagement_type: 'test'}), '');
+            assert.equal(behaviorObj._setExportLinks({id: 12}), '');
 
             behaviorObj.getEndpoint = sinon.stub().returns({url: ''});
-            behaviorObj._setExportLink({engagement_type: 'test', id: 12});
+            behaviorObj._setExportLinks({engagement_type: 'test', id: 12});
 
             assert.isTrue(behaviorObj.getEndpoint.called);
         });
