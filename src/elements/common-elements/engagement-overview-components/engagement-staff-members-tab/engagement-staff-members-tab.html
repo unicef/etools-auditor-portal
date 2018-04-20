@@ -22,7 +22,12 @@
 
         <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
 
-        <check-user-existence email="{{newEmail}}" email-checking="{{emailChecking}}" errors="{{errors}}" organisation-id="[[organisationId]]"></check-user-existence>
+        <check-user-existence email="{{newEmail}}"
+                              email-checking="{{emailChecking}}"
+                              errors="{{errors}}"
+                              organisation-id="[[organisationId]]"
+                              edited-item="{{editedItem}}"
+                              unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}"></check-user-existence>
         <!--end requests-->
 
         <etools-content-panel

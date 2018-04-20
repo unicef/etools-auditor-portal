@@ -81,16 +81,8 @@
                 },
 
                 loadStaticData: function () {
-                    let isAuditor = this.isAuditor();
-
-                    if (isAuditor) {
-                        dataLoaded.partners = true;
-                        dataLoaded.users = true;
-                    } else {
-                        this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
-                        this.usersEndpoint = this.getEndpoint('users').url;
-                    }
-
+                    this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
+                    this.usersEndpoint = this.getEndpoint('users').url;
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
                 },
 
