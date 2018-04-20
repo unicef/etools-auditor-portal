@@ -33,6 +33,14 @@
                 errors: {
                     type: String,
                     notify: true
+                },
+                unicefUsersAllowed: {
+                    type: Boolean,
+                    notify: true
+                },
+                editedItem: {
+                    type: Object,
+                    notify: true
                 }
             },
 
@@ -45,22 +53,36 @@
                 this.email = null;
             },
 
-            _handleResponse: function(event, detail) {
-                if (!detail || !detail.results || !detail.results.length) {
-                    this._handleError();
-                    return;
+            _handleResponse: function(event, details = []) {
+                let alreadyExists = _.get(details, '0.auditor_firm');
+
+                if (alreadyExists || (details.length && !this.unicefUsersAllowed)) {
+                    this._setError(`This field must be unique.`);
+                } else if (details.length) {
+                    let user = details[0],
+                        user_pk = user.id;
+
+                    this.editedItem = {
+                        hasAccess: true,
+                        user: _.omit(user, ['id', 'auditor_firm']),
+                        user_pk
+                    };
                 }
 
-                if (!this.errors) { this.set('errors', {}); }
-                if (!this.errors.user) { this.set('errors.user', {}); }
-                if (!this.errors.user.email) { this.set('errors.user.email', 'This field must be unique.'); }
                 this.emailChecking = false;
                 this.url = null;
             },
 
             _handleError: function() {
+                this._setError(`Can't get Email data!`);
                 this.emailChecking = false;
                 this.url = null;
+            },
+
+            _setError: function(error) {
+                if (!this.errors) { this.set('errors', {}); }
+                if (!this.errors.user) { this.set('errors.user', {}); }
+                if (!this.errors.user.email) { this.set('errors.user.email', 'This field must be unique.'); }
             }
         });
     </script>

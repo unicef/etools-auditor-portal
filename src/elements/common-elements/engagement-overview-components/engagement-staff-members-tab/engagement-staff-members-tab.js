@@ -319,8 +319,8 @@ Polymer({
         return staffLength || 0;
     },
 
-    _addStaffFromDialog: function() {
-        if (this.requestInProcess) { return; }
+    _addStaffFromDialog: function(force) {
+        if (this.requestInProcess && !force) { return; }
 
         if (!this.validate()) { return; }
 
@@ -341,10 +341,11 @@ Polymer({
                 id: `${item.id}/`
             });
         } else {
+            let data = item.user_pk ? {user_pk: item.user_pk} : item;
             this.set('newData', {
                 method: 'POST',
-                data: item,
-                id: ''
+                id: '',
+                data
             });
         }
     },
@@ -379,7 +380,8 @@ Polymer({
         if (details.action === 'patch') {
             this.manageEngagementStaff(details.data, details.hasAccess);
             this._updateEngagement();
-            this.splice('dataItems', details.index, 1, details.data);
+            let index = ~details.index ? details.index : _.findIndex(this.dataItems, item => item.id === details.data.id);
+            this.splice('dataItems', index, 1, details.data);
         } else if (details.action === 'post') {
             this.manageEngagementStaff(details.data, details.hasAccess);
             this._updateEngagement();
@@ -394,6 +396,16 @@ Polymer({
                 page: this.listPage - last || 1
             });
         }
+
+        if (this.editedItem.user_pk && !_.isEqual(details.data.user, this.editedItem.user)) {
+            this.editedIndex = _.findIndex(this.dataItems, item => item.id === details.data.id);
+            this.addDialog = false;
+            delete this.editedItem.user_pk;
+            this.editedItem.id = details.data.id;
+            this._addStaffFromDialog(true);
+            return;
+        }
+
         this.requestInProcess = false;
         this.dialogOpened = false;
         this.resetDialog();
