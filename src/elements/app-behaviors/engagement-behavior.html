@@ -262,10 +262,19 @@
                     });
         },
 
-        _setExportLink: function(engagement) {
+        _setExportLinks: function(engagement) {
             if (!engagement || !engagement.engagement_type || !engagement.id) { return ''; }
-            let type = this.getType(engagement.engagement_type) || 'engagements';
-            return this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/'
+            let type = this.getType(engagement.engagement_type) || 'engagements',
+                pdfLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
+                csvLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + '?format=csv';
+
+            return [{
+                name: 'Export PDF',
+                url: pdfLink
+            }, {
+                name: 'Export CSV',
+                url: csvLink
+            }];
         },
 
         _validateBasicInfo: function(property) {
