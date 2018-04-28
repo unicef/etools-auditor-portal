@@ -113,6 +113,10 @@
             hasCollapse: {
                 type: Boolean,
                 value: false
+            },
+            staticParam: {
+                type: 'String',
+                value: ''
             }
         },
 
@@ -151,6 +155,7 @@
                 {query: 'agreement__auditor_firm', dataKey: 'filterAuditors'},
                 {query: 'status', dataKey: 'statuses'},
                 {query: 'engagement_type', dataKey: 'engagementTypes'},
+                {query: 'user', dataKey: 'users'}
             ];
 
             queryAndKeyPairs.forEach((pair) => {
