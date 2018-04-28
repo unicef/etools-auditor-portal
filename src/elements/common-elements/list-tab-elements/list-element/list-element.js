@@ -121,7 +121,7 @@ Polymer({
             value = this._refactorCurrency(value);
         } else if (item.name === 'percents') {
             value = this._refactorPercents(value);
-        } else if (item.name === 'finding') {
+        } else if (item.name === 'finding' || item.name === 'autoNumber') {
             value = this._refactorFindingNumber();
         }
         // if (typeof value === 'string') { value = value.trim(); }

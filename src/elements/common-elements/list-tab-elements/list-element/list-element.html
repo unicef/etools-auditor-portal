@@ -3,8 +3,8 @@
 
 <dom-module id="list-element">
     <template>
-        <!-- inject styles './list-element.scss'-->
         <style include="shared-styles module-styles iron-flex tab-inputs-styles"></style>
+        <!-- inject styles './list-element.scss'-->
 
         <paper-material id="wrapper" elevation="0">
             <template is="dom-if" if="[[showCollapse]]">
@@ -124,23 +124,27 @@
 
         <template is="dom-if" if="[[showCollapse]]">
             <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
+                <slot name="custom-details">
                 <div id="collapse-wrapper">
                     <div class="partners-data-details group">
-                        <template is="dom-repeat" items="[[details]]">
-                            <div class$="row-details-content w[[item.size]]">
-                                <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
-                                <template is="dom-if" if="[[_getValue(item, data)]]">
-                                    [[_getValue(item, data)]]
-                                </template>
+                            <template is="dom-repeat" items="[[details]]">
+                                <div class$="row-details-content w[[item.size]]">
+                                    <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
-                                <template is="dom-if" if="[[!_getValue(item, data)]]">
-                                    <span class="">–</span>
-                                </template>
-                            </div>
-                        </template>
+                                    <template is="dom-if" if="[[_getValue(item, data)]]">
+                                        [[_getValue(item, data)]]
+                                    </template>
+
+                                    <template is="dom-if" if="[[!_getValue(item, data)]]">
+                                        <span class="">–</span>
+                                    </template>
+                                </div>
+                            </template>
+
                     </div>
                 </div>
+                </slot>
             </iron-collapse>
         </template>
     </template>
