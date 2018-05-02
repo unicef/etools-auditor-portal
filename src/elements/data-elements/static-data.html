@@ -117,7 +117,7 @@
 
                 _partnersLoaded: function(event, details) {
                     if (!details || details.error) {
-                        this._responseError('Partners', event && event.type);
+                        this._responseError('Partners', event && event.type, 'warn');
                     } else {
                         let partners = _.sortBy(details, ['name']);
                         this._setData('partners', partners);
@@ -184,7 +184,7 @@
 
                 _handleUsersResponse: function(event, details) {
                     if (!details || details.error) {
-                        this._responseError('Users', event && event.type);
+                        this._responseError('Users', event && event.type, 'warn');
                     } else {
                         _.each(details, (user) => {
                             user.full_name = `${user.first_name} ${user.last_name}`;
