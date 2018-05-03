@@ -155,7 +155,7 @@
                 {query: 'agreement__auditor_firm', dataKey: 'filterAuditors'},
                 {query: 'status', dataKey: 'statuses'},
                 {query: 'engagement_type', dataKey: 'engagementTypes'},
-                {query: 'user', dataKey: 'users'}
+                {query: 'staff_members__user', dataKey: 'staffMembersUsers'}
             ];
 
             queryAndKeyPairs.forEach((pair) => {

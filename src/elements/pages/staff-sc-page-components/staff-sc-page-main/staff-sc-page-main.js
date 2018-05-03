@@ -53,8 +53,8 @@ Polymer({
                     selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
                 },
                 {
-                    name: 'user',
-                    query: 'user',
+                    name: 'unicef user',
+                    query: 'staff_members__user',
                     optionValue: 'id',
                     optionLabel: 'full_name',
                     selection: []
@@ -63,7 +63,7 @@ Polymer({
         },
         staticParam: {
             type: String,
-            value: 'agreement__auditor_firm=200'
+            value: 'agreement__auditor_firm__unicef_users_allowed=true'
         }
     },
 
