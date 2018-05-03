@@ -28,7 +28,7 @@
         <app-drawer-layout id="layout" opened-when-narrow force-narrow narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" transition-duration="350" disable-swipe opened>
-                <app-sidebar-menu class="opened" page="[[page]]"></app-sidebar-menu>
+                <app-sidebar-menu class="opened" page="[[page]]" show-ssc-page="[[_checkSSCPage(user)]]"></app-sidebar-menu>
             </app-drawer>
 
             <!-- Main content -->
