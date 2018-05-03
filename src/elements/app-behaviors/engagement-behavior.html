@@ -27,8 +27,6 @@
         },
 
         ready: function() {
-            this.engagementFileTypes = this.getData('engagement_attachments_types');
-            this.reportFileTypes = this.getData('report_attachments_types');
             this._addObserverEffect("errorObject", '_errorOccurred');
             this._addObserverEffect("dialogOpened", 'resetDialog');
             this.listen(this, 'action-activated', '_processAction');
@@ -70,13 +68,6 @@
             //save data copy
             this._setOriginalData(_.cloneDeep(this.engagement));
 
-            //add report attachments file types if not exists
-            if (!this.reportFileTypes) {
-                let reportAttachmentsTypes = this.getChoices(`engagement_${this.engagement && this.engagement.id}.report_attachments.file_type`);
-                this._setData('report_attachments_types', reportAttachmentsTypes);
-                this.reportFileTypes = reportAttachmentsTypes;
-            }
-
             let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
             if (!~this.tabsList.indexOf(tab)) {
                 this.routeData.tab = this.tabsList[0] || '';
@@ -109,6 +100,8 @@
             } else {
                 this.permissionBase = `engagement_${id}`;
             }
+            this.reportFileTypes = this.getChoices(`${this.permissionBase}.report_attachments.file_type`);
+            this.engagementFileTypes = this.getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
         },
 
         _openCancelDialog: function() {
