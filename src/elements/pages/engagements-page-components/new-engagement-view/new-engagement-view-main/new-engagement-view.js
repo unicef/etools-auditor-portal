@@ -10,6 +10,7 @@ Polymer({
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior,
+        APBehaviors.QueryParamsController
     ],
 
     properties: {
@@ -64,6 +65,7 @@ Polymer({
         } else if (!_.includes(this.tabsList, currentTab)) {
             this.fire('404');
         }
+        this.clearQueries();
     },
 
     _attachmentsReadonly: function() {
