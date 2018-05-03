@@ -2,7 +2,15 @@ Polymer({
     is: 'app-sidebar-menu',
 
     properties: {
-        page: String
+        page: String,
+        user: {
+            type: Object,
+            observer: 'checkPermissions'
+        },
+        showSscPage: {
+            type: Boolean,
+            value: false
+        }
     },
 
     behaviors: [
