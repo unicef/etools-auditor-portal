@@ -165,15 +165,12 @@
                     } else {
                         this._addToCollection('new_engagement', actions);
 
-                        let engagementAttachmentsTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
                         let statuses = this.getChoices('new_engagement.status') || [];
                         let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
 
-                        if (!engagementAttachmentsTypes) { this._responseError('Attachments types', 'Access denied', 'warn'); }
                         if (!statuses) { this._responseError('Statuses', 'Can not load engagement statuses data'); }
                         if (!engagementTypes) { this._responseError('Engagement types', 'Can not load engagement types data'); }
 
-                        this._setData('engagement_attachments_types', engagementAttachmentsTypes);
                         this._setData('statuses', statuses);
                         this._setData('engagementTypes', engagementTypes);
                     }

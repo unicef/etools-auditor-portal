@@ -49,7 +49,7 @@ Polymer({
     },
 
     attached: function() {
-        this.fileTypes = this.getData('engagement_attachments_types');
+        this.fileTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
         this._routeConfig();
     },
 
