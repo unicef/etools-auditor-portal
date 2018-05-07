@@ -5,7 +5,8 @@ Polymer({
 
     behaviors: [
         APBehaviors.TableElementsBehavior,
-        APBehaviors.CommonMethodsBehavior
+        APBehaviors.CommonMethodsBehavior,
+        APBehaviors.UserController
     ],
 
     properties: {
@@ -285,8 +286,11 @@ Polymer({
         let item = event && event.model && event.model.item;
         if (!item) { throw 'Cann not get item model!'; }
 
+        let me = this.getUserData() || {},
+            updateOptions = _.get(item, 'user.email') === me.email;
+
         this.manageEngagementStaff(item);
-        this._updateEngagement(true);
+        this._updateEngagement(true, updateOptions);
     },
 
     _emailDisabled: function(request, createPopup, emailChecking) {
@@ -376,15 +380,18 @@ Polymer({
             return;
         }
 
+        let me = this.getUserData() || {},
+            updateOptions = _.get(details, 'data.user.email') === me.email;
+
         details.data.hasAccess = this.editedItem.hasAccess;
         if (details.action === 'patch') {
             this.manageEngagementStaff(details.data, details.hasAccess);
-            this._updateEngagement();
+            this._updateEngagement(false, updateOptions);
             let index = ~details.index ? details.index : _.findIndex(this.dataItems, item => item.id === details.data.id);
             this.splice('dataItems', index, 1, details.data);
         } else if (details.action === 'post') {
             this.manageEngagementStaff(details.data, details.hasAccess);
-            this._updateEngagement();
+            this._updateEngagement(false, updateOptions);
             this.set('listPage', 0);
             this.set('listPage', 1);
         } else if (details.action === 'delete') {
@@ -420,9 +427,9 @@ Polymer({
         this.engagementStaffs = _.cloneDeep(this.engagementStaffs);
     },
 
-    _updateEngagement: function(quiet) {
+    _updateEngagement: function(quiet, forceOptions) {
         if (!this.saveWithButton) {
-            this.fire('action-activated', {type: 'save', quietAdding: quiet});
+            this.fire('action-activated', {type: 'save', quietAdding: quiet, forceOptionsUpdate: forceOptions});
         }
     },
 
