@@ -48,6 +48,15 @@
                 on-forbidden="_handleUsersResponse"
                 on-fail="_handleUsersResponse">
         </etools-ajax>
+
+        <!--staff_members__user-->
+        <etools-ajax
+                method="GET"
+                url="{{staffUsersEndpoint}}"
+                on-success="_handleStaffUsersResponse"
+                on-forbidden="_handleStaffUsersResponse"
+                on-fail="_handleStaffUsersResponse">
+        </etools-ajax>
     </template>
 
     <script>
@@ -84,10 +93,11 @@
                     this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.usersEndpoint = this.getEndpoint('users').url;
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
+                    this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
                 },
 
                 _allDataLoaded: function() {
-                    if (dataLoaded.partners && dataLoaded.engagementOptions && dataLoaded.users) {
+                    if (dataLoaded.partners && dataLoaded.engagementOptions && dataLoaded.users && dataLoaded.staffUsers) {
                         this.fire('static-data-loaded');
                     }
                 },
@@ -184,11 +194,28 @@
                         this._responseError('Users', event && event.type);
                     } else {
                         _.each(details, (user) => {
-                            user.full_name = `${user.first_name} ${user.last_name}`;
+                            user.full_name = user.first_name || user.last_name ?
+                                    `${user.first_name} ${user.last_name}` :
+                                    'Unnamed User';
                         });
                         this._setData('users', details);
                     }
                     dataLoaded.users = true;
+                    this._allDataLoaded();
+                },
+
+                _handleStaffUsersResponse: function(event, details) {
+                    if (!details || details.error) {
+                        this._responseError('Staff Members Users', event && event.type, 'warn');
+                    } else {
+                        _.each(details, (user) => {
+                            user.full_name = user.first_name || user.last_name ?
+                                    `${user.first_name} ${user.last_name}` :
+                                    'Unnamed User';
+                        });
+                        this._setData('staffMembersUsers', details);
+                    }
+                    dataLoaded.staffUsers = true;
                     this._allDataLoaded();
                 },
 
