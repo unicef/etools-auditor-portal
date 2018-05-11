@@ -12,7 +12,7 @@ Polymer({
 
     properties: {
         subjectAreas: Object,
-        editedBlueprint: {
+        dataModel: {
             type: Object,
             value: () => ({
                 risks: [{
@@ -89,6 +89,7 @@ Polymer({
     ready: function() {
         let riskOptions = this.getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
         this.set('riskOptions', riskOptions);
+        this.editedBlueprint = _.cloneDeep(this.dataModel);
     },
 
     _getRisValueData: function(risk) {
@@ -127,6 +128,7 @@ Polymer({
             }
 
             let blueprint = this.subjectAreas.blueprints[index];
+            this.set('editedBlueprint',  _.cloneDeep(this.dataModel));
             this.editedBlueprint.id = blueprint.id;
             this.dialogTexts = this.addDialogTexts;
         }
