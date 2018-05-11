@@ -297,31 +297,7 @@
                 assert.isTrue(behaviorObj.infoLoaded.called);
             });
 
-            it('get choices and sets data if reportFileTypes is not defined', function() {
-                var types = 'test';
-                behaviorObj._setOriginalData = function() {};
-                behaviorObj._setData = sinon.spy();
-                behaviorObj.getChoices = sinon.stub().returns(types);
-                behaviorObj.reportFileTypes = {};
-                behaviorObj.tabsList = ['overview'];
-                behaviorObj.routeData = {
-                    tab: 'overview'
-                };
-                behaviorObj.tab = undefined;
 
-                behaviorObj._infoLoaded();
-
-                assert.isFalse(behaviorObj._setData.called);
-                assert.isFalse(behaviorObj.getChoices.called);
-
-                behaviorObj.reportFileTypes = undefined;
-
-                behaviorObj._infoLoaded();
-
-                assert.isTrue(behaviorObj._setData.called);
-                assert.isTrue(behaviorObj.getChoices.called);
-                assert.equal(behaviorObj.reportFileTypes, types);
-            });
         });
 
         it('_engagementUpdated method sets OriginalData if event detail argument provided', function() {
@@ -346,6 +322,7 @@
         });
 
         it('_setPermissionBase method return base path or null', function() {
+            behaviorObj.getChoices = sinon.stub()
             behaviorObj._setPermissionBase();
             assert.equal(behaviorObj.permissionBase, null);
 
