@@ -497,7 +497,6 @@
                             assert.isObject(resolved[0]);
                             assert.equal(resolved[0].id, myEl.editedItem.id);
                             assert.equal(resolved[0].file_type, myEl.editedItem.file_type);
-                            assert.equal(resolved[0].hyperlink, myEl.editedItem.file);
                             assert.equal(resolved[0]._delete, myEl.editedItem._delete);
                             done();
                         })
@@ -742,17 +741,6 @@
 
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy.calledWithExactly('toast', {text: `Attachments: ${errorData.report_attachments}`}));
-            });
-
-            it('fires toast with nonField error', function () {
-                let spy = sinon.spy(myEl, 'fire');
-                let errorData = {report_attachments: [{non_field_errors: ['Please provide file or hyperlink.']}]};
-
-                assert.isFalse(spy.called);
-                myEl._errorHandler(errorData);
-
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy.calledWithExactly('toast', {text: `Attachments: ${errorData.report_attachments[0].non_field_errors}`}));
             });
 
             it('fires toast with error for each invalid file when dialog is closed (New Engagement Tab)', function () {
