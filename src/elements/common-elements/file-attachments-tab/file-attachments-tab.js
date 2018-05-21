@@ -272,7 +272,6 @@
                         changedFiles.push({
                             id: fileModel.id,
                             file_type: fileModel.file_type,
-                            hyperlink: fileModel.file,
                             _delete: fileModel._delete
                         });
                     }
