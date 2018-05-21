@@ -55,13 +55,16 @@ App global configuration
                 template: '/api/audit/audit-firms/<%=id%>/staff-members/'
             },
             userExistence: {
-                template: '/api/audit/audit-firms/users/?search=<%=email%>'
+                template: '/api/audit/audit-firms/users/?email=<%=email%>'
             },
             changeCountry: {
                 url: '/users/api/changecountry/'
             },
             users: {
                 url: '/api/users/'
+            },
+            staffMembersUsers: {
+                url: '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true'
             }
         },
 

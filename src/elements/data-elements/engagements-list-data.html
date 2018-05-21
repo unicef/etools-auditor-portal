@@ -35,6 +35,10 @@
                 listLength: {
                     type: Number,
                     notify: true
+                },
+                staticParam: {
+                    type: 'String',
+                    value: ''
                 }
             },
 
@@ -68,7 +72,8 @@
                 this.fire('global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
 
                 let endpoint = this.getEndpoint('engagementsList');
-                endpoint.url += this.getQueriesString();
+                let staticParam = this.staticParam ? `&${this.staticParam}` : '';
+                endpoint.url += this.getQueriesString() + staticParam;
 
                 if (this.requestQueries.reload) {
                     endpoint.url += `&reload=${new Date().getTime()}`;
@@ -81,7 +86,7 @@
             reloadRequired: function () {
                 let lastKeys = _.keys(this.lastState);
                 let requestQueriesKeys = _.keys(this.requestQueries);
-                let filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit'];
+                let filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit', 'staff_members__user'];
                 let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
                 queriesKeys = _.uniq(queriesKeys);

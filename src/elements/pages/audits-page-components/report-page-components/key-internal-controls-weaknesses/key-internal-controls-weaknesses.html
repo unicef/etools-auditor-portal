@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input, lodash]-->
 <!--import [list-header, list-element, tab-inputs-styles, module-styles, dialog-element, common-methods-behavior,
-            static-data-behavior]-->
+            static-data-behavior, kicw-risk]-->
 
 <dom-module id="key-internal-controls-weaknesses">
     <template>
@@ -28,7 +28,12 @@
                         has-collapse
                         no-animation>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:add-box" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                    </div>
+                    <div class="collapse-container" slot="custom-details">
+                        <kicw-risk risks-data="[[item.risks]]"
+                                   blueprint-id="[[item.id]]"
+                                   is-editable="[[_canBeChanged(basePermissionPath)]]"></kicw-risk>
                     </div>
                 </list-element>
             </template>
@@ -45,8 +50,9 @@
 
         <dialog-element
                 opened="{{dialogOpened}}"
-                dialog-title="{{editedArea.header}}"
-                confirm-btn-text="Save"
+                dialog-title="[[dialogTexts.dialogTitle]]"
+                delete-dialog="[[deleteDialog]]"
+                confirm-btn-text="[[dialogTexts.confirmBtn]]"
                 request-in-process="{{requestInProcess}}">
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">
@@ -55,19 +61,19 @@
                                 <!-- Risk Assessment -->
                                 <etools-searchable-multiselection-menu
                                         id="riskRatingInput"
-                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}} validate-input"
-                                        value="{{editedArea.risk.value}}"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}} validate-input"
+                                        value="{{editedBlueprint.risks.0.value}}"
                                         label="Risk rating"
                                         placeholder="Select Risk rating"
                                         options="[[riskOptions]]"
                                         custom-object-options
                                         option-label="display_name"
                                         option-value="display_name"
-                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.value', basePermissionPath)}}"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly$="{{requestInProcess}}"
-                                        invalid="{{errors.blueprints.0.risk.value}}"
-                                        error-message="{{errors.blueprints.0.risk.value}}"
+                                        invalid="{{errors.blueprints.0.risks.value}}"
+                                        error-message="{{errors.blueprints.0.risks.value}}"
                                         on-focus="_resetFieldError"
                                         hide-search
                                         no-title-attr="">
@@ -78,16 +84,16 @@
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
-                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
-                                        value="{{editedArea.risk.extra.key_control_observation}}"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}} validate-input"
+                                        value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
                                         label="Key control observation"
                                         placeholder="Enter Observation"
-                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
                                         max-rows="4"
-                                        invalid="{{errors.blueprints.0.risk.extra}}"
-                                        error-message="{{errors.blueprints.0.risk.extra}}"
+                                        invalid="{{errors.blueprints.0.risks.extra}}"
+                                        error-message="{{errors.blueprints.0.risks.extra}}"
                                         on-focus="_resetFieldError">
                                 </paper-textarea>
                             </div>
@@ -96,16 +102,16 @@
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
-                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
-                                        value="{{editedArea.risk.extra.recommendation}}"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}} validate-input"
+                                        value="{{editedBlueprint.risks.0.extra.recommendation}}"
                                         label="Recommendation"
                                         placeholder="Enter Recommendation"
-                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
                                         max-rows="4"
-                                        invalid="{{errors.blueprints.0.risk.extra}}"
-                                        error-message="{{errors.blueprints.0.risk.extra}}"
+                                        invalid="{{errors.blueprints.0.risks.extra}}"
+                                        error-message="{{errors.blueprints.0.risks.extra}}"
                                         on-focus="_resetFieldError">
                                 </paper-textarea>
                             </div>
@@ -114,16 +120,16 @@
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <paper-textarea
-                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}} validate-input"
-                                        value="{{editedArea.risk.extra.ip_response}}"
+                                        class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}} validate-input"
+                                        value="{{editedBlueprint.risks.0.extra.ip_response}}"
                                         label="IP Response"
                                         placeholder="Enter Response"
-                                        required="{{_setRequired('key_internal_weakness.blueprints.risk.extra', basePermissionPath)}}"
+                                        required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}}"
                                         disabled="{{requestInProcess}}"
                                         readonly="{{requestInProcess}}"
                                         max-rows="4"
-                                        invalid="{{errors.blueprints.0.risk.extra}}"
-                                        error-message="{{errors.blueprints.0.risk.extra}}"
+                                        invalid="{{errors.blueprints.0.risks.extra}}"
+                                        error-message="{{errors.blueprints.0.risks.extra}}"
                                         on-focus="_resetFieldError">
                                 </paper-textarea>
                             </div>

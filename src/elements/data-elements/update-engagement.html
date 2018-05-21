@@ -50,12 +50,17 @@
                     value: function() {
                         return {};
                     }
+                },
+                forceOptionsUpdate: {
+                    type: Boolean,
+                    notify: true
                 }
             },
 
             _handleResponse: function (data) {
-                if (this.method === 'POST') {
+                if (this.method === 'POST' || this.forceOptionsUpdate) {
                     this.lastData = data;
+                    this.forceOptionsUpdate = false;
                     this._finishPostResponse();
                     return;
                 } else if (this.actionUrl) {
@@ -102,13 +107,18 @@
             },
 
             _finishPostResponse: function() {
-                this.fire('global-loading', {type: 'update-permissions', active: true, message: 'Updating data...'});
+                if (!this.quietAdding) {
+                    this.fire('global-loading', {type: 'update-permissions', active: true, message: 'Updating data...'});
+                }
+
                 if (~this.actionUrl.indexOf('submit')) {
                     this.fire('global-loading', {type: 'submit-engagement'});
                 } else if (~this.actionUrl.indexOf('finalize')) {
                     this.fire('global-loading', {type: 'finalize-engagement'});
                 } else if (~this.actionUrl.indexOf('cancel')) {
                     this.fire('global-loading', {type: 'cancel-engagement'});
+                } else {
+                    this.fire('global-loading', {type: 'update-engagement'});
                 }
                 this.actionUrl = '';
                 this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type}).url;
@@ -200,6 +210,7 @@
                     //Simple engagement data updating
                     let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
                     this.method = 'PATCH';
+                    this.actionUrl = '';
                     this._saveEngagement(engagement.data, url);
                 }
 

@@ -53,7 +53,7 @@
                 this.email = null;
             },
 
-            _handleResponse: function(event, details = []) {
+            _handleResponse: function(event, details = {}) {
                 let alreadyExists = _.get(details, '0.auditor_firm');
 
                 if (alreadyExists || (details.length && !this.unicefUsersAllowed)) {

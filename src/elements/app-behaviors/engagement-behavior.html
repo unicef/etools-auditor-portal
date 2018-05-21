@@ -1,5 +1,5 @@
 <!--import [polymer, lodash]-->
-<!--import [textarea-max-rows-behavior, etools-app-config]-->
+<!--import [textarea-max-rows-behavior, etools-app-config, permission-controller]-->
 
 <script>
     'use strict';
@@ -151,10 +151,13 @@
             if (!this._validateBasicInfo()) { return; }
             if (this.customBasicValidation && !this.customBasicValidation()) { return; }
 
-            let quietAdding = event && event.detail && event.detail.quietAdding;
+            let quietAdding = event && event.detail && event.detail.quietAdding,
+                forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
+
             return this._prepareData()
                     .then((data) => {
                         this.quietAdding = quietAdding;
+                        this.forceOptionsUpdate = forceOptionsUpdate;
                         this.updatedEngagement = data;
                     });
         },

@@ -34,14 +34,18 @@
             queryParams: {
                 type: Object,
                 notify: true
-            }
+            },
+            previousSearchValue: String
         },
 
         observers: [
             '_restoreFilters(queryParams.*)'
         ],
 
-        searchKeyDown: function() {
+        searchKeyDown: function(event, {value}) {
+            if ((!this.previousSearchValue && !value) || value === this.previousSearchValue) { return; }
+            this.previousSearchValue = value;
+
             this.debounce('searchKeyDown', () => {
                 if (this.searchString.length !== 1) {
                     this.updateQueries({search: this.searchString || undefined, page: '1'});

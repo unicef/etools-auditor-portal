@@ -108,6 +108,9 @@ Polymer({
         var resolvedPageUrl;
         if (page === 'not-found') {
             resolvedPageUrl = 'elements/pages/not-found-page-view/not-found-page-view.html';
+        } else if (page === 'staff-sc' && !this._checkSSCPage(this.user)) {
+            this._pageNotFound();
+            return;
         } else {
             resolvedPageUrl = `elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.html`;
         }
@@ -116,6 +119,11 @@ Polymer({
             this.fire('global-loading', {type: 'initialisation'});
             if (this.route.path === '/ap/') { this._configPath(); }
         }, this._pageNotFound, true);
+    },
+
+    _checkSSCPage: function(user) {
+        let groups = _.get(user, 'groups', []);
+        return _.some(groups, group => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User');
     },
 
     _pageNotFound: function(event) {
