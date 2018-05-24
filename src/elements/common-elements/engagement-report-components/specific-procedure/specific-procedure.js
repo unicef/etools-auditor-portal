@@ -79,6 +79,10 @@
                 type: Boolean,
                 value: false,
                 reflectToAttibute: true
+            },
+            readonlyTab: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -111,8 +115,12 @@
             }
         },
 
-        _hideEditIcon: function() {
-            return !this._canBeChanged('new_engagement') && this.withoutFindingColumn;
+        _hideEditIcon: function(basePermissionPath, withoutFindingColumn, readonlyTab) {
+            return withoutFindingColumn || readonlyTab || !this._canBeChanged(basePermissionPath);
+        },
+
+        canAddSP: function(basePermissionPath, readonlyTab, withoutFindingColumn) {
+            return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
         }
 
     });

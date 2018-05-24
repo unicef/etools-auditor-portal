@@ -12,15 +12,13 @@
                 class="content-section clearfix"
                 panel-title="[[getLabel('specific_procedures', basePermissionPath)]]">
             <div slot="panel-btns">
-                <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                    <div hidden$="[[!_canBeChanged('new_engagement', basePermissionPath)]]">
-                        <paper-icon-button
-                                class="panel-button"
-                                on-tap="openAddDialog"
-                                icon="add-box">
-                        </paper-icon-button>
-                        <paper-tooltip offset="0">Add</paper-tooltip>
-                    </div>
+                <div hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]">
+                    <paper-icon-button
+                            class="panel-button"
+                            on-tap="openAddDialog"
+                            icon="add-box">
+                    </paper-icon-button>
+                    <paper-tooltip offset="0">Add</paper-tooltip>
                 </div>
             </div>
 
@@ -43,10 +41,10 @@
                         multiline
                         no-animation>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" hidden$="[[_hideEditIcon(basePermissionPath)]]"
+                        <paper-icon-button icon="icons:create" class="edit-icon" hidden$="[[_hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab)]]"
                                            on-tap="openEditDialog"></paper-icon-button>
                         <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"
-                                           hidden$="[[!_canBeChanged('new_engagement', basePermissionPath)]]"></paper-icon-button>
+                                           hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -71,7 +69,7 @@
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
 
-                    <template is="dom-if" if="[[_canBeChanged('new_engagement', basePermissionPath)]]" restamp>
+                    <template is="dom-if" if="[[canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <!-- Description -->
@@ -94,7 +92,7 @@
                         </div>
                     </template>
 
-                    <template is="dom-if" if="[[!_canBeChanged('new_engagement', basePermissionPath)]]" restamp>
+                    <template is="dom-if" if="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
                         <div class="row-h group">
                             <div class="input-container input-container-l">
                                 <!-- Finding -->
