@@ -132,13 +132,16 @@
         });
 
         describe('method _handleResponse()', function () {
-            it('fires "main_refresh" event', function () {
-                let spy = sinon.spy(myEl, 'fire');
+            it('sets refreshInProgress to true and calls clearDexieDbs', function () {
+                myEl.clearDexieDbs = sinon.spy();
+                myEl.refreshInProgress = false;
 
-                assert.isFalse(spy.called);
+                assert.isFalse(myEl.clearDexieDbs);
+                assert.isFalse(myEl.refreshInProgress);
+
                 myEl._handleResponse();
-                assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy.calledWithExactly('main_refresh'));
+                assert.isTrue(myEl.clearDexieDbs.calledOnce);
+                assert.isTrue(myEl.refreshInProgress);
             });
         });
     });
