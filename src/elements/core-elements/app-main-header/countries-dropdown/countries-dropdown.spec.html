@@ -136,7 +136,7 @@
                 myEl.clearDexieDbs = sinon.spy();
                 myEl.refreshInProgress = false;
 
-                assert.isFalse(myEl.clearDexieDbs);
+                assert.isFalse(myEl.clearDexieDbs.called);
                 assert.isFalse(myEl.refreshInProgress);
 
                 myEl._handleResponse();
