@@ -326,12 +326,13 @@ Polymer({
     _addStaffFromDialog: function(force) {
         if (this.requestInProcess && !force) { return; }
 
+        this.errors = {};
         if (!this.validate()) { return; }
 
         this.requestInProcess = true;
 
         let item = _.cloneDeep(this.editedItem);
-        if (!this.addDialog && !isNaN(this.editedIndex)) {
+        if ((!this.addDialog && !isNaN(this.editedIndex)) || item.id) {
             if (_.isEqual(this.originalEditedObj, this.editedItem)) {
                 this.requestInProcess = false;
                 this.dialogOpened = false;
@@ -341,7 +342,7 @@ Polymer({
             this.set('newData', {
                 method: 'PATCH',
                 data: item,
-                staffIndex: this.editedIndex,
+                staffIndex: !this.addDialog ? this.editedIndex : null,
                 id: `${item.id}/`
             });
         } else {
@@ -388,12 +389,16 @@ Polymer({
             this.manageEngagementStaff(details.data, details.hasAccess);
             this._updateEngagement(false, updateOptions);
             let index = ~details.index ? details.index : _.findIndex(this.dataItems, item => item.id === details.data.id);
-            this.splice('dataItems', index, 1, details.data);
+            if (_.isNumber(index) && ~index) {
+                this.splice('dataItems', index, 1, details.data);
+            } else {
+                this.set('listPage', 0);
+                this.set('listPage', 1);
+            }
         } else if (details.action === 'post') {
             this.manageEngagementStaff(details.data, details.hasAccess);
             this._updateEngagement(false, updateOptions);
-            this.set('listPage', 0);
-            this.set('listPage', 1);
+
         } else if (details.action === 'delete') {
             let last = this.dataItems.length === 1 ? 1 : 0;
             let email = this.editedItem.user.email;

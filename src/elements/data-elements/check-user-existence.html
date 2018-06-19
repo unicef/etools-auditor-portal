@@ -59,6 +59,15 @@
 
                 if (alreadyExists || (details.length && !this.unicefUsersAllowed)) {
                     this._setError(`This field must be unique.`);
+                } else if(firmId === this.organisationId) {
+                    let user = details[0];
+                    user.is_active = true;
+                    this.editedItem = {
+                        id: user.staff_member_id,
+                        hidden: false,
+                        hasAccess: true,
+                        user: _.omit(user, ['id', 'auditor_firm', 'staff_member_id', 'hidden'])
+                    };
                 } else if (details.length) {
                     let user = details[0],
                         user_pk = user.id;
