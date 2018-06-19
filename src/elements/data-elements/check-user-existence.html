@@ -54,7 +54,8 @@
             },
 
             _handleResponse: function(event, details = {}) {
-                let alreadyExists = _.get(details, '0.auditor_firm');
+                let firmId = _.get(details, '0.auditor_firm'),
+                    alreadyExists = !firmId || firmId !== this.organisationId;
 
                 if (alreadyExists || (details.length && !this.unicefUsersAllowed)) {
                     this._setError(`This field must be unique.`);
