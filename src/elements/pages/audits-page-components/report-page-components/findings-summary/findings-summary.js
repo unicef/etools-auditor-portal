@@ -199,5 +199,20 @@ Polymer({
         } else {
             this.set('errors', refactoredData);
         }
+    },
+
+    customValidation: function() {
+        let ffElement = this.$['financial-findings'],
+            ffNumber = ffElement && _.toNumber(ffElement.value);
+        let aeElement = this.$['audited-expenditure'],
+            aeNumber = aeElement && _.toNumber(aeElement.value);
+
+        if (aeNumber < ffNumber) {
+            aeElement.invalid = 'Can\'t be less than Financial Findings';
+            return false;
+        } else {
+            aeElement.invalid = '';
+            return true;
+        }
     }
 });
