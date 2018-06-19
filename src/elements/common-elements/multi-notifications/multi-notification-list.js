@@ -58,8 +58,10 @@ Polymer({
     },
 
     _resetNotifications: function() {
-        this.set('notifications', []);
-        this.set('notificationsQueue', []);
+        _.each(['notifications', 'notificationsQueue'], (arrayName) => {
+            let result = this[arrayName].filter((toast) => toast.fixed);
+            this.set(arrayName, result);
+        });
     },
 
     /**

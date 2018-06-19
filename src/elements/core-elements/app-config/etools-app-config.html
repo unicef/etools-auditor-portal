@@ -11,6 +11,8 @@ App global configuration
     etoolsCustomDexieDb.version(1).stores({
         collectionsList: '&name, expire',
         partners: 'id',
+        sections: 'id',
+        offices: 'id'
     });
 
     var etoolsAppConfig = {
@@ -65,15 +67,22 @@ App global configuration
             },
             staffMembersUsers: {
                 url: '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true'
-            }
-        },
-
-        localEndpoints: {
-            userProfile: {
-                url: '/data/user-profile.json'
             },
-            engagementsList: {
-                url: '/data/engagements-list.json'
+            sectionsCovered: {
+                url: '/api/sections/',
+                exp: 24 * 60 * 60 * 1000, // 24h
+                cachingKey: 'sections'
+            },
+            offices: {
+                url: '/api/offices/',
+                exp: 23 * 60 * 60 * 1000, // 23h
+                cachingKey: 'offices'
+            },
+            reportAttachments: {
+                template: '/api/audit/engagements/<%=id%>/report-attachments/'
+            },
+            attachments: {
+                template: '/api/audit/engagements/<%=id%>/engagement-attachments/'
             }
         },
 
@@ -82,7 +91,8 @@ App global configuration
             baseSite: window.location.origin,
             basePath: (window.location.port === '8080') ? '/' : '/ap/',
             serverBackend: (window.location.port !== '8080'),
-            epsPath: (window.location.port !== '8080') ? 'endpoints' : 'localEndpoints',
+            //epsPath: (window.location.port !== '8080') ? 'endpoints' : 'localEndpoints',
+            epsPath:  'endpoints',
 
             // dexie js
             appDexieDb: etoolsCustomDexieDb,
