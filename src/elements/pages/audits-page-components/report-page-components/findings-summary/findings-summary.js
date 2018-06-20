@@ -208,10 +208,10 @@ Polymer({
             aeNumber = aeElement && _.toNumber(aeElement.value);
 
         if (aeNumber < ffNumber) {
-            aeElement.invalid = 'Can\'t be less than Financial Findings';
+            ffElement.invalid = 'Cannot exceed Audited Expenditure';
             return false;
         } else {
-            aeElement.invalid = '';
+            ffElement.invalid = '';
             return true;
         }
     }
