@@ -19,9 +19,31 @@
         <etools-ajax
                 method="OPTIONS"
                 url="[[apOptionsUrl]]"
-                on-success="_handleApOptionsResponse"
-                on-fail="_handleApOptionsResponse"
-                on-forbidden="_handleApOptionsResponse">
+                data-path-postfix="ap"
+                data-request-name="apOptions"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
+        </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[atmOptionsUrl]]"
+                data-path-postfix="attachments"
+                data-request-name="attachments"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
+        </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[reportAtmOptionsUrl]]"
+                data-path-postfix="report_attachments"
+                data-request-name="reportAttachments"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
         </etools-ajax>
     </template>
 
@@ -74,11 +96,15 @@
                 this._handleResponse(this.responseData);
             },
 
-            _handleApOptionsResponse: function(data) {
-                let actions = _.get(data, 'detail.actions', {});
-                this._addToCollection(`engagement_${this.engagementId}_ap`, actions || {});
+            _handleDataOptionsResponse: function(data) {
+                let actions = _.get(data, 'detail.actions', {}),
+                    name = _.get(data, 'detail.name', ''),
+                    postfix = _.get(data, 'srcElement.dataset.pathPostfix'),
+                    requestName = _.get(data, 'srcElement.dataset.requestName');
 
-                this.requestsCompleted.apOptions = true;
+                this._addToCollection(`engagement_${this.engagementId}_${postfix}`, actions || {}, name);
+
+                this.requestsCompleted[requestName] = true;
                 this._handleResponse(this.responseData);
             },
 
@@ -87,7 +113,11 @@
             },
 
             _finishRequests: function(data) {
-                if (!this.requestsCompleted.data || !this.requestsCompleted.options || !this.requestsCompleted.apOptions) { return; }
+                if (!this.requestsCompleted.data ||
+                    !this.requestsCompleted.apOptions ||
+                    !this.requestsCompleted.options ||
+                    !this.requestsCompleted.attachments ||
+                    !this.requestsCompleted.reportAttachments) { return; }
 
                 if (data) { this.engagementInfo = data; }
 
@@ -125,6 +155,8 @@
 
                 let apBaseUrl = this.getEndpoint('engagementInfo', {id: id, type: 'engagements'}).url;
                 this.apOptionsUrl = `${apBaseUrl}action-points/`;
+                this.atmOptionsUrl = this.getEndpoint('attachments', {id: id}).url;
+                this.reportAtmOptionsUrl = this.getEndpoint('reportAttachments', {id: id}).url;
 
                 let lastCreated = this.getLastEngagementData(id);
                 if (lastCreated) {

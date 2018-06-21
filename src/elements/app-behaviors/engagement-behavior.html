@@ -213,9 +213,6 @@
         },
 
         _prepareData: function(submit, finalize) {
-            let engagementAttachmentsTab = this.getElement('#engagement_attachments'),
-                reportAttachmentsTab = this.getElement('#report_attachments');
-
             if (!this.engagement) {
                 return Promise.reject('You need engagement object');
             }
@@ -240,22 +237,15 @@
                 data = this.customDataPrepare(data);
             }
 
-            let promises = [];
-            if (engagementAttachmentsTab) { promises[0] = engagementAttachmentsTab.getFiles(); }
-            if (reportAttachmentsTab) { promises[1] = reportAttachmentsTab.getFiles(); }
-
-            return Promise.all(promises)
-                    .then((uploadedFiles) => {
-                        if (uploadedFiles && uploadedFiles[0]) {data.engagement_attachments = uploadedFiles[0]; }
-                        if (uploadedFiles && uploadedFiles[1]) {data.report_attachments = uploadedFiles[1]; }
-                        return {
-                            engagement_type: type,
-                            id: engagementId,
-                            data: data,
-                            submit: submit ? 'submit/' : null,
-                            finalize: finalize ? 'finalize/' : null
-                        };
-                    });
+            //leave for compatibility with other code
+            return Promise.all([])
+                    .then(() => ({
+                        engagement_type: type,
+                        id: engagementId,
+                        data: data,
+                        submit: submit ? 'submit/' : null,
+                        finalize: finalize ? 'finalize/' : null
+                    }));
         },
 
         _setExportLinks: function(engagement) {

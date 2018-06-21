@@ -39,6 +39,10 @@ Polymer({
                 return ['overview', 'attachments'];
             }
         },
+        _attachmentErrors: {
+            type: Array,
+            value: []
+        }
     },
 
     observers: [
@@ -50,7 +54,6 @@ Polymer({
     },
 
     attached: function() {
-        this.fileTypes = this.getChoices('new_engagement.engagement_attachments.file_type');
         this._routeConfig();
     },
 
@@ -66,12 +69,6 @@ Polymer({
             this.fire('404');
         }
         this.clearQueries();
-    },
-
-    _attachmentsReadonly: function() {
-        let readOnly = this.isReadonly(`new_engagement.engagement_attachments`);
-        if (readOnly === null) { readOnly = true; }
-        return readOnly;
     },
 
     _saveNewEngagement: function() {
@@ -98,23 +95,57 @@ Polymer({
         if (!event && !event.detail) { return; }
         if (event.detail.success && event.detail.data) {
             //save response data before redirecting
-            this._setLastEngagementData(event.detail.data);
+            let data = event.detail.data;
+            this._setLastEngagementData(data);
+            this.engagement.id = data.id;
 
-            this.reloadEngagementsList();
+            let attachmentsTab = this.$.engagement_attachments,
+                attachments = attachmentsTab && attachmentsTab.getFiles();
 
-            //redirect
-            let path = `${this.engagement.engagement_type.link}/${event.detail.data.id}/overview`;
-            this.set('path', this.getAbsolutePath(path));
-
-            //reset data
-            this.engagement = {
-                status: '',
-                staff_members: [],
-                type: {}
-            };
-
-            this.fire('global-loading', {type: 'create-engagement'});
+            if (attachments && attachments.length) {
+                this.fire('global-loading', {type: 'upload-attachments', active: true, message: 'Uploading documents...'});
+                this.fire('global-loading', {type: 'create-engagement'});
+                this.atmUrl = this.getEndpoint('attachments', {id: data.id}).url;
+                this._attachmentsToUpload = attachments;
+                this.attachmentsPostData = attachments.shift();
+            } else {
+                this._finishEngagementCreation();
+            }
         }
+    },
+
+    _handleAtmResponse: function(event, detail) {
+        if (detail.error) {
+            let name = this.attachmentsPostData.file.name;
+            this._attachmentErrors.push(name);
+        }
+
+        if (this._attachmentsToUpload.length) {
+            this.attachmentsPostData = this._attachmentsToUpload.shift();
+        } else {
+            _.each(this._attachmentErrors, (fileName) => this.fire('toast', {text: `File upload failed: ${fileName}`, fixed: true}));
+            this._finishEngagementCreation();
+        }
+    },
+
+    _finishEngagementCreation: function() {
+        this.reloadEngagementsList();
+
+        //redirect
+        let path = `${this.engagement.engagement_type.link}/${this.engagement.id}/overview`;
+        this.set('path', this.getAbsolutePath(path));
+
+        //reset data
+        this.engagement = {
+            status: '',
+            staff_members: [],
+            type: {}
+        };
+        this._attachmentsToUpload = [];
+        this._attachmentErrors = [];
+
+        this.fire('global-loading', {type: 'upload-attachments'});
+        this.fire('global-loading', {type: 'create-engagement'});
     },
 
     reloadEngagementsList: function() {
@@ -138,6 +169,7 @@ Polymer({
                 specific_procedures: []
             });
 
+            this.$.engagement_attachments.resetData();
             this.$.engagementDetails.resetValidationErrors();
             this.$.engagementDetails.resetAgreement();
             this.$.partnerDetails.resetValidationErrors();
