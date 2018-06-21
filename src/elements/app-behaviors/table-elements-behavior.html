@@ -172,6 +172,7 @@
             }
 
             if (!this.validate()) { return; }
+            if (this.customValidation && !this.customValidation()) { return; }
 
             if (!this.addDialog && _.isEqual(this.originalEditedObj, this.editedItem)) {
                 this.dialogOpened = false;
