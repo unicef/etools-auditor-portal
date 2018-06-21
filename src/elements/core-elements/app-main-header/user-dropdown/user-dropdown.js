@@ -33,6 +33,6 @@ Polymer({
 
     _logout: function() {
         this.resetOldUserData();
-        this._changeLocation('accounts/logout');
+        this._changeLocation('saml2/logout');
     }
 });
