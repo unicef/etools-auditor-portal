@@ -139,13 +139,23 @@
         });
 
         describe('method _showAddButton()', function () {
-            it('returns result of actionAllowed() method', function () {
+            it('returns true if actionAllowed method returns true and first argument is false', function () {
                 let spy = sinon.stub(myEl, 'actionAllowed');
-                spy.withArgs('new_engagement', 'create').returns('returned_value');
+                spy.withArgs('new_engagement', 'create').returns(true);
 
-                assert.equal(myEl._showAddButton(), 'returned_value');
+                assert.isTrue(myEl._showAddButton(false));
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy.calledWithExactly('new_engagement', 'create'));
+            });
+
+            it('returns false if actionAllowed method returns false or first argument is true', function () {
+                let spy = sinon.stub(myEl, 'actionAllowed');
+                spy.withArgs('new_engagement', 'create').returns(true);
+
+                assert.isFalse(myEl._showAddButton(true));
+
+                spy.withArgs('new_engagement', 'create').returns(false);
+                assert.isFalse(myEl._showAddButton(false));
             });
         });
 

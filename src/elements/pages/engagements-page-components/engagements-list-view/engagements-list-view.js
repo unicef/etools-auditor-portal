@@ -117,6 +117,10 @@
             staticParam: {
                 type: 'String',
                 value: ''
+            },
+            hideAddButton: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -137,8 +141,8 @@
             }
         },
 
-        _showAddButton: function() {
-            return this.actionAllowed('new_engagement', 'create');
+        _showAddButton: function(hideAddButton) {
+            return this.actionAllowed('new_engagement', 'create') && !hideAddButton;
         },
 
         _getFilterIndex: function(query) {
