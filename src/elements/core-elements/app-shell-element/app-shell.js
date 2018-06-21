@@ -45,6 +45,7 @@ Polymer({
     ],
 
     listeners: {
+        'global-loading': 'handleLoading',
         'toast': 'queueToast',
         'drawer-toggle-tap': 'toggleDrawer',
         '404': '_pageNotFound',
