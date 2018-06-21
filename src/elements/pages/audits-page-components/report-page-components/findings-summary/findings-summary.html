@@ -60,6 +60,7 @@
                         <div class="input-container">
                             <!-- Audited expenditure (USD) -->
                             <etools-currency-amount-input
+                                    id="audited-expenditure"
                                     class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure', basePermissionPath)]]"
                                     value="{{editedItem.audited_expenditure}}"
                                     currency="$"
@@ -70,6 +71,7 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.audited_expenditure}}"
                                     error-message="{{errors.audited_expenditure}}"
+                                    on-blur="customValidation"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError">
                             </etools-currency-amount-input>
@@ -78,6 +80,7 @@
                         <div class="input-container">
                             <!-- Financial findings (USD) -->
                             <etools-currency-amount-input
+                                    id="financial-findings"
                                     class$="validate-input disabled-as-readonly [[_setRequired('financial_findings', basePermissionPath)]]"
                                     value="{{editedItem.financial_findings}}"
                                     currency="$"
@@ -88,6 +91,7 @@
                                     readonly$="[[requestInProcess]]"
                                     invalid="{{errors.financial_findings}}"
                                     error-message="{{errors.financial_findings}}"
+                                    on-blur="customValidation"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError">
                             </etools-currency-amount-input>
