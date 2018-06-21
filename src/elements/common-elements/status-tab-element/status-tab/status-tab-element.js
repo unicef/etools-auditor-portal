@@ -98,7 +98,15 @@
         },
 
         _classByStatus: function(statusNumber, currentStatusNumber) {
-            if (+statusNumber === currentStatusNumber + 1) { return 'active'; } else if (+statusNumber <= currentStatusNumber) { return 'completed'; } else { return 'pending'; }
+            if (+statusNumber === currentStatusNumber + 1) {
+                return 'active';
+            } else if (statusNumber === 8 && this.engagementData.status === 'cancelled') {
+                return 'pending';
+            } else if (+statusNumber <= currentStatusNumber) {
+                return 'completed';
+            } else {
+                return 'pending';
+            }
         },
 
         _classByDate: function(statusNumber) {
