@@ -3,7 +3,8 @@ Polymer({
     is: 'countries-dropdown',
 
     behaviors: [
-        etoolsAppConfig.globals
+        etoolsAppConfig.globals,
+        etoolsBehaviors.EtoolsRefreshBehavior
     ],
 
     properties: {
@@ -68,6 +69,12 @@ Polymer({
     },
 
     _handleResponse: function() {
-        this.fire('main_refresh');
+        this.refreshInProgress = true;
+        this.clearDexieDbs();
+    },
+
+    _refreshPage: function() {
+        this.refreshInProgress = false;
+        window.location.href = `${window.location.origin}/tpm/`;
     }
 });
