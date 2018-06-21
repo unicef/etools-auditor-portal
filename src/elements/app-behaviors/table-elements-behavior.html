@@ -125,8 +125,11 @@
             this.dialogOpened = true;
         },
 
-        openEditDialog: function(event) {
-            let index = this._getIndex(event);
+        openEditDialog: function(event = {}) {
+            let index = event.itemIndex;
+            if (isNaN(index) || !~index) {
+                index = this._getIndex(event);
+            }
 
             this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
             this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';

@@ -68,7 +68,7 @@
                 assert.isFalse(spy.called);
                 myEl._logout();
                 assert.isTrue(spy.calledOnce);
-                assert.isTrue(spy.calledWithExactly('accounts/logout'));
+                assert.isTrue(spy.calledWithExactly('saml2/logout'));
             });
         });
     });
