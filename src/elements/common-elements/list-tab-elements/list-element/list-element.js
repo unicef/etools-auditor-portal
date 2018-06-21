@@ -186,6 +186,7 @@ Polymer({
         if (typeof pattern !== 'string') { return '#'; }
 
         let link = pattern
+            .replace('*ap_link*', this.data.url)
             .replace('*data_id*', this.data.id)
             .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
 

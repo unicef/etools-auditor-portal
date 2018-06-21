@@ -16,6 +16,14 @@
                 on-success="_handleOptionsResponse"
                 on-fail="_handleOptionsError">
         </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[apOptionsUrl]]"
+                on-success="_handleApOptionsResponse"
+                on-fail="_handleApOptionsResponse"
+                on-forbidden="_handleApOptionsResponse">
+        </etools-ajax>
     </template>
 
     <script>
@@ -47,9 +55,12 @@
                 errorObject: {
                     type: Object,
                     notify: true,
-                    value: function() {
-                        return {};
-                    }
+                    value: () => ({})
+                },
+                optionRequests: {
+                    type: Object,
+                    notify: true,
+                    value: () => ({})
                 },
                 forceOptionsUpdate: {
                     type: Boolean,
@@ -73,17 +84,34 @@
 
             _handleOptionsResponse: function(data) {
                 let collectionName = `engagement_${this.lastData.detail.id}`;
-
                 this._updateCollection(collectionName, data.detail.actions);
                 this.optionsUrl = '';
-                this.basePermissionPath = '';
-                this.basePermissionPath = collectionName;
 
-                this.finishResponse(this.lastData);
+                this.optionRequests.options = true;
+                if (this.optionRequests.apOptions) {
+                    this.finishResponse(this.lastData);
+                }
+            },
+
+            _handleApOptionsResponse: function(data) {
+                let actions = _.get(data, 'detail.actions', {});
+                let collectionName = `engagement_${this.lastData.detail.id}_ap`;
+                this._updateCollection(collectionName, actions || {});
+                this.apOptionsUrl = '';
+
+                this.optionRequests.apOptions = true;
+                if (this.optionRequests.options) {
+                    this.finishResponse(this.lastData);
+                }
             },
 
             finishResponse: function(data) {
+                this.optionRequests = {};
                 this.engagement = data.detail;
+
+                this.basePermissionPath = '';
+                this.basePermissionPath = `engagement_${this.engagement.id}`;
+
                 this.fire('engagement-updated', {success: true, data: data.detail});
                 this.fire('global-loading', {type: 'update-engagement'});
                 this.fire('global-loading', {type: 'update-permissions'});
@@ -122,6 +150,8 @@
                 }
                 this.actionUrl = '';
                 this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type}).url;
+                let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
+                this.apOptionsUrl = `${apBaseUrl}action-points/`;
             },
 
             _handleError: function (event, error) {

@@ -57,6 +57,30 @@
                 on-forbidden="_handleStaffUsersResponse"
                 on-fail="_handleStaffUsersResponse">
         </etools-ajax>
+
+        <!--sections-->
+        <etools-ajax
+                method="GET"
+                endpoint="{{sectionsEndpoint}}"
+                caching-storage="custom"
+                dexie-db-collection="sections"
+                cache-key="sections"
+                on-success="_apDataResponse"
+                on-forbidden="_apDataResponse"
+                on-fail="_apDataResponse">
+        </etools-ajax>
+
+        <!--offices-->
+        <etools-ajax
+                method="GET"
+                endpoint="{{officesEndpoint}}"
+                caching-storage="custom"
+                dexie-db-collection="offices"
+                cache-key="offices"
+                on-success="_apDataResponse"
+                on-forbidden="_apDataResponse"
+                on-fail="_apDataResponse">
+        </etools-ajax>
     </template>
 
     <script>
@@ -94,6 +118,8 @@
                     this.usersEndpoint = this.getEndpoint('users').url;
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
                     this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
+                    this.officesEndpoint = this.getEndpoint('offices');
+                    this.sectionsEndpoint = this.getEndpoint('sectionsCovered');
                 },
 
                 _allDataLoaded: function() {
@@ -217,6 +243,13 @@
                     }
                     dataLoaded.staffUsers = true;
                     this._allDataLoaded();
+                },
+
+                _apDataResponse: function(event, details) {
+                    let collection = _.invoke(event, 'srcElement.getAttribute', 'cache-key');
+
+                    if (!collection || !details) { return; }
+                    this._setData(collection, details);
                 },
 
                 _responseError: function(message, type, eventType = 'error') {

@@ -17,11 +17,8 @@
         </template>
 
         <follow-up-actions
-                id="actions"
-                data-items="{{engagement.action_points}}"
-                error-object="{{errorObject}}"
-                base-permission-path="{{permissionBase}}">
-
+                engagement-id="[[engagement.id]]"
+                base-engagement-path="{{permissionBase}}">
         </follow-up-actions>
 
     </template>

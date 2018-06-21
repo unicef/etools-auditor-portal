@@ -327,7 +327,8 @@
         },
 
         _showFollowUpTabs: function(permissionBase) {
-            return this.collectionExists(`${permissionBase}.action_points`, 'GET');
+            let collection = this._getCollection(`${permissionBase}_ap`, 'GET');
+            return this.isValidCollection(collection);
         },
 
         _showCancellationReason: function(engagement) {

@@ -4,6 +4,7 @@ Polymer({
     is: 'follow-up-actions',
 
     behaviors: [
+        etoolsAppConfig.globals,
         APBehaviors.DateBehavior,
         APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior,
@@ -14,153 +15,132 @@ Polymer({
     properties: {
         dataItems: {
             type: Array,
-            notify: true
-        },
-        mainProperty: {
-            type: String,
-            value: 'action_points'
+            value: () => []
         },
         itemModel: {
             type: Object,
             value: function() {
                 return {
-                    category: '',
-                    person_responsible: {full_name: ''},
-                    due_date: '',
+                    assigned_to: undefined,
+                    due_date: undefined,
                     description: '',
-                    status: null,
-                    high_priority: false,
-                    action_taken: ''
+                    high_priority: false
                 };
             }
         },
         columns: {
             type: Array,
-            value: function() {
-                return [
-                    {
-                        'size': 35,
-                        'label': 'Category',
-                        'labelPath': 'action_points.category',
-                        'path': 'category'
-                    }, {
-                        'size': 5,
-                        'label': 'Status',
-                        'labelPath': 'action_points.status',
-                        'align': 'right',
-                        'property': 'status',
-                        'custom': true,
-                        'doNotHide': false
-                    }, {
-                        'size': 10,
-                        'label': 'High Priority',
-                        'labelPath': 'action_points.high_priority',
-                        'path': 'high_priority',
-                        'align': 'right',
-                        'checkbox': true
-                    }, {
-                        'size': 25,
-                        'label': 'Due Date',
-                        'labelPath': 'action_points.due_date',
-                        'path': 'due_date',
-                        'name': 'date',
-                        'align': 'right'
-                    }, {
-                        'size': 25,
-                        'label': 'Person Responsible',
-                        'labelPath': 'action_points.person_responsible',
-                        'path': 'person_responsible.full_name',
-                        'align': 'right'
-                    }
-                ];
-            }
+            value: () => [
+                {
+                    'size': 10,
+                    'label': 'Reference Number #',
+                    'name': 'reference_number',
+                    'link': '*ap_link*',
+                    'ordered': false,
+                    'path': 'reference_number',
+                    'target': '_blank'
+                }, {
+                    'size': 10,
+                    'label': 'Status',
+                    'labelPath': 'status',
+                    'align': 'center',
+                    'property': 'status',
+                    'path': 'status',
+                    'class': 'caps'
+                }, {
+                    'size': 10,
+                    'label': 'High Priority',
+                    'labelPath': 'high_priority',
+                    'path': 'high_priority',
+                    'align': 'center',
+                    'checkbox': true
+                }, {
+                    'size': 20,
+                    'label': 'Due Date',
+                    'labelPath': 'due_date',
+                    'path': 'due_date',
+                    'name': 'date',
+                    'align': 'center'
+                }, {
+                    'size': 20,
+                    'label': 'Person Responsible',
+                    'labelPath': 'assigned_to',
+                    'path': 'assigned_to.name'
+                }, {
+                    'size': 15,
+                    'label': 'Office',
+                    'labelPath': 'office',
+                    'path': 'office.name'
+                }, {
+                    'size': 15,
+                    'label': 'Section',
+                    'labelPath': 'section',
+                    'path': 'section.name'
+                }
+            ]
         },
         details: {
             type: Array,
-            value: function() {
-                return [{
+            value: () => [{
                     'label': 'Description',
-                    'labelPath': 'action_points.description',
-                    'path': 'description',
-                    'size': 100
-                }, {
-                    'label': 'Action Taken',
-                    'labelPath': 'action_points.action_taken',
-                    'path': 'action_taken',
-                    'size': 100
-                }];
-            }
+                    'labelPath': 'description',
+                    'path': 'description'
+                }]
         },
         addDialogTexts: {
             type: Object,
-            value: function() {
-                return {
-                    title: 'Add New Action'
-                };
-            }
+            value: () => ({title: 'Add New Action'})
         },
         editDialogTexts: {
             type: Object,
-            value: function() {
-                return {
-                    title: 'Edit Follow-Up Action'
-                };
-            }
+            value: () => ({title: 'Edit Follow-Up Action'})
         },
-        deleteTitle: {
-            type: String,
-            value: 'Are you sure that you want to delete this action?'
-        },
-        categoryOptions: {
-            type: Array,
-            value: function() {
-                return [];
-            }
-        },
-        statusOptions: {
-            type: Array,
-            value: function() {
-                return [];
-            }
+        viewDialogTexts: {
+            type: Object,
+            value: () => ({title: 'View Follow-Up Action'})
         },
         users: {
             type: Array,
-            value: function() {
-                return [];
-            }
+            value: () => []
+        },
+        sections: {
+            type: Array,
+            value: () => []
+        },
+        offices: {
+            type: Array,
+            value: () => []
         }
     },
 
     listeners: {
-        'dialog-confirmed': '_addItemFromDialog',
-        'delete-confirmed': 'removeItem'
+        'dialog-confirmed': '_addActionPoint',
+        'delete-confirmed': '_removeActionPoint',
+        'ap-request-completed': '_requestCompleted'
     },
 
     observers: [
         'resetDialog(dialogOpened)',
         '_errorHandler(errorObject)',
         '_checkNonField(errorObject)',
-        'setChoices(basePermissionPath)',
-        'setFullName(dataItems)'
+        'setPermissionPath(baseEngagementPath)',
+        'updateStyles(editedApBase)'
     ],
 
     attached: function() {
         APBehaviors.TextareaMaxRowsBehavior.attached.call(this, arguments);
         this.set('users', this.getData('users') || []);
+        this.set('offices', this.getData('offices') || []);
+        this.set('sections', this.getData('sections') || []);
+
+        if (!this.collectionExists('edited_ap_options')) {
+            this._addToCollection('edited_ap_options', {});
+        }
     },
 
-    setChoices: function(basePath) {
-        let category = this.getChoices(`${basePath}.action_points.category`);
-        let status = this.getChoices(`${basePath}.action_points.status`);
-        this.set('categoryOptions', category || []);
-        this.set('statusOptions', status || []);
-    },
-
-    setFullName: function(actions) {
-        _.each(actions, (action, index) => {
-            let fullName = `${action.person_responsible.first_name} ${action.person_responsible.last_name}`;
-            this.set(`dataItems.${index}.person_responsible.full_name`, fullName);
-        });
+    setPermissionPath: function(basePath) {
+        this.basePermissionPath = basePath ? `${basePath}_ap` : '';
+        this.canBeChanged = !this.isReadonly(`${this.basePermissionPath}.POST`);
     },
 
     _checkNonField: function(error) {
@@ -174,33 +154,115 @@ Polymer({
 
     getActionsData: function() {
         if (!this.dialogOpened) { return null; }
-
-        this.editedItem.person_responsible = this.editedItem.person_responsible && this.editedItem.person_responsible.id;
-        if (this.addDialog) {
-            let data = _.clone(this.editedItem) || {};
-            if (!data.person_responsible) { delete data.person_responsible; }
-            if (!data.status) { delete data.status; }
-            return [data];
-        }
-        //add changed data except person_responsible
-        let data = _.pickBy(this.editedItem, (value, key) => {
-            return (this.originalEditedObj[key] !== value && key !== 'person_responsible');
+        let data = _.pickBy(this.editedItem, (value, fieldName) => {
+            let isObject = _.isObject(value) && !_.isArray(value);
+            if (isObject) {
+                return value.id !== _.get(this, `originalEditedObj.${fieldName}.id`);
+            } else {
+                return !_.isEqual(value, this.originalEditedObj[fieldName]);
+            }
         });
-        //check person_responsible
-        if (this.editedItem.category !== 'Escalate to Investigation' &&
-            this.editedItem.person_responsible !== this.originalEditedObj.person_responsible.id) {
-            data.person_responsible = this.editedItem.person_responsible;
-        }
 
-        return _.isEmpty(data) ? null : [_.set(data, 'id', this.editedItem.id)];
+        _.each(['assigned_to', 'office', 'section'], (field) => {
+            if (data[field]) { data[field] = data[field].id; }
+        });
+
+        if (this.editedItem.id && !_.isEmpty(data)) { data.id = this.editedItem.id; }
+
+        return _.isEmpty(data) ? null : data;
     },
 
-    _showPersonField: function(category) {
-        return !category || category.value !== 'Escalate to Investigation';
+    _addActionPoint: function() {
+        if (!this.validate()) { return; }
+        this.requestInProcess = true;
+        let apData = this.getActionsData();
+        if (apData) {
+            let method = apData.id ? 'PATCH' : 'POST';
+            this.requestData = {method, apData};
+        } else {
+            this._requestCompleted(null, {success: true});
+        }
+    },
+
+    _requestCompleted: function(event, detail) {
+        if (this.completeAPAfterRequest) {
+            this.completeAPAfterRequest = false;
+            this.originalEditedObj = _.clone(this.editedItem);
+            this.completeAP();
+            return;
+        }
+
+        this.requestInProcess = false;
+        if (detail && detail.success) {
+            this.dialogOpened = false;
+        }
     },
 
     isValidateInput: function(category) {
         return this._showPersonField(category) ? 'validate-input' : '';
+    },
+
+    _openAddDialog: function() {
+        this.originalEditedObj = {};
+        this.editedApBase = this.basePermissionPath;
+        this.openAddDialog();
+    },
+
+    _openEditDialog: function(event) {
+        this.editedApBase = '';
+        this.fire('global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
+
+        let index = this._getIndex(event);
+        this._selectedAPIndex = index;
+
+        let id = _.get(this, `dataItems.${index}.id`);
+        let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
+            url = `${apBaseUrl}action-points/${id}/`;
+
+        this.apOptionUrl = url;
+    },
+
+    _handleOptionResponse: function(event, detail) {
+        this.fire('global-loading', {type: 'get-ap-options'});
+        this.apOptionUrl = null;
+
+        if (detail && detail.actions) {
+            this._updateCollection('edited_ap_options', detail.actions);
+        }
+        this.editedApBase = 'edited_ap_options';
+        let itemIndex = this._selectedAPIndex;
+        this._selectedAPIndex = null;
+
+        if (this.collectionExists('edited_ap_options.PUT')) {
+            this.openEditDialog({itemIndex});
+        } else {
+            this.dialogTitle = _.get(this, 'viewDialogTexts.title');
+            this.confirmBtnText = '';
+            this.cancelBtnText = 'Cancel';
+            this._openDialog(itemIndex);
+        }
+    },
+
+    completeAP: function() {
+        if (!this.validate()) { return; }
+        let data = this.getActionsData();
+
+        if (data) {
+            this.completeAPAfterRequest = true;
+            this._addActionPoint();
+            return;
+        }
+
+        this.requestInProcess = true;
+        this.requestData = {
+            apData: {id: this.editedItem.id},
+            complete: true,
+            method: 'POST'
+        };
+    },
+
+    canBeEdited: function(status) {
+        return status !== 'completed';
     }
 
 });

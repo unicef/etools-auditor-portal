@@ -133,7 +133,9 @@
             },
 
             isValidCollection: function(collection) {
-                if (collection && Object.keys(collection).length) {
+                let testedCollection = _.omit(collection, 'allowed_actions'),
+                    actions = _.get(collection, 'allowed_actions', []);
+                if (collection && (Object.keys(testedCollection).length || actions.length)) {
                     return collection;
                 } else {
                     return false;

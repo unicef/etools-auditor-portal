@@ -15,6 +15,14 @@
                 on-success="_handleOptionsResponse"
                 on-fail="_handleOptionsResponse">
         </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[apOptionsUrl]]"
+                on-success="_handleApOptionsResponse"
+                on-fail="_handleApOptionsResponse"
+                on-forbidden="_handleApOptionsResponse">
+        </etools-ajax>
     </template>
 
     <script>
@@ -66,12 +74,20 @@
                 this._handleResponse(this.responseData);
             },
 
+            _handleApOptionsResponse: function(data) {
+                let actions = _.get(data, 'detail.actions', {});
+                this._addToCollection(`engagement_${this.engagementId}_ap`, actions || {});
+
+                this.requestsCompleted.apOptions = true;
+                this._handleResponse(this.responseData);
+            },
+
             _handleResponse: function (data) {
                 this._finishRequests(data || {});
             },
 
             _finishRequests: function(data) {
-                if (!this.requestsCompleted.data || !this.requestsCompleted.options) { return; }
+                if (!this.requestsCompleted.data || !this.requestsCompleted.options || !this.requestsCompleted.apOptions) { return; }
 
                 if (data) { this.engagementInfo = data; }
 
@@ -106,6 +122,10 @@
                 this.requestsCompleted = {};
 
                 this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
+
+                let apBaseUrl = this.getEndpoint('engagementInfo', {id: id, type: 'engagements'}).url;
+                this.apOptionsUrl = `${apBaseUrl}action-points/`;
+
                 let lastCreated = this.getLastEngagementData(id);
                 if (lastCreated) {
                     this._handleDataResponse({detail: lastCreated});
