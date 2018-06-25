@@ -1,20 +1,33 @@
 <!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel,
-            iron-icons, lodash, paper-tooltip, paper-input/paper-textarea]-->
+            iron-icons, lodash, paper-tooltip, paper-input/paper-textarea, paper-button, etools-ajax]-->
 
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
-            textarea-max-rows-behavior]-->
+            textarea-max-rows-behavior, get-action-points, update-action-points]-->
 
 <dom-module id="follow-up-actions">
     <template>
         <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
         <!-- inject styles './follow-up-actions.scss'-->
 
+        <etools-ajax
+                url="[[apOptionUrl]]"
+                method="OPTIONS"
+                on-success="_handleOptionResponse"
+                on-fail="_handleOptionResponse">
+        </etools-ajax>
+        <get-action-points engagement-id="[[engagementId]]" action-points="{{dataItems}}"></get-action-points>
+        <update-action-points engagement-id="[[engagementId]]"
+                              request-in-process="{{requestInProcess}}"
+                              request-data="{{requestData}}"
+                              errors="{{errors}}"
+                              action-points="{{dataItems}}"></update-action-points>
+
         <etools-content-panel panel-title="UNICEF Follow-Up Actions">
             <div slot="panel-btns">
-                <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
+                <div hidden$="[[!canBeChanged]]">
                     <paper-icon-button
                             class="panel-button"
-                            on-tap="openAddDialog"
+                            on-tap="_openAddDialog"
                             icon="add-box">
                     </paper-icon-button>
                     <paper-tooltip offset="0">Add</paper-tooltip>
@@ -32,10 +45,6 @@
                         details="[[details]]"
                         has-collapse
                         no-animation>
-                    <div slot="custom">
-                        [[getDisplayName('action_points.status', basePermissionPath, item.status)]]
-                        <paper-tooltip offset="0">[[getDisplayName('action_points.status', basePermissionPath, item.status)]]</paper-tooltip>
-                    </div>
                     <div slot="checkbox" class="checkbox">
                         <paper-checkbox
                                 disabled="disabled"
@@ -43,9 +52,8 @@
                                 label="">
                         </paper-checkbox>
                     </div>
-                    <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                    <div slot="hover" class="edit-icon-slot" hidden$="[[!canBeEdited(item.status)]]">
+                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="_openEditDialog"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -56,9 +64,6 @@
                         data="[[itemModel]]"
                         headings="[[columns]]"
                         no-animation>
-                    <div slot="custom">
-                        <span>–</span>
-                    </div>
                     <div slot="checkbox" class="checkbox">
                         <span>–</span>
                     </div>
@@ -68,55 +73,28 @@
 
         <dialog-element
                 opened="{{dialogOpened}}"
-                delete-dialog="[[deleteDialog]]"
                 dialog-title="[[dialogTitle]]"
                 confirm-btn-text="[[confirmBtnText]]"
+                hide-confirm-btn="[[!confirmBtnText]]"
                 request-in-process="{{requestInProcess}}">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
-                            <!-- Category -->
-                            <etools-searchable-multiselection-menu
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.category', basePermissionPath)]] fua-category"
-                                    value="{{category}}"
-                                    label="[[getLabel('action_points.category', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.category', basePermissionPath)]]"
-                                    options="[[categoryOptions]]"
-                                    custom-object-options
-                                    option-label="display_name"
-                                    option-value="value"
-                                    selected="{{editedItem.category}}"
-                                    update-selected
-                                    required$="[[_setRequired('action_points.category', basePermissionPath)]]"
-                                    disabled$="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
-                                    invalid="{{errors.action_points.0.category}}"
-                                    error-message="{{errors.action_points.0.category}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError"
-                                    hide-search
-                                    no-title-attr>
-                            </etools-searchable-multiselection-menu>
-                            <paper-tooltip offset="0">[[category.display_name]]</paper-tooltip>
-                        </div>
-                    </div>
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Due Date -->
                             <paper-input
                                     id="deadlineAction"
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.due_date', basePermissionPath)]]"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('due_date', editedApBase)]]"
                                     value="[[prettyDate(editedItem.due_date)]]"
-                                    label="[[getLabel('action_points.due_date', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.due_date', basePermissionPath)]]"
+                                    label="[[getLabel('due_date', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('due_date', editedApBase)]]"
                                     data-selector="deadlineActionSelector"
-                                    required$="[[_setRequired('action_points.due_date', basePermissionPath)]]"
-                                    disabled$="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
-                                    invalid="{{errors.action_points.0.due_date}}"
-                                    error-message="{{errors.action_points.0.due_date}}"
+                                    required$="[[_setRequired('due_date', editedApBase)]]"
+                                    disabled$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.due_date}}"
+                                    error-message="{{errors.due_date}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError"
                                     on-down="openDatePicker">
@@ -134,48 +112,46 @@
                         </div>
                     </div>
 
-                    <template is="dom-if" if="[[_showPersonField(category)]]" restamp>
-                        <div class="row-h group">
-                            <div class="input-container input-container-l">
-                                <!-- Person Responsible -->
-                                <etools-searchable-multiselection-menu
-                                        class$="disabled-as-readonly [[isValidateInput(category)]] [[_setRequired('action_points.person_responsible', basePermissionPath)]] fua-person"
-                                        value="{{editedItem.person_responsible}}"
-                                        label="[[getLabel('action_points.person_responsible', basePermissionPath)]]"
-                                        placeholder="[[getPlaceholderText('action_points.person_responsible', basePermissionPath)]]"
-                                        options="[[users]]"
-                                        custom-object-options
-                                        option-label="full_name"
-                                        option-value="id"
-                                        update-selected
-                                        required$="[[_setRequired('action_points.person_responsible', basePermissionPath)]]"
-                                        disabled$="{{requestInProcess}}"
-                                        readonly$="{{requestInProcess}}"
-                                        invalid="{{errors.action_points.0.person_responsible}}"
-                                        error-message="{{errors.action_points.0.person_responsible}}"
-                                        on-focus="_resetFieldError"
-                                        on-tap="_resetFieldError"
-                                        no-title-attr>
-                                </etools-searchable-multiselection-menu>
-                            </div>
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Assigned To -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('assigned_to', editedApBase)]] fua-person"
+                                    value="{{editedItem.assigned_to}}"
+                                    label="[[getLabel('assigned_to', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('assigned_to', editedApBase)]]"
+                                    options="[[users]]"
+                                    custom-object-options
+                                    option-label="full_name"
+                                    option-value="id"
+                                    update-selected
+                                    required$="[[_setRequired('assigned_to', editedApBase)]]"
+                                    disabled$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.assigned_to}}"
+                                    error-message="{{errors.assigned_to}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
                         </div>
-                    </template>
+                    </div>
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Description -->
                             <paper-textarea
-                                    class$="validate-input {{_setRequired('action_points.description', basePermissionPath)}}"
+                                    class$="validate-input {{_setRequired('description', editedApBase)}}"
                                     value="{{editedItem.description}}"
                                     allowed-pattern="[\d\s]"
-                                    label="[[getLabel('action_points.description', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.description', basePermissionPath)]]"
-                                    required="{{_setRequired('action_points.description', basePermissionPath)}}"
-                                    disabled="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
+                                    label="[[getLabel('description', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('description', editedApBase)]]"
+                                    required="{{_setRequired('description', editedApBase)}}"
+                                    disabled="{{isReadOnly('description', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     max-rows="4"
-                                    invalid="{{errors.action_points.0.description}}"
-                                    error-message="{{errors.action_points.0.description}}"
+                                    invalid="{{errors.description}}"
+                                    error-message="{{errors.description}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError">
                             </paper-textarea>
@@ -184,67 +160,76 @@
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
-                            <!-- Status -->
+                            <!-- Offices -->
                             <etools-searchable-multiselection-menu
-                                    class$="disabled-as-readonly validate-input [[_setRequired('action_points.status', basePermissionPath)]] fua-category"
-                                    value="{{status}}"
-                                    label="[[getLabel('action_points.status', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.status', basePermissionPath)]]"
-                                    options="[[statusOptions]]"
+                                    class$="disabled-as-readonly validate-input [[_setRequired('office', editedApBase)]] fua-person"
+                                    value="{{editedItem.office}}"
+                                    label="[[getLabel('office', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('office', editedApBase)]]"
+                                    options="[[offices]]"
                                     custom-object-options
-                                    option-label="display_name"
-                                    option-value="value"
-                                    selected="{{editedItem.status}}"
+                                    option-label="name"
+                                    option-value="id"
                                     update-selected
-                                    required$="[[_setRequired('action_points.status', basePermissionPath)]]"
-                                    disabled$="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
-                                    invalid="{{errors.action_points.0.status}}"
-                                    error-message="{{errors.action_points.0.status}}"
+                                    required$="[[_setRequired('office', editedApBase)]]"
+                                    disabled$="{{isReadOnly('office', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('office', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.office}}"
+                                    error-message="{{errors.office}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError"
-                                    hide-search
                                     no-title-attr>
                             </etools-searchable-multiselection-menu>
-                            <paper-tooltip offset="0">[[status.display_name]]</paper-tooltip>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
+                            <!-- Sections -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('section', editedApBase)]] fua-person"
+                                    value="{{editedItem.section}}"
+                                    label="[[getLabel('section', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('section', editedApBase)]]"
+                                    options="[[sections]]"
+                                    custom-object-options
+                                    option-label="name"
+                                    option-value="id"
+                                    update-selected
+                                    required$="[[_setRequired('section', editedApBase)]]"
+                                    disabled$="{{isReadOnly('section', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('section', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.section}}"
+                                    error-message="{{errors.section}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
                         </div>
                     </div>
 
                     <div class="row-h group">
                         <!-- High Priority -->
-                        <div class="input-container input-container-l checkbox-container">
+                        <div class="input-container checkbox-container">
                             <etools-checkable-input
                                     class="disabled-as-readonly"
                                     type="checkbox"
-                                    label="[[getLabel('action_points.high_priority', basePermissionPath)]]"
+                                    label="[[getLabel('high_priority', editedApBase)]]"
                                     label-alignment="right"
                                     checked="{{editedItem.high_priority}}"
-                                    disabled="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}">
+                                    disabled="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}">
                             </etools-checkable-input>
                         </div>
+
+                        <template is="dom-if" if="[[actionAllowed(editedApBase, 'complete')]]">
+                            <div class="input-container">
+                                <paper-button on-tap="completeAP">Complete Action</paper-button>
+                            </div>
+                        </template>
+
                     </div>
 
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
-                            <!-- Action Taken -->
-                            <paper-textarea
-                                    class$="validate-input {{_setRequired('action_points.action_taken', basePermissionPath)}}"
-                                    value="{{editedItem.action_taken}}"
-                                    allowed-pattern="[\d\s]"
-                                    label="[[getLabel('action_points.action_taken', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('action_points.action_taken', basePermissionPath)]]"
-                                    required="{{_setRequired('action_points.action_taken', basePermissionPath)}}"
-                                    disabled="{{requestInProcess}}"
-                                    readonly$="{{requestInProcess}}"
-                                    max-rows="4"
-                                    invalid="{{errors.action_points.0.action_taken}}"
-                                    error-message="{{errors.action_points.0.action_taken}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </paper-textarea>
-                        </div>
-                    </div>
                 </div>
             </div>
         </dialog-element>

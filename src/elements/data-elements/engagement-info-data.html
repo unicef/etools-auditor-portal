@@ -18,6 +18,14 @@
 
         <etools-ajax
                 method="OPTIONS"
+                url="[[apOptionsUrl]]"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
+        </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
                 url="[[atmOptionsUrl]]"
                 data-path-postfix="attachments"
                 data-request-name="attachments"
@@ -104,6 +112,7 @@
 
             _finishRequests: function(data) {
                 if (!this.requestsCompleted.data ||
+                    !this.requestsCompleted.apOptions ||
                     !this.requestsCompleted.options ||
                     !this.requestsCompleted.attachments ||
                     !this.requestsCompleted.reportAttachments) { return; }
@@ -142,6 +151,8 @@
 
                 this.fire('global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
 
+                let apBaseUrl = this.getEndpoint('engagementInfo', {id: id, type: 'engagements'}).url;
+                this.apOptionsUrl = `${apBaseUrl}action-points/`;
                 this.atmOptionsUrl = this.getEndpoint('attachments', {id: id}).url;
                 this.reportAtmOptionsUrl = this.getEndpoint('reportAttachments', {id: id}).url;
 
