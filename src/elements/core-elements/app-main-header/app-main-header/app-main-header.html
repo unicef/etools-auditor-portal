@@ -63,7 +63,7 @@
 
         <app-toolbar sticky class="content-align">
             <div class="titlebar content-align">
-                <etools-app-selector hidden$="[[!user.is_staff]]" menu-options="[[menuOptions]]"></etools-app-selector>
+                <etools-app-selector hidden$="[[!user.is_staff]]"></etools-app-selector>
 
                 <img src$="[[getAbsolutePath('images/etools_logo.svg')]]">
             </div>
@@ -94,39 +94,39 @@
                     user: {
                         type: Object
                     },
-                    menuOptions: {
-                        type: Array,
-                        value: function () {
-                            return [
-                                {
-                                    title: 'Dashboards',
-                                    icon: 'app-selector-icons:dashIcon',
-                                    url: 'dash'
-                                },
-                                {
-                                    title: 'Partnership Management',
-                                    icon: 'app-selector-icons:pmpIcon',
-                                    url: 'pmp'
-                                },
-                                {
-                                    title: 'Trip Management',
-                                    icon: 'app-selector-icons:tripsIcon',
-                                    url: 't2f'
-                                },
-                                {
-                                    title: 'Financial Assurance Module',
-                                    icon: 'app-icons:auditor',
-                                    url: 'ap'
-                                },
-                                {
-                                    title: 'Admin (Permission Required)',
-                                    icon: 'app-selector-icons:adminIcon',
-                                    url: 'admin'
-                                }
+                    // menuOptions: {
+                    //     type: Array,
+                    //     value: function () {
+                    //         return [
+                    //             {
+                    //                 title: 'Dashboards',
+                    //                 icon: 'app-selector-icons:dashIcon',
+                    //                 url: 'dash'
+                    //             },
+                    //             {
+                    //                 title: 'Partnership Management',
+                    //                 icon: 'app-selector-icons:pmpIcon',
+                    //                 url: 'pmp'
+                    //             },
+                    //             {
+                    //                 title: 'Trip Management',
+                    //                 icon: 'app-selector-icons:tripsIcon',
+                    //                 url: 't2f'
+                    //             },
+                    //             {
+                    //                 title: 'Financial Assurance Module',
+                    //                 icon: 'app-icons:auditor',
+                    //                 url: 'ap'
+                    //             },
+                    //             {
+                    //                 title: 'Admin (Permission Required)',
+                    //                 icon: 'app-selector-icons:adminIcon',
+                    //                 url: 'admin'
+                    //             }
 
-                            ];
-                        }
-                    }
+                    //         ];
+                    //     }
+                    // }
                 },
 
                 listeners: {
