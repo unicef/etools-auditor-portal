@@ -203,7 +203,7 @@ Polymer({
             data.partner = partnerId;
         }
 
-        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1 && activePd.length) {
+        if (!_.isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
             data.active_pd = activePd;
         }
 
