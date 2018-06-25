@@ -81,7 +81,7 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
-        'updateStyles(requestInProcess)',
+        'updateStyles(requestInProcess, dialogOpened)',
         '_dataChanged(subjectAreas)',
         '_complexErrorHandler(errorObject.key_internal_weakness)'
     ],

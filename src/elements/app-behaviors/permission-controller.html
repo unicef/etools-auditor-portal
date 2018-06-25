@@ -6,7 +6,7 @@
 
         window.APBehaviors = window.APBehaviors || {};
         window.APBehaviors.PermissionController = {
-            _addToCollection: function(collectionName, data) {
+            _addToCollection: function(collectionName, data, title) {
                 //check arguments
                 if (!collectionName || !data) {
                     console.warn('collectionName and data arguments must be provided!');
@@ -25,12 +25,15 @@
                 if (_permissionCollection[collectionName]) { return false; }
 
                 _permissionCollection[collectionName] = data;
+                if (title) {
+                    _permissionCollection[collectionName].title = title;
+                }
                 this._manageActions(collectionName);
 
                 return true;
             },
 
-            _updateCollection: function(collectionName, data) {
+            _updateCollection: function(collectionName, data, title) {
                 if (!_permissionCollection[collectionName]) {
                     console.warn(`Collection ${collectionName} does not exist!`);
                     return false;
@@ -41,6 +44,9 @@
                 }
 
                 _permissionCollection[collectionName] = data;
+                if (title) {
+                    _permissionCollection[collectionName].title = title;
+                }
                 this._manageActions(collectionName);
                 return true;
             },
@@ -133,7 +139,9 @@
             },
 
             isValidCollection: function(collection) {
-                if (collection && Object.keys(collection).length) {
+                let testedCollection = _.omit(collection, 'allowed_actions'),
+                    actions = _.get(collection, 'allowed_actions', []);
+                if (collection && (Object.keys(testedCollection).length || actions.length)) {
                     return collection;
                 } else {
                     return false;

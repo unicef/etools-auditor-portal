@@ -40,6 +40,15 @@
                 on-fail="_handleNewEngagementResponse">
         </etools-ajax>
 
+        <!--attachments-->
+        <etools-ajax
+                method="OPTIONS"
+                url="{{atmOptionsUrl}}"
+                on-success="_atmOptionsResponse"
+                on-forbidden="_atmOptionsResponse"
+                on-fail="_atmOptionsResponse">
+        </etools-ajax>
+
         <!--users-->
         <etools-ajax
                 method="GET"
@@ -57,6 +66,7 @@
                 on-forbidden="_handleStaffUsersResponse"
                 on-fail="_handleStaffUsersResponse">
         </etools-ajax>
+
     </template>
 
     <script>
@@ -94,10 +104,15 @@
                     this.usersEndpoint = this.getEndpoint('users').url;
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
                     this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
+                    this.atmOptionsUrl = this.getEndpoint('attachments', {id: 'new'}).url;
                 },
 
                 _allDataLoaded: function() {
-                    if (dataLoaded.partners && dataLoaded.engagementOptions && dataLoaded.users && dataLoaded.staffUsers) {
+                    if (dataLoaded.partners &&
+                        dataLoaded.engagementOptions &&
+                        dataLoaded.users &&
+                        dataLoaded.staffUsers &&
+                        dataLoaded.attachmentsOptions) {
                         this.fire('static-data-loaded');
                     }
                 },
@@ -186,6 +201,20 @@
                     }
 
                     dataLoaded.engagementOptions = true;
+                    this._allDataLoaded();
+                },
+
+                _atmOptionsResponse: function(data) {
+                    let actions = _.get(data, 'detail.actions', {}),
+                            name = _.get(data, 'detail.name', '');
+
+                    if (actions) {
+                        this._addToCollection(`new_engagement_attachments`, actions || {}, name);
+                    } else {
+                        this._responseError('Engagement Attachments Permissions', data && data.type);
+                    }
+
+                    dataLoaded.attachmentsOptions = true;
                     this._allDataLoaded();
                 },
 
