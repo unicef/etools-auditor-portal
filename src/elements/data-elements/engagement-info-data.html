@@ -19,6 +19,8 @@
         <etools-ajax
                 method="OPTIONS"
                 url="[[apOptionsUrl]]"
+                data-path-postfix="ap"
+                data-request-name="apOptions"
                 on-success="_handleDataOptionsResponse"
                 on-fail="_handleDataOptionsResponse"
                 on-forbidden="_handleDataOptionsResponse">
