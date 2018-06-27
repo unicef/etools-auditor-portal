@@ -53,13 +53,19 @@
                 this.email = null;
             },
 
-            _handleResponse: function(event, details = {}) {
+            _handleResponse: function(event, details = []) {
                 let firmId = _.get(details, '0.auditor_firm'),
-                    alreadyExists = !firmId || firmId !== this.organisationId;
+                    userIsNotDeleted = firmId === this.organisationId && !_.get(details, '0.hidden'),
+                    alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
 
                 if (alreadyExists || (details.length && !this.unicefUsersAllowed)) {
+                    //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
                     this._setError(`This field must be unique.`);
-                } else if(firmId === this.organisationId) {
+                    let email = _.get(this, 'editedItem.user.email'),
+                        hasAccess = false;
+                    this.editedItem = {user: {email}, hasAccess};
+                } else if (firmId === this.organisationId) {
+                    //if user was deleted from current organization
                     let user = details[0];
                     user.is_active = true;
                     this.editedItem = {
@@ -69,6 +75,7 @@
                         user: _.omit(user, ['id', 'auditor_firm', 'staff_member_id', 'hidden'])
                     };
                 } else if (details.length) {
+                    //if user exists but doesn't belong to any auditor_firm
                     let user = details[0],
                         user_pk = user.id;
 
@@ -77,6 +84,9 @@
                         user: _.omit(user, ['id', 'auditor_firm']),
                         user_pk
                     };
+                } else {
+                    //if is new user
+                    this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                 }
 
                 this.emailChecking = false;

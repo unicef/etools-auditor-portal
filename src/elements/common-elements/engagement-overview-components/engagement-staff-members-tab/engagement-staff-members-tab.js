@@ -176,6 +176,11 @@ Polymer({
         }
     },
 
+    _openAddDialog: function() {
+        this.originalEditedObj = {};
+        this.openAddDialog();
+    },
+
     _organizationChanged: function(id) {
         if (!this._canBeChanged() || !this.basePermissionPath) { return; }
         if (!id) { this.resetList(); }
@@ -398,7 +403,8 @@ Polymer({
         } else if (details.action === 'post') {
             this.manageEngagementStaff(details.data, details.hasAccess);
             this._updateEngagement(false, updateOptions);
-
+            this.set('listPage', 0);
+            this.set('listPage', 1);
         } else if (details.action === 'delete') {
             let last = this.dataItems.length === 1 ? 1 : 0;
             let email = this.editedItem.user.email;
