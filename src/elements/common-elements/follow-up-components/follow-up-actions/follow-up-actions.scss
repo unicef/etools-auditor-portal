@@ -32,4 +32,15 @@ etools-searchable-multiselection-menu.fua-person {
 .checkbox-container {
     padding-left: 12px;
     box-sizing: border-box;
+    height: 34px;
+    padding-top: 6px;
+}
+
+.input-container paper-button {
+    height: 34px;
+    color: rgba(0,0,0,.54);
+    font-weight: 500;
+    z-index: 5;
+    border: 1px solid rgba(0,0,0,.54);
+    padding: 6px 13px;
 }

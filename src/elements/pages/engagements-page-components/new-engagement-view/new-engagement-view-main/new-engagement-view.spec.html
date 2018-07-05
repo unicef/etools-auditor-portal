@@ -34,24 +34,6 @@
             server.restore();
         });
 
-        describe('method _attachmentsReadonly()', () => {
-            it('return true when no POST/PUT collection', () => {
-                assert.isTrue(myEl._attachmentsReadonly());
-            });
-
-            it('return false when POST/PUT collection has value', () => {
-                myEl._addToCollection('new_engagement', {
-                    POST: {
-                        "engagement_attachments": {
-                            "required": false,
-                            "read_only": false
-                        }
-                    }
-                });
-                assert.isFalse(myEl._attachmentsReadonly());
-            });
-        });
-
         describe('method _saveNewEngagement()', () => {
             it('call _validateBasicInfo', () => {
                 sinon.spy(myEl, '_validateBasicInfo');

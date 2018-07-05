@@ -21,6 +21,15 @@
                 error-object="{{errorObject}}">
         </add-new-engagement>
 
+        <etools-ajax
+                method="POST"
+                url="{{atmUrl}}"
+                multi-part
+                body="{{attachmentsPostData}}"
+                on-success="_handleAtmResponse"
+                on-fail="_handleAtmResponse">
+        </etools-ajax>
+
         <pages-header-element
                 hide-print-button
                 page-title="Add New Engagement"
@@ -79,19 +88,9 @@
                     <div name="attachments">
                         <file-attachments-tab
                                 id="engagement_attachments"
-                                tab-title="[[getLabel('engagement_attachments', 'new_engagement')]]"
-                                base-permission-path="new_engagement"
-                                main-property="engagement_attachments"
-                                error-object="{{errorObject}}"
-                                data-items="[[engagement.engagement_attachments]]"
-                                file-types="[[fileTypes]]"
-                                file-types-label="[[getLabel('engagement_attachments.file_type', 'new_engagement')]]"
-                                readonly$="[[_attachmentsReadonly()]]"
-                                file-type-required
-                                allow-download
-                                allow-edit
-                                save-with-button
-                                multiple>
+                                data-base-path="new_engagement"
+                                error-property="engagement_attachments"
+                                path-postfix="attachments">
                         </file-attachments-tab>
                     </div>
                 </iron-pages>

@@ -1,17 +1,26 @@
 <!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel, paper-tooltip]-->
-<!--import [tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior, static-data-behavior]-->
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
+            common-methods-behavior, get-attachments, update-attachments]-->
 
 <dom-module id="file-attachments-tab">
     <template>
         <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
+        <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}" endpoint-name="[[endpointName]]"></get-attachments>
+        <update-attachments
+                base-id="[[baseId]]"
+                attachments="{{dataItems}}"
+                request-data="{{requestData}}"
+                endpoint-name="[[endpointName]]"
+                request-in-process="{{requestInProcess}}"
+                errors="{{errors}}"></update-attachments>
+
         <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
-                <div hidden$="[[!_showAddBtn(dataItems.length, readonly)]]">
+                <div hidden$="[[isTabReadonly(basePermissionPath)]]">
                     <paper-icon-button
                             class="panel-button"
-                            disabled$="[[!_showAddBtn(dataItems.length, readonly)]]"
                             on-tap="openAddDialog"
                             icon="add-box">
                     </paper-icon-button>
@@ -37,14 +46,14 @@
 
                         <a class="truncate"
                            href$="[[item.file]]"
-                           download$="[[item.file_name]]"
+                           download$="[[item.filename]]"
                            target="_blank">
-                            [[item.file_name]]
+                            [[item.filename]]
                         </a>
-                        <paper-tooltip offset="0">[[item.file_name]]</paper-tooltip>
+                        <paper-tooltip offset="0">[[item.filename]]</paper-tooltip>
                     </div>
 
-                    <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
+                    <div slot="hover" class="edit-icon-slot" hidden$="[[isTabReadonly(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
 
                         <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
@@ -71,26 +80,26 @@
 
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
-                    <template is="dom-if" if="[[fileTypeRequired]]">
+                    <template is="dom-if" if="[[showFileTypes(basePermissionPath)]]">
                         <div class="row-h group">
                             <div class="input-container input-container-ms">
                                 <etools-searchable-multiselection-menu
                                         id="fileType"
-                                        class$="validate-input disabled-as-readonly [[_setRequiredClass(fileTypeRequired)]]"
+                                        class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
                                         value="{{editedItem.type}}"
-                                        label="[[fileTypesLabel]]"
-                                        placeholder="&#8212;"
+                                        label="[[getLabel('file_type', basePermissionPath)]]"
+                                        placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
                                         options="[[fileTypes]]"
                                         custom-object-options
                                         option-label="display_name"
                                         option-value="value"
-                                        required$="[[fileTypeRequired]]"
+                                        required$="[[_setRequired('file_type', basePermissionPath)]]"
                                         disabled$="[[requestInProcess]]"
                                         readonly$="[[requestInProcess]]"
                                         invalid="{{errors.file_type}}"
                                         error-message="{{errors.file_type}}"
                                         on-focus="_resetFieldError"
-                                        on-value-change="_setFileType"
+                                        on-tap="_resetFieldError"
                                         hide-search
                                         no-title-attr>
                                 </etools-searchable-multiselection-menu>

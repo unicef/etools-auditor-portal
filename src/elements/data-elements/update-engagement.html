@@ -16,6 +16,36 @@
                 on-success="_handleOptionsResponse"
                 on-fail="_handleOptionsError">
         </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[apOptionsUrl]]"
+                data-path-postfix="ap"
+                data-request-name="apOptions"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
+        </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[attachments]]"
+                data-path-postfix="attachments"
+                data-request-name="attachments"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
+        </etools-ajax>
+
+        <etools-ajax
+                method="OPTIONS"
+                url="[[reportAttachments]]"
+                data-path-postfix="report_attachments"
+                data-request-name="reportAttachments"
+                on-success="_handleDataOptionsResponse"
+                on-fail="_handleDataOptionsResponse"
+                on-forbidden="_handleDataOptionsResponse">
+        </etools-ajax>
     </template>
 
     <script>
@@ -47,9 +77,12 @@
                 errorObject: {
                     type: Object,
                     notify: true,
-                    value: function() {
-                        return {};
-                    }
+                    value: () => ({})
+                },
+                optionRequests: {
+                    type: Object,
+                    notify: true,
+                    value: () => ({})
                 },
                 forceOptionsUpdate: {
                     type: Boolean,
@@ -73,17 +106,43 @@
 
             _handleOptionsResponse: function(data) {
                 let collectionName = `engagement_${this.lastData.detail.id}`;
-
                 this._updateCollection(collectionName, data.detail.actions);
                 this.optionsUrl = '';
-                this.basePermissionPath = '';
-                this.basePermissionPath = collectionName;
 
-                this.finishResponse(this.lastData);
+                this.optionRequests.options = true;
+                this.finishOptionsResponse(this.lastData);
+            },
+
+            _handleDataOptionsResponse: function(data) {
+                let actions = _.get(data, 'detail.actions', {}),
+                    name = _.get(data, 'detail.name', ''),
+                    postfix = _.get(data, 'srcElement.dataset.pathPostfix'),
+                    requestName = _.get(data, 'srcElement.dataset.requestName');
+
+                let collectionName = `engagement_${this.lastData.detail.id}_${postfix}`;
+                this._updateCollection(collectionName, actions || {}, name);
+                this[requestName] = '';
+
+                this.optionRequests[requestName] = true;
+                this.finishOptionsResponse(this.lastData);
+            },
+
+            finishOptionsResponse: function(data) {
+                if (!this.optionRequests.options ||
+                    !this.optionRequests.apOptions ||
+                    !this.optionRequests.attachments ||
+                    !this.optionRequests.reportAttachments) { return; }
+
+                this.finishResponse(data);
             },
 
             finishResponse: function(data) {
+                this.optionRequests = {};
                 this.engagement = data.detail;
+
+                this.basePermissionPath = '';
+                this.basePermissionPath = `engagement_${this.engagement.id}`;
+
                 this.fire('engagement-updated', {success: true, data: data.detail});
                 this.fire('global-loading', {type: 'update-engagement'});
                 this.fire('global-loading', {type: 'update-permissions'});
@@ -122,6 +181,10 @@
                 }
                 this.actionUrl = '';
                 this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type}).url;
+                this.attachments = this.getEndpoint('attachments', {id: this.updatedEngagementData.id}).url;
+                this.reportAttachments = this.getEndpoint('reportAttachments', {id: this.updatedEngagementData.id}).url;
+                let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
+                this.apOptionsUrl = `${apBaseUrl}action-points/`;
             },
 
             _handleError: function (event, error) {
