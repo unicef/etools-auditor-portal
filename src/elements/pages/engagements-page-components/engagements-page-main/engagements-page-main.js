@@ -36,7 +36,6 @@ Polymer({
             this._fireUpdateEngagementsFilters();
             this.view = 'list';
         } else if (view === 'new' && this.actionAllowed('new_engagement', 'create')) {
-            this.clearQueries();
             this.view = 'new';
         } else if (view === '' || _.isUndefined(view)) {
             this.set('route.path', '/list');

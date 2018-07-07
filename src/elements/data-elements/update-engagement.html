@@ -181,10 +181,10 @@
                 }
                 this.actionUrl = '';
                 this.optionsUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type}).url;
-                let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
-                this.apOptionsUrl = `${apBaseUrl}action-points/`;
                 this.attachments = this.getEndpoint('attachments', {id: this.updatedEngagementData.id}).url;
                 this.reportAttachments = this.getEndpoint('reportAttachments', {id: this.updatedEngagementData.id}).url;
+                let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
+                this.apOptionsUrl = `${apBaseUrl}action-points/`;
             },
 
             _handleError: function (event, error) {
