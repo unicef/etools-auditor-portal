@@ -121,6 +121,10 @@
             hideAddButton: {
                 type: Boolean,
                 value: false
+            },
+            addBtnText: {
+                type: 'String',
+                value: 'Add New Engagement'
             }
         },
 
