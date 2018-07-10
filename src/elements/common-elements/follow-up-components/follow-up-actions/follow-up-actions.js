@@ -82,10 +82,14 @@ Polymer({
         details: {
             type: Array,
             value: () => [{
-                    'label': 'Description',
-                    'labelPath': 'description',
-                    'path': 'description'
-                }]
+                'label': 'Description',
+                'labelPath': 'description',
+                'path': 'description'
+            }, {
+                'label': 'Category',
+                'labelPath': 'category',
+                'path': 'category'
+            }]
         },
         addDialogTexts: {
             type: Object,
@@ -140,6 +144,7 @@ Polymer({
 
     setPermissionPath: function(basePath) {
         this.basePermissionPath = basePath ? `${basePath}_ap` : '';
+        this.set('categories', this.getChoices(`${this.basePermissionPath}.category`) || []);
         this.canBeChanged = !this.isReadonly(`${this.basePermissionPath}.POST`);
     },
 
