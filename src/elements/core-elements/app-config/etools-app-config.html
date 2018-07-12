@@ -97,6 +97,9 @@ App global configuration
             // dexie js
             appDexieDb: etoolsCustomDexieDb,
 
+            productionDomain: 'etools.unicef.org',
+            stagingDomain: 'etools-staging.unicef.org',
+
             getEndpoint: function (endpointName, data) {
                 var endpoint = etoolsAppConfig[etoolsAppConfig.globals.epsPath][endpointName];
                 if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
@@ -117,6 +120,16 @@ App global configuration
             getAbsolutePath: function(path) {
                 path = path || '';
                 return this.basePath + path;
+            },
+
+            isProductionServer: function() {
+                var location = window.location.href;
+                return location.indexOf(this.productionDomain) > -1;
+            },
+
+            isStagingServer: function() {
+                var location = window.location.href;
+                return location.indexOf(this.stagingDomain) > -1;
             }
         }
     };
