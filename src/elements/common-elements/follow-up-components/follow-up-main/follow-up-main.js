@@ -5,16 +5,10 @@ Polymer({
 
     getFollowUpData: function() {
         let data = {},
-            //Follow Up
-            followUp = Polymer.dom(this.root).querySelector('#actions'),
-            followUpData = followUp && followUp.getActionsData(),
             //Audit Financial Findings
             followUpFindings = Polymer.dom(this.root).querySelector('#followUpFF'),
             followUpFindingsData = followUpFindings && followUpFindings.getFindingsData();
 
-        if (followUpData) {
-            data.action_points = followUpData;
-        }
         if (followUpFindingsData) {
             _.assign(data, followUpFindingsData);
         }
