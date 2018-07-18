@@ -32,13 +32,25 @@ Polymer({
             type: Array,
             value: () => [
                 {
-                    'size': 10,
+                    'size': 18,
                     'label': 'Reference Number #',
                     'name': 'reference_number',
                     'link': '*ap_link*',
-                    'ordered': false,
+                    'ordered': 'asc',
                     'path': 'reference_number',
-                    'target': '_blank'
+                    'target': '_blank',
+                    'class': 'with-icon'
+                }, {
+                    'size': 32,
+                    'label': 'Action Point Category',
+                    'labelPath': 'category',
+                    'name': 'category'
+                }, {
+                    'size': 20,
+                    'label': 'Assignee (Section / Office)',
+                    'path': 'computed_field',
+                    'html': true,
+                    'class': 'no-order'
                 }, {
                     'size': 10,
                     'label': 'Status',
@@ -49,47 +61,19 @@ Polymer({
                     'class': 'caps'
                 }, {
                     'size': 10,
-                    'label': 'High Priority',
-                    'labelPath': 'high_priority',
-                    'path': 'high_priority',
-                    'align': 'center',
-                    'checkbox': true
-                }, {
-                    'size': 20,
                     'label': 'Due Date',
                     'labelPath': 'due_date',
                     'path': 'due_date',
                     'name': 'date',
                     'align': 'center'
                 }, {
-                    'size': 20,
-                    'label': 'Person Responsible',
-                    'labelPath': 'assigned_to',
-                    'path': 'assigned_to.name'
-                }, {
-                    'size': 15,
-                    'label': 'Office',
-                    'labelPath': 'office',
-                    'path': 'office.name'
-                }, {
-                    'size': 15,
-                    'label': 'Section',
-                    'labelPath': 'section',
-                    'path': 'section.name'
+                    'size': 10,
+                    'label': 'Priority',
+                    'labelPath': 'high_priority',
+                    'path': 'priority',
+                    'align': 'center'
                 }
             ]
-        },
-        details: {
-            type: Array,
-            value: () => [{
-                'label': 'Description',
-                'labelPath': 'description',
-                'path': 'description'
-            }, {
-                'label': 'Category',
-                'labelPath': 'category',
-                'path': 'category'
-            }]
         },
         addDialogTexts: {
             type: Object,
@@ -114,6 +98,10 @@ Polymer({
         offices: {
             type: Array,
             value: () => []
+        },
+        orderBy: {
+            type: String,
+            value: ''
         }
     },
 
@@ -128,7 +116,9 @@ Polymer({
         '_errorHandler(errorObject)',
         '_checkNonField(errorObject)',
         'setPermissionPath(baseEngagementPath)',
-        'updateStyles(editedApBase)'
+        'updateStyles(editedApBase)',
+        '_addComputedField(dataItems.*)',
+        '_orderChanged(orderBy, columns)'
     ],
 
     attached: function() {
@@ -140,6 +130,34 @@ Polymer({
         if (!this.collectionExists('edited_ap_options')) {
             this._addToCollection('edited_ap_options', {});
         }
+    },
+
+    _orderChanged: function(newOrder, columns) {
+        if (!newOrder || !(columns instanceof Array)) { return false; }
+
+        let direction = 'asc';
+        let name = newOrder;
+
+        if (name.startsWith('-')) {
+            direction = 'desc';
+            name = name.slice(1);
+        }
+
+        columns.forEach((column, index) => {
+            if (column.name === name) {
+                this.set(`columns.${index}.ordered`, direction);
+            } else {
+                this.set(`columns.${index}.ordered`, false);
+            }
+        });
+    },
+
+    _addComputedField: function() {
+        this.dataItemsTest = this.dataItems.map((item) => {
+            item.priority = item.high_priority && 'High' || ' ';
+            item.computed_field = `<b>${item.assigned_to.name}</b> <br>(${item.section.name} / ${item.office.name})`;
+            return item;
+        })
     },
 
     setPermissionPath: function(basePath) {

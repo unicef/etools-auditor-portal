@@ -61,6 +61,19 @@
                 iron-icon.up-icon { display: none; }
             }
 
+            &.no-order {
+                cursor: auto;
+
+                &:hover {
+                    .heading { color: inherit; }
+                }
+
+                iron-icon.up-icon,
+                iron-icon.down-icon {
+                    display: none;
+                }
+            }
+
             &.right { text-align: right; }
             &.center { text-align: center; }
 
