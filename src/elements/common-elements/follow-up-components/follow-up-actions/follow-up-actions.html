@@ -54,8 +54,9 @@
                                 label="">
                         </paper-checkbox>
                     </div>
-                    <div slot="hover" class="edit-icon-slot" hidden$="[[!canBeEdited(item.status)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="_openEditDialog"></paper-icon-button>
+                    <div slot="hover" class="edit-icon-slot">
+                        <paper-icon-button icon="icons:content-copy" class="edit-icon" on-tap="_openCopyDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="_openEditDialog" hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -78,7 +79,14 @@
                 dialog-title="[[dialogTitle]]"
                 confirm-btn-text="[[confirmBtnText]]"
                 hide-confirm-btn="[[!confirmBtnText]]"
-                request-in-process="{{requestInProcess}}">
+                request-in-process="{{requestInProcess}}"
+                no-title-margin$="[[notTouched]]">
+            <template is="dom-if" if="[[notTouched]]">
+                <div class="copy-warning">
+                    It is required to change at least one of the fields below.
+                </div>
+            </template>
+
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
 

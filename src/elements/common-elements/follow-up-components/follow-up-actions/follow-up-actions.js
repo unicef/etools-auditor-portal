@@ -28,6 +28,10 @@ Polymer({
                 };
             }
         },
+        modelFields: {
+            type: Array,
+            value: () => ['assigned_to', 'category', 'description', 'section', 'office', 'due_date', 'high_priority']
+        },
         columns: {
             type: Array,
             value: () => [
@@ -85,6 +89,10 @@ Polymer({
             type: Object,
             value: () => ({title: 'Edit Follow-Up Action'})
         },
+        copyDialogTexts: {
+            type: Object,
+            value: () => ({title: 'Duplicate Follow-Up Action'})
+        },
         viewDialogTexts: {
             type: Object,
             value: () => ({title: 'View Follow-Up Action'})
@@ -104,6 +112,11 @@ Polymer({
         orderBy: {
             type: String,
             value: '-reference_number'
+        },
+        notTouched: {
+            type: Boolean,
+            value: false,
+            computed: '_checkNotTouched(copyDialog, editedItem.*)'
         }
     },
 
@@ -114,7 +127,7 @@ Polymer({
     },
 
     observers: [
-        'resetDialog(dialogOpened)',
+        '_resetDialog(dialogOpened)',
         '_errorHandler(errorObject)',
         '_checkNonField(errorObject)',
         'setPermissionPath(baseEngagementPath)',
@@ -132,6 +145,13 @@ Polymer({
         if (!this.collectionExists('edited_ap_options')) {
             this._addToCollection('edited_ap_options', {});
         }
+    },
+
+    _resetDialog: function(dialogOpened) {
+        if (dialogOpened) { return; }
+        this.copyDialog = false;
+        this.originalEditedObj = {};
+        this.resetDialog(dialogOpened);
     },
 
     _orderChanged: function(newOrder, columns) {
@@ -182,7 +202,9 @@ Polymer({
 
     getActionsData: function() {
         if (!this.dialogOpened) { return null; }
+        if (this.copyDialog) { this.originalEditedObj = {}; }
         let data = _.pickBy(this.editedItem, (value, fieldName) => {
+            if (!~this.modelFields.indexOf(fieldName)) { return false; }
             let isObject = _.isObject(value) && !_.isArray(value);
             if (isObject) {
                 return value.id !== _.get(this, `originalEditedObj.${fieldName}.id`);
@@ -201,7 +223,7 @@ Polymer({
     },
 
     _addActionPoint: function() {
-        if (!this.validate()) { return; }
+        if (!this.validate() || this.notTouched) { return; }
         this.requestInProcess = true;
         let apData = this.getActionsData();
         if (apData) {
@@ -241,6 +263,32 @@ Polymer({
             url = `${apBaseUrl}action-points/${id}/`;
 
         this.apOptionUrl = url;
+    },
+
+    _openCopyDialog: function(event) {
+        this.dialogTitle = (this.copyDialogTexts && this.copyDialogTexts.title) || 'Add New Item';
+        this.confirmBtnText = 'Save';
+        this.cancelBtnText = 'Cancel';
+        let index = this._getIndex(event),
+            data = _.omit(this.dataItems[index], ['id']);
+        this.editedItem = data;
+        this.originalEditedObj = _.cloneDeep(data);
+        this.editedApBase = this.basePermissionPath;
+
+        this.copyDialog = true;
+        this.dialogOpened = true;
+    },
+
+    _checkNotTouched: function(copyDialog) {
+        if (!copyDialog || _.isEmpty(this.originalEditedObj)) { return false; }
+        return _.every(this.originalEditedObj, (value, key) => {
+            let isObject = _.isObject(value);
+            if (isObject) {
+                return !value.id || +value.id === +_.get(this, `editedItem.${key}.id`);
+            } else {
+                return value === this.editedItem[key];
+            }
+        });
     },
 
     _handleOptionResponse: function(event, detail) {

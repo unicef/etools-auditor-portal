@@ -78,7 +78,10 @@ paper-dialog {
     margin-top: 0 !important;
     margin-bottom: 10px !important;
     color: white;
-    background-color: var(--module-primary);
+    background-color: var(--module-primary)
+}
+:host([no-title-margin]) {
+    .dialog-title { margin-bottom: 0 !important; }
 }
 
 .close-btn {
