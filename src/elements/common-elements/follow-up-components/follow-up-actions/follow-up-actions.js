@@ -182,7 +182,7 @@ Polymer({
             item.priority = item.high_priority && 'High' || ' ';
             item.computed_field = `<b>${item.assigned_to.name}</b> <br>(${item.section.name} / ${item.office.name})`;
             return item;
-        })
+        });
     },
 
     setPermissionPath: function(basePath) {
