@@ -7,6 +7,24 @@
     .confirm-text {
         padding: 5px 86px 0 23px !important;
     }
+
+    div[slot="additional"] {
+        padding: 10px 0 9px 12px;
+        paper-button {
+            height: 38px;
+            font-weight: 500;
+            padding-right: 0;
+        }
+        iron-icon {
+            width: 20px;
+            color: var(--gray-mid);
+            margin-left: 5px;
+        }
+        a {
+            color: var(--gray-mid);
+            text-decoration: none;
+        }
+    }
 }
 
 etools-content-panel {

@@ -40,6 +40,7 @@
                 display: inline-flex;
                 color: var(--gray-dark);
             }
+            &[ordered="asc"] .heading { color: var(--gray-dark); }
 
             &[ordered="desc"] {
                 .heading { color: var(--gray-dark); }

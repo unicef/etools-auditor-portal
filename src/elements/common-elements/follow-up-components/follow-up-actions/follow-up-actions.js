@@ -36,7 +36,7 @@ Polymer({
                     'label': 'Reference Number #',
                     'name': 'reference_number',
                     'link': '*ap_link*',
-                    'ordered': 'asc',
+                    'ordered': 'desc',
                     'path': 'reference_number',
                     'target': '_blank',
                     'class': 'with-icon'
@@ -58,20 +58,22 @@ Polymer({
                     'align': 'center',
                     'property': 'status',
                     'path': 'status',
-                    'class': 'caps'
+                    'class': 'caps',
+                    'name': 'status'
                 }, {
                     'size': 10,
                     'label': 'Due Date',
                     'labelPath': 'due_date',
                     'path': 'due_date',
-                    'name': 'date',
+                    'name': 'due_date',
                     'align': 'center'
                 }, {
                     'size': 10,
                     'label': 'Priority',
                     'labelPath': 'high_priority',
                     'path': 'priority',
-                    'align': 'center'
+                    'align': 'center',
+                    'name': 'high_priority'
                 }
             ]
         },
@@ -101,7 +103,7 @@ Polymer({
         },
         orderBy: {
             type: String,
-            value: ''
+            value: '-reference_number'
         }
     },
 
@@ -118,7 +120,7 @@ Polymer({
         'setPermissionPath(baseEngagementPath)',
         'updateStyles(editedApBase)',
         '_addComputedField(dataItems.*)',
-        '_orderChanged(orderBy, columns)'
+        '_orderChanged(orderBy, columns, dataItems.*)'
     ],
 
     attached: function() {
@@ -150,10 +152,13 @@ Polymer({
                 this.set(`columns.${index}.ordered`, false);
             }
         });
+
+        let sorted = _.sortBy(this.dataItems, (item) => item[name]);
+        this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
     },
 
     _addComputedField: function() {
-        this.dataItemsTest = this.dataItems.map((item) => {
+        this.itemsToDisplay = this.dataItems.map((item) => {
             item.priority = item.high_priority && 'High' || ' ';
             item.computed_field = `<b>${item.assigned_to.name}</b> <br>(${item.section.name} / ${item.office.name})`;
             return item;
@@ -208,13 +213,6 @@ Polymer({
     },
 
     _requestCompleted: function(event, detail) {
-        if (this.completeAPAfterRequest) {
-            this.completeAPAfterRequest = false;
-            this.originalEditedObj = _.clone(this.editedItem);
-            this.completeAP();
-            return;
-        }
-
         this.requestInProcess = false;
         if (detail && detail.success) {
             this.dialogOpened = false;
@@ -264,24 +262,6 @@ Polymer({
             this.cancelBtnText = 'Cancel';
             this._openDialog(itemIndex);
         }
-    },
-
-    completeAP: function() {
-        if (!this.validate()) { return; }
-        let data = this.getActionsData();
-
-        if (data) {
-            this.completeAPAfterRequest = true;
-            this._addActionPoint();
-            return;
-        }
-
-        this.requestInProcess = true;
-        this.requestData = {
-            apData: {id: this.editedItem.id},
-            complete: true,
-            method: 'POST'
-        };
     },
 
     canBeEdited: function(status) {

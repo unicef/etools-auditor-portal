@@ -16,6 +16,14 @@
 
 :host {
     --divider-color: none;
+    .additional {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        margin-top: 0 !important;
+        padding: 0 !important;
+    }
 }
 
 paper-dialog {

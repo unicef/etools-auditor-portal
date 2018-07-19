@@ -39,7 +39,7 @@
                          no-additional
                          base-permission-path="[[basePermissionPath]]"></list-header>
 
-            <template is="dom-repeat" items="[[dataItemsTest]]" filter="_showItems">
+            <template is="dom-repeat" items="[[itemsToDisplay]]" filter="_showItems">
                 <list-element
                         class="list-element"
                         data="[[item]]"
@@ -245,15 +245,14 @@
                             </etools-checkable-input>
                         </div>
 
-                        <template is="dom-if" if="[[actionAllowed(editedApBase, 'complete')]]">
-                            <div class="input-container">
-                                <paper-button on-tap="completeAP">Complete Action</paper-button>
-                            </div>
-                        </template>
-
                     </div>
 
                 </div>
+            </div>
+
+
+            <div slot="additional" hidden$="[[!actionAllowed(editedApBase, 'complete')]]">
+                <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
             </div>
         </dialog-element>
     </template>
