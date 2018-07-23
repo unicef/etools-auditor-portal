@@ -82,6 +82,31 @@
 
                     <div class="row-h group">
                         <div class="input-container input-container-l">
+                            <!-- Category -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('category', editedApBase)]] fua-person"
+                                    selected="{{editedItem.category}}"
+                                    label="[[getLabel('category', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('category', editedApBase)]]"
+                                    options="[[categories]]"
+                                    custom-object-options
+                                    option-label="display_name"
+                                    option-value="value"
+                                    update-selected
+                                    required$="[[_setRequired('category', editedApBase)]]"
+                                    disabled$="{{isReadOnly('category', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('category', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.category}}"
+                                    error-message="{{errors.category}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
+                        </div>
+                    </div>
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-l">
                             <!-- Due Date -->
                             <paper-input
                                     id="deadlineAction"
