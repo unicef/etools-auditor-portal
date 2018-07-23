@@ -42,6 +42,11 @@ Polymer({
         _attachmentErrors: {
             type: Array,
             value: []
+        },
+        queryParams: {
+            type: Object,
+            notify: true,
+            value: () => ({})
         }
     },
 
@@ -174,6 +179,16 @@ Polymer({
             this.$.engagementDetails.resetAgreement();
             this.$.partnerDetails.resetValidationErrors();
             this.$.engagementDetails.resetType();
+        }
+
+        if (page === 'new') {
+            let sc = _.get(this, 'queryParams.sc');
+            if (!_.isNil(sc)) {
+                this.set('engagement.agreement.order_number', '0000000000');
+                this.set('engagement.engagement_type', {value: 'sc', label: 'Spot Check'});
+                this.$.engagementDetails._requestAgreement({target: {value: '0000000000'}});
+            }
+            setTimeout(() => this.clearQueries());
         }
     }
 });

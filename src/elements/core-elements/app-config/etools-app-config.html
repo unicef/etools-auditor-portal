@@ -69,7 +69,7 @@ App global configuration
                 url: '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true'
             },
             sectionsCovered: {
-                url: '/api/sections/',
+                url: '/api/reports/sectors/',
                 exp: 24 * 60 * 60 * 1000, // 24h
                 cachingKey: 'sections'
             },
@@ -97,6 +97,9 @@ App global configuration
             // dexie js
             appDexieDb: etoolsCustomDexieDb,
 
+            productionDomain: 'etools.unicef.org',
+            stagingDomain: 'etools-staging.unicef.org',
+
             getEndpoint: function (endpointName, data) {
                 var endpoint = etoolsAppConfig[etoolsAppConfig.globals.epsPath][endpointName];
                 if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
@@ -117,6 +120,16 @@ App global configuration
             getAbsolutePath: function(path) {
                 path = path || '';
                 return this.basePath + path;
+            },
+
+            isProductionServer: function() {
+                var location = window.location.href;
+                return location.indexOf(this.productionDomain) > -1;
+            },
+
+            isStagingServer: function() {
+                var location = window.location.href;
+                return location.indexOf(this.stagingDomain) > -1;
             }
         }
     };

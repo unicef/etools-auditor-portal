@@ -75,6 +75,6 @@ Polymer({
 
     _refreshPage: function() {
         this.refreshInProgress = false;
-        window.location.href = `${window.location.origin}/tpm/`;
+        window.location.href = `${window.location.origin}/ap/`;
     }
 });
