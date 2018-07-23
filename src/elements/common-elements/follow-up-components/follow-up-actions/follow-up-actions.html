@@ -97,7 +97,7 @@
                                     class$="disabled-as-readonly validate-input [[_setRequired('category', editedApBase)]] fua-person"
                                     selected="{{editedItem.category}}"
                                     label="[[getLabel('category', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('category', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('category', editedApBase, 'select')]]"
                                     options="[[categories]]"
                                     custom-object-options
                                     option-label="display_name"
@@ -143,7 +143,7 @@
                                     class$="disabled-as-readonly validate-input [[_setRequired('assigned_to', editedApBase)]] fua-person"
                                     value="{{editedItem.assigned_to}}"
                                     label="[[getLabel('assigned_to', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('assigned_to', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
                                     options="[[users]]"
                                     custom-object-options
                                     option-label="full_name"
@@ -166,7 +166,7 @@
                                     class$="disabled-as-readonly validate-input [[_setRequired('section', editedApBase)]] fua-person"
                                     value="{{editedItem.section}}"
                                     label="[[getLabel('section', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('section', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
                                     options="[[sections]]"
                                     custom-object-options
                                     option-label="name"
@@ -191,7 +191,7 @@
                                     class$="disabled-as-readonly validate-input [[_setRequired('office', editedApBase)]] fua-person"
                                     value="{{editedItem.office}}"
                                     label="[[getLabel('office', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('office', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('office', editedApBase, 'select')]]"
                                     options="[[offices]]"
                                     custom-object-options
                                     option-label="name"
@@ -215,7 +215,7 @@
                                     class$="disabled-as-readonly validate-input [[_setRequired('due_date', editedApBase)]]"
                                     value="[[prettyDate(editedItem.due_date)]]"
                                     label="[[getLabel('due_date', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('due_date', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('due_date', editedApBase, 'select')]]"
                                     data-selector="deadlineActionSelector"
                                     required$="[[_setRequired('due_date', editedApBase)]]"
                                     disabled$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"

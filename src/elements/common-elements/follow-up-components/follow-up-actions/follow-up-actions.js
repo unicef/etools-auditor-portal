@@ -21,7 +21,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    assigned_to: undefined,
+                    assigned_to: '',
                     due_date: undefined,
                     description: '',
                     high_priority: false
@@ -48,6 +48,7 @@ Polymer({
                     'size': 32,
                     'label': 'Action Point Category',
                     'labelPath': 'category',
+                    'path': 'ap_category.display_name',
                     'name': 'category'
                 }, {
                     'size': 20,
@@ -181,6 +182,7 @@ Polymer({
         this.itemsToDisplay = this.dataItems.map((item) => {
             item.priority = item.high_priority && 'High' || ' ';
             item.computed_field = `<b>${item.assigned_to.name}</b> <br>(${item.section.name} / ${item.office.name})`;
+            item.ap_category = _.find(this.categories, (category) => category.value === item.category);
             return item;
         });
     },

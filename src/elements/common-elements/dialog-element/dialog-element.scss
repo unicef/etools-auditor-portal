@@ -80,8 +80,13 @@ paper-dialog {
     color: white;
     background-color: var(--module-primary)
 }
+
 :host([no-title-margin]) {
     .dialog-title { margin-bottom: 0 !important; }
+}
+
+:host([request-in-process]) {
+    .additional { left: 70px; }
 }
 
 .close-btn {
