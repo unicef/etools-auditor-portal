@@ -5,7 +5,7 @@
     <template>
         <style include="shared-styles">
             app-toolbar {
-                background-color: #233944;
+                background-color: var(--header-bg-color, #233944);
                 padding: 0 8px 0 0;
             }
 
@@ -54,6 +54,12 @@
                 @apply(--layout-center);
             }
 
+            .envWarning {
+                color: var(--nonprod-text-warn-color);
+                font-weight: 700;
+                font-size: 18px;
+            }
+
             @media (min-width: 851px) {
                 div[main-title] {
                     margin-left: 32px;
@@ -63,15 +69,18 @@
 
         <app-toolbar sticky class="content-align">
             <div class="titlebar content-align">
-                <etools-app-selector hidden$="[[!user.is_staff]]" menu-options="[[menuOptions]]"></etools-app-selector>
+                <etools-app-selector hidden$="[[!user.is_staff]]"></etools-app-selector>
 
                 <img src$="[[getAbsolutePath('images/etools_logo.svg')]]">
+                <template is="dom-if" if="[[isStaging]]">
+                    <div class="envWarning">- STAGING TESTING ENVIRONMENT</div>
+                </template>
             </div>
 
             <div class="content-align">
                 <countries-dropdown
-                        countries="[[user.profile.countries_available]]"
-                        country-id="[[user.profile.country]]">
+                    countries="[[user.profile.countries_available]]"
+                    country-id="[[user.profile.country]]">
                 </countries-dropdown>
 
                 <user-dropdown is-admin="[[user.is_superuser]]"></user-dropdown>
@@ -94,43 +103,32 @@
                     user: {
                         type: Object
                     },
-                    menuOptions: {
-                        type: Array,
-                        value: function () {
-                            return [
-                                {
-                                    title: 'Dashboards',
-                                    icon: 'app-selector-icons:dashIcon',
-                                    url: 'dash'
-                                },
-                                {
-                                    title: 'Partnership Management',
-                                    icon: 'app-selector-icons:pmpIcon',
-                                    url: 'pmp'
-                                },
-                                {
-                                    title: 'Trip Management',
-                                    icon: 'app-selector-icons:tripsIcon',
-                                    url: 't2f'
-                                },
-                                {
-                                    title: 'Financial Assurance Module',
-                                    icon: 'app-icons:auditor',
-                                    url: 'ap'
-                                },
-                                {
-                                    title: 'Admin (Permission Required)',
-                                    icon: 'app-selector-icons:adminIcon',
-                                    url: 'admin'
-                                }
-
-                            ];
-                        }
+                    isStaging: {
+                        type: Boolean,
+                        value: false
                     }
                 },
 
                 listeners: {
                     'main_refresh': '_refresh_page'
+                },
+
+                ready: function() {
+                    this._setBgColor();
+                    this._isStaging();
+                },
+
+                _isStaging: function() {
+                    if (etoolsAppConfig.globals.isStagingServer()) {
+                        this.set('isStaging', true)
+                    }
+                },
+
+                _setBgColor: function() {
+                    // If not production environment, changing header color to red
+                    if (!etoolsAppConfig.globals.isProductionServer()) {
+                        this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
+                    }
                 },
 
                 openDrawer: function () {
