@@ -9,7 +9,7 @@
         <div class="heading-row-header clearfix" style$="padding-right: [[paddingRight]];">
             <template is="dom-repeat" items="[[data]]">
                 <template is="dom-if" if="[[!item.group]]">
-                    <div class$="local-headings w[[item.size]] [[item.align]]"
+                    <div class$="local-headings w[[item.size]] [[item.align]] [[item.class]]"
                          ordered$="{{item.ordered}}"
                          on-tap="_changeOrder">
                         <span class="textsec heading">[[getHeadingLabel(basePermissionPath, item)]]</span>

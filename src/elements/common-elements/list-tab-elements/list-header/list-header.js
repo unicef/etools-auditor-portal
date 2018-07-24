@@ -42,7 +42,9 @@ Polymer({
     _changeOrder: function(event) {
         if (this.noOrdered) { return; }
 
-        let newOrderName = event && event.model && event.model.item && event.model.item.name;
+        let item = _.get(event, 'model.item');
+        if (!item || (item.class && ~item.class.indexOf('no-order'))) { return; }
+        let newOrderName = item.name;
         let currentOrderName = this.orderBy || '';
         let direction = '-';
 
