@@ -30,7 +30,8 @@ Polymer({
         },
         modelFields: {
             type: Array,
-            value: () => ['assigned_to', 'category', 'description', 'section', 'office', 'due_date', 'high_priority']
+            value: () => ['assigned_to', 'category', 'description', 'section', 'office', 'due_date',
+                'high_priority', 'intervention']
         },
         columns: {
             type: Array,
@@ -84,19 +85,19 @@ Polymer({
         },
         addDialogTexts: {
             type: Object,
-            value: () => ({title: 'Add New Action'})
+            value: () => ({title: 'Add New Action Point'})
         },
         editDialogTexts: {
             type: Object,
-            value: () => ({title: 'Edit Follow-Up Action'})
+            value: () => ({title: 'Edit Action Point'})
         },
         copyDialogTexts: {
             type: Object,
-            value: () => ({title: 'Duplicate Follow-Up Action'})
+            value: () => ({title: 'Duplicate Action Point'})
         },
         viewDialogTexts: {
             type: Object,
-            value: () => ({title: 'View Follow-Up Action'})
+            value: () => ({title: 'View Action Point'})
         },
         users: {
             type: Array,
@@ -134,7 +135,8 @@ Polymer({
         'setPermissionPath(baseEngagementPath)',
         'updateStyles(editedApBase)',
         '_addComputedField(dataItems.*)',
-        '_orderChanged(orderBy, columns, dataItems.*)'
+        '_orderChanged(orderBy, columns, dataItems.*)',
+        '_requestPartner(partnerData, selectedPartnerId, partners)'
     ],
 
     attached: function() {
@@ -142,10 +144,17 @@ Polymer({
         this.set('users', this.getData('users') || []);
         this.set('offices', this.getData('offices') || []);
         this.set('sections', this.getData('sections') || []);
+        this.set('partners', this.getData('partners') || []);
 
         if (!this.collectionExists('edited_ap_options')) {
             this._addToCollection('edited_ap_options', {});
         }
+    },
+
+    _requestPartner: function(partner) {
+        let id = partner && +partner.id || null;
+        this.partnerId = id;
+        this.selectedPartnerId = id;
     },
 
     _resetDialog: function(dialogOpened) {
@@ -209,13 +218,13 @@ Polymer({
             if (!~this.modelFields.indexOf(fieldName)) { return false; }
             let isObject = _.isObject(value) && !_.isArray(value);
             if (isObject) {
-                return value.id !== _.get(this, `originalEditedObj.${fieldName}.id`);
+                return +value.id !== +_.get(this, `originalEditedObj.${fieldName}.id`, 0);
             } else {
                 return !_.isEqual(value, this.originalEditedObj[fieldName]);
             }
         });
 
-        _.each(['assigned_to', 'office', 'section'], (field) => {
+        _.each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
             if (data[field]) { data[field] = data[field].id; }
         });
 

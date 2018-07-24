@@ -2,7 +2,7 @@
             iron-icons, lodash, paper-tooltip, paper-input/paper-textarea, paper-button, etools-ajax]-->
 
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
-            textarea-max-rows-behavior, get-action-points, update-action-points]-->
+            textarea-max-rows-behavior, get-action-points, update-action-points, get-partner-data]-->
 
 <dom-module id="follow-up-actions">
     <template>
@@ -21,8 +21,9 @@
                               request-data="{{requestData}}"
                               errors="{{errors}}"
                               action-points="{{dataItems}}"></update-action-points>
+        <get-partner-data partner="{{fullPartner}}" partner-id="{{partnerId}}"></get-partner-data>
 
-        <etools-content-panel panel-title="UNICEF Follow-Up Actions">
+        <etools-content-panel panel-title="Action Points">
             <div slot="panel-btns">
                 <div hidden$="[[!canBeChanged]]">
                     <paper-icon-button
@@ -66,6 +67,7 @@
                         class="list-element"
                         data="[[itemModel]]"
                         headings="[[columns]]"
+                        no-additional
                         no-animation>
                     <div slot="checkbox" class="checkbox">
                         <span>–</span>
@@ -89,6 +91,54 @@
 
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
+
+                    <div class="row-h group">
+                        <div class="input-container input-container-ms">
+                            <!-- Partner -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('partner', editedApBase)]] fua-person"
+                                    selected="{{selectedPartnerId}}"
+                                    label="[[getLabel('partner', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
+                                    options="{{partners}}"
+                                    custom-object-options
+                                    option-label="name"
+                                    option-value="id"
+                                    update-selected
+                                    required$="[[_setRequired('partner', editedApBase)]]"
+                                    disabled$="{{isReadOnly('partner', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('partner', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.partner}}"
+                                    error-message="{{errors.partner}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
+                        </div>
+                        <div class="input-container input-container-ms">
+                            <!-- PD/SSFA -->
+                            <etools-searchable-multiselection-menu
+                                    class$="disabled-as-readonly validate-input [[_setRequired('intervention', editedApBase)]] fua-person"
+                                    value="{{editedItem.intervention}}"
+                                    label="[[getLabel('intervention', editedApBase)]]"
+                                    placeholder="[[getPlaceholderText('intervention', editedApBase, 'select')]]"
+                                    options="[[fullPartner.interventions]]"
+                                    custom-object-options
+                                    option-label="title"
+                                    option-value="id"
+                                    update-selected
+                                    required$="[[_setRequired('intervention', editedApBase)]]"
+                                    disabled$="{{isReadOnly('intervention', editedApBase, requestInProcess)}}"
+                                    readonly$="{{isReadOnly('intervention', editedApBase, requestInProcess)}}"
+                                    invalid="{{errors.intervention}}"
+                                    error-message="{{errors.intervention}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    no-title-attr>
+                            </etools-searchable-multiselection-menu>
+                        </div>
+                    </div>
+                </div>
 
                     <div class="row-h group">
                         <div class="input-container input-container-ms">
