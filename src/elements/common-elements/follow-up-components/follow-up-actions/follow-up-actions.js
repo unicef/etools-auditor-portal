@@ -54,6 +54,7 @@ Polymer({
                 }, {
                     'size': 20,
                     'label': 'Assignee (Section / Office)',
+                    'htmlLabel': 'Assignee<br/>(Section / Office)',
                     'path': 'computed_field',
                     'html': true,
                     'class': 'no-order'
@@ -71,7 +72,7 @@ Polymer({
                     'label': 'Due Date',
                     'labelPath': 'due_date',
                     'path': 'due_date',
-                    'name': 'due_date',
+                    'name': 'date',
                     'align': 'center'
                 }, {
                     'size': 10,
@@ -85,7 +86,7 @@ Polymer({
         },
         addDialogTexts: {
             type: Object,
-            value: () => ({title: 'Add New Action Point'})
+            value: () => ({title: 'Add Action Point', confirmBtn: 'Save'})
         },
         editDialogTexts: {
             type: Object,
@@ -190,7 +191,10 @@ Polymer({
     _addComputedField: function() {
         this.itemsToDisplay = this.dataItems.map((item) => {
             item.priority = item.high_priority && 'High' || ' ';
-            item.computed_field = `<b>${item.assigned_to.name}</b> <br>(${item.section.name} / ${item.office.name})`;
+            let assignedTo = _.get(item, 'assigned_to.name', '--'),
+                section = _.get(item, 'section.name', '--'),
+                office = _.get(item, 'office.name', '--');
+            item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
             item.ap_category = _.find(this.categories, (category) => category.value === item.category);
             return item;
         });
