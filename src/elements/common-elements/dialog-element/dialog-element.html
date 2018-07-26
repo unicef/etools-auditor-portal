@@ -11,6 +11,11 @@
                 modal
                 with-backdrop
                 ok-btn-text="sync from vision">
+
+            <div class="additional">
+                <slot name="additional"></slot>
+            </div>
+
             <iron-icon
                     icon="icons:close"
                     class="close-btn"
@@ -91,7 +96,8 @@
                 requestInProcess: {
                     type: Boolean,
                     value: false,
-                    notify: true
+                    notify: true,
+                    reflectToAttribute: true
                 },
                 confirmDialogOpened: {
                     type: Boolean,

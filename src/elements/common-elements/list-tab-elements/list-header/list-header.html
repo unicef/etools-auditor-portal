@@ -1,5 +1,5 @@
 <!--import [polymer, iron-icon, iron-flex-layout]-->
-<!--import [shared-styles, module-styles, localization-behavior]-->
+<!--import [shared-styles, module-styles, localization-behavior, insert-html]-->
 
 <dom-module id="list-header">
     <template>
@@ -9,10 +9,16 @@
         <div class="heading-row-header clearfix" style$="padding-right: [[paddingRight]];">
             <template is="dom-repeat" items="[[data]]">
                 <template is="dom-if" if="[[!item.group]]">
-                    <div class$="local-headings w[[item.size]] [[item.align]]"
+                    <div class$="local-headings w[[item.size]] [[item.align]] [[item.class]]"
                          ordered$="{{item.ordered}}"
                          on-tap="_changeOrder">
-                        <span class="textsec heading">[[getHeadingLabel(basePermissionPath, item)]]</span>
+                        <template is="dom-if" if="[[!item.htmlLabel]]">
+                            <span class="textsec heading">[[getHeadingLabel(basePermissionPath, item)]]</span>
+                        </template>
+
+                        <template is="dom-if" if="[[item.htmlLabel]]">
+                            <span class="textsec heading"><insert-html html="[[item.htmlLabel]]"></insert-html></span>
+                        </template>
 
                         <iron-icon
                                 class="down-icon"
