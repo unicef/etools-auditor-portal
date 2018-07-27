@@ -192,7 +192,6 @@
                 return;
             }
 
-
             this.requestData = {method, attachmentsData};
         },
 
