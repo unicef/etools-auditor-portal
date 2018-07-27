@@ -44,7 +44,8 @@ Polymer({
                     'ordered': 'desc',
                     'path': 'reference_number',
                     'target': '_blank',
-                    'class': 'with-icon'
+                    'class': 'with-icon',
+                    'orderBy': 'id'
                 }, {
                     'size': 32,
                     'label': 'Action Point Category',
@@ -170,6 +171,7 @@ Polymer({
 
         let direction = 'asc';
         let name = newOrder;
+        let orderBy;
 
         if (name.startsWith('-')) {
             direction = 'desc';
@@ -179,12 +181,13 @@ Polymer({
         columns.forEach((column, index) => {
             if (column.name === name) {
                 this.set(`columns.${index}.ordered`, direction);
+                orderBy = column.orderBy || name;
             } else {
                 this.set(`columns.${index}.ordered`, false);
             }
         });
 
-        let sorted = _.sortBy(this.dataItems, (item) => item[name]);
+        let sorted = _.sortBy(this.dataItems, (item) => item[orderBy]);
         this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
     },
 
