@@ -243,7 +243,7 @@ Polymer({
     _setPartnerAddress: function(partner) {
         if (!partner) { return ''; }
 
-        return [partner.street_address, partner.postal_code, partner.city, partner.country]
+        return [partner.address, partner.postal_code, partner.city, partner.country]
             .filter((info) => !!info)
             .join(', ');
     }
