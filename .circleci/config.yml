@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            xvfb-run polymer test --skip-selenium-install
+            sleep 10 && gulp test --pc
 
   build_and_deploy:
     working_directory: ~/code
