@@ -27,7 +27,7 @@ jobs:
             - bower_components
       - run:
           name: Run Tests
-          command: ./test.sh
+          command: gulp test
 
   build_and_deploy:
     working_directory: ~/code
