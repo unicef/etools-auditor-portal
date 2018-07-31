@@ -35,9 +35,21 @@
         <etools-ajax
                 method="OPTIONS"
                 url="{{newEngagementPermissions}}"
+                data-collection="new_engagement"
                 on-success="_handleNewEngagementResponse"
                 on-forbidden="_handleNewEngagementResponse"
                 on-fail="_handleNewEngagementResponse">
+        </etools-ajax>
+
+        <!--staff sc creation-->
+        <etools-ajax
+                method="OPTIONS"
+                url="{{newStaffSCPermissions}}"
+                data-collection="new_staff_sc"
+                data-data-name="staffSCPermissions"
+                on-success="_handleDataLoading"
+                on-forbidden="_handleDataLoading"
+                on-fail="_handleDataLoading">
         </etools-ajax>
 
         <!--attachments-->
@@ -126,6 +138,7 @@
                     this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.usersEndpoint = this.getEndpoint('users').url;
                     this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
+                    this.newStaffSCPermissions = this.getEndpoint('staffSCList').url;
                     this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
                     this.atmOptionsUrl = this.getEndpoint('attachments', {id: 'new'}).url;
                     this.officesEndpoint = this.getEndpoint('offices');
@@ -227,6 +240,20 @@
 
                     dataLoaded.engagementOptions = true;
                     this._allDataLoaded();
+                },
+
+                _handleDataLoading: function(data) {
+                    let actions = _.get(data, 'detail.actions') || {},
+                        name = _.get(data, 'detail.name', ''),
+                        collection = _.get(data, 'target.dataset.collection', ''),
+                        dataName  = _.get(data, 'target.dataset.dataName', '');
+
+                    if (!collection || !dataName) {
+                        throw new Error('Please provide collection and dataName attributes');
+                    }
+
+                    this._addToCollection(collection, actions, name);
+                    dataLoaded[dataName] = true;
                 },
 
                 _atmOptionsResponse: function(data) {

@@ -47,11 +47,23 @@ Polymer({
             type: Object,
             notify: true,
             value: () => ({})
+        },
+        pageTitle: {
+            type: String,
+            value: ''
+        },
+        isStaffSc: {
+            type: Boolean,
+            value: false
+        },
+        auditFirm: {
+            type: Object,
+            value: () => ({})
         }
     },
 
     observers: [
-        '_pageChanged(page)'
+        '_pageChanged(page, isStaffSc, auditFirm)'
     ],
 
     listeners: {
@@ -137,7 +149,9 @@ Polymer({
         this.reloadEngagementsList();
 
         //redirect
-        let path = `${this.engagement.engagement_type.link}/${this.engagement.id}/overview`;
+        let link = _.get(this, 'engagement.engagement_type.link');
+        if (!link && this.isStaffSc) { link = 'staff-spot-checks'; }
+        let path = `${link}/${this.engagement.id}/overview`;
         this.set('path', this.getAbsolutePath(path));
 
         //reset data
@@ -157,7 +171,7 @@ Polymer({
         this.set('requestQueries.reload', true);
     },
 
-    _pageChanged: function(page) {
+    _pageChanged: function(page, isStaffSc, auditFirm) {
         if (page === 'new' || page === 'list') {
             this.set('engagement', {
                 status: '',
@@ -181,14 +195,9 @@ Polymer({
             this.$.engagementDetails.resetType();
         }
 
-        if (page === 'new') {
-            let sc = _.get(this, 'queryParams.sc');
-            if (!_.isNil(sc)) {
-                this.set('engagement.agreement.order_number', '0000000000');
-                this.set('engagement.engagement_type', {value: 'sc', label: 'Spot Check'});
-                this.$.engagementDetails._requestAgreement({target: {value: '0000000000'}});
-            }
-            setTimeout(() => this.clearQueries());
+        if (page === 'new' && isStaffSc) {
+            this.set('engagement.agreement.auditor_firm', auditFirm);
+            this.set('engagement.engagement_type', {value: 'sc', label: 'Spot Check'});
         }
     }
 });

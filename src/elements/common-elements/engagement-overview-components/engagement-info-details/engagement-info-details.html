@@ -39,6 +39,13 @@
             }
 
             .row-h.float {
+                display: flex;
+                position: relative;
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                flex-wrap: wrap;
                 margin-bottom: 0;
             }
 
@@ -60,8 +67,8 @@
         </update-agreement-data>
 
         <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
-            <div class="row-h group">
-                <div class="input-container">
+            <div class="row-h group  float">
+                <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
                     <!-- Purchase Order -->
                     <paper-input
                             id="purchaseOrder"
@@ -105,7 +112,7 @@
                     <paper-tooltip offset="0">[[data.agreement.auditor_firm.name]]</paper-tooltip>
                 </div>
 
-                <div class="input-container">
+                <div class="input-container" hidden$="[[_hideField('po_item', basePermissionPath)]]">
                     <!-- PO Item Number -->
                     <etools-searchable-multiselection-menu
                             class$="validate-field disabled-as-readonly [[_setRequired('po_item', basePermissionPath)]]"
@@ -128,10 +135,8 @@
                     </etools-searchable-multiselection-menu>
                     <paper-tooltip offset="0">[[data.po_item.number]]</paper-tooltip>
                 </div>
-            </div>
 
-            <div class="row-h group">
-                <div class="input-container">
+                <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
                     <!-- PO Date -->
                     <paper-input
                             id="contractStartDateInput"
@@ -150,7 +155,7 @@
                     </paper-input>
                 </div>
 
-                <div class="input-container">
+                <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
                     <!-- Contract Expiry Date -->
                     <paper-input
                             id="contractEndDateInput"
@@ -188,7 +193,7 @@
                     </etools-loading>
                 </div>
 
-                <div class="input-container">
+                <div class="input-container" hidden$="[[_hideField('partner_contacted_at', basePermissionPath)]]">
                     <!-- Date Partner Was Contacted -->
                     <paper-input
                             id="contactedDateInput"
@@ -219,9 +224,6 @@
                     </paper-input>
                 </div>
 
-            </div>
-
-            <div class="row-h group float">
                 <div class="input-container">
                     <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput, data.engagement_type)}}">
                         <!-- Engagement Type -->
@@ -257,7 +259,7 @@
                 </div>
 
                 <template is="dom-if" if="{{showInput}}" restamp>
-                    <div class="input-container">
+                    <div class="input-container" hidden$="[[_hideField('start_date', basePermissionPath)]]">
                         <!-- Period Start Date -->
                         <paper-input
                                 id="periodStartDateInput"
@@ -289,7 +291,7 @@
                 </template>
 
                 <template is="dom-if" if="{{showInput}}" restamp>
-                    <div class="input-container">
+                    <div class="input-container" hidden$="[[_hideField('end_date', basePermissionPath)]]">
                         <!-- Period End Date -->
                         <paper-input
                                 id="periodEndDateInput"
@@ -321,7 +323,7 @@
                 </template>
 
                 <template is="dom-if" if="{{showInput}}" restamp>
-                    <div class="input-container">
+                    <div class="input-container" hidden$="[[_hideField('total_value', basePermissionPath)]]">
                         <!-- Total Value of Selected FACE Forms -->
                         <etools-currency-amount-input
                                 class$="disabled-as-readonly {{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}} validate-field"
@@ -351,7 +353,7 @@
                 </template>
 
                 <template is="dom-if" if="{{showAdditionalInput}}" restamp>
-                    <div class="input-container">
+                    <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
                         <etools-searchable-multiselection-menu
                                 class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
                                 value="{{sharedIpWith}}"
@@ -377,8 +379,8 @@
                         </etools-searchable-multiselection-menu>
                     </div>
                 </template>
-
             </div>
+
         </etools-content-panel>
     </template>
 
