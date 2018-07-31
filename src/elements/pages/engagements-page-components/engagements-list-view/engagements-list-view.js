@@ -21,7 +21,7 @@
             },
             listHeadings: {
                 type: Array,
-                value: [{
+                value: () => [{
                     'size': 15,
                     'label': 'Unique ID #',
                     'name': 'unique_id',
@@ -114,10 +114,6 @@
                 type: Boolean,
                 value: false
             },
-            staticParam: {
-                type: 'String',
-                value: ''
-            },
             hideAddButton: {
                 type: Boolean,
                 value: false
@@ -125,8 +121,14 @@
             addBtnText: {
                 type: 'String',
                 value: 'Add New Engagement'
+            },
+            isStaffSc: {
+                type: Boolean,
+                value: false
             }
         },
+
+        observers: ['_changeLinkTemplate(isStaffSc, listHeadings)'],
 
         attached: function() {
             document.addEventListener('engagements-filters-updated', this._engagementsFiltersUpdated.bind(this));
@@ -185,6 +187,15 @@
                 name: 'Export Engagements',
                 url: this.getEndpoint('engagementsList').url + '?format=csv&page_size=all'
             }];
+        },
+
+        _changeLinkTemplate: function(isStaffSc, headings) {
+            if (!headings) { return; }
+            if (isStaffSc) {
+                this.set('listHeadings.0.link', 'staff-spot-checks/*data_id*/overview');
+            } else {
+                this.set('listHeadings.0.link', '*engagement_type*/*data_id*/overview');
+            }
         }
 
     });
