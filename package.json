@@ -52,7 +52,8 @@
     "merge-stream": "^1.0.0",
     "plylog": "^0.4.0",
     "polymer-build": "^0.4.0",
-    "yargs": "^5.0.0"
+    "yargs": "^5.0.0",
+    "wct-local": "2.1.0"
   },
   "scripts": {}
 }
