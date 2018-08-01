@@ -49,7 +49,7 @@
                 if (isNaN(+this.organisationId)) { return; }
 
                 this.emailChecking = true;
-                this.url = this.getEndpoint('userExistence', {email: email, id: this.organisationId}).url;
+                this.url = this.getEndpoint('userExistence', {email: encodeURIComponent(email), id: this.organisationId}).url;
                 this.email = null;
             },
 
