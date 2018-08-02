@@ -103,6 +103,7 @@ Polymer({
     },
 
     _pageChanged: function(page) {
+        if (page === 'staff-spot-checks') { page = 'spot-checks'; }
         if (Polymer.isInstance(this.$[`${page}`])) { return; }
         this.fire('global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 

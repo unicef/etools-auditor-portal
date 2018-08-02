@@ -1,6 +1,6 @@
-<!--import [polymer]-->
+<!--import [polymer, etools-ajax]-->
 <!--import [page-layout-styles, shared-styles, module-styles, engagements-list-view, new-engagement-view,
-            query-params-controller, permission-controller]-->
+            query-params-controller, permission-controller, etools-app-config]-->
 
 <dom-module id="staff-sc-page-main">
     <template>
@@ -18,6 +18,12 @@
                 tail="{{subroute}}">
         </app-route>
 
+        <etools-ajax
+                url="[[auditFirmUrl]]"
+                on-success="_auditFirmLoaded"
+                on-fail="_auditFirmLoaded">
+        </etools-ajax>
+
         <iron-pages
                 id="categoryPages"
                 selected="{{view}}"
@@ -31,10 +37,28 @@
                     request-queries="[[partnersListQueries]]"
                     base-permission-path="new_engagement"
                     filters="[[filters]]"
-                    new-btn-link="/engagements/new/overview?sc"
                     add-btn-text="Add New Staff Spot Checks"
-                    static-param="{{staticParam}}">
+                    new-btn-link="/staff-sc/new/overview"
+                    endpoint-name="{{endpointName}}"
+                    is-staff-sc>
             </engagements-list-view>
+
+            <template is="dom-if" if="{{actionAllowed('new_staff_sc', 'create')}}" restamp>
+                <new-engagement-view
+                        name="new"
+                        id="creationPage"
+                        page="{{routeData.view}}"
+                        query-params="{{queryParams}}"
+                        route="{{subroute}}"
+                        request-queries="{{partnersListQueries}}"
+                        base-permission-path="new_staff_sc"
+                        partner="{{partnerDetails}}"
+                        audit-firm="[[auditFirm]]"
+                        page-title="Add New Staff Spot Check"
+                        endpoint-name="{{endpointName}}"
+                        is-staff-sc>
+                </new-engagement-view>
+            </template>
         </iron-pages>
     </template>
 

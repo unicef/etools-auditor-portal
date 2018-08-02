@@ -19,7 +19,7 @@
 
         <engagement-info-data
                 engagement-id="{{engagementId}}"
-                engagement-type="spot-checks"
+                engagement-type="[[pageType]]"
                 engagement-info="{{engagement}}">
         </engagement-info-data>
 
@@ -96,7 +96,8 @@
                                     data="{{engagement}}"
                                     error-object="{{errorObject}}"
                                     original-data="[[originalData]]"
-                                    base-permission-path="{{permissionBase}}">
+                                    base-permission-path="{{permissionBase}}"
+                                    is-staff-sc="[[isStaffSc]]">
                             </engagement-info-details>
 
                             <partner-details-tab

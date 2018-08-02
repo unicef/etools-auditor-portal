@@ -36,7 +36,7 @@
                     type: Number,
                     notify: true
                 },
-                staticParam: {
+                endpointName: {
                     type: 'String',
                     value: ''
                 }
@@ -64,16 +64,15 @@
 
                 this.lastState = _.cloneDeep(this.requestQueries);
 
-                if (!reloadRequired) {
+                if (!reloadRequired || !this.endpointName) {
                     //not reload the page
                     return;
                 }
 
                 this.fire('global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
 
-                let endpoint = this.getEndpoint('engagementsList');
-                let staticParam = this.staticParam ? `&${this.staticParam}` : '';
-                endpoint.url += this.getQueriesString() + staticParam;
+                let endpoint = this.getEndpoint(this.endpointName);
+                endpoint.url += this.getQueriesString();
 
                 if (this.requestQueries.reload) {
                     endpoint.url += `&reload=${new Date().getTime()}`;

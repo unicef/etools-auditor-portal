@@ -33,7 +33,7 @@
             },
 
             _handleResponse: function (data, detail) {
-                this.actionPoints = detail && detail.results || [];
+                this.actionPoints = detail && detail.length ? detail : [];
                 this.url = null;
                 this.fire('ap-loaded', {success: true});
             },
@@ -45,7 +45,7 @@
             _engagementIdChanged: function(engagementId) {
                 if (!engagementId) { return; }
                 let apBaseUrl = this.getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
-                this.url = `${apBaseUrl}action-points/`;
+                this.url = `${apBaseUrl}action-points/?page_size=all`;
             }
         });
     </script>

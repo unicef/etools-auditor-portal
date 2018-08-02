@@ -49,7 +49,7 @@
                 if (isNaN(+this.organisationId)) { return; }
 
                 this.emailChecking = true;
-                this.url = this.getEndpoint('userExistence', {email: email, id: this.organisationId}).url;
+                this.url = this.getEndpoint('userExistence', {email: encodeURIComponent(email), id: this.organisationId}).url;
                 this.email = null;
             },
 
@@ -84,6 +84,10 @@
                         user: _.omit(user, ['id', 'auditor_firm']),
                         user_pk
                     };
+                } else if (this.unicefUsersAllowed) {
+                    //if is new user and unicefUsersAllowed
+                    this._setError(`You can't add new user to this firm.`);
+                    this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                 } else {
                     //if is new user
                     this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
@@ -102,7 +106,7 @@
             _setError: function(error) {
                 if (!this.errors) { this.set('errors', {}); }
                 if (!this.errors.user) { this.set('errors.user', {}); }
-                if (!this.errors.user.email) { this.set('errors.user.email', 'This field must be unique.'); }
+                if (!this.errors.user.email) { this.set('errors.user.email', error); }
             }
         });
     </script>
