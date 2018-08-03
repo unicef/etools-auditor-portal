@@ -7,24 +7,24 @@ jobs:
       - image: circleci/node:latest-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+#      - restore_cache:
+#          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Install node modules
           command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-      - restore_cache:
-          key: dependency-cache-{{ checksum "bower.json" }}
+#      - save_cache:
+#          key: dependency-cache-{{ checksum "package.json" }}
+#          paths:
+#            - node_modules
+#      - restore_cache:
+#          key: dependency-cache-{{ checksum "bower.json" }}
       - run:
           name: Install bower components
           command: bower install --allow-root --config.interactive=false -s
-      - save_cache:
-          key: dependency-cache-{{ checksum "bower.json" }}
-          paths:
-            - bower_components
+#      - save_cache:
+#          key: dependency-cache-{{ checksum "bower.json" }}
+#          paths:
+#            - bower_components
       - run:
           name: Run Tests
           command: ./node_modules/.bin/gulp test
