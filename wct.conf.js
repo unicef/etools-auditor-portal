@@ -1,8 +1,8 @@
 module.exports = {
   plugins: {
     local: {
-      // browsers: ["chrome", ]
-      browsers: ["firefox", ]
+      browsers: ["chrome", ]
+      // browsers: ["firefox", ]
     },
     sauce: false,
   },
