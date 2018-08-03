@@ -8,7 +8,7 @@ RUN apt-get update
 RUN apt-get install -t jessie-backports -y openjdk-8-jdk
 
 # install firefox
-RUN apt-get install -qqy firefox
+RUN apt-get install -y firefox-esr
 
 # install xvfb
 RUN apt-get install -y xvfb
