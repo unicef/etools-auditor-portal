@@ -28,9 +28,10 @@ Polymer({
                 return ['overview', 'report', 'attachments', 'follow-up'];
             }
         },
-        engagementPrefix: {
-            type: String,
-            value: '/spot-checks'
+        pageType: String,
+        isStaffSc: {
+            type: Boolean,
+            value: false
         }
     },
 
@@ -38,7 +39,8 @@ Polymer({
         '_routeConfig(route)',
         '_checkAvailableTab(engagement, permissionBase, route)',
         '_setPermissionBase(engagement.id)',
-        '_tabChanged(tab)'
+        '_tabChanged(tab)',
+        '_setType(isStaffSc)'
     ],
 
     listeners: {
@@ -46,6 +48,12 @@ Polymer({
         'engagement-updated': '_engagementUpdated',
         'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
+    },
+
+    _setType: function(isStaffSc) {
+        let type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
+        this.set('engagementPrefix', `/${type}`);
+        this.set('pageType', type);
     },
 
     _validateEngagement: function() {

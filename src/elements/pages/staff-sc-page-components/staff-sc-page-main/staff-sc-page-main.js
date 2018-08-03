@@ -5,7 +5,8 @@ Polymer({
 
     behaviors: [
         APBehaviors.QueryParamsController,
-        APBehaviors.PermissionController
+        APBehaviors.PermissionController,
+        etoolsAppConfig.globals
     ],
 
     properties: {
@@ -22,14 +23,6 @@ Polymer({
             type: Array,
             value: [
                 {
-                    name: 'engagement type',
-                    query: 'engagement_type',
-                    hideSearch: true,
-                    optionValue: 'value',
-                    optionLabel: 'display_name',
-                    selection: []
-                },
-                {
                     name: 'partner',
                     query: 'partner',
                     optionValue: 'id',
@@ -45,14 +38,6 @@ Polymer({
                     selection: []
                 },
                 {
-                    name: 'joint audit',
-                    query: 'joint_audit',
-                    hideSearch: true,
-                    optionValue: 'value',
-                    optionLabel: 'display_name',
-                    selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
-                },
-                {
                     name: 'unicef user',
                     query: 'staff_members__user',
                     optionValue: 'id',
@@ -61,27 +46,35 @@ Polymer({
                 }
             ]
         },
-        staticParam: {
+        endpointName: {
             type: String,
-            value: 'agreement__auditor_firm__unicef_users_allowed=true'
+            value: 'staffSCList'
         }
     },
 
     observers: [
-        '_routeConfig(routeData.view)'
+        '_routeConfig(routeData.view, selectedPage)'
     ],
 
-    _routeConfig: function(view) {
-        if (!this.route || !~this.route.prefix.indexOf('/staff-sc')) {
+    ready: function() {
+        this.auditFirmUrl = this.getEndpoint('filterAuditors').url + '?unicef_users_allowed=true';
+    },
+
+    _routeConfig: function(view, selectedPage) {
+        if (!this.route || !~this.route.prefix.indexOf('/staff-sc') || selectedPage !== 'staff-sc') {
             this.resetLastView();
             return;
         }
 
+        if (view === this.lastView) { return; }
         if (view === 'list') {
             let queries = this._configListParams(this.initiation++);
             this._setEngagementsListQueries(queries);
             this._fireUpdateEngagementsFilters();
             this.view = 'list';
+        } else if (view === 'new' && this.actionAllowed('new_staff_sc', 'create')) {
+            this.clearQueries();
+            this.view = 'new';
         } else if (view === '' || _.isUndefined(view)) {
             this.set('route.path', '/list');
         } else {
@@ -139,6 +132,16 @@ Polymer({
     _setEngagementsListQueries: function(queries) {
         if (!_.isEmpty(queries) && (!this.partnersListQueries || !_.isEqual(this.partnersListQueries, queries))) {
             this.partnersListQueries = queries;
+        }
+    },
+
+    _auditFirmLoaded: function(event, data) {
+        let auditFirm = _.get(data, 'results.0');
+        if (!auditFirm) {
+            console.error('Can not load firm data.');
+            console.error(data);
+        } else {
+            this.auditFirm = auditFirm;
         }
     }
 

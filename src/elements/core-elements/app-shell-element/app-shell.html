@@ -51,6 +51,7 @@
                 </engagements-page-main>
 
                 <staff-sc-page-main
+                        selected-page="[[page]]"
                         name="staff-sc"
                         id="staff-sc"
                         route="{{subroute}}"
@@ -83,6 +84,14 @@
                         id="spot-checks"
                         route="{{subroute}}"
                         query-params="{{queryParams}}">
+                </spot-checks-page-main>
+
+                <spot-checks-page-main
+                        name="staff-spot-checks"
+                        id="staff-spot-checks"
+                        route="{{subroute}}"
+                        query-params="{{queryParams}}"
+                        is-staff-sc>
                 </spot-checks-page-main>
 
                 <not-found-page-view name="not-found" id="not-found"></not-found-page-view>

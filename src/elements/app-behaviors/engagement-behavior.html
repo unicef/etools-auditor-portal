@@ -204,7 +204,7 @@
                 case 'ma':
                     return 'micro-assessments';
                 case 'sc':
-                    return 'spot-checks';
+                    return this.isStaffSc ? 'staff-spot-checks' : 'spot-checks';
                 case 'audit':
                     return 'audits';
                 case 'sa':
@@ -228,7 +228,7 @@
             }
 
             let type = this.getType(this.engagement.engagement_type);
-            if (!type) {
+            if (!type && !this.isStaffSc) {
                 type = this.engagement.engagement_type.link;
                 data.engagement_type = this.engagement.engagement_type.value;
             }

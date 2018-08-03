@@ -24,6 +24,9 @@ App global configuration
             engagementsList: {
                 url: '/api/audit/engagements/'
             },
+            staffSCList: {
+                url: '/api/audit/staff-spot-checks/'
+            },
             engagementInfo: {
                 template: '/api/audit/<%=type%>/<%=id%>/'
             },
@@ -48,7 +51,7 @@ App global configuration
                 url: '/api/audit/engagements/partners/'
             },
             agreementData: {
-                template: '/api/audit/purchase-orders/sync/<%=id%>/'
+                template: '/api/audit/purchase-orders/sync/<%=id%>/?auditor_firm__unicef_users_allowed=False'
             },
             purchaseOrder: {
                 template: '/api/audit/purchase-orders/<%=id%>/'

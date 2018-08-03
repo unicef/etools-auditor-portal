@@ -21,8 +21,7 @@
 
             properties: {
                 newEngagementData: {
-                    type: Object,
-                    observer: '_newEngagementChanged'
+                    type: Object
                 },
                 errorObject: {
                     type: Object,
@@ -30,8 +29,14 @@
                     value: function() {
                         return {};
                     }
+                },
+                endpointName: {
+                    type: String,
+                    value: ''
                 }
             },
+
+            observers: ['_newEngagementChanged(newEngagementData, endpointName)'],
 
             _handleResponse: function (data) {
                 this.fire('engagement-created', {success: true, data: data.detail});
@@ -61,9 +66,9 @@
                 this.fire('global-loading', {type: 'create-engagement'});
             },
 
-            _newEngagementChanged: function(engagement) {
-                if (!engagement) { return; }
-                let url = this.getEndpoint('createEngagement').url;
+            _newEngagementChanged: function(engagement, endpointName) {
+                if (!engagement || !endpointName) { return; }
+                let url = this.getEndpoint(endpointName).url;
 
                 this.fire('global-loading', {type: 'create-engagement', active: true, message: 'Creating new engagement...'});
                 this.postData = engagement.data;
