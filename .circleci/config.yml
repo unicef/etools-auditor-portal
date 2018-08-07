@@ -16,33 +16,32 @@ jobs:
             sudo apt-get remove binutils
             sudo apt-get install -t sid firefox &&
             firefox --version
-#      - restore_cache:
-#          key: dependency-cache-{{ checksum "package.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Install node modules
           command: npm install
-#      - save_cache:
-#          key: dependency-cache-{{ checksum "package.json" }}
-#          paths:
-#            - node_modules
-#      - restore_cache:
-#          key: dependency-cache-{{ checksum "bower.json" }}
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - restore_cache:
+          key: dependency-cache-{{ checksum "bower.json" }}
       - run:
           name: Install bower components
           command: ./node_modules/.bin/bower install --allow-root --config.interactive=false
-#      - save_cache:
-#          key: dependency-cache-{{ checksum "bower.json" }}
-#          paths:
-#            - bower_components
+      - save_cache:
+          key: dependency-cache-{{ checksum "bower.json" }}
+          paths:
+            - bower_components
       - run:
           name: Run Tests
           command: ./node_modules/.bin/gulp test --pc
 
   build_and_deploy:
     working_directory: ~/code
-    # The primary container is an instance of the first list image listed. Your build commands run in this container.
-    docker:
-      - image: selenium/standalone-firefox:latest
+    machine:
+        enabled: true
     steps:
       - checkout
       - setup_remote_docker
@@ -88,3 +87,4 @@ workflows:
                 - master
                 - staging
                 - develop
+                - "circle-2.0"
