@@ -17,21 +17,21 @@ jobs:
             sudo apt-get install -t sid firefox &&
             firefox --version
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: cache-{{ checksum "package.json" }}
       - run:
           name: Install node modules
           command: npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: cache-{{ checksum "package.json" }}
           paths:
             - node_modules
       - restore_cache:
-          key: dependency-cache-{{ checksum "bower.json" }}
+          key: cache-{{ checksum "bower.json" }}
       - run:
           name: Install bower components
           command: ./node_modules/.bin/bower install --allow-root --config.interactive=false
       - save_cache:
-          key: dependency-cache-{{ checksum "bower.json" }}
+          key: cache-{{ checksum "bower.json" }}
           paths:
             - bower_components
       - run:
