@@ -56,7 +56,7 @@ function buildElements(done) {
         ))
         .pipe(gulp.dest('./build/'))
         .on('end', function () {
-            let testsPerFile = 24;
+            let testsPerFile = 10;
             let indexFilesLength = Math.ceil(testSources.length / testsPerFile) || 1;
 
             console.log(`\x1b[32mFound ${testSources.length} test files. They will be combined into ${indexFilesLength} file(s).\x1b[0m`);
