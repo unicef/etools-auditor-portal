@@ -80,4 +80,3 @@ workflows:
                 - master
                 - staging
                 - develop
-                - circle2
