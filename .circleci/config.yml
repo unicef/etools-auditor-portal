@@ -40,8 +40,8 @@ jobs:
 
   build_and_deploy:
     working_directory: ~/code
-    machine:
-        enabled: true
+    docker:
+      - image: circleci/buildpack-deps:stretch
     steps:
       - checkout
       - setup_remote_docker
