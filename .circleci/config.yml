@@ -87,4 +87,4 @@ workflows:
                 - master
                 - staging
                 - develop
-                - circle-2.0
+                - circle2
