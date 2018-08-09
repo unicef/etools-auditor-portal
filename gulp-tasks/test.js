@@ -23,12 +23,27 @@ module.exports = function testElements(done) {
 
         let tests;
         if (argv.noxvfb) {
-            tests = spawn('node', ['./node_modules/.bin/wct', '--skip-selenium-install', `./build/tests/${indexFileName}`], { stdio: 'inherit' });
+            tests = spawn('node', ['./node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
         } else {
-            tests = spawn('xvfb-run', ['-a', './node_modules/.bin/wct', '--skip-selenium-install', `./build/tests/${indexFileName}`], { stdio: 'inherit' });
+            tests = spawn('xvfb-run', ['-a', './node_modules/.bin/wct', `./build/tests/${indexFileName}`]);
         }
 
         console.log(`\x1b[32mRunning ${indexFileName}.\x1b[0m`);
+
+        tests.stdout.on('data', (data) => {
+            if (~data.indexOf('✖') || ~data.indexOf('Tests failed')) {
+                data = `\x1b[31m${data}\x1b[0m`;
+                withErrors = true;
+            } else if (~data.indexOf('ended with great success') || data.indexOf('404') === 0) {
+                return;
+            }
+            console.log(`${data}`);
+        });
+
+        tests.stderr.on('data', (data) => {
+            console.log(`\x1b[31m${data}\x1b[0m`);
+            withErrors = true;
+        });
 
         tests.on('close', () => {
             runTests(files);
