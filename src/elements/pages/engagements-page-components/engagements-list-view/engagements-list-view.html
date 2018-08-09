@@ -25,7 +25,7 @@
                 list-length="{{listLength}}"
                 request-queries="[[requestQueries]]"
                 without-pagination="[[withoutPagination]]"
-                static-param="[[staticParam]]">
+                endpoint-name="[[endpointName]]">
         </engagements-list-data>
 
         <pages-header-element
@@ -34,7 +34,7 @@
                 export-links="[[_setExportLinks()]]"
                 link="{{newBtnLink}}"
                 show-add-button="{{_showAddButton(hideAddButton)}}"
-                btn-text="Add New Engagement"
+                btn-text="{{addBtnText}}"
                 page-title="Engagements">
         </pages-header-element>
 

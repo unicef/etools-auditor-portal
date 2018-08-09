@@ -17,6 +17,7 @@
         </app-route>
 
         <add-new-engagement
+                endpoint-name="[[endpointName]]"
                 new-engagement-data="{{newEngagementData}}"
                 error-object="{{errorObject}}">
         </add-new-engagement>
@@ -32,7 +33,7 @@
 
         <pages-header-element
                 hide-print-button
-                page-title="Add New Engagement"
+                page-title="[[pageTitle]]"
                 engagement="[[engagement]]">
         </pages-header-element>
 
@@ -54,14 +55,15 @@
                                 error-object="{{errorObject}}"
                                 data="{{engagement}}"
                                 id="engagementDetails"
-                                base-permission-path="new_engagement">
+                                base-permission-path="[[basePermissionPath]]"
+                                is-staff-sc="[[isStaffSc]]">
                         </engagement-info-details>
 
                         <partner-details-tab
                                 id="partnerDetails"
                                 error-object="{{errorObject}}"
                                 engagement="{{engagement}}"
-                                base-permission-path="new_engagement">
+                                base-permission-path="[[basePermissionPath]]">
                         </partner-details-tab>
 
                         <template is="dom-if" if="[[isSpecialAudit(engagement.engagement_type)]]" restamp>
@@ -72,7 +74,7 @@
                                     error-object="{{errorObject}}"
                                     save-with-button
                                     data-items="{{engagement.specific_procedures}}"
-                                    base-permission-path="new_engagement">
+                                    base-permission-path="[[basePermissionPath]]">
                             </specific-procedure>
                         </template>
 
@@ -81,14 +83,14 @@
                                 error-object="{{errorObject}}"
                                 save-with-button
                                 engagement="[[engagement]]"
-                                base-permission-path="new_engagement">
+                                base-permission-path="[[basePermissionPath]]">
                         </engagement-staff-members-tab>
                     </div>
 
                     <div name="attachments">
                         <file-attachments-tab
                                 id="engagement_attachments"
-                                data-base-path="new_engagement"
+                                data-base-path="[[basePermissionPath]]"
                                 error-property="engagement_attachments"
                                 path-postfix="attachments">
                         </file-attachments-tab>

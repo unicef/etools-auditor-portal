@@ -1,6 +1,6 @@
 <!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel, paper-tooltip]-->
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
-            common-methods-behavior, get-attachments, update-attachments]-->
+            common-methods-behavior, get-attachments, update-attachments, error-handler-behavior]-->
 
 <dom-module id="file-attachments-tab">
     <template>
@@ -107,56 +107,54 @@
                         </div>
                     </template>
 
-                    <template is="dom-if" if="[[addDialog]]">
-                        <div class="row-h group">
-                            <div class="input-container input-container-ms">
-                                <template is="dom-if" if="[[!editedItem.file_name]]">
-                                    <!-- File Upload -->
-                                    <paper-input-container
-                                            class="validate-input"
-                                            always-float-label
-                                            disabled$="[[requestInProcess]]"
-                                            readonly$="[[requestInProcess]]"
-                                            invalid="{{errors.file}}">
-                                        <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
+                    <div class="row-h group">
+                        <div class="input-container input-container-ms">
+                            <template is="dom-if" if="[[!editedItem.filename]]">
+                                <!-- File Upload -->
+                                <paper-input-container
+                                        class="validate-input"
+                                        always-float-label
+                                        disabled$="[[requestInProcess]]"
+                                        readonly$="[[requestInProcess]]"
+                                        invalid="{{errors.file}}">
+                                    <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
 
-                                        <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
-                                            <iron-icon icon="file-upload"></iron-icon>
-                                            [[uploadLabel]]
-                                        </paper-button>
+                                    <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
+                                        <iron-icon icon="file-upload"></iron-icon>
+                                        [[uploadLabel]]
+                                    </paper-button>
 
-                                        <template is="dom-if" if="[[errors.file]]">
-                                            <paper-input-error aria-live="assertive">[[errors.file]]</paper-input-error>
-                                        </template>
+                                    <template is="dom-if" if="[[errors.file]]">
+                                        <paper-input-error aria-live="assertive">[[errors.file]]</paper-input-error>
+                                    </template>
 
-                                        <input id="fileInput"
-                                               class="validate-input"
-                                               type="file"
-                                               hidden
-                                               required
-                                               disabled$="[[requestInProcess]]"
-                                               readonly$="[[requestInProcess]]"
-                                               on-change="_fileSelected">
-                                    </paper-input-container>
-                                </template>
+                                    <input id="fileInput"
+                                           class="validate-input"
+                                           type="file"
+                                           hidden
+                                           required
+                                           disabled$="[[requestInProcess]]"
+                                           readonly$="[[requestInProcess]]"
+                                           on-change="_fileSelected">
+                                </paper-input-container>
+                            </template>
 
-                                <template is="dom-if" if="[[editedItem.file_name]]">
-                                    <paper-input
-                                            class="disabled-as-readonly validate-input"
-                                            value="{{editedItem.file_name}}"
-                                            label="[[uploadLabel]]"
-                                            required
-                                            disabled$="[[requestInProcess]]"
-                                            readonly
-                                            invalid="{{errors.file}}"
-                                            error-message="{{errors.file}}"
-                                            on-tap="_openFileChooser">
-                                        <iron-icon prefix icon="icons:attachment"></iron-icon>
-                                    </paper-input>
-                                </template>
-                            </div>
+                            <template is="dom-if" if="[[editedItem.filename]]">
+                                <paper-input
+                                        class="disabled-as-readonly validate-input"
+                                        value="{{editedItem.filename}}"
+                                        label="[[uploadLabel]]"
+                                        required
+                                        disabled$="[[requestInProcess]]"
+                                        readonly
+                                        invalid="{{_checkInvalid(errors.file)}}"
+                                        error-message="{{errors.file}}"
+                                        on-tap="_openFileChooser">
+                                    <iron-icon prefix icon="icons:attachment"></iron-icon>
+                                </paper-input>
+                            </template>
                         </div>
-                    </template>
+                    </div>
                 </div>
             </div>
         </dialog-element>

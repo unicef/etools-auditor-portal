@@ -21,24 +21,44 @@ Polymer({
             type: Object,
             value: function() {
                 return {
-                    assigned_to: undefined,
+                    assigned_to: '',
                     due_date: undefined,
                     description: '',
                     high_priority: false
                 };
             }
         },
+        modelFields: {
+            type: Array,
+            value: () => ['assigned_to', 'category', 'description', 'section', 'office', 'due_date',
+                'high_priority', 'intervention']
+        },
         columns: {
             type: Array,
             value: () => [
                 {
-                    'size': 10,
+                    'size': 18,
                     'label': 'Reference Number #',
                     'name': 'reference_number',
                     'link': '*ap_link*',
-                    'ordered': false,
+                    'ordered': 'desc',
                     'path': 'reference_number',
-                    'target': '_blank'
+                    'target': '_blank',
+                    'class': 'with-icon',
+                    'orderBy': 'id'
+                }, {
+                    'size': 32,
+                    'label': 'Action Point Category',
+                    'labelPath': 'category',
+                    'path': 'ap_category.display_name',
+                    'name': 'category'
+                }, {
+                    'size': 20,
+                    'label': 'Assignee (Section / Office)',
+                    'htmlLabel': 'Assignee<br/>(Section / Office)',
+                    'path': 'computed_field',
+                    'html': true,
+                    'class': 'no-order'
                 }, {
                     'size': 10,
                     'label': 'Status',
@@ -46,58 +66,40 @@ Polymer({
                     'align': 'center',
                     'property': 'status',
                     'path': 'status',
-                    'class': 'caps'
+                    'class': 'caps',
+                    'name': 'status'
                 }, {
                     'size': 10,
-                    'label': 'High Priority',
-                    'labelPath': 'high_priority',
-                    'path': 'high_priority',
-                    'align': 'center',
-                    'checkbox': true
-                }, {
-                    'size': 20,
                     'label': 'Due Date',
                     'labelPath': 'due_date',
                     'path': 'due_date',
                     'name': 'date',
                     'align': 'center'
                 }, {
-                    'size': 20,
-                    'label': 'Person Responsible',
-                    'labelPath': 'assigned_to',
-                    'path': 'assigned_to.name'
-                }, {
-                    'size': 15,
-                    'label': 'Office',
-                    'labelPath': 'office',
-                    'path': 'office.name'
-                }, {
-                    'size': 15,
-                    'label': 'Section',
-                    'labelPath': 'section',
-                    'path': 'section.name'
+                    'size': 10,
+                    'label': 'Priority',
+                    'labelPath': 'high_priority',
+                    'path': 'priority',
+                    'align': 'center',
+                    'name': 'high_priority'
                 }
             ]
         },
-        details: {
-            type: Array,
-            value: () => [{
-                    'label': 'Description',
-                    'labelPath': 'description',
-                    'path': 'description'
-                }]
-        },
         addDialogTexts: {
             type: Object,
-            value: () => ({title: 'Add New Action'})
+            value: () => ({title: 'Add Action Point', confirmBtn: 'Save'})
         },
         editDialogTexts: {
             type: Object,
-            value: () => ({title: 'Edit Follow-Up Action'})
+            value: () => ({title: 'Edit Action Point'})
+        },
+        copyDialogTexts: {
+            type: Object,
+            value: () => ({title: 'Duplicate Action Point'})
         },
         viewDialogTexts: {
             type: Object,
-            value: () => ({title: 'View Follow-Up Action'})
+            value: () => ({title: 'View Action Point'})
         },
         users: {
             type: Array,
@@ -110,6 +112,15 @@ Polymer({
         offices: {
             type: Array,
             value: () => []
+        },
+        orderBy: {
+            type: String,
+            value: '-reference_number'
+        },
+        notTouched: {
+            type: Boolean,
+            value: false,
+            computed: '_checkNotTouched(copyDialog, editedItem.*)'
         }
     },
 
@@ -120,11 +131,14 @@ Polymer({
     },
 
     observers: [
-        'resetDialog(dialogOpened)',
+        '_resetDialog(dialogOpened)',
         '_errorHandler(errorObject)',
         '_checkNonField(errorObject)',
         'setPermissionPath(baseEngagementPath)',
-        'updateStyles(editedApBase)'
+        'updateStyles(editedApBase)',
+        '_addComputedField(dataItems.*)',
+        '_orderChanged(orderBy, columns, dataItems.*)',
+        '_requestPartner(partnerData, selectedPartnerId, partners)'
     ],
 
     attached: function() {
@@ -132,14 +146,66 @@ Polymer({
         this.set('users', this.getData('users') || []);
         this.set('offices', this.getData('offices') || []);
         this.set('sections', this.getData('sections') || []);
+        this.set('partners', this.getData('partners') || []);
 
         if (!this.collectionExists('edited_ap_options')) {
             this._addToCollection('edited_ap_options', {});
         }
     },
 
+    _requestPartner: function(partner) {
+        let id = partner && +partner.id || null;
+        this.partnerId = id;
+        this.selectedPartnerId = id;
+    },
+
+    _resetDialog: function(dialogOpened) {
+        if (dialogOpened) { return; }
+        this.copyDialog = false;
+        this.originalEditedObj = {};
+        this.resetDialog(dialogOpened);
+    },
+
+    _orderChanged: function(newOrder, columns) {
+        if (!newOrder || !(columns instanceof Array)) { return false; }
+
+        let direction = 'asc';
+        let name = newOrder;
+        let orderBy;
+
+        if (name.startsWith('-')) {
+            direction = 'desc';
+            name = name.slice(1);
+        }
+
+        columns.forEach((column, index) => {
+            if (column.name === name) {
+                this.set(`columns.${index}.ordered`, direction);
+                orderBy = column.orderBy || name;
+            } else {
+                this.set(`columns.${index}.ordered`, false);
+            }
+        });
+
+        let sorted = _.sortBy(this.dataItems, (item) => item[orderBy]);
+        this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
+    },
+
+    _addComputedField: function() {
+        this.itemsToDisplay = this.dataItems.map((item) => {
+            item.priority = item.high_priority && 'High' || ' ';
+            let assignedTo = _.get(item, 'assigned_to.name', '--'),
+                section = _.get(item, 'section.name', '--'),
+                office = _.get(item, 'office.name', '--');
+            item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
+            item.ap_category = _.find(this.categories, (category) => category.value === item.category);
+            return item;
+        });
+    },
+
     setPermissionPath: function(basePath) {
         this.basePermissionPath = basePath ? `${basePath}_ap` : '';
+        this.set('categories', this.getChoices(`${this.basePermissionPath}.category`) || []);
         this.canBeChanged = !this.isReadonly(`${this.basePermissionPath}.POST`);
     },
 
@@ -154,16 +220,18 @@ Polymer({
 
     getActionsData: function() {
         if (!this.dialogOpened) { return null; }
+        if (this.copyDialog) { this.originalEditedObj = {}; }
         let data = _.pickBy(this.editedItem, (value, fieldName) => {
+            if (!~this.modelFields.indexOf(fieldName)) { return false; }
             let isObject = _.isObject(value) && !_.isArray(value);
             if (isObject) {
-                return value.id !== _.get(this, `originalEditedObj.${fieldName}.id`);
+                return +value.id !== +_.get(this, `originalEditedObj.${fieldName}.id`, 0);
             } else {
                 return !_.isEqual(value, this.originalEditedObj[fieldName]);
             }
         });
 
-        _.each(['assigned_to', 'office', 'section'], (field) => {
+        _.each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
             if (data[field]) { data[field] = data[field].id; }
         });
 
@@ -173,7 +241,7 @@ Polymer({
     },
 
     _addActionPoint: function() {
-        if (!this.validate()) { return; }
+        if (!this.validate() || this.notTouched) { return; }
         this.requestInProcess = true;
         let apData = this.getActionsData();
         if (apData) {
@@ -185,13 +253,6 @@ Polymer({
     },
 
     _requestCompleted: function(event, detail) {
-        if (this.completeAPAfterRequest) {
-            this.completeAPAfterRequest = false;
-            this.originalEditedObj = _.clone(this.editedItem);
-            this.completeAP();
-            return;
-        }
-
         this.requestInProcess = false;
         if (detail && detail.success) {
             this.dialogOpened = false;
@@ -222,6 +283,32 @@ Polymer({
         this.apOptionUrl = url;
     },
 
+    _openCopyDialog: function(event) {
+        this.dialogTitle = (this.copyDialogTexts && this.copyDialogTexts.title) || 'Add New Item';
+        this.confirmBtnText = 'Save';
+        this.cancelBtnText = 'Cancel';
+        let index = this._getIndex(event),
+            data = _.omit(this.dataItems[index], ['id']);
+        this.editedItem = data;
+        this.originalEditedObj = _.cloneDeep(data);
+        this.editedApBase = this.basePermissionPath;
+
+        this.copyDialog = true;
+        this.dialogOpened = true;
+    },
+
+    _checkNotTouched: function(copyDialog) {
+        if (!copyDialog || _.isEmpty(this.originalEditedObj)) { return false; }
+        return _.every(this.originalEditedObj, (value, key) => {
+            let isObject = _.isObject(value);
+            if (isObject) {
+                return !value.id || +value.id === +_.get(this, `editedItem.${key}.id`);
+            } else {
+                return value === this.editedItem[key];
+            }
+        });
+    },
+
     _handleOptionResponse: function(event, detail) {
         this.fire('global-loading', {type: 'get-ap-options'});
         this.apOptionUrl = null;
@@ -241,24 +328,6 @@ Polymer({
             this.cancelBtnText = 'Cancel';
             this._openDialog(itemIndex);
         }
-    },
-
-    completeAP: function() {
-        if (!this.validate()) { return; }
-        let data = this.getActionsData();
-
-        if (data) {
-            this.completeAPAfterRequest = true;
-            this._addActionPoint();
-            return;
-        }
-
-        this.requestInProcess = true;
-        this.requestData = {
-            apData: {id: this.editedItem.id},
-            complete: true,
-            method: 'POST'
-        };
     },
 
     canBeEdited: function(status) {

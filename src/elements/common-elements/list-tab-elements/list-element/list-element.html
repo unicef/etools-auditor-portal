@@ -32,7 +32,7 @@
                            href$="[[_getLink(item.link, data)]]" target="[[item.target]]">
                             <span class="truncate">
                                 <template is="dom-if" if="[[_getValue(item, data)]]">
-                                    [[_getValue(item, data)]]
+                                    [[_getValue(item, data)]] <iron-icon icon="icons:launch"></iron-icon>
                                     <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                                 </template>
 

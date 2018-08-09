@@ -99,6 +99,10 @@ Polymer({
             type: Boolean,
             value: false,
             computed: '_showJoinAudit(showInput, showAdditionalInput)'
+        },
+        isStaffSc: {
+            type: Boolean,
+            value: false
         }
     },
 
@@ -264,13 +268,15 @@ Polymer({
 
     getEngagementData: function() {
         let data = {};
+        let agreementId = _.get(this, 'data.agreement.id'),
+            originalAgreementId = _.get(this, 'originalData.agreement.id');
 
         if (this.originalData.start_date !== this.data.start_date) { data.start_date = this.data.start_date; }
         if (this.originalData.end_date !== this.data.end_date) { data.end_date = this.data.end_date; }
         if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) { data.partner_contacted_at = this.data.partner_contacted_at; }
-        if (!this.originalData.agreement || this.originalData.agreement.id !== this.data.agreement.id) { data.agreement = this.data.agreement.id; }
+        if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) { data.agreement = this.data.agreement.id; }
         if (this.originalData.total_value !== this.data.total_value) { data.total_value = this.data.total_value; }
-        if (this.originalData.engagement_type !== this.data.engagement_type.value) { data.engagement_type = this.data.engagement_type.value; }
+        if (this.originalData.engagement_type !== this.data.engagement_type.value && !this.isStaffSc) { data.engagement_type = this.data.engagement_type.value; }
         if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) { data.po_item = this.data.po_item.id; }
         if (this.originalData.joint_audit !== this.data.joint_audit) { data.joint_audit = this.data.joint_audit; }
 
@@ -371,8 +377,23 @@ Polymer({
 
         return poItems;
     },
+
     _isDataAgreementReaonly: function(field, basePermissionPath, agreement) {
         return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
+    },
+
+    _hideField: function(fieldName, basePermissionPath) {
+        if (!fieldName || !basePermissionPath) { return false; }
+        let path = `${basePermissionPath}.${fieldName}`;
+        let collectionNotExists = !this.collectionExists(path, 'POST') &&
+            !this.collectionExists(path, 'PUT') &&
+            !this.collectionExists(path, 'GET');
+
+        return collectionNotExists;
+    },
+
+    _hideForSc: function(isStaffSc) {
+        return isStaffSc ;
     }
 
 });

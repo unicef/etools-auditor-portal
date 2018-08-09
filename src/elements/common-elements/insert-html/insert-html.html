@@ -20,7 +20,7 @@
                 },
 
                 _htmlChanged: function (html) {
-                    Polymer.dom(this.root).innerHTML = html;
+                    Polymer.dom(this.root).innerHTML = html || '--';
                 }
             });
         })();

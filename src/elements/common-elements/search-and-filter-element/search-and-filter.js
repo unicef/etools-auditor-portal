@@ -46,9 +46,11 @@
             if ((!this.previousSearchValue && !value) || value === this.previousSearchValue) { return; }
             this.previousSearchValue = value;
 
+
             this.debounce('searchKeyDown', () => {
                 if (this.searchString.length !== 1) {
-                    this.updateQueries({search: this.searchString || undefined, page: '1'});
+                    let query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
+                    this.updateQueries({search: query, page: '1'});
                 }
             }, 300);
         },

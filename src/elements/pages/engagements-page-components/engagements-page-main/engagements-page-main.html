@@ -29,6 +29,7 @@
                     query-params="{{queryParams}}"
                     has-collapse
                     request-queries="[[partnersListQueries]]"
+                    endpoint-name="{{endpointName}}"
                     base-permission-path="new_engagement">
             </engagements-list-view>
 
@@ -37,9 +38,13 @@
                         name="new"
                         id="creationPage"
                         page="{{routeData.view}}"
+                        query-params="{{queryParams}}"
                         route="{{subroute}}"
                         request-queries="{{partnersListQueries}}"
-                        partner="{{partnerDetails}}">
+                        base-permission-path="new_engagement"
+                        partner="{{partnerDetails}}"
+                        endpoint-name="{{endpointName}}"
+                        page-title="Add New Engagement">
                 </new-engagement-view>
             </template>
         </iron-pages>

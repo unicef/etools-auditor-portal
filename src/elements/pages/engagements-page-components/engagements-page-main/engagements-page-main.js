@@ -17,6 +17,10 @@ Polymer({
         initiation: {
             type: Number,
             value: 0
+        },
+        endpointName: {
+            type: String,
+            value: 'engagementsList'
         }
     },
 

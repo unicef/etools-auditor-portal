@@ -56,6 +56,15 @@
                 color: initial;
                 pointer-events: none;
             }
+
+            iron-icon {
+                display:none;
+                width: 16px;
+                color: var(--module-primary);
+            }
+            &.with-icon iron-icon {
+                display: inline-flex;
+            }
         }
 
         .hover-icons-block {
