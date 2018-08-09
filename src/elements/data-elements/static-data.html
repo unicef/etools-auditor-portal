@@ -262,6 +262,7 @@
 
                     if (actions) {
                         this._addToCollection(`new_engagement_attachments`, actions || {}, name);
+                        this._addToCollection(`new_staff_sc_attachments`, actions || {}, name);
                     } else {
                         this._responseError('Engagement Attachments Permissions', data && data.type);
                     }
