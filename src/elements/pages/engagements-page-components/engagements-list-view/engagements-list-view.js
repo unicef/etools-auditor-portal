@@ -125,7 +125,8 @@
             isStaffSc: {
                 type: Boolean,
                 value: false
-            }
+            },
+            endpointName: String
         },
 
         observers: ['_changeLinkTemplate(isStaffSc, listHeadings)'],
@@ -183,10 +184,12 @@
         },
 
         _setExportLinks: function() {
-            return [{
-                name: 'Export Engagements',
-                url: this.getEndpoint('engagementsList').url + '?format=csv&page_size=all'
-            }];
+            const endpoint = this.getEndpoint(this.endpointName);
+            return endpoint ? [{
+                    name: 'Export Engagements',
+                    url: endpoint.url + '?format=csv&page_size=all'
+                }] :
+                [];
         },
 
         _changeLinkTemplate: function(isStaffSc, headings) {
