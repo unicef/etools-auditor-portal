@@ -185,7 +185,7 @@
         _setExportLinks: function() {
             return [{
                 name: 'Export Engagements',
-                url: this.getEndpoint('engagementsList').url + '?format=csv&page_size=all'
+                url: `${this.getEndpoint('engagementsList').url}csv/`
             }];
         },
 
