@@ -187,7 +187,7 @@
             const endpoint = this.getEndpoint(this.endpointName);
             return endpoint ? [{
                     name: 'Export Engagements',
-                    url: endpoint.url + '?format=csv&page_size=all'
+                    url: `${this.getEndpoint('engagementsList').url}csv/`
                 }] :
                 [];
         },
