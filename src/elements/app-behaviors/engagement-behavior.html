@@ -252,7 +252,7 @@
             if (!engagement || !engagement.engagement_type || !engagement.id) { return ''; }
             let type = this.getType(engagement.engagement_type) || 'engagements',
                 pdfLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
-                csvLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + '?format=csv';
+                csvLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
             return [{
                 name: 'Export PDF',
