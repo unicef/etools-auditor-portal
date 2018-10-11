@@ -1,5 +1,5 @@
 <!--import [polymer, etools-ajax, lodash]-->
-<!--import [etools-app-config, permission-controller]-->
+<!--import [etools-app-config, permission-controller, user-controller]-->
 
 <dom-module id="get-staff-members-list">
     <template>
@@ -24,7 +24,8 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
-                APBehaviors.PermissionController
+                APBehaviors.PermissionController,
+                APBehaviors.UserController,
             ],
 
             properties: {
@@ -66,7 +67,7 @@
 
             _startRequest: function(organisationId, listQueries) {
                 if (!organisationId || !listQueries) { return; }
-
+                
                 this.listLoading = true;
                 let queriesString = this._prepareQueries(listQueries);
                 this.requestsCompleted = {};
@@ -86,7 +87,8 @@
                     }
 
                 });
-                return `?ordering=-id&${queries.join('&')}`;
+                const {profile} = this.getUserData();
+                return `?ordering=-id&user__profile__country__name=${profile.country_name}&${queries.join('&')}`;
             },
 
             _handleDataResponse: function(data) {
