@@ -21,6 +21,10 @@
 <script>
     describe('<engagement-staff-members-tab>', function () {
         var myEl, server;
+        var user = {
+            id: 120,
+            groups: [{id: 1, name: 'Test Group'}]
+        };
 
         before(function() {
             server = sinon.fakeServer.create();
@@ -29,6 +33,7 @@
 
         beforeEach(function () {
             myEl = fixture('element-fixture');
+            myEl._setUserData(user);
         });
 
         after(function() {
