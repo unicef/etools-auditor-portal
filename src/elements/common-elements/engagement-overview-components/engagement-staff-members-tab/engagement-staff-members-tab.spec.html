@@ -33,7 +33,10 @@
 
         beforeEach(function () {
             myEl = fixture('element-fixture');
-            myEl._setUserData(user);
+            if (!myEl.getUserData()) {
+                myEl._setUserData(user);
+            }
+
         });
 
         after(function() {
