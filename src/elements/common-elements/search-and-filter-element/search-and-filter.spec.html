@@ -194,14 +194,16 @@
                 let filterId = filter.query;
                 let e = {currentTarget: {id: filterId}};
                 let filterValue = myEl.filters[2].selection[filter.optionValue];
-                let detail = {selectedValues: {}};
+                let detail = {selectedValues: []};
                 let args = {page: '1'};
 
-                detail.selectedValues[filter.optionValue] = filterValue;
-                args[filterId] = filterValue;
-
+                detail.selectedValues.push({value: filterValue});
+                args[filterId] = detail.selectedValues.
+                    map(val => val[filter.optionValue]).
+                    join(',');
+      
                 assert.isFalse(spy.called);
-
+                
                 myEl._changeFilterValue(e, detail);
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy.calledWithMatch(args));
