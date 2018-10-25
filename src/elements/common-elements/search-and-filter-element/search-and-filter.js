@@ -193,7 +193,7 @@
                 queryObject[query] = detail.selectedValues.
                     map(val => val[optionValue]).
                     join(',');
-
+                debugger
                 this.updateQueries(queryObject);
             }
         },
