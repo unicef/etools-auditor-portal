@@ -23,14 +23,14 @@
         let filters = [
             {
                 name: 'auditor',
-                query: 'agreement__auditor_firm',
+                query: 'agreement__auditor_firm__in',
                 optionValue: 'id',
                 optionLabel: 'name',
                 selection: []
             },
             {
                 name: 'engagement type',
-                query: 'engagement_type',
+                query: 'engagement_type__in',
                 hideSearch: true,
                 optionValue: 'value',
                 optionLabel: 'label',
@@ -47,14 +47,14 @@
             },
             {
                 name: 'partner',
-                query: 'partner',
+                query: 'partner__in',
                 optionValue: 'id',
                 optionLabel: 'name',
                 selection: []
             },
             {
                 name: 'status',
-                query: 'status',
+                query: 'status__in',
                 hideSearch: true,
                 optionValue: 'value',
                 optionLabel: 'label',

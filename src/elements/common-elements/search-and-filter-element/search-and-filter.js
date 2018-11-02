@@ -134,7 +134,7 @@
         },
 
         _getFilterIndex: function(query) {
-            if (!this.filters) { return -1; }
+            if (_.isEmpty(this.filters)) { return -1; }
 
             return this.filters.findIndex((filter) => {
                 return filter.query === query;
