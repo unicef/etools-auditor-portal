@@ -162,10 +162,17 @@
             let splitValues = filterValue.split(',');
             let optionValue = filter.optionValue;
 
-            // return filter.selection.find((selectionItem) => {
-            //     return selectionItem[optionValue].toString() === filterValue;
-            // });
-            return filter.selection.filter(selectionItem => splitValues.includes(selectionItem[optionValue]));
+            const exists = filter.selection.find((selectionItem) => filterValue.indexOf(selectionItem[optionValue].toString()) !== -1);
+            
+            if (!exists) {
+                return;
+            }
+
+            return filter.selection.filter(selectionItem => {
+                let filVal = selectionItem[optionValue].toString();
+                return splitValues.includes(filVal);
+            });
+         
         },
 
         _getFilter: function(query) {

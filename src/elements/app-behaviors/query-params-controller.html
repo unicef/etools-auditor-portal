@@ -41,12 +41,14 @@
             if (!keys.length) { return false; }
 
             path = path && _.isString(path) ? path : this.getPath();
+            
             let queries = this.parseQueries();
 
             keys.forEach((key) => {
                 if (newQueries[key] === undefined || newQueries[key] === false) delete queries[key];
                 else queries[key] = newQueries[key];
             });
+            
 
             queries = Object.keys(queries).map((key) => {
                 let value = typeof queries[key] ===  'boolean' ? '' : 
