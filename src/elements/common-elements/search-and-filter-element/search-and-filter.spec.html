@@ -170,7 +170,7 @@
                 let selectionItem = _.clone(filter.selection[0]);
                 let filterValue = selectionItem[filter.optionValue];
 
-                assert.deepEqual(myEl._getFilterValue(filterValue, filter), selectionItem);
+                assert.deepEqual(myEl._getFilterValue(filterValue, filter)[0], selectionItem);
             });
         });
 
