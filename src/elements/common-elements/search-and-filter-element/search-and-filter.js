@@ -54,7 +54,7 @@
             }, 300);
         },
 
-        _isSelected: function(filter, _) {
+        _isSelected: function(filter) {
             const query = typeof filter === 'string' ? filter : filter.query;
             return this.usedFilters.findIndex(usedFilter => usedFilter.query === query) !== -1;
         },
@@ -193,7 +193,7 @@
             }
 
             let query = e.currentTarget.id;
-            let queryObject = { page: '1' };
+            let queryObject = {page: '1'};
 
             if (detail.selectedValues && query) {
                 let filter = this._getFilter(query);
