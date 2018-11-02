@@ -124,9 +124,8 @@
             });
         });
 
-        describe('method _setFilterValue(filter)', function () {
+        dedescribe('method _setFilterValue(filter)', function () {
             it('restores previous selected filter value from queryParams', function () {
-                it('restores previous selected filter value from queryParams', function () {
                 let spy = sinon.spy(myEl, '_getFilterValue');
                 let filter = myEl.filters[2];
                 let query = filter.query;
@@ -141,8 +140,6 @@
                 assert.deepEqual(filter.selectedValues[0], _.clone(filter.selection[0]));
                 assert.isTrue(spy.calledOnce);
                 assert.isTrue(spy.calledWithMatch(filterValue, filter));
-            });
-
             });
 
             it('sets filter value to undefined when queryParams value is undefined', function () {
