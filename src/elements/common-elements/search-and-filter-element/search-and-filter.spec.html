@@ -124,7 +124,7 @@
             });
         });
 
-        dedescribe('method _setFilterValue(filter)', function () {
+        describe('method _setFilterValue(filter)', function () {
             it('restores previous selected filter value from queryParams', function () {
                 let spy = sinon.spy(myEl, '_getFilterValue');
                 let filter = myEl.filters[2];
