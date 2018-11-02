@@ -180,7 +180,7 @@
             });
             
             it('should set filter selection data by filterIndex', function () {
-                let auditorsFilterIndex = myEl._getFilterIndex('agreement__auditor_firm');
+                let auditorsFilterIndex = myEl._getFilterIndex('agreement__auditor_firm__in');
                 let auditors = [{}, {}];
                 myEl.filters[auditorsFilterIndex].selection = null;
 
