@@ -64,14 +64,14 @@
                 value: [
                     {
                         name: 'auditor',
-                        query: 'agreement__auditor_firm',
+                        query: 'agreement__auditor_firm__in',
                         optionValue: 'id',
                         optionLabel: 'name',
                         selection: []
                     },
                     {
                         name: 'engagement type',
-                        query: 'engagement_type',
+                        query: 'engagement_type__in',
                         hideSearch: true,
                         optionValue: 'value',
                         optionLabel: 'display_name',
@@ -79,14 +79,14 @@
                     },
                     {
                         name: 'partner',
-                        query: 'partner',
+                        query: 'partner__in',
                         optionValue: 'id',
                         optionLabel: 'name',
                         selection: []
                     },
                     {
                         name: 'status',
-                        query: 'status',
+                        query: 'status__in',
                         hideSearch: true,
                         optionValue: 'value',
                         optionLabel: 'display_name',
@@ -94,7 +94,7 @@
                     },
                     {
                         name: 'joint audit',
-                        query: 'joint_audit',
+                        query: 'joint_audit__in',
                         hideSearch: true,
                         optionValue: 'value',
                         optionLabel: 'display_name',
@@ -162,11 +162,11 @@
 
         setFiltersSelections: function() {
             let queryAndKeyPairs = [
-                {query: 'partner', dataKey: 'filterPartners'},
-                {query: 'agreement__auditor_firm', dataKey: 'filterAuditors'},
-                {query: 'status', dataKey: 'statuses'},
-                {query: 'engagement_type', dataKey: 'engagementTypes'},
-                {query: 'staff_members__user', dataKey: 'staffMembersUsers'}
+                {query: 'partner__in', dataKey: 'filterPartners'},
+                {query: 'agreement__auditor_firm__in', dataKey: 'filterAuditors'},
+                {query: 'status__in', dataKey: 'statuses'},
+                {query: 'engagement_type__in', dataKey: 'engagementTypes'},
+                {query: 'staff_members__user__in', dataKey: 'staffMembersUsers'}
             ];
 
             queryAndKeyPairs.forEach((pair) => {

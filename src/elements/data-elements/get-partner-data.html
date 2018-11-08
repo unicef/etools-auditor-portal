@@ -105,7 +105,7 @@
 
                 let partner = this.getData(`partner_${partnerId}`);
                 if (partner) {
-                    this._handleResponse({detail: partner});
+                    this._handleResponse({detail: partner}, partner);
                 } else {
                     this.url = this.getEndpoint('partnerInfo', {id: partnerId}).url;
                 }
