@@ -33,6 +33,7 @@
             if (~path.indexOf('/ap')) { path = path.slice(3) }
             return path.slice(1);
         },
+        
         updateQueries: function (newQueries, path, noNotify) {
             if (!_.isObject(newQueries)) { return false; }
             let keys = Object.keys(newQueries);
@@ -40,15 +41,18 @@
             if (!keys.length) { return false; }
 
             path = path && _.isString(path) ? path : this.getPath();
+            
             let queries = this.parseQueries();
 
             keys.forEach((key) => {
                 if (newQueries[key] === undefined || newQueries[key] === false) delete queries[key];
                 else queries[key] = newQueries[key];
             });
+            
 
             queries = Object.keys(queries).map((key) => {
-                let value = typeof queries[key] ===  'boolean' ? '' : `=${queries[key]}`;
+                let value = typeof queries[key] ===  'boolean' ? '' : 
+                Boolean(queries[key]) ? `=${queries[key]}` : '';
                 return `${key}${value}`;
             });
 

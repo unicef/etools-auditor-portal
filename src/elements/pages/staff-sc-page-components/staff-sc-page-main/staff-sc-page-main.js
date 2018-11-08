@@ -24,14 +24,14 @@ Polymer({
             value: [
                 {
                     name: 'partner',
-                    query: 'partner',
+                    query: 'partner__in',
                     optionValue: 'id',
                     optionLabel: 'name',
                     selection: []
                 },
                 {
                     name: 'status',
-                    query: 'status',
+                    query: 'status__in',
                     hideSearch: true,
                     optionValue: 'value',
                     optionLabel: 'display_name',
@@ -39,7 +39,7 @@ Polymer({
                 },
                 {
                     name: 'unicef user',
-                    query: 'staff_members__user',
+                    query: 'staff_members__user__in',
                     optionValue: 'id',
                     optionLabel: 'full_name',
                     selection: []

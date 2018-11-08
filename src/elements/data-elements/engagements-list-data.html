@@ -61,9 +61,7 @@
 
             getEngagementsList: function() {
                 let reloadRequired = this.reloadRequired() || this.requestQueries.reload;
-
                 this.lastState = _.cloneDeep(this.requestQueries);
-
                 if (!reloadRequired || !this.endpointName) {
                     //not reload the page
                     return;
@@ -101,7 +99,7 @@
                 let filtersChanged = !filtersKeys.every((key) => {
                     let lastValue = this.lastState[key];
                     let newValue = this.requestQueries[key];
-                    return lastValue === newValue || newValue === true || (lastValue === true && newValue === undefined);
+                    return lastValue === newValue || (lastValue === true && newValue === undefined);
                 });
 
                 return otherQueriesChanged || filtersChanged;
