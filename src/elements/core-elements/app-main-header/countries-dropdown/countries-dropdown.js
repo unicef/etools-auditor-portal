@@ -4,7 +4,8 @@ Polymer({
 
     behaviors: [
         etoolsAppConfig.globals,
-        etoolsBehaviors.EtoolsRefreshBehavior
+        etoolsBehaviors.EtoolsRefreshBehavior,
+        EtoolsAjaxRequestBehavior
     ],
 
     properties: {
@@ -58,7 +59,19 @@ Polymer({
 
         this.fire('global-loading', {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
         this.countryData = {country: id};
-        this.url = this.getEndpoint('changeCountry').url;
+
+        this._sendChangeCountryRequest();
+    },
+
+    _sendChangeCountryRequest() {
+        const options = {
+            method: 'POST',
+            body: this.countryData,
+            endpoint: this.getEndpoint('changeCountry')
+        };
+        this.sendRequest(options)
+            .then(this._handleResponse.bind(this))
+            .catch(this._handleError.bind(this))
     },
 
     _handleError: function() {
