@@ -1,15 +1,8 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config]-->
 
 <dom-module id="update-staff-members">
     <template>
-        <etools-ajax
-                method="{{method}}"
-                url="{{url}}"
-                body="{{postData}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
     </template>
 
     <script>
@@ -17,7 +10,8 @@
             is: 'update-staff-members',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -28,7 +22,7 @@
                     observer: '_dataChanged'
                 }
             },
-
+   
             _dataChanged: function(data) {
                 if (!data) { return; }
                 if (!this.organisationId) { throw 'Organisation id is not provided!'; }
@@ -36,13 +30,24 @@
 
                 this.lastRequestData = _.cloneDeep(data);
 
-                this.method = data.method;
-                this.url = this.getEndpoint('staffMembers', {id: this.organisationId}).url + data.id;
-                this.postData = data.data;
+                // this.method = data.method;
+                // this.url = this.getEndpoint('staffMembers', {id: this.organisationId}).url + data.id;
+                // this.postData = data.data;
                 this.set('staffData', null);
+                const options = {
+                    method: data.method,
+                    endpoint: {
+                        url: this.getEndpoint('staffMembers', {id: this.organisationId}).url + data.id
+                    },
+                    body: data.data
+                }
+                this.sendRequest(options)
+                    .then(this._handleResponse.bind(this))
+                    .catch(this._handleError.bind(this));
             },
 
-            _handleResponse: function(event, detail) {
+
+            _handleResponse: function(detail) {
                 this.fire('staff-updated', {
                     action: this.lastRequestData.method.toLowerCase(),
                     data: detail,

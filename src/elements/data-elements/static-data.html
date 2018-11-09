@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, etools-ajax-request-behavior, lodash]-->
+<!--import [polymer, etools-ajax, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [static-data-behavior, permission-controller, user-controller, user-data]-->
 
 <dom-module id="static-data">
@@ -29,36 +29,6 @@
                 on-success="_filterPartnersLoaded"
                 on-forbidden="_filterPartnersLoaded"
                 on-fail="_filterPartnersLoaded">
-        </etools-ajax>
-
-        <!--engagement creation-->
-        <etools-ajax
-                params="[[optionsParams]]"
-                url="{{newEngagementPermissions}}"
-                data-collection="new_engagement"
-                on-success="_handleNewEngagementResponse"
-                on-forbidden="_handleNewEngagementResponse"
-                on-fail="_handleNewEngagementResponse">
-        </etools-ajax>
-
-        <!--staff sc creation-->
-        <etools-ajax
-                params="[[optionsParams]]"
-                url="{{newStaffSCPermissions}}"
-                data-collection="new_staff_sc"
-                data-data-name="staffSCPermissions"
-                on-success="_handleDataLoading"
-                on-forbidden="_handleDataLoading"
-                on-fail="_handleDataLoading">
-        </etools-ajax>
-
-        <!--attachments-->
-        <etools-ajax
-                params="[[optionsParams]]"
-                url="{{atmOptionsUrl}}"
-                on-success="_atmOptionsResponse"
-                on-forbidden="_atmOptionsResponse"
-                on-fail="_atmOptionsResponse">
         </etools-ajax>
 
         <!--users-->
@@ -145,17 +115,50 @@
                 loadStaticData: function () {
                     this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.usersEndpoint = this.getEndpoint('users').url;
-                    
                     this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
                     this.officesEndpoint = this.getEndpoint('offices');
                     this.sectionsEndpoint = this.getEndpoint('sectionsCovered');
+
+                    this.makeOptionsCalls();
                 },
 
                 makeOptionsCalls: function() {
-                    this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
-                    this.newStaffSCPermissions = this.getEndpoint('staffSCList').url;
-                    this.atmOptionsUrl = this.getEndpoint('attachments', {id: 'new'}).url;
+                    this.getEngagementOptions();
+                    this.getNewStaffSCOptions();
+                    this.getAtmOptions();
+                },
 
+                getEngagementOptions: function() {
+                    const options = {
+                        endpoint: this.getEndpoint('createEngagement'),
+                        csrf: true,
+                        method: 'OPTIONS'
+                    }
+                    this.sendRequest(options)
+                    .then(this._handleNewEngagementResponse.bind(this))
+                    .catch(this._handleNewEngagementResponse.bind(this));
+                },
+                
+                getNewStaffSCOptions: function() {
+                    const options = {
+                        endpoint: this.getEndpoint('staffSCList'),
+                        csrf: true,
+                        method: 'OPTIONS'
+                    }
+                    this.sendRequest(options)
+                    .then(this._handleStaffSCOptionsResponse.bind(this))
+                    .catch(this._handleStaffSCOptionsResponse.bind(this));
+                },
+
+                getAtmOptions: function() {
+                    const options = {
+                        endpoint: this.getEndpoint('attachments', {id: 'new'}),
+                        csrf: true,
+                        method: 'OPTIONS'
+                    }
+                    this.sendRequest(options)
+                    .then(this._atmOptionsResponse.bind(this))
+                    .catch(this._atmOptionsResponse.bind(this));
                 },
 
                 _allDataLoaded: function() {
@@ -234,10 +237,10 @@
                     this._filtersDataLoaded();
                 },
 
-                _handleNewEngagementResponse: function(event, details) {
+                _handleNewEngagementResponse: function(details) {
                     let actions = details && details.actions;
                     if (!details || details.error || !this.isValidCollection(actions)) {
-                        this._responseError('Engagement Permissions', event && event.type);
+                        this._responseError('Engagement Permissions', details.error);
                     } else {
                         this._addToCollection('new_engagement', actions);
 
@@ -255,11 +258,11 @@
                     this._allDataLoaded();
                 },
 
-                _handleDataLoading: function(data) {
+                _handleStaffSCOptionsResponse: function(data) {
                     let actions = _.get(data, 'detail.actions') || {},
                         name = _.get(data, 'detail.name', ''),
-                        collection = _.get(data, 'target.dataset.collection', ''),
-                        dataName  = _.get(data, 'target.dataset.dataName', '');
+                        collection = 'new_staff_sc',
+                        dataName  = 'staffSCPermissions'
 
                     if (!collection || !dataName) {
                         throw new Error('Please provide collection and dataName attributes');

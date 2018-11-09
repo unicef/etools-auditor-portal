@@ -1,19 +1,10 @@
-<!--import [polymer, paper-dropdown-menu, paper-listbox, paper-item, etools-ajax, etools-page-refresh/etools-refresh-behavior]-->
+<!--import [polymer, paper-dropdown-menu, paper-listbox, paper-item, etools-ajax/etools-ajax-request-behavior, etools-page-refresh/etools-refresh-behavior]-->
 <!--import [country-flag-styles, etools-app-config]-->
 
 <dom-module id="countries-dropdown">
     <template>
         <style include="country-flag-styles"></style>
         <!-- inject styles './../header-styles.scss'-->
-
-        <etools-ajax
-                method="POST"
-                url="{{url}}"
-                body="{{countryData}}"
-                on-success="_handleResponse"
-                on-forbidden="_handleError"
-                on-fail="_handleError">
-        </etools-ajax>
 
         <paper-menu-button
                 id="dropdown" vertical-align="top"
