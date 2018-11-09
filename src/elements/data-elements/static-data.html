@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax, etools-ajax-request-behavior, lodash]-->
 <!--import [static-data-behavior, permission-controller, user-controller, user-data]-->
 
 <dom-module id="static-data">
@@ -33,7 +33,7 @@
 
         <!--engagement creation-->
         <etools-ajax
-                method="OPTIONS"
+                params="[[optionsParams]]"
                 url="{{newEngagementPermissions}}"
                 data-collection="new_engagement"
                 on-success="_handleNewEngagementResponse"
@@ -43,7 +43,7 @@
 
         <!--staff sc creation-->
         <etools-ajax
-                method="OPTIONS"
+                params="[[optionsParams]]"
                 url="{{newStaffSCPermissions}}"
                 data-collection="new_staff_sc"
                 data-data-name="staffSCPermissions"
@@ -54,7 +54,7 @@
 
         <!--attachments-->
         <etools-ajax
-                method="OPTIONS"
+                params="[[optionsParams]]"
                 url="{{atmOptionsUrl}}"
                 on-success="_atmOptionsResponse"
                 on-forbidden="_atmOptionsResponse"
@@ -118,9 +118,17 @@
                     APBehaviors.StaticDataController,
                     APBehaviors.PermissionController,
                     APBehaviors.UserController,
+                    EtoolsAjaxRequestBehavior
                 ],
 
-                properties: {},
+                properties: {
+                    optionsParams: {
+                        type: Object,
+                        value: {
+                            method: 'OPTIONS'
+                        }
+                    }
+                },
 
                 listeners: {
                     'user-profile-loaded': 'loadStaticData'
@@ -137,12 +145,17 @@
                 loadStaticData: function () {
                     this.partnersEndpoint = this.getEndpoint('partnerOrganisations');
                     this.usersEndpoint = this.getEndpoint('users').url;
-                    this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
-                    this.newStaffSCPermissions = this.getEndpoint('staffSCList').url;
+                    
                     this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
-                    this.atmOptionsUrl = this.getEndpoint('attachments', {id: 'new'}).url;
                     this.officesEndpoint = this.getEndpoint('offices');
                     this.sectionsEndpoint = this.getEndpoint('sectionsCovered');
+                },
+
+                makeOptionsCalls: function() {
+                    this.newEngagementPermissions = this.getEndpoint('createEngagement').url;
+                    this.newStaffSCPermissions = this.getEndpoint('staffSCList').url;
+                    this.atmOptionsUrl = this.getEndpoint('attachments', {id: 'new'}).url;
+
                 },
 
                 _allDataLoaded: function() {
