@@ -16,7 +16,7 @@
                 let [key, value] = query.split('=');
                 queriesOvj[key] = value || true;
             });
-
+            
             return queriesOvj;
         },
 
@@ -32,6 +32,14 @@
             let path = this.getLocationProperty('pathname');
             if (~path.indexOf('/ap')) { path = path.slice(3) }
             return path.slice(1);
+        },
+
+        buildQueryString(queryObj) {
+            return _.keys(queryObj).map((key) => {
+                let value = typeof queryObj[key] ===  'boolean' ? '' : 
+                Boolean(queryObj[key]) ? `=${queryObj[key]}` : '';
+                return `${key}${value}`;
+            }).join('&');
         },
         
         updateQueries: function (newQueries, path, noNotify) {
@@ -49,14 +57,9 @@
                 else queries[key] = newQueries[key];
             });
             
+            const queryString = this.buildQueryString(queries);
 
-            queries = Object.keys(queries).map((key) => {
-                let value = typeof queries[key] ===  'boolean' ? '' : 
-                Boolean(queries[key]) ? `=${queries[key]}` : '';
-                return `${key}${value}`;
-            });
-
-            window.history.replaceState({}, '', `${path}?${queries.join('&')}`);
+            window.history.replaceState({}, '', `${path}?${queryString}`);
             if (!noNotify) { window.dispatchEvent(new CustomEvent('location-changed')); }
             return true;
         },
