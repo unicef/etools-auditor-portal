@@ -274,16 +274,6 @@ Polymer({
 
         let valid = true;
 
-        if (this.saveWithButton) {
-            _.each(this.dataItems, item => {
-                if (item.user && item.user.email === this.editedItem.user.email &&
-                    item.id && item.id === this.editedItem.id) {
-                    this.errors = {user: {email: 'Email must be unique'}};
-                    valid = false;
-                }
-            });
-        }
-
         return valid;
     },
 
