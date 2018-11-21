@@ -55,7 +55,7 @@
                 this._setEngagementsList(detail.results);
                 this.listLength = detail.count;
                 this.updateQueries({reload: false});
-
+                this.fire('update-export-links');
                 this.fire('global-loading', {type: 'engagements-list'});
             },
 
