@@ -58,13 +58,14 @@
                     userIsNotDeleted = firmId === this.organisationId && !_.get(details, '0.hidden'),
                     alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
     
-                if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
-                    //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
-                    this._setError(`This field must be unique.`);
-                    let email = _.get(this, 'editedItem.user.email'),
-                        hasAccess = false;
-                    this.editedItem = {user: {email}, hasAccess};
-                } else if (firmId === this.organisationId) {
+                // if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
+                //     //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
+                //     this._setError(`This field must be unique.`);
+                //     let email = _.get(this, 'editedItem.user.email'),
+                //         hasAccess = false;
+                //     this.editedItem = {user: {email}, hasAccess};
+                // } 
+                if (firmId === this.organisationId) {
                     //if user was deleted from current organization
                     let user = details[0];
                     user.is_active = true;
