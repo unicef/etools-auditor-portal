@@ -7,6 +7,7 @@
         behaviors: [
             APBehaviors.PermissionController,
             APBehaviors.StaticDataController,
+            APBehaviors.QueryParamsController,
             etoolsAppConfig.globals
         ],
 
@@ -126,10 +127,17 @@
                 type: Boolean,
                 value: false
             },
+            exportLinks: {
+                type: Array,
+                value: []
+            },
             endpointName: String
         },
 
-        observers: ['_changeLinkTemplate(isStaffSc, listHeadings)'],
+        observers: [
+            '_changeLinkTemplate(isStaffSc, listHeadings)',
+            '_setExportLinks(endpointName)'
+        ],
 
         attached: function() {
             document.addEventListener('engagements-filters-updated', this._engagementsFiltersUpdated.bind(this));
@@ -185,11 +193,12 @@
 
         _setExportLinks: function() {
             const endpoint = this.getEndpoint(this.endpointName);
-            return endpoint ? [{
-                    name: 'Export Engagements',
-                    url: `${endpoint.url}csv/`
-                }] :
-                [];
+            const queryString = this.buildQueryString(this.queryParams);
+            const exportLinks = endpoint ? [{
+                name: 'Export Engagements',
+                url: `${endpoint.url}csv/?${queryString}`
+            }] : [];
+            this.set('exportLinks', exportLinks);
         },
 
         _changeLinkTemplate: function(isStaffSc, headings) {
