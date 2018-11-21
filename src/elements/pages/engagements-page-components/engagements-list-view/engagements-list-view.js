@@ -194,7 +194,6 @@
         _setExportLinks: function() {
             const endpoint = this.getEndpoint(this.endpointName);
             const queryString = this.buildQueryString(this.queryParams);
-            console.log(`${endpoint.url}csv/?${queryString}`);
             const exportLinks = endpoint ? [{
                 name: 'Export Engagements',
                 url: `${endpoint.url}csv/?${queryString}`
