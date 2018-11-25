@@ -34,7 +34,7 @@
             observers: ['_newEngagementChanged(newEngagementData, endpointName)'],
 
             _handleResponse: function (data) {
-                this.fire('engagement-created', {success: true, data: data.detail});
+                this.fire('engagement-created', {success: true, data});
             },
 
             _handleError: function (error) {
