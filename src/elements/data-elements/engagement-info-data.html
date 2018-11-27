@@ -3,48 +3,7 @@
 
 <dom-module id="engagement-info-data">
     <template>
-        <!-- <etools-ajax
-                url="[[url]]"
-                on-success="_handleDataResponse"
-                on-fail="_handleError">
-        </etools-ajax> -->
-
-        <!-- <etools-ajax
-                method="OPTIONS"
-                url="[[optionsUrl]]"
-                on-success="_handleOptionsResponse"
-                on-fail="_handleOptionsResponse">
-        </etools-ajax>
-
-        <etools-ajax
-                method="OPTIONS"
-                url="[[apOptionsUrl]]"
-                data-path-postfix="ap"
-                data-request-name="apOptions"
-                on-success="_handleDataOptionsResponse"
-                on-fail="_handleDataOptionsResponse"
-                on-forbidden="_handleDataOptionsResponse">
-        </etools-ajax> -->
-
-        <!-- <etools-ajax
-                method="OPTIONS"
-                url="[[atmOptionsUrl]]"
-                data-path-postfix="attachments"
-                data-request-name="attachments"
-                on-success="_handleDataOptionsResponse"
-                on-fail="_handleDataOptionsResponse"
-                on-forbidden="_handleDataOptionsResponse">
-        </etools-ajax> -->
-
-        <!-- <etools-ajax
-                method="OPTIONS"
-                url="[[reportAtmOptionsUrl]]"
-                data-path-postfix="report_attachments"
-                data-request-name="reportAttachments"
-                on-success="_handleDataOptionsResponse"
-                on-fail="_handleDataOptionsResponse"
-                on-forbidden="_handleDataOptionsResponse">
-        </etools-ajax> -->
+     
     </template>
 
     <script>
@@ -132,7 +91,6 @@
                 
                 this.fire('global-loading', {type: 'engagement-info'});
                 this.fire('engagement-info-loaded');
-                console.log('engagement-info-loaded');
                 this.engagementId = null;
                 this.lastError = false;
             },
@@ -186,13 +144,11 @@
                     requestName: 'apOptions'
                 }, {url: `${apBaseUrl}action-points/`});
 
-                // this.atmOptionsUrl = this.getEndpoint('attachments', {id: id}).url;
                 this._makeOptionsRequest({
                     postfix: 'attachments',
                     requestName: 'attachments'
                 }, this.getEndpoint('attachments', {id: id}));
 
-                // this.reportAtmOptionsUrl = this.getEndpoint('reportAttachments', {id: id}).url;
                 this._makeOptionsRequest({
                     postfix: 'report_attachments',
                     requestName: 'reportAttachments'
@@ -200,14 +156,16 @@
                 
 
                 let lastCreated = this.getLastEngagementData(id);
+                // load engagement info if it was just created
                 if (lastCreated) {
-                    this._handleDataResponse({detail: lastCreated});
+                    this._handleDataResponse(lastCreated);
                     this._requestOptions(id);
                     return;
                 }
+
+                // otherwise fetch info
                 
                 this._getEngagementInfo(id);
-                // this.url = this.getEndpoint('engagementInfo', {id: id, type: this.engagementType}).url;
 
                 if (this.collectionExists(`engagement_${id}`)) {
                     this.requestsCompleted.options = true;
@@ -215,6 +173,7 @@
                     this._requestOptions(id);
                 }
             },
+
             _getEngagementInfo: function (id) {
                 const options = {
                     endpoint: this.getEndpoint('engagementInfo', {id, type: this.engagementType})
@@ -223,6 +182,7 @@
                     .then(this._handleDataResponse.bind(this))
                     .catch(this._handleError.bind(this));
             },
+
             _requestOptions: function (id) {
                 const options = {
                     method: 'OPTIONS',

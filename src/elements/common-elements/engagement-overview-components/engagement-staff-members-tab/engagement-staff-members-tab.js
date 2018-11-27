@@ -378,7 +378,8 @@ Polymer({
 
         let me = this.getUserData() || {},
             updateOptions = _.get(details, 'data.user.email') === me.email;
-
+            
+        details.data = details.data || {};
         details.data.hasAccess = this.editedItem.hasAccess;
         if (details.action === 'patch') {
             this.manageEngagementStaff(details.data, details.hasAccess);
