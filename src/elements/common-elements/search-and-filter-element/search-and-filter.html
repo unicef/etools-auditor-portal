@@ -1,5 +1,5 @@
 <!--import [polymer, paper-input, paper-card, paper-item/paper-icon-item, etools-searchable-multiselection-menu, iron-icon, paper-menu-button,
-            paper-button, paper-menu, iron-flex-layout]-->
+            paper-button, iron-flex-layout, paper-listbox]-->
 
 <!--import [shared-styles, module-styles, tab-inputs-styles, query-params-controller]-->
 
@@ -48,15 +48,15 @@
                 <paper-menu-button horizontal-align="right"
                                    ignore-select
                                    no-overlap>
-                    <paper-button class="dropdown-trigger">
+                    <paper-button slot="dropdown-trigger">
                         <iron-icon icon="filter-list"
                                    class="filter-list-icon"></iron-icon>
-                
+
                         <span class="add-filter-text">ADD FILTER</span>
-                        
+
                     </paper-button>
-                   
-                    <paper-listbox multi class="dropdown-content" selected="0">
+
+                    <paper-listbox multi slot="dropdown-content" selected="0">
                         <template is="dom-repeat"
                                   items="[[availableFilters]]">
                             <paper-icon-item on-tap="addFilter">
@@ -68,7 +68,7 @@
                         </template>
                     </paper-listbox>
                 </paper-menu-button>
-            
+
             </div>
         </paper-card>
     </template>
