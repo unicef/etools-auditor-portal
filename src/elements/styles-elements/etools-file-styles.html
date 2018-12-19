@@ -24,7 +24,7 @@
                     display: none;
                 }'};
                 --paper-input-error: #{'{
-                    @apply(--etools-file-error);
+                    @apply --etools-file-error;
                 }'};
             }
 
@@ -52,23 +52,23 @@
                 box-sizing: border-box;
             }
             :host(:not([readonly])) .selected-file-container {
-                @apply(--etools-file-filename-container);
+                @apply --etools-file-filename-container;
             }
             :host([readonly]) .selected-file-container {
-                @apply(--etools-file-readonly-filename-container);
+                @apply --etools-file-readonly-filename-container;
             }
             .file-actions {
                 width: 50%;
             }
 
             .files-container.multiple .file-actions {
-                @apply(--etools-file-actions-multiple);
+                @apply --etools-file-actions-multiple;
             }
             .files-container:not(.multiple) .file-actions {
-                @apply(--etools-file-actions-single);
+                @apply --etools-file-actions-single;
             }
             .files-container:not(.multiple) .file-name-wrapper {
-                @apply(--etools-file-single-file-wrapper);
+                @apply --etools-file-single-file-wrapper;
             }
 
             .file-name-wrapper {
@@ -101,8 +101,8 @@
 
             .upload-button {
                 --paper-button: #{'{
-                    @apply(--layout-flex);
-                    @apply(--layout-start-justified);
+                    @apply --layout-flex;
+                    @apply --layout-start-justified;
                     font-weight: bold;
                     font-size: 14px;
                     margin: 0;
@@ -114,7 +114,7 @@
                     color: #ffffff;
                     background-color: var(--module-primary)
                 }'};
-                @apply(--etools-file-upload-button);
+                @apply --etools-file-upload-button;
             }
 
             .change-button,
@@ -193,7 +193,7 @@
                 height: 24px;
             }
 
-            .type-dropdown paper-menu {
+            .type-dropdown paper-listbox {
                 min-width: 200px;
             }
 
@@ -244,7 +244,7 @@
 
             :host([activate-file-types]) .file-area {
                 border-bottom: 1px solid var(--etools-file-area-with-type-border-color, rgba(0, 0, 0, 0.12));
-                @apply(--etools-file-area-with-type);
+                @apply --etools-file-area-with-type;
             }
         </style>
     </template>
