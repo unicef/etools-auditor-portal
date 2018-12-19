@@ -40,7 +40,8 @@
     "neon-animation": "2.0.1",
     "etools-searchable-multiselection-menu": "^2.2.19",
     "etools-profile-dropdown": "2.0.6",
-    "paper-dialog": "2.1.1"
+    "paper-dialog": "2.1.1",
+    "paper-checkbox": "PolymerElements/paper-checkbox#v1.4.2"
   },
   "devDependencies": {},
   "resolutions": {
