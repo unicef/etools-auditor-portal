@@ -1,4 +1,4 @@
-<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel, iron-icon,
+<!--import [polymer, paper-icon-button, paper-input, paper-icon-button, etools-content-panel, iron-icon,
             iron-icons, iron-icons/communication-icons, etools-loading, paper-tooltip]-->
 
 <!--import [tab-inputs-styles, permission-controller, list-header, list-element, list-pagination,
@@ -221,14 +221,12 @@
                     <div class="row-h group">
                         <!--receive notification-->
                         <div class="staff-check-box notify-box input-container input-container-l">
-                            <etools-checkable-input
-                                    type="checkbox"
-                                    label="Has Access"
-                                    label-alignment="right"
+                            <paper-checkbox
                                     checked="{{editedItem.hasAccess}}"
                                     disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}"
                                     readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}">
-                            </etools-checkable-input>
+                                    Has Access
+                        </paper-checkbox>
                         </div>
                     </div>
                 </div>
