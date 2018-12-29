@@ -4,6 +4,7 @@
 
 :host {
     display: block;
+    position: relative;
     border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
 
     .question-title {
@@ -111,12 +112,12 @@
 }
 
 :host([hover]) {
-    paper-material {
+    div[list-item] {
         background-color: #EEEEEE;
     }
 }
 
-paper-material {
+div[list-item] {
     display: table;
     table-layout: fixed;
     width: 100%;
@@ -130,7 +131,7 @@ paper-material {
 }
 
 :host([no-additional]) {
-    paper-material {
+    div[list-item] {
         padding: 0 14px 0 24px !important
     }
 }
@@ -149,12 +150,12 @@ paper-material {
 }
 
 :host([no-hover]) {
-    paper-material:hover {
+    div[list-item]:hover {
         background-color: initial;
     }
 }
 
-paper-material ::slotted(*) {
+div[list-item] {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
