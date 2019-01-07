@@ -133,6 +133,9 @@ Polymer({
         saveWithButton: {
             type: Boolean,
             value: false
+        },
+        newEmail: {
+            type: String
         }
     },
 
@@ -289,6 +292,7 @@ Polymer({
     },
 
     _emailDisabled: function(request, createPopup, emailChecking) {
+        return false;
         return !!(!createPopup || request || emailChecking);
     },
 
@@ -378,7 +382,7 @@ Polymer({
 
         let me = this.getUserData() || {},
             updateOptions = _.get(details, 'data.user.email') === me.email;
-            
+
         details.data = details.data || {};
         details.data.hasAccess = this.editedItem.hasAccess;
         if (details.action === 'patch') {
