@@ -48,7 +48,7 @@
                 <paper-menu-button horizontal-align="right"
                                    ignore-select
                                    no-overlap>
-                    <paper-button slot="dropdown-trigger">
+                    <paper-button class="dropdown-trigger">
                         <iron-icon icon="filter-list"
                                    class="filter-list-icon"></iron-icon>
 
@@ -56,7 +56,7 @@
 
                     </paper-button>
 
-                    <paper-listbox multi slot="dropdown-content" selected="0">
+                    <paper-listbox multi class="dropdown-content" selected="0">
                         <template is="dom-repeat"
                                   items="[[availableFilters]]">
                             <paper-icon-item on-tap="addFilter">

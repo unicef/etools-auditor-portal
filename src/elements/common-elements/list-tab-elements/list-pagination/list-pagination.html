@@ -16,7 +16,7 @@
                     no-label-float
                     vertical-align="bottom"
                     horizontal-align="right">
-                <paper-listbox id="selecta" slot="dropdown-content" attr-for-selected="name" selected="{{pageSize}}">
+                <paper-listbox id="selecta" class="dropdown-content" attr-for-selected="name" selected="{{pageSize}}">
                     <!--on-iron-select="itemsNrChanged"-->
                     <template is="dom-repeat" items="[[sizesAllowed]]">
                         <paper-item name="[[item]]">[[item]]</paper-item>
