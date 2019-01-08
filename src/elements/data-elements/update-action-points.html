@@ -1,15 +1,8 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config]-->
 
 <dom-module id="update-action-points">
     <template>
-        <etools-ajax
-                method="{{method}}"
-                url="{{url}}"
-                body="{{postData}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
     </template>
 
     <script>
@@ -17,7 +10,8 @@
             is: 'update-action-points',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -49,11 +43,19 @@
                 if (apData.id) { url += `${apData.id}/` }
                 if (complete) { url += 'complete/'; }
 
-                this.url = url;
-                this.postData = apData;
+                this.sendRequest({
+                    method: method,
+                    endpoint: {url},
+                    body: apData
+                }).then(resp => {
+                   this._handleResponse(resp);
+                }).catch(err => {
+                    this._handleError(err);
+                });
+
             },
 
-            _handleResponse: function(event, detail) {
+            _handleResponse: function(detail) {
                 let index = _.findIndex(this.actionPoints, item => item.id === detail.id);
 
                 if (~index) {
@@ -65,11 +67,8 @@
                 this.fire('ap-request-completed', {success: true});
             },
 
-            _handleError: function(event, error) {
-                let responseData = error && error.request && error.request.detail &&
-                        error.request.detail.request && error.request.detail.request.xhr;
-
-                let {status, response} = responseData || {};
+            _handleError: function(error) {
+                let {status, response} = error || {};
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);
