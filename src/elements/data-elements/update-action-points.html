@@ -35,7 +35,10 @@
 
             _dataChanged: function(data = {}) {
                 let {method, apData, complete} = data;
-                if (!method || !apData) { return; }
+                if (!method || !apData) {
+                    return;
+                }
+
                 this.method = method;
                 let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
                         url = `${apBaseUrl}action-points/`;
@@ -48,7 +51,7 @@
                     endpoint: {url},
                     body: apData
                 }).then(resp => {
-                   this._handleResponse(resp);
+                    this._handleResponse(resp);
                 }).catch(err => {
                     this._handleError(err);
                 });

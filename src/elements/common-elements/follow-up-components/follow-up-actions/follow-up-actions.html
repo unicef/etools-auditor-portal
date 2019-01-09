@@ -1,7 +1,7 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-checkbox, paper-icon-button, etools-content-panel,
             iron-icons, lodash, paper-tooltip, paper-input/paper-textarea, paper-button, etools-ajax]-->
 
-<!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, etools-dialog, table-elements-behavior,
             textarea-max-rows-behavior, get-action-points, update-action-points, get-partner-data]-->
 
 <dom-module id="follow-up-actions">
@@ -76,13 +76,13 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
+                ok-btn-text="[[confirmBtnText]]"
                 hide-confirm-btn="[[!confirmBtnText]]"
-                request-in-process="{{requestInProcess}}"
-                no-title-margin$="[[notTouched]]">
+                show-spinner="{{requestInProcess}}"
+                on-confirm-btn-clicked="_addActionPoint">
             <template is="dom-if" if="[[notTouched]]">
                 <div class="copy-warning">
                     It is required to change at least one of the fields below.
@@ -310,7 +310,7 @@
             <div slot="additional" hidden$="[[!actionAllowed(editedApBase, 'complete')]]">
                 <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
             </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './follow-up-actions.js'-->
