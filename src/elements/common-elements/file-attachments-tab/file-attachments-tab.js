@@ -85,8 +85,6 @@
         },
 
         listeners: {
-            'dialog-confirmed': '_sendRequest',
-            'delete-confirmed': '_sendRequest',
             'attachments-request-completed': '_requestCompleted'
         },
 
@@ -168,7 +166,9 @@
         },
 
         _sendRequest: function() {
-            if (!this.dialogOpened || !this.validate()) { return; }
+            if (!this.validate()) {
+                return;
+            }
 
             this.requestInProcess = true;
             let attachmentsData, method;

@@ -82,6 +82,7 @@
                 ok-btn-text="[[confirmBtnText]]"
                 hide-confirm-btn="[[!confirmBtnText]]"
                 show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
                 on-confirm-btn-clicked="_addActionPoint">
             <template is="dom-if" if="[[notTouched]]">
                 <div class="copy-warning">
