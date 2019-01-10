@@ -138,10 +138,13 @@ Polymer({
             type: String
         }
     },
-
+    listeners: {
+        'staff-updated': '_staffUpdated'
+    },
 
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(deleteDialogOpened)',
         'changePermission(basePermissionPath)',
         '_handleUpdateError(errorObject.staff_members)',
         '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
@@ -366,7 +369,6 @@ Polymer({
             staffIndex: this.editedIndex,
             id: `${this.editedItem.id}/`
         });
-        this.set('deleteDialogOpened', false);
     },
 
     _staffUpdated: function(event, details) {
@@ -417,6 +419,7 @@ Polymer({
 
         this.requestInProcess = false;
         this.dialogOpened = false;
+        this.deleteDialogOpened = false;
         this.resetDialog();
     },
 
