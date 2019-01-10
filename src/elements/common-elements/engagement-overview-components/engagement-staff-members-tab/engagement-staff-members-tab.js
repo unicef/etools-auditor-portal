@@ -139,11 +139,6 @@ Polymer({
         }
     },
 
-    listeners: {
-        'dialog-confirmed': '_addStaffFromDialog',
-        'delete-confirmed': 'removeStaff',
-        'staff-updated': '_staffUpdated'
-    },
 
     observers: [
         'resetDialog(dialogOpened)',
@@ -360,7 +355,7 @@ Polymer({
 
         if (removalForbidden) {
             this.fire('toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
-            this.dialogOpened = false;
+            this.set('deleteDialogOpened', false);
             return false;
         }
 
@@ -371,6 +366,7 @@ Polymer({
             staffIndex: this.editedIndex,
             id: `${this.editedItem.id}/`
         });
+        this.set('deleteDialogOpened', false);
     },
 
     _staffUpdated: function(event, details) {

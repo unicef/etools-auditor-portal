@@ -41,7 +41,8 @@
     "paper-checkbox": "PolymerElements/paper-checkbox#v2.0.4",
     "paper-listbox": "PolymerElements/paper-listbox#^1.1.2",
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#v2.3.4",
-    "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2"
+    "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
+    "etools-dialog": "1.2.9"
 
   },
   "devDependencies": {},
@@ -54,6 +55,7 @@
     "paper-dialog": "2.1.1",
     "paper-checkbox": "2.0.4",
     "iron-overlay-behavior": "2.3.4",
-    "paper-dropdown-menu": "^2.1.0"
+    "paper-dropdown-menu": "^2.1.0",
+    "etools-dialog": "1.2.9"
   }
 }

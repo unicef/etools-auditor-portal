@@ -2,8 +2,8 @@
             iron-icons, iron-icons/communication-icons, etools-loading, paper-tooltip]-->
 
 <!--import [tab-inputs-styles, permission-controller, list-header, list-element, list-pagination,
-            dialog-element, lodash, table-elements-behavior, error-handler-behavior, update-staff-members,
-            get-staff-members-list, check-user-existence, common-methods-behavior, user-controller]-->
+            lodash, table-elements-behavior, error-handler-behavior, update-staff-members,
+            get-staff-members-list, check-user-existence, common-methods-behavior, user-controller, etools-dialog]-->
 
 <dom-module id="engagement-staff-members-tab">
     <template>
@@ -110,12 +110,24 @@
             </div>
         </etools-content-panel>
 
-        <dialog-element
-                opened="{{dialogOpened}}"
-                delete-dialog="[[deleteDialog]]"
-                dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="{{requestInProcess}}">
+        <etools-dialog theme="confirmation"
+                       size="md"
+                       keep-dialog-open
+                       opened="{{deleteDialogOpened}}"
+                       on-confirm-btn-clicked="removeStaff"
+                       ok-btn-text="Deletee">
+            Are you sure you want to delete this attachment?
+        </etools-dialog>
+
+        <etools-dialog id="staff-members"
+                       opened="{{dialogOpened}}"
+                       dialog-title="[[dialogTitle]]"
+                       size="md"
+                       ok-btn-text="[[confirmBtnText]]"
+                       show-spinner="{{requestInProcess}}"
+                       keep-dialog-open
+                       on-confirm-btn-clicked="_addStaffFromDialog">
+
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -225,13 +237,14 @@
                                     checked="{{editedItem.hasAccess}}"
                                     disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}"
                                     readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}">
-                                    Has Access
-                        </paper-checkbox>
+                                Has Access
+                            </paper-checkbox>
                         </div>
                     </div>
                 </div>
             </div>
-        </dialog-element>
+        </etools-dialog>
+
     </template>
 
     <!-- inject scripts './engagement-staff-members-tab.js'-->
