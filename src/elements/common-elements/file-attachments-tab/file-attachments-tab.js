@@ -165,7 +165,12 @@
             });
         },
 
-        _sendRequest: function() {
+        _sendRequest: function(event) {
+
+            if (this._deleteCanceled(event)) {
+                return;
+            }
+
             if (!this.validate()) {
                 return;
             }
@@ -177,7 +182,6 @@
                 this._processDelayedRequest();
                 return;
             }
-
             if (this.deleteDialog) {
                 attachmentsData = {id: this.editedItem.id};
                 method = 'DELETE';
@@ -193,6 +197,10 @@
             }
 
             this.requestData = {method, attachmentsData};
+        },
+
+        _deleteCanceled: function deleteCanceled(ev) {
+            return event && event.detail && event.detail.confirmed === false;
         },
 
         _getChanges: function(attachmentsData) {
@@ -253,6 +261,7 @@
             if (detail.success) {
                 this.dialogOpened = false;
             }
+            this._resetDialog(false);
         },
 
         _fileAlreadySelected: function() {
