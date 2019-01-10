@@ -165,30 +165,21 @@
             });
         },
 
-        _sendRequest: function(event) {
-
-            if (this._deleteCanceled(event)) {
-                return;
-            }
+        _saveAttachment: function() {
 
             if (!this.validate()) {
                 return;
             }
 
             this.requestInProcess = true;
-            let attachmentsData, method;
 
             if (!this.baseId) {
                 this._processDelayedRequest();
                 return;
             }
-            if (this.deleteDialog) {
-                attachmentsData = {id: this.editedItem.id};
-                method = 'DELETE';
-            } else {
-                attachmentsData = this._getFileData();
-                method = attachmentsData.id ? 'PATCH' : 'POST';
-            }
+
+            let attachmentsData = this._getFileData();
+            let method = attachmentsData.id ? 'PATCH' : 'POST';
 
             attachmentsData = method === 'PATCH' ? this._getChanges(attachmentsData) : attachmentsData;
             if (!attachmentsData) {
@@ -197,6 +188,22 @@
             }
 
             this.requestData = {method, attachmentsData};
+        },
+
+        _deleteAttachment(event) {
+            if (this._deleteCanceled(event)) {
+                return;
+            }
+            if (!this.baseId) {
+                this._processDelayedRequest();
+                return;
+            }
+            this.requestInProcess = true;
+
+            this.requestData = {
+                method: 'DELETE',
+                attachmentsData: {id: this.editedItem.id}
+            };
         },
 
         _deleteCanceled: function deleteCanceled(ev) {
