@@ -42,7 +42,7 @@
                 type: Boolean,
                 value: false
             },
-            deleteDialogOpened: {
+            confirmDialogOpened: { //confirmation/deleteDialogOpened
                 type: Boolean,
                 value: false
             }
@@ -158,12 +158,12 @@
 
             //this.dialogTitle = this.deleteTitle || 'Are you sure you want to delete?';
 
-            this.deleteDialog = true;
+            //this.deleteDialog = true;
             this.editedItem = _.cloneDeep(this.dataItems[index]);
             this.originalEditedObj = _.cloneDeep(this.dataItems[index]);
             this.editedIndex = index;
 
-            this.deleteDialogOpened = true;
+            this.confirmDialogOpened = true;
         },
 
         _getIndex: function(event) {
@@ -263,7 +263,11 @@
             if (!errorData) { return; }
             let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData)[0] : this.refactorErrorObject(errorData);
             this.set('errors', refactoredData);
-        }
+        },
+
+        deleteCanceled: function(ev) {
+            return event && event.detail && event.detail.confirmed === false;
+        },
     };
 
     APBehaviors.TableElementsBehavior = [

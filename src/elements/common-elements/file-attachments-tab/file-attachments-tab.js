@@ -191,7 +191,7 @@
         },
 
         _deleteAttachment(event) {
-            if (this._deleteCanceled(event)) {
+            if (this.deleteCanceled(event)) {
                 return;
             }
             if (!this.baseId) {
@@ -204,10 +204,6 @@
                 method: 'DELETE',
                 attachmentsData: {id: this.editedItem.id}
             };
-        },
-
-        _deleteCanceled: function deleteCanceled(ev) {
-            return event && event.detail && event.detail.confirmed === false;
         },
 
         _getChanges: function(attachmentsData) {
