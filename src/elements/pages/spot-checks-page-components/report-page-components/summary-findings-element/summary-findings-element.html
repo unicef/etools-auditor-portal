@@ -1,7 +1,7 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons,
             etools-searchable-multiselection-menu, etools-datepicker, etools-content-panel, lodash, paper-tooltip]-->
 
-<!--import [tab-inputs-styles, tab-layout-styles, permission-controller, date-behavior, list-header, list-element, dialog-element,
+<!--import [tab-inputs-styles, tab-layout-styles, permission-controller, date-behavior, list-header, list-element, etools-dialog,
             table-elements-behavior, static-data-behavior, textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="summary-findings-element">
@@ -42,7 +42,7 @@
                     </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog2"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -57,12 +57,25 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
-                opened="{{dialogOpened}}"
-                delete-dialog="[[deleteDialog]]"
-                dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="{{requestInProcess}}">
+        <etools-dialog theme="confirmation"
+                       id="delete-summary-findings"
+                       size="md"
+                       opened="[[deleteDialog]]"
+                       on-confirm-btn-clicked="removeItem"
+                       ok-btn-text="Delete">
+            Are you sure you want to delete this attachment?
+        </etools-dialog>
+
+        <etools-dialog size="md"
+                       id="summary-findings"
+                       dialog-title="[[dialogTitle]]"
+                       keep-dialog-open
+                       opened="{{dialogOpened}}"
+                       ok-btn-text="[[confirmBtnText]]"
+                       show-spinner="{{requestInProcess}}"
+                       disable-confirm-btn="{{requestInProcess}}"
+                       on-confirm-btn-clicked="_addItemFromDialog">
+
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -169,7 +182,9 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+
+        </etools-dialog>
+
     </template>
 
     <!-- inject scripts './summary-findings-element.js'-->
