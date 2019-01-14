@@ -73,13 +73,9 @@ Polymer({
         }
     },
 
-    listeners: {
-        'dialog-confirmed': '_addItemFromDialog',
-        'delete-confirmed': 'removeItem'
-    },
-
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         '_errorHandler(errorObject.findings)',
         '_checkNonField(errorObject.findings)'
     ],
@@ -91,5 +87,6 @@ Polymer({
         if (nonField) {
             this.fire('toast', {text: `Findings and Recommendations: ${nonField}`});
         }
-    }
+    },
+
 });

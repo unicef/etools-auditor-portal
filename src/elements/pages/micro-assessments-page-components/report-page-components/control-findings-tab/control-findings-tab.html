@@ -1,7 +1,7 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-icon-button, etools-content-panel,
             iron-icons, lodash, paper-tooltip]-->
 
-<!--import [tab-inputs-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
+<!--import [tab-inputs-styles, permission-controller, list-header, list-element, etools-dialog, table-elements-behavior,
             textarea-max-rows-behavior]-->
 
 <dom-module id="control-findings-tab">
@@ -34,7 +34,7 @@
                         no-animation>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog2"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -48,13 +48,22 @@
                 </list-element>
             </template>
         </etools-content-panel>
+        <etools-dialog theme="confirmation" size="md"
+                keep-dialog-open
+                opened="{{confirmDialogOpened}}"
+                on-confirm-btn-clicked="removeItem"
+                ok-btn-text="Delete">
+            [[deleteTitle]]
+        </etools-dialog>
 
-        <dialog-element
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 delete-dialog="[[deleteDialog]]"
                 dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="{{requestInProcess}}">
+                ok-btn-text="[[confirmBtnText]]"
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_addItemFromDialog">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -99,7 +108,7 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './control-findings-tab.js'-->

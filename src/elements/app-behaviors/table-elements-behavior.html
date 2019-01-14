@@ -61,10 +61,16 @@
                 this.requestInProcess = false;
                 this.dialogOpened = false;
             }
+            if (this.confirmDialogOpened) {
+                this.requestInProcess = false;
+                this.confirmDialogOpened = false;
+            }
         },
 
         getTabData: function() {
-            if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
+            if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
+                 return this.getCurrentData();
+            }
             if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
             if (!this.originalData.length && !this.dataItems.length) { return null; }
             let data = [];
@@ -79,7 +85,7 @@
         },
 
         getCurrentData: function() {
-            if (!this.dialogOpened) { return null; }
+            if (!this.dialogOpened && !this.confirmDialogOpened) { return null; }
             return [_.cloneDeep(this.editedItem)];
         },
 
@@ -246,8 +252,8 @@
                 this.splice('dataItems', this.editedIndex, 1);
                 this.resetDialog();
                 this.dialogOpened = false;
+                this.confirmDialogOpened = false;
             }
-            this.confirmDialogOpened = false;
         },
 
         _showItems: function(item) {
