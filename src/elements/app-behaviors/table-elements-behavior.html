@@ -145,11 +145,12 @@
         openDeleteDialog: function(event) {
             let index = this._getIndex(event);
 
-            this.editedItem = _.cloneDeep(this.dataItems[index]);
-            this.originalEditedObj = _.cloneDeep(this.dataItems[index]);
-            this.editedIndex = index;
+            this.dialogTitle = this.deleteTitle || 'Are you sure you want to delete?';
+            this.confirmBtnText = 'Delete';
+            this.cancelBtnText = 'Cancel';
+            this.deleteDialog = true;
 
-            this.deleteDialogOpened = true;
+            this._openDialog(index);
         },
 
         openDeleteDialog2: function(event) { //TODO

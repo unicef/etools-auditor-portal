@@ -42,8 +42,8 @@
                     body: data.data
                 }
                 this.sendRequest(options)
-                    .then(this._handleResponse.bind(this))
-                    .catch(this._handleError.bind(this));
+                    .then(resp => this._handleResponse(resp))
+                    .catch(err => this._handleError(err));
             },
 
 
@@ -56,11 +56,8 @@
                 });
             },
 
-            _handleError: function(event, error) {
-                let responseData = error && error.request && error.request.detail &&
-                        error.request.detail.request && error.request.detail.request.xhr;
-
-                let {status, response} = responseData || {};
+            _handleError: function(error) {
+                let {status, response} = error || {};
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);
