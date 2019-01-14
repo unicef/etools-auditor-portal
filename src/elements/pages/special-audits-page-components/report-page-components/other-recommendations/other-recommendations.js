@@ -63,13 +63,9 @@ Polymer({
         }
     },
 
-    listeners: {
-        'dialog-confirmed': '_addItemFromDialog',
-        'delete-confirmed': 'removeItem',
-    },
-
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         '_errorHandler(errorObject.other_recommendations)',
         '_checkNonField(errorObject.other_recommendations)'
     ],
