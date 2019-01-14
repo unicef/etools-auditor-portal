@@ -198,7 +198,7 @@
             }
 
             //save after popup click
-            if (this.dialogOpened && !this.saveWithButton) {
+            if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
                 this.requestInProcess = true;
                 this.fire('action-activated', {type: 'save', quietAdding: true});
                 return;
