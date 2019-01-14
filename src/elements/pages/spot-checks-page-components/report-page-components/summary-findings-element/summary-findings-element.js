@@ -154,7 +154,7 @@ Polymer({
     },
 
     getFindingsData: function() {
-        if (this.dialogOpened && !this.saveWithButton) {
+        if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
             return this.getCurrentData();
         }
         let data = [];
@@ -187,7 +187,7 @@ Polymer({
     },
 
     getCurrentData: function() {
-        if (!this.dialogOpened) {
+        if (!this.dialogOpened && !this.confirmDialogOpened) {
             return null;
         }
         let data = _.cloneWith(this.editedItem, (item) => {
