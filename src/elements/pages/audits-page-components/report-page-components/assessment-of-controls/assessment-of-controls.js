@@ -72,13 +72,9 @@ Polymer({
         },
     },
 
-    listeners: {
-        'dialog-confirmed': '_addItemFromDialog',
-        'delete-confirmed': 'removeItem',
-    },
-
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         '_errorHandler(errorObject.key_internal_controls)',
         '_checkNonField(errorObject.key_internal_controls)',
     ],
