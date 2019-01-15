@@ -1,7 +1,7 @@
 <!--import [polymer, paper-icon-button, paper-input, paper-input/paper-textarea, iron-icons, etools-content-panel,
             etools-currency-amount-input, etools-searchable-multiselection-menu, lodash, paper-tooltip]-->
 
-<!--import [list-header, list-element, common-methods-behavior, tab-inputs-styles, module-styles, dialog-element,
+<!--import [list-header, list-element, common-methods-behavior, tab-inputs-styles, module-styles, etools-dialog,
             table-elements-behavior, permission-controller, textarea-max-rows-behavior]-->
 
 <dom-module id="financial-findings">
@@ -46,7 +46,7 @@
                     </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog2"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -61,12 +61,26 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
-                opened="{{dialogOpened}}"
-                delete-dialog="[[deleteDialog]]"
-                dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="{{requestInProcess}}">
+        <etools-dialog theme="confirmation"
+                       size="md"
+                       keep-dialog-open
+                       opened="{{confirmDialogOpened}}"
+                       on-confirm-btn-clicked="removeItem"
+                       ok-btn-text="Delete">
+            [[deleteTitle]]
+        </etools-dialog>
+
+        <etools-dialog id="financial-findings"
+                       no-padding
+                       size="md"
+                       opened="{{dialogOpened}}"
+                       keep-dialog-open
+                       dialog-title="[[dialogTitle]]"
+                       ok-btn-text="Add"
+                       show-spinner="{{requestInProcess}}"
+                       disable-confirm-btn="{{requestInProcess}}"
+                       on-confirm-btn-clicked="_addItemFromDialog">
+
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -199,7 +213,9 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+
+        </etools-dialog>
+
     </template>
 
     <!-- inject scripts './financial-findings.js'-->
