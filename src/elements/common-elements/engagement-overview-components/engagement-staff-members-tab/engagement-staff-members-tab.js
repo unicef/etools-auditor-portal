@@ -138,15 +138,13 @@ Polymer({
             type: String
         }
     },
-
     listeners: {
-        'dialog-confirmed': '_addStaffFromDialog',
-        'delete-confirmed': 'removeStaff',
         'staff-updated': '_staffUpdated'
     },
 
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         'changePermission(basePermissionPath)',
         '_handleUpdateError(errorObject.staff_members)',
         '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
@@ -360,7 +358,7 @@ Polymer({
 
         if (removalForbidden) {
             this.fire('toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
-            this.dialogOpened = false;
+            this.set('confirmDialogOpened', false);
             return false;
         }
 
@@ -421,6 +419,7 @@ Polymer({
 
         this.requestInProcess = false;
         this.dialogOpened = false;
+        this.confirmDialogOpened = false;
         this.resetDialog();
     },
 
