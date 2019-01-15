@@ -1,5 +1,5 @@
 <!--import [polymer, lodash, etools-content-panel, etools-searchable-multiselection-menu, paper-input/paper-textarea]-->
-<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, dialog-element,
+<!--import [risk-tab, permission-controller, module-styles, tab-inputs-styles, static-data-behavior, etools-dialog,
             textarea-max-rows-behavior, common-methods-behavior]-->
 
 <dom-module id="questionnaire-page-main">
@@ -111,11 +111,13 @@
             </risk-tab>
         </template>
 
-        <dialog-element
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 dialog-title="Edit Question"
-                confirm-btn-text="Save"
-                request-in-process="{{requestInProcess}}">
+                ok-btn-text="Save"
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_addItemFromDialog">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="form-title">
                     <div class="text" id="questionHeader">[[editedItem.header]]</div>
@@ -165,7 +167,7 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './questionnaire-page-main.js'-->
