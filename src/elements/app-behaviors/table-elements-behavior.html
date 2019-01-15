@@ -91,7 +91,9 @@
 
         _canBeChanged: function(basePath) {
             let path = basePath || this.basePermissionPath;
-            if (!path) { return true; }
+            if (!path) {
+              return true;
+            }
 
             let readOnly = this.isReadonly(`${path}.${this.mainProperty}`);
             if (readOnly === null) { readOnly = true; }
@@ -116,7 +118,9 @@
         },
 
         _setRequired: function(field) {
-            if (!this.basePermissionPath) { return false; }
+            if (!this.basePermissionPath) {
+              return false;
+            }
 
             let required = this.isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
 
@@ -195,7 +199,9 @@
                 return;
             }
 
-            if (!this.validate()) { return; }
+            if (!this.validate()) {
+              return;
+            }
             if (this.customValidation && !this.customValidation()) { return; }
 
             if (!this.addDialog && _.isEqual(this.originalEditedObj, this.editedItem)) {
@@ -226,7 +232,9 @@
         },
 
         resetDialog: function(opened) {
-            if (opened) { return; }
+            if (opened) {
+              return;
+            }
             let elements = Polymer.dom(this.root).querySelectorAll('.validate-input');
 
             Array.prototype.forEach.call(elements, element => {
@@ -243,7 +251,9 @@
             this.editedItem = _.cloneDeep(this.itemModel);
         },
 
-        _getTitleValue: function(value) { return value || ''; },
+        _getTitleValue: function(value) {
+          return value || '';
+          },
 
         removeItem: function() {
             if (this.editedItem && this.editedItem.id !== undefined) {
