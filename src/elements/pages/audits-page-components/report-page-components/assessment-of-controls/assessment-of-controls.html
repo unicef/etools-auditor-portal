@@ -1,6 +1,6 @@
 <!--import [polymer, etools-content-panel, paper-input, paper-input/paper-textarea]-->
 
-<!--import [list-header, list-element, common-methods-behavior, tab-inputs-styles, module-styles, dialog-element,
+<!--import [list-header, list-element, common-methods-behavior, tab-inputs-styles, module-styles, etools-dialog,
             table-elements-behavior, permission-controller, textarea-max-rows-behavior]-->
 
 <dom-module id="assessment-of-controls">
@@ -47,7 +47,7 @@
                         no-animation>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
                         <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog2"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -62,12 +62,23 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
+        <etools-dialog theme="confirmation" size="md"
+                keep-dialog-open
+                opened="{{confirmDialogOpened}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="removeItem"
+                ok-btn-text="Delete">
+            [[deleteTitle]]
+        </etools-dialog>
+
+        <etools-dialog no-padding keep-dialog-open
+                size="md"
                 opened="{{dialogOpened}}"
-                delete-dialog="[[deleteDialog]]"
                 dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="{{requestInProcess}}">
+                ok-btn-text="[[confirmBtnText]]"
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_addItemFromDialog">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -128,7 +139,7 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './assessment-of-controls.js'-->
