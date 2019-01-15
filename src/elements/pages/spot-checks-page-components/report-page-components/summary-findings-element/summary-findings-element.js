@@ -114,6 +114,7 @@ Polymer({
 
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         '_setPriority(itemModel, priority)',
         '_complexErrorHandler(errorObject.findings)'
     ],
