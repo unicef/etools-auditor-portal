@@ -107,7 +107,6 @@ Polymer({
     },
 
     openEditDialog: function(event, data) {
-        this.deleteDialog = false;
         if (data.blueprint) {
             let blueprint = data.blueprint,
                 risk = blueprint.risks[0];
@@ -133,21 +132,28 @@ Polymer({
     },
 
     openDeleteDialog: function(event, data) {
-        this.deleteDialog = true
         this.dialogTexts = this.deleteDialogTexts;
         this.set('editedBlueprint', data.blueprint);
         this.confirmDialogOpened = true;
     },
 
     _saveEditedArea: function() {
-        if (!this.validate() && !this.deleteDialog) { return; }
+        if (!this.validate()) { return; }
 
-        if (_.isEqual(this.originalData, this.editedBlueprint) && !this.deleteDialog) {
+        if (_.isEqual(this.originalData, this.editedBlueprint)) {
             this.dialogOpened = false;
             this.resetDialog();
             return;
         }
 
+        this._triggerSaveEngagement();
+    },
+
+    _deleteArea: function() {
+        this._triggerSaveEngagement();
+    },
+
+    _triggerSaveEngagement() {
         this.requestInProcess = true;
         this.fire('action-activated', {type: 'save', quietAdding: true});
     },

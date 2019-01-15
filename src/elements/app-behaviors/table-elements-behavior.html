@@ -24,6 +24,10 @@
                     return {};
                 }
             },
+            /*
+            * Determines whether Save is performed on dialog confirm (when false),
+            * or on click on Save btn in status component (when true)
+            */
             saveWithButton: {
                 type: Boolean,
                 value: false
@@ -194,14 +198,29 @@
                 return;
             }
 
-            //save after popup click
-            if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
-                this.requestInProcess = true;
-                this.fire('action-activated', {type: 'save', quietAdding: true});
-                return;
+            //Perform save on confirm btn clicked in dialog
+            if (this.dialogOpened && !this.saveWithButton) {
+               this._triggerSaveEngagement();
+               return;
             }
+            console.log('save with status btn');
+            //Perform save outside dialog (by clicking the Save btn in the status component)
+            this._updateDataItemsWithoutSave()
 
-            //save after click on save button
+            this.dialogOpened = false;
+            this.resetDialog();
+        },
+
+        _triggerSaveEngagement() {
+            this.requestInProcess = true;
+            this.fire('action-activated', {type: 'save', quietAdding: true});
+        },
+
+        /*
+         * In this case Save is trigger outside the dialog,
+         * by clicking Save btn in status component
+         */
+        _updateDataItemsWithoutSave: function() {
             let item = _.cloneDeep(this.editedItem);
             if (!this.addDialog && !isNaN(this.editedIndex)) {
                 //if is edit popup
@@ -210,9 +229,6 @@
                 //if is creation popup
                 this.push('dataItems', item);
             }
-
-            this.dialogOpened = false;
-            this.resetDialog();
         },
 
         resetDialog: function(opened) {
@@ -242,7 +258,7 @@
         removeItem: function() {
             if (this.editedItem && this.editedItem.id !== undefined) {
                 this.set('editedItem._delete', true);
-                this._addItemFromDialog();
+                this._triggerSaveEngagement();
             } else {
                 this.splice('dataItems', this.editedIndex, 1);
                 this.resetDialog();
@@ -266,7 +282,7 @@
             this.set('errors', refactoredData);
         },
 
-        deleteCanceled: function(ev) {
+        deleteCanceled: function(event) {
             return event && event.detail && event.detail.confirmed === false;
         },
     };
