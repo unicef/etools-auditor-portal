@@ -51,6 +51,7 @@
                 keep-dialog-open
                 opened="{{confirmDialogOpened}}"
                 on-confirm-btn-clicked="_saveEditedArea"
+                disable-confirm-btn="{{requestInProcess}}"
                 ok-btn-text="Delete">
             [[dialogTexts.dialogTitle]]
         </etools-dialog>
@@ -59,6 +60,7 @@
                 dialog-title="[[dialogTexts.dialogTitle]]"
                 ok-btn-text="[[dialogTexts.confirmBtn]]"
                 show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
                 on-confirm-btn-clicked="_saveEditedArea">
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">

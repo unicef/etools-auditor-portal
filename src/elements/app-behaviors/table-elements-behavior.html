@@ -193,6 +193,7 @@
         },
 
         _addItemFromDialog: function(event) {
+            //* This if might be deprecated and unused
             if(event && event.detail && event.detail.dialogName === 'deleteConfirm') {
                 this.removeItem();
                 return;
