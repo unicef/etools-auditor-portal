@@ -61,6 +61,7 @@
                 keep-dialog-open
                 opened="{{confirmDialogOpened}}"
                 on-confirm-btn-clicked="removeItem"
+                disable-confirm-btn="{{requestInProcess}}"
                 ok-btn-text="Delete">
             [[deleteTitle]]
         </etools-dialog>
@@ -69,6 +70,7 @@
                 dialog-title="[[dialogTitle]]"
                 ok-btn-text="[[confirmBtnText]]"
                 show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
                 on-confirm-btn-clicked="_addItemFromDialog">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
