@@ -193,7 +193,6 @@
         },
 
         _addItemFromDialog: function(event) {
-            // debugger;
             if(event && event.detail && event.detail.dialogName === 'deleteConfirm') {
                 this.removeItem();
                 return;
@@ -214,7 +213,6 @@
             if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
                 this.requestInProcess = true;
                 this.fire('action-activated', {type: 'save', quietAdding: true});
-                // this.resetDialog();
                 return;
             }
 
