@@ -115,7 +115,6 @@
         },
 
         canAddSP: function(basePermissionPath, readonlyTab, withoutFindingColumn) {
-            console.log('basePermissionPath',basePermissionPath);
             return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
         },
 

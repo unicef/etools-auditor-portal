@@ -199,11 +199,11 @@
             }
 
             //Perform save on confirm btn clicked in dialog
-            if (this.dialogOpened && !this.saveWithButton) {
+            if (!this.saveWithButton && this.dialogOpened) {
                this._triggerSaveEngagement();
                return;
             }
-            console.log('save with status btn');
+
             //Perform save outside dialog (by clicking the Save btn in the status component)
             this._updateDataItemsWithoutSave()
 
@@ -216,10 +216,6 @@
             this.fire('action-activated', {type: 'save', quietAdding: true});
         },
 
-        /*
-         * In this case Save is trigger outside the dialog,
-         * by clicking Save btn in status component
-         */
         _updateDataItemsWithoutSave: function() {
             let item = _.cloneDeep(this.editedItem);
             if (!this.addDialog && !isNaN(this.editedIndex)) {
