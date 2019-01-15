@@ -54,7 +54,7 @@ Polymer({
     removeRisk: function() {
         let blueprint = this._createBlueprintFromEvent(event);
         blueprint.risks[0]._delete = true;
-        this.fire('kicw-risk-edit', {blueprint, delete: true});
+        this.fire('kicw-risk-delete', {blueprint, delete: true});
     },
 
     _createBlueprintFromEvent: function(event) {
