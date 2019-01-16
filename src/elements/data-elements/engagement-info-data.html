@@ -49,10 +49,11 @@
             _handleDataResponse: function(data) {
                 this.responseData = data;
                 this.requestsCompleted.data = true;
-                this._handleResponse(this.responseData);
+                this._finishRequests(this.responseData || {});
             },
 
             _handleOptionsResponse: function(data) {
+                debugger
                 let actions = _.get(data,'actions', null);
                 if (actions) {
                     this._addToCollection(`engagement_${this.engagementId}`, actions);
@@ -61,7 +62,7 @@
                 }
 
                 this.requestsCompleted.options = true;
-                this._handleResponse(this.responseData);
+                this._finishRequests(this.responseData || {});
             },
 
             _handleDataOptionsResponse: function(data, params) {
@@ -70,14 +71,11 @@
                 this._handleEngagementOptions(params, actions, name);
             },
 
-            _handleResponse: function (data) {
-                this._finishRequests(data || {});
-            },
 
             _handleEngagementOptions: function ({postfix, requestName}, actions, name) {
                 this._addToCollection(`engagement_${this.engagementId}_${postfix}`, actions, name);
                 this.requestsCompleted[requestName] = true;
-                this._handleResponse(this.responseData);
+                this._finishRequests(this.responseData || {});
             },
 
             _finishRequests: function(data) {
@@ -128,7 +126,7 @@
             _idChanged: function(id) {
                 if (!id || isNaN(id) || !this.engagementType) { return; }
                 if (+id === this.lastId) {
-                    this.lastError ? this._handleError() : this._handleResponse(this.responseData);
+                    this.lastError ? this._handleError() : this._finishRequests(this.responseData || {});
                     return;
                 }
 
