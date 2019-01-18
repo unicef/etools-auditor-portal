@@ -224,6 +224,7 @@
             },
 
             _handleError: function (event, error) {
+                debugger
                 if (this.requestOptions.method === 'PATCH') {
                     this.fire('global-loading', {type: 'update-engagement'});
                 } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('submit')) {
