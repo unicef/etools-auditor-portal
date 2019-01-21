@@ -1,13 +1,13 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config, permission-controller]-->
 
 <dom-module id="get-action-points">
     <template>
-        <etools-ajax
+        <!-- <etools-ajax
                 url="[[url]]"
                 on-success="_handleResponse"
                 on-fail="_handleError">
-        </etools-ajax>
+        </etools-ajax> -->
     </template>
 
     <script>
@@ -16,7 +16,8 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
-                APBehaviors.PermissionController
+                APBehaviors.PermissionController,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -32,9 +33,8 @@
 
             },
 
-            _handleResponse: function (data, detail) {
-                this.actionPoints = detail && detail.length ? detail : [];
-                this.url = null;
+            _handleResponse: function (data) {
+                this.actionPoints = data.length && data || [];
                 this.fire('ap-loaded', {success: true});
             },
 
@@ -45,7 +45,20 @@
             _engagementIdChanged: function(engagementId) {
                 if (!engagementId) { return; }
                 let apBaseUrl = this.getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
-                this.url = `${apBaseUrl}action-points/?page_size=all`;
+                let url = `${apBaseUrl}action-points/?page_size=all`;
+                this._getActionPoints(url);
+            },
+
+            _getActionPoints: function(url) {
+                const requestOptions = {
+                    endpoint: {
+                        url,
+                    }
+                };
+                
+                this.sendRequest(requestOptions)
+                    .then(this._handleResponse.bind(this))
+                    .catch(this._handleError.bind(this))
             }
         });
     </script>

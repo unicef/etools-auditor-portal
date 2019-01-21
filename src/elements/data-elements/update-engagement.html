@@ -2,50 +2,6 @@
 
 <dom-module id="update-engagement">
     <template>
-        <!-- <etools-ajax
-                method="{{method}}"
-                url="{{url}}"
-                body="{{postData}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax> -->
-
-        <!-- <etools-ajax
-                method="OPTIONS"
-                url="[[optionsUrl]]"
-                on-success="_handleOptionsResponse"
-                on-fail="_handleOptionsError">
-        </etools-ajax> -->
-
-        <!-- <etools-ajax
-                method="OPTIONS"
-                url="[[apOptionsUrl]]"
-                data-path-postfix="ap"
-                data-request-name="apOptions"
-                on-success="_handleDataOptionsResponse"
-                on-fail="_handleDataOptionsResponse"
-                on-forbidden="_handleDataOptionsResponse">
-        </etools-ajax>
-
-        <etools-ajax
-                method="OPTIONS"
-                url="[[attachments]]"
-                data-path-postfix="attachments"
-                data-request-name="attachments"
-                on-success="_handleDataOptionsResponse"
-                on-fail="_handleDataOptionsResponse"
-                on-forbidden="_handleDataOptionsResponse">
-        </etools-ajax>
-
-        <etools-ajax
-                method="OPTIONS"
-                url="[[reportAttachments]]"
-                data-path-postfix="report_attachments"
-                data-request-name="reportAttachments"
-                on-success="_handleDataOptionsResponse"
-                on-fail="_handleDataOptionsResponse"
-                on-forbidden="_handleDataOptionsResponse">
-        </etools-ajax> -->
     </template>
 
     <script>
@@ -223,7 +179,7 @@
                     .catch(this._handleDataOptionsResponse('ap','apOptions'));
             },
 
-            _handleError: function (event, error) {
+            _handleError: function (error) {
                 debugger
                 if (this.requestOptions.method === 'PATCH') {
                     this.fire('global-loading', {type: 'update-engagement'});
@@ -237,10 +193,7 @@
 
                 this.actionUrl = '';
 
-                let responseData = error && error.request && error.request.detail &&
-                                    error.request.detail.request && error.request.detail.request.xhr;
-
-                let {status, response} = responseData || {};
+                let {status, response} = error || {};
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);
@@ -248,6 +201,7 @@
                         response = {};
                     }
                 }
+                
 
                 if (status === 400) {
                     this.set('errorObject', response);
@@ -280,12 +234,12 @@
                 if (engagement.submit && !this.actionUrl) {
                     //Prepare submit request. Save submit url, update engagement data at first
                     let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
-                    // this.actionUrl = url + engagement.submit;
+                    this.actionUrl = url + engagement.submit;
                     // this.requestOptions.method = 'PATCH';
                     this.set('requestOptions', {
                         method: 'PATCH',
                         endpoint: {
-                            url: url + engagement.submit
+                            url,
                         },
                         body: engagement.data
                     });
@@ -296,12 +250,12 @@
                     
                     this.fire('global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
                     this.fire('global-loading', {type: 'update-engagement'});
-                    // this.url = this.actionUrl;
+                    this.url = this.actionUrl;
                     // this.requestOptions.method = 'POST';
                     this.set('requestOptions', {
                         method: 'POST',
                         endpoint: {
-                            url: this.actionUrl
+                            url: this.url
                         },
                         body: this.postData
                     });
