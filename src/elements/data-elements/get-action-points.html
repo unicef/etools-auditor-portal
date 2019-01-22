@@ -3,6 +3,7 @@
 
 <dom-module id="get-action-points">
     <template>
+
     </template>
 
     <script>
@@ -27,8 +28,8 @@
                 }
             },
 
-            _handleResponse: function (detail) {
-                this.actionPoints = detail && detail.length ? detail : [];
+            _handleResponse: function (data) {
+                this.actionPoints = data.length && data || [];
                 this.fire('ap-loaded', {success: true});
             },
 
@@ -40,13 +41,20 @@
                 if (!engagementId) { return; }
                 let apBaseUrl = this.getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
                 let url = `${apBaseUrl}action-points/?page_size=all`;
-                this.sendRequest({
-                    endpoint: {url}
-                }).then(resp => {
-                   this._handleResponse(resp);
-                }).catch(err => {
-                    this._handleError(err);
-                });
+
+                this._getActionPoints(url);
+            },
+
+            _getActionPoints: function(url) {
+                const requestOptions = {
+                    endpoint: {
+                        url,
+                    }
+                };
+                
+                this.sendRequest(requestOptions)
+                    .then(resp => this._handleResponse(resp))
+                    .catch(err => this._handleError(err))
             }
         });
     </script>

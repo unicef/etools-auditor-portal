@@ -259,8 +259,8 @@
                 },
 
                 _handleStaffSCOptionsResponse: function(data) {
-                    let actions = _.get(data, 'detail.actions') || {},
-                        name = _.get(data, 'detail.name', ''),
+                    let actions = _.get(data, 'actions') || {},
+                        name = _.get(data, 'name', ''),
                         collection = 'new_staff_sc',
                         dataName  = 'staffSCPermissions'
 
@@ -273,8 +273,8 @@
                 },
 
                 _atmOptionsResponse: function(data) {
-                    let actions = _.get(data, 'detail.actions', {}),
-                            name = _.get(data, 'detail.name', '');
+                    let actions = _.get(data, 'actions', {}),
+                            name = _.get(data, 'name', '');
 
                     if (actions) {
                         this._addToCollection(`new_engagement_attachments`, actions || {}, name);
