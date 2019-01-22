@@ -133,6 +133,9 @@ Polymer({
         saveWithButton: {
             type: Boolean,
             value: false
+        },
+        newEmail: {
+            type: String
         }
     },
 
@@ -378,7 +381,7 @@ Polymer({
 
         let me = this.getUserData() || {},
             updateOptions = _.get(details, 'data.user.email') === me.email;
-            
+
         details.data = details.data || {};
         details.data.hasAccess = this.editedItem.hasAccess;
         if (details.action === 'patch') {

@@ -56,8 +56,8 @@
                 };
 
                 this.sendRequest(requestOptions)
-                    .then(this._handleResponse.bind(this))
-                    .catch(this._handleError.bind(this));
+                    .then(resp => this._handleResponse(resp))
+                    .catch(err => this._handleError(err));
             },
 
             _handleResponse: function(detail) {
@@ -72,7 +72,8 @@
                 this.fire('ap-request-completed', {success: true});
             },
 
-            _handleError: function( error) {
+
+            _handleError: function(error) {
                 let {status, response} = error || {};
 
                 if (typeof response === 'string') {

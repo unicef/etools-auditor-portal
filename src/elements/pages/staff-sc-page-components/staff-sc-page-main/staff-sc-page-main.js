@@ -6,7 +6,8 @@ Polymer({
     behaviors: [
         APBehaviors.QueryParamsController,
         APBehaviors.PermissionController,
-        etoolsAppConfig.globals
+        etoolsAppConfig.globals,
+        EtoolsAjaxRequestBehavior
     ],
 
     properties: {
@@ -57,7 +58,13 @@ Polymer({
     ],
 
     ready: function() {
-        this.auditFirmUrl = this.getEndpoint('filterAuditors').url + '?unicef_users_allowed=true';
+        this.sendRequest({
+            endpoint: {url: this.getEndpoint('filterAuditors').url + '?unicef_users_allowed=true'}
+        }).then(resp => {
+           this._auditFirmLoaded(resp);
+        }).catch(err => {
+            this._auditFirmLoaded(err);
+        });
     },
 
     _routeConfig: function(view, selectedPage) {
@@ -135,7 +142,7 @@ Polymer({
         }
     },
 
-    _auditFirmLoaded: function(event, data) {
+    _auditFirmLoaded: function(data) {
         let auditFirm = _.get(data, 'results.0');
         if (!auditFirm) {
             console.error('Can not load firm data.');

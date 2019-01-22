@@ -1,13 +1,8 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config, permission-controller]-->
 
 <dom-module id="get-attachments">
     <template>
-        <etools-ajax
-                url="[[url]]"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
     </template>
 
     <script>
@@ -16,7 +11,8 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
-                APBehaviors.PermissionController
+                APBehaviors.PermissionController,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -33,9 +29,8 @@
 
             },
 
-            _handleResponse: function (data, detail) {
+            _handleResponse: function (detail) {
                 this.attachments = detail && detail.results || [];
-                this.url = null;
                 this.fire('attachments-loaded', {success: true});
             },
 
@@ -45,7 +40,15 @@
 
             _baseIdChanged: function(baseId) {
                 if (!baseId) { return; }
-                this.url = this.getEndpoint(this.endpointName, {id: baseId}).url;
+                let url = this.getEndpoint(this.endpointName, {id: baseId}).url;
+
+                this.sendRequest({
+                    endpoint: {url}
+                }).then(resp => {
+                   this._handleResponse(resp);
+                }).catch(err => {
+                   this._handleError(err);
+                });
             }
         });
     </script>

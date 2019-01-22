@@ -122,6 +122,9 @@ Polymer({
             type: Boolean,
             value: false,
             computed: '_checkNotTouched(copyDialog, editedItem.*)'
+        },
+        requestData: {
+            type: String
         }
     },
 

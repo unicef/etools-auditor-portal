@@ -25,7 +25,6 @@
                     type: Array,
                     notify: true
                 }
-
             },
 
             _handleResponse: function (data) {
@@ -41,6 +40,7 @@
                 if (!engagementId) { return; }
                 let apBaseUrl = this.getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
                 let url = `${apBaseUrl}action-points/?page_size=all`;
+
                 this._getActionPoints(url);
             },
 
@@ -52,8 +52,8 @@
                 };
                 
                 this.sendRequest(requestOptions)
-                    .then(this._handleResponse.bind(this))
-                    .catch(this._handleError.bind(this))
+                    .then(resp => this._handleResponse(resp))
+                    .catch(err => this._handleError(err))
             }
         });
     </script>

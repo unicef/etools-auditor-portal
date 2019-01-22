@@ -3,6 +3,7 @@
 
 <dom-module id="update-attachments">
     <template>
+
     </template>
 
     <script>
@@ -36,23 +37,31 @@
 
             _dataChanged: function(data = {}) {
                 let {method, attachmentsData} = data;
-                if (!method || !attachmentsData || !this.baseId) { return; }
-                this.method = method;
-                const endpoint = this.getEndpoint(this.endpointName, {id: this.baseId});
+                if (!method || !attachmentsData || !this.baseId) {
+                    return;
+                }
 
-                if (attachmentsData.id) { url += `${attachmentsData.id}/` }
-
+                let url = this.getEndpoint(this.endpointName, {id: this.baseId}).url;
+                if (attachmentsData.id) {
+                    url += `${attachmentsData.id}/`;
+                }
                 this.postData = attachmentsData;
-                this.requestOptions = {
-                    method: this.method,
-                    endpoint,
-                    body: this.postData,
-                    multiPart: true
+                this.method = method;
 
+                let options = {
+                    method: method,
+                    endpoint: {url},
+                    body: attachmentsData,
+                    multiPart: true,
+                    prepareMultipartData: true
                 };
-                this.sendRequest(this.requestOptions)
-                    .then(this._handleResponse.bind(this))
-                    .catch(this._handleError.bind(this));
+
+                this.sendRequest(options)
+                    .then((resp) => {
+                        this._handleResponse(resp);
+                    }).catch((error) => {
+                       this._handleError(error);
+                });
             },
 
             _handleResponse: function(detail) {
@@ -74,7 +83,6 @@
             },
 
             _handleError: function(error) {
-
                 let {status, response} = error || {};
                 if (typeof response === 'string') {
                     try {
