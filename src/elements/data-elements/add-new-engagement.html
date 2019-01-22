@@ -73,7 +73,6 @@
                     body: this.postData,
                     endpoint: this.getEndpoint(endpointName)
                 };
-                console.log('zz', options)
                 this.sendRequest(options)
                     .then(this._handleResponse.bind(this))
                     .catch(this._handleError.bind(this))

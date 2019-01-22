@@ -29,7 +29,10 @@
                     notify: true
                 },
                 baseId: Number,
-                endpointName: String
+                endpointName: String,
+                requestOptions: {
+                    type: Object
+                }
             },
 
             _dataChanged: function(data = {}) {
@@ -59,8 +62,6 @@
                     }).catch((error) => {
                        this._handleError(error);
                 });
-
-
             },
 
             _handleResponse: function(detail) {

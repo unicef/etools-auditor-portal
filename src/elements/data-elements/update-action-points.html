@@ -43,16 +43,21 @@
                 if (apData.id) { url += `${apData.id}/` }
                 if (complete) { url += 'complete/'; }
 
-                this.sendRequest({
-                    method: method,
-                    endpoint: {url},
-                    body: apData
-                }).then(resp => {
-                   this._handleResponse(resp);
-                }).catch(err => {
-                    this._handleError(err);
-                });
+                this._sendUpdateRequest(url, apData);
+            },
 
+            _sendUpdateRequest(url, body) {
+                const requestOptions = {
+                    method: this.method,
+                    endpoint: {
+                        url
+                    },
+                    body
+                };
+
+                this.sendRequest(requestOptions)
+                    .then(resp => this._handleResponse(resp))
+                    .catch(err => this._handleError(err));
             },
 
             _handleResponse: function(detail) {
@@ -67,8 +72,10 @@
                 this.fire('ap-request-completed', {success: true});
             },
 
+
             _handleError: function(error) {
                 let {status, response} = error || {};
+
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);
