@@ -9,7 +9,8 @@ Polymer({
         APBehaviors.StaticDataController,
         APBehaviors.TableElementsBehavior,
         APBehaviors.TextareaMaxRowsBehavior,
-        APBehaviors.CommonMethodsBehavior
+        APBehaviors.CommonMethodsBehavior,
+        EtoolsAjaxRequestBehavior
     ],
 
     properties: {
@@ -292,7 +293,19 @@ Polymer({
         let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
             url = `${apBaseUrl}action-points/${id}/`;
 
-        this.apOptionUrl = url;
+        this._sendOptionsRequest(url);
+    },
+
+    _sendOptionsRequest: function(url) {
+        const requestOptions = {
+            method: 'OPTIONS',
+            endpoint: {
+                url
+            },
+        };
+        this.sendRequest(requestOptions)
+            .then(this._handleOptionResponse.bind(this))
+            .catch(this._handleOptionResponse.bind(this));
     },
 
     _openCopyDialog: function(event) {
@@ -321,10 +334,8 @@ Polymer({
         });
     },
 
-    _handleOptionResponse: function(event, detail) {
+    _handleOptionResponse: function(detail) {
         this.fire('global-loading', {type: 'get-ap-options'});
-        this.apOptionUrl = null;
-
         if (detail && detail.actions) {
             this._updateCollection('edited_ap_options', detail.actions);
         }
