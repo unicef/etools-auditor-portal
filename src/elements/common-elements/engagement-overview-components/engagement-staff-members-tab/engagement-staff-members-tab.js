@@ -292,7 +292,6 @@ Polymer({
     },
 
     _emailDisabled: function(request, createPopup, emailChecking) {
-        return false;
         return !!(!createPopup || request || emailChecking);
     },
 
