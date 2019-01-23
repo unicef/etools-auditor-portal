@@ -54,9 +54,7 @@ Polymer({
     _changeCountry: function(event) {
         let country = event && event.model && event.model.item,
             id = country && country.id;
-
         if (Number(parseFloat(id)) !== id) { throw 'Can not find country id!'; }
-
         this.fire('global-loading', {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
         this.countryData = {country: id};
 
