@@ -1,14 +1,8 @@
-<!--import [polymer, etools-ajax]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior]-->
 
 <dom-module id="add-new-engagement">
     <template>
-        <etools-ajax
-                method="POST"
-                url="{{url}}"
-                body="{{postData}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
+        
     </template>
 
     <script>
@@ -16,7 +10,8 @@
             is: 'add-new-engagement',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -39,14 +34,11 @@
             observers: ['_newEngagementChanged(newEngagementData, endpointName)'],
 
             _handleResponse: function (data) {
-                this.fire('engagement-created', {success: true, data: data.detail});
+                this.fire('engagement-created', {success: true, data});
             },
 
-            _handleError: function (event, error) {
-                let responseData = error && error.request && error.request.detail &&
-                        error.request.detail.request && error.request.detail.request.xhr;
-
-                let {status, response} = responseData || {};
+            _handleError: function (error) {
+                let {status, response} = error;
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);
@@ -72,7 +64,18 @@
 
                 this.fire('global-loading', {type: 'create-engagement', active: true, message: 'Creating new engagement...'});
                 this.postData = engagement.data;
-                this.url = url;
+                this._makeRequest(endpointName)
+            },
+
+            _makeRequest(endpointName) {
+                const options = {
+                    method: 'POST',
+                    body: this.postData,
+                    endpoint: this.getEndpoint(endpointName)
+                };
+                this.sendRequest(options)
+                    .then(this._handleResponse.bind(this))
+                    .catch(this._handleError.bind(this))
             }
         });
     </script>

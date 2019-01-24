@@ -1,16 +1,9 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config]-->
 
 <dom-module id="update-attachments">
     <template>
-        <etools-ajax
-                method="{{method}}"
-                url="{{url}}"
-                multi-part
-                body="{{postData}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
+
     </template>
 
     <script>
@@ -18,7 +11,8 @@
             is: 'update-attachments',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -35,22 +29,42 @@
                     notify: true
                 },
                 baseId: Number,
-                endpointName: String
+                endpointName: String,
+                requestOptions: {
+                    type: Object
+                }
             },
 
             _dataChanged: function(data = {}) {
                 let {method, attachmentsData} = data;
-                if (!method || !attachmentsData || !this.baseId) { return; }
-                this.method = method;
+                if (!method || !attachmentsData || !this.baseId) {
+                    return;
+                }
+
                 let url = this.getEndpoint(this.endpointName, {id: this.baseId}).url;
-
-                if (attachmentsData.id) { url += `${attachmentsData.id}/` }
-
-                this.url = url;
+                if (attachmentsData.id) {
+                    url += `${attachmentsData.id}/`;
+                }
                 this.postData = attachmentsData;
+                this.method = method;
+
+                let options = {
+                    method: method,
+                    endpoint: {url},
+                    body: attachmentsData,
+                    multiPart: true,
+                    prepareMultipartData: true
+                };
+
+                this.sendRequest(options)
+                    .then((resp) => {
+                        this._handleResponse(resp);
+                    }).catch((error) => {
+                       this._handleError(error);
+                });
             },
 
-            _handleResponse: function(event, detail) {
+            _handleResponse: function(detail) {
                 let deleteRequest = this.method === 'DELETE',
                     id = deleteRequest ? this.postData.id : detail.id;
 
@@ -68,11 +82,8 @@
                 this.fire('attachments-request-completed', {success: true});
             },
 
-            _handleError: function(event, error) {
-                let responseData = error && error.request && error.request.detail &&
-                        error.request.detail.request && error.request.detail.request.xhr;
-
-                let {status, response} = responseData || {};
+            _handleError: function(error) {
+                let {status, response} = error || {};
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);

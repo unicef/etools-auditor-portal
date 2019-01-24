@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior]-->
 <!--import [page-layout-styles, shared-styles, module-styles, engagements-list-view, new-engagement-view,
             query-params-controller, permission-controller, etools-app-config]-->
 
@@ -17,12 +17,6 @@
                 data="{{routeData}}"
                 tail="{{subroute}}">
         </app-route>
-
-        <etools-ajax
-                url="[[auditFirmUrl]]"
-                on-success="_auditFirmLoaded"
-                on-fail="_auditFirmLoaded">
-        </etools-ajax>
 
         <iron-pages
                 id="categoryPages"

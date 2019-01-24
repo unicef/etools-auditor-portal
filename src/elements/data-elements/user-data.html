@@ -1,16 +1,9 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [permission-controller, user-controller]-->
 
 <dom-module id="user-data">
     <template>
-        <etools-ajax
-                endpoint="[[endpoint]]"
-                caching-storage="custom"
-                dexie-db-collection="profile"
-                on-success="_handleResponse"
-                on-forbidden="_forbidden"
-                on-fail="_handleError">
-        </etools-ajax>
+
     </template>
 
     <script>
@@ -21,16 +14,22 @@
                 etoolsAppConfig.globals,
                 APBehaviors.PermissionController,
                 APBehaviors.UserController,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {},
 
             ready: function () {
-                this.endpoint = this.getEndpoint('userProfile');
+                this.sendRequest({
+                    endpoint: this.getEndpoint('userProfile')
+                }).then(resp => {
+                   this._handleResponse(resp);
+                }).catch(err => {
+                    this._handleError(err);
+                });
             },
 
-            _handleResponse: function (data) {
-                let user = data.detail;
+            _handleResponse: function (user) {
                 let previousUserId = JSON.parse(localStorage.getItem('userId'));
                 let countriesAvailable = _.get(user, 'profile.countries_available') || [];
 
@@ -47,13 +46,14 @@
                 this.fire('user-profile-loaded');
             },
 
-            _handleError: function (rsp, err) {
-                console.error('Can\'t load user data');
+            _handleError: function (err) {
+                if (err.status === 403) {
+                    window.location.href = window.location.origin + '/';
+                } else {
+                    console.error('Can\'t load user data');
+                }
             },
 
-            _forbidden: function() {
-                window.location.href = window.location.origin + '/';
-            }
         });
     </script>
 </dom-module>
