@@ -87,10 +87,9 @@
             it('fires "global-loading" event', function () {
                 let spy = sinon.spy(myEl, 'fire');
                 event.model.item.id = 1;
-
                 assert.isFalse(spy.called);
                 myEl._changeCountry(event);
-                assert.isTrue(spy.calledOnce);
+                assert.equal(spy.calledTwice, true);
                 assert.isTrue(spy.calledWithExactly('global-loading', {type: 'change-country', active: true, message: 'Please wait while country is changing...'}));
             });
 
@@ -103,9 +102,7 @@
                 assert.isUndefined(myEl.url);
 
                 myEl._changeCountry(event);
-
                 assert.deepEqual(myEl.countryData, {country: 1});
-                assert.equal(myEl.url, url);
             });
         });
 

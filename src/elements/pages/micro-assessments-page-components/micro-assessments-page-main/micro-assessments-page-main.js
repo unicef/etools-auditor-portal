@@ -46,7 +46,7 @@ Polymer({
         'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
     },
-
+ 
     _validateEngagement: function() {
         let basicInfoValid = this._validateBasicInfo();
         let questionnaireValid = this.getElement('#questionnaire').validateComplited();

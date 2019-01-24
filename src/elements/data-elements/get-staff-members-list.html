@@ -1,4 +1,4 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer,etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config, permission-controller, user-controller]-->
 
 <dom-module id="get-staff-members-list">
@@ -10,12 +10,12 @@
                 on-fail="_handleError">
         </etools-ajax>
 
-        <etools-ajax
+        <!-- <etools-ajax
                 method="OPTIONS"
                 url="[[optionsUrl]]"
                 on-success="_handleOptionsResponse"
                 on-fail="_handleOptionsResponse">
-        </etools-ajax>
+        </etools-ajax> -->
     </template>
 
     <script>
@@ -26,6 +26,7 @@
                 etoolsAppConfig.globals,
                 APBehaviors.PermissionController,
                 APBehaviors.UserController,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -75,8 +76,19 @@
                 if (this.collectionExists(`staff_members_${organisationId}`)) {
                     this.requestsCompleted.options = true;
                 } else {
-                    this.optionsUrl = this.url;
+                    this._getOptions(organisationId, listQueries);
                 }
+            },
+
+            _getOptions: function(organisationId, params) {
+                const options = {
+                    method: 'OPTIONS',
+                    endpoint: this.getEndpoint('staffMembers', {id: organisationId}),
+                    params
+                };
+                this.sendRequest(options)
+                    .then(this._handleOptionsResponse.bind(this))
+                    .catch(this._handleOptionsResponse.bind(this))
             },
 
             _prepareQueries: function(listQueries) {
@@ -98,9 +110,9 @@
             },
 
             _handleOptionsResponse: function(data) {
-                let actions = data.detail && data.detail.actions;
+                let actions = data && data.actions;
                 if (actions) {
-                    this._addToCollection(`staff_members_${this.organisationId}`, data.detail.actions);
+                    this._addToCollection(`staff_members_${this.organisationId}`, actions);
                 } else {
                     console.error('Can not load permissions for engagement');
                 }

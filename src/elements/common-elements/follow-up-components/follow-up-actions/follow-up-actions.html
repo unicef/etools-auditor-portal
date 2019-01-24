@@ -1,4 +1,4 @@
-<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input, paper-icon-button, etools-content-panel,
+<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input,etools-ajax/etools-ajax-request-behavior, paper-icon-button, etools-content-panel,
             iron-icons, lodash, paper-tooltip, paper-input/paper-textarea, paper-button, etools-ajax]-->
 
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
@@ -9,12 +9,6 @@
         <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
         <!-- inject styles './follow-up-actions.scss'-->
 
-        <etools-ajax
-                url="[[apOptionUrl]]"
-                method="OPTIONS"
-                on-success="_handleOptionResponse"
-                on-fail="_handleOptionResponse">
-        </etools-ajax>
         <get-action-points engagement-id="[[engagementId]]" action-points="{{dataItems}}"></get-action-points>
         <update-action-points engagement-id="[[engagementId]]"
                               request-in-process="{{requestInProcess}}"
