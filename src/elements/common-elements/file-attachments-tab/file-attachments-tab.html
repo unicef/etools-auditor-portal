@@ -1,6 +1,6 @@
 <!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel, paper-tooltip]-->
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
-            common-methods-behavior, get-attachments, update-attachments, error-handler-behavior]-->
+            common-methods-behavior, get-attachments, update-attachments, error-handler-behavior, etools-dialog]-->
 
 <dom-module id="file-attachments-tab">
     <template>
@@ -71,13 +71,20 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
-                opened="{{dialogOpened}}"
-                delete-dialog="[[deleteDialog]]"
-                dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="[[requestInProcess]]">
+        <etools-dialog theme="confirmation" size="md"
+                       opened="{{confirmDialogOpened}}"
+                       on-close="_deleteAttachment"
+                       ok-btn-text="Delete">
+            [[deleteTitle]]
+        </etools-dialog>
 
+        <etools-dialog no-padding keep-dialog-open size="md"
+                opened="{{dialogOpened}}"
+                dialog-title="[[dialogTitle]]"
+                ok-btn-text="[[confirmBtnText]]"
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_saveAttachment">
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <template is="dom-if" if="[[showFileTypes(basePermissionPath)]]">
@@ -157,7 +164,7 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './file-attachments-tab.js'-->

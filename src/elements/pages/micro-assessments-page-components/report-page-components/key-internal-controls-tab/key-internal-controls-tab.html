@@ -1,7 +1,7 @@
 <!--import [polymer, etools-content-panel, paper-dropdown-menu, paper-listbox, paper-item,
             etools-searchable-multiselection-menu, lodash]-->
 
-<!--import [list-header, list-element, subject-area-element, dialog-element, tab-inputs-styles, module-styles,
+<!--import [list-header, list-element, subject-area-element, etools-dialog, tab-inputs-styles, module-styles,
             textarea-max-rows-behavior, common-methods-behavior, static-data-behavior, permission-controller,
             error-handler-behavior]-->
 
@@ -25,11 +25,13 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 dialog-title="Edit Subject Area - {{editedArea.blueprints.0.header}}"
-                confirm-btn-text="Save"
-                request-in-process="{{requestInProcess}}">
+                ok-btn-text="Save"
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_saveEditedArea">
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">
                         <div class="row-h group">
@@ -80,7 +82,7 @@
                         </div>
                     </div>
                 </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './key-internal-controls-tab.js'-->

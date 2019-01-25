@@ -1,7 +1,7 @@
 <!--import [polymer, etools-content-panel, etools-currency-amount-input, etools-searchable-multiselection-menu,
             paper-input, paper-toast, lodash, paper-tooltip]-->
 
-<!--import [list-header, list-element, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, dialog-element,
+<!--import [list-header, list-element, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, etools-dialog,
             table-elements-behavior, static-data-behavior, common-methods-behavior]-->
 
 <dom-module id="findings-summary">
@@ -36,11 +36,15 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
-                opened="{{dialogOpened}}"
-                dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
-                request-in-process="[[requestInProcess]]">
+        <etools-dialog id="findings-summary"
+                       size="md"
+                       no-padding
+                       keep-dialog-open
+                       opened="{{dialogOpened}}"
+                       on-confirm-btn-clicked="_addItemFromDialog"
+                       dialog-title="[[dialogTitle]]"
+                       ok-btn-text="Save">
+
             <div class="row-h repeatable-item-container" without-line>
                 <div class="repeatable-item-content">
                     <div class="row-h group">
@@ -188,7 +192,9 @@
                     </div>
                 </div>
             </div>
-        </dialog-element>
+
+        </etools-dialog>
+
     </template>
 
     <!-- inject scripts './findings-summary.js'-->

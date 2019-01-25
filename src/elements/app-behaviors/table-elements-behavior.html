@@ -24,6 +24,10 @@
                     return {};
                 }
             },
+            /*
+            * Determines whether Save is performed on dialog confirm (when false),
+            * or on click on Save btn in status component (when true)
+            */
             saveWithButton: {
                 type: Boolean,
                 value: false
@@ -39,6 +43,10 @@
                 value: false
             },
             requestInProcess: {
+                type: Boolean,
+                value: false
+            },
+            confirmDialogOpened: { //confirmation/deleteDialogOpened
                 type: Boolean,
                 value: false
             }
@@ -57,10 +65,16 @@
                 this.requestInProcess = false;
                 this.dialogOpened = false;
             }
+            if (this.confirmDialogOpened) {
+                this.requestInProcess = false;
+                this.confirmDialogOpened = false;
+            }
         },
 
         getTabData: function() {
-            if (this.dialogOpened && !this.saveWithButton) { return this.getCurrentData(); }
+            if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
+                 return this.getCurrentData();
+            }
             if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
             if (!this.originalData.length && !this.dataItems.length) { return null; }
             let data = [];
@@ -75,13 +89,15 @@
         },
 
         getCurrentData: function() {
-            if (!this.dialogOpened) { return null; }
+            if (!this.dialogOpened && !this.confirmDialogOpened) { return null; }
             return [_.cloneDeep(this.editedItem)];
         },
 
         _canBeChanged: function(basePath) {
             let path = basePath || this.basePermissionPath;
-            if (!path) { return true; }
+            if (!path) {
+              return true;
+            }
 
             let readOnly = this.isReadonly(`${path}.${this.mainProperty}`);
             if (readOnly === null) { readOnly = true; }
@@ -106,7 +122,9 @@
         },
 
         _setRequired: function(field) {
-            if (!this.basePermissionPath) { return false; }
+            if (!this.basePermissionPath) {
+              return false;
+            }
 
             let required = this.isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
 
@@ -135,18 +153,16 @@
             this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
             this.cancelBtnText = (this.editDialogTexts && this.editDialogTexts.cancelBtn) || 'Cancel';
 
-            this._openDialog(index);
+            this._setDialogData(index);
+            this.dialogOpened = true;
         },
 
         openDeleteDialog: function(event) {
             let index = this._getIndex(event);
 
-            this.dialogTitle = this.deleteTitle || 'Are you sure you want to delete?';
-            this.confirmBtnText = 'Delete';
-            this.cancelBtnText = 'Cancel';
-            this.deleteDialog = true;
+            this._setDialogData(index);
 
-            this._openDialog(index);
+            this.confirmDialogOpened = true;
         },
 
         _getIndex: function(event) {
@@ -158,20 +174,22 @@
             return index;
         },
 
-        _openDialog: function(index) {
+        _setDialogData: function(index) {
             this.editedItem = _.cloneDeep(this.dataItems[index]);
             this.originalEditedObj = _.cloneDeep(this.dataItems[index]);
             this.editedIndex = index;
-            this.dialogOpened = true;
         },
 
         _addItemFromDialog: function(event) {
+            //* This if might be deprecated and unused
             if(event && event.detail && event.detail.dialogName === 'deleteConfirm') {
                 this.removeItem();
                 return;
             }
 
-            if (!this.validate()) { return; }
+            if (!this.validate()) {
+              return;
+            }
             if (this.customValidation && !this.customValidation()) { return; }
 
             if (!this.addDialog && _.isEqual(this.originalEditedObj, this.editedItem)) {
@@ -180,14 +198,25 @@
                 return;
             }
 
-            //save after popup click
-            if (this.dialogOpened && !this.saveWithButton) {
-                this.requestInProcess = true;
-                this.fire('action-activated', {type: 'save', quietAdding: true});
-                return;
+            //Perform save on confirm btn clicked in dialog
+            if (!this.saveWithButton && this.dialogOpened) {
+               this._triggerSaveEngagement();
+               return;
             }
 
-            //save after click on save button
+            //Perform save outside dialog (by clicking the Save btn in the status component)
+            this._updateDataItemsWithoutSave()
+
+            this.dialogOpened = false;
+            this.resetDialog();
+        },
+
+        _triggerSaveEngagement() {
+            this.requestInProcess = true;
+            this.fire('action-activated', {type: 'save', quietAdding: true});
+        },
+
+        _updateDataItemsWithoutSave: function() {
             let item = _.cloneDeep(this.editedItem);
             if (!this.addDialog && !isNaN(this.editedIndex)) {
                 //if is edit popup
@@ -196,13 +225,12 @@
                 //if is creation popup
                 this.push('dataItems', item);
             }
-
-            this.dialogOpened = false;
-            this.resetDialog();
         },
 
         resetDialog: function(opened) {
-            if (opened) { return; }
+            if (opened) {
+              return;
+            }
             let elements = Polymer.dom(this.root).querySelectorAll('.validate-input');
 
             Array.prototype.forEach.call(elements, element => {
@@ -219,18 +247,19 @@
             this.editedItem = _.cloneDeep(this.itemModel);
         },
 
-        _getTitleValue: function(value) { return value || ''; },
+        _getTitleValue: function(value) {
+          return value || '';
+          },
 
         removeItem: function() {
             if (this.editedItem && this.editedItem.id !== undefined) {
                 this.set('editedItem._delete', true);
-                this._addItemFromDialog();
+                this._triggerSaveEngagement();
             } else {
                 this.splice('dataItems', this.editedIndex, 1);
                 this.resetDialog();
-                this.dialogOpened = false;
+                this.confirmDialogOpened = false;
             }
-            this.confirmDialogOpened = false;
         },
 
         _showItems: function(item) {
@@ -246,7 +275,11 @@
             if (!errorData) { return; }
             let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData)[0] : this.refactorErrorObject(errorData);
             this.set('errors', refactoredData);
-        }
+        },
+
+        deleteCanceled: function(event) {
+            return event && event.detail && event.detail.confirmed === false;
+        },
     };
 
     APBehaviors.TableElementsBehavior = [
