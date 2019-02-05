@@ -32,7 +32,7 @@ jobs:
           command: ./node_modules/.bin/bower install --allow-root --config.interactive=false
       - run:
           name: Some selenium driver
-          command: ./node_modules/.bin/selenium-standalone install --drivers.firefox.version=0.23.0  && ./node_modules/.bin/selenium-standalone start --drivers.firefox.version=0.23.0
+          command: ./node_modules/.bin/selenium-standalone install --drivers.firefox.version=0.23.0
       - save_cache:
           key: cache-{{ checksum "bower.json" }}
           paths:
