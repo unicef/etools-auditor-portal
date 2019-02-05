@@ -36,7 +36,9 @@ jobs:
             - bower_components
       - run:
           name: Run Tests
-          command: ./node_modules/.bin/gulp test --pc
+          # command: ./node_modules/.bin/gulp test --pc
+          command: |
+            xvfb-run polymer test --skip-selenium-install
 
   build_and_deploy:
     working_directory: ~/code
