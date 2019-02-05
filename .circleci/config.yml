@@ -16,6 +16,8 @@ jobs:
             sudo apt-get remove binutils
             sudo apt-get install firefox=64.0 &&
             firefox --version
+            sudo apt-cache show firefox | grep Version
+
       - restore_cache:
           key: cache-{{ checksum "package.json" }}
       - run:
