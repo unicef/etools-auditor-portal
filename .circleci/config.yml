@@ -16,6 +16,7 @@ jobs:
             sudo apt-get remove binutils
             sudo apt-get install firefox=59.0.2 &&
             firefox --version
+            sudo apt-cache madison firefox
 
       - restore_cache:
           key: cache-{{ checksum "package.json" }}
