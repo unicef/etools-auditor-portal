@@ -57,5 +57,7 @@
     "polymer-build": "^0.4.0",
     "yargs": "^5.0.0"
   },
-  "scripts": {}
+  "scripts": {
+    "test": "gulp devBuild && gulp test"
+  }
 }
