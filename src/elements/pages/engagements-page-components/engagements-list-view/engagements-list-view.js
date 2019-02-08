@@ -95,7 +95,7 @@
                     },
                     {
                         name: 'joint audit',
-                        query: 'joint_audit__in',
+                        query: 'joint_audit',
                         hideSearch: true,
                         optionValue: 'value',
                         optionLabel: 'display_name',
