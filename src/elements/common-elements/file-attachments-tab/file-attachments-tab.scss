@@ -81,3 +81,27 @@ etools-content-panel {
     visibility: visible;
     margin-left: 12px;
 }
+
+.row-data {
+    & > * {
+        box-sizing: border-box;
+        padding-right: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    &:hover .delete-icon {
+        display: block;
+    }
+}
+
+.delete-icon {
+    position: absolute;
+    right: 10px;
+    display: none;
+    cursor: pointer;
+    & iron-icon {
+        --iron-icon-width: 20px;
+        --iron-icon-height: 20px;
+        --iron-icon-fill-color: var(--gray-50);
+    }
+}

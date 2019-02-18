@@ -7,7 +7,10 @@
         behaviors: [
             APBehaviors.TableElementsBehavior,
             APBehaviors.CommonMethodsBehavior,
-            APBehaviors.ErrorHandlerBehavior
+            APBehaviors.ErrorHandlerBehavior,
+            APBehaviors.EngagementBehavior,
+            APBehaviors.DateBehavior,
+            EtoolsAjaxRequestBehavior
         ],
 
         properties: {
@@ -30,24 +33,39 @@
                 type: Array,
                 notify: true,
                 value: [{
-                    'size': '100px',
+                    'size': 18,
                     'name': 'date',
                     'label': 'Date Uploaded!',
                     'labelPath': `created`,
                     'path': 'created'
                 }, {
-                    'size': 35,
+                    'size': 30,
+                    'name': 'documentType',
                     'label': 'Document Type!',
                     'labelPath': `file_type`,
                     'path': 'display_name'
                 }, {
-                    'size': 65,
+                    'size': 30,
+                    'name': 'document',
                     'label': 'File Attachment!',
                     'labelPath': `file`,
                     'property': 'filename',
                     'custom': true,
                     'doNotHide': false
-                }]
+                }, {
+                    'size': 12,
+                    'label': 'Source',
+                    'labelPath': 'tpm_activities.date',
+                    'path': 'source'
+                },
+                
+            ],
+            },
+            ENGAGEMENT_TYPE_ENDPOINT_MAP: {
+                type: Object,
+                value: () => ({
+                    'micro-assessments': 'micro-assessment'
+                })
             },
             dataItems: {
                 type: Array,
@@ -71,6 +89,22 @@
                 type: String,
                 value: 'Upload File'
             },
+            shareDialogOpened: {
+                type: Boolean,
+                value: false
+            },
+            shareParams: {
+                type: Object,
+            },
+            auditLinksOptions: {
+                type: Object,
+                value: {}
+            },
+            linkedAttachments: {
+                type: Array,
+                value: [],
+                notify: true
+            },
             fileTypes: {
                 type: Array,
                 value: function() {
@@ -81,7 +115,10 @@
                 type: String,
                 value: 'Are you sure that you want to delete this attachment?'
             },
-            errorProperty: String
+            errorProperty: String,
+            partnerName: {
+                type: String
+            }
         },
 
         listeners: {
@@ -98,7 +135,36 @@
             'updateStyles(requestInProcess, editedItem, basePermissionPath)',
         ],
 
+        _hanldeLinksForEngagement: function () {
+            this._setLinksEndpoint();
+            this._getLinkedAttachments();
+        },
+
+        _setLinksEndpoint: function () {
+            const {details: engagement, type: engagementType} = this.getCurrentEngagement();
+            this.set('engagement', engagement);
+            this.set('auditLinksOptions', {
+                endpoint: this.getEndpoint('auditLinks', {
+                    type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
+                    id: engagement.id
+                })
+            });
+        },
+
+        _getLinkedAttachments: function () {
+            this.set('requestInProcess', true);
+            const options = Object.assign(this.auditLinksOptions, { method: 'GET' })
+            this.sendRequest(options)
+                .then(res=>{
+                    this.set('linkedAttachments', _.uniqBy(res, 'attachment'));
+                    this.set('requestInProcess', false);
+                })
+                .catch(this._errorHandler.bind(this));
+        },
+
         _setBasePath: function(dataBase, pathPostfix) {
+
+            this._hanldeLinksForEngagement();
             let base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
             this.set('basePermissionPath', base);
             if (base) {
@@ -108,6 +174,7 @@
             }
         },
 
+        
         isTabReadonly: function(basePath) {
             return !basePath || (!this.collectionExists(`${basePath}.PUT`) && !this.collectionExists(`${basePath}.POST`));
         },
@@ -155,6 +222,8 @@
             }
         },
 
+        
+
         _filesChange: function() {
             if (!this.dataItems) { return false; }
 
@@ -167,12 +236,11 @@
             });
         },
 
-        _sendRequest: function() {
+        _sendRequest: function(e) {
             if (!this.dialogOpened || !this.validate()) { return; }
 
             this.requestInProcess = true;
             let attachmentsData, method;
-
             if (!this.baseId) {
                 this._processDelayedRequest();
                 return;
@@ -191,7 +259,6 @@
                 this._requestCompleted(null, {success: true});
                 return;
             }
-
             this.requestData = {method, attachmentsData};
         },
 
@@ -231,6 +298,10 @@
             }
 
             return data;
+        },
+
+        _getAttachmentType: function(attachment){
+            return this.fileTypes.find(fileType=> fileType.value === attachment.file_type).display_name;
         },
 
         _processDelayedRequest: function() {
@@ -301,6 +372,11 @@
             return valid;
         },
 
+        _openAddDialog: function() {
+            this.editedItem = _.clone(this.itemModel);
+            this.openAddDialog();
+        },
+
         _errorHandler: function(errorData) {
             let mainProperty = this.errorProperty;
             this.requestInProcess = false;
@@ -367,6 +443,70 @@
 
         resetData: function() {
             this.set('dataItems', []);
+        },
+        
+        _openShareDialog: function() {
+            this.shareDialogOpened = true;
+            this.set('confirmDisabled', true);
+        },
+
+        _SendShareRequest: function() {
+            const { attachments } = this.shareParams;
+            const options = Object.assign(this.auditLinksOptions,{
+                csrf: true,
+                body:  { attachments } ,
+                method: 'POST'
+            });
+            this.set('requestInProcess', true);
+            this.sendRequest(options)
+                .then(()=> {
+                    this.fire('toast', {
+                        text: 'Documents shared successfully.'
+                    });
+                })
+                .catch(this._handleShareError.bind(this))
+                .finally(() => {
+                    this.set('requestInProcess', false);
+                    this.set('shareDialogOpened', false);
+                    this._getLinkedAttachments(); // refresh the list
+                })
+        },
+
+        _handleShareError: function(err){
+            let nonField = this.checkNonField(err);
+            let message;
+            if (nonField) {
+                message = `Nonfield error: ${nonField}`
+            } else {
+                message = err.response && err.response.detail ? `Error: ${err.response.detail}` 
+                : 'Error sharing documents.';
+            }
+            this.fire('toast', {
+                text: message
+            });
+        },
+
+        _getClassFor: function (field) {
+            return `w${this.headings.find(
+                heading => heading.name === field
+            ).size}`
+        },
+
+        _openDeleteLinkDialog: function (e) {
+            const { linkedAttachment } = e.model;
+            this.set('linkToDeleteId', linkedAttachment.id);
+            this.deleteLinkOpened = true; 
+        },
+    
+        _removeLink: function ({ detail }) {
+            this.deleteLinkOpened = false;
+            const id = detail.dialogName;
+
+            this.sendRequest({
+                method: 'DELETE',
+                endpoint: this.getEndpoint('linkAttachment', { id })
+            }).then(this._getLinkedAttachments.bind(this))
+                .catch(err => this._errorHandler(err));
         }
 
     });
