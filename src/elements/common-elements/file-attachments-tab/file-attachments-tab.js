@@ -64,7 +64,10 @@
             ENGAGEMENT_TYPE_ENDPOINT_MAP: {
                 type: Object,
                 value: () => ({
-                    'micro-assessments': 'micro-assessment'
+                    'micro-assessments': 'micro-assessment',
+                    'spot-check': 'spot-check',
+                    'audits': 'audit',
+                    'special-audits': 'special-audit'
                 })
             },
             dataItems: {
@@ -142,6 +145,8 @@
 
         _setLinksEndpoint: function () {
             const {details: engagement, type: engagementType} = this.getCurrentEngagement();
+			console.log('TCL: engagement', engagement)
+			console.log('TCL: engagementType', engagementType)
             this.set('engagement', engagement);
             this.set('auditLinksOptions', {
                 endpoint: this.getEndpoint('auditLinks', {
@@ -163,8 +168,7 @@
         },
 
         _setBasePath: function(dataBase, pathPostfix) {
-
-            this._hanldeLinksForEngagement();
+            this._handleLinksInDetailsView(dataBase);
             let base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
             this.set('basePermissionPath', base);
             if (base) {
@@ -174,6 +178,12 @@
             }
         },
 
+        _handleLinksInDetailsView: function (dataBase) {
+            const isEngagementDetailsView = dataBase !== 'new_engagement';
+            if (isEngagementDetailsView){
+                this._hanldeLinksForEngagement();
+            }
+        },
         
         isTabReadonly: function(basePath) {
             return !basePath || (!this.collectionExists(`${basePath}.PUT`) && !this.collectionExists(`${basePath}.POST`));
