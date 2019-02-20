@@ -89,18 +89,16 @@
     
   },
 
-  _getFileTypesFromStatic: function () {
-    const fileTypes = this.getData("staticDropdown").attachment_types
-          .filter(val => !_.isEmpty(val))
-          .map(
-            typeStr => ({ label: typeStr, value: typeStr })
-          );
-            const uniques = _.uniqBy(fileTypes, 'label');
-						console.log('TCL: uniques', uniques)
-        return uniques
+    _getFileTypesFromStatic: function () {
+      const fileTypes = this.getData("staticDropdown").attachment_types
+        .filter(val => !_.isEmpty(val))
+        .map(
+          typeStr => ({ label: typeStr, value: typeStr })
+        );
+      const uniques = _.uniqBy(fileTypes, 'label');
+      return uniques
 
-        // this.set('fileTypes', uniques);
-  },
+    },
 
   _getReferenceNumber: function (refNumber) {
     return refNumber || 'n/a';
