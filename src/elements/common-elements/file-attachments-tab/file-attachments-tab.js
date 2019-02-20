@@ -65,7 +65,7 @@
                 type: Object,
                 value: () => ({
                     'micro-assessments': 'micro-assessment',
-                    'spot-check': 'spot-check',
+                    'spot-checks': 'spot-check',
                     'audits': 'audit',
                     'special-audits': 'special-audit'
                 })
