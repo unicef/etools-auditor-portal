@@ -1,8 +1,11 @@
-Polymer({
+( function(){
+
+  Polymer({
   is: 'share-documents',
   behaviors: [
     APBehaviors.CommonMethodsBehavior,
     APBehaviors.TableElementsBehavior,
+    APBehaviors.StaticDataController,
     etoolsAppConfig.globals,
     EtoolsAjaxRequestBehavior,
   ],
@@ -25,6 +28,11 @@ Polymer({
     selectedAttachments: {
       type: Array,
       value: []
+    },
+    fileTypes: {
+      type: Array,
+      computed: '_getFileTypesFromStatic(partnerName)',
+      notify: true
     },
     headingColumns: {
       type: Array,
@@ -57,10 +65,7 @@ Polymer({
     },
   },
 
-  attached: function () {
-    this._getFileTypesFromStatic();
-  },
-
+ 
   _handlePartnerChanged: function (partnerName) {
     if (!partnerName) { return; }
     this._getPartnerAttachments(partnerName);
@@ -85,15 +90,16 @@ Polymer({
   },
 
   _getFileTypesFromStatic: function () {
-    const fileTypes = _.get(this.getData("staticDropdown"), "attachment_types")
+    const fileTypes = this.getData("staticDropdown").attachment_types
           .filter(val => !_.isEmpty(val))
           .map(
             typeStr => ({ label: typeStr, value: typeStr })
           );
+            const uniques = _.uniqBy(fileTypes, 'label');
+						console.log('TCL: uniques', uniques)
+        return uniques
 
-        const uniques = _.uniqBy(fileTypes, 'label');
-
-        this.set('fileTypes', uniques);
+        // this.set('fileTypes', uniques);
   },
 
   _getReferenceNumber: function (refNumber) {
@@ -154,3 +160,4 @@ Polymer({
 
 
 });
+})();
