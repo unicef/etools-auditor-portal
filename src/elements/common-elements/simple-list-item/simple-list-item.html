@@ -1,0 +1,21 @@
+<!--import [polymer, paper-material, iron-flex-layout ]-->
+<!--import [module-styles, date-behavior, common-methods-behavior]-->
+
+<dom-module id="simple-list-item">
+    <template>
+        <style include="module-styles iron-flex"></style>
+        <!-- inject styles './simple-list-item.scss'-->
+
+        <paper-material elevation="0">
+            <content></content>
+        </paper-material>
+
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'simple-list-item',
+            });
+        })();
+    </script>
+</dom-module>

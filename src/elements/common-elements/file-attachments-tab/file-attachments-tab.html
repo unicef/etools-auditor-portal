@@ -1,15 +1,15 @@
-<!--import [polymer, iron-icon, paper-icon-button, paper-toast, etools-content-panel, paper-tooltip]-->
-<!--import [tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
-            common-methods-behavior, get-attachments, update-attachments, error-handler-behavior]-->
+<!--import [polymer, iron-icon, paper-icon-button, paper-toast,etools-ajax/etools-ajax-request-behavior, etools-content-panel, paper-tooltip]-->
+<!--import [share-documents,engagement-behavior, simple-list-item, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
+            common-methods-behavior, date-behavior,  get-attachments, update-attachments, error-handler-behavior]-->
 
 <dom-module id="file-attachments-tab">
     <template>
-        <style include="tab-inputs-styles tab-layout-styles module-styles"></style>
+        <style include="tab-inputs-styles tab-layout-styles iron-flex module-styles"></style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
         <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}" endpoint-name="[[endpointName]]"></get-attachments>
         <update-attachments
-                base-id="[[baseId]]"
+            base-id="[[baseId]]"
                 attachments="{{dataItems}}"
                 request-data="{{requestData}}"
                 endpoint-name="[[endpointName]]"
@@ -18,14 +18,23 @@
 
         <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
-                <div hidden$="[[isTabReadonly(basePermissionPath)]]">
-                    <paper-icon-button
-                            class="panel-button"
-                            on-tap="openAddDialog"
-                            icon="add-box">
-                    </paper-icon-button>
-                    <paper-tooltip offset="0">Add</paper-tooltip>
+                <div class="layout horizontal">
+                    <div hidden$="[[isTabReadonly(basePermissionPath)]]">
+                        <paper-icon-button class="panel-button"
+                                           on-tap="_openShareDialog"
+                                           icon="open-in-browser">
+                        </paper-icon-button>
+                        <paper-tooltip offset="0">Share Documents</paper-tooltip>
+                    </div>
+                    <div hidden$="[[isTabReadonly(basePermissionPath)]]">
+                        <paper-icon-button class="panel-button"
+                                           on-tap="_openAddDialog"
+                                           icon="add-box">
+                        </paper-icon-button>
+                        <paper-tooltip offset="0">Add</paper-tooltip>
+                    </div>
                 </div>
+            
             </div>
             <list-header
                     id="list-header"
@@ -36,29 +45,57 @@
             </list-header>
 
             <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-                <list-element
-                        class="list-element"
-                        no-additional
-                        data="[[item]]"
-                        headings="[[headings]]">
-                    <div slot="custom">
-                        <iron-icon icon="icons:attachment" class="download-icon"></iron-icon>
+                <simple-list-item>
+                    <div class="row-data">
+                        <span class$="[[_getClassFor('date')]]">[[prettyDate(item.created)]]</span>
+                        <span class$="[[_getClassFor('documentType')]]">[[_getAttachmentType(item)]]</span>
+                        <div class$="[[_getClassFor('document')]]">
+                            <iron-icon icon="icons:attachment"
+                                        class="download-icon">
+                            </iron-icon>
+                            <a href$="[[item.file]]" 
+                                class="truncate" 
+                                target="_blank">[[item.filename]]
+                            </a>
+                            <paper-tooltip offset="0">[[item.filename]]</paper-tooltip>
 
-                        <a class="truncate"
-                           href$="[[item.file]]"
-                           download$="[[item.filename]]"
-                           target="_blank">
-                            [[item.filename]]
+                        </div>
+                        <span class="delete-icon" hidden$="[[isTabReadonly(basePermissionPath)]]">
+                            <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+    
+                            <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                        </span>
+                        <span>FAM</span>
+                    </div>
+                </simple-list-item>
+            </template>
+            
+            <template is="dom-repeat" items="[[linkedAttachments]]" as="linkedAttachment">
+                <simple-list-item>
+                    <div class="row-data">
+                        <span class$="[[_getClassFor('date')]]">[[prettyDate(linkedAttachment.created)]]</span>
+                        <span class$="[[_getClassFor('documentType')]]">[[linkedAttachment.file_type]]</span>
+                        <div class$="[[_getClassFor('document')]]">
+                            <iron-icon icon="icons:attachment" class="download-icon">
+                            </iron-icon>
+                            <a href$="[[linkedAttachment.url]]"
+                                class="truncate"
+                                target="_blank">[[linkedAttachment.filename]]
+                            </a>
+                            <paper-tooltip offset="0">[[linkedAttachment.filename]]</paper-tooltip>
+            
+                        </div>
+                        <a on-click="_openDeleteLinkDialog"
+                            class="delete-icon">
+                            <iron-icon 
+                                hidden$="[[isTabReadonly(basePermissionPath)]]"
+                                icon="icons:cancel"></iron-icon>
+
+                            <paper-tooltip offset="0">Remove</paper-tooltip>
                         </a>
-                        <paper-tooltip offset="0">[[item.filename]]</paper-tooltip>
+                        <span>PMP</span>
                     </div>
-
-                    <div slot="hover" class="edit-icon-slot" hidden$="[[isTabReadonly(basePermissionPath)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-                    </div>
-                </list-element>
+                </simple-list-item>
             </template>
 
             <template is="dom-if" if="[[!dataItems.length]]">
@@ -157,6 +194,36 @@
                     </div>
                 </div>
             </div>
+        </dialog-element>
+
+        <dialog-element id="deleteLinks" 
+            opened="{{deleteLinkOpened}}"
+            dialog-name="[[linkToDeleteId]]"
+            dialog-title="Are you sure you want to delete?"
+            delete-dialog
+            on-delete-confirmed="_removeLink"
+            confirm-btn-text="Delete"
+            cancel-btn-text="Cancel"
+        >
+        </dialog-element>
+
+        <dialog-element opened="{{shareDialogOpened}}"
+                        dialog-title="Share Documents"
+                        no-title-margin
+                        dialog-name="share-documents"
+                        confirm-btn-text="Share"
+                        on-dialog-confirmed="_SendShareRequest"
+                        confirm-disabled="{{confirmDisabled}}"
+                        request-in-process="{{requestInProcess}}">
+            <share-documents 
+                id="shareDocuments"
+                data-base-path="[[dataBasePath]]"
+                base-permission-path="[[basePermissionPath]]"
+                partner-name= "[[engagement.partner.name]]"
+                share-params="{{shareParams}}"
+                confirm-disabled="{{confirmDisabled}}"
+                >
+            </share-documents>
         </dialog-element>
     </template>
 

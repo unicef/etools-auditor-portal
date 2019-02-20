@@ -151,7 +151,6 @@
             if (filterValue !== undefined) {
                 filter.selectedValues = this._getFilterValue(filterValue, filter);
             } else {
-                console.log('UNDDD')
                 filter.selectedValues = undefined;
             }
         },
