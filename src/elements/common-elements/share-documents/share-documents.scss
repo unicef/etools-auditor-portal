@@ -1,0 +1,81 @@
+
+:host {
+  overflow: hidden;
+ 
+  .subtitle {
+    background-color: #EEEEEE;
+    padding: 16px 24px;
+  }
+}
+.content-wrapper {
+  padding-bottom: 8px;
+}
+
+
+
+list-header {
+  background-color: var(--hover-block-bg-color, #F3EEE9);
+  padding-left: 56px;
+  --list-header-custom-style : {
+    height: 48px;
+    line-height: 48px;
+    flex-shrink: 0;
+  }
+}
+
+
+
+simple-list-item {
+  --hover-style: #{'{
+      background-color: transparent;
+  }'};
+
+  paper-material {
+    --simple-list-item-custom-style: #{'{
+      padding-left: 24px;
+      padding-right: 0;
+    }'};
+  }
+  
+}
+
+.right {
+  text-align: right;
+}
+
+.row-data {
+
+  & >* {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+  }
+  & > paper-checkbox {
+    padding-right: 14px;
+  }
+}
+
+a {
+  padding-left: 5px;
+  color: #0099ff;
+  text-decoration: none;
+}
+
+.repeatable-item-container.list-items {
+  padding: 0;
+  max-height: 365px;
+  overflow: auto;
+}
+
+.doc-type {
+  flex: 0 0 calc(27% - -2px);
+}
+
+.document-link {
+  flex: 0 0 33%;
+}
+
+.pd {
+  flex: 0 0 14%;
+}

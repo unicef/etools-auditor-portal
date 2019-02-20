@@ -3,7 +3,7 @@
 
 <script>
     'use strict';
-
+    let currentEngagement = {};
     window.APBehaviors = window.APBehaviors || {};
     APBehaviors.EngagementBehaviorImpl = {
         properties: {
@@ -25,12 +25,15 @@
                 value: function() {
                     return {};
                 }
+            },
+            currentEngagement: {
+                type: Object
             }
         },
 
         ready: function() {
             this._addObserverEffect("errorObject", '_errorOccurred');
-            this._addObserverEffect("dialogOpened", 'resetDialog');
+            this._addObserverEffect("dialogOpened", 'resetInputDialog');
             this.listen(this, 'action-activated', '_processAction');
         },
 
@@ -114,7 +117,7 @@
             this.dialogOpened = true;
         },
 
-        resetDialog: function(opened) {
+        resetInputDialog: function(opened) {
             let input = this.getElement('#cancellationReasonInput');
             if (!opened && input) {
                 input.value = '';
@@ -212,6 +215,15 @@
                 case 'sa':
                     return 'special-audits';
             }
+        },
+
+        persistCurrentEngagement(engagement, type) {
+            currentEngagement = { details: engagement, type };
+            this.set('currentEngagement', currentEngagement)
+        },
+
+        getCurrentEngagement() {
+            return currentEngagement;
         },
 
         _prepareData: function(submit, finalize) {
