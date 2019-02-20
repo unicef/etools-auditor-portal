@@ -145,8 +145,6 @@
 
         _setLinksEndpoint: function () {
             const {details: engagement, type: engagementType} = this.getCurrentEngagement();
-			console.log('TCL: engagement', engagement)
-			console.log('TCL: engagementType', engagementType)
             this.set('engagement', engagement);
             this.set('auditLinksOptions', {
                 endpoint: this.getEndpoint('auditLinks', {
