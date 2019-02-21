@@ -121,6 +121,10 @@
             errorProperty: String,
             partnerName: {
                 type: String
+            },
+            isReportTab: {
+                type: Boolean,
+                value: () => false,
             }
         },
 
@@ -178,7 +182,7 @@
 
         _handleLinksInDetailsView: function (dataBase) {
             const isEngagementDetailsView = dataBase !== 'new_engagement';
-            if (isEngagementDetailsView){
+            if (isEngagementDetailsView && !this.isReportTab){
                 this._hanldeLinksForEngagement();
             }
         },
@@ -515,7 +519,8 @@
                 endpoint: this.getEndpoint('linkAttachment', { id })
             }).then(this._getLinkedAttachments.bind(this))
                 .catch(err => this._errorHandler(err));
-        }
+        },
+        
 
     });
 })();
