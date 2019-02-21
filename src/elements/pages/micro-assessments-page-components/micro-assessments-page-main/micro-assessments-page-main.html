@@ -160,6 +160,7 @@
                             <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
+                                        is-report-tab="true"
                                         data-base-path="[[permissionBase]]"
                                         path-postfix="report_attachments"
                                         base-id="[[engagement.id]]"

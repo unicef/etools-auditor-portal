@@ -70,32 +70,34 @@
                 </simple-list-item>
             </template>
             
-            <template is="dom-repeat" items="[[linkedAttachments]]" as="linkedAttachment">
-                <simple-list-item>
-                    <div class="row-data">
-                        <span class$="[[_getClassFor('date')]]">[[prettyDate(linkedAttachment.created)]]</span>
-                        <span class$="[[_getClassFor('documentType')]]">[[linkedAttachment.file_type]]</span>
-                        <div class$="[[_getClassFor('document')]]">
-                            <iron-icon icon="icons:attachment" class="download-icon">
-                            </iron-icon>
-                            <a href$="[[linkedAttachment.url]]"
-                                class="truncate"
-                                target="_blank">[[linkedAttachment.filename]]
+            <template is="dom-if" if="[[!isReportTab]]">
+                <template is="dom-repeat" items="[[linkedAttachments]]" as="linkedAttachment">
+                    <simple-list-item>
+                        <div class="row-data">
+                            <span class$="[[_getClassFor('date')]]">[[prettyDate(linkedAttachment.created)]]</span>
+                            <span class$="[[_getClassFor('documentType')]]">[[linkedAttachment.file_type]]</span>
+                            <div class$="[[_getClassFor('document')]]">
+                                <iron-icon icon="icons:attachment" class="download-icon">
+                                </iron-icon>
+                                <a href$="[[linkedAttachment.url]]"
+                                    class="truncate"
+                                    target="_blank">[[linkedAttachment.filename]]
+                                </a>
+                                <paper-tooltip offset="0">[[linkedAttachment.filename]]</paper-tooltip>
+                
+                            </div>
+                            <a on-click="_openDeleteLinkDialog"
+                                class="delete-icon">
+                                <iron-icon 
+                                    hidden$="[[isTabReadonly(basePermissionPath)]]"
+                                    icon="icons:cancel"></iron-icon>
+    
+                                <paper-tooltip offset="0">Remove</paper-tooltip>
                             </a>
-                            <paper-tooltip offset="0">[[linkedAttachment.filename]]</paper-tooltip>
-            
+                            <span>PMP</span>
                         </div>
-                        <a on-click="_openDeleteLinkDialog"
-                            class="delete-icon">
-                            <iron-icon 
-                                hidden$="[[isTabReadonly(basePermissionPath)]]"
-                                icon="icons:cancel"></iron-icon>
-
-                            <paper-tooltip offset="0">Remove</paper-tooltip>
-                        </a>
-                        <span>PMP</span>
-                    </div>
-                </simple-list-item>
+                    </simple-list-item>
+                </template>
             </template>
 
             <template is="dom-if" if="[[!dataItems.length]]">
