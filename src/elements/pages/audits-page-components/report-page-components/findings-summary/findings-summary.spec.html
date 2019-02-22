@@ -112,16 +112,6 @@
                     assert.isUndefined(myEl.getFindingsSummaryData());
                 });
 
-                it('replaces null with 0 where needed and returns object with changed properties', function () {
-                    myEl.originalData = [_.cloneDeep(myEl.editedItem)];
-                    myEl.originalData[0].audited_expenditure = null;
-                    myEl.originalData[0].financial_findings = null;
-
-                    assert.deepEqual(myEl.getFindingsSummaryData(), {
-                        audited_expenditure: 0,
-                        financial_findings: 0,
-                    });
-                });
             });
         });
 
