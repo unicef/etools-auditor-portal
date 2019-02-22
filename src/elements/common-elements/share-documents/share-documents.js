@@ -85,7 +85,7 @@
         this.set('attachmentsList', resp);
         this.set('originalList', resp);
       })
-      .catch(err => this.fire('toast', { text: `Error fetching documents for ${partnerName}: ${err}` }));
+      .catch(err => this.fire('toast', { text: `Error fetching documents for ${partner}: ${err}` }));
     
   },
 
