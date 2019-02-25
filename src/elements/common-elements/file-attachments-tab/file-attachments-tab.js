@@ -74,6 +74,9 @@
                 type: Array,
                 value: () => []
             },
+            engagement: {
+                type: Object
+            },
             addDialogTexts: {
                 type: Object,
                 value: {
@@ -119,8 +122,9 @@
                 value: 'Are you sure that you want to delete this attachment?'
             },
             errorProperty: String,
-            partnerName: {
-                type: String
+            isReportTab: {
+                type: Boolean,
+                value: () => false,
             }
         },
 
@@ -177,14 +181,18 @@
         },
 
         _handleLinksInDetailsView: function (dataBase) {
-            const isEngagementDetailsView = dataBase !== 'new_engagement';
-            if (isEngagementDetailsView){
+            const isEngagementDetailsView = !dataBase.includes('new');
+            if (isEngagementDetailsView && !this.isReportTab){
                 this._hanldeLinksForEngagement();
             }
         },
         
         isTabReadonly: function(basePath) {
             return !basePath || (!this.collectionExists(`${basePath}.PUT`) && !this.collectionExists(`${basePath}.POST`));
+        },
+
+        _hideShare: function(basePermissionPath) {
+            return this.isTabReadonly(basePermissionPath) || basePermissionPath.includes('new');
         },
 
         showFileTypes: function(basePath) {
@@ -515,7 +523,8 @@
                 endpoint: this.getEndpoint('linkAttachment', { id })
             }).then(this._getLinkedAttachments.bind(this))
                 .catch(err => this._errorHandler(err));
-        }
+        },
+        
 
     });
 })();
