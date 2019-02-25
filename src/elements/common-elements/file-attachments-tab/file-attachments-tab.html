@@ -19,7 +19,7 @@
         <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
                 <div class="layout horizontal">
-                    <div hidden$="[[isTabReadonly(basePermissionPath)]]">
+                    <div hidden$="[[_hideShare(basePermissionPath)]]">
                         <paper-icon-button class="panel-button"
                                            on-tap="_openShareDialog"
                                            icon="open-in-browser">
