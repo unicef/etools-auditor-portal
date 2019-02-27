@@ -32,7 +32,7 @@
                 }, {
                     'size': 20,
                     'label': 'Audit Firm',
-                    'labelPath': 'agreement.auditor_firm',
+                    'labelPath': 'agreement.audit_firm',
                     'name': 'agreement__auditor_firm__name',
                     'ordered': false,
                     'path': 'agreement.auditor_firm.name'
