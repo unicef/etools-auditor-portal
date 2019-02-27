@@ -1,10 +1,12 @@
 
 :host {
   overflow: hidden;
- 
+  .modal-pad {
+    padding: 16px 24px;
+  }
   .subtitle {
     background-color: #EEEEEE;
-    padding: 16px 24px;
+    @extend .modal-pad;
   }
 }
 .content-wrapper {

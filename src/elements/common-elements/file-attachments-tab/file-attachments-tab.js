@@ -9,6 +9,7 @@
             APBehaviors.CommonMethodsBehavior,
             APBehaviors.ErrorHandlerBehavior,
             APBehaviors.EngagementBehavior,
+            APBehaviors.UserController,
             APBehaviors.DateBehavior,
             EtoolsAjaxRequestBehavior
         ],
@@ -125,6 +126,10 @@
             isReportTab: {
                 type: Boolean,
                 value: () => false,
+            },
+            _isAuditor: {
+                type: Boolean,
+                computed: '_checkIsAuditor(dataBasePath)'
             }
         },
 
@@ -141,6 +146,11 @@
             '_errorHandler(errorObject)',
             'updateStyles(requestInProcess, editedItem, basePermissionPath)',
         ],
+
+        _checkIsAuditor: function () {
+            const user = this.getUserData();
+            return Boolean(user.groups.find(({ name }) => name === 'Auditor'));
+        },
 
         _hanldeLinksForEngagement: function () {
             this._setLinksEndpoint();
