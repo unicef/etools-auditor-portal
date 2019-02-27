@@ -39,34 +39,39 @@
                      on-order-changed="_orderChanged"
                      base-permission-path="[[dataBasePath]]">
         </list-header>
-        <div class="row-h repeatable-item-container list-items">
-
-          <template is="dom-repeat"
-                    items="[[attachmentsList]]">
-            <simple-list-item>
-              <div class="row-data">
-                <paper-checkbox on-tap="_toggleChecked">
-                </paper-checkbox>
-                <span class="pd">[[_getReferenceNumber(item.agreement_reference_number)]]
-                  <paper-tooltip>[[_getReferenceNumber(item.agreement_reference_number)]]</paper-tooltip>
-                </span>
-                <span class="doc-type">[[item.file_type]]</span>
-                <div class="document-link">
-                  <iron-icon icon="icons:attachment"
-                             class="download-icon">
-                  </iron-icon>
-                  <a href$="[[item.file_link]]"
-                           class="truncate"
-                           target="_blank">[[item.filename]]
-                        </a>
-                  <paper-tooltip>[[item.filename]]</paper-tooltip>
+        <template is="dom-if" if="[[!attachmentsList.length]]">
+          <span class="modal-pad">There are no attachments for this partner. </span>
+        </template>
+        <template is="dom-if" if="[[attachmentsList.length]]">
+          <div class="row-h repeatable-item-container list-items">
+           
+            <template is="dom-repeat"
+                      items="[[attachmentsList]]">
+              <simple-list-item>
+                <div class="row-data">
+                  <paper-checkbox on-tap="_toggleChecked">
+                  </paper-checkbox>
+                  <span class="pd">[[_getReferenceNumber(item.agreement_reference_number)]]
+                    <paper-tooltip>[[_getReferenceNumber(item.agreement_reference_number)]]</paper-tooltip>
+                  </span>
+                  <span class="doc-type">[[item.file_type]]</span>
+                  <div class="document-link">
+                    <iron-icon icon="icons:attachment"
+                               class="download-icon">
+                    </iron-icon>
+                    <a href$="[[item.file_link]]"
+                             class="truncate"
+                             target="_blank">[[item.filename]]
+                          </a>
+                    <paper-tooltip>[[item.filename]]</paper-tooltip>
+                  </div>
+                  <span class="w12">[[item.created]]</span>
                 </div>
-                <span class="w12">[[item.created]]</span>
-              </div>
-
-            </simple-list-item>
-          </template>
-        </div>
+  
+              </simple-list-item>
+            </template>
+          </div>
+        </template>
       </div>
     </div>
 
