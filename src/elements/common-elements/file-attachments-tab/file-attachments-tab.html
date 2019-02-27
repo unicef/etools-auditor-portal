@@ -1,5 +1,5 @@
 <!--import [polymer, iron-icon, paper-icon-button, paper-toast,etools-ajax/etools-ajax-request-behavior, etools-content-panel, paper-tooltip]-->
-<!--import [share-documents,engagement-behavior, simple-list-item, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
+<!--import [share-documents,engagement-behavior, user-controller, simple-list-item, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
             common-methods-behavior, date-behavior,  get-attachments, update-attachments, error-handler-behavior]-->
 
 <dom-module id="file-attachments-tab">
@@ -19,7 +19,7 @@
         <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
                 <div class="layout horizontal">
-                    <div hidden$="[[_hideShare(basePermissionPath)]]">
+                    <div hidden$="[[_isAuditor]]">
                         <paper-icon-button class="panel-button"
                                            on-tap="_openShareDialog"
                                            icon="open-in-browser">
@@ -208,25 +208,26 @@
             cancel-btn-text="Cancel"
         >
         </dialog-element>
-
-        <dialog-element opened="{{shareDialogOpened}}"
-                        dialog-title="Share Documents"
-                        no-title-margin
-                        dialog-name="share-documents"
-                        confirm-btn-text="Share"
-                        on-dialog-confirmed="_SendShareRequest"
-                        confirm-disabled="{{confirmDisabled}}"
-                        request-in-process="{{requestInProcess}}">
-            <share-documents 
-                id="shareDocuments"
-                data-base-path="[[dataBasePath]]"
-                base-permission-path="[[basePermissionPath]]"
-                partner-name= "[[engagement.partner.name]]"
-                share-params="{{shareParams}}"
-                confirm-disabled="{{confirmDisabled}}"
-                >
-            </share-documents>
-        </dialog-element>
+        <template is="dom-if" if="[[!_isAuditor]]">
+            <dialog-element opened="{{shareDialogOpened}}"
+                            dialog-title="Share Documents"
+                            no-title-margin
+                            dialog-name="share-documents"
+                            confirm-btn-text="Share"
+                            on-dialog-confirmed="_SendShareRequest"
+                            confirm-disabled="{{confirmDisabled}}"
+                            request-in-process="{{requestInProcess}}">
+                <share-documents 
+                    id="shareDocuments"
+                    data-base-path="[[dataBasePath]]"
+                    base-permission-path="[[basePermissionPath]]"
+                    partner-name= "[[engagement.partner.name]]"
+                    share-params="{{shareParams}}"
+                    confirm-disabled="{{confirmDisabled}}"
+                    >
+                </share-documents>
+            </dialog-element>
+        </template>
     </template>
 
     <!-- inject scripts './file-attachments-tab.js'-->
