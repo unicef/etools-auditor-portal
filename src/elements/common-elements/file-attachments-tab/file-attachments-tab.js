@@ -127,9 +127,9 @@
                 type: Boolean,
                 value: () => false,
             },
-            _isAuditor: {
+            _isUnicefUser: {
                 type: Boolean,
-                computed: '_checkIsAuditor(dataBasePath)'
+                computed: '_checkIsUnicefUser(dataBasePath)'
             }
         },
 
@@ -147,9 +147,9 @@
             'updateStyles(requestInProcess, editedItem, basePermissionPath)',
         ],
 
-        _checkIsAuditor: function () {
+        _checkIsUnicefUser: function () {
             const user = this.getUserData();
-            return Boolean(user.groups.find(({ name }) => name === 'Auditor'));
+            return Boolean(user.groups.find(({ name }) => name === 'Unicef User'));
         },
 
         _hanldeLinksForEngagement: function () {
