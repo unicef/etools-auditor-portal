@@ -149,7 +149,7 @@
 
         _checkIsUnicefUser: function () {
             const user = this.getUserData();
-            return Boolean(user.groups.find(({ name }) => name === 'Unicef User'));
+            return Boolean(user.groups.find(({ name }) => name === 'UNICEF User'));
         },
 
         _hanldeLinksForEngagement: function () {
