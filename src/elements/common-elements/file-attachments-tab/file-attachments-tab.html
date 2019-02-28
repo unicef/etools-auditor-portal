@@ -19,7 +19,7 @@
         <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
             <div slot="panel-btns">
                 <div class="layout horizontal">
-                    <div hidden$="[[_isAuditor]]">
+                    <div hidden$="[[!_isUnicefUser]]">
                         <paper-icon-button class="panel-button"
                                            on-tap="_openShareDialog"
                                            icon="open-in-browser">
@@ -208,7 +208,7 @@
             cancel-btn-text="Cancel"
         >
         </dialog-element>
-        <template is="dom-if" if="[[!_isAuditor]]">
+        <template is="dom-if" if="[[_isUnicefUser]]">
             <dialog-element opened="{{shareDialogOpened}}"
                             dialog-title="Share Documents"
                             no-title-margin
