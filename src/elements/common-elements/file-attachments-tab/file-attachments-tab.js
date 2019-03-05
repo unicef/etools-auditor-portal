@@ -67,6 +67,7 @@
                 value: () => ({
                     'micro-assessments': 'micro-assessment',
                     'spot-checks': 'spot-check',
+                    'staff-spot-checks': 'spot-check',
                     'audits': 'audit',
                     'special-audits': 'special-audit'
                 })
