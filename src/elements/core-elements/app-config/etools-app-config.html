@@ -86,7 +86,21 @@ App global configuration
             },
             attachments: {
                 template: '/api/audit/engagements/<%=id%>/engagement-attachments/'
-            }
+            },
+            globalAttachments: {
+                template: '/api/v2/attachments/'
+            },
+            auditLinks: {
+                template: '/api/audit/<%=type%>/<%=id%>/links'
+            },
+            linkAttachment: {
+                template: '/api/v2/attachments/links/<%=id%>/' 
+            },
+            static: {
+                url: '/api/v2/dropdowns/static',
+                exp: 6 * 60 * 60 * 1000, // 6h
+                cachingKey: 'static'
+            },
         },
 
         globals: {
@@ -112,7 +126,6 @@ App global configuration
             },
 
             resetOldUserData: function() {
-                console.log('resetOldUserData()');
 
                 localStorage.removeItem('userId');
 
