@@ -65,6 +65,7 @@
                 value: [
                     {
                         name: 'audit firm',
+                        label: 'Audit Firm',
                         query: 'agreement__auditor_firm__in',
                         optionValue: 'id',
                         optionLabel: 'name',
@@ -72,6 +73,7 @@
                     },
                     {
                         name: 'engagement type',
+                        label: 'Engagement Type',
                         query: 'engagement_type__in',
                         hideSearch: true,
                         optionValue: 'value',
@@ -80,6 +82,7 @@
                     },
                     {
                         name: 'partner',
+                        label: 'Partner',
                         query: 'partner__in',
                         optionValue: 'id',
                         optionLabel: 'name',
@@ -87,6 +90,7 @@
                     },
                     {
                         name: 'status',
+                        label: 'Status',
                         query: 'status__in',
                         hideSearch: true,
                         optionValue: 'value',
@@ -95,6 +99,7 @@
                     },
                     {
                         name: 'joint audit',
+                        label: 'Joint Audit',
                         query: 'joint_audit',
                         hideSearch: true,
                         optionValue: 'value',
