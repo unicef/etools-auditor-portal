@@ -128,6 +128,10 @@
                 type: Boolean,
                 value: () => false,
             },
+            _hideShare:{
+                type: Boolean,
+                computed: '_shouldHideShare(_isUnicefUser)'
+            },
             _isUnicefUser: {
                 type: Boolean,
                 computed: '_checkIsUnicefUser(dataBasePath)'
@@ -150,8 +154,9 @@
 
         _checkIsUnicefUser: function () {
             const user = this.getUserData();
-            return Boolean(user.groups.find(({ name }) => name === 'Unicef User'));
+            return Boolean(user.groups.find(({ name }) => name === 'UNICEF User'));
         },
+        
 
         _hanldeLinksForEngagement: function () {
             this._setLinksEndpoint();
@@ -535,6 +540,10 @@
             }).then(this._getLinkedAttachments.bind(this))
                 .catch(err => this._errorHandler(err));
         },
+
+        _shouldHideShare: function (isUnicefUser) {
+            return this.isReportTab || !isUnicefUser;
+        }
         
 
     });
