@@ -100,7 +100,7 @@
 
                 });
                 const {profile} = this.getUserData();
-                return `?ordering=-id&user__profile__country__name=${profile.country_name}&${queries.join('&')}`;
+                return `?ordering=-id&user__profile__countries_available__name=${profile.country_name}&${queries.join('&')}`;
             },
 
             _handleDataResponse: function(data) {
