@@ -67,7 +67,7 @@
 
                 if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
                     //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
-                    this._setError(`This field must be unique.`);
+                    this._setError(`This user is already assigned to an auditor firm.`);
                     let email = _.get(this, 'editedItem.user.email'),
                         hasAccess = false;
                     this.editedItem = {user: {email}, hasAccess};
