@@ -61,13 +61,13 @@
             },
 
             _handleResponse: function(details = []) {
-                let firmId = _.get(details, '0.auditor_firm'),
-                    userIsNotDeleted = firmId === this.organisationId && !_.get(details, '0.hidden'),
+                const user = _.get(details, '0');
+                let firmId = user.auditor_firm,
+                    userIsNotDeleted = firmId === this.organisationId && !user.hidden,
                     alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
-
                 if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
                     //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
-                    this._setError(`This user is already assigned to an auditor firm.`);
+                    this._setError(`This user is already assigned to firm : ${user.auditor_firm_description}`);
                     let email = _.get(this, 'editedItem.user.email'),
                         hasAccess = false;
                     this.editedItem = {user: {email}, hasAccess};
