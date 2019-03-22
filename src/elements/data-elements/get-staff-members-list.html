@@ -77,7 +77,6 @@
                 
                 this.listLoading = true;
                 let queriesString = this._prepareQueries(listQueries);
-				console.log("TCL: queriesString", queriesString)
                 
                 this.requestsCompleted = {};
                 this.url = this.getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
