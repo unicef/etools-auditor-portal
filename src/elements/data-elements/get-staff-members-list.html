@@ -1,21 +1,27 @@
-<!--import [polymer,etools-ajax/etools-ajax-request-behavior, lodash]-->
+<!--import [polymer,app-route, app-location, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config, permission-controller, user-controller]-->
 
 <dom-module id="get-staff-members-list">
     <template>
+        <app-location
+            route="{{route}}"
+        ></app-location>
+
+        <app-route
+            route="{{route}}"
+            pattern="/:view/:page"
+            data="{{routeData}}"
+        >
+        </app-route>
+
         <etools-ajax
-                method="GET"
-                url="{{url}}"
-                on-success="_handleDataResponse"
-                on-fail="_handleError">
+            method="GET"
+            url="{{url}}"
+            on-success="_handleDataResponse"
+            on-fail="_handleError"
+        >
         </etools-ajax>
 
-        <!-- <etools-ajax
-                method="OPTIONS"
-                url="[[optionsUrl]]"
-                on-success="_handleOptionsResponse"
-                on-fail="_handleOptionsResponse">
-        </etools-ajax> -->
     </template>
 
     <script>
@@ -71,6 +77,8 @@
                 
                 this.listLoading = true;
                 let queriesString = this._prepareQueries(listQueries);
+				console.log("TCL: queriesString", queriesString)
+                
                 this.requestsCompleted = {};
                 this.url = this.getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
                 if (this.collectionExists(`staff_members_${organisationId}`)) {
@@ -100,7 +108,8 @@
 
                 });
                 const {profile} = this.getUserData();
-                return `?ordering=-id&user__profile__countries_available__name=${profile.country_name}&${queries.join('&')}`;
+                const countryFilter = _.get(this.routeData,'page', '').includes('staff')? `user__profile__countries_available__name=${profile.country_name}`: '';
+                return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
             },
 
             _handleDataResponse: function(data) {
