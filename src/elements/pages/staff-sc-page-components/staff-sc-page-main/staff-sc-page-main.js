@@ -66,7 +66,7 @@ Polymer({
         }).then(resp => {
            this._auditFirmLoaded(resp);
         }).catch(err => {
-            this._auditFirmLoaded(err);
+            throw new Error(err);
         });
     },
 
@@ -146,12 +146,12 @@ Polymer({
     },
 
     _auditFirmLoaded: function(data) {
-        let auditFirm = _.get(data, 'results.0');
-        if (!auditFirm) {
+        if (!data.length) {
             console.error('Can not load firm data.');
             console.error(data);
-        } else {
-            this.auditFirm = auditFirm;
+        }
+        else {
+            this.auditFirm = data[0];
         }
     }
 
