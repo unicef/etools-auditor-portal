@@ -261,7 +261,7 @@ Polymer({
     },
 
     _validEmailAddress: function(emailInput) {
-        let value = emailInput.value,
+        let value = _.trim(emailInput.value),
             required = emailInput.required;
 
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -292,7 +292,7 @@ Polymer({
 
     _isActive: function(event) {
         let item = event && event.model && event.model.item;
-        if (!item) { throw 'Cann not get item model!'; }
+        if (!item) { throw 'Can not get item model!'; }
 
         let me = this.getUserData() || {},
             updateOptions = _.get(item, 'user.email') === me.email;
