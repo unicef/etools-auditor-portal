@@ -60,6 +60,10 @@
                 this.email = null;
             },
 
+            _isUnicefUser: function (user) {
+                return user.auditor_firm === 1 || user.email.includes('unicef.org');
+            },
+
             _handleResponse: function (details = []) {
                 const user = _.get(details, '0');
                 if (user) {
@@ -72,6 +76,10 @@
                         let email = _.get(this, 'editedItem.user.email'),
                             hasAccess = false;
                         this.editedItem = { user: { email }, hasAccess };
+                    }
+                    if (!this.unicefUsersAllowed && this._isUnicefUser(user)){
+                        this._setError(`You can't add UNICEF user.`);
+                        this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                     }
                     if (firmId === this.organisationId) {
                         //if user was deleted from current organization
@@ -101,6 +109,10 @@
                         //if is new user
                         this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                     }
+                } else if (this.unicefUsersAllowed && this.organisationId === 1) {
+                    //if is new user and unicefUsersAllowed
+                    this._setError(`You can't add new user to this firm.`);
+                    this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                 }
 
 

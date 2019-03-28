@@ -46,7 +46,7 @@
                             on-tap="confirmDialog"
                             raised
                             autofocus$="[[autofocus]]"
-                            disabled="{{requestInProcess}}">
+                            disabled="[[confirmDisabled]]">
                         [[confirmBtnText]]
                     </paper-button>
                 </template>
@@ -88,6 +88,15 @@
                     type: String,
                     value: 'Ok'
                 },
+                confirmDisabled:{
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                errors: {
+                    type: Array,
+                    notify: true,
+                },
                 opened: {
                     type: Boolean,
                     notify: true,
@@ -97,7 +106,7 @@
                     type: Boolean,
                     value: false,
                     notify: true,
-                    reflectToAttribute: true
+                    reflectToAttribute: true,
                 },
                 confirmDialogOpened: {
                     type: Boolean,
@@ -117,6 +126,14 @@
                     type: Boolean,
                     value: false
                 }
+            },
+            observers: ['_handleChangedState(requestInProcess, errors.*)'],
+            _handleChangedState: function (requestInProcess, errors) {
+                if (!this.opened) {
+                    return
+                }
+                const shouldDisable = requestInProcess || !_.isEmpty(errors)
+                this.set('confirmDisabled', shouldDisable );
             },
 
             _setDialogDismiss: function(requestInProcess, confirmDialogOpened) {
