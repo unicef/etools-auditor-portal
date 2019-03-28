@@ -62,7 +62,7 @@ Polymer({
 
     ready: function() {
         this.sendRequest({
-            endpoint: {url: this.getEndpoint('filterAuditors').url + '?unicef_users_allowed=true'}
+            endpoint: {url: this.getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
         }).then(resp => {
            this._auditFirmLoaded(resp);
         }).catch(err => {
@@ -145,13 +145,12 @@ Polymer({
         }
     },
 
-    _auditFirmLoaded: function(data) {
-        if (!data.length) {
-            console.error('Can not load firm data.');
-            console.error(data);
+    _auditFirmLoaded: function({results}) {
+        if (!results.length) {
+            console.error('Error fetching audit firm.');
         }
         else {
-            this.auditFirm = data[0];
+            this.auditFirm = results[0];
         }
     }
 
