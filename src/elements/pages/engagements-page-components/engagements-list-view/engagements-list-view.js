@@ -31,8 +31,8 @@
                     'path': 'unique_id'
                 }, {
                     'size': 20,
-                    'label': 'Auditor',
-                    'labelPath': 'agreement.auditor_firm',
+                    'label': 'Audit Firm',
+                    'labelPath': 'agreement.audit_firm',
                     'name': 'agreement__auditor_firm__name',
                     'ordered': false,
                     'path': 'agreement.auditor_firm.name'
@@ -64,7 +64,7 @@
                 type: Array,
                 value: [
                     {
-                        name: 'auditor',
+                        name: 'audit firm',
                         query: 'agreement__auditor_firm__in',
                         optionValue: 'id',
                         optionLabel: 'name',
@@ -95,7 +95,7 @@
                     },
                     {
                         name: 'joint audit',
-                        query: 'joint_audit__in',
+                        query: 'joint_audit',
                         hideSearch: true,
                         optionValue: 'value',
                         optionLabel: 'display_name',

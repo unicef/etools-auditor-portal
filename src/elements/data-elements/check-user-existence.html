@@ -1,14 +1,8 @@
-<!--import [polymer, etools-ajax]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior]-->
 <!--import [etools-app-config]-->
 
 <dom-module id="check-user-existence">
     <template>
-        <etools-ajax
-                method="GET"
-                url="{{url}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
     </template>
 
     <script>
@@ -16,7 +10,8 @@
             is: 'check-user-existence',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -49,22 +44,34 @@
                 if (isNaN(+this.organisationId)) { return; }
 
                 this.emailChecking = true;
-                this.url = this.getEndpoint('userExistence', {email: encodeURIComponent(email), id: this.organisationId}).url;
+                let url = this.getEndpoint('userExistence', {
+                    email: encodeURIComponent(email),
+                    id: this.organisationId
+                }).url;
+
+                this.sendRequest({
+                    endpoint: {url}
+                }).then(resp => {
+                   this._handleResponse(resp);
+                }).catch(err => {
+                    this._handleError(err);
+                });
+
                 this.email = null;
             },
 
-            _handleResponse: function(event, details = []) {
+            _handleResponse: function(details = []) {
                 let firmId = _.get(details, '0.auditor_firm'),
                     userIsNotDeleted = firmId === this.organisationId && !_.get(details, '0.hidden'),
                     alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
-    
-                // if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
-                //     //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
-                //     this._setError(`This field must be unique.`);
-                //     let email = _.get(this, 'editedItem.user.email'),
-                //         hasAccess = false;
-                //     this.editedItem = {user: {email}, hasAccess};
-                // } 
+
+                if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
+                    //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
+                    this._setError(`This field must be unique.`);
+                    let email = _.get(this, 'editedItem.user.email'),
+                        hasAccess = false;
+                    this.editedItem = {user: {email}, hasAccess};
+                }
                 if (firmId === this.organisationId) {
                     //if user was deleted from current organization
                     let user = details[0];
@@ -95,13 +102,11 @@
                 }
 
                 this.emailChecking = false;
-                this.url = null;
             },
 
             _handleError: function() {
                 this._setError(`Can't get Email data!`);
                 this.emailChecking = false;
-                this.url = null;
             },
 
             _setError: function(error) {

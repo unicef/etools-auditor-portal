@@ -1,15 +1,8 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config]-->
 
 <dom-module id="update-agreement-data">
     <template>
-        <etools-ajax
-                method="PATCH"
-                url="{{url}}"
-                body="{{postData}}"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
     </template>
 
     <script>
@@ -17,7 +10,8 @@
             is: 'update-agreement-data',
 
             behaviors: [
-                etoolsAppConfig.globals
+                etoolsAppConfig.globals,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -45,21 +39,28 @@
                 if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) { return; }
 
                 this.poUpdating = true;
-                this.url = this.getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
-                this.postData = {contract_end_date: date};
+                let url = this.getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
+                this.sendRequest({
+                    method: 'PATCH',
+                    endpoint: {url},
+                    body: {contract_end_date: date}
+                }).then(resp => {
+                   this._handleResponse(resp);
+                }).catch(err => {
+                    this._handleError(err);
+                });
+
             },
 
-            _handleResponse: function(event, detail) {
+            _handleResponse: function(detail) {
                 this.poUpdating = false;
                 this.agreement = detail;
             },
 
-            _handleError: function(event, error) {
+            _handleError: function(error) {
                 this.poUpdating = false;
-                let responseData = error && error.request && error.request.detail &&
-                        error.request.detail.request && error.request.detail.request.xhr;
 
-                let {status, response} = responseData || {};
+                let {status, response} = error || {};
                 if (typeof response === 'string') {
                     try {
                         response = JSON.parse(response);

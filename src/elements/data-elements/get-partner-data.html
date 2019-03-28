@@ -1,19 +1,9 @@
-<!--import [polymer, etools-ajax, lodash]-->
+<!--import [polymer, etools-ajax/etools-ajax-request-behavior, lodash]-->
 <!--import [etools-app-config, static-data-behavior]-->
 
 <dom-module id="get-partner-data">
     <template>
-        <etools-ajax
-                url="[[url]]"
-                on-success="_handleResponse"
-                on-fail="_handleError">
-        </etools-ajax>
 
-        <etools-ajax
-                url="[[officersUrl]]"
-                on-success="_handleOfficersResponse"
-                on-fail="_handleOfficersError">
-        </etools-ajax>
     </template>
 
     <script>
@@ -22,7 +12,8 @@
 
             behaviors: [
                 etoolsAppConfig.globals,
-                APBehaviors.StaticDataController
+                APBehaviors.StaticDataController,
+                EtoolsAjaxRequestBehavior
             ],
 
             properties: {
@@ -37,7 +28,7 @@
                 }
             },
 
-            _handleResponse: function (data, detail) {
+            _handleResponse: function (detail) {
                 if (!detail || !detail.id) {
                     this._handleError();
                     return;
@@ -48,11 +39,17 @@
                     this.lastData.partnerOfficers = officers;
                     this.finishRequest();
                 } else {
-                    this.officersUrl = this.getEndpoint('authorizedOfficers', {id: detail.id}).url;
+                    this.sendRequest({
+                        endpoint: {url: this.getEndpoint('authorizedOfficers', {id: detail.id}).url}
+                    }).then(resp => {
+                        this._handleOfficersResponse(resp);
+                    }).catch(err => {
+                        this._handleOfficersError(err);
+                    });
                 }
             },
 
-            _handleOfficersResponse: function(event, detail) {
+            _handleOfficersResponse: function(detail) {
                 if (!detail) {
                     this._handleOfficersError();
                 } else {
@@ -96,7 +93,7 @@
                 if (partnerId === this.lastNumber) {
                     this.partnerId = null;
                     let detail = _.clone(this.lastData)
-                    this.lastError ? this._handleError() : this._handleResponse({detail: detail}, detail);
+                    this.lastError ? this._handleError() : this._handleResponse(detail);
                     return;
                 }
 
@@ -105,9 +102,15 @@
 
                 let partner = this.getData(`partner_${partnerId}`);
                 if (partner) {
-                    this._handleResponse({detail: partner}, partner);
+                    this._handleResponse(partner);
                 } else {
-                    this.url = this.getEndpoint('partnerInfo', {id: partnerId}).url;
+                    this.sendRequest({
+                        endpoint: {url: this.getEndpoint('partnerInfo', {id: partnerId}).url}
+                    }).then(resp => {
+                        this._handleResponse(resp);
+                    }).catch(err => {
+                        this._handleError(err);
+                    });
                 }
 
                 this.partnerId = null;

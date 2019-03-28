@@ -1,0 +1,83 @@
+<!--import [polymer, lodash, paper-icon-button, paper-tooltip, paper-input, 
+  iron-icons, iron-flex-layout, etools-ajax/etools-ajax-request-behavior,
+  paper-checkbox, etools-searchable-multiselection-menu]-->
+
+<!-- import [tab-inputs-styles, table-elements-behavior, list-header, static-data-behavior,
+  simple-list-item, etools-file-styles, date-behavior, etools-app-config,
+   module-styles, common-methods-behavior] -->
+
+<dom-module id="share-documents">
+
+  <template>
+    <style include="tab-inputs-styles module-styles iron-flex etools-file-styles"></style>
+    <!-- inject styles './share-documents.scss' -->
+
+    <div>
+      <div class="subtitle"
+           without-line>
+        Showing documents for [[partnerName]]
+      </div>
+
+      <div class="row-h repeatable-item-container"
+           without-line>
+        <div class="layout horizontal">
+          <etools-searchable-multiselection-menu class="validate-input w40"
+                                                 value="{{selectedFiletype}}"
+                                                 label="[[getLabel('file_type', basePermissionPath)]]"
+                                                 placeholder="Select"
+                                                 options="[[fileTypes]]"
+                                                 update-selected
+                                                 empty-value
+                                                 dynamic-align
+                                                 >
+          </etools-searchable-multiselection-menu>
+        </div>
+      </div>
+      <div class="layout vertical">
+        <list-header data="[[headingColumns]]"
+                     order-by="{{orderBy}}"
+                     on-order-changed="_orderChanged"
+                     base-permission-path="[[dataBasePath]]">
+        </list-header>
+        <template is="dom-if" if="[[!attachmentsList.length]]">
+          <span class="modal-pad">There are no attachments for this partner. </span>
+        </template>
+        <template is="dom-if" if="[[attachmentsList.length]]">
+          <div class="row-h repeatable-item-container list-items">
+           
+            <template is="dom-repeat"
+                      items="[[attachmentsList]]">
+              <simple-list-item>
+                <div class="row-data">
+                  <paper-checkbox on-tap="_toggleChecked">
+                  </paper-checkbox>
+                  <span class="pd">[[_getReferenceNumber(item.agreement_reference_number)]]
+                    <paper-tooltip>[[_getReferenceNumber(item.agreement_reference_number)]]</paper-tooltip>
+                  </span>
+                  <span class="doc-type">[[item.file_type]]</span>
+                  <div class="document-link">
+                    <iron-icon icon="icons:attachment"
+                               class="download-icon">
+                    </iron-icon>
+                    <a href$="[[item.file_link]]"
+                             class="truncate"
+                             target="_blank">[[item.filename]]
+                          </a>
+                    <paper-tooltip>[[item.filename]]</paper-tooltip>
+                  </div>
+                  <span class="w12">[[item.created]]</span>
+                </div>
+  
+              </simple-list-item>
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    </div>
+  </template>
+
+  <!-- inject scripts './share-documents.js'-->
+
+</dom-module>
