@@ -65,7 +65,6 @@
 
             _handleResponse: function (details = []) {
                 const user = _.get(details, '0');
-                console.log('user', user);
                 if (user) {
                     let firmId = user.auditor_firm,
                         userIsNotDeleted = firmId === this.organisationId && !user.hidden,
