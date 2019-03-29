@@ -132,7 +132,7 @@
                 if (!this.opened) {
                     return
                 }
-                const shouldDisable = requestInProcess || !_.isEmpty(errors)
+                const shouldDisable = requestInProcess || !_.isEmpty(errors.value)
                 this.set('confirmDisabled', shouldDisable );
             },
 
