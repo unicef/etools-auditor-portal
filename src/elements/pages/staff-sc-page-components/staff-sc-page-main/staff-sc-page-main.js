@@ -25,6 +25,7 @@ Polymer({
             value: [
                 {
                     name: 'partner',
+                    label: 'Partner',
                     query: 'partner__in',
                     optionValue: 'id',
                     optionLabel: 'name',
@@ -32,6 +33,7 @@ Polymer({
                 },
                 {
                     name: 'status',
+                    label: 'Status',
                     query: 'status__in',
                     hideSearch: true,
                     optionValue: 'value',
@@ -40,6 +42,7 @@ Polymer({
                 },
                 {
                     name: 'unicef user',
+                    label: 'Unicef User',
                     query: 'staff_members__user__in',
                     optionValue: 'id',
                     optionLabel: 'full_name',
@@ -59,11 +62,11 @@ Polymer({
 
     ready: function() {
         this.sendRequest({
-            endpoint: {url: this.getEndpoint('filterAuditors').url + '?unicef_users_allowed=true'}
+            endpoint: {url: this.getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
         }).then(resp => {
            this._auditFirmLoaded(resp);
         }).catch(err => {
-            this._auditFirmLoaded(err);
+            throw new Error(err);
         });
     },
 
@@ -142,13 +145,12 @@ Polymer({
         }
     },
 
-    _auditFirmLoaded: function(data) {
-        let auditFirm = _.get(data, 'results.0');
-        if (!auditFirm) {
-            console.error('Can not load firm data.');
-            console.error(data);
-        } else {
-            this.auditFirm = auditFirm;
+    _auditFirmLoaded: function({results}) {
+        if (!results.length) {
+            console.error('Error fetching audit firm.');
+        }
+        else {
+            this.auditFirm = results[0];
         }
     }
 

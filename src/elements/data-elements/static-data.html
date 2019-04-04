@@ -219,8 +219,7 @@
                     if (!details || details.error) {
                         this._responseError('Auditors', event && event.type);
                     }
-
-                    let filterAuditors = details && details.results || [];
+                    let filterAuditors = details || details.results || [];
                     if (dataLoaded.filters) {
                         this._updateData('filterAuditors', filterAuditors);
                     } else {

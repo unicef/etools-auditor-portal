@@ -44,8 +44,11 @@ App global configuration
             authorizedOfficers: {
                 template: '/api/v2/partners/<%=id%>/staff-members/'
             },
-            filterAuditors: {
+            auditFirms: {
                 url: '/api/audit/audit-firms/'
+            },
+            filterAuditors: {
+                url: '/api/audit/audit-firms/current_tenant/'
             },
             filterPartners : {
                 url: '/api/audit/engagements/partners/'
@@ -116,6 +119,9 @@ App global configuration
 
             productionDomain: 'etools.unicef.org',
             stagingDomain: 'etools-staging.unicef.org',
+            demoDomain: 'etools-demo.unicef.org',
+            devDomain: 'etools-dev.unicef.org',
+            localDomain: 'localhost',
 
             getEndpoint: function (endpointName, data) {
                 var endpoint = etoolsAppConfig[etoolsAppConfig.globals.epsPath][endpointName];
@@ -138,14 +144,21 @@ App global configuration
                 return this.basePath + path;
             },
 
-            isProductionServer: function() {
+            _checkEnvironment: function() {
                 var location = window.location.href;
-                return location.indexOf(this.productionDomain) > -1;
-            },
-
-            isStagingServer: function() {
-                var location = window.location.href;
-                return location.indexOf(this.stagingDomain) > -1;
+                if (location.indexOf(this.stagingDomain) > -1) {
+                    return 'STAGING'
+                }
+                if (location.indexOf(this.demoDomain) > -1) {
+                    return 'DEMO'
+                }
+                if (location.indexOf(this.devDomain) > -1) {
+                    return 'DEVELOPMENT'
+                } 
+                if (location.indexOf(this.localDomain) > -1) {
+                    return 'LOCAL'
+                }
+                return null
             }
         }
     };
