@@ -479,7 +479,6 @@
         
         _openShareDialog: function() {
             this.shareDialogOpened = true;
-            this.set('confirmDisabled', true);
         },
 
         _SendShareRequest: function() {
