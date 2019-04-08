@@ -57,11 +57,10 @@
                     this._handleError(err);
                 });
 
-                this.email = null;
             },
 
-            _isUnicefUser: function (user) {
-                return user.auditor_firm === 1 || user.email.includes('unicef.org');
+            _isUnicefUser: function (email) {
+                return email.includes('unicef.org');
             },
 
             _handleResponse: function (details = []) {
@@ -70,6 +69,10 @@
                     let firmId = user.auditor_firm,
                         userIsNotDeleted = firmId === this.organisationId && !user.hidden,
                         alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
+                    if (!this.unicefUsersAllowed && this._isUnicefUser(user.email)) {
+                        this._setError('UNICEF users can not be added to this engagement type.')
+                        this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
+                    }
                     if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
                         //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
                         this._setError(`This user is already assigned to firm : ${user.auditor_firm_description}`);
@@ -77,10 +80,7 @@
                             hasAccess = false;
                         this.editedItem = { user: { email }, hasAccess };
                     }
-                    if (!this.unicefUsersAllowed && this._isUnicefUser(user)){
-                        this._setError(`You can't add UNICEF user.`);
-                        this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
-                    }
+                    
                     if (firmId === this.organisationId) {
                         //if user was deleted from current organization
                         let user = details[0];
@@ -109,19 +109,25 @@
                         //if is new user
                         this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                     }
-                } else if (this.unicefUsersAllowed && this.organisationId === 1) {
-                    //if is new user and unicefUsersAllowed
-                    this._setError(`You can't add new user to this firm.`);
+                } else if (this.unicefUsersAllowed){
+                    const errorMsg = this._isUnicefUser(this.email) ? `We could not find this user at this time, please try again later or contact support if the issue persists` :
+                        'Only UNICEF users can be added to a Staff Spot Check';
+                    this._setError(errorMsg);
+                    this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
+
+                } else if (this._isUnicefUser(this.email)){
+                    this._setError('UNICEF users can not be added to this engagement type.')
                     this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                 }
 
-
                 this.emailChecking = false;
+                this.email = null;
             },
 
             _handleError: function(err) {
                 this._setError(`Can't get Email data!`);
                 this.emailChecking = false;
+                this.email = null;
             },
 
             _setError: function(error) {
