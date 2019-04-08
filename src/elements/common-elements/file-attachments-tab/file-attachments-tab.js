@@ -479,7 +479,8 @@
         
         _openShareDialog: function() {
             this.shareDialogOpened = true;
-            this.set('confirmDisabled', true);
+            const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+            shareModal.updateShareParams();
         },
 
         _SendShareRequest: function() {
