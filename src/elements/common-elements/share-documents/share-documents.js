@@ -63,6 +63,11 @@
         }
       ]
     },
+    confirmDisabled: {
+      type: Boolean,
+      reflectToAttribute: true,
+      notify: true
+    }
   },
 
  
@@ -115,13 +120,18 @@
       this.set('selectedAttachments', cloned);
     }
 
-    this._updateShareParams();
+    this.updateShareParams();
   },
 
-  _updateShareParams: function(){
+  updateShareParams: function(){
     this.set('shareParams', {
       attachments: this.selectedAttachments
     });
+    if(this.selectedAttachments.length) {
+      this.set('confirmDisabled', false);
+    }else {
+      this.set('confirmDisabled', true);
+    }
   },
 
   _orderChanged: function ({ detail }) {
