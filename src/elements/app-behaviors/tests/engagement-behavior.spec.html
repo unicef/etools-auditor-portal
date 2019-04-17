@@ -587,8 +587,6 @@
             });
 
             it('returns true if actionAllowed returns true', function() {
-                behaviorObj.actionAllowed = sinon.stub().returns(false);
-                assert.isFalse(behaviorObj._showReportTabs(true, true));
 
                 behaviorObj.actionAllowed = sinon.stub().returns(true);
                 assert.isTrue(behaviorObj._showReportTabs(true, true));
