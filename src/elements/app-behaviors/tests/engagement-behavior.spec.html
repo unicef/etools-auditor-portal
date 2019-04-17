@@ -160,6 +160,8 @@
 
         beforeEach(function () {
             behaviorObj = _.cloneDeep(copy);
+            behaviorObj.getUserData = sinon.stub().returns({groups: [{name:'UNICEF Audit Focal Point'}]})
+
         });
 
         describe('method _routeConfig', function() {
@@ -574,7 +576,6 @@
         });
 
         describe('method _showReportTabs', function() {
-            behaviorObj.getUserData = sinon.stub().returns({groups: [{name:'UNICEF Audit Focal Point'}]})
             it('returns false if one of two arguments is false', function() {
                 behaviorObj.actionAllowed = sinon.stub().returns(true);
 
