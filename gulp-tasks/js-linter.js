@@ -8,49 +8,35 @@ const fs = require('fs');
 const gulpIf = require('gulp-if');
 const combine = require('stream-combiner2').obj;
 const argv = require('yargs').argv;
+const eslint = require('gulp-eslint');
+
 
 function lint() {
-    let eslintResults = {};
-    let cacheFilePath = process.cwd() + '/build/lintCache.json';
 
-    try {
-        eslintResults = JSON.parse(fs.readFileSync(cacheFilePath));
-    } catch (e) {
-    }
-
-    return gulp.src('./src/elements/**/*.js', {read: false})
-        .pipe(gulpIf(
-            function(file) {
-                let cached = eslintResults[file.path];
-                return !(cached && cached.mtime == file.stat.mtime.toJSON() && cached.jshint && cached.jscs);
-            },
-            combine(
-                through2(function(file, enc, callback) {
-                    file.contents = fs.readFileSync(file.path);
-                    callback(null, file);
-                }),
-                jshint(),
-                jscs(),
-                through2(function(file, enc, callback) {
-                    eslintResults[file.path] = {
-                        jshint: file.jshint.success,
-                        jscs: file.jscs.success,
-                        mtime: file.stat.mtime
-                    };
-                    callback(null, file);
-                })
-            )
-        ))
-        .pipe(jshint.reporter('default'))
-        .pipe(jscs.reporter())
-        .pipe(gulpIf(argv.pc, jshint.reporter('fail')))
-        .pipe(gulpIf(argv.pc, jscs.reporter('fail')))
-        .on('end', function() {
-            if (!fs.existsSync('build')) {
-                fs.mkdirSync('build');
-            }
-            fs.writeFileSync(cacheFilePath, JSON.stringify(eslintResults));
-        });
+  return gulp.src('./src/elements/**/*.js', { read: false })
+      .pipe(
+          combine(
+              through2(function(file, enc, callback) {
+                file.contents = fs.readFileSync(file.path);
+                callback(null, file);
+              }),
+              eslint({ fix: true }),
+              eslint.format(),
+              eslint.failOnError()
+          )
+      )
+      .pipe(eslint.results((results) => {
+        // Called once for all ESLint results.
+        console.log(`Total Results: ${results.length}`);
+        console.log(`Total Warnings: ${results.warningCount}`);
+        console.log(`Total Errors: ${results.errorCount}`);
+      }))
+      .on('end', function() {
+        if (!fs.existsSync('build')) {
+          fs.mkdirSync('build');
+        }
+        fs.writeFileSync(cacheFilePath, JSON.stringify(eslintResults));
+      });
 }
 
 module.exports = lint;

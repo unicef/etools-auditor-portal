@@ -18,8 +18,10 @@
     "no-undef": "warn",
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
+    "no-console": "off",
     "comma-dangle": ["error", "never"],
-    "max-len": ["error", { "code": 120 }],
+    "guard-for-in": "off",
+    "max-len": ["error", { "code": 150 }],
     "camelcase": ["error", {"properties": "never"}],
     "object-curly-spacing": ["warn", "always"]
   },

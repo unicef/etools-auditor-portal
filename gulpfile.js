@@ -38,7 +38,7 @@ const source = require('./gulp-tasks/project-source');
 const dependencies = require('./gulp-tasks/project-dependencies');
 
 
-gulp.task('watch', function () {
+gulp.task('watch', function() {
   gulp.watch(['./src/elements/**/*.*'], gulp.series(jsLinter, buildElements));
   gulp.watch(['./src/*.*', './src/assets/**/*.*'], gulp.series(copyAssets));
   gulp.watch(['./bower_components/**/*.*'], gulp.series(copyBower()));
@@ -47,13 +47,13 @@ gulp.task('watch', function () {
 gulp.task('lint', gulp.series(jsLinter));
 gulp.task('test', gulp.series(clean.build, gulp.parallel(buildElements, copyAssets, copyBower()), runTests));
 
-gulp.task('startServer', function () { nodemon({ script: 'express.js' }) });
+gulp.task('startServer', function() {nodemon({ script: 'express.js' });});
 
 gulp.task('devBuild', gulp.series(clean.build, jsLinter, gulp.parallel(buildElements, copyAssets, copyBower())));
 gulp.task('prodBuild', gulp.series(clean.build, copyBower('toSrc'), buildElements, project.merge(source, dependencies), clean.bowerInSrc));
 
-//Run dev server and watch changes
+// Run dev server and watch changes
 gulp.task('devup', gulp.series('devBuild', gulp.parallel('startServer', 'watch')));
 
-//Minify scripts, run prod server and watch changes
-gulp.task('default', gulp.series([ 'prodBuild']));
+// Minify scripts, run prod server and watch changes
+gulp.task('default', gulp.series(['prodBuild']));
