@@ -123,7 +123,10 @@ Polymer({
     ],
 
     setChoices: function(basePath) {
-        let titleOptions = this.getChoices(`${basePath}.financial_finding_set.title`);
+        let unsortedOptions = this.getChoices(`${basePath}.financial_finding_set.title`);
+        let titleOptions = _.sortBy(
+            unsortedOptions,
+            ['display_name']);
         this.set('titleOptions', titleOptions || []);
     },
 
