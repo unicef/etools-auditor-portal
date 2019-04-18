@@ -24,14 +24,11 @@
         before(function() {
             server = sinon.fakeServer.create();
             server.respondWith('test' );
+            myEl = fixture('element-fixture');
         });
 
         after(function() {
             server.restore();
-        });
-
-        beforeEach(() => {
-            myEl = fixture('element-fixture');
         });
 
         describe('method queueToast()', () => {
