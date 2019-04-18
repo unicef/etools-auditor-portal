@@ -276,7 +276,9 @@ Polymer({
     if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {data.partner_contacted_at = this.data.partner_contacted_at;}
     if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) {data.agreement = this.data.agreement.id;}
     if (this.originalData.total_value !== this.data.total_value) {data.total_value = this.data.total_value;}
-    if (this.originalData.engagement_type !== this.data.engagement_type.value && !this.isStaffSc) {data.engagement_type = this.data.engagement_type.value;}
+    if (this.originalData.engagement_type !== this.data.engagement_type.value && !this.isStaffSc) {
+      data.engagement_type = this.data.engagement_type.value;
+    }
     if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) {data.po_item = this.data.po_item.id;}
     if (this.originalData.joint_audit !== this.data.joint_audit) {data.joint_audit = this.data.joint_audit;}
 

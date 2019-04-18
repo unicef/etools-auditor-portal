@@ -1,13 +1,13 @@
 'use strict';
 
 const gulp = require('gulp');
-const jshint = require('gulp-jshint');
-const jscs = require('gulp-jscs');
+// const jshint = require('gulp-jshint');
+// const jscs = require('gulp-jscs');
 const through2 = require('through2').obj;
 const fs = require('fs');
-const gulpIf = require('gulp-if');
+// const gulpIf = require('gulp-if');
 const combine = require('stream-combiner2').obj;
-const argv = require('yargs').argv;
+// const argv = require('yargs').argv;
 const eslint = require('gulp-eslint');
 
 
@@ -35,7 +35,7 @@ function lint() {
         if (!fs.existsSync('build')) {
           fs.mkdirSync('build');
         }
-        fs.writeFileSync(cacheFilePath, JSON.stringify(eslintResults));
+        // fs.writeFileSync(cacheFilePath, JSON.stringify(eslintResults));
       });
 }
 
