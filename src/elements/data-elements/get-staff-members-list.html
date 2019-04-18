@@ -107,7 +107,7 @@
 
                 });
                 const {profile} = this.getUserData();
-                const countryFilter = _.get(this.routeData,'page', '').includes('staff')? `user__profile__countries_available__name=${profile.country_name}`: '';
+                const countryFilter = _.get(this.routeData,'page', '').includes('staff')? `user__profile__countries_available__name=${country_name}`: '';
                 return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
             },
 
