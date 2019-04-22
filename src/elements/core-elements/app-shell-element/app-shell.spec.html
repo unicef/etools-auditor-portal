@@ -24,14 +24,7 @@
         before(function() {
             server = sinon.fakeServer.create();
             server.respondWith('test' );
-        });
-
-        beforeEach(() => {
             myEl = fixture('element-fixture');
-        });
-
-        afterEach(() => {
-
         });
 
         after(function() {
@@ -65,9 +58,9 @@
                 sinon.spy(myEl, '_pageChanged');
                 sinon.spy(myEl, 'fire');
                 Polymer.isInstance = sinon.stub().returns(false);
-                myEl.route ={path: 'test'};
+                myEl.page = 'test';
                 assert.isTrue(myEl._pageChanged.called);
-                // assert.isTrue(myEl.fire.called);
+                assert.isTrue(myEl.fire.called);
                 myEl._pageChanged.restore();
                 myEl.fire.restore();
             });
@@ -91,13 +84,13 @@
                 myEl.queueToast.restore();
             });
 
-            // it('\'static-data-loaded\' should call method _initialDataLoaded()', () => {
-            //     sinon.spy(myEl, '_initialDataLoaded');
-            //     assert.isFalse(myEl._initialDataLoaded.called);
-            //     myEl.fire('static-data-loaded');
-            //     assert.isTrue(myEl._initialDataLoaded.called);
-            //     myEl._initialDataLoaded.restore();
-            // });
+            it('\'static-data-loaded\' should call method _initialDataLoaded()', () => {
+                sinon.spy(myEl, '_initialDataLoaded');
+                assert.isFalse(myEl._initialDataLoaded.called);
+                myEl.fire('static-data-loaded');
+                assert.isTrue(myEl._initialDataLoaded.called);
+                myEl._initialDataLoaded.restore();
+            });
 
             it('\'global-loading\' call method handleLoading', () => {
                 sinon.spy(myEl, 'handleLoading');
