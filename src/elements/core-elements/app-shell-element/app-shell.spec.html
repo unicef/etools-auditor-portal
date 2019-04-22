@@ -24,8 +24,15 @@
         before(function() {
             server = sinon.fakeServer.create();
             server.respondWith('test' );
-            myEl = fixture('element-fixture');
         });
+        
+        beforeEach(() => {
+            myEl = fixture('element-fixture');
+        })
+
+        afterEach(() => {
+
+        })
 
         after(function() {
             server.restore();
