@@ -139,7 +139,7 @@ Polymer({
     },
 
     _initialDataLoaded: function(e) {
-        if (e && e.type === 'static-data-loaded') { this.staticDataLoaded = true; }
+        this.staticDataLoaded = true;
         if (this.routeData && this.staticDataLoaded) {
             this.user = this.getUserData();
             this.page = this.routeData.page || this._configPath();
