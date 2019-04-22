@@ -25,22 +25,23 @@
                 }).then(resp => {
                    this._handleResponse(resp);
                 }).catch(err => {
+                    console.log(err)
                     this._handleError(err);
                 });
             },
 
             _handleResponse: function (user) {
                 let previousUserId = JSON.parse(localStorage.getItem('userId'));
-                let countriesAvailable = _.get(user, 'profile.countries_available') || [];
+                let countriesAvailable = _.get(user, 'countries_available') || [];
 
                 countriesAvailable = _.sortBy(countriesAvailable, ['name']);
-                _.set(user, 'profile.countries_available', countriesAvailable);
+                _.set(user, 'countries_available', countriesAvailable);
 
-                if (!previousUserId || previousUserId !== user.id) {
+                if (!previousUserId || previousUserId !== user.user) {
                     this.resetOldUserData();
                 }
 
-                localStorage.setItem('userId', user.id);
+                localStorage.setItem('userId', user.user);
 
                 this._setUserData(user);
                 this.fire('user-profile-loaded');
