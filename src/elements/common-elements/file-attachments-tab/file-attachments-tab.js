@@ -196,7 +196,7 @@
             }
         },
 
-        _handleLinksInDetailsView: function (dataBase) {
+        _handleLinksInDetailsView: function (dataBase='') {
             const isEngagementDetailsView = !dataBase.includes('new');
             if (isEngagementDetailsView && !this.isReportTab){
                 this._hanldeLinksForEngagement();
