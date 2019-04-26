@@ -12,21 +12,25 @@
                 base-permission-path="{{permissionBase}}">
         </assign-engagement>
 
-        <primary-risk-element
-                id="primaryRisk"
-                risk-data="[[engagement.overall_risk_assessment]]"
-                dialog-opened="[[riskDialogOpened]]"
-                error-object="{{errorObject}}"
-                base-permission-path="{{permissionBase}}">
-        </primary-risk-element>
-
-        <key-internal-controls-tab
-                id="internalControls"
-                subject-areas="[[engagement.test_subject_areas]]"
-                dialog-opened="{{riskDialogOpened}}"
-                error-object="{{errorObject}}"
-                base-permission-path="{{permissionBase}}">
-        </key-internal-controls-tab>
+        <template is="dom-if"
+                  if="[[engagement.overall_risk_assessment]]">
+                <primary-risk-element id="primaryRisk"
+                                      risk-data="[[engagement.overall_risk_assessment]]"
+                                      dialog-opened="[[riskDialogOpened]]"
+                                      error-object="{{errorObject}}"
+                                      base-permission-path="{{permissionBase}}">
+                </primary-risk-element>
+        </template>
+        
+        <template is="dom-if" if="[[engagement.test_subject_areas]]">
+                <key-internal-controls-tab
+                        id="internalControls"
+                        subject-areas="[[engagement.test_subject_areas]]"
+                        dialog-opened="{{riskDialogOpened}}"
+                        error-object="{{errorObject}}"
+                        base-permission-path="{{permissionBase}}">
+                </key-internal-controls-tab>
+        </template>
 
         <control-findings-tab
                 id="controlFindings"
