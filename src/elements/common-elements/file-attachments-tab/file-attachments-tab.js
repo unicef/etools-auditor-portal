@@ -196,7 +196,10 @@
             }
         },
 
-        _handleLinksInDetailsView: function (dataBase='') {
+        _handleLinksInDetailsView: function (dataBase) {
+            if(!dataBase){ //null check
+                dataBase = '';
+            }
             const isEngagementDetailsView = !dataBase.includes('new');
             if (isEngagementDetailsView && !this.isReportTab){
                 this._hanldeLinksForEngagement();
