@@ -74,7 +74,7 @@ Polymer({
         } else {
             delete data.questionnaire;
         }
-        const hasReport  = this._hasReportAccess(this.permissionBase, this.engagement);
+        const hasReport  = this.hasReportAccess(this.permissionBase, this.engagement);
         let reportTab = hasReport ? this.getElement('#report'): null;
 
         let subjectAreas = reportTab && reportTab.getInternalControlsData();
@@ -95,7 +95,7 @@ Polymer({
     },
 
     customBasicValidation: function() {
-        const hasReport  = this._hasReportAccess(this.permissionBase, this.engagement);
+        const hasReport  = this.hasReportAccess(this.permissionBase, this.engagement);
         if (!hasReport) {
             return true;
         }

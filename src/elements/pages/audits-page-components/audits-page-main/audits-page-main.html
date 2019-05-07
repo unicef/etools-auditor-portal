@@ -148,7 +148,7 @@
                                     endpoint-name="attachments">
                             </file-attachments-tab>
 
-                            <template is="dom-if" if="{{_hasReportAccess(permissionBase, engagement)}}" restamp>
+                            <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
                                         is-report-tab="true"
