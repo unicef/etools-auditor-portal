@@ -152,7 +152,7 @@ Polymer({
         '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
         '_organizationChanged(engagement.agreement.auditor_firm.id)',
         '_queriesChanged(listSize, listPage, searchQuery)',
-        '_dataItemsChanged(dataItems, engagementStaffs)',
+        '_staffMembersListChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
         'updateStyles(emailChecking, staffsBase, addDialog)',
     ],
@@ -226,11 +226,14 @@ Polymer({
         return valid && emailValid;
     },
 
-    _dataItemsChanged: function(data, staffs) {
+    _staffMembersListChanged: function(data, staffs) {
         if (!staffs) { return; }
         _.each(data, (staff, index) => {
             this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
         });
+        if( !this.originalTabData) {
+            this._dataItemsChanged(this.dataItems)
+        }
     },
 
     _selectedStaffsChanged: function(data) {

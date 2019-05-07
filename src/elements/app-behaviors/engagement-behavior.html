@@ -326,10 +326,10 @@
         _showReportTabs: function(permissionBase, engagement) {
             if (!permissionBase || !engagement) { return false; }
             const userIsFocalPoint = _.find(this.getUserData().groups, {name:'UNICEF Audit Focal Point'});
-             return this._hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
+             return this.hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
         },
 
-        _hasReportAccess(permissionBase, engagement){
+        hasReportAccess(permissionBase, engagement){
             return this.actionAllowed(permissionBase, 'submit') ||
                 engagement.status === 'report_submitted' ||
                 engagement.status === 'final'
@@ -337,7 +337,7 @@
 
         _showQuestionnaire: function(permissionBase, engagement){
             if (!permissionBase || !engagement) { return false; }
-            return this._hasReportAccess(permissionBase, engagement);
+            return this.hasReportAccess(permissionBase, engagement);
         },
 
         _showFollowUpTabs: function(permissionBase) {
