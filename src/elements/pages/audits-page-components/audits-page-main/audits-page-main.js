@@ -63,8 +63,9 @@ Polymer({
         _.assign(data, followUpData);
 
         //Report Data
+        const hasReport  = this._hasReportAccess(this.permissionBase, this.engagement);
+        if (!hasReport){ return data;}
         let reportPage = this.getElement('#report');
-        if (!reportPage) { return data; }
 
         let findingsSummaryData = reportPage.getFindingsSummaryData();
         let assessmentOfControlsData = reportPage.getAssessmentOfControlsData();
