@@ -105,6 +105,7 @@
                     getFollowUpData: sinon.spy()
                 };
                 sinon.stub(myEl, 'getElement').returns(reportPage);
+                sinon.stub(myEl, 'hasReportAccess').returns(true);
 
                 myEl.customDataPrepare();
 
@@ -114,6 +115,8 @@
                 assert.isTrue(reportPage.getKeyInternalWeaknessData.called);
 
                 myEl.getElement.restore();
+                myEl.hasReportAccess.restore();
+
             });
 
             it('save data from report page to data object and return it', function() {
@@ -125,7 +128,7 @@
                     getFollowUpData: sinon.spy()
                 };
                 sinon.stub(myEl, 'getElement').returns(reportPage);
-
+                sinon.stub(myEl, 'hasReportAccess').returns(true);
                 var data = myEl.customDataPrepare();
 
                 assert.isDefined(data.test1);
@@ -134,6 +137,7 @@
                 assert.equal(data.key_internal_weakness[0], 'test4');
 
                 myEl.getElement.restore();
+                myEl.hasReportAccess.restore();
             });
         });
 

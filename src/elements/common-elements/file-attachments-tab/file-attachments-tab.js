@@ -197,6 +197,9 @@
         },
 
         _handleLinksInDetailsView: function (dataBase) {
+            if(!dataBase){ //null check
+                dataBase = '';
+            }
             const isEngagementDetailsView = !dataBase.includes('new');
             if (isEngagementDetailsView && !this.isReportTab){
                 this._hanldeLinksForEngagement();
@@ -479,7 +482,8 @@
         
         _openShareDialog: function() {
             this.shareDialogOpened = true;
-            this.set('confirmDisabled', true);
+            const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+            shareModal.updateShareParams();
         },
 
         _SendShareRequest: function() {

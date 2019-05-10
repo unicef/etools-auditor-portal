@@ -325,9 +325,19 @@
 
         _showReportTabs: function(permissionBase, engagement) {
             if (!permissionBase || !engagement) { return false; }
+            const userIsFocalPoint = _.find(this.getUserData().groups, {name:'UNICEF Audit Focal Point'});
+             return this.hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
+        },
+
+        hasReportAccess(permissionBase, engagement){
             return this.actionAllowed(permissionBase, 'submit') ||
                 engagement.status === 'report_submitted' ||
-                engagement.status === 'final';
+                engagement.status === 'final'
+        },
+
+        _showQuestionnaire: function(permissionBase, engagement){
+            if (!permissionBase || !engagement) { return false; }
+            return this.hasReportAccess(permissionBase, engagement);
         },
 
         _showFollowUpTabs: function(permissionBase) {
@@ -352,7 +362,7 @@
     APBehaviors.EngagementBehavior = [
         APBehaviors.EngagementBehaviorImpl,
         APBehaviors.PermissionController,
-        APBehaviors.StaticDataController,
+        APBehaviors.UserController,
         APBehaviors.ErrorHandlerBehavior,
         APBehaviors.TextareaMaxRowsBehavior,
         etoolsAppConfig.globals

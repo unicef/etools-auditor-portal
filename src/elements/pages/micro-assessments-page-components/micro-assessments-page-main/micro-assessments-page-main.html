@@ -57,6 +57,9 @@
 
                     <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                         <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
+                    </template>
+                    
+                    <template is="dom-if" if="{{_showQuestionnaire(permissionBase, engagement)}}" restamp>
                         <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>
                     </template>
 
@@ -122,7 +125,8 @@
                                         permission-base="{{permissionBase}}">
                                 </ma-report-page-main>
                             </div>
-
+                        </template>
+                        <template is="dom-if" if="{{_showQuestionnaire(permissionBase, engagement)}}" restamp>
                             <div name="questionnaire">
                                 <questionnaire-page-main
                                         id="questionnaire"
@@ -157,7 +161,7 @@
                                     endpoint-name="attachments">
                             </file-attachments-tab>
 
-                            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+                            <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
                                         is-report-tab="true"

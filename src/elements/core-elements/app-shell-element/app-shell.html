@@ -1,6 +1,6 @@
-<!--import [polymer, app-route/app-location, app-route, app-layout, paper-icon-button, paper-material, iron-selector,
+<!--import [polymer, app-route,app-route/app-location, app-layout, paper-icon-button, paper-material, iron-selector,
             iron-pages, iron-collapse, iron-icons, iron-icons/social-icons, etools-loading/etools-loading-behavior,
-            iron-icons/av-icons]-->
+            iron-icons/av-icons, etools-piwik-analytics]-->
 
 <!--import [app-main-header, app-sidebar-menu, multi-notification-list, permission-controller, etools-app-config,
             user-controller, side-bar-item, countries-dropdown, static-data, shared-styles,
@@ -11,6 +11,8 @@
         <!-- inject styles './app-shell.scss'-->
         <style include="page-layout-styles shared-styles"></style>
 
+        <etools-piwik-analytics user="[[user]]" page="[[page]]" toast="[[_toast]]"></etools-piwik-analytics>
+        
         <static-data></static-data>
 
         <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
