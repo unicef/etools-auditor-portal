@@ -10,7 +10,8 @@ Polymer({
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior,
-        APBehaviors.QueryParamsController
+        APBehaviors.QueryParamsController,
+        EtoolsAjaxRequestBehavior
     ],
 
     properties: {
@@ -116,22 +117,43 @@ Polymer({
             this._setLastEngagementData(data);
             this.engagement.id = data.id;
 
-            let attachmentsTab = this.$.engagement_attachments,
-                attachments = attachmentsTab && attachmentsTab.getFiles();
+            let attachmentsTab = this.$.engagement_attachments;
+            let attachments = attachmentsTab && attachmentsTab.getFiles();
 
             if (attachments && attachments.length) {
                 this.fire('global-loading', {type: 'upload-attachments', active: true, message: 'Uploading documents...'});
                 this.fire('global-loading', {type: 'create-engagement'});
-                this.atmUrl = this.getEndpoint('attachments', {id: data.id}).url;
+
                 this._attachmentsToUpload = attachments;
-                this.attachmentsPostData = attachments.shift();
+
+                this.attachmentsPostData = this._attachmentsToUpload.shift();
+                this.atmUrl = this.getEndpoint('attachments', {id: this.engagement.id}).url;
+
+                this._POSTattachment();
+
             } else {
                 this._finishEngagementCreation();
             }
         }
     },
 
-    _handleAtmResponse: function(event, detail) {
+    _POSTattachment: function() {
+
+        const options = {
+            endpoint: {url: this.atmUrl},
+            body: this.attachmentsPostData,
+            method: 'POST',
+            multiPart: true
+        };
+        this.set('requestInProcess', true);
+        this.sendRequest(options)
+            .then(this._handleAtmResponse.bind(this))
+            .catch(this._handleAtmResponse.bind(this));
+
+    },
+
+    _handleAtmResponse: function(detail) {
+        this.set('requestInProcess', true);
         if (detail.error) {
             let name = this.attachmentsPostData.file.name;
             this._attachmentErrors.push(name);
@@ -139,6 +161,7 @@ Polymer({
 
         if (this._attachmentsToUpload.length) {
             this.attachmentsPostData = this._attachmentsToUpload.shift();
+            this._POSTattachment();
         } else {
             _.each(this._attachmentErrors, (fileName) => this.fire('toast', {text: `File upload failed: ${fileName}`, fixed: true}));
             this._finishEngagementCreation();
