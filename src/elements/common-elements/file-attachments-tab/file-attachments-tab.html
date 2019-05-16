@@ -1,10 +1,10 @@
 <!--import [polymer, iron-icon, paper-icon-button, paper-toast,etools-ajax/etools-ajax-request-behavior, etools-content-panel, paper-tooltip]-->
-<!--import [share-documents,engagement-behavior, user-controller, simple-list-item, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
+<!--import [share-documents,engagement-behavior, user-controller, simple-list-item, shared-styles, tab-inputs-styles, tab-layout-styles, module-styles, shared-styles, table-elements-behavior,
             common-methods-behavior, date-behavior,  get-attachments, update-attachments, error-handler-behavior]-->
 
 <dom-module id="file-attachments-tab">
     <template>
-        <style include="tab-inputs-styles tab-layout-styles iron-flex module-styles">
+        <style include="shared-styles tab-inputs-styles tab-layout-styles iron-flex module-styles">
         </style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
@@ -109,6 +109,10 @@
                         headings="[[headings]]">
                 </list-element>
             </template>
+            <div class="row" hidden$="[[!_isNewEngagement(baseId)]]">
+                You can add attachments after you create the engagement!
+            </div>
+
         </etools-content-panel>
 
         <dialog-element
