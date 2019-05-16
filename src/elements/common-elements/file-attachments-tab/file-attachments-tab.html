@@ -26,7 +26,7 @@
                         </paper-icon-button>
                         <paper-tooltip offset="0">Share Documents</paper-tooltip>
                     </div>
-                    <div hidden$="[[isTabReadonly(basePermissionPath)]]">
+                    <div hidden$="[[_hideAddAttachments(basePermissionPath, baseId)]]">
                         <paper-icon-button class="panel-button"
                                            on-tap="_openAddDialog"
                                            icon="add-box">
@@ -34,7 +34,7 @@
                         <paper-tooltip offset="0">Add</paper-tooltip>
                     </div>
                 </div>
-            
+
             </div>
             <list-header
                     id="list-header"
@@ -53,8 +53,8 @@
                             <iron-icon icon="icons:attachment"
                                         class="download-icon">
                             </iron-icon>
-                            <a href$="[[item.file]]" 
-                                class="truncate" 
+                            <a href$="[[item.file]]"
+                                class="truncate"
                                 target="_blank">[[item.filename]]
                             </a>
                             <paper-tooltip offset="0">[[item.filename]]</paper-tooltip>
@@ -62,14 +62,14 @@
                         </div>
                         <span class="delete-icon" hidden$="[[isTabReadonly(basePermissionPath)]]">
                             <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-    
+
                             <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
                         </span>
                         <span>FAM</span>
                     </div>
                 </simple-list-item>
             </template>
-            
+
             <template is="dom-if" if="[[!isReportTab]]">
                 <template is="dom-repeat" items="[[linkedAttachments]]" as="linkedAttachment">
                     <simple-list-item>
@@ -84,14 +84,14 @@
                                     target="_blank">[[linkedAttachment.filename]]
                                 </a>
                                 <paper-tooltip offset="0">[[linkedAttachment.filename]]</paper-tooltip>
-                
+
                             </div>
                             <a on-click="_openDeleteLinkDialog"
                                 class="delete-icon">
-                                <iron-icon 
+                                <iron-icon
                                     hidden$="[[isTabReadonly(basePermissionPath)]]"
                                     icon="icons:cancel"></iron-icon>
-    
+
                                 <paper-tooltip offset="0">Remove</paper-tooltip>
                             </a>
                             <span>PMP</span>
@@ -198,15 +198,14 @@
             </div>
         </dialog-element>
 
-        <dialog-element id="deleteLinks" 
+        <dialog-element id="deleteLinks"
             opened="{{deleteLinkOpened}}"
             dialog-name="[[linkToDeleteId]]"
             dialog-title="Are you sure you want to delete?"
             delete-dialog
             on-delete-confirmed="_removeLink"
             confirm-btn-text="Delete"
-            cancel-btn-text="Cancel"
-        >
+            cancel-btn-text="Cancel">
         </dialog-element>
         <template is="dom-if" if="[[_isUnicefUser]]">
             <dialog-element opened="{{shareDialogOpened}}"
@@ -217,7 +216,7 @@
                             on-dialog-confirmed="_SendShareRequest"
                             confirm-disabled="{{confirmDisabled}}"
                             request-in-process="{{requestInProcess}}">
-                <share-documents 
+                <share-documents
                     id="shareDocuments"
                     data-base-path="[[dataBasePath]]"
                     base-permission-path="[[basePermissionPath]]"
