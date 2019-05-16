@@ -4,7 +4,8 @@
 
 <dom-module id="file-attachments-tab">
     <template>
-        <style include="tab-inputs-styles tab-layout-styles iron-flex module-styles"></style>
+        <style include="tab-inputs-styles tab-layout-styles iron-flex module-styles">
+        </style>
         <!-- inject styles './file-attachments-tab.scss'-->
 
         <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}" endpoint-name="[[endpointName]]"></get-attachments>
@@ -100,7 +101,7 @@
                 </template>
             </template>
 
-            <template is="dom-if" if="[[!dataItems.length]]">
+            <template is="dom-if" if="[[_showEmptyRow(dataItems.length, linkedAttachments.length)]]">
                 <list-element
                         class="list-element"
                         no-additional

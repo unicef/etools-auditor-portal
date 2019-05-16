@@ -555,8 +555,11 @@
 
         _hideAddAttachments: function(basePermissionPath, baseId) {
             return this.isTabReadonly(basePermissionPath) || this._isNewEngagement();
-        }
+        },
 
+        _showEmptyRow: function(length1, length2) {
+            return !length1 && !length2;
+        }
 
     });
 })();
