@@ -2,7 +2,9 @@
 
 Polymer({
     is: 'ma-report-page-main',
-
+    behaviors: [
+        APBehaviors.EngagementBehavior,
+    ],
     properties: {
         engagement: {
             type: Object,
@@ -14,30 +16,30 @@ Polymer({
     },
 
     validate: function(forSave) {
-        let assignTabValid = Polymer.dom(this.root).querySelector('#assignEngagement').validate(forSave),
-            primaryValid = this.$.primaryRisk.validate(forSave),
-            internalControlsValid = this.$.internalControls.validate(forSave);
+        let assignTabValid = this.getElement('#assignEngagement').validate(forSave),
+            primaryValid = this.getElement('#primaryRisk').validate(forSave),
+            internalControlsValid = this.getElement('#internalControls').validate(forSave);
 
         return assignTabValid && primaryValid && internalControlsValid;
     },
 
     getInternalControlsData: function() {
-        let internalControls = this.$.internalControls;
+        let internalControls = this.getElement('#internalControls');
         let data = internalControls && internalControls.getRiskData() || [];
         return data.length ? {children: data} : null;
     },
 
     getPrimaryRiskData: function() {
-        let primaryRisk = this.$.primaryRisk;
+        let primaryRisk = this.getElement('#primaryRisk');
         let primaryRiskData = primaryRisk && primaryRisk.getRiskData();
         return primaryRiskData || null;
     },
 
     getAssignVisitData: function() {
-        return this.$.assignEngagement.getAssignVisitData();
+        return this.getElement('#assignEngagement').getAssignVisitData();
     },
 
     getFindingsData: function() {
-        return this.$.controlFindings.getTabData();
+        return this.getElement('#controlFindings').getTabData();
     }
 });
