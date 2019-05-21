@@ -1,5 +1,5 @@
 <!--import [polymer]-->
-<!--import [assign-engagement, key-internal-controls-tab, control-findings-tab, primary-risk-element]-->
+<!--import [assign-engagement, engagement-behavior, key-internal-controls-tab, control-findings-tab, primary-risk-element]-->
 
 <dom-module id="ma-report-page-main">
     <template>
@@ -13,7 +13,7 @@
         </assign-engagement>
 
         <template is="dom-if"
-                  if="[[engagement.overall_risk_assessment]]">
+                  if="[[engagement.overall_risk_assessment]]" restamp>
                 <primary-risk-element id="primaryRisk"
                                       risk-data="[[engagement.overall_risk_assessment]]"
                                       dialog-opened="[[riskDialogOpened]]"

@@ -59,7 +59,7 @@
                     'labelPath': 'tpm_activities.date',
                     'path': 'source'
                 },
-                
+
             ],
             },
             ENGAGEMENT_TYPE_ENDPOINT_MAP: {
@@ -156,7 +156,7 @@
             const user = this.getUserData();
             return Boolean(user.groups.find(({ name }) => name === 'UNICEF User'));
         },
-        
+
 
         _hanldeLinksForEngagement: function () {
             this._setLinksEndpoint();
@@ -205,7 +205,7 @@
                 this._hanldeLinksForEngagement();
             }
         },
-        
+
         isTabReadonly: function(basePath) {
             return !basePath || (!this.collectionExists(`${basePath}.PUT`) && !this.collectionExists(`${basePath}.POST`));
         },
@@ -257,7 +257,7 @@
             }
         },
 
-        
+
 
         _filesChange: function() {
             if (!this.dataItems) { return false; }
@@ -479,7 +479,7 @@
         resetData: function() {
             this.set('dataItems', []);
         },
-        
+
         _openShareDialog: function() {
             this.shareDialogOpened = true;
             const shareModal = this.shadowRoot.querySelector('#shareDocuments');
@@ -514,7 +514,7 @@
             if (nonField) {
                 message = `Nonfield error: ${nonField}`
             } else {
-                message = err.response && err.response.detail ? `Error: ${err.response.detail}` 
+                message = err.response && err.response.detail ? `Error: ${err.response.detail}`
                 : 'Error sharing documents.';
             }
             this.fire('toast', {
@@ -531,9 +531,9 @@
         _openDeleteLinkDialog: function (e) {
             const { linkedAttachment } = e.model;
             this.set('linkToDeleteId', linkedAttachment.id);
-            this.deleteLinkOpened = true; 
+            this.deleteLinkOpened = true;
         },
-    
+
         _removeLink: function ({ detail }) {
             this.deleteLinkOpened = false;
             const id = detail.dialogName;
@@ -547,8 +547,12 @@
 
         _shouldHideShare: function (isUnicefUser) {
             return this.isReportTab || !isUnicefUser;
+        },
+
+        _showEmptyRow: function(length1, length2) {
+            return !length1 && !length2;
         }
-        
+
 
     });
 })();
