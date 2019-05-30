@@ -49,7 +49,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
         // Setup Polymer options
         window.Polymer = {
-            dom: 'shadow',
             lazyRegister: true
         };
 
@@ -80,21 +79,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             };
 
-            var webComponentsSupported = (
-                'registerElement' in document
-                && 'import' in document.createElement('link')
-                && 'content' in document.createElement('template')
-            );
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = baseUrl + '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+            script.onload = onload;
+            document.head.appendChild(script);
 
-            if (!webComponentsSupported) {
-                var script = document.createElement('script');
-                script.async = true;
-                script.src = baseUrl + '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-                script.onload = onload;
-                document.head.appendChild(script);
-            } else {
-                onload();
-            }
         })();
 
         var appShellImport = document.createElement('link');

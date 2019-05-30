@@ -10,7 +10,8 @@ Polymer({
         APBehaviors.StaticDataController,
         APBehaviors.PermissionController,
         APBehaviors.CommonMethodsBehavior,
-        APBehaviors.QueryParamsController
+        APBehaviors.QueryParamsController,
+        EtoolsAjaxRequestBehavior
     ],
 
     properties: {
@@ -18,6 +19,7 @@ Polymer({
             type: Object,
             value: function() {
                 return {
+                    id: null,
                     status: '',
                     staff_members: [],
                     engagement_type: {},
@@ -38,10 +40,6 @@ Polymer({
             value: function() {
                 return ['overview', 'attachments'];
             }
-        },
-        _attachmentErrors: {
-            type: Array,
-            value: []
         },
         queryParams: {
             type: Object,
@@ -110,37 +108,13 @@ Polymer({
 
     _engagementCreated: function(event) {
         if (!event && !event.detail) { return; }
+
         if (event.detail.success && event.detail.data) {
             //save response data before redirecting
-            let data = event.detail.data;
-            this._setLastEngagementData(data);
-            this.engagement.id = data.id;
+            let engagement = event.detail.data;
+            this._setLastEngagementData(engagement);
+            this.engagement.id = engagement.id;
 
-            let attachmentsTab = this.$.engagement_attachments,
-                attachments = attachmentsTab && attachmentsTab.getFiles();
-
-            if (attachments && attachments.length) {
-                this.fire('global-loading', {type: 'upload-attachments', active: true, message: 'Uploading documents...'});
-                this.fire('global-loading', {type: 'create-engagement'});
-                this.atmUrl = this.getEndpoint('attachments', {id: data.id}).url;
-                this._attachmentsToUpload = attachments;
-                this.attachmentsPostData = attachments.shift();
-            } else {
-                this._finishEngagementCreation();
-            }
-        }
-    },
-
-    _handleAtmResponse: function(event, detail) {
-        if (detail.error) {
-            let name = this.attachmentsPostData.file.name;
-            this._attachmentErrors.push(name);
-        }
-
-        if (this._attachmentsToUpload.length) {
-            this.attachmentsPostData = this._attachmentsToUpload.shift();
-        } else {
-            _.each(this._attachmentErrors, (fileName) => this.fire('toast', {text: `File upload failed: ${fileName}`, fixed: true}));
             this._finishEngagementCreation();
         }
     },
@@ -160,10 +134,7 @@ Polymer({
             staff_members: [],
             type: {}
         };
-        this._attachmentsToUpload = [];
-        this._attachmentErrors = [];
 
-        this.fire('global-loading', {type: 'upload-attachments'});
         this.fire('global-loading', {type: 'create-engagement'});
     },
 
@@ -174,6 +145,7 @@ Polymer({
     _pageChanged: function(page, isStaffSc, auditFirm) {
         if (page === 'new' || page === 'list') {
             this.set('engagement', {
+                id: null,
                 status: '',
                 staff_members: [],
                 engagement_type: {},
