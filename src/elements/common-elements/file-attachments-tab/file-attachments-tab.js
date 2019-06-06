@@ -59,7 +59,7 @@
                     'labelPath': 'tpm_activities.date',
                     'path': 'source'
                 },
-                
+
             ],
             },
             ENGAGEMENT_TYPE_ENDPOINT_MAP: {
@@ -130,7 +130,7 @@
             },
             _hideShare:{
                 type: Boolean,
-                computed: '_shouldHideShare(_isUnicefUser)'
+                computed: '_shouldHideShare(_isUnicefUser, baseId)'
             },
             _isUnicefUser: {
                 type: Boolean,
@@ -156,7 +156,7 @@
             const user = this.getUserData();
             return Boolean(user.groups.find(({ name }) => name === 'UNICEF User'));
         },
-        
+
 
         _hanldeLinksForEngagement: function () {
             this._setLinksEndpoint();
@@ -205,7 +205,7 @@
                 this._hanldeLinksForEngagement();
             }
         },
-        
+
         isTabReadonly: function(basePath) {
             return !basePath || (!this.collectionExists(`${basePath}.PUT`) && !this.collectionExists(`${basePath}.POST`));
         },
@@ -257,7 +257,7 @@
             }
         },
 
-        
+
 
         _filesChange: function() {
             if (!this.dataItems) { return false; }
@@ -276,10 +276,6 @@
 
             this.requestInProcess = true;
             let attachmentsData, method;
-            if (!this.baseId) {
-                this._processDelayedRequest();
-                return;
-            }
 
             if (this.deleteDialog) {
                 attachmentsData = {id: this.editedItem.id};
@@ -337,21 +333,6 @@
 
         _getAttachmentType: function(attachment){
             return this.fileTypes.find(fileType=> fileType.value === attachment.file_type).display_name;
-        },
-
-        _processDelayedRequest: function() {
-            let fileData = this._getFileData(true);
-            let index = _.findIndex(this.dataItems, (file) => file.unique_id === this.editedItem.unique_id);
-
-            if (this.deleteDialog && ~index) {
-                this.splice('dataItems', index, 1);
-            } else if (~index) {
-                this.splice('dataItems', index, 1, fileData);
-            } else if (!this.deleteDialog) {
-                this.push('dataItems', fileData);
-            }
-
-            this._requestCompleted(null, {success: true});
         },
 
         _requestCompleted: function(event, detail = {}) {
@@ -479,7 +460,7 @@
         resetData: function() {
             this.set('dataItems', []);
         },
-        
+
         _openShareDialog: function() {
             this.shareDialogOpened = true;
             const shareModal = this.shadowRoot.querySelector('#shareDocuments');
@@ -514,7 +495,7 @@
             if (nonField) {
                 message = `Nonfield error: ${nonField}`
             } else {
-                message = err.response && err.response.detail ? `Error: ${err.response.detail}` 
+                message = err.response && err.response.detail ? `Error: ${err.response.detail}`
                 : 'Error sharing documents.';
             }
             this.fire('toast', {
@@ -531,9 +512,9 @@
         _openDeleteLinkDialog: function (e) {
             const { linkedAttachment } = e.model;
             this.set('linkToDeleteId', linkedAttachment.id);
-            this.deleteLinkOpened = true; 
+            this.deleteLinkOpened = true;
         },
-    
+
         _removeLink: function ({ detail }) {
             this.deleteLinkOpened = false;
             const id = detail.dialogName;
@@ -545,10 +526,21 @@
                 .catch(err => this._errorHandler(err));
         },
 
-        _shouldHideShare: function (isUnicefUser) {
-            return this.isReportTab || !isUnicefUser;
+        _shouldHideShare: function (isUnicefUser, baseId) {
+            return this.isReportTab || !isUnicefUser || this._isNewEngagement();
+        },
+
+        _isNewEngagement: function() {
+            return !this.baseId;
+        },
+
+        _hideAddAttachments: function(basePermissionPath, _baseId) {
+            return this.isTabReadonly(basePermissionPath) || this._isNewEngagement();
+        },
+
+        _showEmptyRow: function(length1, length2) {
+            return !length1 && !length2 && !this._isNewEngagement();
         }
-        
 
     });
 })();
