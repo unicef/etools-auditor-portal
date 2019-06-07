@@ -39,7 +39,7 @@
     "etools-info-tooltip": "^1.0.3",
     "neon-animation": "2.0.1",
     "etools-searchable-multiselection-menu": "^2.2.19",
-    "etools-profile-dropdown": "15cc714",
+    "etools-profile-dropdown": "2.0.9",
     "paper-dialog": "2.1.1",
     "etools-piwik-analytics": "git://github.com/unicef-polymer/etools-piwik-analytics#polymer-1"
   },
