@@ -54,7 +54,7 @@ Polymer({
                         'size': 20,
                         'label': 'Position',
                         'labelPath': 'staff_members.user.profile.job_title',
-                        'name': 'user.profile.job_title'
+                        'name': 'user.job_title'
                     }, {
                         'size': 20,
                         'label': 'First Name',
@@ -69,7 +69,7 @@ Polymer({
                         'size': 20,
                         'label': 'Phone Number',
                         'labelPath': 'staff_members.user.profile.phone_number',
-                        'name': 'user.profile.phone_number'
+                        'name': 'user.phone_number'
                     }, {
                         'size': 20,
                         'label': 'E-mail Address',
@@ -150,7 +150,7 @@ Polymer({
         '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
         '_organizationChanged(engagement.agreement.auditor_firm.id)',
         '_queriesChanged(listSize, listPage, searchQuery)',
-        '_dataItemsChanged(dataItems, engagementStaffs)',
+        '_staffMembersListChanged(dataItems, engagementStaffs)',
         '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
         'updateStyles(emailChecking, staffsBase, addDialog)',
     ],
@@ -224,11 +224,14 @@ Polymer({
         return valid && emailValid;
     },
 
-    _dataItemsChanged: function(data, staffs) {
+    _staffMembersListChanged: function(data, staffs) {
         if (!staffs) { return; }
         _.each(data, (staff, index) => {
             this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
         });
+        if( !this.originalTabData) {
+            this._dataItemsChanged(this.dataItems)
+        }
     },
 
     _selectedStaffsChanged: function(data) {
@@ -259,7 +262,7 @@ Polymer({
     },
 
     _validEmailAddress: function(emailInput) {
-        let value = emailInput.value,
+        let value = _.trim(emailInput.value),
             required = emailInput.required;
 
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -275,12 +278,22 @@ Polymer({
 
         let valid = true;
 
+        if (this.saveWithButton) {	
+            _.each(this.dataItems, item => {	
+                if (item.user && item.user.email === this.editedItem.user.email &&	
+                    item.id && item.id === this.editedItem.id) {	
+                    this.errors = {user: {email: 'Email must be unique'}};	
+                    valid = false;	
+                }	
+            });	
+        }
+
         return valid;
     },
 
     _isActive: function(event) {
         let item = event && event.model && event.model.item;
-        if (!item) { throw 'Cann not get item model!'; }
+        if (!item) { throw 'Can not get item model!'; }
 
         let me = this.getUserData() || {},
             updateOptions = _.get(item, 'user.email') === me.email;

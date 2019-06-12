@@ -57,56 +57,77 @@
                     this._handleError(err);
                 });
 
-                this.email = null;
             },
 
-            _handleResponse: function(details = []) {
-                let firmId = _.get(details, '0.auditor_firm'),
-                    userIsNotDeleted = firmId === this.organisationId && !_.get(details, '0.hidden'),
-                    alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
+            _isUnicefUser: function (email) {
+                return email.includes('unicef.org');
+            },
 
-                // if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
-                //     //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
-                //     this._setError(`This field must be unique.`);
-                //     let email = _.get(this, 'editedItem.user.email'),
-                //         hasAccess = false;
-                //     this.editedItem = {user: {email}, hasAccess};
-                // }
-                if (firmId === this.organisationId) {
-                    //if user was deleted from current organization
-                    let user = details[0];
-                    user.is_active = true;
-                    this.editedItem = {
-                        id: user.staff_member_id,
-                        hidden: false,
-                        hasAccess: true,
-                        user: _.omit(user, ['id', 'auditor_firm', 'staff_member_id', 'hidden'])
-                    };
-                } else if (details.length) {
-                    //if user exists but doesn't belong to any auditor_firm
-                    let user = details[0],
-                        user_pk = user.id;
+            _handleResponse: function (details = []) {
+                const user = _.get(details, '0');
+                if (user) {
+                    let firmId = user.auditor_firm,
+                        userIsNotDeleted = firmId === this.organisationId && !user.hidden,
+                        alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
+                    if (!this.unicefUsersAllowed && this._isUnicefUser(user.email)) {
+                        this._setError('UNICEF users can not be added to this engagement type.')
+                        this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
+                    }
+                    if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
+                        //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
+                        this._setError(`This user is already assigned to firm : ${user.auditor_firm_description}`);
+                        let email = _.get(this, 'editedItem.user.email'),
+                            hasAccess = false;
+                        this.editedItem = { user: { email }, hasAccess };
+                    }
+                    
+                    if (firmId === this.organisationId) {
+                        //if user was deleted from current organization
+                        let user = details[0];
+                        user.is_active = true;
+                        this.editedItem = {
+                            id: user.staff_member_id,
+                            hidden: false,
+                            hasAccess: true,
+                            user: _.omit(user, ['id', 'auditor_firm', 'staff_member_id', 'hidden'])
+                        };
+                    } else if (details.length) {
+                        //if user exists but doesn't belong to any auditor_firm
+                        let user = details[0],
+                            user_pk = user.id;
 
-                    this.editedItem = {
-                        hasAccess: true,
-                        user: _.omit(user, ['id', 'auditor_firm']),
-                        user_pk
-                    };
-                } else if (this.unicefUsersAllowed) {
-                    //if is new user and unicefUsersAllowed
-                    this._setError(`You can't add new user to this firm.`);
+                        this.editedItem = {
+                            hasAccess: true,
+                            user: _.omit(user, ['id', 'auditor_firm']),
+                            user_pk
+                        };
+                    } else if (this.unicefUsersAllowed) {
+                        //if is new user and unicefUsersAllowed
+                        this._setError(`You can't add new user to this firm.`);
+                        this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
+                    } else {
+                        //if is new user
+                        this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
+                    }
+                } else if (this.unicefUsersAllowed){
+                    const errorMsg = this._isUnicefUser(this.email) ? `We could not find this user at this time, please try again later or contact support if the issue persists` :
+                        'Only UNICEF users can be added to a Staff Spot Check';
+                    this._setError(errorMsg);
                     this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
-                } else {
-                    //if is new user
+
+                } else if (this._isUnicefUser(this.email)){
+                    this._setError('UNICEF users can not be added to this engagement type.')
                     this.editedItem = _.pick(this.editedItem, ['user', 'hasAccess']);
                 }
 
                 this.emailChecking = false;
+                this.email = null;
             },
 
-            _handleError: function() {
+            _handleError: function(err) {
                 this._setError(`Can't get Email data!`);
                 this.emailChecking = false;
+                this.email = null;
             },
 
             _setError: function(error) {

@@ -21,34 +21,34 @@
         });
 
 
-       it('sets originalData equal to changed data', function() {
+       it('sets originalTableData equal to changed data', function() {
            var test = {foo: 'bar'};
-           assert.isUndefined(behaviorObj.originalData);
+           assert.isUndefined(behaviorObj.originalTableData);
            behaviorObj._dataItemsChanged(test);
-           assert.isTrue(_.isEqual(behaviorObj.originalData, test));
+           assert.isTrue(_.isEqual(behaviorObj.originalTableData, test));
        });
 
         describe('method getTabData', function() {
-            it('throws if originalData or dataItems arrays aren\'t provided', function() {
+            it('throws if originalTableData or dataItems arrays aren\'t provided', function() {
                 let foo = behaviorObj.getTabData.bind(behaviorObj);
                 assert.throws(foo);
 
                 behaviorObj.dataItems = [];
                 assert.throws(foo);
 
-                behaviorObj.originalData = [];
+                behaviorObj.originalTableData = [];
                 assert.doesNotThrow(foo);
             });
 
-            it('returns null if originalData and dataItems arrays are empty', function() {
+            it('returns null if originalTableData and dataItems arrays are empty', function() {
                 behaviorObj.dataItems = [];
-                behaviorObj.originalData = [];
+                behaviorObj.originalTableData = [];
                 assert.isNull(behaviorObj.getTabData());
             });
 
             it('compare arrays and returns the difference', function() {
                 behaviorObj.dataItems = [{foo: 'bar'}, {bar: 'baz'}, {test: true}];
-                behaviorObj.originalData = [{foo: 'bar'},{bar: 'baz'}];
+                behaviorObj.originalTableData = [{foo: 'bar'},{bar: 'baz'}];
                 assert.isTrue(_.isEqual(behaviorObj.getTabData(), [{test: true}]));
 
                 behaviorObj.dataItems[0].changed = true;
@@ -57,14 +57,14 @@
 
             it('returns null if arrays are equal', function() {
                 behaviorObj.dataItems = [{foo: 'bar'}, {bar: 'baz'}];
-                behaviorObj.originalData = [{foo: 'bar'},{bar: 'baz'}];
+                behaviorObj.originalTableData = [{foo: 'bar'},{bar: 'baz'}];
 
                 assert.isNull(behaviorObj.getTabData());
             });
 
             it('runs getCurrentData method if dialogOpened and not saveWithButton', function() {
                 behaviorObj.dataItems = [{foo: 'bar'}, {bar: 'baz'}];
-                behaviorObj.originalData = [{foo: 'bar'},{bar: 'baz'}];
+                behaviorObj.originalTableData = [{foo: 'bar'},{bar: 'baz'}];
                 sinon.spy(behaviorObj, 'getCurrentData');
                 behaviorObj.dialogOpened = false;
                 behaviorObj.saveWithButton = true;

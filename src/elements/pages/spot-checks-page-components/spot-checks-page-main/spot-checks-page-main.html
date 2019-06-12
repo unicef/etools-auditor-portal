@@ -153,12 +153,14 @@
                                     endpoint-name="attachments">
                             </file-attachments-tab>
 
-                            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+                            <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
                                 <file-attachments-tab
                                         id="report_attachments"
+                                        is-report-tab="true"
                                         data-base-path="[[permissionBase]]"
                                         path-postfix="report_attachments"
                                         base-id="[[engagement.id]]"
+                                        partner-name="[[engagement.partner.name]]"
                                         error-object="{{errorObject}}"
                                         error-property="report_attachments"
                                         endpoint-name="reportAttachments">

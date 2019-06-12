@@ -72,15 +72,15 @@
                 <etools-app-selector hidden$="[[!user.is_staff]]"></etools-app-selector>
 
                 <img src$="[[getAbsolutePath('images/etools_logo.svg')]]">
-                <template is="dom-if" if="[[isStaging]]">
-                    <div class="envWarning">- STAGING TESTING ENVIRONMENT</div>
+                <template is="dom-if" if="[[environment]]">
+                    <div class="envWarning">- [[environment]] TESTING ENVIRONMENT</div>
                 </template>
             </div>
 
             <div class="content-align">
                 <countries-dropdown
-                    countries="[[user.profile.countries_available]]"
-                    country-id="[[user.profile.country]]">
+                    countries="[[user.countries_available]]"
+                    country-id="[[user.country.id]]">
                 </countries-dropdown>
 
                 <etools-profile-dropdown profile="[[user]]"></etools-profile-dropdown>
@@ -103,9 +103,9 @@
                     user: {
                         type: Object
                     },
-                    isStaging: {
-                        type: Boolean,
-                        value: false
+                    environment: {
+                        type: String,
+                        value: function() { return etoolsAppConfig.globals._checkEnvironment() }
                     }
                 },
 
@@ -116,18 +116,11 @@
 
                 ready: function() {
                     this._setBgColor();
-                    this._isStaging();
-                },
-
-                _isStaging: function() {
-                    if (etoolsAppConfig.globals.isStagingServer()) {
-                        this.set('isStaging', true)
-                    }
                 },
 
                 _setBgColor: function() {
                     // If not production environment, changing header color to red
-                    if (!etoolsAppConfig.globals.isProductionServer()) {
+                    if (this.environment) {
                         this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
                     }
                 },

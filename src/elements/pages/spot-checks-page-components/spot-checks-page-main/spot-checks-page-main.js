@@ -108,6 +108,9 @@ Polymer({
         if (this.getData(property)) { return; }
         let choices = this.getChoices(`engagement_${this.engagement.id}.findings.${property}`);
         if (!choices) { return; }
-        this._setData(property, choices);
+        const sortedChoices = _.sortBy(
+            choices,
+            ['display_name']);
+        this._setData(property, sortedChoices);
     }
 });

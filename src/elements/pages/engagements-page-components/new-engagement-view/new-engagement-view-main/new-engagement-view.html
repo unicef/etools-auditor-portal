@@ -1,7 +1,8 @@
 <!--import [polymer, app-route, paper-tabs, iron-pages, app-route/app-location, lodash]-->
 <!--import [shared-styles, module-styles, main-page-styles, pages-header-element, file-attachments-tab, last-created-behavior,
             status-tab-element, engagement-staff-members-tab, engagement-info-details, add-new-engagement,
-            engagement-behavior, partner-details-tab, specific-procedure]-->
+            engagement-behavior, partner-details-tab, specific-procedure,
+            etools-ajax/etools-ajax-request-behavior]-->
 
 <dom-module id="new-engagement-view">
     <template>
@@ -21,15 +22,6 @@
                 new-engagement-data="{{newEngagementData}}"
                 error-object="{{errorObject}}">
         </add-new-engagement>
-
-        <etools-ajax
-                method="POST"
-                url="{{atmUrl}}"
-                multi-part
-                body="{{attachmentsPostData}}"
-                on-success="_handleAtmResponse"
-                on-fail="_handleAtmResponse">
-        </etools-ajax>
 
         <pages-header-element
                 hide-print-button
@@ -90,6 +82,7 @@
                     <div name="attachments">
                         <file-attachments-tab
                                 id="engagement_attachments"
+                                base-id="[[engagement.id]]"
                                 data-base-path="[[basePermissionPath]]"
                                 error-property="engagement_attachments"
                                 path-postfix="attachments">

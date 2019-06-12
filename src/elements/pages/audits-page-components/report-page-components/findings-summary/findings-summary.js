@@ -144,8 +144,7 @@ Polymer({
         }
         originalData = _.pick(this.originalData && this.originalData[0], itemModelKeys);
 
-        data.audited_expenditure = data.audited_expenditure || 0;
-        data.financial_findings = data.financial_findings || 0;
+        
 
         if (!_.isEqual(data, originalData)) {
             //return only changed values

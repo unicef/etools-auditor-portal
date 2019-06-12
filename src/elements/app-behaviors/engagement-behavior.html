@@ -3,7 +3,7 @@
 
 <script>
     'use strict';
-
+    let currentEngagement = {};
     window.APBehaviors = window.APBehaviors || {};
     APBehaviors.EngagementBehaviorImpl = {
         properties: {
@@ -25,12 +25,15 @@
                 value: function() {
                     return {};
                 }
+            },
+            currentEngagement: {
+                type: Object
             }
         },
 
         ready: function() {
             this._addObserverEffect("errorObject", '_errorOccurred');
-            this._addObserverEffect("dialogOpened", 'resetDialog');
+            this._addObserverEffect("dialogOpened", 'resetInputDialog');
             this.listen(this, 'action-activated', '_processAction');
         },
 
@@ -114,7 +117,7 @@
             this.dialogOpened = true;
         },
 
-        resetDialog: function(opened) {
+        resetInputDialog: function(opened) {
             let input = this.getElement('#cancellationReasonInput');
             if (!opened && input) {
                 input.value = '';
@@ -212,6 +215,15 @@
                 case 'sa':
                     return 'special-audits';
             }
+        },
+
+        persistCurrentEngagement(engagement, type) {
+            currentEngagement = { details: engagement, type };
+            this.set('currentEngagement', currentEngagement)
+        },
+
+        getCurrentEngagement() {
+            return currentEngagement;
         },
 
         _prepareData: function(submit, finalize) {
@@ -313,9 +325,19 @@
 
         _showReportTabs: function(permissionBase, engagement) {
             if (!permissionBase || !engagement) { return false; }
+            const userIsFocalPoint = _.find(this.getUserData().groups, {name:'UNICEF Audit Focal Point'});
+             return this.hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
+        },
+
+        hasReportAccess(permissionBase, engagement){
             return this.actionAllowed(permissionBase, 'submit') ||
                 engagement.status === 'report_submitted' ||
-                engagement.status === 'final';
+                engagement.status === 'final'
+        },
+
+        _showQuestionnaire: function(permissionBase, engagement){
+            if (!permissionBase || !engagement) { return false; }
+            return this.hasReportAccess(permissionBase, engagement);
         },
 
         _showFollowUpTabs: function(permissionBase) {
@@ -340,7 +362,7 @@
     APBehaviors.EngagementBehavior = [
         APBehaviors.EngagementBehaviorImpl,
         APBehaviors.PermissionController,
-        APBehaviors.StaticDataController,
+        APBehaviors.UserController,
         APBehaviors.ErrorHandlerBehavior,
         APBehaviors.TextareaMaxRowsBehavior,
         etoolsAppConfig.globals

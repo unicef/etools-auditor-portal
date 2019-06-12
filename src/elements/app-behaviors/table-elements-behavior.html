@@ -60,7 +60,7 @@
         },
 
         _dataItemsChanged: function(data) {
-            this.originalData = _.cloneDeep(data);
+            this.originalTableData = _.cloneDeep(data);
             if (this.dialogOpened) {
                 this.requestInProcess = false;
                 this.dialogOpened = false;
@@ -77,10 +77,11 @@
             }
             if (!this.originalData || !this.dataItems) { throw Error('originalData and dataItems arrays must exist'); }
             if (!this.originalData.length && !this.dataItems.length) { return null; }
+
             let data = [];
 
             _.each(this.dataItems, (item, index) => {
-                if (!_.isEqual(item, this.originalData[index])) {
+                if (!_.isEqual(item, this.originalTableData[index])) {
                     data.push(item);
                 }
             });

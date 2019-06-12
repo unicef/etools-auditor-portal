@@ -7,7 +7,11 @@
         behaviors: [
             APBehaviors.TableElementsBehavior,
             APBehaviors.CommonMethodsBehavior,
-            APBehaviors.ErrorHandlerBehavior
+            APBehaviors.ErrorHandlerBehavior,
+            APBehaviors.EngagementBehavior,
+            APBehaviors.UserController,
+            APBehaviors.DateBehavior,
+            EtoolsAjaxRequestBehavior
         ],
 
         properties: {
@@ -30,28 +34,50 @@
                 type: Array,
                 notify: true,
                 value: [{
-                    'size': '100px',
+                    'size': 18,
                     'name': 'date',
                     'label': 'Date Uploaded!',
                     'labelPath': `created`,
                     'path': 'created'
                 }, {
-                    'size': 35,
+                    'size': 30,
+                    'name': 'documentType',
                     'label': 'Document Type!',
                     'labelPath': `file_type`,
                     'path': 'display_name'
                 }, {
-                    'size': 65,
+                    'size': 30,
+                    'name': 'document',
                     'label': 'File Attachment!',
                     'labelPath': `file`,
                     'property': 'filename',
                     'custom': true,
                     'doNotHide': false
-                }]
+                }, {
+                    'size': 12,
+                    'label': 'Source',
+                    'labelPath': 'tpm_activities.date',
+                    'path': 'source'
+                },
+
+            ],
+            },
+            ENGAGEMENT_TYPE_ENDPOINT_MAP: {
+                type: Object,
+                value: () => ({
+                    'micro-assessments': 'micro-assessment',
+                    'spot-checks': 'spot-check',
+                    'staff-spot-checks': 'spot-check',
+                    'audits': 'audit',
+                    'special-audits': 'special-audit'
+                })
             },
             dataItems: {
                 type: Array,
                 value: () => []
+            },
+            engagement: {
+                type: Object
             },
             addDialogTexts: {
                 type: Object,
@@ -71,6 +97,22 @@
                 type: String,
                 value: 'Upload File'
             },
+            shareDialogOpened: {
+                type: Boolean,
+                value: false
+            },
+            shareParams: {
+                type: Object,
+            },
+            auditLinksOptions: {
+                type: Object,
+                value: {}
+            },
+            linkedAttachments: {
+                type: Array,
+                value: [],
+                notify: true
+            },
             fileTypes: {
                 type: Array,
                 value: function() {
@@ -81,10 +123,24 @@
                 type: String,
                 value: 'Are you sure that you want to delete this attachment?'
             },
-            errorProperty: String
+            errorProperty: String,
+            isReportTab: {
+                type: Boolean,
+                value: () => false,
+            },
+            _hideShare:{
+                type: Boolean,
+                computed: '_shouldHideShare(_isUnicefUser, baseId)'
+            },
+            _isUnicefUser: {
+                type: Boolean,
+                computed: '_checkIsUnicefUser(dataBasePath)'
+            }
         },
 
         listeners: {
+            'dialog-confirmed': '_sendRequest',
+            'delete-confirmed': '_sendRequest',
             'attachments-request-completed': '_requestCompleted'
         },
 
@@ -96,7 +152,41 @@
             'updateStyles(requestInProcess, editedItem, basePermissionPath)',
         ],
 
+        _checkIsUnicefUser: function () {
+            const user = this.getUserData();
+            return Boolean(user.groups.find(({ name }) => name === 'UNICEF User'));
+        },
+
+
+        _hanldeLinksForEngagement: function () {
+            this._setLinksEndpoint();
+            this._getLinkedAttachments();
+        },
+
+        _setLinksEndpoint: function () {
+            const {details: engagement, type: engagementType} = this.getCurrentEngagement();
+            this.set('engagement', engagement);
+            this.set('auditLinksOptions', {
+                endpoint: this.getEndpoint('auditLinks', {
+                    type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
+                    id: engagement.id
+                })
+            });
+        },
+
+        _getLinkedAttachments: function () {
+            this.set('requestInProcess', true);
+            const options = Object.assign(this.auditLinksOptions, { method: 'GET' })
+            this.sendRequest(options)
+                .then(res=>{
+                    this.set('linkedAttachments', _.uniqBy(res, 'attachment'));
+                    this.set('requestInProcess', false);
+                })
+                .catch(this._errorHandler.bind(this));
+        },
+
         _setBasePath: function(dataBase, pathPostfix) {
+            this._handleLinksInDetailsView(dataBase);
             let base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
             this.set('basePermissionPath', base);
             if (base) {
@@ -106,8 +196,22 @@
             }
         },
 
+        _handleLinksInDetailsView: function (dataBase) {
+            if(!dataBase){ //null check
+                dataBase = '';
+            }
+            const isEngagementDetailsView = !dataBase.includes('new');
+            if (isEngagementDetailsView && !this.isReportTab){
+                this._hanldeLinksForEngagement();
+            }
+        },
+
         isTabReadonly: function(basePath) {
             return !basePath || (!this.collectionExists(`${basePath}.PUT`) && !this.collectionExists(`${basePath}.POST`));
+        },
+
+        _hideShare: function(basePermissionPath) {
+            return this.isTabReadonly(basePermissionPath) || basePermissionPath.includes('new');
         },
 
         showFileTypes: function(basePath) {
@@ -153,6 +257,8 @@
             }
         },
 
+
+
         _filesChange: function() {
             if (!this.dataItems) { return false; }
 
@@ -165,45 +271,26 @@
             });
         },
 
-        _saveAttachment: function() {
-
-            if (!this.validate()) {
-                return;
-            }
+        _sendRequest: function(e) {
+            if (!this.dialogOpened || !this.validate()) { return; }
 
             this.requestInProcess = true;
+            let attachmentsData, method;
 
-            if (!this.baseId) {
-                this._processDelayedRequest();
-                return;
+            if (this.deleteDialog) {
+                attachmentsData = {id: this.editedItem.id};
+                method = 'DELETE';
+            } else {
+                attachmentsData = this._getFileData();
+                method = attachmentsData.id ? 'PATCH' : 'POST';
             }
-
-            let attachmentsData = this._getFileData();
-            let method = attachmentsData.id ? 'PATCH' : 'POST';
 
             attachmentsData = method === 'PATCH' ? this._getChanges(attachmentsData) : attachmentsData;
             if (!attachmentsData) {
                 this._requestCompleted(null, {success: true});
                 return;
             }
-
             this.requestData = {method, attachmentsData};
-        },
-
-        _deleteAttachment(event) {
-            if (this.deleteCanceled(event)) {
-                return;
-            }
-            if (!this.baseId) {
-                this._processDelayedRequest();
-                return;
-            }
-            this.requestInProcess = true;
-
-            this.requestData = {
-                method: 'DELETE',
-                attachmentsData: {id: this.editedItem.id}
-            };
         },
 
         _getChanges: function(attachmentsData) {
@@ -244,19 +331,8 @@
             return data;
         },
 
-        _processDelayedRequest: function() {
-            let fileData = this._getFileData(true);
-            let index = _.findIndex(this.dataItems, (file) => file.unique_id === this.editedItem.unique_id);
-
-            if (this.deleteDialog && ~index) {
-                this.splice('dataItems', index, 1);
-            } else if (~index) {
-                this.splice('dataItems', index, 1, fileData);
-            } else if (!this.deleteDialog) {
-                this.push('dataItems', fileData);
-            }
-
-            this._requestCompleted(null, {success: true});
+        _getAttachmentType: function(attachment){
+            return this.fileTypes.find(fileType=> fileType.value === attachment.file_type).display_name;
         },
 
         _requestCompleted: function(event, detail = {}) {
@@ -264,7 +340,6 @@
             if (detail.success) {
                 this.dialogOpened = false;
             }
-            this._resetDialog(false);
         },
 
         _fileAlreadySelected: function() {
@@ -311,6 +386,11 @@
             }
 
             return valid;
+        },
+
+        _openAddDialog: function() {
+            this.editedItem = _.clone(this.itemModel);
+            this.openAddDialog();
         },
 
         _errorHandler: function(errorData) {
@@ -379,6 +459,87 @@
 
         resetData: function() {
             this.set('dataItems', []);
+        },
+
+        _openShareDialog: function() {
+            this.shareDialogOpened = true;
+            const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+            shareModal.updateShareParams();
+        },
+
+        _SendShareRequest: function() {
+            const { attachments } = this.shareParams;
+            const options = Object.assign(this.auditLinksOptions,{
+                csrf: true,
+                body:  { attachments } ,
+                method: 'POST'
+            });
+            this.set('requestInProcess', true);
+            this.sendRequest(options)
+                .then(()=> {
+                    this.fire('toast', {
+                        text: 'Documents shared successfully.'
+                    });
+                })
+                .catch(this._handleShareError.bind(this))
+                .finally(() => {
+                    this.set('requestInProcess', false);
+                    this.set('shareDialogOpened', false);
+                    this._getLinkedAttachments(); // refresh the list
+                })
+        },
+
+        _handleShareError: function(err){
+            let nonField = this.checkNonField(err);
+            let message;
+            if (nonField) {
+                message = `Nonfield error: ${nonField}`
+            } else {
+                message = err.response && err.response.detail ? `Error: ${err.response.detail}`
+                : 'Error sharing documents.';
+            }
+            this.fire('toast', {
+                text: message
+            });
+        },
+
+        _getClassFor: function (field) {
+            return `w${this.headings.find(
+                heading => heading.name === field
+            ).size}`
+        },
+
+        _openDeleteLinkDialog: function (e) {
+            const { linkedAttachment } = e.model;
+            this.set('linkToDeleteId', linkedAttachment.id);
+            this.deleteLinkOpened = true;
+        },
+
+        _removeLink: function ({ detail }) {
+            this.deleteLinkOpened = false;
+            const id = detail.dialogName;
+
+            this.sendRequest({
+                method: 'DELETE',
+                endpoint: this.getEndpoint('linkAttachment', { id })
+            }).then(this._getLinkedAttachments.bind(this))
+                .catch(err => this._errorHandler(err));
+        },
+
+        _shouldHideShare: function (isUnicefUser, baseId) {
+            return this.isReportTab || !isUnicefUser || this._isNewEngagement();
+        },
+
+        _isNewEngagement: function() {
+            return !this.baseId;
+        },
+
+        _hideAddAttachments: function(basePermissionPath, _baseId) {
+            return this.isTabReadonly(basePermissionPath) || this._isNewEngagement();
+        },
+
+        _showEmptyRow: function(length1, length2) {
+            return !length1 && !length2 && !this._isNewEngagement();
         }
 
     });

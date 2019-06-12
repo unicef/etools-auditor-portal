@@ -22,7 +22,7 @@
     describe('<engagement-staff-members-tab>', function () {
         var myEl, server;
         var user = {
-            id: 120,
+            user: 120,
             profile: {country_name: 'test'},
             groups: [{id: 1, name: 'Test Group'}]
         };
@@ -362,8 +362,8 @@
                 myEl.editedItem = {id: 1, user: {email: 'test@test.test'}};
                 myEl.dataItems = [{id: 1, user: {email: 'test@test.test'}}];
                 var email = {value: 'test@test.test', required: true};
-                // assert.isFalse(myEl._validEmailAddress(email));
-                // assert.equal(myEl.errors.user.email, 'Email must be unique');
+                assert.isFalse(myEl._validEmailAddress(email));
+                assert.equal(myEl.errors.user.email, 'Email must be unique');
 
                 myEl.editedItem.id = 2;
                 assert.isTrue(myEl._validEmailAddress(email));

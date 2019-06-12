@@ -118,8 +118,18 @@
                     this.staffUsersEndpoint = this.getEndpoint('staffMembersUsers').url;
                     this.officesEndpoint = this.getEndpoint('offices');
                     this.sectionsEndpoint = this.getEndpoint('sectionsCovered');
+                    this._getStaticDropdownData();
 
                     this.makeOptionsCalls();
+                    
+                },
+
+                _getStaticDropdownData: function () {
+                    const reqOpts = {
+                        csrf: true,
+                        endpoint: this.getEndpoint('static')
+                    };
+                    this.sendRequest(reqOpts).then(resp=> this._setData('staticDropdown', resp));
                 },
 
                 makeOptionsCalls: function() {
@@ -209,8 +219,7 @@
                     if (!details || details.error) {
                         this._responseError('Auditors', event && event.type);
                     }
-
-                    let filterAuditors = details && details.results || [];
+                    let filterAuditors = details || details.results || [];
                     if (dataLoaded.filters) {
                         this._updateData('filterAuditors', filterAuditors);
                     } else {
