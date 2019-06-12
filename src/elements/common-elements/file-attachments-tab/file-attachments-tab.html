@@ -211,15 +211,15 @@
                         </div>
                     </etools-dialog>
 
-                    <dialog-element id="deleteLinks"
+                    <etools-dialog id="deleteLinks"
+                        theme="confirmation" size="md"
+                        link-id$="[[linkToDeleteId]]"
                         opened="{{deleteLinkOpened}}"
-                        dialog-name="[[linkToDeleteId]]"
-                        dialog-title="Are you sure you want to delete?"
-                        delete-dialog
-                        on-delete-confirmed="_removeLink"
-                        confirm-btn-text="Delete"
+                        on-close="_removeLink"
+                        ok-btn-text="Delete"
                         cancel-btn-text="Cancel">
-                    </dialog-element>
+                        Are you sure you want to delete the shared document?
+                    </etools-dialog>
 
 
                     <template is="dom-if" if="[[_isUnicefUser]]">

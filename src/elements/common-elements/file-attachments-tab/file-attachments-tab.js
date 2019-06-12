@@ -524,9 +524,15 @@
             this.deleteLinkOpened = true;
         },
 
-        _removeLink: function ({ detail }) {
+        _removeLink: function (event) {
+            if (this.deleteCanceled(event)) {
+                return;
+            }
+
             this.deleteLinkOpened = false;
-            const id = detail.dialogName;
+            console.log(event);
+            console.log(Polymer.dom(event).localTarget);
+            const id = Polymer.dom(event).localTarget.getAttribute('link-id');
 
             this.sendRequest({
                 method: 'DELETE',
