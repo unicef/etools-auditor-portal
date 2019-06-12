@@ -1,0 +1,129 @@
+:host([delete-dialog]) {
+  .dialog-title {
+      font-size: 17px;
+      color: var(--gray-dark);
+      background-color: transparent;
+  }
+
+  .close-btn {
+      color: inherit;
+  }
+
+  #buttons {
+      border-top: none;
+  }
+}
+
+:host {
+  --divider-color: none;
+  .additional {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+      margin-top: 0 !important;
+      padding: 0 !important;
+  }
+}
+
+paper-dialog {
+  background-color: #ffffff;
+  border-radius: 4px;
+  max-height: 90vh;
+  width: 96%;
+  max-width: 700px !important;
+
+  --paper-font-body1: #{'{
+      font-family: "Roboto", "Noto", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      font-weight: 400;
+  }'};
+}
+
+#buttons {
+  display: block;
+  padding: 10px 8px 10px 24px;
+  overflow: hidden;
+  border-top: 1px solid var(--gray-lighter);
+
+  paper-button { height: 37px; }
+}
+
+.right { float: right; }
+.left { float: left; }
+
+.btn-cancel {
+  color: var(--gray-mid);
+  font-weight: 500;
+  &:not([dialog-dismiss]) { color: var(--gray-mid); }
+  z-index: 5;
+}
+
+.btn-confirm {
+  min-width: 90px;
+  color: #ffffff;
+  background-color: var(--module-primary);
+  font-weight: 500;
+  z-index: 5;
+  margin-right: 9px;
+  &[delete-btn] {
+      background-color: var(--module-error);
+  }
+}
+
+.dialog-title {
+  padding: 16px 24px 10px !important;
+  min-height: 26px;
+  margin-top: 0 !important;
+  margin-bottom: 10px !important;
+  color: white;
+  background-color: var(--module-primary)
+}
+
+:host([no-title-margin]) {
+  .dialog-title { margin-bottom: 0 !important; }
+}
+
+:host([request-in-process]) {
+  .additional { left: 70px; }
+}
+
+.close-btn {
+  position: absolute;
+  right: -5px;
+  top: 4px;
+  margin-top: 14px !important;
+  color: white;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: 0.15s;
+  z-index: 5;
+}
+.close-btn:hover { opacity: 1;}
+
+.loading {
+  margin-top: 8px;
+  vertical-align: top;
+  margin-left: 15px;
+}
+
+.loading:not([active]) {
+  display: none !important;
+}
+
+paper-button.btn-cancel[disabled] {
+  background-color: transparent;
+  color: var(--gray-mid)
+}
+
+paper-button[disabled]:not(.btn-cancel) {
+   opacity: 0.7;
+}
+
+#scrollbarContainer {
+  position: relative;
+  max-height: calc(90vh - 147px);
+  margin: 0;
+  padding: 0;
+}
