@@ -223,14 +223,14 @@
 
 
                     <template is="dom-if" if="[[_isUnicefUser]]">
-                        <dialog-element opened="{{shareDialogOpened}}"
-                                        dialog-title="Share Documents"
-                                        no-title-margin
-                                        dialog-name="share-documents"
-                                        confirm-btn-text="Share"
-                                        on-dialog-confirmed="_SendShareRequest"
-                                        confirm-disabled="{{confirmDisabled}}"
-                                        request-in-process="{{requestInProcess}}">
+                        <etools-dialog no-padding keep-dialog-open size="lg"
+                                       opened="{{shareDialogOpened}}"
+                                       dialog-title="Share Documents"
+                                       id="share-documents"
+                                       ok-btn-text="Share"
+                                       on-confirm-btn-clicked="_SendShareRequest"
+                                       show-spinner="{{requestInProcess}}"
+                                       disable-confirm-btn="{{requestInProcess}}">
                             <share-documents
                                 id="shareDocuments"
                                 data-base-path="[[dataBasePath]]"
@@ -240,7 +240,7 @@
                                 confirm-disabled="{{confirmDisabled}}"
                                 >
                             </share-documents>
-                        </dialog-element>
+                        </etools-dialog>
                     </template>
                 </template>
 

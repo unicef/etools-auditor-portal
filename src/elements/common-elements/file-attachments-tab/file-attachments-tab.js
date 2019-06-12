@@ -472,7 +472,7 @@
 
         _openShareDialog: function() {
             this.shareDialogOpened = true;
-            const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+            const shareModal = this.querySelector('#shareDocuments');
             shareModal.updateShareParams();
         },
 
