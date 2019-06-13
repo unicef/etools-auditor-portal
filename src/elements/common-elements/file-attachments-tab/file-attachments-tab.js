@@ -530,8 +530,6 @@
             }
 
             this.deleteLinkOpened = false;
-            console.log(event);
-            console.log(Polymer.dom(event).localTarget);
             const id = Polymer.dom(event).localTarget.getAttribute('link-id');
 
             this.sendRequest({
