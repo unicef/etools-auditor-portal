@@ -244,9 +244,9 @@
         },
 
         _fileSelected: function(e) {
-            if (!e || !e.target) { return false; }
+            if (!e || !Polymer.dom(e).localTarget) { return false; }
 
-            let files = e.target.files || {};
+            let files = Polymer.dom(e).localTarget.files || {};
             let file = files[0];
 
             if (file && file instanceof File) {
@@ -463,7 +463,7 @@
 
         _openShareDialog: function() {
             this.shareDialogOpened = true;
-            const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+            const shareModal = this.querySelector('#shareDocuments');
             shareModal.updateShareParams();
         },
 
