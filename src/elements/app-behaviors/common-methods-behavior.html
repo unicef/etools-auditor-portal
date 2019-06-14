@@ -7,14 +7,13 @@
     window.APBehaviors = window.APBehaviors || {};
     APBehaviors.CommonMethodsBehaviorImpl = {
         _resetFieldError: function(event) {
-            let evTarget = Polymer.dom(event).localTarget;
 
-            if (!event || !evTarget) { return false; }
+            if (!event || !event.target) { return false; }
 
-            let field = evTarget.getAttribute('field');
+            let field = event.target.getAttribute('field');
             if (field) { this.set(`errors.${field}`, false); }
 
-            evTarget.invalid = false;
+            event.target.invalid = false;
         },
 
         isReadOnly: function(field, basePermissionPath, inProcess) {
