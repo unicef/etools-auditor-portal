@@ -114,7 +114,7 @@
         },
 
         _resetFieldError: function(event) {
-            event.target.invalid = false;
+            Polymer.dom(event).localTarget.invalid = false;
         },
 
         openAddDialog: function() {
