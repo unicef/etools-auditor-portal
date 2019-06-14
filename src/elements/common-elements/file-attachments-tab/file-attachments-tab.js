@@ -139,8 +139,6 @@
         },
 
         listeners: {
-            'dialog-confirmed': '_sendRequest',
-            'delete-confirmed': '_sendRequest',
             'attachments-request-completed': '_requestCompleted'
         },
 
