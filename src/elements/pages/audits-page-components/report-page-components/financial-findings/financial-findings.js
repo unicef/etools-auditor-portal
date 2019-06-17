@@ -110,13 +110,9 @@ Polymer({
         },
     },
 
-    listeners: {
-        'dialog-confirmed': '_addItemFromDialog',
-        'delete-confirmed': 'removeItem',
-    },
-
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         '_errorHandler(errorObject.financial_finding_set)',
         '_checkNonField(errorObject.financial_finding_set)',
         'setChoices(basePermissionPath)'

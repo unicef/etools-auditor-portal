@@ -30,7 +30,7 @@
         &.b-3 { bottom: 3px; }
     }
 
-    paper-menu {
+    paper-listbox {
         max-height: 296px;
 
         iron-icon {
@@ -72,12 +72,12 @@
         .arrow-up { color: var(--dark-icon-color); }
     }
 }
-
-paper-menu.no-focus {
-    --paper-menu-focused-item-after: #{'{
-        background: var(--primary-background-color);
-        opacity: 0;
-    }'};
+/* TODO - is this style needed? */
+paper-listbox.no-focus {
+     --paper-menu-focused-item-after: #{'{
+         background: var(--primary-background-color);
+         opacity: 0;
+     }'};
 
     paper-item {
         --paper-item-focused-before: #{'{

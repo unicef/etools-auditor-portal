@@ -1,7 +1,7 @@
-<!--import [polymer, paper-icon-button, paper-input, etools-checkable-input,etools-ajax/etools-ajax-request-behavior, paper-icon-button, etools-content-panel,
+<!--import [polymer, paper-icon-button, paper-input, paper-checkbox, etools-ajax/etools-ajax-request-behavior, paper-icon-button, etools-content-panel,
             iron-icons, lodash, paper-tooltip, paper-input/paper-textarea, paper-button, etools-ajax]-->
 
-<!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, dialog-element, table-elements-behavior,
+<!--import [tab-inputs-styles, tab-layout-styles, module-styles, permission-controller, list-header, list-element, etools-dialog, table-elements-behavior,
             textarea-max-rows-behavior, get-action-points, update-action-points, get-partner-data]-->
 
 <dom-module id="follow-up-actions">
@@ -70,13 +70,14 @@
             </template>
         </etools-content-panel>
 
-        <dialog-element
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 dialog-title="[[dialogTitle]]"
-                confirm-btn-text="[[confirmBtnText]]"
+                ok-btn-text="[[confirmBtnText]]"
                 hide-confirm-btn="[[!confirmBtnText]]"
-                request-in-process="{{requestInProcess}}"
-                no-title-margin$="[[notTouched]]">
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_addActionPoint">
             <template is="dom-if" if="[[notTouched]]">
                 <div class="copy-warning">
                     It is required to change at least one of the fields below.
@@ -286,15 +287,13 @@
                     <div class="row-h group">
                         <!-- High Priority -->
                         <div class="input-container checkbox-container input-container-l">
-                            <etools-checkable-input
+                            <paper-checkbox
                                     class="disabled-as-readonly"
-                                    type="checkbox"
-                                    label="This action point is high priority"
-                                    label-alignment="right"
                                     checked="{{editedItem.high_priority}}"
                                     disabled="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}">
-                            </etools-checkable-input>
+                                    This action point is high priority
+                            </paper-checkbox>
                         </div>
 
                     </div>
@@ -306,7 +305,7 @@
             <div slot="additional" hidden$="[[!actionAllowed(editedApBase, 'complete')]]">
                 <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
             </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './follow-up-actions.js'-->

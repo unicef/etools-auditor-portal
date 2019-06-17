@@ -69,6 +69,10 @@
                 this.requestInProcess = false;
                 this.dialogOpened = false;
             }
+            if (this.confirmDialogOpened) {
+                this.requestInProcess = false;
+                this.confirmDialogOpened = false;
+            }
         },
 
         getLabel: function(path, base) {

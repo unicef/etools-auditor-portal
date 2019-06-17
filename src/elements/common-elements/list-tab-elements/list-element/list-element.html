@@ -6,7 +6,7 @@
         <style include="shared-styles module-styles iron-flex tab-inputs-styles"></style>
         <!-- inject styles './list-element.scss'-->
 
-        <paper-material id="wrapper" elevation="0">
+        <div list-item id="wrapper">
             <template is="dom-if" if="[[showCollapse]]">
                 <div id="iconWrapper">
                     <iron-icon
@@ -120,7 +120,7 @@
                     </span>
                 </template>
             </div>
-        </paper-material>
+        </div>
 
         <template is="dom-if" if="[[showCollapse]]">
             <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">

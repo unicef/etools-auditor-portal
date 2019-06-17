@@ -129,8 +129,6 @@ Polymer({
     },
 
     listeners: {
-        'dialog-confirmed': '_addActionPoint',
-        'delete-confirmed': '_removeActionPoint',
         'ap-request-completed': '_requestCompleted'
     },
 
@@ -164,7 +162,9 @@ Polymer({
     },
 
     _resetDialog: function(dialogOpened) {
-        if (dialogOpened) { return; }
+        if (dialogOpened) {
+            return;
+        }
         this.copyDialog = false;
         this.originalEditedObj = {};
         this.resetDialog(dialogOpened);
@@ -223,10 +223,16 @@ Polymer({
     },
 
     getActionsData: function() {
-        if (!this.dialogOpened) { return null; }
-        if (this.copyDialog) { this.originalEditedObj = {}; }
+        if (!this.dialogOpened) {
+            return null;
+        }
+        if (this.copyDialog) {
+            this.originalEditedObj = {};
+        }
         let data = _.pickBy(this.editedItem, (value, fieldName) => {
-            if (!~this.modelFields.indexOf(fieldName)) { return false; }
+            if (!~this.modelFields.indexOf(fieldName)) {
+                 return false;
+            }
             let isObject = _.isObject(value) && !_.isArray(value);
             if (isObject) {
                 return +value.id !== +_.get(this, `originalEditedObj.${fieldName}.id`, 0);
@@ -245,7 +251,10 @@ Polymer({
     },
 
     _addActionPoint: function() {
-        if (!this.validate() || this.notTouched) { return; }
+        if (!this.validate() || this.notTouched) {
+             return;
+        }
+
         this.requestInProcess = true;
         let apData = this.getActionsData();
         if (apData) {
