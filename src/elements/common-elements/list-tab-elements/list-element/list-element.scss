@@ -111,12 +111,13 @@
 }
 
 :host([hover]) {
-    paper-material {
+    div[list-item] {
         background-color: #EEEEEE;
     }
 }
 
-paper-material {
+div[list-item] {
+    position: relative;
     display: table;
     table-layout: fixed;
     width: 100%;
@@ -129,8 +130,14 @@ paper-material {
     box-sizing: border-box;
 }
 
+div[list-item] {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 :host([no-additional]) {
-    paper-material {
+    div[list-item] {
         padding: 0 16px 0 24px !important
     }
 }
@@ -149,15 +156,9 @@ paper-material {
 }
 
 :host([no-hover]) {
-    paper-material:hover {
+    div[list-item]:hover {
         background-color: initial;
     }
-}
-
-paper-material ::slotted(*) {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 #iconWrapper {

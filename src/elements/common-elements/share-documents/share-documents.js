@@ -70,7 +70,7 @@
     }
   },
 
- 
+
   _handlePartnerChanged: function (partnerName) {
     if (!partnerName) { return; }
     this._getPartnerAttachments(partnerName);
@@ -91,7 +91,7 @@
         this.set('originalList', resp);
       })
       .catch(err => this.fire('toast', { text: `Error fetching documents for ${partner}: ${err}` }));
-    
+
   },
 
     _getFileTypesFromStatic: function () {
@@ -111,7 +111,7 @@
 
   _toggleChecked: function (e) {
     const {id} = e.model.item;
-    const isChecked = e.target.checked
+    const isChecked = Polymer.dom(e).localTarget.checked;
     if (isChecked) {
       this.push('selectedAttachments', {attachment: id});
     } else {
@@ -157,8 +157,8 @@
     if (selectedFileType === '') { return; }
     if (selectedFileType === null) {
       // resets list when doc-type filter is cleared
-      this.set('attachmentsList', this.originalList); 
-      return; 
+      this.set('attachmentsList', this.originalList);
+      return;
     }
     const { value } = selectedFileType;
     const newFilteredList = this.originalList.filter(row => row.file_type.toLowerCase() === value.toLowerCase());

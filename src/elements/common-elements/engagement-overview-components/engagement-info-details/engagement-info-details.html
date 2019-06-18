@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, paper-input, etools-searchable-multiselection-menu, iron-icons,
-            etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading, etools-info-tooltip]-->
+            etools-datepicker/etools-datepicker-button, etools-currency-amount-input, etools-loading, etools-info-tooltip, paper-checkbox]-->
 
 <!--import [tab-inputs-styles, tab-layout-styles, module-styles, date-behavior, static-data-behavior, permission-controller, get-agreement-data,
             common-methods-behavior, update-agreement-data]-->
@@ -344,11 +344,11 @@
 
                 <template is="dom-if" if="{{showJoinAudit}}" restamp>
                     <div class="input-container join-audit">
-                        <etools-checkable-input
+                        <paper-checkbox
                                 checked="{{data.joint_audit}}"
-                                label="[[getLabel('joint_audit', basePermissionPath)]]"
-                                readonly="[[isReadOnly('joint_audit', basePermissionPath)]]">
-                        </etools-checkable-input>
+                                disabled="[[isReadOnly('joint_audit', basePermissionPath)]]">
+                                [[getLabel('joint_audit', basePermissionPath)]]
+                        </paper-checkbox>
                     </div>
                 </template>
 

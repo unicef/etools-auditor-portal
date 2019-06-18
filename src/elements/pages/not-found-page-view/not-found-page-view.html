@@ -1,9 +1,9 @@
 <!--import [polymer]-->
-<!--import [shared-styles, page-layout-styles, etools-app-config]-->
+<!--import [shared-styles, page-layout-styles, etools-app-config, paper-styles/element-styles/paper-material-styles]-->
 
 <dom-module id="not-found-page-view">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles paper-material-styles">
             :host {
                 display: block;
             }
@@ -11,13 +11,18 @@
             a.link {
                 color: #40c4ff;
             }
+
+            div[elevation] {
+              padding: 15px 20px;
+              background-color: var(--light-theme-content-color);
+            }
         </style>
         <style include="page-layout-styles shared-styles"></style>
 
         <div id="pageContent">
-            <paper-material elevation="1">
+            <div class="paper-material" elevation="1">
                 404 <a href$="[[getLink()]]" class="link">Head back home.</a>
-            </paper-material>
+            </div>
         </div>
     </template>
 

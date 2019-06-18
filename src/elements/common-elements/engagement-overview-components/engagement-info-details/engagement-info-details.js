@@ -202,7 +202,7 @@ Polymer({
     _requestAgreement: function(event) {
         if (this.requestInProcess) { return; }
 
-        let input = event && event.target,
+        let input = event && event.target, // event.target works ok here
             value = input && input.value;
 
         if ((+value || +value === 0) && value === this.orderNumber) { return; }

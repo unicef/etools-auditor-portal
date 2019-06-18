@@ -139,8 +139,6 @@
         },
 
         listeners: {
-            'dialog-confirmed': '_sendRequest',
-            'delete-confirmed': '_sendRequest',
             'attachments-request-completed': '_requestCompleted'
         },
 
@@ -244,9 +242,9 @@
         },
 
         _fileSelected: function(e) {
-            if (!e || !e.target) { return false; }
+            if (!e || !Polymer.dom(e).localTarget) { return false; }
 
-            let files = e.target.files || {};
+            let files = Polymer.dom(e).localTarget.files || {};
             let file = files[0];
 
             if (file && file instanceof File) {
@@ -271,19 +269,13 @@
             });
         },
 
-        _sendRequest: function(e) {
-            if (!this.dialogOpened || !this.validate()) { return; }
+        _saveAttachment: function(e) {
+            if (!this.validate()) { return; }
 
             this.requestInProcess = true;
-            let attachmentsData, method;
 
-            if (this.deleteDialog) {
-                attachmentsData = {id: this.editedItem.id};
-                method = 'DELETE';
-            } else {
-                attachmentsData = this._getFileData();
-                method = attachmentsData.id ? 'PATCH' : 'POST';
-            }
+            let attachmentsData = this._getFileData();
+            let method = attachmentsData.id ? 'PATCH' : 'POST';
 
             attachmentsData = method === 'PATCH' ? this._getChanges(attachmentsData) : attachmentsData;
             if (!attachmentsData) {
@@ -293,6 +285,21 @@
             this.requestData = {method, attachmentsData};
         },
 
+        _deleteAttachment(event) {
+            if (this.deleteCanceled(event)) {
+                return;
+            }
+            if (!this.baseId) {
+                this._processDelayedRequest();
+                return;
+            }
+            this.requestInProcess = true;
+
+            this.requestData = {
+                method: 'DELETE',
+                attachmentsData: {id: this.editedItem.id}
+            };
+        },
         _getChanges: function(attachmentsData) {
             let original = this.originalEditedObj && this._getFileData(false, this.originalEditedObj);
             if (!original) { return attachmentsData; }
@@ -463,7 +470,7 @@
 
         _openShareDialog: function() {
             this.shareDialogOpened = true;
-            const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+            const shareModal = this.querySelector('#shareDocuments');
             shareModal.updateShareParams();
         },
 
@@ -515,9 +522,13 @@
             this.deleteLinkOpened = true;
         },
 
-        _removeLink: function ({ detail }) {
+        _removeLink: function (event) {
+            if (this.deleteCanceled(event)) {
+                return;
+            }
+
             this.deleteLinkOpened = false;
-            const id = detail.dialogName;
+            const id = Polymer.dom(event).localTarget.getAttribute('link-id');
 
             this.sendRequest({
                 method: 'DELETE',

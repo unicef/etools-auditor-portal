@@ -2,7 +2,7 @@
 <!--import [shared-styles, module-styles, main-page-styles, tab-inputs-styles, app-main-header, pages-header-element,
             file-attachments-tab, update-engagement, status-tab-element, engagement-staff-members-tab,
             engagement-info-details, engagement-info-data, engagement-behavior, questionnaire-page-main,
-            ma-report-page-main, partner-details-tab, dialog-element, follow-up-main]-->
+            ma-report-page-main, partner-details-tab, etools-dialog, follow-up-main]-->
 
 <dom-module id="micro-assessments-page-main">
     <template>
@@ -185,10 +185,11 @@
                 </div>
             </div>
 
-            <dialog-element
+            <etools-dialog no-padding keep-dialog-open size="md"
                     opened="{{dialogOpened}}"
                     dialog-title="Cancellation of Engagement"
-                    confirm-btn-text="Continue">
+                    ok-btn-text="Continue"
+                    on-confirm-btn-clicked="_cancelEngagement">
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">
                         <div class="row-h group">
@@ -207,7 +208,7 @@
                         </div>
                     </div>
                 </div>
-            </dialog-element>
+            </etools-dialog>
         </template>
     </template>
 

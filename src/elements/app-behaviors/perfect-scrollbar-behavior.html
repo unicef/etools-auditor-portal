@@ -1,32 +1,32 @@
 <!--import [polymer, perfect-scrollbar]-->
 
 <script>
-window.APBehaviors = window.APBehaviors || {};
-APBehaviors.PerfectScrollbarBehavior = {
-    listeners: {
-        'paper-dropdown-open': '_dropdownOpened',
-        'paper-dropdown-close': '_dropdownClosed'
-    },
+  window.APBehaviors = window.APBehaviors || {};
+  APBehaviors.PerfectScrollbarBehavior = {
+      listeners: {
+          'paper-dropdown-open': '_dropdownOpened',
+          'paper-dropdown-close': '_dropdownClosed'
+      },
 
-    ready: function () {
-        let scrollbarContainer = this.$.scrollbarContainer;
-        if (!scrollbarContainer) { return; }
-        let options = {
-            handlers: ['click-rail', 'drag-scrollbar', 'wheel', 'touch']
-        };
-        Ps.initialize(scrollbarContainer, options);
-    },
+      ready: function () {
+          let scrollbarContainer = this.$.scrollbarContainer;
+          if (!scrollbarContainer) { return; }
+          let options = {
+              handlers: ['click-rail', 'drag-scrollbar', 'wheel', 'touch']
+          };
+          Ps.initialize(scrollbarContainer, options);
+      },
 
-    _dropdownOpened: function (e, detail) {
-        if (e && e.target) {
-            e.target.dropdownOpened = true;
-        }
-    },
+      _dropdownOpened: function (e, detail) {
+          if (e && e.target) {
+              e.target.dropdownOpened = true;
+          }
+      },
 
-    _dropdownClosed: function (e, detail) {
-        if (e && e.target) {
-            e.target.dropdownOpened = false;
-        }
-    },
-};
-</script>
+      _dropdownClosed: function (e, detail) {
+          if (e && e.target) {
+              e.target.dropdownOpened = false;
+          }
+      },
+  };
+  </script>

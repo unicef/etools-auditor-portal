@@ -1,5 +1,5 @@
 <!--import [polymer, etools-content-panel, etools-searchable-multiselection-menu, paper-input, lodash]-->
-<!--import [list-header, list-element, tab-inputs-styles, module-styles, dialog-element, common-methods-behavior,
+<!--import [list-header, list-element, tab-inputs-styles, module-styles, etools-dialog, common-methods-behavior,
             static-data-behavior, kicw-risk]-->
 
 <dom-module id="key-internal-controls-weaknesses">
@@ -47,13 +47,21 @@
                 </list-element>
             </template>
         </etools-content-panel>
-
-        <dialog-element
+        <etools-dialog theme="confirmation" size="md"
+                keep-dialog-open
+                opened="{{confirmDialogOpened}}"
+                on-confirm-btn-clicked="_deleteArea"
+                disable-confirm-btn="{{requestInProcess}}"
+                ok-btn-text="Delete">
+            [[dialogTexts.dialogTitle]]
+        </etools-dialog>
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 dialog-title="[[dialogTexts.dialogTitle]]"
-                delete-dialog="[[deleteDialog]]"
-                confirm-btn-text="[[dialogTexts.confirmBtn]]"
-                request-in-process="{{requestInProcess}}">
+                ok-btn-text="[[dialogTexts.confirmBtn]]"
+                show-spinner="{{requestInProcess}}"
+                disable-confirm-btn="{{requestInProcess}}"
+                on-confirm-btn-clicked="_saveEditedArea">
                 <div class="row-h repeatable-item-container" without-line>
                     <div class="repeatable-item-content">
                         <div class="row-h group">
@@ -136,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-        </dialog-element>
+        </etools-dialog>
     </template>
 
     <!-- inject scripts './key-internal-controls-weaknesses.js'-->
