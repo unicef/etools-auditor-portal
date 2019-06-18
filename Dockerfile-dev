@@ -9,4 +9,4 @@ RUN npm install -g --unsafe-perm polymer-cli gulp-cli typescript
 
 RUN mkdir /code
 WORKDIR /code
-CMD  /code/node_modules/.bin/gulp devup
+
