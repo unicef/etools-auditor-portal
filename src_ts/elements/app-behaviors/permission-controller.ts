@@ -1,14 +1,13 @@
 import { PolymerElement } from '@polymer/polymer';
-import * as _ from 'lodash';
+import omit from 'lodash-es/omit';
+import get from 'lodash-es/get';
 
 
-const PermissionController = () => class extends PolymerElement {
+export const PermissionController = (baseClass) => class extends PolymerElement(baseClass) {
 
-    var _permissionCollection = {};
+    let _permissionCollection = {};
 
-    window.APBehaviors = window.APBehaviors || {};
-
-    _addToCollection: function(collectionName, data, title) {
+    _addToCollection(collectionName, data, title){
         //check arguments
         if (!collectionName || !data) {
             console.warn('collectionName and data arguments must be provided!');
@@ -33,10 +32,10 @@ const PermissionController = () => class extends PolymerElement {
         this._manageActions(collectionName);
 
         return true;
-    },
+    };
 
-    _updateCollection: function(collectionName, data, title) {
-        if (!_permissionCollection[collectionName]) {
+    _updateCollection(collectionName, data, title){
+        if (!_permissionCollection[collectionName]){
             console.warn(`Collection ${collectionName} does not exist!`);
             return false;
         }
@@ -51,9 +50,9 @@ const PermissionController = () => class extends PolymerElement {
         }
         this._manageActions(collectionName);
         return true;
-    },
+    };
 
-    _manageActions: function(collectionName) {
+    _manageActions(collectionName){
         let collection = _permissionCollection[collectionName];
         if (!collection) {
             console.warn(`Collection ${collectionName} does not exist!`);
@@ -72,17 +71,17 @@ const PermissionController = () => class extends PolymerElement {
 
         collection.allowed_actions = actions.concat(allowed_actions);
         return true;
-    },
+    };
 
-    _createAction: function(action, existedAction) {
+    _createAction(action, existedAction){
         if (!existedAction || typeof existedAction === 'string') { return action; }
         return {
             code: action,
             display_name: action
         };
-    },
+    };
 
-    getFieldAttribute: function(path, attribute, actionType) {
+    getFieldAttribute(path, attribute, actionType){
         if (!path || !attribute) { throw new Error('path and attribute arguments must be provided'); }
         if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
         if (typeof attribute !== 'string') { throw new Error('attribute argument must be a string'); }
@@ -93,35 +92,35 @@ const PermissionController = () => class extends PolymerElement {
 
         return value === undefined ? null : value;
 
-    },
+    };
 
-    isReadonly: function(path) {
+    isReadonly(path){
         return !this.collectionExists(path, 'POST') && !this.collectionExists(path, 'PUT');
-    },
+    };
 
-    isRequired: function(path) {
+    isRequired(path){
         return this.getFieldAttribute(path, 'required', 'POST') ||
             this.getFieldAttribute(path, 'required', 'PUT');
-    },
+    };
 
-    collectionExists: function(path, actionType) {
+    collectionExists(path, actionType){
         if (!path) { throw new Error('path argument must be provided'); }
         if (typeof path !== 'string') { throw new Error('path argument must be a string'); }
 
         return !!this._getCollection(path, actionType);
-    },
+    };
 
-    getChoices: function(path) {
+    getChoices(path){
         return this.getFieldAttribute(path, 'choices', 'GET') ||
             this.getFieldAttribute(path, 'choices', 'POST');
-    },
+    };
 
-    _getCollection: function(path, actionType) {
+    _getCollection(path, actionType){
         path = path.split('.');
 
         let value = _permissionCollection;
 
-        while (path.length) {
+        while (path.length){
             let key = path.shift();
             if (value[key]) {
                 value = value[key];
@@ -138,19 +137,19 @@ const PermissionController = () => class extends PolymerElement {
         }
 
         return value;
-    },
+    };
 
-    isValidCollection: function(collection) {
-        let testedCollection = _.omit(collection, 'allowed_actions'),
-            actions = _.get(collection, 'allowed_actions', []);
+    isValidCollection(collection){
+        let testedCollection = omit(collection, 'allowed_actions'),
+            actions = get(collection, 'allowed_actions', []);
         if (collection && (Object.keys(testedCollection).length || actions.length)) {
             return collection;
         } else {
             return false;
         }
-    },
+    };
 
-    actionAllowed: function(collection, action) {
+    actionAllowed(collection, action){
         if (!action || !collection) { return false; }
         if (typeof collection !== 'string') { throw new Error('collection argument must be a string'); }
         if (typeof action !== 'string') { throw new Error('action argument must be a string'); }
@@ -164,24 +163,22 @@ const PermissionController = () => class extends PolymerElement {
         }
 
         return !!~actions.indexOf(action);
-    },
+    };
 
-    noActionsAllowed: function(collection) {
+    noActionsAllowed(collection){
         if (!collection) { return true; }
         if (typeof collection !== 'string') { throw new Error('Collection argument must be a string'); }
         collection = _permissionCollection[collection];
 
         return !(collection && collection.allowed_actions && collection.allowed_actions.length);
-    },
+    };
 
-    getActions: function(collection) {
+    getActions(collection){
         if (!collection) { return null; }
         if (typeof collection !== 'string') { throw new Error('Collection argument must be a string'); }
         collection = _permissionCollection[collection];
 
         return collection && collection.allowed_actions || null;
-    }
+    };
 
 };
-
-export default PermissionController;
