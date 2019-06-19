@@ -3,7 +3,7 @@
   "shell": "src/elements/core-elements/app-shell-element/app-shell.html",
   "sources": [
     "src/**/*",
-    "images/**/*",
+    "assets/**/*",
     "package.json"
   ],
   "fragments": [
