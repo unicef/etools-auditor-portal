@@ -1,7 +1,7 @@
 {
   "name": "fam",
   "version": "3.0.0",
-  "description": "Financial Assurance Module",
+  "description": "Financial Assurance Module, formerly known as Auditor Portal",
   "repository": {
     "type": "git",
     "url": "https://github.com/unicef/etools-auditor-portal.git"
@@ -28,6 +28,8 @@
     "@webcomponents/webcomponentsjs": "^2.2.4",
     "@unicef-polymer/etools-app-selector": "3.0.0-rc.1",
     "@unicef-polymer/etools-behaviors": "3.0.0-rc.1",
+    "@unicef-polymer/etools-ajax": "4.0.0-rc.1",
+    "@unicef-polymer/etools-profile-dropdown": "4.0.0-rc.1",
     "lit-element": "^2.0.1",
     "pwa-helpers": "^0.9.0",
     "redux": "^4.0.0",
