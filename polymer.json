@@ -1,6 +1,11 @@
 {
-  "entrypoint": "src/index.html",
+  "entrypoint": "index.html",
   "shell": "src/elements/core-elements/app-shell-element/app-shell.html",
+  "sources": [
+    "src/**/*",
+    "images/**/*",
+    "package.json"
+  ],
   "fragments": [
     "src/elements/pages/not-found-page-view/not-found-page-view.html",
     "src/elements/pages/engagements-page-components/engagements-page-main/engagements-page-main.html",
@@ -11,12 +16,6 @@
     "src/elements/pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main.html"
   ],
   "sourceGlobs": [
-    "src/assets/**/*",
-    "src/elements/**/*",
-    "!src/assets/data/**/*",
-    "src/manifest.json",
-    "src/bower_components/webcomponentsjs/webcomponents-lite.min.js",
-    "src/bower_components/webcomponentsjs/webcomponents-lite.js",
-    "src/assets/data/countries.json"
+
   ]
 }
