@@ -5,3 +5,8 @@
 * On the type level, a class can be represented as a newable function
 */
 export type Constructor<T> = new(...args: any[]) => T;
+
+export interface GenericObject {
+  [key: string]: any;
+}
+
