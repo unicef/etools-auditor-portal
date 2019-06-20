@@ -9,17 +9,18 @@ import each from 'lodash-es/each';
  * @polymer
  * @mixinFunction
  */
-export const ErrorHandlerMixin = (baseClass) => class extends PolymerElement(baseClass) {
+function ErrorHandlerMixin <T extends Constructor<PolymerElement>>(baseClass: T) {
+    class ErrorHandlerMixin extends (baseClass) {
 
-    const OverviewProperties = ['agreement', 'end_date', 'partner', 'partner_contacted_at', 'staff_members', 'start_date', 'total_value', 'type'],
-        AttachmentsProperties = ['engagement_attachments', 'report_attachments', 'additional_supporting_documentation_provided'],
-        ReportProperties = ['amount_refunded', 'date_of_comments_by_ip', 'test_subject_areas',
-            'date_of_comments_by_unicef', 'date_of_draft_report_to_ip', 'date_of_draft_report_to_unicef', 'date_of_field_visit', 'findings', 'internal_controls',
-            'justification_provided_and_accepted', 'pending_unsupported_amount', 'total_amount_of_ineligible_expenditure', 'total_amount_tested', 'write_off_required',
-            'audit_observation', 'audit_opinion', 'audited_expenditure', 'financial_finding_set', 'financial_findings', 'high_risk', 'ip_response', 'key_internal_weakness',
-            'low_risk', 'medium_risk', 'number_of_financial_findings', 'pending_unsupported_amount', 'percent_of_audited_expenditure', 'recommendation'],
-        FollowUpProperties = ['additional_supporting_documentation_provided', 'amount_refunded',
-            'justification_provided_and_accepted', 'write_off_required', 'explanation_for_additional_information', 'action_points'];
+        const OverviewProperties = ['agreement', 'end_date', 'partner', 'partner_contacted_at', 'staff_members', 'start_date', 'total_value', 'type'],
+            AttachmentsProperties = ['engagement_attachments', 'report_attachments', 'additional_supporting_documentation_provided'],
+            ReportProperties = ['amount_refunded', 'date_of_comments_by_ip', 'test_subject_areas',
+                'date_of_comments_by_unicef', 'date_of_draft_report_to_ip', 'date_of_draft_report_to_unicef', 'date_of_field_visit', 'findings', 'internal_controls',
+                'justification_provided_and_accepted', 'pending_unsupported_amount', 'total_amount_of_ineligible_expenditure', 'total_amount_tested', 'write_off_required',
+                'audit_observation', 'audit_opinion', 'audited_expenditure', 'financial_finding_set', 'financial_findings', 'high_risk', 'ip_response', 'key_internal_weakness',
+                'low_risk', 'medium_risk', 'number_of_financial_findings', 'pending_unsupported_amount', 'percent_of_audited_expenditure', 'recommendation'],
+            FollowUpProperties = ['additional_supporting_documentation_provided', 'amount_refunded',
+                'justification_provided_and_accepted', 'write_off_required', 'explanation_for_additional_information', 'action_points'];
 
 
         refactorErrorObject(errorData) {
@@ -36,11 +37,11 @@ export const ErrorHandlerMixin = (baseClass) => class extends PolymerElement(bas
                 return errorData;
             }
 
-        };
+        }
 
         _checkInvalid(value) {
             return !!value;
-        };
+        }
 
         whichPageTrows(errorObj) {
             let overviewError, attachmentError, reportError, questionnaireError;
@@ -54,7 +55,7 @@ export const ErrorHandlerMixin = (baseClass) => class extends PolymerElement(bas
             });
 
             return overviewError || attachmentError || questionnaireError || reportError || null;
-        };
+        }
 
         checkNonField(errorObj) {
             if (!isObject(errorObj)) { return null; }
@@ -76,6 +77,11 @@ export const ErrorHandlerMixin = (baseClass) => class extends PolymerElement(bas
                 });
             }
             return message;
-        };
+        }
 
-};
+    }
+    return ErrorHandlerMixin;
+
+}
+
+export default ErrorHandlerMixin;

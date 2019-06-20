@@ -3,7 +3,7 @@
   "shell": "src/elements/core-elements/app-shell-element/app-shell.html",
   "sources": [
     "src/**/*",
-    "images/**/*",
+    "assets/**/*",
     "package.json"
   ],
   "fragments": [
@@ -15,7 +15,5 @@
     "src/elements/pages/special-audits-page-components/special-audits-page-main/special-audits-page-main.html",
     "src/elements/pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main.html"
   ],
-  "sourceGlobs": [
 
-  ]
 }
