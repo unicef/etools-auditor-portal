@@ -22,6 +22,7 @@ import './../app-theme.js';
 setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
+import { AppMenuMixin } from '../app-sidebar-menu/mixins/app-menu-mixin.js';
 
 setRootPath('ap_poly3');
 
@@ -29,7 +30,7 @@ setRootPath('ap_poly3');
  * @customElement
  * @polymer
  */
-class AppShell extends PolymerElement {
+class AppShell extends AppMenuMixin(PolymerElement) {
 
   public static get template() {
       // main template
