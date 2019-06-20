@@ -1,6 +1,5 @@
 import {Constructor} from '../../types/global';
 import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
 
 declare const moment: any;
 /**
@@ -9,14 +8,6 @@ declare const moment: any;
  */
 function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     class DateMixinClass extends baseClass {
-
-        @property({type: Boolean})
-        datepickerModal!: boolean = false;
-
-        // TODO: added only for ts-lint, find a better way to make this accessible... might not be the best solution
-        @property({type: Object})
-        shadowRoot: ShadowRoot;
-
         /**
          * Format date string to any format supported by momentjs
          */
@@ -47,25 +38,6 @@ function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
             } else {
                 return new Date();
             }
-        }
-
-        /**
-         * Open input field assigned(as prefix or suffix) etools-datepicker on tap.
-         * Make sure you also have the data-selector attribute set on the input field.
-         */
-        openDatePicker(event) {
-            // do not close datepicker on mouse up
-            this.datepickerModal = true;
-            const id = (event.target as HTMLElement).getAttribute('data-selector');
-            if (id) {
-                const datepickerId = `#${id}`;
-                const datePicker = this.shadowRoot.querySelector(datepickerId);
-                if (datePicker) {
-                    (datePicker as any).open = true;
-                }
-            }
-            // allow outside click closing
-            setTimeout(() => this.datepickerModal = false, 300);
         }
     }
     return DateMixinClass;
