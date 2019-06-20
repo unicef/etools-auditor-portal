@@ -412,7 +412,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   }
 
   return EngagementMixin;
-
 }
 
 export default EngagementMixin;

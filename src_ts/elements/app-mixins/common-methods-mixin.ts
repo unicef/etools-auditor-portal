@@ -8,6 +8,7 @@ import ErrorHandlerMixin from './error-handler-mixin';
 import PermissionControllerMixin from './permission-controller-mixin';
 import StaticDataMixin from './static-data-mixin';
 import {Constructor} from '../../types/global';
+import {fireEvent} from '../utils/fire-custom-event';
 
 
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
@@ -58,7 +59,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       }
       this.set('errors', clone(this.refactorErrorObject(errorData)));
       if (this.tabTexts && this.tabTexts.fields.some(field => !!this.errors[field])) {
-        this.fire('toast', {text: `${this.tabTexts.name}: Please correct errors`});
+        fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }
     }
 
@@ -72,13 +73,13 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       let nonField = this.checkNonField(errorData);
 
       if (!this.dialogOpened && isString(data)) {
-        this.fire('toast', {text: `${this.errorBaseText}${data}`});
+        fireEvent(this,'toast', {text: `${this.errorBaseText}${data}`});
       } else {
         this.set('errors', data);
       }
 
       if (nonField) {
-        this.fire('toast', {text: `${this.errorBaseText}${nonField}`});
+        fireEvent(this,'toast', {text: `${this.errorBaseText}${nonField}`});
       }
     }
 

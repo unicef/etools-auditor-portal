@@ -19,9 +19,7 @@ function LocalizationMixin<T extends Constructor<PolymerElement>>(baseClass: T) 
       return (label && typeof label === 'string') ? label : (item.label || '');
     }
   }
-
   return LocalizationMixin;
-
 }
 
 export default LocalizationMixin;

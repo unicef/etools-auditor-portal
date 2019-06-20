@@ -5,7 +5,7 @@ function LastCreatedMixin<T extends Constructor>(baseClass: T) {
   class LastCreatedMixin extends (baseClass) {
     let _engagementData;
 
-    _setLastEngagementData(data) {
+    _setLastEngagementData(data){
       if (!data || !data.id) {
         return false;
       }
@@ -13,7 +13,7 @@ function LastCreatedMixin<T extends Constructor>(baseClass: T) {
       return true;
     }
 
-    getLastEngagementData(id) {
+    getLastEngagementData(id){
       if (!_engagementData) {
         return null;
       }
