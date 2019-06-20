@@ -135,7 +135,6 @@ class EngagementInfoDetails extends PolymerElement {
                             label="[[getLabel('po_item', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('po_item', basePermissionPath)]]"
                             options="[[_getPoItems(data.agreement)]]"
-                            custom-object-options
                             option-label="number"
                             option-value="id"
                             required$="{{_setRequired('po_item', basePermissionPath)}}"
@@ -145,8 +144,7 @@ class EngagementInfoDetails extends PolymerElement {
                             error-message="{{errors.po_item}}"
                             on-focus="_resetFieldError"
                             on-tap="_resetFieldError"
-                            hide-search
-                            no-title-attr>
+                            hide-search>
                     </etools-dropdown>
                     <paper-tooltip offset="0">[[data.po_item.number]]</paper-tooltip>
                 </div>
@@ -182,7 +180,6 @@ class EngagementInfoDetails extends PolymerElement {
                             disabled$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.contract_end_date)}}"
                             error-message="{{errors.contract_end_date}}"
-                            on-down="openDatePicker"
                             on-focus="_resetFieldError"
                             on-tap="_resetFieldError"
                             selected-date-display-format="YYYY-MM-DD"
@@ -208,7 +205,6 @@ class EngagementInfoDetails extends PolymerElement {
                             disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
                             error-message="{{errors.partner_contacted_at}}"
-                            on-down="openDatePicker"
                             on-focus="_resetFieldError"
                             on-tap="_resetFieldError"
                             selected-date-display-format="YYYY-MM-DD"
@@ -236,9 +232,9 @@ class EngagementInfoDetails extends PolymerElement {
                                 error-message="{{errors.engagement_type}}"
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError"
-                                on-value-change="_setEngagementType"
-                                hide-search
-                                no-title-attr>
+                                trigger-value-change-event
+                                on-etools-selected-item-changed="_setEngagementType"
+                                hide-search>
                         </etools-dropdown>
                         <span slot="message">Attach FACE Form Requesting Funding, <br>
                                 ICE Form, FACE Form Reporting,<br>
@@ -263,8 +259,7 @@ class EngagementInfoDetails extends PolymerElement {
                                 invalid="{{_checkInvalid(errors.start_date)}}"
                                 error-message="{{errors.start_date}}"
                                 on-focus="_resetFieldError"
-                                on-tap="_resetFieldError"
-                                on-down="openDatePicker">
+                                on-tap="_resetFieldError">
                         </datepicker-lite>
                     </div>
                 </template>
@@ -285,7 +280,6 @@ class EngagementInfoDetails extends PolymerElement {
                                 error-message="{{errors.end_date}}"
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError"
-                                on-down="openDatePicker"
                                 selected-date-display-format="YYYY-MM-DD">
                         </datepicker-lite>
                     </div>
@@ -329,11 +323,9 @@ class EngagementInfoDetails extends PolymerElement {
                                 label="[[getLabel('shared_ip_with', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
                                 options="[[sharedIpWithOptions]]"
-                                custom-object-options
                                 option-label="display_name"
                                 option-value="value"
-                                update-selected
-                                selected="{{data.shared_ip_with}}"
+                                selected-values="{{data.shared_ip_with}}"
                                 required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
                                 disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
                                 readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
@@ -342,8 +334,7 @@ class EngagementInfoDetails extends PolymerElement {
                                 on-focus="_resetFieldError"
                                 on-tap="_resetFieldError"
                                 dynamic-align
-                                hide-search
-                                no-title-attr>
+                                hide-search>
                     </etools-dropdown-multi>
                     </div>
                 </template>
@@ -389,13 +380,10 @@ class EngagementInfoDetails extends PolymerElement {
         engagementType = '';
 
         @property({type: Date})
-        maxDate = function() {
+        maxDate = () => {
             let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
             return new Date(nextDay.getDate() - 1);
         }
-
-        @property({type: Boolean})
-        datepickerModal = false;
 
         @property({type: String})
         contractExpiryDate = null;
@@ -431,8 +419,8 @@ class EngagementInfoDetails extends PolymerElement {
             ];
         }
 
-    ready() {
-        super.ready();
+    connectedCallback() {
+        super.connectedCallback();
         (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     }
 
