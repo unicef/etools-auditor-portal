@@ -4,9 +4,9 @@ import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
-import {ErrorHandlerMixin} from './error-handler-mixin';
-import {PermissionController} from './permission-controller';
-import {StaticDataMixin} from './static-data-mixin';
+import ErrorHandlerMixin from './error-handler-mixin';
+import PermissionController from './permission-controller';
+import StaticDataMixin from './static-data-mixin';
 
 
 /**
