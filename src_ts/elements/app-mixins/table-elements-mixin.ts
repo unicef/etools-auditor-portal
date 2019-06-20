@@ -4,6 +4,7 @@ import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
+import {fireEvent} from "../utils/fire-custom-event";
 
 /**
  * @polymer
@@ -213,7 +214,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
         _triggerSaveEngagement() {
             this.requestInProcess = true;
-            this.fire('action-activated', {type: 'save', quietAdding: true});
+            fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
         }
 
         _updateDataItemsWithoutSave() {
