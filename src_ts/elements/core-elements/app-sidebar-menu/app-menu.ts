@@ -9,6 +9,7 @@ import '@polymer/paper-ripple/paper-ripple.js';
 
 import './styles/nav-menu-styles.js';
 import {fireEvent} from '../../utils/fire-custom-event.js';
+import { property } from '@polymer/decorators';
 
 /**
  * @polymer
@@ -107,21 +108,16 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
     `;
   }
 
-  public static get properties() {
-    return {
-      selectedOption: String,
-      rootPath: String,
-      smallMenu: {
-        type: Boolean,
-        reflectToAttribute: true,
-        observer: '_menuSizeChange'
-      }
-    };
-  }
 
-  public selectedOption: string = '';
-  public rootPath: string = '';
-  public smallMenu: boolean = false;
+  @property({type: String})
+  selectedOption!: string;
+
+  @property({type: String})
+  rootPath!: string;
+
+  @property({type: Boolean, reflectToAttribute: true, observer: '_menuSizeChange'})
+  smallMenu!: Boolean;
+
 
   // @ts-ignore
   private _menuSizeChange(newVal: boolean, oldVal: boolean): void {

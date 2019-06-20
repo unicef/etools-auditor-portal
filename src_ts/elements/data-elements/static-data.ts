@@ -32,7 +32,7 @@ class StaticData extends PolymerElement {
   _updateEngagementsFilters() {
     let time = new Date().getTime();
 
-    this.filterAuditorsUrl = famEndpoints.filterAuditors + `?reload=${time}`;
+    this.filterAuditorsUrl = famEndpoints.filterAuditors.url + `?reload=${time}`;
     this.filterPartnersUrl = famEndpoints.filterPartners.url + `?reload=${time}`;
   }
 }
