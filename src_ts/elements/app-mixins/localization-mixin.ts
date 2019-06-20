@@ -1,8 +1,8 @@
 import { PolymerElement } from '@polymer/polymer';
-import PermissionController from './permission-controller';
+import PermissionControllerMixin from './permission-controller-mixin';
 
 function LocalizationMixin <T extends Constructor<PolymerElement>>(baseClass: T) {
-    class LocalizationMixin extends (PermissionController(baseClass)) {
+    class LocalizationMixin extends (PermissionControllerMixin(baseClass)) {
         getHeadingLabel(base, item) {
             if (!item) { return ''; }
             if (!base) { return item.label || ''; }

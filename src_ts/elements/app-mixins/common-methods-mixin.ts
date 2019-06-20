@@ -5,7 +5,7 @@ import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import ErrorHandlerMixin from './error-handler-mixin';
-import PermissionController from './permission-controller';
+import PermissionControllerMixin from './permission-controller-mixin';
 import StaticDataMixin from './static-data-mixin';
 
 
@@ -16,7 +16,7 @@ import StaticDataMixin from './static-data-mixin';
  * @appliesMixin PermissionController
  * @appliesMixin StaticDataMixin
  */
-export const CommonMethodsMixin = (baseClass) => class extends (StaticDataMixin(PermissionController(ErrorHandlerMixin(PolymerElement(baseClass))))) {
+export const CommonMethodsMixin = (baseClass) => class extends (StaticDataMixin(PermissionControllerMixin(ErrorHandlerMixin(PolymerElement(baseClass))))) {
 
         _resetFieldError(event) {
             if (!event || !event.target) { return false; }
