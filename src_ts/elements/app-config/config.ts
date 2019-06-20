@@ -1,3 +1,16 @@
+import Dexie from 'dexie';
+
+//------------Dexie--------
+var etoolsCustomDexieDb = new Dexie('AP');
+
+etoolsCustomDexieDb.version(1).stores({
+    collectionsList: '&name, expire',
+    partners: 'id',
+    sections: 'id',
+    offices: 'id'
+});
+
+//------------------------
 
 
 const PROD_DOMAIN = 'etools.unicef.org';
