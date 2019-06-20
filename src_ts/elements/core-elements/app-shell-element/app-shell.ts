@@ -33,35 +33,95 @@ setRootPath('ap_poly3');
 class AppShell extends AppMenuMixin(PolymerElement) {
 
   public static get template() {
-      // main template
-      // language=HTML
-      return html`
-  <app-drawer-layout id="layout" responsive-width="850px"
+    // main template
+    // language=HTML
+    return html`
+    <static-data></static-data>
+
+    <app-drawer-layout id="layout" responsive-width="850px"
                       fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
-    <!-- Drawer content -->
-    <app-drawer id="drawer" slot="drawer" transition-duration="350"
-                opened="[[_drawerOpened]]"
-                swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
-      <app-menu root-path="[[rootPath]]"
-        selected-option="[[_page]]"
-        small-menu$="[[smallMenu]]"></app-menu>
-    </app-drawer>
+      <!-- Drawer content -->
+      <app-drawer id="drawer" slot="drawer" transition-duration="350"
+                  opened="[[_drawerOpened]]"
+                  swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
+        <app-menu root-path="[[rootPath]]"
+          selected-option="[[_page]]"
+          small-menu$="[[smallMenu]]"></app-menu>
+      </app-drawer>
 
-    <!-- Main content -->
-    <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
+      <!-- Main content -->
+      <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
 
-      <app-header slot="header" fixed shadow>
-        <page-header id="pageheader" title="eTools"></page-header>
-      </app-header>
+        <app-header slot="header" fixed shadow>
+          <page-header id="pageheader" title="eTools"></page-header>
+        </app-header>
 
-      <main role="main" class="main-content">
-        <page-one class="page" active$="[[_isActivePage(_page, 'page-one')]]"></page-one>
-        <page-two class="page" active$="[[_isActivePage(_page, 'page-two')]]"></page-two>
-        <page-not-found class="page" active$="[[_isActivePage(_page, 'page-not-found')]]"></page-not-found>
-      </main>
+        <main role="main" class="main-content">
+          <iron-pages
+              id="pages"
+              selected="[[page]]"
+              attr-for-selected="name"
+              fallback-selection="not-found"
+              role="main">
 
-    </app-header-layout>
-  </app-drawer-layout>
+            <engagements-page-main
+                    name="engagements"
+                    id="engagements"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}">
+            </engagements-page-main>
+
+            <staff-sc-page-main
+                    selected-page="[[page]]"
+                    name="staff-sc"
+                    id="staff-sc"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}">
+            </staff-sc-page-main>
+
+            <audits-page-main
+                    name="audits"
+                    id="audits"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}">
+            </audits-page-main>
+
+            <special-audits-page-main
+                    name="special-audits"
+                    id="special-audits"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}">
+            </special-audits-page-main>
+
+            <micro-assessments-page-main
+                    name="micro-assessments"
+                    id="micro-assessments"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}">
+            </micro-assessments-page-main>
+
+            <spot-checks-page-main
+                    name="spot-checks"
+                    id="spot-checks"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}">
+            </spot-checks-page-main>
+
+            <spot-checks-page-main
+                    name="staff-spot-checks"
+                    id="staff-spot-checks"
+                    route="{{subroute}}"
+                    query-params="{{queryParams}}"
+                    is-staff-sc>
+            </spot-checks-page-main>
+
+            <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
+          </iron-pages>
+
+        </main>
+
+      </app-header-layout>
+    </app-drawer-layout>
   `;
   }
 
