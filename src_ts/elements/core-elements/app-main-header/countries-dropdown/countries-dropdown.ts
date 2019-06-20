@@ -28,10 +28,12 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
                 vertical-offset="56"
                 horizontal-align="right">
             <paper-button slot="dropdown-trigger" on-tap="_toggleOpened">
-                <span class="dropdown-text">[[country.name]]</span>
+                <div class="layout-horizontal">
+                   <span class="dropdown-text">[[country.name]]</span>
 
-                <iron-icon class="arrow-down" icon="icons:arrow-drop-down"></iron-icon>
-                <iron-icon class="arrow-up" icon="icons:arrow-drop-up"></iron-icon>
+                   <iron-icon class="arrow-down" icon="icons:arrow-drop-down"></iron-icon>
+                   <iron-icon class="arrow-up" icon="icons:arrow-drop-up"></iron-icon>
+                </div>
             </paper-button>
 
             <paper-listbox slot="dropdown-content" selected="[[countryIndex]]" on-iron-select="_countrySelected">
