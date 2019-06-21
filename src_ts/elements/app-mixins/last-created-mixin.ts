@@ -1,26 +1,33 @@
+import PolymerElement from '@polymer/polymer';
+import {Constructor} from "../../types/global";
+import {property} from "@polymer/decorators/lib/decorators";
 
+/**
+ * @polymer
+ * @mixinFunction
+ */
+function LastCreatedMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+    class LastCreatedMixinClass extends (baseClass) {
 
-
-function LastCreatedMixin <T extends Constructor>(baseClass: T) {
-    class LastCreatedMixin extends (baseClass){
-        let _engagementData;
+        @property({type: Object})
+        _engagementData: object | null = null;
 
         _setLastEngagementData(data) {
             if (!data || !data.id) { return false; }
-            _engagementData = data;
+            this._engagementData = data;
             return true;
         }
 
         getLastEngagementData(id) {
-            if (!_engagementData) { return null; }
+            if (!this._engagementData) { return null; }
 
-            let data = _engagementData;
-            _engagementData = null;
+            let data = this._engagementData;
+            this._engagementData = null;
 
             return +data.id === +id ? data : null;
         }
     }
-    return LastCreatedMixin;
+    return LastCreatedMixinClass;
 }
 
 export default LastCreatedMixin;

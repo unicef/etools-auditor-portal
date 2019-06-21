@@ -1,8 +1,15 @@
-import { PolymerElement } from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import PermissionControllerMixin from './permission-controller-mixin';
+import {Constructor} from "../../types/global";
 
-function LocalizationMixin <T extends Constructor<PolymerElement>>(baseClass: T) {
-    class LocalizationMixin extends (PermissionControllerMixin(baseClass)) {
+/**
+ * @polymer
+ * @mixinFunction
+ * @appliesMixin PermissionControllerMixin
+ */
+function LocalizationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+    class LocalizationMixinClass extends (PermissionControllerMixin(baseClass)) {
+
         getHeadingLabel(base, item) {
             if (!item) { return ''; }
             if (!base) { return item.label || ''; }
@@ -13,7 +20,7 @@ function LocalizationMixin <T extends Constructor<PolymerElement>>(baseClass: T)
             return (label && typeof label === 'string') ? label : (item.label || '');
         }
     }
-    return LocalizationMixin;
+    return LocalizationMixinClass;
 
 }
 

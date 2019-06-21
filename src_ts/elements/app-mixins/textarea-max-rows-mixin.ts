@@ -1,10 +1,17 @@
+import PolymerElement from '@polymer/polymer';
+import {Constructor} from '../../types/global';
+import {microTask} from '@polymer/polymer/lib/utils/async';
 
+/**
+ * @polymer
+ * @mixinFunction
+ */
+function TextareaMaxRowsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+    class TextareaMaxRowsMixinClass extends (baseClass) {
 
-function TextareaMaxRowsMixin <T extends Constructor>(baseClass: T) {
-    class TextareaMaxRowsMixin extends (baseClass){
-        attached() {
-            Polymer.dom.flush();
-            let paperTextareas = Polymer.dom(this.root).querySelectorAll('paper-textarea') || [];
+        connectedCallback() {
+            super.connectedCallback();
+            let paperTextareas = this.shadowRoot!.querySelectorAll('paper-textarea') || [];
 
             paperTextareas.forEach((paperTextarea) => {
                 this.setMaxHeight(paperTextarea);
@@ -14,8 +21,8 @@ function TextareaMaxRowsMixin <T extends Constructor>(baseClass: T) {
         setMaxHeight(paperTextarea) {
             if (!paperTextarea) { return false; }
 
-            let paperInputContainer = Polymer.dom(paperTextarea.root).querySelector('paper-input-container');
-            let textareaAutogrow = Polymer.dom(paperInputContainer).querySelector('.paper-input-input');
+            let paperInputContainer = paperTextarea.shadowRoot!.querySelector('paper-input-container');
+            let textareaAutogrow = paperInputContainer.shadowRoot!.querySelector('.paper-input-input');
 
             if (!textareaAutogrow) { return false; }
 
@@ -24,7 +31,7 @@ function TextareaMaxRowsMixin <T extends Constructor>(baseClass: T) {
 
             if (!maxRows || maxRows <= 1) { return false; }
 
-            this.async(() => {
+            microTask.run(() => {
                 let lineHeight = textareaAutogrowStyles.lineHeight || '';
                 let lineHeightPx = parseInt(lineHeight, 10);
 
@@ -36,8 +43,7 @@ function TextareaMaxRowsMixin <T extends Constructor>(baseClass: T) {
             });
         }
     }
-    return TextareaMaxRowsMixin;
-
+    return TextareaMaxRowsMixinClass;
 }
 
 export default TextareaMaxRowsMixin;
