@@ -487,13 +487,13 @@
                     this.fire('toast', {
                         text: 'Documents shared successfully.'
                     });
-                })
-                .catch(this._handleShareError.bind(this))
-                .finally(() => {
+
                     this.set('requestInProcess', false);
                     this.set('shareDialogOpened', false);
                     this._getLinkedAttachments(); // refresh the list
                 })
+                .catch(this._handleShareError.bind(this))
+
         },
 
         _handleShareError: function(err){
@@ -508,6 +508,10 @@
             this.fire('toast', {
                 text: message
             });
+
+            this.set('requestInProcess', false);
+            this.set('shareDialogOpened', false);
+            this._getLinkedAttachments(); // refresh the list
         },
 
         _getClassFor: function (field) {
