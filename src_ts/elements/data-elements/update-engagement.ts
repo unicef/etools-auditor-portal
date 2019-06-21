@@ -4,13 +4,9 @@ import { fireEvent } from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
 
-class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     APBehaviors.PermissionController,
-    //     EtoolsAjaxRequestBehavior
-    // ],
+class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
     @property({type: Object, observer: '_engagementChanged'})
     updatedEngagementData!: any;

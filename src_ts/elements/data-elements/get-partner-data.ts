@@ -7,11 +7,6 @@ import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-requ
 import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
 
 class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     APBehaviors.StaticDataController,
-    //     EtoolsAjaxRequestBehavior
-    // ],
 
     @property({type: Number, notify: true, observer: '_partnerIdChanged'})
     partnerId!: number | null;

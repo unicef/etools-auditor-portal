@@ -13,6 +13,7 @@ import PermissionControllerMixin from './permission-controller-mixin';
 import ErrorHandlerMixin from './error-handler-mixin';
 import TextareaMaxRowsMixin from './textarea-max-rows-mixin';
 import EndpointsMixin from '../app-config/endpoints-mixin';
+import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
 
 /**
  * @polymer
@@ -23,6 +24,7 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
  * @appliesMixin TextareaMaxRowsMixin
  */
 // TODO: in old behavior config globals was used, check usage
+
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends
       EndpointsMixin(PermissionControllerMixin(

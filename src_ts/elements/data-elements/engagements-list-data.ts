@@ -12,11 +12,6 @@ import QueryParamsController from '../app-mixins/query-params-controller';
 
 class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     APBehaviors.QueryParamsController,
-    //     EtoolsAjaxRequestBehavior
-    // ],
     @property({type: Array, readOnly: true, notify: true})
     engagementsList!: [];
   

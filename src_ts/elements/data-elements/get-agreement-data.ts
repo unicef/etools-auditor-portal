@@ -5,11 +5,7 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
 class GetAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     APBehaviors.PermissionController,
-    //     EtoolsAjaxRequestBehavior
-    // ],
+
     @property({type: Number, notify: true, observer: '_orderNumberChanged'})
     orderNumber!: number;
 

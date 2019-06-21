@@ -5,10 +5,6 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
 class AddNewEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
-  // behaviors: [
-  //     etoolsAppConfig.globals,
-  //     EtoolsAjaxRequestBehavior
-  // ],
 
   @property({type: Object})
   newEngagementData!: {};

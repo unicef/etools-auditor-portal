@@ -43,7 +43,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
       return true;
     }
 
-    _updateCollection(collectionName, data, title) {
+    _updateCollection(collectionName, data, title?) {
       if (!this._permissionCollection[collectionName]) {
         console.warn(`Collection ${collectionName} does not exist!`);
         return false;

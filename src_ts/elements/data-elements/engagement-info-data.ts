@@ -6,8 +6,11 @@ import isEqual from 'lodash-es/isEqual';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import LastCreatedMixin from '../../elements/app-mixins/last-created-mixin';
+import EngagementMixin from '../../elements/app-mixins/engagement-mixin';
 
-class EngagementInfoData extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
+//TO DO must use EngagementMixin, will create more errors...
+class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)))) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.LastCreatedController,

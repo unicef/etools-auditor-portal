@@ -6,10 +6,6 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
 class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     EtoolsAjaxRequestBehavior
-    // ],
 
     @property({type: String, observer: '_dateChanged'})
     requestData!: string;

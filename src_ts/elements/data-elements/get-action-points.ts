@@ -5,11 +5,6 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
 class GetActionPoints extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     APBehaviors.PermissionController,
-    //     EtoolsAjaxRequestBehavior
-    // ],
 
     @property({type: Number, notify: true, observer: '_engagementIdChanged'})
     engagementId!: number;

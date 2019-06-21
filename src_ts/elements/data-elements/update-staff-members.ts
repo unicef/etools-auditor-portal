@@ -6,10 +6,6 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
 class UpdateStaffMembers extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     EtoolsAjaxRequestBehavior
-    // ],
 
     @property({type: Object, notify: true, observer: '_dataChanged'})
     staffData!: any;
