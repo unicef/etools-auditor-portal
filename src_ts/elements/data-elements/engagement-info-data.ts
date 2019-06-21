@@ -3,8 +3,11 @@ import { property } from "@polymer/decorators";
 import { fireEvent } from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
-class EngagementInfoData extends PolymerElement {
+class EngagementInfoData extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.LastCreatedController,

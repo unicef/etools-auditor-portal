@@ -6,8 +6,11 @@ import keys from 'lodash-es/keys';
 import pull from 'lodash-es/pull';
 import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import QueryParamsController from '../app-mixins/query-params-controller';
 
-class EngagementListData extends PolymerElement {
+class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
     // behaviors: [
     //     etoolsAppConfig.globals,

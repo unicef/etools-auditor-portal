@@ -3,14 +3,11 @@ import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
 import { fireEvent } from "../utils/fire-custom-event.js";
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
 
-class UserData extends PolymerElement {
-    // behaviors: [
-    //     etoolsAppConfig.globals,
-    //     APBehaviors.PermissionController,
-    //     APBehaviors.UserController,
-    //     EtoolsAjaxRequestBehavior
-    // ],
+class UserData extends EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement))) {
 
     public connectedCallback() {
         super.connectedCallback();

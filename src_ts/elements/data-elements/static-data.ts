@@ -2,6 +2,8 @@ import { PolymerElement, html } from '@polymer/polymer';
 import famEndpoints from '../app-config/endpoints';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
+import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
@@ -19,7 +21,7 @@ let dataLoaded: {
   filterPartners: boolean
 };
 
-class StaticData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) { // TODO add other mixins
+class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)))) {
 
   public static get template() {
     return html`

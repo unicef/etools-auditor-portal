@@ -2,8 +2,11 @@ import { PolymerElement } from "@polymer/polymer";
 import { property } from "@polymer/decorators";
 import { fireEvent } from "../utils/fire-custom-event.js";
 import clone from 'lodash-es/clone';
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
 
-class GetPartnerData extends PolymerElement {
+class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.StaticDataController,

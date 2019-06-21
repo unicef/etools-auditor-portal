@@ -4,8 +4,12 @@ import '@polymer/app-route/app-location.js';
 import '@unicef-polymer/etools-ajax/etools-ajax';
 import {property} from "@polymer/decorators";
 import get from 'lodash-es/get';
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
+import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
 
-class GetStaffMembersList extends PolymerElement {
+class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement)))) {
 
     // behaviors: [
     //     etoolsAppConfig.globals,

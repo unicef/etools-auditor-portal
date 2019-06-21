@@ -3,8 +3,10 @@ import { property } from "@polymer/decorators";
 import get from 'lodash-es/get';
 import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
-class CheckUserExistence extends PolymerElement {
+class CheckUserExistence extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     EtoolsAjaxRequestBehavior

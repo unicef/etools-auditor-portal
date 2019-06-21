@@ -2,8 +2,10 @@ import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
 import { fireEvent } from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
-class UpdateEngagement extends PolymerElement {
+class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.PermissionController,

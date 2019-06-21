@@ -2,8 +2,10 @@ import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
 import cloneDeep from 'lodash-es/cloneDeep';
 import { fireEvent } from "../utils/fire-custom-event.js";
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
-class UpdateStaffMembers extends PolymerElement {
+class UpdateStaffMembers extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     EtoolsAjaxRequestBehavior

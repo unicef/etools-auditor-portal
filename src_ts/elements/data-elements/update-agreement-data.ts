@@ -1,7 +1,9 @@
 import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
+import EndpointsMixin from '../app-config/endpoints-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
-class UpdateAgreementData extends PolymerElement {
+class UpdateAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     EtoolsAjaxRequestBehavior
