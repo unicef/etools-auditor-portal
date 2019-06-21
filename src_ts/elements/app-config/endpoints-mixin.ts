@@ -8,7 +8,7 @@ function EndpointsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EndpointsMixinClass extends baseClass {
 
     getEndpoint(endpointName, data) {
-      var endpoint = clone(famEndpoints[endpointName]);
+      let endpoint = clone(famEndpoints[endpointName]);
       if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
           endpoint.url = window.location.origin + this._generateUrlFromTemplate(endpoint.template, data);
       }
