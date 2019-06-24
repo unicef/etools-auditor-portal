@@ -48,11 +48,14 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: Object})
     currentEngagement!: GenericObject;
 
+    @property({type: String})
+    permissionBase!: string | null;
+
     connectedCallback() {
       super.connectedCallback();
 
       this._processAction = this._processAction.bind(this);
-      this.addEventListener('action-activated', this._processAction);
+      this.addEventListener('action-activated', this._processAction as any);
 
       this._addObserverEffect("errorObject", '_errorOccurred');
       this._addObserverEffect("dialogOpened", 'resetInputDialog');
@@ -60,7 +63,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     disconnectedCallback() {
       super.disconnectedCallback();
-      this.removeEventListener('action-activated', this._processAction);
+      this.removeEventListener('action-activated', this._processAction as any);
     }
 
     _routeConfig(route) {
