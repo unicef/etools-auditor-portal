@@ -19,25 +19,27 @@ class UpdateActionPoints extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEl
     @property({type: Object, notify: true})
     errors!: {};
 
+    @property({type: Number})
+    engagementId!: number;
+
     _dataChanged(data = {}) {
         let {method, apData, complete} = data as any;
         if (!method || !apData) {
             return;
         }
 
-        this.method = method;
         let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
                 url = `${apBaseUrl}action-points/`;
 
         if (apData.id) { url += `${apData.id}/` }
         if (complete) { url += 'complete/'; }
 
-        this._sendUpdateRequest(url, apData);
+        this._sendUpdateRequest(url, apData, method);
     }
 
-    _sendUpdateRequest(url, body) {
+    _sendUpdateRequest(url, body, method) {
         const requestOptions = {
-            method: this.method,
+            method: method,
             endpoint: {
                 url
             },

@@ -23,6 +23,9 @@ class CheckUserExistence extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEl
     @property({type: Object, notify: true})
     editedItem!: {};
 
+    @property({type: Number})
+    organisationId!: number;
+
     _emailChanged(email) {
         if (!email) { return; }
         if (isNaN(+this.organisationId)) { return; }

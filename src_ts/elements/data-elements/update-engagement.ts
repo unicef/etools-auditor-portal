@@ -5,14 +5,15 @@ import get from 'lodash-es/get';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
+import { GenericObject } from "../../types/global.js";
 
 class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
     @property({type: Object, observer: '_engagementChanged'})
-    updatedEngagementData!: any;
+    updatedEngagementData!: GenericObject;
 
     @property({type: Object, notify: true})
-    engagement!: any;
+    engagement!: GenericObject;
 
     @property({type: String, notify: true})
     basePermissionPath!: string;
@@ -24,13 +25,22 @@ class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAj
     errorObject = {};
 
     @property({type: Object, notify: true})
-    optionRequests: any = {};
+    optionRequests: GenericObject = {};
 
     @property({type: Boolean, notify: true})
     forceOptionsUpdate!: boolean;
 
     @property({type: Object})
-    requestOptions!: any;
+    requestOptions!: GenericObject;
+
+    @property({type: Object})
+    postData!: GenericObject;
+
+    @property({type: String, notify: true})
+    actionUrl: string = '';
+
+    @property({type: Object})
+    lastData!: GenericObject;
 
     _handleResponse(data) {
         if (this.requestOptions.method === 'POST' || this.forceOptionsUpdate) {
@@ -49,7 +59,6 @@ class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAj
     _handleOptionsResponse(data) {
         let collectionName = `engagement_${this.lastData.id}`;
         this._updateCollection(collectionName, data.actions);
-        this.optionsUrl = '';
 
         this.optionRequests.options = true;
         this.finishOptionsResponse(this.lastData);
@@ -202,7 +211,6 @@ class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAj
     }
 
     _handleOptionsError() {
-        this.optionsUrl = '';
         this.basePermissionPath = 'not_found';
         this.finishResponse(this.lastData);
         fireEvent(this,'toast', {text: 'Can not update permissions data. Please reload the page!'});
@@ -231,12 +239,11 @@ class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAj
 
             fireEvent(this, 'global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
             fireEvent(this, 'global-loading', {type: 'update-engagement'});
-            this.url = this.actionUrl;
             // this.requestOptions.method = 'POST';
             this.set('requestOptions', {
                 method: 'POST',
                 endpoint: {
-                    url: this.url
+                    url: this.actionUrl
                 },
                 body: this.postData
             });

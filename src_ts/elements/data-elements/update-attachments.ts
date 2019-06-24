@@ -4,6 +4,7 @@ import { fireEvent } from "../utils/fire-custom-event.js";
 import findIndex from 'lodash-es/findIndex';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import { GenericObject } from "../../types/global.js";
 
 class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
 
@@ -14,7 +15,7 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     attachments!: [];
 
     @property({type: Object, notify: true})
-    errors!: any;
+    errors!: GenericObject;
 
     @property({type: Number})    
     baseId!: number;
@@ -23,7 +24,13 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     endpointName!: string;
 
     @property({type: Object, notify: true})
-    requestOptions!: {};
+    requestOptions!: GenericObject;
+
+    @property({type: String})
+    method!: string;
+
+    @property({type: Object})
+    postData!: GenericObject;
 
     _dataChanged(data = {}) {
         let {method, attachmentsData} = data as any;

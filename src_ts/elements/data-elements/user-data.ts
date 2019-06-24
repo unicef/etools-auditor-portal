@@ -6,6 +6,7 @@ import { fireEvent } from "../utils/fire-custom-event.js";
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
+import { resetOldUserData } from '../app-config/config.js';
 
 class UserData extends EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement))) {
 
@@ -29,7 +30,7 @@ class UserData extends EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin
         set(user, 'countries_available', countriesAvailable);
 
         if (!previousUserId || previousUserId !== user.user) {
-            this.resetOldUserData();
+            resetOldUserData();
         }
 
         localStorage.setItem('userId', user.user);

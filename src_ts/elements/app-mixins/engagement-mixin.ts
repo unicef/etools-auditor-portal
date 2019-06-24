@@ -1,4 +1,4 @@
-import PolymerElement from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import {property} from "@polymer/decorators";
 import isUndefined from 'lodash-es/isUndefined';
 import includes from 'lodash-es/includes';
@@ -8,7 +8,7 @@ import assign from 'lodash-es/assign';
 import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 import PermissionControllerMixin from './permission-controller-mixin';
 import ErrorHandlerMixin from './error-handler-mixin';
 import TextareaMaxRowsMixin from './textarea-max-rows-mixin';
@@ -28,25 +28,25 @@ import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends
       EndpointsMixin(PermissionControllerMixin(
-          UserControllerMixin(ErrorHandlerMixin(TextareaMaxRowsMixin(baseClass))))) {
+          UserControllerMixin(ErrorHandlerMixin(TextareaMaxRowsMixin(baseClass as Constructor<PolymerElement>))))) {
 
     @property({type: Number})
-    engagementId: number;
+    engagementId!: number;
 
     @property({type: Object})
-    routeData: object;
+    routeData!: GenericObject;
 
     @property({type: Array})
-    tabsList: any[];
+    tabsList!: any[];
 
     @property({type: String})
     engagementPrefix: string = '';
 
     @property({type: Object, readOnly: true})
-    originalData: {};
+    originalData!: GenericObject;
 
     @property({type: Object})
-    currentEngagement: {};
+    currentEngagement!: GenericObject;
 
     connectedCallback() {
       super.connectedCallback();

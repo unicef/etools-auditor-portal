@@ -8,6 +8,7 @@ import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
 import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
+import { GenericObject } from "../../types/global";
 
 class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement)))) {
 
@@ -46,7 +47,7 @@ class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(Etool
     organisationId!: number;
 
     @property({type: Object, notify: true})
-    queries!: any;
+    queries!: GenericObject;
 
     @property({type: Object, notify: true})
     dataItems!: {};
@@ -61,10 +62,19 @@ class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(Etool
     datalength!: number;
 
     @property({type: Object})
-    requestsCompleted: any = {};
+    requestsCompleted: GenericObject = {};
 
     @property({type: String, notify: true})
     staffsBase: string = '';
+
+    @property({type: Object})
+    responseData!: GenericObject;
+
+    @property({type: Object})
+    routeData!: GenericObject;
+
+    @property({type: String})
+    url?: string | null;
 
     static get observers() {
         return [ 'startRequest(organisationId, queries)'];
@@ -103,7 +113,7 @@ class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(Etool
                 queries.push(`${key}=${value}`);
             }            
         });
-        const profile = this.getUserData();
+        const profile = this.getUserData() as any;
         const countryFilter = get(this.routeData,'page', '').includes('staff')? `user__profile__countries_available__name=${profile.country.name}`: '';
         return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
     }

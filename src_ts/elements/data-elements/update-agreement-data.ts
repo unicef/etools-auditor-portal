@@ -2,6 +2,7 @@ import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import { GenericObject } from "../../types/global";
 
 class UpdateAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
 
@@ -9,7 +10,7 @@ class UpdateAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerE
     newDate!: string;
 
     @property({type: Object, notify: true})
-    agreement!: any;
+    agreement!: GenericObject;
 
     @property({type: Boolean, notify: true})
     poUpdating: boolean = false;

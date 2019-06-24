@@ -8,9 +8,10 @@ import PermissionControllerMixin from '../../elements/app-mixins/permission-cont
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import LastCreatedMixin from '../../elements/app-mixins/last-created-mixin';
 import EngagementMixin from '../../elements/app-mixins/engagement-mixin';
+import { GenericObject } from "../../types/global.js";
 
 //TO DO must use EngagementMixin, will create more errors...
-class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)))) {
+class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(EngagementMixin(PolymerElement))))) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.LastCreatedController,
@@ -19,9 +20,10 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
     //     EtoolsAjaxRequestBehavior
     // ],
 
+    // ts-@ignore
     @property({type: Number, notify: true, observer: '_idChanged'})
     engagementId: number | null = null;
-  
+
     @property({type: String})
     engagementType!: string;
   
@@ -32,7 +34,7 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
     lastId!: number;
 
     @property({type: Object})
-    requestsCompleted: any = {};
+    requestsCompleted: GenericObject = {};
 
     @property({type: Object})
     reportAtmOptions = {
@@ -45,6 +47,12 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
         postfix: 'attachments',
         requestName: 'attachments'
     };
+
+    @property({type: Object})
+    responseData!: GenericObject;
+
+    @property({type: Boolean})
+    lastError?: boolean;
 
     _handleDataResponse(data) {
         this.responseData = data;
@@ -104,7 +112,6 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
           this._handleEngagementOptions(params, {}, '');
       }
     }
-
 
     _setToResponse(engagement) {
         if (engagement && engagement.id && !isEqual(this.responseData, engagement)) {

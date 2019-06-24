@@ -9,6 +9,7 @@ import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
 import invoke from 'lodash-es/invoke';
 import { fireEvent } from '../utils/fire-custom-event';
+import {property} from "@polymer/decorators";
 
 let dataLoaded: {
   partners: boolean,
@@ -28,6 +29,12 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       <user-data></user-data>
     `;
   }
+
+  @property({type: String})
+  filterAuditorsUrl!: string;
+
+  @property({type: String})
+  filterPartnersUrl!: string;
 
   connectedCallback() {
     super.connectedCallback();
@@ -151,7 +158,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       }
   }
 
-  _triggerGlobalEvent(eventName, data) {
+  _triggerGlobalEvent(eventName, data?) {
       let detail = {detail: data};
       let event = new CustomEvent(eventName, detail);
       document.dispatchEvent(event);

@@ -4,14 +4,18 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import { fireEvent } from "../utils/fire-custom-event.js";
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import { GenericObject } from "../../types/global.js";
 
 class UpdateStaffMembers extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
 
     @property({type: Object, notify: true, observer: '_dataChanged'})
-    staffData!: any;
+    staffData!: GenericObject;
 
     @property({type: Number})
     organisationId!: number;
+
+    @property({type: Object})
+    lastRequestData!: GenericObject;
 
     _dataChanged(data) {
         if (!data) { return; }

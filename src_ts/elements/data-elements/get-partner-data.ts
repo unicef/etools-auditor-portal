@@ -5,6 +5,7 @@ import clone from 'lodash-es/clone';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
+import { GenericObject } from "../../types/global.js";
 
 class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
@@ -12,8 +13,16 @@ class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMix
     partnerId!: number | null;
 
     @property({type: Object, notify: true})
-    partner!: any;
+    partner!: GenericObject;
 
+    @property({type: Object})
+    lastData!: GenericObject;
+
+    @property({type: Boolean})
+    lastError?: boolean;
+
+    @property({type: Number})
+    lastNumber?: number;
 
     _handleResponse(detail) {
         if (!detail || !detail.id) {

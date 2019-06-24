@@ -1,4 +1,4 @@
-import PolymerElement from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import {Constructor} from "../../types/global";
 import {property} from "@polymer/decorators/lib/decorators";
 
@@ -21,7 +21,7 @@ function LastCreatedMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         getLastEngagementData(id) {
             if (!this._engagementData) { return null; }
 
-            let data = this._engagementData;
+            let data = this._engagementData as any;
             this._engagementData = null;
 
             return +data.id === +id ? data : null;

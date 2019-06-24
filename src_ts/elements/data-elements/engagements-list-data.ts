@@ -9,6 +9,7 @@ import difference from 'lodash-es/difference';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import QueryParamsController from '../app-mixins/query-params-controller';
+import { GenericObject } from "../../types/global.js";
 
 class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
@@ -19,7 +20,7 @@ class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjax
     requestQueries!: any;
 
     @property({type: Object})
-    lastState: any = {};
+    lastState: GenericObject = {};
 
     @property({type: Number, notify: true})
     listLength!: number;
@@ -37,6 +38,7 @@ class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjax
             return;
         }
 
+        // @ts-ignore
         this._setEngagementsList(detail.results);
         this.listLength = detail.count;
         this.updateQueries({reload: false});

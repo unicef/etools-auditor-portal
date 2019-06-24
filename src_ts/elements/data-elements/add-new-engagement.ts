@@ -56,14 +56,13 @@ class AddNewEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
       active: true,
       message: "Creating new engagement..."
     });
-    this.postData = engagement.data;
-    this._makeRequest(endpointName);
+    this._makeRequest(endpointName, engagement.data);
   }
 
-  _makeRequest(endpointName) {
+  _makeRequest(endpointName: any, postData: any) {
     const options = {
       method: "POST",
-      body: this.postData,
+      body: postData,
       endpoint: this.getEndpoint(endpointName)
     };
     this.sendRequest(options)
