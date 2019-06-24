@@ -1,6 +1,5 @@
 import {html} from '@polymer/polymer/polymer-element';
 
-
 // language=HTML
 export const moduleStyles = html`
   <style>
@@ -58,16 +57,16 @@ export const moduleStyles = html`
     }
 
     paper-tab {
-      --paper-tab-content: #{'{
-                    color: var(--module-primary);
-                    text-transform: none;
-                    font-size: 14px;
-                    font-weight: 500;
-                    width: 140px;
-                } '};
-      --paper-tab-content-unselected: #{'{
-                    color: var(--gray-mid);
-                } '};
+      --paper-tab-content: {
+        color: var(--module-primary);
+        text-transform: none;
+        font-size: 14px;
+        font-weight: 500;
+        width: 140px;
+      };
+      --paper-tab-content-unselected: {
+        color: var(--gray-mid);
+      };
     }
 
     /* PAPER-TOGGLE-BUTTON */
@@ -82,10 +81,10 @@ export const moduleStyles = html`
     paper-checkbox {
       --paper-checkbox-unchecked-color: var(--gray-mid);
       --paper-checkbox-checked-color: var(--module-primary);
-      --paper-checkbox-label: #{'{
-                    color: var(--gray-dark);
-                    font-size: 16px;
-                } '};
+      --paper-checkbox-label: {
+        color: var(--gray-dark);
+        font-size: 16px;
+      };
       --paper-checkbox-margin: 0;
     }
 
@@ -97,42 +96,41 @@ export const moduleStyles = html`
     etools-content-panel {
       position: relative;
 
-      --ecp-header-title: #{'{
-                    line-height: 48px;
-                } '};
+      --ecp-header-title: {
+        line-height: 48px;
+      };
 
-      --ecp-expand-btn: #{'{
-                    position: absolute;
-                    top: 3px;
-                    left: 13px;
-                    width: 45px;
-                    height: 45px;
-                } '};
+      --ecp-expand-btn: {
+        position: absolute;
+        top: 3px;
+        left: 13px;
+        width: 45px;
+        height: 45px;
+      };
 
-      --ecp-header-title: #{'{
-                    font-weight: 500;
-                    line-height: 48px;
-                    padding: 0 30px;
-                } '};
+      --ecp-header-title: {
+        font-weight: 500;
+        line-height: 48px;
+        padding: 0 30px;
+      };
 
-      --ecp-header-btns-wrapper: #{'{
-                    opacity: 1;
-                } '};
+      --ecp-header-btns-wrapper: {
+        opacity: 1;
+      };
     }
 
     div[slot="panel-btns"] {
       position: absolute;
       top: 4px;
       right: 16px;
+    }
 
-    .panel-button {
+    div[slot="panel-btns"] .panel-button {
       opacity: 0.7;
     }
 
-    .panel-button:hover {
+    div[slot="panel-btns"] .panel-button:hover {
       opacity: 0.87;
-    }
-
     }
 
     .pr-25 {
@@ -367,5 +365,4 @@ export const moduleStyles = html`
       width: 200px;
     }
   </style>
-
 `;

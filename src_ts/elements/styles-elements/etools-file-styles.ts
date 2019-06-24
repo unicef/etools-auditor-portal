@@ -1,4 +1,5 @@
 import {html} from '@polymer/polymer/polymer-element';
+import '@polymer/paper-styles/color;
 
 // language=HTML
 export const etoolsFileStyles = html`
@@ -17,21 +18,16 @@ export const etoolsFileStyles = html`
       margin: 0 0 10px 20px;
     }
 
-    --paper-input-container-underline-focus: #{'{
-          display: none;
-      }
+    --paper-input-container-underline-focus: {
+      display: none;
+    }
 
-    '};
-    --paper-input-container-underline-disabled: #{'{
-          display: none;
-      }
+    --paper-input-container-underline-disabled: {
+      display: none;
+    }
 
-    '};
-    --paper-input-error: #{'{
-          @apply --etools-file-error;
-      }
-
-    '};
+    --paper-input-error: {
+      @apply --etools-file-error;
     }
 
     .file-area {
@@ -113,45 +109,45 @@ export const etoolsFileStyles = html`
     }
 
     .upload-button {
-      --paper-button: #{'{
-          @apply --layout-flex;
-          @apply --layout-start-justified;
-          font-weight: bold;
-          font-size: 14px;
-          margin: 0;
-          padding: 0 5px 0 0;
-          margin-left: 20px;
-          margin-bottom: 14px;
-          padding: 0 19px 0 12px;
-          height: 36px;
-          color: #ffffff;
-          background-color: var(--module-primary)
-      } '}; @apply --etools-file-upload-button;
+      --paper-button: {
+        @apply --layout-flex;
+        @apply --layout-start-justified;
+        font-weight: bold;
+        font-size: 14px;
+        margin: 0;
+        padding: 0 5px 0 0;
+        margin-left: 20px;
+        margin-bottom: 14px;
+        padding: 0 19px 0 12px;
+        height: 36px;
+        color: #ffffff;
+        background-color: var(--module-primary);
+      };
+      @apply --etools-file-upload-button;
     }
 
     .change-button,
     .delete-button,
     .download-button {
       --paper-button-ink-color: transparent;
-
-      --paper-button: #{'{
-          font-weight: bold;
-          font-size: 14px;
-          padding: 10px 8px;
-          margin: 18px 0 0;
-          width: 50%;
-      } '};
+      --paper-button: {
+        font-weight: bold;
+        font-size: 14px;
+        padding: 10px 8px;
+        margin: 18px 0 0;
+        width: 50%;
+      };
     }
 
     .download-button {
-      --paper-button: #{'{
-          font-weight: bold;
-          font-size: 14px;
-          padding: 10px 8px;
-          margin: 18px 0 0;
-          width: 50%;
-          color: var(--module-primary) !important;
-      } '};
+      --paper-button: {
+        font-weight: bold;
+        font-size: 14px;
+        padding: 10px 8px;
+        margin: 18px 0 0;
+        width: 50%;
+        color: var(--module-primary) !important;
+      };
     }
 
     .change-button,
@@ -240,18 +236,18 @@ export const etoolsFileStyles = html`
       border-left: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12));
       box-sizing: border-box;
 
-      --paper-input-container-underline: #{'{
-            display: block !important;
-            border-bottom: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12)) !important;
-        } '};
-      --paper-input-container-underline-focus: #{'{
-            display: block !important;
-            border-bottom: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12)) !important;
-        } '};
-      --paper-input-container-underline-disabled: #{'{
-            display: block !important;
-            border-bottom: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12)) !important;
-        } '};
+      --paper-input-container-underline: {
+        display: block !important;
+        border-bottom: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12)) !important;
+      };
+      --paper-input-container-underline-focus: {
+        display: block !important;
+        border-bottom: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12)) !important;
+      };
+      --paper-input-container-underline-disabled: {
+        display: block !important;
+        border-bottom: 1px solid var(--etools-file-type-underline-color, rgba(0, 0, 0, 0.12)) !important;
+      };
     }
 
     :host([activate-file-types]) .file-area {
@@ -265,5 +261,4 @@ export const etoolsFileStyles = html`
       --iron-icon-fill-color: var(--gray-50);
     }
   </style>
-
 `;

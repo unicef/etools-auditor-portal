@@ -1,6 +1,4 @@
-import '@polymer/polymer/polymer-element.js';
 import '@polymer/polymer/lib/elements/custom-style';
-
 
 // language=HTML
 const documentContainer = document.createElement('template');
