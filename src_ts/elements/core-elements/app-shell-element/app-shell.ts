@@ -33,6 +33,7 @@ import { AppDrawerElement } from '@polymer/app-layout/app-drawer/app-drawer.js';
 import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
 import { GenericObject } from '../../../types/global.js';
 
+
 setRootPath('ap_poly3');
 
 /**
@@ -74,7 +75,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
 
           <app-header slot="header" fixed shadow>
-            <page-header id="pageheader" title="eTools"></page-header>
+            <page-header id="pageheader" title="eTools" user="[[user]]"></page-header>
           </app-header>
 
           <main role="main" class="main-content">
@@ -174,7 +175,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   route!: GenericObject;
 
   @property({type: Object})
-  routeData!: GenericObject;
+  routeData: GenericObject = {};
 
   public connectedCallback() {
     super.connectedCallback();
@@ -239,7 +240,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
         if (this.route.path === '/ap/') { this._configPath(); }
     })
-    .catch(() => {this._pageNotFound});
+    .catch(() => {this._pageNotFound()});
   }
 
   _checkSSCPage(user) {
@@ -258,7 +259,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   }
 
   _initialDataLoaded(e) {
-    this.staticDataLoaded = true;// TODO -where is this flag comming from???
+    this.staticDataLoaded = true;// TODO -what is this flag doing???
     if (this.routeData && this.staticDataLoaded) {
         this.user = this.getUserData();
         this.page = this.routeData.page || this._configPath();

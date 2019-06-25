@@ -10,6 +10,7 @@ import './countries-dropdown/countries-dropdown';
 
 import {isProductionServer, checkEnvironment} from '../../app-config/config.js';
 import { property } from '@polymer/decorators';
+import { GenericObject } from '../../../types/global';
 
 /**
  * page header element
@@ -99,17 +100,15 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
 
+  @property({type: Object})
+  user!: GenericObject;
+
   @property({type: String})
   environment: string | null = checkEnvironment();
 
   public connectedCallback() {
     super.connectedCallback();
     this._setBgColor();
-  }
-
-  // @ts-ignore
-  public stateChanged(state: RootState) {
-    // TODO
   }
 
   public menuBtnClicked() {

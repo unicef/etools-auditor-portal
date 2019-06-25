@@ -1,7 +1,33 @@
 import {PolymerElement} from '@polymer/polymer';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {Constructor} from "../../types/global";
-import {property} from "@polymer/decorators/lib/decorators";
+
+let _staticData!: {
+  engagementTypes: [],
+  offices: [],
+  partners: [],
+  sections: [],
+  staffMembersUsers: [],
+  staticDropdown: {
+    cso_types: [],
+    agency_choices: [],
+    agreement_amendment_types: [],
+    agreement_status: [],
+    agreement_types: [],
+    attachment_types_active: [],
+    currencies: [],
+    intervention_amendment_types: [],
+    intervention_doc_types: [],
+    intervention_status: [],
+    local_curency: number,
+    location_types: [],
+    partner_file_types: [],
+    partner_types: []
+  },
+  statuses: [],
+  users: []
+};
+
 
 /**
  * @polymer
@@ -10,27 +36,23 @@ import {property} from "@polymer/decorators/lib/decorators";
 function StaticDataMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class StaticDataMixin extends baseClass {
 
-    // TODO:  this might not work as expected... it was a global variable before
-    @property({type: Object})
-    _staticData: object = {};
-
     _setData(key, data) {
-      if (!key || !data || this._staticData[key]) {
+      if (!key || !data || _staticData[key]) {
         return false;
       }
-      this._staticData[key] = cloneDeep(data);
+      _staticData[key] = cloneDeep(data);
       return true;
     }
 
     getData(key) {
-      return cloneDeep(this._staticData[key]);
+      return cloneDeep(_staticData[key]);
     }
 
     _updateData(key, data) {
-      if (!key || !data || !this._staticData[key]) {
+      if (!key || !data || !_staticData[key]) {
         return false;
       }
-      this._staticData[key] = cloneDeep(data);
+      _staticData[key] = cloneDeep(data);
       return true;
     }
   }

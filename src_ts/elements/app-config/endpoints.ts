@@ -12,7 +12,7 @@ const famEndpoints = {
     template: '/api/audit/<%=type%>/<%=id%>/'
   },
   createEngagement: {
-    template: '/api/audit/engagements/'
+    url: '/api/audit/engagements/'
   },
   partnerOrganisations: {
     url: '/api/v2/partners/?hidden=false',
