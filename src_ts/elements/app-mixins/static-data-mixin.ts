@@ -2,7 +2,7 @@ import {PolymerElement} from '@polymer/polymer';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {Constructor} from "../../types/global";
 
-let _staticData!: {
+let _staticData = {
   engagementTypes: [],
   offices: [],
   partners: [],
@@ -19,7 +19,7 @@ let _staticData!: {
     intervention_amendment_types: [],
     intervention_doc_types: [],
     intervention_status: [],
-    local_curency: number,
+    local_curency: null,
     location_types: [],
     partner_file_types: [],
     partner_types: []
