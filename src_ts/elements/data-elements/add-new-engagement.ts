@@ -16,7 +16,7 @@ class AddNewEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
   endpointName: string = "";
 
   static get observers() {
-    return ["_newEngagementChanged(newEngagementData, endpointName)"];
+    return ['_newEngagementChanged(newEngagementData, endpointName)'];
   }
 
   _handleResponse(data) {

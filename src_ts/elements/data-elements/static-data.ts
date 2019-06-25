@@ -9,7 +9,6 @@ import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
 import invoke from 'lodash-es/invoke';
 import { fireEvent } from '../utils/fire-custom-event';
-import {property} from "@polymer/decorators";
 
 let dataLoaded: {
   partners: boolean,
@@ -29,12 +28,6 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       <user-data></user-data>
     `;
   }
-
-  @property({type: String})
-  filterAuditorsUrl!: string;
-
-  @property({type: String})
-  filterPartnersUrl!: string;
 
   connectedCallback() {
     super.connectedCallback();
@@ -74,18 +67,38 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   getUsers() {
     let usersEndpoint = famEndpoints.users.url;
+    this.sendRequest({
+      endpoint: usersEndpoint
+      })
+      .then(this._handleUsersResponse.bind(this))
+      .catch(this._handleUsersResponse.bind(this));
   }
 
   getStaffUsers() {
     let staffUsersEndpoint = famEndpoints.staffMembersUsers.url;
+    this.sendRequest({
+      endpoint: staffUsersEndpoint
+      })
+      .then(this._handleStaffUsersResponse.bind(this))
+      .catch(this._handleStaffUsersResponse.bind(this));
   }
 
   getOffices() {
     let officesEndpoint = famEndpoints.offices;
+    this.sendRequest({
+      endpoint: officesEndpoint
+      })
+      .then(this._apDataResponse.bind(this))
+      .catch(this._apDataResponse.bind(this));
   }
 
   getSections() {
     let sectionsEndpoint = famEndpoints.sectionsCovered;
+    this.sendRequest({
+      endpoint: sectionsEndpoint
+      })
+      .then(this._apDataResponse.bind(this))
+      .catch(this._apDataResponse.bind(this));
   }
 
   _getStaticDropdownData () {
@@ -138,24 +151,24 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
 
 
-  _allDataLoaded() {
+  _allDataLoaded() {// TODO -rename _checkAllDataLoaded
     if (dataLoaded.partners &&
-        dataLoaded.engagementOptions &&
-        dataLoaded.users &&
-        dataLoaded.staffUsers &&
-        dataLoaded.attachmentsOptions) {
-        fireEvent(this, 'static-data-loaded');
+      dataLoaded.engagementOptions &&
+      dataLoaded.users &&
+      dataLoaded.staffUsers &&
+      dataLoaded.attachmentsOptions) {
+      fireEvent(this, 'static-data-loaded');
     }
   }
 
   _filtersDataLoaded() {
-      if (dataLoaded.filterAuditors && dataLoaded.filterPartners) {
-          this._triggerGlobalEvent('engagements-filters-updated');
+    if (dataLoaded.filterAuditors && dataLoaded.filterPartners) {
+      this._triggerGlobalEvent('engagements-filters-updated');
 
-          dataLoaded.filters = true;
-          dataLoaded.filterAuditors = false;
-          dataLoaded.filterPartners = false;
-      }
+      dataLoaded.filters = true;
+      dataLoaded.filterAuditors = false;
+      dataLoaded.filterPartners = false;
+    }
   }
 
   _triggerGlobalEvent(eventName, data?) {
@@ -167,8 +180,15 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   _updateEngagementsFilters() {
     let time = new Date().getTime();
 
-    this.filterAuditorsUrl = famEndpoints.filterAuditors.url + `?reload=${time}`;// TODO
-    this.filterPartnersUrl = famEndpoints.filterPartners.url + `?reload=${time}`;// TODO
+    let filterAuditorsUrl = famEndpoints.filterAuditors.url + `?reload=${time}`;
+    this.sendRequest(filterAuditorsUrl)
+      .then(this._filterAuditorsLoaded.bind(this))
+      .catch(this._filterAuditorsLoaded.bind(this));
+
+    let filterPartnersUrl = famEndpoints.filterPartners.url + `?reload=${time}`;
+    this.sendRequest(filterPartnersUrl)
+      .then(this._filterPartnersLoaded.bind(this))
+      .catch(this._filterPartnersLoaded.bind(this));
   }
 
   _partnersLoaded(event, details) {

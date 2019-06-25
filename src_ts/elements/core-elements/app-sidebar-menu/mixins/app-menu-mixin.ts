@@ -94,7 +94,7 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
       }
     }
 
-    private _toggleDrawer(): void {
+    _toggleDrawer(): void {
       // @ts-ignore
       this.$.drawer.toggle();
     }

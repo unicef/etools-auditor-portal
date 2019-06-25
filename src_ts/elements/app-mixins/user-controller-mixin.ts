@@ -1,4 +1,4 @@
-import PolymerElement from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
@@ -13,13 +13,11 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
   class UserControllerMixinClass extends (baseClass) {
 
     // TODO:  this might not work... _user & _groups is not used like this in old app (global variables)
-    @property({type: Object})
-    _user: object = null;
+    _user: any = null;
 
-    @property({type: Object})
     _groups: object[] | string[] = [];
 
-    _setUserData(user) {
+    _setUserData(user: any) {
       if (this._user) {
         throw 'User already exists!';
       }
