@@ -72,6 +72,4 @@ export const resetOldUserData = () => {
   localStorage.removeItem('userId');
   (etoolsCustomDexieDb as any).collectionsList.clear();
   (etoolsCustomDexieDb as any).partners.clear();
-};
-
 

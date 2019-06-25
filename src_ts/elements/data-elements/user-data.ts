@@ -28,7 +28,7 @@ class UserData extends EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement
         let countriesAvailable = get(user, 'countries_available') || [];
 
         countriesAvailable = sortBy(countriesAvailable, ['name']);
-        set(user, 'countries_available', countriesAvailable); // What's this , is this necessary? TODO
+        set(user, 'countries_available', countriesAvailable);
 
         if (!previousUserId || previousUserId !== user.user) {
             resetOldUserData();
