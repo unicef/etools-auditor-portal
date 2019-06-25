@@ -239,7 +239,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
         if (this.route.path === '/ap/') { this._configPath(); }
     })
-    .catch(this._pageNotFound);
+    .catch(() => {this._pageNotFound});
   }
 
   _checkSSCPage(user) {
