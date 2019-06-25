@@ -1,8 +1,8 @@
-import PolymerElement from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 import {property} from "@polymer/decorators/lib/decorators";
 
 /**
@@ -14,7 +14,7 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
 
     // TODO:  this might not work... _user & _groups is not used like this in old app (global variables)
     @property({type: Object})
-    _user: object = null;
+    _user: GenericObject | null = null;
 
     @property({type: Object})
     _groups: object[] | string[] = [];
@@ -27,7 +27,7 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
       if (!user || !isObject(user) || isArray(user)) {
         throw new Error('User must be an object');
       }
-      if (!user.user || !user.groups) {
+      if (!user || !(user as any).user || !(user as any).groups) {
         throw new Error('User must have id and groups fields!');
       }
 

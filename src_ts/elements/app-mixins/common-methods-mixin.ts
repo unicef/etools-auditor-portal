@@ -18,7 +18,7 @@ import {fireEvent} from "../utils/fire-custom-event";
  * @appliesMixin StaticDataMixin
  */
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class CommonMethodsMixinClass extends StaticDataMixin(PermissionControllerMixin(ErrorHandlerMixin(baseClass))) {
+  class CommonMethodsMixinClass extends StaticDataMixin(PermissionControllerMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>))) {
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -33,7 +33,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       event.target.invalid = false;
     }
 
-    isReadOnly(field, basePermissionPath, inProcess) {
+    isReadOnly(field, basePermissionPath, inProcess?) {
       if (!basePermissionPath || inProcess) {
         return true;
       }

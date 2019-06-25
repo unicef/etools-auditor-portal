@@ -1,4 +1,4 @@
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -15,19 +15,19 @@ import ErrorHandlerMixin from "./error-handler-mixin";
  * @appliesMixin ErrorHandlerMixin
  */
 function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class TableElementsMixinClass extends PermissionControllerMixin(ErrorHandlerMixin(baseClass)) {
+  class TableElementsMixinClass extends PermissionControllerMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>)) {
 
     @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
     dataItems: any[] = [];
 
     @property({type: Object})
-    emptyObj: object = {empty: true};
+    emptyObj: GenericObject = {empty: true};
 
     @property({type: Object})
-    editedItem: object = {};
+    editedItem: GenericObject = {};
 
     @property({type: Object})
-    itemModel: object = {};
+    itemModel: GenericObject = {};
 
     /**
      * Determines whether Save is performed on dialog confirm (when false),
@@ -50,7 +50,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     // TODO: added only for ts-lint, find a better way to make this accessible... might not be the best solution
     @property({type: Object})
-    shadowRoot: ShadowRoot;
+    shadowRoot!: ShadowRoot;
 
     connectedCallback() {
       super.connectedCallback();
@@ -102,7 +102,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return [cloneDeep(this.editedItem)];
     }
 
-    _canBeChanged(basePath) {
+    _canBeChanged(basePath?) {
       let path = basePath || this.basePermissionPath;
       if (!path) {
         return true;

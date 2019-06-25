@@ -19,6 +19,10 @@ import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import {property} from '@polymer/decorators';
 
+/**
+ * @polymer
+ * @customElement
+ */
 class EngagementInfoDetails extends PolymerElement {
     static get template() {
         return html`
