@@ -14,7 +14,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
     @property({type: Object})
     _permissionCollection: GenericObject = {};
 
-    _addToCollection(collectionName, data, title) {
+    _addToCollection(collectionName, data, title?) {
       //check arguments
       if (!collectionName || !data) {
         console.warn('collectionName and data arguments must be provided!');
@@ -43,7 +43,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
       return true;
     }
 
-    _updateCollection(collectionName, data, title) {
+    _updateCollection(collectionName, data, title?) {
       if (!this._permissionCollection[collectionName]) {
         console.warn(`Collection ${collectionName} does not exist!`);
         return false;
@@ -122,7 +122,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
           this.getFieldAttribute(path, 'required', 'PUT');
     }
 
-    collectionExists(path, actionType) {
+    collectionExists(path, actionType?) {
       if (!path) {
         throw new Error('path argument must be provided');
       }
@@ -138,7 +138,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
           this.getFieldAttribute(path, 'choices', 'POST');
     }
 
-    _getCollection(path, actionType) {
+    _getCollection(path, actionType?) {
       path = path.split('.');
 
       let value = this._permissionCollection;

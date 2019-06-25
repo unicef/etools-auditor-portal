@@ -15,7 +15,7 @@ import ErrorHandlerMixin from "./error-handler-mixin";
  * @appliesMixin ErrorHandlerMixin
  */
 function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class TableElementsMixinClass extends PermissionControllerMixin(ErrorHandlerMixin(baseClass)) {
+  class TableElementsMixinClass extends PermissionControllerMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>)) {
 
     @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
     dataItems: any[] = [];
@@ -50,7 +50,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     // TODO: added only for ts-lint, find a better way to make this accessible... might not be the best solution
     @property({type: Object})
-    shadowRoot: ShadowRoot;
+    shadowRoot!: ShadowRoot;
 
     connectedCallback() {
       super.connectedCallback();

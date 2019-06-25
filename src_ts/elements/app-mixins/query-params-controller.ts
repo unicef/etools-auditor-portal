@@ -50,7 +50,7 @@ function QueryParamsController<T extends Constructor<PolymerElement>>(baseClass:
       }).join('&');
     }
 
-    updateQueries(newQueries, path, noNotify) {
+    updateQueries(newQueries, path?, noNotify?) {
       if (!isObject(newQueries)) {
         return false;
       }
