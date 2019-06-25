@@ -1,22 +1,28 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators/lib/decorators';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
+import '@polymer/polymer/lib/elements/dom-if';
+import '@polymer/iron-pages/iron-pages';
+import '@polymer/app-route/app-route';
 import isEqual from 'lodash-es/isEqual';
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
 import isUndefined from 'lodash-es/isUndefined';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
+import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
+import QueryParamsController from '../../../app-mixins/query-params-controller';
+import '../engagements-list-view/engagements-list-view';
+import '../new-engagement-view/new-engagement-view';
 
 /**
  * TODO: polymer 3 migration
  *      - replace include="page-layout-styles shared-styles module-styles" with polymer 3 version
- *      - include APBehaviors.QueryParamsController, APBehaviors.PermissionController migrated mixins
  * @customElement
  * @polymer
  */
-class EngagementsPageMain extends PolymerElement {
+class EngagementsPageMain extends PermissionControllerMixin(QueryParamsController(PolymerElement)) {
 
   // Define optional shadow DOM template
   static get template() {
