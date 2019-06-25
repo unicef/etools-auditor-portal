@@ -17,10 +17,12 @@ import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import QueryParamsController from '../../../app-mixins/query-params-controller';
+import {sharedStyles} from "../../../styles-elements/shared-styles";
+import {moduleStyles} from "../../../styles-elements/module-styles";
+import {mainPageStyles} from "../../../styles-elements/main-page-styles";
 
 /**
  * TODO: polymer 3 migration
- *    - replace include="shared-styles module-styles main-page-styles" with polymer 3 version
  *    - migrate and use:
  *        - status-tab-element
  *        - pages-header-element
@@ -45,11 +47,11 @@ class NewEngagementView extends
     QueryParamsController(CommonMethodsMixin(PermissionControllerMixin(
         StaticDataMixin(EngagementMixin(LastCreatedMixin(PolymerElement)))))) {
 
-  // Define optional shadow DOM template
   static get template() {
     // language=HTML
     return html`
-      <style include="shared-styles module-styles main-page-styles">
+      ${sharedStyles} ${moduleStyles} ${mainPageStyles}
+      <style>
         :host {
           position: relative;
           display: block;

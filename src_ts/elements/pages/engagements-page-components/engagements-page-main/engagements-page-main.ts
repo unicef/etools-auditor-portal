@@ -15,20 +15,21 @@ import PermissionControllerMixin from '../../../app-mixins/permission-controller
 import QueryParamsController from '../../../app-mixins/query-params-controller';
 import '../engagements-list-view/engagements-list-view';
 import '../new-engagement-view/new-engagement-view';
+import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 /**
- * TODO: polymer 3 migration
- *      - replace include="page-layout-styles shared-styles module-styles" with polymer 3 version
  * @customElement
  * @polymer
  */
 class EngagementsPageMain extends PermissionControllerMixin(QueryParamsController(PolymerElement)) {
 
-  // Define optional shadow DOM template
   static get template() {
     // language=HTML
     return html`
-      <style include="page-layout-styles shared-styles module-styles">
+      ${pageLayoutStyles} ${sharedStyles} ${moduleStyles}
+      <style>
         :host {
           position: relative;
           display: block;

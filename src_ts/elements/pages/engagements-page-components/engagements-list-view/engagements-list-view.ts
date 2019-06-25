@@ -5,10 +5,12 @@ import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 import QueryParamsController from '../../../app-mixins/query-params-controller';
 import EndpointsMixin from '../../../app-config/endpoints-mixin';
+import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 /**
  * TODO: polymer 3 migration:
- *    - replace include="page-layout-styles shared-styles module-styles" with polymer 3 version
  *    - migrate and use:
  *        - engagements-list-data
  *        - pages-header-element
@@ -25,11 +27,11 @@ import EndpointsMixin from '../../../app-config/endpoints-mixin';
 class EngagementsListView extends
     EndpointsMixin(QueryParamsController(PermissionControllerMixin(StaticDataMixin(PolymerElement)))) {
 
-  // Define optional shadow DOM template
   static get template() {
     // language=HTML
     return html`
-      <style include="page-layout-styles shared-styles module-styles">
+      ${pageLayoutStyles} ${sharedStyles} ${moduleStyles}
+      <style>
         :host {
           position: relative;
           display: block;
