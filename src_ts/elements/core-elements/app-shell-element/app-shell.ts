@@ -18,7 +18,7 @@ import './../app-sidebar-menu/app-menu.js';
 import './../app-main-header/page-header.js'
 import './../app-footer/page-footer.js'
 
-import './../app-theme.js';
+import './../../styles-elements/app-theme.js';
 import '../../data-elements/static-data';
 
 
