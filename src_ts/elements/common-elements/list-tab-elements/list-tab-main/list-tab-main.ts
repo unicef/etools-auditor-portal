@@ -3,6 +3,10 @@ import {property} from '@polymer/decorators';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-card/paper-card.js';
+import '@polymer/polymer/lib/elements/dom-if';
+
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 import QueryParamsController from '../../../app-mixins//query-params-controller';
 import { GenericObject } from '../../../../types/global';
@@ -10,15 +14,14 @@ import { GenericObject } from '../../../../types/global';
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin QueryParamsController
  */
 class ListTabMain extends QueryParamsController(PolymerElement){
 
     static get template() {
     return html`
-
-    <style include="shared-styles module-styles">
+    ${sharedStyles} ${moduleStyles}
+    <style>
         :host {
                 display: block;
                 margin-top: 25px;

@@ -4,6 +4,7 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
+import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
@@ -21,10 +22,13 @@ import PermissionControllerMixin from '../../../app-mixins/permission-controller
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import { microTask } from '@polymer/polymer/lib/utils/async';
 
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin StaticDataMixin
  * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
@@ -36,7 +40,8 @@ class PartnerDetailsTab extends
 
     static get template() {
     return html`
-         <style include="tab-inputs-styles tab-layout-styles module-styles">
+        ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+         <style>
             .partner-loading {
                 position: absolute;
                 top: 28px;
@@ -58,7 +63,6 @@ class PartnerDetailsTab extends
                     <etools-dropdown
                             id="partner"
                             class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                            value="{{engagement.partner}}"
                             selected="{{engagement.partner}}"
                             label="[[getLabel('partner', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
@@ -127,7 +131,7 @@ class PartnerDetailsTab extends
                     <etools-dropdown
                             id="authorizedOfficer"
                             class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
-                            value="{{authorizedOfficer}}"
+                            selected="{{authorizedOfficer}}"
                             label="[[getLabel('authorized_officers', basePermissionPath)]]"
                             placeholder="[[getReadonlyPlaceholder(partner)]]"
                             options="[[partner.partnerOfficers]]"
@@ -153,7 +157,7 @@ class PartnerDetailsTab extends
                         <etools-dropdown-multi
                                 id="activePd"
                                 class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                                value="{{activePd}}"
+                                selected-values="{{activePd}}"
                                 label="[[getLabel('active_pd', basePermissionPath)]]"
                                 placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                                 options="[[partner.interventions]]"                                
@@ -224,6 +228,15 @@ class PartnerDetailsTab extends
     _initListeners() {
         this._partnerLoaded = this._partnerLoaded.bind(this);
         this.addEventListener('partner-loaded', this._partnerLoaded as any);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this._removeListeners();
+    }
+
+    _removeListeners() {
+        this.removeEventListener('partner-loaded', this._partnerLoaded as any);
     }
 
     _partnerLoaded() {

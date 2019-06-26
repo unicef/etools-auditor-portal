@@ -5,6 +5,7 @@ import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-collapse/iron-collapse.js';
+import '@polymer/polymer/lib/elements/dom-if';
 import { IronCollapseElement } from '@polymer/iron-collapse/iron-collapse.js';
 declare const moment: any;
 import {property} from '@polymer/decorators';
@@ -12,18 +13,20 @@ import { GenericObject } from '../../../../types/global';
 
 import LocalizationMixin from '../../../app-mixins/localization-mixin';
 
-
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin LocalizationMixin
  */
 class ListElement extends LocalizationMixin(PolymerElement){
 
     static get template() {
     return html`
-    <style include="shared-styles module-styles iron-flex tab-inputs-styles">
+    ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
+    <style>
         *[hidden] {
             display: none !important;
         }

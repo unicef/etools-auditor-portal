@@ -2,24 +2,26 @@ import {PolymerElement, html} from '@polymer/polymer';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/polymer/lib/elements/dom-if';
 
 import {property} from '@polymer/decorators';
 import { GenericObject } from '../../../../types/global';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 import LocalizationMixin from '../../../app-mixins/localization-mixin';
 
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin LocalizationMixin
  */
 class ListHeader extends LocalizationMixin(PolymerElement){
 
     static get template() {
     return html`
-
-    <style include="shared-styles module-styles">
+    ${sharedStyles} ${moduleStyles}
+    <style>
         :host {
                 display: block;
                 padding: 0 15px 0 72px;

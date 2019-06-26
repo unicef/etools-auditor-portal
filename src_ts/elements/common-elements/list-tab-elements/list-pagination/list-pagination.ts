@@ -6,18 +6,20 @@ import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 
 import QueryParamsController from '../../../app-mixins//query-params-controller';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin QueryParamsController
  */
 class ListPagination extends QueryParamsController(PolymerElement){
 
     static get template() {
     return html`
-         <style include="iron-flex shared-styles module-styles">
+        ${sharedStyles} ${moduleStyles}
+         <style>
             :host {
                 display: block;
                 margin-top: 0;

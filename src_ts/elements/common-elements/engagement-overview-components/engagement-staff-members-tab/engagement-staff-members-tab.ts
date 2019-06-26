@@ -6,6 +6,7 @@ import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
+import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
@@ -30,11 +31,12 @@ import {timeOut} from '@polymer/polymer/lib/utils/async';
 import UserControllerMixin from '../../../app-mixins/user-controller-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin UserControllerMixin
@@ -47,7 +49,8 @@ class EngagementStaffMembersTab extends
     static get template() {
     return html`
 
-    <style include="tab-inputs-styles module-styles">
+    ${tabInputsStyles} ${moduleStyles}
+    <style>
         :host {
             position: relative;
             display: block;
@@ -140,7 +143,7 @@ class EngagementStaffMembersTab extends
             }
 
             .line {
-                width: #{'calc(100% - 48px)'};
+                width: 'calc(100% - 48px)';
                 margin-left: 24px;
                 box-sizing: border-box;
                 margin-bottom: 0 !important;
@@ -572,6 +575,9 @@ class EngagementStaffMembersTab extends
     connectedCallback() {
         super.connectedCallback();
         this._initListeners();
+        (this.$.emailInput as PaperInputElement).validate = this._validEmailAddress.bind(this, this.$.emailInput);
+        this.listSize = 10;
+        this.listPage = 1;
     }
       
     _initListeners() {
@@ -579,10 +585,13 @@ class EngagementStaffMembersTab extends
         this.addEventListener('staff-updated', this._staffUpdated as any);
     }
 
-    attached() {
-        (this.$.emailInput as PaperInputElement).validate = this._validEmailAddress.bind(this, this.$.emailInput);
-        this.listSize = 10;
-        this.listPage = 1;
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this._removeListeners();
+      }
+
+    _removeListeners() {
+        this.removeEventListener('staff-updated', this._staffUpdated as any);
     }
 
     changePermission(basePermissionPath) {

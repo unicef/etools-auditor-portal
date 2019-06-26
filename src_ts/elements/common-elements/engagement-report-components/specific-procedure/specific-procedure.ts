@@ -4,6 +4,7 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
+import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
@@ -16,10 +17,13 @@ import TextareaMaxRowsMixin from '../../../app-mixins/textarea-max-rows-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import { fireEvent } from '../../../utils/fire-custom-event';
 
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin TableElementsMixin
  * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin CommonMethodsMixin
@@ -28,7 +32,8 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
 
     static get template() {
     return html`
-        <style include="tab-inputs-styles tab-layout-styles module-styles">
+        ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+        <style>
             :host {
                 .repeatable-item-container[without-line] {
                     min-width: 0 !important;
@@ -175,6 +180,7 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
         ]
     }
 
+    @property({type: Object})
     findingColumn: GenericObject = {
         'size': 40,
         'label': 'Finding',

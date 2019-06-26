@@ -7,16 +7,20 @@ import isEmpty from 'lodash-es/isEmpty';
 import each from 'lodash-es/each';
 import pickBy from 'lodash-es/pickBy';
 import {property} from '@polymer/decorators';
+import '@polymer/polymer/lib/elements/dom-if';
 declare const moment: any;
 import { GenericObject } from '../../../../types/global';
 import { fireEvent } from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+
 /**
  * @polymer
  * @customElement
- * @mixinFunction
  * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
  */
@@ -24,8 +28,8 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
 
     static get template() {
     return html`
-
-        <style include="tab-inputs-styles tab-layout-styles module-styles">
+        ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+        <style>
         </style>
 
         <etools-content-panel class="content-section clearfx" panel-title="Engagement Status">

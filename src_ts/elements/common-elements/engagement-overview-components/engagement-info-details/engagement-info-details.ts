@@ -4,6 +4,7 @@ import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
+import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
@@ -13,11 +14,16 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+
 import isEqual from 'lodash-es/isEqual';
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import {property} from '@polymer/decorators';
+import { GenericObject } from '../../../../types/global';
 
 /**
  * @polymer
@@ -26,7 +32,8 @@ import {property} from '@polymer/decorators';
 class EngagementInfoDetails extends PolymerElement {
     static get template() {
         return html`
-        <style include="tab-inputs-styles module-styles tab-layout-styles">
+        ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
+        <style>
             .po-loading {
                 position: absolute;
                 top: 25px;
@@ -135,7 +142,7 @@ class EngagementInfoDetails extends PolymerElement {
                     <!-- PO Item Number -->
                     <etools-dropdown
                             class$="validate-field disabled-as-readonly [[_setRequired('po_item', basePermissionPath)]]"
-                            value="{{data.po_item}}"
+                            selected="{{data.po_item}}"
                             label="[[getLabel('po_item', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('po_item', basePermissionPath)]]"
                             options="[[_getPoItems(data.agreement)]]"
@@ -155,7 +162,7 @@ class EngagementInfoDetails extends PolymerElement {
 
                 <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
                     <!-- PO Date -->
-                    <paper-input
+                    <datepicker-lite
                             id="contractStartDateInput"
                             class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
                             value="[[prettyDate(data.agreement.contract_start_date)]]"
@@ -163,13 +170,9 @@ class EngagementInfoDetails extends PolymerElement {
                             placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
                             disabled
                             readonly
-                            on-down="openDatePicker">
-                        <iron-icon
-                                hidden$="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
-                                prefix
-                                icon="date-range">
-                        </iron-icon>
-                    </paper-input>
+                            hidden$="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
+                            icon="date-range">
+                    </datepicker-lite>                    
                 </div>
 
                 <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
@@ -223,7 +226,7 @@ class EngagementInfoDetails extends PolymerElement {
                                 slot="field"
                                 id="engagementType"
                                 class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
-                                value="{{_processValue(data.engagement_type)}}"
+                                selected="{{_processValue(data.engagement_type)}}"
                                 label="[[getLabel('engagement_type', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
                                 options="[[engagementTypes]]"
@@ -323,7 +326,6 @@ class EngagementInfoDetails extends PolymerElement {
                     <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
                     <etools-dropdown-multi
                                 class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
-                                value="{{sharedIpWith}}"
                                 label="[[getLabel('shared_ip_with', basePermissionPath)]]"
                                 placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
                                 options="[[sharedIpWithOptions]]"
@@ -352,7 +354,7 @@ class EngagementInfoDetails extends PolymerElement {
         basePermissionPath!: string;
       
         @property({type: Array, computed: '_setEngagementTypes(basePermissionPath)'})
-        engagementTypes: any = [
+        engagementTypes: GenericObject[] = [
             {
                 label: 'Micro Assessment',
                 link: 'micro-assessments',
