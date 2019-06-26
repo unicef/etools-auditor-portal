@@ -1,23 +1,19 @@
 import Dexie from 'dexie';
 
 declare global {
-  interface Window { EtoolsFamApp: any; EtoolsRequestCacheDb: any; }
+  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any;}
 }
 
 window.EtoolsFamApp = window.EtoolsFamApp || {};
-
-//------- Globally stored data-----
-window.EtoolsFamApp.Store = window.EtoolsFamApp.Store || {}; // TODO -centralize here what might be living in a future redux store
-
 
 //------------Dexie------------
 var etoolsCustomDexieDb = new Dexie('AP');
 
 etoolsCustomDexieDb.version(1).stores({
-    collectionsList: '&name, expire',
-    partners: '&id',
-    sections: '&id',
-    offices: '&id'
+  collectionsList: '&name, expire',
+  partners: '&id',
+  sections: '&id',
+  offices: '&id'
 });
 
 // configure app dexie db to be used for caching

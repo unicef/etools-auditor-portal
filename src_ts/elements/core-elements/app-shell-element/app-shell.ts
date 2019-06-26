@@ -27,11 +27,11 @@ import '../../data-elements/static-data';
 setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
-import { AppMenuMixin } from '../app-sidebar-menu/mixins/app-menu-mixin.js';
-import { fireEvent } from '../../utils/fire-custom-event.js';
-import { AppDrawerElement } from '@polymer/app-layout/app-drawer/app-drawer.js';
+import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin.js';
+import {fireEvent} from '../../utils/fire-custom-event.js';
+import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
-import { GenericObject } from '../../../types/global.js';
+import {GenericObject} from '../../../types/global.js';
 
 
 setRootPath('ap_poly3');
@@ -160,7 +160,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   narrow: Boolean = false
 
   @property({type: Object})
-  _toast: PolymerElement| null = null;
+  _toast: PolymerElement | null = null;
 
   @property({type: Array})
   _toastQueue = [];
@@ -186,11 +186,11 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
       this._configPath();
     }
 
-  (this.$.drawer as AppDrawerElement).$.scrim.remove();
+    (this.$.drawer as AppDrawerElement).$.scrim.remove();
 
     this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('toast', this.queueToast as any);
-   // this.addEventListener('drawer-toggle-tap', this._toggleDrawer as any); TODO
+    // this.addEventListener('drawer-toggle-tap', this._toggleDrawer as any); TODO
     this.addEventListener('404', this._pageNotFound);
     this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
@@ -198,17 +198,17 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
   queueToast(e, detail) {
     let notificationList = this.shadowRoot!.querySelector('multi-notification-list');
-    if (!notificationList) { return; }
+    if (!notificationList) {return;}
 
     if (detail && detail.reset) {
-        fireEvent(notificationList, 'reset-notifications');
+      fireEvent(notificationList, 'reset-notifications');
     } else {
-        fireEvent(notificationList, 'notification-push', detail);
+      fireEvent(notificationList, 'notification-push', detail);
     }
   }
 
   _routePageChanged() {
-    if (!this.initLoadingComplete || !this.routeData.page) { return; }
+    if (!this.initLoadingComplete || !this.routeData.page) {return;}
     this.page = this.routeData.page || 'engagements';
     this.scroll(0, 0);
   }
@@ -226,21 +226,22 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
     var resolvedPageUrl;
     if (page === 'not-found') {
-        resolvedPageUrl = 'elements/pages/not-found-page-view/not-found-page-view.html';
+      resolvedPageUrl = 'elements/pages/not-found-page-view/not-found-page-view.html';
     } else if (page === 'staff-sc' && !this._checkSSCPage(this.user)) {
-        this._pageNotFound();
-        return;
+      this._pageNotFound();
+      return;
     } else {
-        resolvedPageUrl = `elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.html`;
+      resolvedPageUrl = `elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.html`;
     }
+
     import(resolvedPageUrl).then(() => {
-        if (!this.initLoadingComplete) { this.initLoadingComplete = true; }
+      if (!this.initLoadingComplete) {this.initLoadingComplete = true;}
 
-        fireEvent(this, 'global-loading', {type: 'initialisation'});
+      fireEvent(this, 'global-loading', {type: 'initialisation'});
 
-        if (this.route.path === '/ap/') { this._configPath(); }
+      if (this.route.path === '/ap/') {this._configPath();}
     })
-    .catch(() => {this._pageNotFound()});
+      .catch(() => {this._pageNotFound()});
   }
 
   _checkSSCPage(user) {
@@ -251,8 +252,8 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _pageNotFound(event?) {
     this.page = 'not-found';
     let message = event && event.detail && event.detail.message ?
-        `${event.detail.message}` :
-        'Oops you hit a 404!';
+      `${event.detail.message}` :
+      'Oops you hit a 404!';
 
     fireEvent(this, 'toast', {text: message});
     fireEvent(this, 'global-loading', {type: 'initialisation'});
@@ -261,29 +262,29 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _initialDataLoaded(e) {
     this.staticDataLoaded = true;// TODO -what is this flag doing???
     if (this.routeData && this.staticDataLoaded) {
-        this.user = this.getUserData();
-        this.page = this.routeData.page || this._configPath();
+      this.user = this.getUserData();
+      this.page = this.routeData.page || this._configPath();
     }
   }
 
   handleLoading(event) {
     if (!event.detail || !event.detail.type) {
-        console.error('Bad details object', JSON.stringify(event.detail));
-        return;
+      console.error('Bad details object', JSON.stringify(event.detail));
+      return;
     }
-    let loadingElement =  this.shadowRoot!.querySelector('etools-loading#global-loading')!;
+    let loadingElement = this.shadowRoot!.querySelector('etools-loading#global-loading')! as any;
 
     if (event.detail.active && loadingElement.active) {
-        this.globalLoadingQueue.push(event);
+      this.globalLoadingQueue.push(event);
     } else if (event.detail.active && typeof event.detail.message === 'string' && event.detail.message !== '') {
-        loadingElement.loadingText = event.detail.message;
-        loadingElement.active = true;
+      loadingElement.loadingText = event.detail.message;
+      loadingElement.active = true;
     } else {
-        loadingElement.active = false;
-        this.globalLoadingQueue = this.globalLoadingQueue.filter((element) => {return element.detail.type !== event.detail.type;});
-        if (this.globalLoadingQueue.length) {
-            this.handleLoading(this.globalLoadingQueue.shift());
-        }
+      loadingElement.active = false;
+      this.globalLoadingQueue = this.globalLoadingQueue.filter((element) => {return element.detail.type !== event.detail.type;});
+      if (this.globalLoadingQueue.length) {
+        this.handleLoading(this.globalLoadingQueue.shift());
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer';
 import famEndpoints from '../app-config/endpoints';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
@@ -7,7 +7,7 @@ import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
-import { fireEvent } from '../utils/fire-custom-event';
+import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
 
 
@@ -62,7 +62,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let partnersEndpoint = famEndpoints.partnerOrganisations;
     this.sendRequest({
       endpoint: partnersEndpoint
-      })
+    })
       .then((resp) => this._partnersLoaded(resp))
       .catch((err) => this._partnersLoaded(err));
   }
@@ -71,7 +71,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let usersEndpoint = famEndpoints.users;
     this.sendRequest({
       endpoint: usersEndpoint
-      })
+    })
       .then((resp) => this._handleUsersResponse(resp))
       .catch((err) => this._handleUsersResponse(err));
   }
@@ -80,7 +80,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let staffUsersEndpoint = famEndpoints.staffMembersUsers;
     this.sendRequest({
       endpoint: staffUsersEndpoint
-      })
+    })
       .then((resp) => this._handleStaffUsersResponse(resp))
       .catch((err) => this._handleStaffUsersResponse(err));
   }
@@ -89,7 +89,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let officesEndpoint = famEndpoints.offices;
     this.sendRequest({
       endpoint: officesEndpoint
-      })
+    })
       .then((resp) => this._apDataResponse(resp, 'offices'))
       .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
   }
@@ -98,18 +98,18 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let sectionsEndpoint = famEndpoints.sectionsCovered;
     this.sendRequest({
       endpoint: sectionsEndpoint
-      })
+    })
       .then((resp) => this._apDataResponse(resp, 'sections'))
       .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
   }
 
-  _getStaticDropdownData () {
+  _getStaticDropdownData() {
     const reqOpts = {
-        csrf: true,
-        endpoint: famEndpoints.static
+      csrf: true,
+      endpoint: famEndpoints.static
     };
 
-    this.sendRequest(reqOpts).then(resp=> this._setData('staticDropdown', resp));
+    this.sendRequest(reqOpts).then(resp => this._setData('staticDropdown', resp));
   }
 
   makeOptionsCalls() {
@@ -120,9 +120,9 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   getEngagementOptions() {
     const options = {
-        endpoint: famEndpoints.createEngagement,
-        csrf: true,
-        method: 'OPTIONS'
+      endpoint: famEndpoints.createEngagement,
+      csrf: true,
+      method: 'OPTIONS'
     }
     this.sendRequest(options)
       .then((resp) => this._handleNewEngagementResponse(resp))
@@ -130,25 +130,25 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   }
 
   getNewStaffSCOptions() {
-      const options = {
-          endpoint: famEndpoints.staffSCList,
-          csrf: true,
-          method: 'OPTIONS'
-      }
-      this.sendRequest(options)
-        .then((resp) => this._handleStaffSCOptionsResponse(resp))
-        .catch((err) => this._handleStaffSCOptionsResponse(err));
+    const options = {
+      endpoint: famEndpoints.staffSCList,
+      csrf: true,
+      method: 'OPTIONS'
+    }
+    this.sendRequest(options)
+      .then((resp) => this._handleStaffSCOptionsResponse(resp))
+      .catch((err) => this._handleStaffSCOptionsResponse(err));
   }
 
   getAtmOptions() {
-      const options = {
-          endpoint: this.getEndpoint('attachments', {id: 'new'}),
-          csrf: true,
-          method: 'OPTIONS'
-      }
-      this.sendRequest(options)
-        .then((resp) => this._atmOptionsResponse(resp))
-        .catch((err) => this._atmOptionsResponse(err));
+    const options = {
+      endpoint: this.getEndpoint('attachments', {id: 'new'}),
+      csrf: true,
+      method: 'OPTIONS'
+    }
+    this.sendRequest(options)
+      .then((resp) => this._atmOptionsResponse(resp))
+      .catch((err) => this._atmOptionsResponse(err));
   }
 
 
@@ -174,9 +174,9 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   }
 
   _triggerGlobalEvent(eventName, data?) {
-      let detail = {detail: data};
-      let event = new CustomEvent(eventName, detail);
-      document.dispatchEvent(event);
+    let detail = {detail: data};
+    let event = new CustomEvent(eventName, detail);
+    document.dispatchEvent(event);
   }
 
   _updateEngagementsFilters() {
@@ -195,10 +195,10 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   _partnersLoaded(details) {
     if (!details || details.error) { // TODO is .error ok?
-        this._responseError('Partners', '', 'warn');
+      this._responseError('Partners', '', 'warn');
     } else {
-        let partners = sortBy(details, ['name']);
-        this._setData('partners', partners);
+      let partners = sortBy(details, ['name']);
+      this._setData('partners', partners);
     }
     this.dataLoaded.partners = true;
     this._allDataLoaded();
@@ -206,13 +206,13 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   _filterAuditorsLoaded(details) {
     if (!details || details.error) {
-        this._responseError('Auditors', '');
+      this._responseError('Auditors', '');
     }
     let filterAuditors = details || details.results || [];
     if (this.dataLoaded.filters) {
-        this._updateData('filterAuditors', filterAuditors);
+      this._updateData('filterAuditors', filterAuditors);
     } else {
-        this._setData('filterAuditors', filterAuditors);
+      this._setData('filterAuditors', filterAuditors);
     }
 
     this.dataLoaded.filterAuditors = true;
@@ -221,14 +221,14 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   _filterPartnersLoaded(details) {
     if (!details || details.error) {
-        this._responseError('Partners', '');
+      this._responseError('Partners', '');
     }
 
     let filterPartners = details || [];
     if (this.dataLoaded.filters) {
-        this._updateData('filterPartners', filterPartners);
+      this._updateData('filterPartners', filterPartners);
     } else {
-        this._setData('filterPartners', filterPartners);
+      this._setData('filterPartners', filterPartners);
     }
 
     this.dataLoaded.filterPartners = true;
@@ -238,18 +238,18 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   _handleNewEngagementResponse(details) {
     let actions = details && details.actions;
     if (!details || details.error || !this.isValidCollection(actions)) {
-        this._responseError('Engagement Permissions', details.error);
+      this._responseError('Engagement Permissions', details.error);
     } else {
-        this._addToCollection('new_engagement', actions);
+      this._addToCollection('new_engagement', actions);
 
-        let statuses = this.getChoices('new_engagement.status') || [];
-        let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
+      let statuses = this.getChoices('new_engagement.status') || [];
+      let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
 
-        if (!statuses) { this._responseError('Statuses', 'Can not load engagement statuses data'); }
-        if (!engagementTypes) { this._responseError('Engagement types', 'Can not load engagement types data'); }
+      if (!statuses) {this._responseError('Statuses', 'Can not load engagement statuses data');}
+      if (!engagementTypes) {this._responseError('Engagement types', 'Can not load engagement types data');}
 
-        this._setData('statuses', statuses);
-        this._setData('engagementTypes', engagementTypes);
+      this._setData('statuses', statuses);
+      this._setData('engagementTypes', engagementTypes);
     }
 
     this.dataLoaded.engagementOptions = true;
@@ -260,10 +260,10 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let actions = get(data, 'actions') || {};
     let name = get(data, 'name', '');
     let collection = 'new_staff_sc';
-    let dataName  = 'staffSCPermissions';
+    let dataName = 'staffSCPermissions';
 
     if (!collection || !dataName) {
-        throw new Error('Please provide collection and dataName attributes');
+      throw new Error('Please provide collection and dataName attributes');
     }
 
     this._addToCollection(collection, actions, name);
@@ -275,10 +275,10 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let name = get(data, 'name', '');
 
     if (actions) {
-        this._addToCollection(`new_engagement_attachments`, actions || {}, name);
-        this._addToCollection(`new_staff_sc_attachments`, actions || {}, name);
+      this._addToCollection(`new_engagement_attachments`, actions || {}, name);
+      this._addToCollection(`new_staff_sc_attachments`, actions || {}, name);
     } else {
-        this._responseError('Engagement Attachments Permissions', data && data.type);
+      this._responseError('Engagement Attachments Permissions', data && data.type);
     }
 
     this.dataLoaded.attachmentsOptions = true;
@@ -287,44 +287,44 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   _handleUsersResponse(details) {
     if (!details || details.error) {
-        this._responseError('Users', '', 'warn');
+      this._responseError('Users', '', 'warn');
     } else {
-        each(details, (user) => {
-            user.full_name = user.first_name || user.last_name ?
-                    `${user.first_name} ${user.last_name}` :
-                    'Unnamed User';
-        });
-        this._setData('users', details);
+      each(details, (user) => {
+        user.full_name = user.first_name || user.last_name ?
+          `${user.first_name} ${user.last_name}` :
+          'Unnamed User';
+      });
+      this._setData('users', details);
     }
     this.dataLoaded.users = true;
     this._allDataLoaded();
   }
 
   _handleStaffUsersResponse(details) {
-      if (!details || details.error) {// TODO check if field `error` exists on the error obj
-          this._responseError('Staff Members Users', '', 'warn');
-      } else {
-          each(details, (user) => {
-              user.full_name = user.first_name || user.last_name ?
-                      `${user.first_name} ${user.last_name}` :
-                      'Unnamed User';
-          });
-          this._setData('staffMembersUsers', details);
-      }
-      this.dataLoaded.staffUsers = true;
-      this._allDataLoaded();
+    if (!details || details.error) {// TODO check if field `error` exists on the error obj
+      this._responseError('Staff Members Users', '', 'warn');
+    } else {
+      each(details, (user) => {
+        user.full_name = user.first_name || user.last_name ?
+          `${user.first_name} ${user.last_name}` :
+          'Unnamed User';
+      });
+      this._setData('staffMembersUsers', details);
+    }
+    this.dataLoaded.staffUsers = true;
+    this._allDataLoaded();
   }
 
   _apDataResponse(details?, cacheKey?) {
-      let collection = cacheKey;// the cacheKey on the endpoint
+    let collection = cacheKey;// the cacheKey on the endpoint
 
-      if (!collection || !details) { return; }
+    if (!collection || !details) {return;}
 
-      this._setData(collection, details);
+    this._setData(collection, details);
   }
 
   _responseError(message, type, eventType = 'error') {
-      console[eventType](`Can not load initial data: ${message || '?'}. Reason: ${type || '?'}`);
+    console[eventType](`Can not load initial data: ${message || '?'}. Reason: ${type || '?'}`);
   }
 }
 

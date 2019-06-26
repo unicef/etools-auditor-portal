@@ -1,6 +1,6 @@
-import { PolymerElement } from "@polymer/polymer";
-import { property } from "@polymer/decorators";
-import { fireEvent } from "../utils/fire-custom-event.js";
+import {PolymerElement} from "@polymer/polymer";
+import {property} from "@polymer/decorators";
+import {fireEvent} from "../utils/fire-custom-event.js";
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
@@ -20,11 +20,11 @@ class AddNewEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
   }
 
   _handleResponse(data) {
-    fireEvent(this, "engagement-created", { success: true, data });
+    fireEvent(this, "engagement-created", {success: true, data});
   }
 
   _handleError(error) {
-    let { status, response } = error;
+    let {status, response} = error;
     if (typeof response === "string") {
       try {
         response = JSON.parse(response);
@@ -43,7 +43,7 @@ class AddNewEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
     }
 
     fireEvent(this, "engagement-created");
-    fireEvent(this, "global-loading", { type: "create-engagement" });
+    fireEvent(this, "global-loading", {type: "create-engagement"});
   }
 
   _newEngagementChanged(engagement, endpointName) {

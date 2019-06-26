@@ -31,7 +31,7 @@ const famEndpoints = {
   filterAuditors: {
     url: '/api/audit/audit-firms/current_tenant/'
   },
-  filterPartners : {
+  filterPartners: {
     url: '/api/audit/engagements/partners/'
   },
   agreementData: {
@@ -66,19 +66,19 @@ const famEndpoints = {
     cachingKey: 'offices'
   },
   reportAttachments: {
-      template: '/api/audit/engagements/<%=id%>/report-attachments/'
+    template: '/api/audit/engagements/<%=id%>/report-attachments/'
   },
   attachments: {
-      template: '/api/audit/engagements/<%=id%>/engagement-attachments/'
+    template: '/api/audit/engagements/<%=id%>/engagement-attachments/'
   },
   globalAttachments: {
-      template: '/api/v2/attachments/'
+    template: '/api/v2/attachments/'
   },
   auditLinks: {
-      template: '/api/audit/<%=type%>/<%=id%>/links'
+    template: '/api/audit/<%=type%>/<%=id%>/links'
   },
   linkAttachment: {
-      template: '/api/v2/attachments/links/<%=id%>/'
+    template: '/api/v2/attachments/links/<%=id%>/'
   },
   static: {
     url: '/api/v2/dropdowns/static',

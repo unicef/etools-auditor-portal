@@ -1,6 +1,6 @@
-import { property } from '@polymer/decorators';
-import { Constructor } from '../../../../types/global';
-import { PolymerElement } from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {Constructor} from '../../../../types/global';
+import {PolymerElement} from '@polymer/polymer';
 
 /**
  * App menu functionality mixin
