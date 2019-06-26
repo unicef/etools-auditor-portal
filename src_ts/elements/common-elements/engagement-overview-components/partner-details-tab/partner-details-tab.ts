@@ -38,398 +38,398 @@ class PartnerDetailsTab extends
             PermissionControllerMixin(
                 CommonMethodsMixin(PolymerElement))){
 
-    static get template() {
-    return html`
-        ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
-         <style>
-            .partner-loading {
-                position: absolute;
-                top: 28px;
-                left: auto;
-                background-color: #fff;
-            }
+  static get template() {
+  return html`
+      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+        <style>
+          .partner-loading {
+              position: absolute;
+              top: 28px;
+              left: auto;
+              background-color: #fff;
+          }
+          .partner-loading:not([active]) {
+              display: none !important;
+          }
 
-            .partner-loading:not([active]) {
-                display: none !important;
-            }
-        </style>
+      </style>
 
-        <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
+      <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
 
-        <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
-            <div class="row-h group">
-                <div class="input-container">
-                    <!-- Partner -->
-                    <etools-dropdown
-                            id="partner"
-                            class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                            selected="{{engagement.partner}}"
-                            label="[[getLabel('partner', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
-                            options="[[partners]]"
-                            option-label="name"
-                            option-value="id"
-                            required$="{{_setRequired('partner', basePermissionPath)}}"
-                            disabled$="[[isReadOnly('partner', basePermissionPath)]]"
-                            readonly$="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
-                            invalid="{{errors.partner}}"
-                            error-message="{{errors.partner}}"
-                            on-focus="_resetFieldError"
-                            on-tap="_resetFieldError"
-                            trigger-value-change-event
-                            on-etools-selected-item-changed="_requestPartner"
-                            dynamic-align>
-                    </etools-dropdown>
+      <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
+          <div class="row-h group">
+              <div class="input-container">
+                  <!-- Partner -->
+                  <etools-dropdown
+                          id="partner"
+                          class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
+                          selected="{{engagement.partner}}"
+                          label="[[getLabel('partner', basePermissionPath)]]"
+                          placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
+                          options="[[partners]]"
+                          option-label="name"
+                          option-value="id"
+                          required$="{{_setRequired('partner', basePermissionPath)}}"
+                          disabled$="[[isReadOnly('partner', basePermissionPath)]]"
+                          readonly$="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
+                          invalid="{{errors.partner}}"
+                          error-message="{{errors.partner}}"
+                          on-focus="_resetFieldError"
+                          on-tap="_resetFieldError"
+                          trigger-value-change-event
+                          on-etools-selected-item-changed="_requestPartner"
+                          dynamic-align>
+                  </etools-dropdown>
 
-                    <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
-                    <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
-                </div>
+                  <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
+                  <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
+              </div>
 
-                <div class="input-container input-container-m">
-                    <!-- Partner Address -->
-                    <paper-input
-                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                            value="[[_setPartnerAddress(partner)]]"
-                            label="Partner Address"
-                            placeholder="[[getReadonlyPlaceholder(partner)]]"
-                            disabled
-                            readonly>
-                    </paper-input>
-                    <paper-tooltip offset="0">[[_setPartnerAddress(partner)]]</paper-tooltip>
-                </div>
-            </div>
+              <div class="input-container input-container-m">
+                  <!-- Partner Address -->
+                  <paper-input
+                          class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                          value="[[_setPartnerAddress(partner)]]"
+                          label="Partner Address"
+                          placeholder="[[getReadonlyPlaceholder(partner)]]"
+                          disabled
+                          readonly>
+                  </paper-input>
+                  <paper-tooltip offset="0">[[_setPartnerAddress(partner)]]</paper-tooltip>
+              </div>
+          </div>
 
-            <div class="row-h group">
-                <div class="input-container">
-                    <!-- Partner Phone Number -->
-                    <paper-input
-                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                            value="{{partner.phone_number}}"
-                            label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-                            placeholder="[[getReadonlyPlaceholder(partner)]]"
-                            disabled
-                            readonly>
-                    </paper-input>
-                    <paper-tooltip offset="0">[[partner.phone_number]]</paper-tooltip>
-                </div>
+          <div class="row-h group">
+              <div class="input-container">
+                  <!-- Partner Phone Number -->
+                  <paper-input
+                          class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                          value="{{partner.phone_number}}"
+                          label="[[getLabel('partner.phone_number', basePermissionPath)]]"
+                          placeholder="[[getReadonlyPlaceholder(partner)]]"
+                          disabled
+                          readonly>
+                  </paper-input>
+                  <paper-tooltip offset="0">[[partner.phone_number]]</paper-tooltip>
+              </div>
 
-                <div class="input-container">
-                    <!-- Partner E-mail Address -->
-                    <paper-input
-                            class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                            value="{{partner.email}}"
-                            label="[[getLabel('partner.email', basePermissionPath)]]"
-                            placeholder="[[getReadonlyPlaceholder(partner)]]"
-                            disabled
-                            readonly>
-                    </paper-input>
-                    <paper-tooltip offset="0">[[partner.email]]</paper-tooltip>
-                </div>
+              <div class="input-container">
+                  <!-- Partner E-mail Address -->
+                  <paper-input
+                          class$="without-border [[_setReadonlyFieldClass(partner)]]"
+                          value="{{partner.email}}"
+                          label="[[getLabel('partner.email', basePermissionPath)]]"
+                          placeholder="[[getReadonlyPlaceholder(partner)]]"
+                          disabled
+                          readonly>
+                  </paper-input>
+                  <paper-tooltip offset="0">[[partner.email]]</paper-tooltip>
+              </div>
 
-                <div class="input-container">
-                    <!-- Partner  Officers-->
-                    <etools-dropdown
-                            id="authorizedOfficer"
-                            class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
-                            selected="{{authorizedOfficer}}"
-                            label="[[getLabel('authorized_officers', basePermissionPath)]]"
-                            placeholder="[[getReadonlyPlaceholder(partner)]]"
-                            options="[[partner.partnerOfficers]]"
-                            option-label="fullName"
-                            option-value="id"
-                            required="{{_setRequired('authorized_officers', basePermissionPath)}}"
-                            disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-                            invalid="{{_checkInvalid(errors.authorized_officers)}}"
-                            error-message="{{errors.authorized_officers}}"
-                            on-focus="_resetFieldError"
-                            on-tap="_resetFieldError"
-                            dynamic-align>
-                    </etools-dropdown>
-                    <paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>
-                </div>
-            </div>
+              <div class="input-container">
+                  <!-- Partner  Officers-->
+                  <etools-dropdown
+                          id="authorizedOfficer"
+                          class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
+                          selected="{{authorizedOfficer}}"
+                          label="[[getLabel('authorized_officers', basePermissionPath)]]"
+                          placeholder="[[getReadonlyPlaceholder(partner)]]"
+                          options="[[partner.partnerOfficers]]"
+                          option-label="fullName"
+                          option-value="id"
+                          required="{{_setRequired('authorized_officers', basePermissionPath)}}"
+                          disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+                          readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+                          invalid="{{_checkInvalid(errors.authorized_officers)}}"
+                          error-message="{{errors.authorized_officers}}"
+                          on-focus="_resetFieldError"
+                          on-tap="_resetFieldError"
+                          dynamic-align>
+                  </etools-dropdown>
+                  <paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>
+              </div>
+          </div>
 
-            <template is="dom-if" if="[[_showActivePd(partner.partner_type, specialPartnerTypes)]]">
-                <div class="row-h group">
-                    <div class="input-container input-container-l">
-                        <!-- Active PD -->
-                        <etools-dropdown-multi
-                                id="activePd"
-                                class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                                selected-values="{{activePd}}"
-                                label="[[getLabel('active_pd', basePermissionPath)]]"
-                                placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
-                                options="[[partner.interventions]]"                                
-                                option-label="number"
-                                option-value="id"
-                                disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                                readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                                invalid="{{errors.active_pd}}"
-                                error-message="{{errors.active_pd}}"
-                                on-focus="_resetFieldError"
-                                on-tap="_resetFieldError"
-                                dynamic-align>
-                        </etools-dropdown-multi>
-                    </div>
-                </div>
-            </template>
-        </etools-content-panel>
-    `;
-    }
-    static get observers() {
-        return [
-            '_engagementChanged(engagement, basePermissionPath)',
-            '_errorHandler(errorObject)',
-            '_setActivePd(engagement, partner.interventions)',
-            'updateStyles(basePermissionPath, requestInProcess, partner, engagement.engagement_type)',
-            'setOfficers(partner, engagement, basePermissionPath)'
-        ];
-    }
+          <template is="dom-if" if="[[_showActivePd(partner.partner_type, specialPartnerTypes)]]">
+              <div class="row-h group">
+                  <div class="input-container input-container-l">
+                      <!-- Active PD -->
+                      <etools-dropdown-multi
+                              id="activePd"
+                              class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
+                              selected-values="{{activePd}}"
+                              label="[[getLabel('active_pd', basePermissionPath)]]"
+                              placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
+                              options="[[partner.interventions]]"                                
+                              option-label="number"
+                              option-value="id"
+                              disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                              readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                              invalid="{{errors.active_pd}}"
+                              error-message="{{errors.active_pd}}"
+                              on-focus="_resetFieldError"
+                              on-tap="_resetFieldError"
+                              dynamic-align>
+                      </etools-dropdown-multi>
+                  </div>
+              </div>
+          </template>
+      </etools-content-panel>
+  `;
+  }
+  static get observers() {
+      return [
+          '_engagementChanged(engagement, basePermissionPath)',
+          '_errorHandler(errorObject)',
+          '_setActivePd(engagement, partner.interventions)',
+          'updateStyles(basePermissionPath, requestInProcess, partner, engagement.engagement_type)',
+          'setOfficers(partner, engagement, basePermissionPath)'
+      ];
+  }
 
-    @property({type: String,  observer: '_basePathChanged'})
-    basePermissionPath!: string;
-  
-    @property({type: Array})
-    partners!: [];
+  @property({type: String,  observer: '_basePathChanged'})
+  basePermissionPath!: string;
 
-    @property({type: Array})
-    specialPartnerTypes = ['Bilateral / Multilateral', 'Government'];
+  @property({type: Array})
+  partners!: [];
 
-    @property({type: Boolean})
-    requestInProcess: boolean = false;
+  @property({type: Array})
+  specialPartnerTypes = ['Bilateral / Multilateral', 'Government'];
 
-    @property({type: Object})
-    errors: GenericObject = {};
+  @property({type: Boolean})
+  requestInProcess: boolean = false;
 
-    @property({type: Object})
-    tabTexts: GenericObject = {
-        name: 'Partner Details',
-        fields: [
-            'authorized_officers', 'active_pd', 'partner'
-        ]
-    };
+  @property({type: Object})
+  errors: GenericObject = {};
 
-    @property({type: Object})
-    partner!: GenericObject;
+  @property({type: Object})
+  tabTexts: GenericObject = {
+      name: 'Partner Details',
+      fields: [
+          'authorized_officers', 'active_pd', 'partner'
+      ]
+  };
 
-    @property({type: Object})
-    activePd!: GenericObject;
+  @property({type: Object})
+  partner!: GenericObject;
 
-    @property({type: Object})
-    authorizedOfficer!: GenericObject;
+  @property({type: Object})
+  activePd!: GenericObject;
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.set('partners', this.getData('partners'));
-        this._initListeners();
-    }
+  @property({type: Object})
+  authorizedOfficer!: GenericObject;
 
-    _initListeners() {
-        this._partnerLoaded = this._partnerLoaded.bind(this);
-        this.addEventListener('partner-loaded', this._partnerLoaded as any);
-    }
+  connectedCallback() {
+      super.connectedCallback();
+      this.set('partners', this.getData('partners'));
+      this._initListeners();
+  }
 
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        this._removeListeners();
-    }
+  _initListeners() {
+      this._partnerLoaded = this._partnerLoaded.bind(this);
+      this.addEventListener('partner-loaded', this._partnerLoaded as any);
+  }
 
-    _removeListeners() {
-        this.removeEventListener('partner-loaded', this._partnerLoaded as any);
-    }
+  disconnectedCallback() {
+      super.disconnectedCallback();
+      this._removeListeners();
+  }
 
-    _partnerLoaded() {
-        this.set('errors', {});
-        this.requestInProcess = false;
-        this.validatePartner();
-    }
+  _removeListeners() {
+      this.removeEventListener('partner-loaded', this._partnerLoaded as any);
+  }
 
-    setOfficers(partner, engagement) {
-        if (!partner || !partner.id) {
-            this.set('authorizedOfficer', null);
-            return;
-        }
-        let engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0],
-            partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
-        if (engagementOfficer) { engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`; }
+  _partnerLoaded() {
+      this.set('errors', {});
+      this.requestInProcess = false;
+      this.validatePartner();
+  }
 
-        if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
-            this.partner.partnerOfficers = [engagementOfficer];
-            this.authorizedOfficer = engagementOfficer;
-        } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-            let officerIndex = !!(engagementOfficer && ~findIndex(partner.partnerOfficers, officer => {
-                return officer.id === engagementOfficer.id;
-            }));
+  setOfficers(partner, engagement) {
+      if (!partner || !partner.id) {
+          this.set('authorizedOfficer', null);
+          return;
+      }
+      let engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0],
+          partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
+      if (engagementOfficer) { engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`; }
 
-            this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
-        }
-    }
+      if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
+          this.partner.partnerOfficers = [engagementOfficer];
+          this.authorizedOfficer = engagementOfficer;
+      } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
+          let officerIndex = !!(engagementOfficer && ~findIndex(partner.partnerOfficers, officer => {
+              return officer.id === engagementOfficer.id;
+          }));
 
-    validate() {
-        return this.validatePartner() && this.validateActivePd();
-    }
+          this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
+      }
+  }
 
-    validateActivePd() {
-        let activePdInput = this.shadowRoot!.querySelector('#activePd');
-        let partnerType = this.get('engagement.partner.partner_type');
-        let partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
+  validate() {
+      return this.validatePartner() && this.validateActivePd();
+  }
 
-        if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
-            activePdInput.invalid = 'Active PD is required';
-            activePdInput.errorMessage = 'Active PD is required';
-            return false;
-        }
+  validateActivePd() {
+      let activePdInput = this.shadowRoot!.querySelector('#activePd');
+      let partnerType = this.get('engagement.partner.partner_type');
+      let partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
 
-        return true;
-    }
+      if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
+          activePdInput.invalid = 'Active PD is required';
+          activePdInput.errorMessage = 'Active PD is required';
+          return false;
+      }
 
-    validatePartner() {
-        if (!this.$.partner || !(this.$.partner as any).required) { return true; }
-        if (!this.engagement as any || !this.engagement.partner || !this.engagement.partner.id) {
-            this.set('errors.partner', 'Partner is required');
-            this.$.partner.invalid = true;
-            return false;
-        } else if (!this.partner.id) {
-            this.set('errors.partner', 'Can not find partner data');
-            this.$.partner.invalid = true;
-            return false;
-        } else {
-            return true;
-        }
-    }
+      return true;
+  }
 
-    resetValidationErrors() {
-        this.set('errors', {});
-    }
+  validatePartner() {
+      if (!this.$.partner || !(this.$.partner as any).required) { return true; }
+      if (!this.engagement as any || !this.engagement.partner || !this.engagement.partner.id) {
+          this.set('errors.partner', 'Partner is required');
+          this.$.partner.invalid = true;
+          return false;
+      } else if (!this.partner.id) {
+          this.set('errors.partner', 'Can not find partner data');
+          this.$.partner.invalid = true;
+          return false;
+      } else {
+          return true;
+      }
+  }
 
-    _setReadonlyClass(inProcess, basePermissionPath) {
-        if (this.isReadOnly('partner', basePermissionPath)) {
-            return 'disabled-as-readonly';
-        } else {
-            return inProcess ? 'readonly' : '';
-        }
-    }
+  resetValidationErrors() {
+      this.set('errors', {});
+  }
 
-    _showActivePd(partnerType, types) {
-        return typeof partnerType === 'string' && types.every(type => !~partnerType.indexOf(type));
-    }
+  _setReadonlyClass(inProcess, basePermissionPath) {
+      if (this.isReadOnly('partner', basePermissionPath)) {
+          return 'disabled-as-readonly';
+      } else {
+          return inProcess ? 'readonly' : '';
+      }
+  }
 
-    _setActivePd() {
-        let partnerType = this.get('engagement.partner.partner_type');
+  _showActivePd(partnerType, types) {
+      return typeof partnerType === 'string' && types.every(type => !~partnerType.indexOf(type));
+  }
 
-        //check <etools-searchable-multiselection-menu> debouncer state
-        // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
-        if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
-            microTask.run(this._setActivePd);
-            return false;
-        }
+  _setActivePd() {
+      let partnerType = this.get('engagement.partner.partner_type');
 
-        let originalPartnerId = this.get('originalData.partner.id');
-        let partnerId = this.get('partner.id');
+      //check <etools-searchable-multiselection-menu> debouncer state
+      // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
+      if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
+          microTask.run(this._setActivePd);
+          return false;
+      }
 
-        if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
-            this.set('activePd', []);
-            this.validateActivePd();
-            return false;
-        }
+      let originalPartnerId = this.get('originalData.partner.id');
+      let partnerId = this.get('partner.id');
 
-        let activePd = this.get('engagement.active_pd') || [];
-        this.set('activePd', activePd);
-        this.validateActivePd();
-        return true;
-    }
+      if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
+          this.set('activePd', []);
+          this.validateActivePd();
+          return false;
+      }
 
-    _requestPartner(event, id) {
-        if (this.requestInProcess) { return; }
+      let activePd = this.get('engagement.active_pd') || [];
+      this.set('activePd', activePd);
+      this.validateActivePd();
+      return true;
+  }
 
-        this.set('partner', {});
-        this.set('activePd', null);
-        this.set('authorizedOfficer', null);
+  _requestPartner(event, id) {
+      if (this.requestInProcess) { return; }
 
-        let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || +id;
-        if (!partnerId) { return; }
-        if (this.isReadOnly('partner', this.basePermissionPath)) {
-            this.partner = this.engagement.partner;
-            this.set('partner.interventions', this.engagement.active_pd);
-            return;
-        }
+      this.set('partner', {});
+      this.set('activePd', null);
+      this.set('authorizedOfficer', null);
 
-        this.requestInProcess = true;
-        this.partnerId = partnerId;
-        return true;
-    }
+      let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || +id;
+      if (!partnerId) { return; }
+      if (this.isReadOnly('partner', this.basePermissionPath)) {
+          this.partner = this.engagement.partner;
+          this.set('partner.interventions', this.engagement.active_pd);
+          return;
+      }
 
-    _engagementChanged(engagement) {
-        if (!engagement || !engagement.partner) {
-            this.set('partner', {});
-            this.set('activePd', null);
-        } else {
-            this._requestPartner(null, engagement.partner.id);
-        }
-    }
+      this.requestInProcess = true;
+      this.partnerId = partnerId;
+      return true;
+  }
 
-    getPartnerData() {
-        if (!this.validate()) { return null; }
+  _engagementChanged(engagement) {
+      if (!engagement || !engagement.partner) {
+          this.set('partner', {});
+          this.set('activePd', null);
+      } else {
+          this._requestPartner(null, engagement.partner.id);
+      }
+  }
 
-        let data = {} as any;
-        let originalPartnerId = this.get('originalData.partner.id');
-        let partnerId = this.get('engagement.partner.id');
-        let partnerType = this.get('engagement.partner.partner_type');
-        let originalActivePd = this.get('originalData.active_pd') || [];
-        let activePd = this.activePd || [];
+  getPartnerData() {
+      if (!this.validate()) { return null; }
 
-        originalActivePd = originalActivePd.map(pd => +pd.id);
-        activePd = activePd.map(pd => +pd.id);
+      let data = {} as any;
+      let originalPartnerId = this.get('originalData.partner.id');
+      let partnerId = this.get('engagement.partner.id');
+      let partnerType = this.get('engagement.partner.partner_type');
+      let originalActivePd = this.get('originalData.active_pd') || [];
+      let activePd = this.activePd || [];
 
-        if (originalPartnerId !== partnerId) {
-            data.partner = partnerId;
-        }
+      originalActivePd = originalActivePd.map(pd => +pd.id);
+      activePd = activePd.map(pd => +pd.id);
 
-        if (!isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
-            data.active_pd = activePd;
-        }
+      if (originalPartnerId !== partnerId) {
+          data.partner = partnerId;
+      }
 
-        if (isEqual(data, {})) {
-            return null;
-        }
+      if (!isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
+          data.active_pd = activePd;
+      }
 
-        return data;
-    }
+      if (isEqual(data, {})) {
+          return null;
+      }
 
-    getAuthorizedOfficer() {
-        if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) { return null; }
-        let engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
-        return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
-    }
+      return data;
+  }
 
-    isPdReadonly(basePermissionPath, requestInProcess, partner) {
-        return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
-    }
+  getAuthorizedOfficer() {
+      if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) { return null; }
+      let engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
+      return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
+  }
 
-    activePdPlaceholder(basePermissionPath, partner) {
-        if (!partner || !partner.id) { return '-'; }
-        return this.isReadonly(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
-        // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
-    }
+  isPdReadonly(basePermissionPath, requestInProcess, partner) {
+      return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
+  }
 
-    _setPlaceholderColor(partner) {
-        return (!partner || !partner.id) ? 'no-data-fetched' : '';
-    }
+  activePdPlaceholder(basePermissionPath, partner) {
+      if (!partner || !partner.id) { return '-'; }
+      return this.isReadonly(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
+      // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
+  }
 
-    isOfficersReadonly(basePermissionPath, requestInProcess, partner) {
-        return this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
-            !partner || !partner.partnerOfficers || !partner.partnerOfficers.length ||
-            partner.partnerOfficers.length < 2;
-    }
+  _setPlaceholderColor(partner) {
+      return (!partner || !partner.id) ? 'no-data-fetched' : '';
+  }
 
-    _setPartnerAddress(partner) {
-        if (!partner) { return ''; }
+  isOfficersReadonly(basePermissionPath, requestInProcess, partner) {
+      return this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
+          !partner || !partner.partnerOfficers || !partner.partnerOfficers.length ||
+          partner.partnerOfficers.length < 2;
+  }
 
-        return [partner.address, partner.postal_code, partner.city, partner.country]
-            .filter((info) => !!info)
-            .join(', ');
-    }
+  _setPartnerAddress(partner) {
+      if (!partner) { return ''; }
+
+      return [partner.address, partner.postal_code, partner.city, partner.country]
+          .filter((info) => !!info)
+          .join(', ');
+  }
 
 }
 window.customElements.define('partner-details-tab', PartnerDetailsTab);

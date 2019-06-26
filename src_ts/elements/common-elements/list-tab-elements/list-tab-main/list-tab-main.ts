@@ -18,191 +18,190 @@ import { GenericObject } from '../../../../types/global';
  */
 class ListTabMain extends QueryParamsController(PolymerElement){
 
-    static get template() {
-    return html`
-    ${sharedStyles} ${moduleStyles}
-    <style>
-        :host {
-                display: block;
-                margin-top: 25px;
-                --paper-card: {
-                        background-color: white;
-                        margin: 0 24px;
-                        width: calc(100% - 48px);
-                    };
-                }
-        :host .data-table .data-card-heading {
-            display: block;
-            font-size: 20px;
-            margin-left: 20px;
-            font-weight: 500;
-            line-height: 64px;
-        }
-        :host .data-table .data-card-heading.table-title {
-            margin-left: 0;
-            text-align: center;
-            background-color: var(--module-primary);
-            line-height: 48px;
-            color: #fff;
-            margin-bottom: 17px;
-        }
-        .data-table {
-            margin-bottom: 24px;
-            padding-bottom: 5px;
-        }
-    </style>
+  static get template() {
+  return html`
+  ${sharedStyles} ${moduleStyles}
+  <style>
+      :host {
+          display: block;
+          margin-top: 25px;
+          --paper-card-background-color: white;
+          --paper-card-margin: 0 24px;
+          --paper-card-width: calc(100% - 48px);
+      }
+      :host .data-table .data-card-heading {
+          display: block;
+          font-size: 20px;
+          margin-left: 20px;
+          font-weight: 500;
+          line-height: 64px;
+      }
+      :host .data-table .data-card-heading.table-title {
+          margin-left: 0;
+          text-align: center;
+          background-color: var(--module-primary);
+          line-height: 48px;
+          color: #fff;
+          margin-bottom: 17px;
+      }
+      .data-table {
+          margin-bottom: 24px;
+          padding-bottom: 5px;
+      }
 
-    <paper-card class="data-table">
-        <template is="dom-if" if="[[!withoutPagination]]" restamp>
-            <span class="textprim data-card-heading">{{showingResults}} {{headerTitle}}</span>
-        </template>
+  </style>
 
-        <template is="dom-if" if="[[withoutPagination]]" restamp>
-            <span class="textprim data-card-heading table-title">{{headerTitle}}</span>
-        </template>
+  <paper-card class="data-table">
+      <template is="dom-if" if="[[!withoutPagination]]" restamp>
+          <span class="textprim data-card-heading">{{showingResults}} {{headerTitle}}</span>
+      </template>
 
-        <list-header
-                id="list-header"
-                data="[[headings]]"
-                no-additional$="[[noAdditional]]"
-                order-by="{{orderBy}}"
-                base-permission-path="[[basePermissionPath]]">
-        </list-header>
+      <template is="dom-if" if="[[withoutPagination]]" restamp>
+          <span class="textprim data-card-heading table-title">{{headerTitle}}</span>
+      </template>
 
-        <template
-                id="list-elements"
-                is="dom-repeat"
-                items="[[data]]"
-                initial-count="10"
-                on-dom-change="_listDataChanged">
-            <list-element
-                    class="list-element"
-                    data="[[item]]"
-                    headings="[[headings]]"
-                    details="[[details]]"
-                    no-additional$="[[noAdditional]]"
-                    has-collapse="[[hasCollapse]]"
-                    no-animation="[[noAnimation]]"
-                    base-permission-path="[[basePermissionPath]]">
-            </list-element>
-        </template>
+      <list-header
+              id="list-header"
+              data="[[headings]]"
+              no-additional$="[[noAdditional]]"
+              order-by="{{orderBy}}"
+              base-permission-path="[[basePermissionPath]]">
+      </list-header>
 
-        <template is="dom-if" if="[[!data.length]]">
-            <list-element
-                    class="list-element"
-                    no-additional
-                    data="[[emptyObj]]"
-                    headings="[[headings]]">
-            </list-element>
-        </template>
+      <template
+              id="list-elements"
+              is="dom-repeat"
+              items="[[data]]"
+              initial-count="10"
+              on-dom-change="_listDataChanged">
+          <list-element
+                  class="list-element"
+                  data="[[item]]"
+                  headings="[[headings]]"
+                  details="[[details]]"
+                  no-additional$="[[noAdditional]]"
+                  has-collapse="[[hasCollapse]]"
+                  no-animation="[[noAnimation]]"
+                  base-permission-path="[[basePermissionPath]]">
+          </list-element>
+      </template>
 
-        <template is="dom-if" if="[[!withoutPagination]]" restamp>
-            <list-pagination
-                    id="list-pagination"
-                    page-size="{{queryParams.page_size}}"
-                    page-number="{{queryParams.page}}"
-                    datalength="[[listLength]]"
-                    page-marker="[[pageMarker]]"
-                    showing-results="{{showingResults}}">
-            </list-pagination>
-        </template>
-    </paper-card>
-    `;
-    }
-    static get observers() {
-        return [
-            '_orderChanged(orderBy, headings)'
-        ];
-    }
+      <template is="dom-if" if="[[!data.length]]">
+          <list-element
+                  class="list-element"
+                  no-additional
+                  data="[[emptyObj]]"
+                  headings="[[headings]]">
+          </list-element>
+      </template>
 
-    @property({type: String})
-    basePermissionPath: string = '';
+      <template is="dom-if" if="[[!withoutPagination]]" restamp>
+          <list-pagination
+                  id="list-pagination"
+                  page-size="{{queryParams.page_size}}"
+                  page-number="{{queryParams.page}}"
+                  datalength="[[listLength]]"
+                  page-marker="[[pageMarker]]"
+                  showing-results="{{showingResults}}">
+          </list-pagination>
+      </template>
+  </paper-card>
+  `;
+  }
+  static get observers() {
+      return [
+          '_orderChanged(orderBy, headings)'
+      ];
+  }
 
-    @property({type: Object, notify: true, observer: '_paramsChanged'})
-    queryParams!: GenericObject;
+  @property({type: String})
+  basePermissionPath: string = '';
 
-    @property({type: String,  computed: '_computeResultsToShow(listLength, queryParams.page_size)'})
-    showingResults!: string;
+  @property({type: Object, notify: true, observer: '_paramsChanged'})
+  queryParams!: GenericObject;
 
-    @property({type: String})
-    orderBy: string = '';
+  @property({type: String,  computed: '_computeResultsToShow(listLength, queryParams.page_size)'})
+  showingResults!: string;
 
-    @property({type: Number})
-    listLength!: number;
+  @property({type: String})
+  orderBy: string = '';
 
-    @property({type: Array, notify: true})
-    data!: any[];
+  @property({type: Number})
+  listLength!: number;
 
-    @property({type: Object})
-    emptyObj: GenericObject = {empty: true};
+  @property({type: Array, notify: true})
+  data!: any[];
 
-    @property({type: Boolean})
-    withoutPagination: boolean = false;
+  @property({type: Object})
+  emptyObj: GenericObject = {empty: true};
 
-    @property({type: Boolean})
-    hasCollapse: boolean = false;
+  @property({type: Boolean})
+  withoutPagination: boolean = false;
 
-    @property({type: Array})
-    headings: any[] = [];
+  @property({type: Boolean})
+  hasCollapse: boolean = false;
 
-    @property({type: Array})
-    details: any[] = [];
+  @property({type: Array})
+  headings: any[] = [];
 
-    @property({type: Boolean})
-    noAdditional: boolean = false;
+  @property({type: Array})
+  details: any[] = [];
 
-    _orderChanged(newOrder) {
-        if (!newOrder || !(this.headings instanceof Array)) { return false; }
+  @property({type: Boolean})
+  noAdditional: boolean = false;
 
-        let direction = 'asc';
-        let name = newOrder;
+  _orderChanged(newOrder) {
+      if (!newOrder || !(this.headings instanceof Array)) { return false; }
 
-        if (name.startsWith('-')) {
-            direction = 'desc';
-            name = name.slice(1);
-        }
+      let direction = 'asc';
+      let name = newOrder;
 
-        this.headings.forEach((heading, index) => {
-            if (heading.name === name) {
-                this.set(`headings.${index}.ordered`, direction);
-            } else {
-                this.set(`headings.${index}.ordered`, false);
-            }
-        });
+      if (name.startsWith('-')) {
+          direction = 'desc';
+          name = name.slice(1);
+      }
 
-        if (this.queryParams && this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
-    }
+      this.headings.forEach((heading, index) => {
+          if (heading.name === name) {
+              this.set(`headings.${index}.ordered`, direction);
+          } else {
+              this.set(`headings.${index}.ordered`, false);
+          }
+      });
 
-    _paramsChanged(newParams) {
-        if (this.orderBy !== newParams.ordering) { this.orderBy = newParams.ordering; }
-    }
+      if (this.queryParams && this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
+  }
 
-    _computeResultsToShow(lengthAmount, size) {
-        let page = (this.queryParams.page || 1) - 1;
-        size = +size || 10;
+  _paramsChanged(newParams) {
+      if (this.orderBy !== newParams.ordering) { this.orderBy = newParams.ordering; }
+  }
 
-        let last = size * page + size;
-        if (last > lengthAmount) { last = lengthAmount; }
-        let first = last ? (size * page + 1) : 0;
+  _computeResultsToShow(lengthAmount, size) {
+      let page = (this.queryParams.page || 1) - 1;
+      size = +size || 10;
 
-        return `${first} - ${last} of ${lengthAmount}`;
-    }
+      let last = size * page + size;
+      if (last > lengthAmount) { last = lengthAmount; }
+      let first = last ? (size * page + 1) : 0;
 
-    _listDataChanged() {
-        let rows = this.shadowRoot!.querySelectorAll('.list-element');
+      return `${first} - ${last} of ${lengthAmount}`;
+  }
 
-        if (rows && rows.length) {
-            this.noAnimation = true;
+  _listDataChanged() {
+      let rows = this.shadowRoot!.querySelectorAll('.list-element');
 
-            for (let i = 0; i < rows.length; i++) {
-                if ((rows[i] as any).detailsOpened) {
-                    (rows[i] as any)._toggleRowDetails();
-                }
-            }
+      if (rows && rows.length) {
+          this.noAnimation = true;
 
-            this.noAnimation = false;
-        }
-    }
+          for (let i = 0; i < rows.length; i++) {
+              if ((rows[i] as any).detailsOpened) {
+                  (rows[i] as any)._toggleRowDetails();
+              }
+          }
+
+          this.noAnimation = false;
+      }
+  }
 
 }
 
