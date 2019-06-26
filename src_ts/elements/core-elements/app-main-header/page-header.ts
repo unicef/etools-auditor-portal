@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
@@ -9,7 +9,8 @@ import './countries-dropdown/countries-dropdown';
 
 
 import {isProductionServer, checkEnvironment} from '../../app-config/config.js';
-import { property } from '@polymer/decorators';
+import {property} from '@polymer/decorators';
+import {GenericObject} from '../../../types/global';
 
 /**
  * page header element
@@ -99,6 +100,9 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
 
+  @property({type: Object})
+  user!: GenericObject;
+
   @property({type: String})
   environment: string | null = checkEnvironment();
 
@@ -107,13 +111,8 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
     this._setBgColor();
   }
 
-  // @ts-ignore
-  public stateChanged(state: RootState) {
-    // TODO
-  }
-
   public menuBtnClicked() {
-   // store.dispatch(updateDrawerState(true));
+    // store.dispatch(updateDrawerState(true));
     // fireEvent(this, 'drawer');
   }
 

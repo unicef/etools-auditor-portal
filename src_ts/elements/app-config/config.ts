@@ -1,18 +1,27 @@
 import Dexie from 'dexie';
 
-//------------Dexie--------
+declare global {
+  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any;}
+}
+
+window.EtoolsFamApp = window.EtoolsFamApp || {};
+
+//------------Dexie------------
 var etoolsCustomDexieDb = new Dexie('AP');
 
 etoolsCustomDexieDb.version(1).stores({
-    collectionsList: '&name, expire',
-    partners: 'id',
-    sections: 'id',
-    offices: 'id'
+  collectionsList: '&name, expire',
+  partners: '&id',
+  sections: '&id',
+  offices: '&id'
 });
 
-//------------------------
+// configure app dexie db to be used for caching
+window.EtoolsRequestCacheDb = etoolsCustomDexieDb;
+window.EtoolsFamApp.DexieDb = etoolsCustomDexieDb;
 
 
+//-----------Environment------
 const PROD_DOMAIN = 'etools.unicef.org';
 const STAGING_DOMAIN = 'etools-staging.unicef.org';
 const DEV_DOMAIN = 'etools-dev.unicef.org';
@@ -59,4 +68,4 @@ export const resetOldUserData = () => {
   localStorage.removeItem('userId');
   (etoolsCustomDexieDb as any).collectionsList.clear();
   (etoolsCustomDexieDb as any).partners.clear();
-};
+}
