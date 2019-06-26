@@ -3,6 +3,7 @@ import {PolymerElement, html} from '@polymer/polymer';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/paper-button/paper-button.js';
@@ -25,6 +26,8 @@ import omit from 'lodash-es/omit';
 import each from 'lodash-es/each';
 import {property} from '@polymer/decorators';
 
+import '../../../data-elements/get-action-points';
+import '../../../data-elements/update-action-points';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
@@ -382,12 +385,9 @@ class FollowUpActions extends
                                     This action point is high priority
                             </paper-checkbox>
                         </div>
-
                     </div>
-
                 </div>
             </div>
-
 
             <div slot="additional" hidden$="[[!actionAllowed(editedApBase, 'complete')]]">
                 <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
