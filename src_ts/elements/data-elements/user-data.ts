@@ -2,50 +2,51 @@ import {PolymerElement} from "@polymer/polymer";
 import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
-import { fireEvent } from "../utils/fire-custom-event.js";
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {fireEvent} from "../utils/fire-custom-event.js";
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
-import { resetOldUserData } from '../app-config/config.js';
+import {resetOldUserData} from '../app-config/config.js';
+import famEndpoints from '../app-config/endpoints.js';
 
-class UserData extends EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement))) {
+class UserData extends EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement)) {
 
-    public connectedCallback() {
-        super.connectedCallback();
-        this.sendRequest({
-            endpoint: this.getEndpoint('userProfile')
-        }).then(resp => {
-           this._handleResponse(resp);
-        }).catch(err => {
-            console.log(err)
-            this._handleError(err);
-        });
-     }
+  public connectedCallback() {
+    super.connectedCallback();
 
-    _handleResponse(user) {
-        let previousUserId = JSON.parse(localStorage.getItem('userId') || '');
-        let countriesAvailable = get(user, 'countries_available') || [];
+    this.sendRequest({
+      endpoint: famEndpoints.userProfile
+    }).then(resp => {
+      this._handleResponse(resp);
+    }).catch(err => {
+      console.log(err)
+      this._handleError(err);
+    });
+  }
 
-        countriesAvailable = sortBy(countriesAvailable, ['name']);
-        set(user, 'countries_available', countriesAvailable);
+  _handleResponse(user) {
+    let previousUserId = JSON.parse(localStorage.getItem('userId') || '');
+    let countriesAvailable = get(user, 'countries_available') || [];
 
-        if (!previousUserId || previousUserId !== user.user) {
-            resetOldUserData();
-        }
+    countriesAvailable = sortBy(countriesAvailable, ['name']);
+    set(user, 'countries_available', countriesAvailable);
 
-        localStorage.setItem('userId', user.user);
-
-        this._setUserData(user);
-        fireEvent(this, 'user-profile-loaded');
+    if (!previousUserId || previousUserId !== user.user) {
+      resetOldUserData();
     }
 
-    _handleError(err) {
-        if (err.status === 403) {
-            window.location.href = window.location.origin + '/';
-        } else {
-            console.error('Can\'t load user data');
-        }
+    localStorage.setItem('userId', user.user);
+
+    this._setUserData(user);
+    fireEvent(this, 'user-profile-loaded');
+  }
+
+  _handleError(err) {
+    if (err.status === 403) {
+      window.location.href = window.location.origin + '/';
+    } else {
+      console.error('Can\'t load user data');
     }
+  }
 
 }
 window.customElements.define("user-data", UserData);
