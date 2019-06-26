@@ -9,5 +9,6 @@ dist/
 *.sublime-workspace
 src/**/*.js
 src_ts/**/*.js
-.vscode/*.*
+.vscode/
+
 

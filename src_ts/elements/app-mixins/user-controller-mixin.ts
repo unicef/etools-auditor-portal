@@ -23,7 +23,7 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
       if (!user || !isObject(user) || isArray(user)) {
         throw new Error('User must be an object');
       }
-      if (!user.user || !user.groups) {
+      if (!user || !(user as any).user || !(user as any).groups) {
         throw new Error('User must have id and groups fields!');
       }
 

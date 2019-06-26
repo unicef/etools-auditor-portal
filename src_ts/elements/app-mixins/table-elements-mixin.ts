@@ -1,4 +1,4 @@
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -21,13 +21,13 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     dataItems: any[] = [];
 
     @property({type: Object})
-    emptyObj: object = {empty: true};
+    emptyObj: GenericObject = {empty: true};
 
     @property({type: Object})
-    editedItem: object = {};
+    editedItem: GenericObject = {};
 
     @property({type: Object})
-    itemModel: object = {};
+    itemModel: GenericObject = {};
 
     /**
      * Determines whether Save is performed on dialog confirm (when false),
@@ -102,7 +102,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return [cloneDeep(this.editedItem)];
     }
 
-    _canBeChanged(basePath) {
+    _canBeChanged(basePath?) {
       let path = basePath || this.basePermissionPath;
       if (!path) {
         return true;
