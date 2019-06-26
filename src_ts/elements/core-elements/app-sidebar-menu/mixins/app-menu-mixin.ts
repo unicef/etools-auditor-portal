@@ -1,6 +1,6 @@
-import { property } from '@polymer/decorators';
-import { Constructor } from '../../../../types/global';
-import { PolymerElement } from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {Constructor} from '../../../../types/global';
+import {PolymerElement} from '@polymer/polymer';
 
 /**
  * App menu functionality mixin
@@ -94,7 +94,7 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
       }
     }
 
-    private _toggleDrawer(): void {
+    _toggleDrawer(): void {
       // @ts-ignore
       this.$.drawer.toggle();
     }
