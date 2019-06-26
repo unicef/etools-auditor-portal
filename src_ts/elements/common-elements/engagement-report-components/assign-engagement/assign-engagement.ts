@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer';
 
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
@@ -6,7 +6,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import isEmpty from 'lodash-es/isEmpty';
 import each from 'lodash-es/each';
 import pickBy from 'lodash-es/pickBy';
-import {property} from '@polymer/decorators';
+import { property } from '@polymer/decorators';
 import '@polymer/polymer/lib/elements/dom-if';
 declare const moment: any;
 import { GenericObject } from '../../../../types/global';
@@ -14,9 +14,9 @@ import { fireEvent } from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
+import { tabLayoutStyles } from '../../../styles-elements/tab-layout-styles';
+import { moduleStyles } from '../../../styles-elements/module-styles';
 
 /**
  * @polymer
@@ -24,7 +24,7 @@ import {moduleStyles} from '../../../styles-elements/module-styles';
  * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
  */
-class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(PolymerElement)){
+class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -167,109 +167,109 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
   `;
   }
   static get observers() {
-      return [
-          '_updateStyles(data.date_of_field_visit)',
-          '_updateStyles(data.date_of_draft_report_to_ip)',
-          '_updateStyles(data.date_of_comments_by_ip)',
-          '_updateStyles(data.date_of_draft_report_to_unicef)',
-          '_updateStyles(data.date_of_comments_by_unicef)',
-          '_updateStyles(basePermissionPath)',
-          '_errorHandler(errorObject)'
-      ];
+    return [
+      '_updateStyles(data.date_of_field_visit)',
+      '_updateStyles(data.date_of_draft_report_to_ip)',
+      '_updateStyles(data.date_of_comments_by_ip)',
+      '_updateStyles(data.date_of_draft_report_to_unicef)',
+      '_updateStyles(data.date_of_comments_by_unicef)',
+      '_updateStyles(basePermissionPath)',
+      '_errorHandler(errorObject)'
+    ];
   }
 
-  @property({type: Object})
+  @property({ type: Object })
   data!: GenericObject;
 
-  @property({type: Object})
+  @property({ type: Object })
   originalData!: GenericObject;
 
-  @property({type: String,  observer: '_updateStyles'})
+  @property({ type: String, observer: '_updateStyles' })
   basePermissionPath!: string;
 
-  @property({type: Date})
+  @property({ type: Date })
   maxDate = () => {
-      let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
-      return new Date(nextDay.getDate() - 1);
+    let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+    return new Date(nextDay.getDate() - 1);
   };
 
-  @property({type: Boolean, readOnly: true})
+  @property({ type: Boolean, readOnly: true })
   falseValue: boolean = false;
 
-  @property({type: Object})
+  @property({ type: Object })
   tabTexts: GenericObject = {
-      name: 'Engagement Status',
-      fields: [
-          'date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip', 'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef'
-      ]
+    name: 'Engagement Status',
+    fields: [
+      'date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip', 'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef'
+    ]
   };
 
   connectedCallback() {
-      super.connectedCallback();
-      this.$['date-validator'].validate = this._validDate.bind(this);
+    super.connectedCallback();
+    this.$['date-validator'].validate = this._validDate.bind(this);
   }
 
   _validDate(date) {
-      return !!(date);
+    return !!(date);
   }
 
   _updateStyles() {
-      this.updateStyles();
-      this.checkDateValues();
+    this.updateStyles();
+    this.checkDateValues();
   }
 
   _isReadOnly(field, prevDate, nextDate, basePermissionPath) {
-      return this.isReadOnly(field, basePermissionPath) || !(prevDate && !nextDate);
+    return this.isReadOnly(field, basePermissionPath) || !(prevDate && !nextDate);
   }
 
   validate(forSave) {
-      let elements = this.shadowRoot!.querySelectorAll('.validate-date');
-      let valid = true;
-      each(elements, (element, index) => {
-          let previousElement = index > 1 ? elements[index - 1] : null;
+    let elements = this.shadowRoot!.querySelectorAll('.validate-date');
+    let valid = true;
+    each(elements, (element, index) => {
+      let previousElement = index > 1 ? elements[index - 1] : null;
 
-          if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
-              element.errorMessage = 'Field is required';
-              element.invalid = true;
-              valid = false;
-          }
-      });
+      if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
+        element.errorMessage = 'Field is required';
+        element.invalid = true;
+        valid = false;
+      }
+    });
 
-      if (!valid) {fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`}); }
-      return valid;
+    if (!valid) { fireEvent(this, 'toast', { text: `${this.tabTexts.name}: Please correct errors` }); }
+    return valid;
   }
 
   checkDateValues() {
-      if (!this.data) { return; }
-      if (!this.data.date_of_field_visit) { this.data.date_of_field_visit = null; }
-      if (!this.data.date_of_draft_report_to_ip) { this.data.date_of_draft_report_to_ip = null; }
-      if (!this.data.date_of_comments_by_ip) { this.data.date_of_comments_by_ip = null; }
-      if (!this.data.date_of_draft_report_to_unicef) { this.data.date_of_draft_report_to_unicef = null; }
-      if (!this.data.date_of_comments_by_unicef) { this.data.date_of_comments_by_unicef = null; }
+    if (!this.data) { return; }
+    if (!this.data.date_of_field_visit) { this.data.date_of_field_visit = null; }
+    if (!this.data.date_of_draft_report_to_ip) { this.data.date_of_draft_report_to_ip = null; }
+    if (!this.data.date_of_comments_by_ip) { this.data.date_of_comments_by_ip = null; }
+    if (!this.data.date_of_draft_report_to_unicef) { this.data.date_of_draft_report_to_unicef = null; }
+    if (!this.data.date_of_comments_by_unicef) { this.data.date_of_comments_by_unicef = null; }
   }
 
   getAssignVisitData() {
-      let data = pickBy(this.data, (value, key) => {
-          let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
-                              'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'exchange_rate'];
-          if (!~properties.indexOf(key)) { return false; }
+    let data = pickBy(this.data, (value, key) => {
+      let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
+        'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'exchange_rate'];
+      if (!~properties.indexOf(key)) { return false; }
 
-          return !this.originalData || this.originalData[key] !== value;
-      });
+      return !this.originalData || this.originalData[key] !== value;
+    });
 
-      return isEmpty(data) ? null : data;
+    return isEmpty(data) ? null : data;
   }
 
   minDate(date) {
-      return date ? new Date(moment(date).format()) : false;
+    return date ? new Date(moment(date).format()) : false;
   }
 
   _checkFieldInvalid(error) {
-      return !!error;
+    return !!error;
   }
 
   showExchange(basePath) {
-      return basePath && this.collectionExists(`${basePath}.exchange_rate`, 'GET');
+    return basePath && this.collectionExists(`${basePath}.exchange_rate`, 'GET');
   }
 
 }

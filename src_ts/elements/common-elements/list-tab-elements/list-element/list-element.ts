@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer';
 
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
@@ -8,20 +8,20 @@ import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/polymer/lib/elements/dom-if';
 import { IronCollapseElement } from '@polymer/iron-collapse/iron-collapse.js';
 declare const moment: any;
-import {property} from '@polymer/decorators';
+import { property } from '@polymer/decorators';
 import { GenericObject } from '../../../../types/global';
 
 import LocalizationMixin from '../../../app-mixins/localization-mixin';
 
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import { sharedStyles } from '../../../styles-elements/shared-styles';
+import { moduleStyles } from '../../../styles-elements/module-styles';
+import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
 /**
  * @polymer
  * @customElement
  * @appliesMixin LocalizationMixin
  */
-class ListElement extends LocalizationMixin(PolymerElement){
+class ListElement extends LocalizationMixin(PolymerElement) {
 
   static get template() {
     return html`
@@ -336,224 +336,224 @@ class ListElement extends LocalizationMixin(PolymerElement){
   `;
   }
   static get observers() {
-      return [
-          '_setRightPadding(headings.*)'
-      ];
+    return [
+      '_setRightPadding(headings.*)'
+    ];
   }
 
-  @property({type: String, observer: '_setItemValues'})
+  @property({ type: String, observer: '_setItemValues' })
   basePermissionPath: string = '';
 
-  @property({type: Object})
+  @property({ type: Object })
   itemValues: GenericObject = {};
 
-  @property({type: Array})
+  @property({ type: Array })
   details: any[] = [];
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   hasCollapse: boolean = false;
 
-  @property({type: Boolean, computed: '_computeShowCollapse(details, hasCollapse)'})
+  @property({ type: Boolean, computed: '_computeShowCollapse(details, hasCollapse)' })
   showCollapse: any[] = [];
 
-  @property({type: Object,  notify: true})
+  @property({ type: Object, notify: true })
   data!: GenericObject;
 
-  @property({type: Number})
+  @property({ type: Number })
   itemIndex!: number;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   multiline: boolean = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   noHover: boolean = false;
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({ type: Boolean, reflectToAttribute: true })
   hover!: boolean;
 
   public connectedCallback() {
-      super.connectedCallback();
-      this._initListeners();
+    super.connectedCallback();
+    this._initListeners();
   }
 
   public disconnectedCallback() {
-      super.disconnectedCallback();
-      this._removeListeners();
+    super.disconnectedCallback();
+    this._removeListeners();
   }
 
   private _initListeners(): void {
-      this._setHover = this._setHover.bind(this);
-      this._resetHover = this._resetHover.bind(this);
+    this._setHover = this._setHover.bind(this);
+    this._resetHover = this._resetHover.bind(this);
 
-      this.addEventListener('mouseover', this._setHover);
-      this.addEventListener('mouseleave', this._resetHover);
+    this.addEventListener('mouseover', this._setHover);
+    this.addEventListener('mouseleave', this._resetHover);
   }
 
   private _removeListeners(): void {
-      this.removeEventListener('mouseover', this._setHover);
-      this.removeEventListener('mouseleave', this._resetHover);
+    this.removeEventListener('mouseover', this._setHover);
+    this.removeEventListener('mouseleave', this._resetHover);
   }
 
   _setHover() {
-      this.hover = true;
+    this.hover = true;
   }
 
   _resetHover() {
-      this.hover = false;
+    this.hover = false;
   }
 
   _setRightPadding() {
-      if (!(this as any).headings) { return; }
-      let rightPadding = 0;
-      let padding;
+    if (!(this as any).headings) { return; }
+    let rightPadding = 0;
+    let padding;
 
-      (this as any).headings.forEach((heading) => {
-          if (typeof heading.size === 'string') {
-              padding = parseInt(heading.size, 10) || 0;
-              rightPadding += padding;
-          }
-      });
+    (this as any).headings.forEach((heading) => {
+      if (typeof heading.size === 'string') {
+        padding = parseInt(heading.size, 10) || 0;
+        rightPadding += padding;
+      }
+    });
 
-      (this as any).paddingRight = `${rightPadding}px`;
+    (this as any).paddingRight = `${rightPadding}px`;
   }
 
   _computeShowCollapse(details, hasCollapse) {
-      return details.length > 0 && hasCollapse;
+    return details.length > 0 && hasCollapse;
   }
 
   _toggleRowDetails() {
-      (this.shadowRoot!.querySelector('#details') as IronCollapseElement).toggle();
+    (this.shadowRoot!.querySelector('#details') as IronCollapseElement).toggle();
   }
 
   _isOneOfType(item) {
-      if (!item) { return false; }
+    if (!item) { return false; }
 
-      let types = Array.prototype.slice.call(arguments, 1) || [];
+    let types = Array.prototype.slice.call(arguments, 1) || [];
 
-      return !!types.find(type => {
-          return !!item[type];
-      });
+    return !!types.find(type => {
+      return !!item[type];
+    });
   }
 
   _getValue(item, data, bool) {
-      let value;
+    let value;
 
-      if (!item.path) {
-          value = this.get('data.' + item.name);
-      } else {
-          value = this.get('data.' + item.path);
-      }
+    if (!item.path) {
+      value = this.get('data.' + item.name);
+    } else {
+      value = this.get('data.' + item.path);
+    }
 
-      if (item.name === 'engagement_type' || item.name === 'status') {
-          value = this._refactorValue(item.name, value);
-      } else if (item.name === 'date') {
-          value = this._refactorTime(value);
-      } else if (item.name === 'currency') {
-          value = this._refactorCurrency(value);
-      } else if (item.name === 'percents') {
-          value = this._refactorPercents(value);
-      } else if (item.name === 'finding' || item.name === 'autoNumber') {
-          value = this._refactorFindingNumber();
-      }
-      // if (typeof value === 'string') { value = value.trim(); }
-      if (bool) {
-          value = !!value;
-      } else if (!value && value !== 0) {
-          return false;
-      }
+    if (item.name === 'engagement_type' || item.name === 'status') {
+      value = this._refactorValue(item.name, value);
+    } else if (item.name === 'date') {
+      value = this._refactorTime(value);
+    } else if (item.name === 'currency') {
+      value = this._refactorCurrency(value);
+    } else if (item.name === 'percents') {
+      value = this._refactorPercents(value);
+    } else if (item.name === 'finding' || item.name === 'autoNumber') {
+      value = this._refactorFindingNumber();
+    }
+    // if (typeof value === 'string') { value = value.trim(); }
+    if (bool) {
+      value = !!value;
+    } else if (!value && value !== 0) {
+      return false;
+    }
 
-      return value;
+    return value;
   }
 
   _refactorValue(type, value) {
-      let values = this.itemValues[type];
-      if (values) { return values[value]; }
+    let values = this.itemValues[type];
+    if (values) { return values[value]; }
   }
 
   _refactorTime(value, format = 'DD MMM YYYY') {
-      if (!value) { return; }
+    if (!value) { return; }
 
-      let date = new Date(value);
-      if (date.toString() !== 'Invalid Date') {
-          return moment.utc(date).format(format);
-      }
+    let date = new Date(value);
+    if (date.toString() !== 'Invalid Date') {
+      return moment.utc(date).format(format);
+    }
   }
 
   _refactorCurrency(value) {
-      if ((!value || isNaN(+value)) && value !== 0) { return; }
-      return (+value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+    if ((!value || isNaN(+value)) && value !== 0) { return; }
+    return (+value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
   }
 
   _refactorPercents(value) {
-      let regexp = /[\d]+.[\d]{2}/;
-      return regexp.test(value) ? `${value}%` : null;
+    let regexp = /[\d]+.[\d]{2}/;
+    return regexp.test(value) ? `${value}%` : null;
   }
 
   _refactorFindingNumber() {
-      let value = this.itemIndex;
-      if (!value && value !== 0) { return; }
-      return `000${value + 1}`;
+    let value = this.itemIndex;
+    if (!value && value !== 0) { return; }
+    return `000${value + 1}`;
   }
 
   _getAdditionalValue(item) {
-      if (!item.additional) { return; }
+    if (!item.additional) { return; }
 
-      let additional = item.additional;
-      let value = this._getValue(additional);
-      let type = additional.type;
+    let additional = item.additional;
+    let value = this._getValue(additional);
+    let type = additional.type;
 
-      if (type === 'date') {
-          value = this._refactorTime(value);
-      }
+    if (type === 'date') {
+      value = this._refactorTime(value);
+    }
 
-      return value || '–';
+    return value || '–';
   }
 
   _getStatus(synced) {
-      if (synced) { return 'Synced from VISION'; }
+    if (synced) { return 'Synced from VISION'; }
   }
 
   _getLink(pattern) {
-      if (typeof pattern !== 'string') { return '#'; }
+    if (typeof pattern !== 'string') { return '#'; }
 
-      let link = pattern
-          .replace('*ap_link*', this.data.url)
-          .replace('*data_id*', this.data.id)
-          .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
+    let link = pattern
+      .replace('*ap_link*', this.data.url)
+      .replace('*data_id*', this.data.id)
+      .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
 
-      return link.indexOf('undefined') === -1 ? link : '#';
+    return link.indexOf('undefined') === -1 ? link : '#';
   }
 
   _emtyObj(data) {
-      return data && !data.empty;
+    return data && !data.empty;
   }
 
   _hasProperty(data, property, doNotHide) {
-      return data && (doNotHide || property && this.get('data.' + property));
+    return data && (doNotHide || property && this.get('data.' + property));
   }
 
   _setItemValues(base) {
-      if (!base) { return; }
-      if (!this.get('itemValues')) { this.set('itemValues', {}); }
-      this.setField(this.getChoices(`${base}.engagement_type`), 'engagement_type');
-      this.setField(this.getChoices(`${base}.status`), 'status');
-      this.set('itemValues.link_type', {
-          ma: 'micro-assessments',
-          audit: 'audits',
-          sc: 'spot-checks',
-          sa: 'special-audits'
-      });
+    if (!base) { return; }
+    if (!this.get('itemValues')) { this.set('itemValues', {}); }
+    this.setField(this.getChoices(`${base}.engagement_type`), 'engagement_type');
+    this.setField(this.getChoices(`${base}.status`), 'status');
+    this.set('itemValues.link_type', {
+      ma: 'micro-assessments',
+      audit: 'audits',
+      sc: 'spot-checks',
+      sa: 'special-audits'
+    });
   }
 
   setField(choices, field) {
-      if (!choices || !field) { return; }
+    if (!choices || !field) { return; }
 
-      let data = {};
-      _.each(choices, (choice) => {
-          data[choice.value] = choice.display_name;
-      });
+    let data = {};
+    _.each(choices, (choice) => {
+      data[choice.value] = choice.display_name;
+    });
 
-      this.set(`itemValues.${field}`, data);
+    this.set(`itemValues.${field}`, data);
   }
 
 }

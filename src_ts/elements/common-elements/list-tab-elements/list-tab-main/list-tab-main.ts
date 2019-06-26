@@ -1,12 +1,12 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import { PolymerElement, html } from '@polymer/polymer';
+import { property } from '@polymer/decorators';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-card/paper-card.js';
 import '@polymer/polymer/lib/elements/dom-if';
 
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import { sharedStyles } from '../../../styles-elements/shared-styles';
+import { moduleStyles } from '../../../styles-elements/module-styles';
 
 import QueryParamsController from '../../../app-mixins//query-params-controller';
 import { GenericObject } from '../../../../types/global';
@@ -16,10 +16,10 @@ import { GenericObject } from '../../../../types/global';
  * @customElement
  * @appliesMixin QueryParamsController
  */
-class ListTabMain extends QueryParamsController(PolymerElement){
+class ListTabMain extends QueryParamsController(PolymerElement) {
 
   static get template() {
-  return html`
+    return html`
   ${sharedStyles} ${moduleStyles}
   <style>
       :host {
@@ -109,98 +109,98 @@ class ListTabMain extends QueryParamsController(PolymerElement){
   `;
   }
   static get observers() {
-      return [
-          '_orderChanged(orderBy, headings)'
-      ];
+    return [
+      '_orderChanged(orderBy, headings)'
+    ];
   }
 
-  @property({type: String})
+  @property({ type: String })
   basePermissionPath: string = '';
 
-  @property({type: Object, notify: true, observer: '_paramsChanged'})
+  @property({ type: Object, notify: true, observer: '_paramsChanged' })
   queryParams!: GenericObject;
 
-  @property({type: String,  computed: '_computeResultsToShow(listLength, queryParams.page_size)'})
+  @property({ type: String, computed: '_computeResultsToShow(listLength, queryParams.page_size)' })
   showingResults!: string;
 
-  @property({type: String})
+  @property({ type: String })
   orderBy: string = '';
 
-  @property({type: Number})
+  @property({ type: Number })
   listLength!: number;
 
-  @property({type: Array, notify: true})
+  @property({ type: Array, notify: true })
   data!: any[];
 
-  @property({type: Object})
-  emptyObj: GenericObject = {empty: true};
+  @property({ type: Object })
+  emptyObj: GenericObject = { empty: true };
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   withoutPagination: boolean = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   hasCollapse: boolean = false;
 
-  @property({type: Array})
+  @property({ type: Array })
   headings: any[] = [];
 
-  @property({type: Array})
+  @property({ type: Array })
   details: any[] = [];
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   noAdditional: boolean = false;
 
   _orderChanged(newOrder) {
-      if (!newOrder || !(this.headings instanceof Array)) { return false; }
+    if (!newOrder || !(this.headings instanceof Array)) { return false; }
 
-      let direction = 'asc';
-      let name = newOrder;
+    let direction = 'asc';
+    let name = newOrder;
 
-      if (name.startsWith('-')) {
-          direction = 'desc';
-          name = name.slice(1);
+    if (name.startsWith('-')) {
+      direction = 'desc';
+      name = name.slice(1);
+    }
+
+    this.headings.forEach((heading, index) => {
+      if (heading.name === name) {
+        this.set(`headings.${index}.ordered`, direction);
+      } else {
+        this.set(`headings.${index}.ordered`, false);
       }
+    });
 
-      this.headings.forEach((heading, index) => {
-          if (heading.name === name) {
-              this.set(`headings.${index}.ordered`, direction);
-          } else {
-              this.set(`headings.${index}.ordered`, false);
-          }
-      });
-
-      if (this.queryParams && this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
+    if (this.queryParams && this.queryParams.ordering !== this.orderBy) { this.set('queryParams.ordering', this.orderBy); }
   }
 
   _paramsChanged(newParams) {
-      if (this.orderBy !== newParams.ordering) { this.orderBy = newParams.ordering; }
+    if (this.orderBy !== newParams.ordering) { this.orderBy = newParams.ordering; }
   }
 
   _computeResultsToShow(lengthAmount, size) {
-      let page = (this.queryParams.page || 1) - 1;
-      size = +size || 10;
+    let page = (this.queryParams.page || 1) - 1;
+    size = +size || 10;
 
-      let last = size * page + size;
-      if (last > lengthAmount) { last = lengthAmount; }
-      let first = last ? (size * page + 1) : 0;
+    let last = size * page + size;
+    if (last > lengthAmount) { last = lengthAmount; }
+    let first = last ? (size * page + 1) : 0;
 
-      return `${first} - ${last} of ${lengthAmount}`;
+    return `${first} - ${last} of ${lengthAmount}`;
   }
 
   _listDataChanged() {
-      let rows = this.shadowRoot!.querySelectorAll('.list-element');
+    let rows = this.shadowRoot!.querySelectorAll('.list-element');
 
-      if (rows && rows.length) {
-          this.noAnimation = true;
+    if (rows && rows.length) {
+      this.noAnimation = true;
 
-          for (let i = 0; i < rows.length; i++) {
-              if ((rows[i] as any).detailsOpened) {
-                  (rows[i] as any)._toggleRowDetails();
-              }
-          }
-
-          this.noAnimation = false;
+      for (let i = 0; i < rows.length; i++) {
+        if ((rows[i] as any).detailsOpened) {
+          (rows[i] as any)._toggleRowDetails();
+        }
       }
+
+      this.noAnimation = false;
+    }
   }
 
 }

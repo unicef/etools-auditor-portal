@@ -1,13 +1,13 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/polymer/lib/elements/dom-if';
 
-import {property} from '@polymer/decorators';
+import { property } from '@polymer/decorators';
 import { GenericObject } from '../../../../types/global';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import { sharedStyles } from '../../../styles-elements/shared-styles';
+import { moduleStyles } from '../../../styles-elements/module-styles';
 
 import LocalizationMixin from '../../../app-mixins/localization-mixin';
 
@@ -16,7 +16,7 @@ import LocalizationMixin from '../../../app-mixins/localization-mixin';
  * @customElement
  * @appliesMixin LocalizationMixin
  */
-class ListHeader extends LocalizationMixin(PolymerElement){
+class ListHeader extends LocalizationMixin(PolymerElement) {
 
   static get template() {
     return html`
@@ -210,60 +210,60 @@ class ListHeader extends LocalizationMixin(PolymerElement){
   `;
   }
   static get observers() {
-      return [
-          '_setRightPadding(data.*)'
-      ];
+    return [
+      '_setRightPadding(data.*)'
+    ];
   }
 
-  @property({type: Object})
+  @property({ type: Object })
   data!: GenericObject;
 
-  @property({type: String})
+  @property({ type: String })
   basePermissionPath: string = '';
 
-  @property({type: String, notify: true})
+  @property({ type: String, notify: true })
   orderBy!: string;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   noOrdered!: boolean;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   noAdditional!: boolean;
 
   _setRightPadding() {
-      if (!this.data) { return; }
-      let rightPadding = 0;
-      let padding;
+    if (!this.data) { return; }
+    let rightPadding = 0;
+    let padding;
 
-      this.data.forEach((heading) => {
-          if (typeof heading.size === 'string') {
-              padding = parseInt(heading.size, 10) || 0;
-              rightPadding += padding;
-          }
-      });
+    this.data.forEach((heading) => {
+      if (typeof heading.size === 'string') {
+        padding = parseInt(heading.size, 10) || 0;
+        rightPadding += padding;
+      }
+    });
 
-      (this as any).paddingRight = `${rightPadding}px`;
+    (this as any).paddingRight = `${rightPadding}px`;
   }
 
   _changeOrder(event) {
-      if (this.noOrdered) { return; }
+    if (this.noOrdered) { return; }
 
-      let item = _.get(event, 'model.item');
-      if (!item || (item.class && ~item.class.indexOf('no-order'))) { return; }
-      let newOrderName = item.name;
-      let currentOrderName = this.orderBy || '';
-      let direction = '-';
+    let item = _.get(event, 'model.item');
+    if (!item || (item.class && ~item.class.indexOf('no-order'))) { return; }
+    let newOrderName = item.name;
+    let currentOrderName = this.orderBy || '';
+    let direction = '-';
 
-      if (currentOrderName.startsWith('-')) {
-          direction = '';
-          currentOrderName = currentOrderName.slice(1);
-      }
+    if (currentOrderName.startsWith('-')) {
+      direction = '';
+      currentOrderName = currentOrderName.slice(1);
+    }
 
-      if (newOrderName !== currentOrderName) {
-          direction = '';
-      }
+    if (newOrderName !== currentOrderName) {
+      direction = '';
+    }
 
-      this.orderBy = `${direction}${newOrderName}`;
+    this.orderBy = `${direction}${newOrderName}`;
   }
 }
 window.customElements.define('list-header', ListHeader);

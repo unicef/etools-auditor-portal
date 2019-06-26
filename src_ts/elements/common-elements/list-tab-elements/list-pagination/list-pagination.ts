@@ -1,20 +1,20 @@
 
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import { PolymerElement, html } from '@polymer/polymer';
+import { property } from '@polymer/decorators';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 
 import QueryParamsController from '../../../app-mixins//query-params-controller';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import { sharedStyles } from '../../../styles-elements/shared-styles';
+import { moduleStyles } from '../../../styles-elements/module-styles';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin QueryParamsController
  */
-class ListPagination extends QueryParamsController(PolymerElement){
+class ListPagination extends QueryParamsController(PolymerElement) {
 
   static get template() {
     return html`
@@ -128,51 +128,51 @@ class ListPagination extends QueryParamsController(PolymerElement){
   `;
   }
 
-  @property({type: Array})
+  @property({ type: Array })
   sizesAllowed: any[] = ['10', '25', '50', '100'];
 
-  @property({type: String, notify: true,  observer: '_sizeChanged'})
+  @property({ type: String, notify: true, observer: '_sizeChanged' })
   pageSize!: string;
 
-  @property({type: String, notify: true,  observer: '_pageChanged'})
+  @property({ type: String, notify: true, observer: '_pageChanged' })
   pageNumber!: string;
 
-  @property({type: Number})
+  @property({ type: Number })
   currentPage: number = 1;
 
-  @property({type: Number, computed: '_calcLastPage(datalength, pageSize)'})
+  @property({ type: Number, computed: '_calcLastPage(datalength, pageSize)' })
   lastPage!: number;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   withoutQueries: boolean = false;
 
 
   _sizeChanged(newSize) {
-      if (this.sizesAllowed.indexOf(newSize) < 0) { this.set('pageSize', '10'); }
+    if (this.sizesAllowed.indexOf(newSize) < 0) { this.set('pageSize', '10'); }
   }
 
   goToFirst() { this.set('pageNumber', '1'); }
 
   goToLeft() {
-      this.set('pageNumber', `${(+this.currentPage || 1) - 1}`);
+    this.set('pageNumber', `${(+this.currentPage || 1) - 1}`);
   }
 
   goToRight() {
-      if (this.currentPage !== this.lastPage) { this.set('pageNumber', `${(+this.currentPage || 1) + 1}`); }
+    if (this.currentPage !== this.lastPage) { this.set('pageNumber', `${(+this.currentPage || 1) + 1}`); }
   }
 
   goToLast() { this.set('pageNumber', this.lastPage); }
 
   _disableButton(currentPage, datalength, pageSize) {
-      if ((+this.currentPage === 1 && !pageSize) || (+this.currentPage === +this.lastPage && pageSize) || this.pageSize >= datalength) { return true; }
+    if ((+this.currentPage === 1 && !pageSize) || (+this.currentPage === +this.lastPage && pageSize) || this.pageSize >= datalength) { return true; }
   }
 
   _calcLastPage(dataLength, size) {
-      return dataLength % size ? Math.ceil(dataLength / size) : dataLength / size;
+    return dataLength % size ? Math.ceil(dataLength / size) : dataLength / size;
   }
 
   _pageChanged(pageNumber) {
-      this.currentPage = pageNumber || 1;
+    this.currentPage = pageNumber || 1;
   }
 
 }
