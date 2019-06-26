@@ -17,7 +17,7 @@ Polymer({
     },
 
     _onTransitionEnd: function(e) {
-        if (e && e.target === this && e.propertyName === 'opacity') {
+        if (e && Polymer.dom(e).localTarget === this && e.propertyName === 'opacity') {
             if (!this.opened) {
                 this.fire('notification-shift', this.id);
             }

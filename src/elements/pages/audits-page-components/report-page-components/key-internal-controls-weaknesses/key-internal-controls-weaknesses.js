@@ -74,13 +74,13 @@ Polymer({
     },
 
     listeners: {
-        'dialog-confirmed': '_saveEditedArea',
         'kicw-risk-edit': 'openEditDialog',
-        'delete-confirmed': '_saveEditedArea',
+        'kicw-risk-delete': 'openDeleteDialog'
     },
 
     observers: [
         'resetDialog(dialogOpened)',
+        'resetDialog(confirmDialogOpened)',
         'updateStyles(requestInProcess, dialogOpened)',
         '_dataChanged(subjectAreas)',
         '_complexErrorHandler(errorObject.key_internal_weakness)'
@@ -107,13 +107,7 @@ Polymer({
     },
 
     openEditDialog: function(event, data) {
-        this.deleteDialog = false;
-
-        if (data.blueprint && data.delete) {
-            this.deleteDialog = true;
-            this.dialogTexts = this.deleteDialogTexts;
-            this.set('editedBlueprint', data.blueprint);
-        } else if (data.blueprint) {
+        if (data.blueprint) {
             let blueprint = data.blueprint,
                 risk = blueprint.risks[0];
 
@@ -137,21 +131,35 @@ Polymer({
         this.dialogOpened = true;
     },
 
-    _saveEditedArea: function() {
-        if (!this.validate() && !this.deleteDialog) { return; }
+    openDeleteDialog: function(event, data) {
+        this.dialogTexts = this.deleteDialogTexts;
+        this.set('editedBlueprint', data.blueprint);
+        this.confirmDialogOpened = true;
+    },
 
-        if (_.isEqual(this.originalData, this.editedBlueprint) && !this.deleteDialog) {
+    _saveEditedArea: function() {
+        if (!this.validate()) { return; }
+
+        if (_.isEqual(this.originalData, this.editedBlueprint)) {
             this.dialogOpened = false;
             this.resetDialog();
             return;
         }
 
+        this._triggerSaveEngagement();
+    },
+
+    _deleteArea: function() {
+        this._triggerSaveEngagement();
+    },
+
+    _triggerSaveEngagement() {
         this.requestInProcess = true;
         this.fire('action-activated', {type: 'save', quietAdding: true});
     },
 
     getKeyInternalWeaknessData: function() {
-        if (!this.dialogOpened) { return null; }
+        if ((!this.dialogOpened && !this.confirmDialogOpened)) { return null; }
         let blueprint = _.cloneDeep(this.editedBlueprint);
 
         if (blueprint.risks[0] && _.isObject(blueprint.risks[0].value)) {
@@ -189,5 +197,6 @@ Polymer({
         });
 
         return valid;
-    },
+    }
+
 });

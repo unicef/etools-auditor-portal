@@ -164,7 +164,7 @@ Polymer({
 
         let childId = null;
         if (this.questionnaire.children.length) {
-            childId = event.target && event.target.getAttribute('category-id');
+            childId = event.target && event.target.getAttribute('category-id');// event.target works ok here
             if (!childId) { throw 'Can not find category id!'; }
         }
         let data = _.cloneDeep(item);

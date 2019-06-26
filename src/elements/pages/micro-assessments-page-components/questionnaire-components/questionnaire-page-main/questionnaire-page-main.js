@@ -70,7 +70,6 @@ Polymer({
 
     listeners: {
         'edit-blueprint': '_openEditDialog',
-        'dialog-confirmed': '_addItemFromDialog',
         'risk-value-changed': '_riskValueChanged'
     },
 
@@ -131,7 +130,7 @@ Polymer({
         this.categoryId = detail.childId;
         this.editedItem = item;
         this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
-        this.$.questionHeader.innerHTML = item.header;
+       // this.$.questionHeader.innerHTML = item.header;
         this.dialogOpened = true;
     },
 
