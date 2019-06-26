@@ -2,10 +2,9 @@ import {PolymerElement} from '@polymer/polymer';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 
 let _user: any = null;
-
 let _groups: object[] | string[] = [];
 
 /**
@@ -17,13 +16,14 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
 
     _setUserData(user: any) {
       if (_user) {
+
         throw 'User already exists!';
       }
 
       if (!user || !isObject(user) || isArray(user)) {
         throw new Error('User must be an object');
       }
-      if (!user.user || !user.groups) {
+      if (!user || !(user as any).user || !(user as any).groups) {
         throw new Error('User must have id and groups fields!');
       }
 
