@@ -172,7 +172,7 @@ class EngagementInfoDetails extends PolymerElement {
                             readonly
                             hidden$="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
                             icon="date-range">
-                    </datepicker-lite>                    
+                    </datepicker-lite>
                 </div>
 
                 <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
