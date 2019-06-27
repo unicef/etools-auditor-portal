@@ -8,8 +8,8 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/paper-input/paper-textarea.js';
-import '../follow-up-actions';
-import FollowUpActions from '../follow-up-actions.js';
+import '../follow-up-actions/follow-up-actions';
+import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
 
@@ -47,7 +47,7 @@ class FollowUpMain extends PolymerElement {
     let data = {},
       //Audit Financial Findings
       followUpFindings = this.shadowRoot!.querySelector('#followUpFF'),
-      followUpFindingsData = followUpFindings && (followUpFindings as FollowUpActions).getFindingsData();
+      followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
 
     if (followUpFindingsData) {
       assign(data, followUpFindingsData);

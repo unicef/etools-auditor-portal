@@ -272,3 +272,4 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PermissionController(
 
 }
 window.customElements.define('follow-up-financial-findings', FollowUpFinancialFindings);
+export default FollowUpFinancialFindings

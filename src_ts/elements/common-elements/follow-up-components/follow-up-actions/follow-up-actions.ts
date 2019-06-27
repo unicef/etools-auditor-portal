@@ -10,6 +10,7 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '../../list-tab-elements/list-header/list-header';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/polymer/lib/elements/dom-if';
+import '@polymer/polymer/lib/elements/dom-repeat';
 
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';

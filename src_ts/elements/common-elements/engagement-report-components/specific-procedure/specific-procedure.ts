@@ -1,25 +1,26 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer';
 
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
 import '@polymer/polymer/lib/elements/dom-if';
+import '@polymer/polymer/lib/elements/dom-repeat';
 
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 
-import { property } from '@polymer/decorators';
-import { GenericObject } from '../../../../types/global';
-
+import {property} from '@polymer/decorators';
+import {GenericObject} from '../../../../types/global';
+import isString from 'lodash-es/isString';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import TextareaMaxRowsMixin from '../../../app-mixins/textarea-max-rows-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
-import { fireEvent } from '../../../utils/fire-custom-event';
+import {fireEvent} from '../../../utils/fire-custom-event';
 
-import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
-import { tabLayoutStyles } from '../../../styles-elements/tab-layout-styles';
-import { moduleStyles } from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 /**
  * @polymer
@@ -176,7 +177,7 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
     ]
   }
 
-  @property({ type: Object })
+  @property({type: Object})
   findingColumn: GenericObject = {
     'size': 40,
     'label': 'Finding',
@@ -184,16 +185,16 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
     'path': 'finding'
   };
 
-  @property({ type: Array, notify: true })
+  @property({type: Array, notify: true})
   dataItems!: [];
 
-  @property({ type: String })
+  @property({type: String})
   mainProperty: string = 'specific_procedures';
 
-  @property({ type: Object })
-  itemModel: GenericObject = { description: '', finding: '' };
+  @property({type: Object})
+  itemModel: GenericObject = {description: '', finding: ''};
 
-  @property({ type: Array })
+  @property({type: Array})
   columns = [{
     'size': 20,
     'name': 'finding',
@@ -210,27 +211,27 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
     'path': 'finding'
   }];;
 
-  @property({ type: Object })
-  addDialogTexts: GenericObject = { title: 'Add New Procedure' };
+  @property({type: Object})
+  addDialogTexts: GenericObject = {title: 'Add New Procedure'};
 
-  @property({ type: Object })
-  editDialogTexts: GenericObject = { title: 'Edit Finding' };
+  @property({type: Object})
+  editDialogTexts: GenericObject = {title: 'Edit Finding'};
 
-  @property({ type: String })
+  @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this finding?';
 
-  @property({ type: Boolean, reflectToAttribute: true })
+  @property({type: Boolean, reflectToAttribute: true})
   withoutFindingColumn: boolean = false;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   readonlyTab: boolean = false;
 
   _checkNonField(error) {
-    if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) { return; }
+    if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) {return;}
 
     let nonField = this.checkNonField(error);
-    if (nonField || _.isString(error)) {
-      fireEvent(this, 'toast', { text: `Specific Procedures: ${nonField || error}` });
+    if (nonField || isString(error)) {
+      fireEvent(this, 'toast', {text: `Specific Procedures: ${nonField || error}`});
     }
   }
 
@@ -238,7 +239,7 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
     if (removeFinding && columns.length === 3) {
       this.splice('columns', 2, 1);
     } else if (!removeFinding && columns.length === 2) {
-      this.splice('columns', 2, 0, findingColumn);
+      this.splice('columns', 2, 0, this.findingColumn);
     }
   }
 
