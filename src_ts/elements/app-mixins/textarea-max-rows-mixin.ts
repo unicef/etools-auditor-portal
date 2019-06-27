@@ -1,4 +1,4 @@
-import PolymerElement from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import {Constructor} from '../../types/global';
 import {microTask} from '@polymer/polymer/lib/utils/async';
 

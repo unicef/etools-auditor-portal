@@ -33,7 +33,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       event.target.invalid = false;
     }
 
-    isReadOnly(field, basePermissionPath, inProcess) {
+    isReadOnly(field, basePermissionPath, inProcess?) {
       if (!basePermissionPath || inProcess) {
         return true;
       }
