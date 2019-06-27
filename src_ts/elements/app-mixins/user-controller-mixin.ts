@@ -2,9 +2,10 @@ import {PolymerElement} from '@polymer/polymer';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
-import {Constructor, GenericObject} from '../../types/global';
+import {Constructor} from '../../types/global';
 
 let _user: any = null;
+
 let _groups: object[] | string[] = [];
 
 /**
@@ -16,7 +17,6 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
 
     _setUserData(user: any) {
       if (_user) {
-
         throw 'User already exists!';
       }
 
