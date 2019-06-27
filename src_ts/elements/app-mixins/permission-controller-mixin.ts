@@ -1,8 +1,9 @@
 import {PolymerElement} from '@polymer/polymer';
 import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
-import {Constructor, GenericObject} from "../../types/global";
-import {property} from "@polymer/decorators/lib/decorators";
+import {Constructor, GenericObject} from '../../types/global';
+
+let _permissionCollection: GenericObject = {};
 
 /**
  * @polymer
@@ -10,9 +11,6 @@ import {property} from "@polymer/decorators/lib/decorators";
  */
 function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class PermissionControllerClass extends (baseClass) {
-
-    @property({type: Object})
-    _permissionCollection: GenericObject = {};
 
     _addToCollection(collectionName, data, title?) {
       //check arguments
@@ -30,13 +28,13 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
       }
 
       //check existance
-      if (this._permissionCollection[collectionName]) {
+      if (_permissionCollection[collectionName]) {
         return false;
       }
 
-      this._permissionCollection[collectionName] = data;
+      _permissionCollection[collectionName] = data;
       if (title) {
-        this._permissionCollection[collectionName].title = title;
+        _permissionCollection[collectionName].title = title;
       }
       this._manageActions(collectionName);
 
@@ -44,7 +42,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
     }
 
     _updateCollection(collectionName, data, title?) {
-      if (!this._permissionCollection[collectionName]) {
+      if (!_permissionCollection[collectionName]) {
         console.warn(`Collection ${collectionName} does not exist!`);
         return false;
       }
@@ -53,16 +51,16 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
         return false;
       }
 
-      this._permissionCollection[collectionName] = data;
+      _permissionCollection[collectionName] = data;
       if (title) {
-        this._permissionCollection[collectionName].title = title;
+        _permissionCollection[collectionName].title = title;
       }
       this._manageActions(collectionName);
       return true;
     }
 
     _manageActions(collectionName) {
-      let collection = this._permissionCollection[collectionName];
+      let collection = _permissionCollection[collectionName];
       if (!collection) {
         console.warn(`Collection ${collectionName} does not exist!`);
         return false;
@@ -141,7 +139,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
     _getCollection(path, actionType?) {
       path = path.split('.');
 
-      let value = this._permissionCollection;
+      let value = _permissionCollection;
 
       while (path.length) {
         let key = path.shift();
@@ -184,7 +182,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
       if (typeof action !== 'string') {
         throw new Error('action argument must be a string');
       }
-      collection = this._permissionCollection[collection];
+      collection = _permissionCollection[collection];
 
       let actions = collection && collection.allowed_actions;
 
@@ -205,7 +203,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
       if (typeof collection !== 'string') {
         throw new Error('Collection argument must be a string');
       }
-      collection = this._permissionCollection[collection];
+      collection = _permissionCollection[collection];
 
       return !(collection && collection.allowed_actions && collection.allowed_actions.length);
     }
@@ -217,7 +215,7 @@ function PermissionControllerMixin<T extends Constructor<PolymerElement>>(baseCl
       if (typeof collection !== 'string') {
         throw new Error('Collection argument must be a string');
       }
-      collection = this._permissionCollection[collection];
+      collection = _permissionCollection[collection];
 
       return collection && collection.allowed_actions || null;
     }
