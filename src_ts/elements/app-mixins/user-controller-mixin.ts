@@ -3,7 +3,9 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
 import {Constructor, GenericObject} from '../../types/global';
-import {property} from "@polymer/decorators/lib/decorators";
+
+let _user: any = null;
+let _groups: object[] | string[] = [];
 
 /**
  * @polymer
@@ -12,15 +14,9 @@ import {property} from "@polymer/decorators/lib/decorators";
 function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class UserControllerMixinClass extends (baseClass) {
 
-    // TODO:  this might not work... _user & _groups is not used like this in old app (global variables)
-    @property({type: Object})
-    _user: GenericObject | null = null;
+    _setUserData(user: any) {
+      if (_user) {
 
-    @property({type: Object})
-    _groups: object[] | string[] = [];
-
-    _setUserData(user) {
-      if (this._user) {
         throw 'User already exists!';
       }
 
@@ -31,7 +27,7 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
         throw new Error('User must have id and groups fields!');
       }
 
-      this._user = cloneDeep(user);
+      _user = cloneDeep(user);
       this._setGroups(user);
     }
 
@@ -39,20 +35,20 @@ function UserControllerMixin<T extends Constructor<PolymerElement>>(baseClass: T
       if (!user.groups.length) {
         throw new Error('Can not find user group!');
       }
-      this._groups = user.groups.map((group) => {
+      _groups = user.groups.map((group) => {
         return group.name;
       });
     }
 
     getUserData() {
-      return cloneDeep(this._user);
+      return cloneDeep(_user);
     }
 
     isAuditor() {
-      if (!this._groups) {
+      if (!_groups) {
         throw new Error('User data is missing or incorrect');
       }
-      return !!~this._groups.indexOf('Auditor');
+      return !!~_groups.indexOf('Auditor');
     }
 
   }

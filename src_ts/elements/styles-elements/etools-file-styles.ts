@@ -1,5 +1,5 @@
 import {html} from '@polymer/polymer/polymer-element';
-import '@polymer/paper-styles/color;
+import '@polymer/paper-styles/color';
 
 // language=HTML
 export const etoolsFileStyles = html`
