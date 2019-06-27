@@ -8,8 +8,6 @@ import EndpointsMixin from '../../../app-config/endpoints-mixin';
 import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
 import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
-import '../../../data-elements/engagements-list-data';
-import '../../../common-elements/pages-header-element/pages-header-element';
 
 /**
  * TODO: polymer 3 migration:

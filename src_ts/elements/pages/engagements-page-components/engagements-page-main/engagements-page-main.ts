@@ -97,7 +97,8 @@ class EngagementsPageMain extends PermissionControllerMixin(QueryParamsControlle
   @property({type: String})
   lastView: string = '';
 
-  private _updateEngagementsFiltersDebouncer!: Debouncer;
+  @property({type: Object})
+  _updateEngagementsFiltersDebouncer!: Debouncer;
 
   @property({type: Object})
   lastParams!: GenericObject;
