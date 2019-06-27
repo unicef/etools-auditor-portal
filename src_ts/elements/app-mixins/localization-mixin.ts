@@ -8,7 +8,7 @@ import {Constructor} from "../../types/global";
  * @appliesMixin PermissionControllerMixin
  */
 function LocalizationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-    class LocalizationMixinClass extends (PermissionControllerMixin(baseClass  as Constructor<PolymerElement)) {
+    class LocalizationMixinClass extends (PermissionControllerMixin(baseClass  as Constructor<PolymerElement>)) {
 
         getHeadingLabel(base, item) {
             if (!item) { return ''; }
