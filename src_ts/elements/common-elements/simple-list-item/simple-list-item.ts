@@ -34,7 +34,7 @@ class SimpleListItem extends PolymerElement {
                 box-sizing: border-box;
                 @apply --simple-list-item-custom-style;
             }
-            paper-material ::content > * {
+            paper-material ::content > * {  /* TODO translate to slotted() */
               width: 100%;
               display: flex;
               align-items: center;
