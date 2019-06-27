@@ -3,8 +3,10 @@ import { PolymerElement, html } from '@polymer/polymer';
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/polymer/lib/elements/dom-if';
+import '@polymer/polymer/lib/elements/dom-repeat';
 
 import { property } from '@polymer/decorators';
+import get from 'lodash-es/get';
 import { GenericObject } from '../../../../types/global';
 import { sharedStyles } from '../../../styles-elements/shared-styles';
 import { moduleStyles } from '../../../styles-elements/module-styles';
@@ -248,7 +250,7 @@ class ListHeader extends LocalizationMixin(PolymerElement) {
   _changeOrder(event) {
     if (this.noOrdered) { return; }
 
-    let item = _.get(event, 'model.item');
+    let item = get(event, 'model.item');
     if (!item || (item.class && ~item.class.indexOf('no-order'))) { return; }
     let newOrderName = item.name;
     let currentOrderName = this.orderBy || '';

@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer';
 
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
@@ -6,16 +6,17 @@ import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/polymer/lib/elements/dom-if';
-import { IronCollapseElement } from '@polymer/iron-collapse/iron-collapse.js';
+import '@polymer/polymer/lib/elements/dom-repeat';
+import {IronCollapseElement} from '@polymer/iron-collapse/iron-collapse.js';
 declare const moment: any;
-import { property } from '@polymer/decorators';
-import { GenericObject } from '../../../../types/global';
+import {property} from '@polymer/decorators';
+import {GenericObject} from '../../../../types/global';
 
 import LocalizationMixin from '../../../app-mixins/localization-mixin';
 
-import { sharedStyles } from '../../../styles-elements/shared-styles';
-import { moduleStyles } from '../../../styles-elements/module-styles';
-import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 /**
  * @polymer
  * @customElement
@@ -341,34 +342,34 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     ];
   }
 
-  @property({ type: String, observer: '_setItemValues' })
+  @property({type: String, observer: '_setItemValues'})
   basePermissionPath: string = '';
 
-  @property({ type: Object })
+  @property({type: Object})
   itemValues: GenericObject = {};
 
-  @property({ type: Array })
+  @property({type: Array})
   details: any[] = [];
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   hasCollapse: boolean = false;
 
-  @property({ type: Boolean, computed: '_computeShowCollapse(details, hasCollapse)' })
+  @property({type: Boolean, computed: '_computeShowCollapse(details, hasCollapse)'})
   showCollapse: any[] = [];
 
-  @property({ type: Object, notify: true })
+  @property({type: Object, notify: true})
   data!: GenericObject;
 
-  @property({ type: Number })
+  @property({type: Number})
   itemIndex!: number;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   multiline: boolean = false;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   noHover: boolean = false;
 
-  @property({ type: Boolean, reflectToAttribute: true })
+  @property({type: Boolean, reflectToAttribute: true})
   hover!: boolean;
 
   public connectedCallback() {
@@ -403,7 +404,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _setRightPadding() {
-    if (!(this as any).headings) { return; }
+    if (!(this as any).headings) {return;}
     let rightPadding = 0;
     let padding;
 
@@ -426,7 +427,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _isOneOfType(item) {
-    if (!item) { return false; }
+    if (!item) {return false;}
 
     let types = Array.prototype.slice.call(arguments, 1) || [];
 
@@ -435,7 +436,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     });
   }
 
-  _getValue(item, data, bool) {
+  _getValue(item, data?, bool?) {
     let value;
 
     if (!item.path) {
@@ -467,11 +468,11 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
   _refactorValue(type, value) {
     let values = this.itemValues[type];
-    if (values) { return values[value]; }
+    if (values) {return values[value];}
   }
 
   _refactorTime(value, format = 'DD MMM YYYY') {
-    if (!value) { return; }
+    if (!value) {return;}
 
     let date = new Date(value);
     if (date.toString() !== 'Invalid Date') {
@@ -480,7 +481,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _refactorCurrency(value) {
-    if ((!value || isNaN(+value)) && value !== 0) { return; }
+    if ((!value || isNaN(+value)) && value !== 0) {return;}
     return (+value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
   }
 
@@ -491,12 +492,12 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
   _refactorFindingNumber() {
     let value = this.itemIndex;
-    if (!value && value !== 0) { return; }
+    if (!value && value !== 0) {return;}
     return `000${value + 1}`;
   }
 
   _getAdditionalValue(item) {
-    if (!item.additional) { return; }
+    if (!item.additional) {return;}
 
     let additional = item.additional;
     let value = this._getValue(additional);
@@ -510,11 +511,11 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _getStatus(synced) {
-    if (synced) { return 'Synced from VISION'; }
+    if (synced) {return 'Synced from VISION';}
   }
 
   _getLink(pattern) {
-    if (typeof pattern !== 'string') { return '#'; }
+    if (typeof pattern !== 'string') {return '#';}
 
     let link = pattern
       .replace('*ap_link*', this.data.url)
@@ -533,8 +534,8 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _setItemValues(base) {
-    if (!base) { return; }
-    if (!this.get('itemValues')) { this.set('itemValues', {}); }
+    if (!base) {return;}
+    if (!this.get('itemValues')) {this.set('itemValues', {});}
     this.setField(this.getChoices(`${base}.engagement_type`), 'engagement_type');
     this.setField(this.getChoices(`${base}.status`), 'status');
     this.set('itemValues.link_type', {
@@ -546,10 +547,10 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   setField(choices, field) {
-    if (!choices || !field) { return; }
+    if (!choices || !field) {return;}
 
     let data = {};
-    _.each(choices, (choice) => {
+    choices.forEach(choice => {
       data[choice.value] = choice.display_name;
     });
 
