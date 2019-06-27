@@ -17,6 +17,7 @@ import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-inpu
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+
 import isEqual from 'lodash-es/isEqual';
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';

@@ -26,7 +26,7 @@ import isNumber from 'lodash-es/isNumber';
 import isString from 'lodash-es/isString';
 import {fireEvent} from "../../../utils/fire-custom-event";
 import {property} from '@polymer/decorators';
-import { GenericObject } from '../../../../types/global';
+import {GenericObject} from '../../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
 import UserControllerMixin from '../../../app-mixins/user-controller-mixin';
@@ -43,12 +43,12 @@ import {moduleStyles} from '../../../styles-elements/module-styles';
  * @appliesMixin UserControllerMixin
  */
 class EngagementStaffMembersTab extends
-    TableElementsMixin(
-        CommonMethodsMixin(
-            UserControllerMixin(PolymerElement))){
+  TableElementsMixin(
+    CommonMethodsMixin(
+      UserControllerMixin(PolymerElement))) {
 
   static get template() {
-  return html`
+    return html`
 
   ${tabInputsStyles} ${moduleStyles}
   <style>
@@ -431,18 +431,18 @@ class EngagementStaffMembersTab extends
 
 
   static get observers() {
-      return [
-          'resetDialog(dialogOpened)',
-          'resetDialog(confirmDialogOpened)',
-          'changePermission(basePermissionPath)',
-          '_handleUpdateError(errorObject.staff_members)',
-          '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
-          '_organizationChanged(engagement.agreement.auditor_firm.id)',
-          '_queriesChanged(listSize, listPage, searchQuery)',
-          '_staffMembersListChanged(dataItems, engagementStaffs)',
-          '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-          'updateStyles(emailChecking, staffsBase, addDialog)',
-      ];
+    return [
+      'resetDialog(dialogOpened)',
+      'resetDialog(confirmDialogOpened)',
+      'changePermission(basePermissionPath)',
+      '_handleUpdateError(errorObject.staff_members)',
+      '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
+      '_organizationChanged(engagement.agreement.auditor_firm.id)',
+      '_queriesChanged(listSize, listPage, searchQuery)',
+      '_staffMembersListChanged(dataItems, engagementStaffs)',
+      '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
+      'updateStyles(emailChecking, staffsBase, addDialog)',
+    ];
   }
 
   @property({type: String})
@@ -453,66 +453,66 @@ class EngagementStaffMembersTab extends
 
   @property({type: Object})
   itemModel: GenericObject = {
-      user: {
-          first_name: '',
-          last_name: '',
-          email: '',
-          profile: {
-              job_title: '',
-              phone_number: ''
-          }
-      },
-      hasAccess: true
+    user: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      profile: {
+        job_title: '',
+        phone_number: ''
+      }
+    },
+    hasAccess: true
   };
 
   @property({type: Array})
-  columns: any[] =  [
-      {
-          'size': '100px',
-          'label': 'Has Access',
-          'name': 'hasAccess',
-          'align': 'center',
-          'property': 'hasAccess',
-          'checkbox': true
-      },
-      {
-          'size': 20,
-          'label': 'Position',
-          'labelPath': 'staff_members.user.profile.job_title',
-          'name': 'user.job_title'
-      }, {
-          'size': 20,
-          'label': 'First Name',
-          'labelPath': 'staff_members.user.first_name',
-          'name': 'user.first_name'
-      }, {
-          'size': 20,
-          'label': 'Last Name',
-          'labelPath': 'staff_members.user.last_name',
-          'name': 'user.last_name'
-      }, {
-          'size': 20,
-          'label': 'Phone Number',
-          'labelPath': 'staff_members.user.profile.phone_number',
-          'name': 'user.phone_number'
-      }, {
-          'size': 20,
-          'label': 'E-mail Address',
-          'labelPath': 'staff_members.user.email',
-          'name': 'user.email'
-      }
+  columns: any[] = [
+    {
+      'size': '100px',
+      'label': 'Has Access',
+      'name': 'hasAccess',
+      'align': 'center',
+      'property': 'hasAccess',
+      'checkbox': true
+    },
+    {
+      'size': 20,
+      'label': 'Position',
+      'labelPath': 'staff_members.user.profile.job_title',
+      'name': 'user.job_title'
+    }, {
+      'size': 20,
+      'label': 'First Name',
+      'labelPath': 'staff_members.user.first_name',
+      'name': 'user.first_name'
+    }, {
+      'size': 20,
+      'label': 'Last Name',
+      'labelPath': 'staff_members.user.last_name',
+      'name': 'user.last_name'
+    }, {
+      'size': 20,
+      'label': 'Phone Number',
+      'labelPath': 'staff_members.user.profile.phone_number',
+      'name': 'user.phone_number'
+    }, {
+      'size': 20,
+      'label': 'E-mail Address',
+      'labelPath': 'staff_members.user.email',
+      'name': 'user.email'
+    }
   ];
-      
-  @property({type: Object})
-  addDialogTexts: GenericObject = { title: 'Add New Audit Staff Team Member' };
 
   @property({type: Object})
-  editDialogTexts: GenericObject = {  title: 'Edit Audit Staff Team Member' };
+  addDialogTexts: GenericObject = {title: 'Add New Audit Staff Team Member'};
+
+  @property({type: Object})
+  editDialogTexts: GenericObject = {title: 'Edit Audit Staff Team Member'};
 
   @property({type: Object})
   listQueries: GenericObject = {
-      page: 1,
-      page_size: 10
+    page: 1,
+    page_size: 10
   }
 
   @property({type: Object})
@@ -542,381 +542,381 @@ class EngagementStaffMembersTab extends
   private _newRequestDebouncer!: Debouncer;
 
   connectedCallback() {
-      super.connectedCallback();
-      this._initListeners();
-      (this.$.emailInput as PaperInputElement).validate = this._validEmailAddress.bind(this, this.$.emailInput);
-      this.listSize = 10;
-      this.listPage = 1;
+    super.connectedCallback();
+    this._initListeners();
+    (this.$.emailInput as PaperInputElement).validate = this._validEmailAddress.bind(this, this.$.emailInput);
+    this.listSize = 10;
+    this.listPage = 1;
   }
 
   _initListeners() {
-      this._staffUpdated = this._staffUpdated.bind(this);
-      this.addEventListener('staff-updated', this._staffUpdated as any);
+    this._staffUpdated = this._staffUpdated.bind(this);
+    this.addEventListener('staff-updated', this._staffUpdated as any);
   }
 
   disconnectedCallback() {
-      super.disconnectedCallback();
-      this._removeListeners();
-    }
+    super.disconnectedCallback();
+    this._removeListeners();
+  }
 
   _removeListeners() {
-      this.removeEventListener('staff-updated', this._staffUpdated as any);
+    this.removeEventListener('staff-updated', this._staffUpdated as any);
   }
 
   changePermission(basePermissionPath) {
-      if (!basePermissionPath) { return; }
-      let editObj = this.columns && this.columns[0];
-      if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
-          each(this.columns, (value, index) => {
-              this.set(`columns.${index}.size`, 18);
-          });
-          this.unshift('columns', {'size': 10,'label': 'Has Access','name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
-      } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
-          this.shift('columns');
-          each(this.columns, (value, index) => {
-              this.set(`columns.${index}.size`, 20);
-          });
-      }
+    if (!basePermissionPath) {return;}
+    let editObj = this.columns && this.columns[0];
+    if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
+      each(this.columns, (value, index) => {
+        this.set(`columns.${index}.size`, 18);
+      });
+      this.unshift('columns', {'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
+    } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
+      this.shift('columns');
+      each(this.columns, (value, index) => {
+        this.set(`columns.${index}.size`, 20);
+      });
+    }
   }
 
   _openAddDialog() {
-      this.originalEditedObj = {};
-      this.openAddDialog();
+    this.originalEditedObj = {};
+    this.openAddDialog();
   }
 
   _organizationChanged(id) {
-      if (!this._canBeChanged() || !this.basePermissionPath) { return; }
-      if (!id) { this.resetList(); }
-      this.organisationId = +id;
+    if (!this._canBeChanged() || !this.basePermissionPath) {return;}
+    if (!id) {this.resetList();}
+    this.organisationId = +id;
   }
 
   _queriesChanged(listSize, listPage, searchQuery) {
-      if (!listPage || !listSize) { return; }
+    if (!listPage || !listSize) {return;}
 
-      if (((this.lastSize && this.lastSize !== listSize) ||
-            (!isUndefined(this.lastSearchQuery) && this.lastSearchQuery !== searchQuery)) && this.listPage !== 1) {
-          this.lastSearchQuery = searchQuery;
-          this.lastSize = listSize;
-          this.listPage = 1;
-          return;
-      }
-      this.lastSize = listSize;
+    if (((this.lastSize && this.lastSize !== listSize) ||
+      (!isUndefined(this.lastSearchQuery) && this.lastSearchQuery !== searchQuery)) && this.listPage !== 1) {
       this.lastSearchQuery = searchQuery;
+      this.lastSize = listSize;
+      this.listPage = 1;
+      return;
+    }
+    this.lastSize = listSize;
+    this.lastSearchQuery = searchQuery;
 
-      this.set('listQueries', {
-          page_size: listSize,
-          page: listPage,
-          search: searchQuery || ''
-      });
+    this.set('listQueries', {
+      page_size: listSize,
+      page: listPage,
+      search: searchQuery || ''
+    });
   }
 
   validate() {
-      let emailImput = this.$.emailInput as PaperInputElement;
-      let elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)'),
-          valid = true,
-          emailValid = emailImput.disabled || emailImput.validate();
+    let emailImput = this.$.emailInput as PaperInputElement;
+    let elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)'),
+      valid = true,
+      emailValid = emailImput.disabled || emailImput.validate();
 
-      Array.prototype.forEach.call(elements, (element) => {
-          if (element.required && !element.disabled && !element.validate()) {
-              element.invalid = 'This field is required';
-              element.errorMessage = 'This field is required';
-              valid = false;
-          }
-      });
-      return valid && emailValid;
+    Array.prototype.forEach.call(elements, (element) => {
+      if (element.required && !element.disabled && !element.validate()) {
+        element.invalid = 'This field is required';
+        element.errorMessage = 'This field is required';
+        valid = false;
+      }
+    });
+    return valid && emailValid;
   }
 
   _staffMembersListChanged(data, staffs) {
-      if (!staffs) { return; }
-      each(data, (staff, index) => {
-          this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
-      });
-      if( !this.originalTabData) {
-          this._dataItemsChanged(this.dataItems)
-      }
+    if (!staffs) {return;}
+    each(data, (staff, index) => {
+      this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
+    });
+    if (!this.originalTabData) {
+      this._dataItemsChanged(this.dataItems)
+    }
   }
 
   _selectedStaffsChanged(data) {
-      if (!data) { return; }
-      if (!this._canBeChanged()) {
-          this.set('dataItems', cloneDeep(data));
-          return;
-      }
-      if (!this.engagementStaffs) { this.set('engagementStaffs', {}); }
-      each(data, staff => {
-          this.engagementStaffs[staff.user.email] = staff.id;
+    if (!data) {return;}
+    if (!this._canBeChanged()) {
+      this.set('dataItems', cloneDeep(data));
+      return;
+    }
+    if (!this.engagementStaffs) {this.set('engagementStaffs', {});}
+    each(data, staff => {
+      this.engagementStaffs[staff.user.email] = staff.id;
+    });
+    if (this.dataItems) {
+      each(this.dataItems, (staff, index) => {
+        this.set(`dataItems.${index}.hasAccess`, !!this.engagementStaffs[staff.user.email]);
       });
-      if (this.dataItems) {
-          each(this.dataItems, (staff, index) => {
-              this.set(`dataItems.${index}.hasAccess`, !!this.engagementStaffs[staff.user.email]);
-          });
-      }
+    }
   }
 
   _calcShowingResults(datalength, listSize, listPage, searchQuery, itemsLength) {
-      let last = listSize * listPage,
-          first = last - listSize + 1,
-          length = searchQuery ? itemsLength : datalength;
+    let last = listSize * listPage,
+      first = last - listSize + 1,
+      length = searchQuery ? itemsLength : datalength;
 
-      if (last > length) { last = length; }
-      if (first > length) { first = 0; }
-      return `${first}-${last} of ${length}`;
+    if (last > length) {last = length;}
+    if (first > length) {first = 0;}
+    return `${first}-${last} of ${length}`;
   }
 
   _validEmailAddress(emailInput) {
-      let value = trim(emailInput.value),
-          required = emailInput.required;
+    let value = trim(emailInput.value),
+      required = emailInput.required;
 
-      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      if (required && !value) {
-          this.errors = {user: {email: 'Email is required'}};
-          return false;
-      }
-      if (value && !re.test(value)) {
-          this.errors = {user: {email: 'Email is incorrect'}};
-          return false;
-      }
+    if (required && !value) {
+      this.errors = {user: {email: 'Email is required'}};
+      return false;
+    }
+    if (value && !re.test(value)) {
+      this.errors = {user: {email: 'Email is incorrect'}};
+      return false;
+    }
 
-      let valid = true;
+    let valid = true;
 
-      if (this.saveWithButton) {
-          each(this.dataItems, (item: any) => {
-              if (item.user && item.user.email === this.editedItem.user.email &&
-                  item.id && item.id === this.editedItem.id) {
-                  this.errors = {user: {email: 'Email must be unique'}};
-                  valid = false;
-              }
-          });
-      }
+    if (this.saveWithButton) {
+      each(this.dataItems, (item: any) => {
+        if (item.user && item.user.email === this.editedItem.user.email &&
+          item.id && item.id === this.editedItem.id) {
+          this.errors = {user: {email: 'Email must be unique'}};
+          valid = false;
+        }
+      });
+    }
 
-      return valid;
+    return valid;
   }
 
   _isActive(event) {
-      let item = event && event.model && event.model.item;
-      if (!item) { throw 'Can not get item model!'; }
+    let item = event && event.model && event.model.item;
+    if (!item) {throw 'Can not get item model!';}
 
-      let me = this.getUserData() || {},
-          updateOptions = get(item, 'user.email') === me.email;
+    let me = this.getUserData() || {},
+      updateOptions = get(item, 'user.email') === me.email;
 
-      this.manageEngagementStaff(item);
-      this._updateEngagement(true, updateOptions);
+    this.manageEngagementStaff(item);
+    this._updateEngagement(true, updateOptions);
   }
 
   _emailDisabled(request, createPopup, emailChecking) {
-      return !!(!createPopup || request || emailChecking);
+    return !!(!createPopup || request || emailChecking);
   }
 
   _checkEmail(event) {
-      if (this.emailChecking) { return; }
+    if (this.emailChecking) {return;}
 
-      let input = event && event.target,
-          value = input && input.value;
+    let input = event && event.target,
+      value = input && input.value;
 
-      if (value && this._validEmailAddress(input)) {
-          this.newEmail = value;
-      }
+    if (value && this._validEmailAddress(input)) {
+      this.newEmail = value;
+    }
   }
 
   _showAddButton(basePath, agreement, loading) {
-      let orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
+    let orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
 
-      return !!orgId && !loading && this._canBeChanged();
+    return !!orgId && !loading && this._canBeChanged();
   }
 
   _showPagination(dataItems) {
-      return !!(+dataItems && +dataItems > 10);
+    return !!(+dataItems && +dataItems > 10);
   }
 
   _staffLength(length, length2, search) {
-      let staffLength = search ? length2 : length || length2;
-      return staffLength || 0;
+    let staffLength = search ? length2 : length || length2;
+    return staffLength || 0;
   }
 
   _addStaffFromDialog(force) {
-      if (this.requestInProcess && !force) { return; }
+    if (this.requestInProcess && !force) {return;}
 
-      this.errors = {};
-      if (!this.validate()) { return; }
+    this.errors = {};
+    if (!this.validate()) {return;}
 
-      this.requestInProcess = true;
+    this.requestInProcess = true;
 
-      let item = cloneDeep(this.editedItem);
-      if ((!this.addDialog && !isNaN(this.editedIndex)) || item.id) {
-          if (isEqual(this.originalEditedObj, this.editedItem)) {
-              this.requestInProcess = false;
-              this.dialogOpened = false;
-              this.resetDialog();
-              return;
-          }
-          this.set('newData', {
-              method: 'PATCH',
-              data: item,
-              staffIndex: !this.addDialog ? this.editedIndex : null,
-              id: `${item.id}/`
-          });
-      } else {
-          let data = item.user_pk ? {user_pk: item.user_pk} : item;
-          this.set('newData', {
-              method: 'POST',
-              id: '',
-              data
-          });
+    let item = cloneDeep(this.editedItem);
+    if ((!this.addDialog && !isNaN(this.editedIndex)) || item.id) {
+      if (isEqual(this.originalEditedObj, this.editedItem)) {
+        this.requestInProcess = false;
+        this.dialogOpened = false;
+        this.resetDialog();
+        return;
       }
+      this.set('newData', {
+        method: 'PATCH',
+        data: item,
+        staffIndex: !this.addDialog ? this.editedIndex : null,
+        id: `${item.id}/`
+      });
+    } else {
+      let data = item.user_pk ? {user_pk: item.user_pk} : item;
+      this.set('newData', {
+        method: 'POST',
+        id: '',
+        data
+      });
+    }
   }
 
   removeStaff() {
-      let hasAccess = this.get('editedItem.hasAccess');
-      let removalForbidden = this._isCheckboxReadonly(hasAccess, this.engagementStaffs, this.saveWithButton);
+    let hasAccess = this.get('editedItem.hasAccess');
+    let removalForbidden = this._isCheckboxReadonly(hasAccess, this.engagementStaffs, this.saveWithButton);
 
-      if (removalForbidden) {
-          fireEvent(this, 'toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
-          this.set('confirmDialogOpened', false);
-          return false;
-      }
+    if (removalForbidden) {
+      fireEvent(this, 'toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
+      this.set('confirmDialogOpened', false);
+      return false;
+    }
 
-      this.requestInProcess = true;
-      this.set('newData', {
-          method: 'DELETE',
-          data: {},
-          staffIndex: this.editedIndex,
-          id: `${this.editedItem.id}/`
-      });
+    this.requestInProcess = true;
+    this.set('newData', {
+      method: 'DELETE',
+      data: {},
+      staffIndex: this.editedIndex,
+      id: `${this.editedItem.id}/`
+    });
   }
 
   _staffUpdated(event, details) {
-      if (!details) { throw 'Detail are not provided!'; }
-      if (details.error) {
-          this._handleUpdateError(details.errorData);
-          return;
+    if (!details) {throw 'Detail are not provided!';}
+    if (details.error) {
+      this._handleUpdateError(details.errorData);
+      return;
+    }
+
+    let me = this.getUserData() || {},
+      updateOptions = get(details, 'data.user.email') === me.email;
+
+    details.data = details.data || {};
+    details.data.hasAccess = this.editedItem.hasAccess;
+    if (details.action === 'patch') {
+      this.manageEngagementStaff(details.data, details.hasAccess);
+      this._updateEngagement(false, updateOptions);
+      let index = ~details.index ? details.index : findIndex(this.dataItems, item => item.id === details.data.id);
+      if (isNumber(index) && ~index) {
+        this.splice('dataItems', index, 1, details.data);
+      } else {
+        this.set('listPage', 0);
+        this.set('listPage', 1);
       }
+    } else if (details.action === 'post') {
+      this.manageEngagementStaff(details.data, details.hasAccess);
+      this._updateEngagement(false, updateOptions);
+      this.set('listPage', 0);
+      this.set('listPage', 1);
+    } else if (details.action === 'delete') {
+      let last = this.dataItems.length === 1 ? 1 : 0;
+      let email = this.editedItem.user.email;
+      this.manageEngagementStaff({user: {email: email}});
+      this.set('listQueries', {
+        page_size: this.listSize,
+        page: this.listPage - last || 1
+      });
+    }
 
-      let me = this.getUserData() || {},
-          updateOptions = get(details, 'data.user.email') === me.email;
+    if (this.editedItem.user_pk && !isEqual(details.data.user, this.editedItem.user)) {
+      this.editedIndex = findIndex(this.dataItems, item => item.id === details.data.id);
+      this.addDialog = false;
+      delete this.editedItem.user_pk;
+      this.editedItem.id = details.data.id;
+      this._addStaffFromDialog(true);
+      return;
+    }
 
-      details.data = details.data || {};
-      details.data.hasAccess = this.editedItem.hasAccess;
-      if (details.action === 'patch') {
-          this.manageEngagementStaff(details.data, details.hasAccess);
-          this._updateEngagement(false, updateOptions);
-          let index = ~details.index ? details.index : findIndex(this.dataItems, item => item.id === details.data.id);
-          if (isNumber(index) && ~index) {
-              this.splice('dataItems', index, 1, details.data);
-          } else {
-              this.set('listPage', 0);
-              this.set('listPage', 1);
-          }
-      } else if (details.action === 'post') {
-          this.manageEngagementStaff(details.data, details.hasAccess);
-          this._updateEngagement(false, updateOptions);
-          this.set('listPage', 0);
-          this.set('listPage', 1);
-      } else if (details.action === 'delete') {
-          let last = this.dataItems.length === 1 ? 1 : 0;
-          let email = this.editedItem.user.email;
-          this.manageEngagementStaff({user: {email: email}});
-          this.set('listQueries', {
-              page_size: this.listSize,
-              page: this.listPage - last || 1
-          });
-      }
-
-      if (this.editedItem.user_pk && !isEqual(details.data.user, this.editedItem.user)) {
-          this.editedIndex = findIndex(this.dataItems, item => item.id === details.data.id);
-          this.addDialog = false;
-          delete this.editedItem.user_pk;
-          this.editedItem.id = details.data.id;
-          this._addStaffFromDialog(true);
-          return;
-      }
-
-      this.requestInProcess = false;
-      this.dialogOpened = false;
-      this.confirmDialogOpened = false;
-      this.resetDialog();
+    this.requestInProcess = false;
+    this.dialogOpened = false;
+    this.confirmDialogOpened = false;
+    this.resetDialog();
   }
 
   manageEngagementStaff(staff, hasAccess) {
-      if (hasAccess || staff.hasAccess) {
-          this.engagementStaffs[staff.user.email] = staff.id;
-      } else {
-          delete this.engagementStaffs[staff.user.email];
-      }
-      this.engagementStaffs = cloneDeep(this.engagementStaffs);
+    if (hasAccess || staff.hasAccess) {
+      this.engagementStaffs[staff.user.email] = staff.id;
+    } else {
+      delete this.engagementStaffs[staff.user.email];
+    }
+    this.engagementStaffs = cloneDeep(this.engagementStaffs);
   }
 
   _updateEngagement(quiet, forceOptions) {
-      if (!this.saveWithButton) {
-          fireEvent(this, 'action-activated', {type: 'save', quietAdding: quiet, forceOptionsUpdate: forceOptions});
-      }
+    if (!this.saveWithButton) {
+      fireEvent(this, 'action-activated', {type: 'save', quietAdding: quiet, forceOptionsUpdate: forceOptions});
+    }
   }
 
   _handleUpdateError(errorData) {
-      let nonField = this.checkNonField(errorData);
-      let error =  this.refactorErrorObject(errorData);
+    let nonField = this.checkNonField(errorData);
+    let error = this.refactorErrorObject(errorData);
 
-      this.set('errors', error);
-      this.requestInProcess = false;
-      if (isString(error)) {
-          let text = !!~error.indexOf('required') ? 'Please select at least one staff member.' : error;
-          fireEvent(this, 'toast', {text: `Audit Staff Team Members: ${text}`});
-      }
-      if (nonField) {
-          fireEvent(this, 'toast', {text: `Audit Staff Team Members: ${nonField}`});
-      }
+    this.set('errors', error);
+    this.requestInProcess = false;
+    if (isString(error)) {
+      let text = !!~error.indexOf('required') ? 'Please select at least one staff member.' : error;
+      fireEvent(this, 'toast', {text: `Audit Staff Team Members: ${text}`});
+    }
+    if (nonField) {
+      fireEvent(this, 'toast', {text: `Audit Staff Team Members: ${nonField}`});
+    }
   }
 
   resetList() {
-      this.set('dataItems', []);
-      this.set('listPage', 1);
-      this.set('searchQuery', '');
-      this.set('searchString', '');
-      this.set('engagementStaffs', {});
-      this.set('datalength', 0);
-      this.updateStyles();
+    this.set('dataItems', []);
+    this.set('listPage', 1);
+    this.set('searchQuery', '');
+    this.set('searchString', '');
+    this.set('engagementStaffs', {});
+    this.set('datalength', 0);
+    this.updateStyles();
   }
 
   getTabData() {
-      if (!this._canBeChanged()) { return null; }
-      let staffs = [];
-      each(this.engagementStaffs, value => {
-          staffs.push(value);
+    if (!this._canBeChanged()) {return null;}
+    let staffs = [];
+    each(this.engagementStaffs, value => {
+      staffs.push(value);
+    });
+
+    let dataChanged = false;
+    if (this.engagement.staff_members.length !== staffs.length) {
+      dataChanged = true;
+    } else {
+      each(this.engagement.staff_members, (staff) => {
+        if (!~staffs.indexOf(staff.id)) {dataChanged = true;}
       });
+    }
 
-      let dataChanged = false;
-      if (this.engagement.staff_members.length !== staffs.length) {
-          dataChanged = true;
-      } else {
-          each(this.engagement.staff_members, (staff) => {
-              if (!~staffs.indexOf(staff.id)) { dataChanged = true; }
-          });
-      }
-
-      return dataChanged ? staffs : null;
+    return dataChanged ? staffs : null;
   }
 
   _getSearchInputClass(searchString) {
-      if (searchString) { return 'filled'; }
-      return 'empty';
+    if (searchString) {return 'filled';}
+    return 'empty';
   }
 
   searchBlur() {
-      this.updateStyles();
+    this.updateStyles();
   }
 
   _searchChanged() {
-      let value = (this.$.searchInput as any).value || '';
+    let value = (this.$.searchInput as any).value || '';
 
-      if (value.length - 1) {
-          this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer,
-              timeOut.after(500),
-              () => { this.set('searchQuery', value); });
-      }
+    if (value.length - 1) {
+      this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer,
+        timeOut.after(500),
+        () => {this.set('searchQuery', value);});
+    }
   }
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
-      return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
+    return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
   }
 
 }

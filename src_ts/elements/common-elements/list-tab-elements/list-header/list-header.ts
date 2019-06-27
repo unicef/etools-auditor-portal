@@ -1,15 +1,15 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
-import { property } from '@polymer/decorators';
+import {property} from '@polymer/decorators';
 import get from 'lodash-es/get';
-import { GenericObject } from '../../../../types/global';
-import { sharedStyles } from '../../../styles-elements/shared-styles';
-import { moduleStyles } from '../../../styles-elements/module-styles';
+import {GenericObject} from '../../../../types/global';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 
 import LocalizationMixin from '../../../app-mixins/localization-mixin';
 
@@ -217,23 +217,23 @@ class ListHeader extends LocalizationMixin(PolymerElement) {
     ];
   }
 
-  @property({ type: Object })
+  @property({type: Object})
   data!: GenericObject;
 
-  @property({ type: String })
+  @property({type: String})
   basePermissionPath: string = '';
 
-  @property({ type: String, notify: true })
+  @property({type: String, notify: true})
   orderBy!: string;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   noOrdered!: boolean;
 
-  @property({ type: Boolean })
+  @property({type: Boolean})
   noAdditional!: boolean;
 
   _setRightPadding() {
-    if (!this.data) { return; }
+    if (!this.data) {return;}
     let rightPadding = 0;
     let padding;
 
@@ -248,10 +248,10 @@ class ListHeader extends LocalizationMixin(PolymerElement) {
   }
 
   _changeOrder(event) {
-    if (this.noOrdered) { return; }
+    if (this.noOrdered) {return;}
 
     let item = get(event, 'model.item');
-    if (!item || (item.class && ~item.class.indexOf('no-order'))) { return; }
+    if (!item || (item.class && ~item.class.indexOf('no-order'))) {return;}
     let newOrderName = item.name;
     let currentOrderName = this.orderBy || '';
     let direction = '-';
