@@ -30,7 +30,7 @@
             },
 
             _handleResponse: function (detail) {
-                this.attachments = detail && detail.results || [];
+                this.attachments = detail || [];
                 this.fire('attachments-loaded', {success: true});
             },
 
@@ -40,7 +40,7 @@
 
             _baseIdChanged: function(baseId) {
                 if (!baseId) { return; }
-                let url = this.getEndpoint(this.endpointName, {id: baseId}).url;
+                let url = this.getEndpoint(this.endpointName, {id: baseId}).url + '?page_size=all';
 
                 this.sendRequest({
                     endpoint: {url}
