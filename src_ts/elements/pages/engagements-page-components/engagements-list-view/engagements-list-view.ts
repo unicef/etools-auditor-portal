@@ -12,13 +12,6 @@ import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
 
 /**
- * TODO: polymer 3 migration:
- *    - migrate and use:
- *        - engagements-list-data
- *        - pages-header-element
- *        - search-and-filter
- *        - list-tab-main
- *
  * @customElement
  * @polymer
  * @appliesMixin EndpointsMixin
