@@ -69,3 +69,22 @@ export const resetOldUserData = () => {
   (etoolsCustomDexieDb as any).collectionsList.clear();
   (etoolsCustomDexieDb as any).partners.clear();
 }
+
+export const getDomainByEnv = () => {
+  if (window.location.port === '8082') {
+    return 'http://localhost:8082/ap_poly3';
+  }
+  if (isStagingServer()) {
+    return 'https://etools-staging.unicef.org/ap';
+  }
+  if (isDevServer()) {
+    return 'https://etools-dev.unicef.org/ap';
+  }
+  if (isDemoServer()) {
+    return 'https://etools-demo.unicef.org/ap';
+  }
+  if (isProductionServer()) {
+    return 'https://etools.unicef.org/ap';
+  }
+  return 'https://etools-dev.unicef.org/ap';
+};

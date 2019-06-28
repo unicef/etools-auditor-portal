@@ -33,6 +33,7 @@ import {fireEvent} from '../../utils/fire-custom-event.js';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
 import {GenericObject} from '../../../types/global.js';
+import {getDomainByEnv} from '../../app-config/config.js';
 
 
 setRootPath('/ap_poly3/');
@@ -215,6 +216,9 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   }
 
   _pageChanged(page) {
+    if (!page) { // TODO
+      return;
+    }
     if (page === 'staff-spot-checks') {
       page = 'spot-checks';
     }
@@ -232,7 +236,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
       this._pageNotFound();
       return;
     } else {
-      resolvedPageUrl = `elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.html`;
+      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
     }
 
     import(resolvedPageUrl).then(() => {
@@ -242,7 +246,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
       if (this.route.path === '/ap/') {this._configPath();}
     })
-      .catch(() => {this._pageNotFound()});
+    .catch((_err) => {console.error(_err); this._pageNotFound()});
   }
 
   _checkSSCPage(user) {

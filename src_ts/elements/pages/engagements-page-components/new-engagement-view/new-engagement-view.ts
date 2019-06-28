@@ -209,9 +209,9 @@ class NewEngagementView extends
   tabsList: string[] = ['overview', 'attachments'];
 
   @property({type: Object, notify: true})
-  queryParams!: GenericObject = {};
+  queryParams: GenericObject = {};
 
-  @property({type: string})
+  @property({type: String})
   pageTitle: string = '';
 
   @property({type: Boolean})
