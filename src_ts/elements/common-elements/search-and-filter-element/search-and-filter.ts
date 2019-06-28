@@ -7,7 +7,7 @@ import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-menu-button/paper-menu-button';
 import '@polymer/paper-button/paper-button';
 import '@polymer/paper-listbox/paper-listbox';
-import '@polymer/paper-icon-item/paper-icon-item';
+import '@polymer/paper-item/paper-icon-item';
 
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';

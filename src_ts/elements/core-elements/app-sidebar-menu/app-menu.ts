@@ -56,7 +56,7 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
                        selectable="a"
                        role="navigation">
 
-          <a class="nav-menu-item" menu-name="page-one" href="[[rootPath]]engagements/list?reload=true">
+          <a class="nav-menu-item" menu-name="page-one" href$="[[rootPath]]engagements/list?reload=true">
             <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
             <paper-tooltip for="iconEngagements" position="right">
               Engagements

@@ -39,10 +39,12 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     errors: object = {};
 
-    @property({type: Boolean})
+    // TODO: polymer 3 migration - check if this observer is needed
+    @property({type: Boolean, observer: 'updateStyles'})
     canBeRemoved: boolean = false;
 
-    @property({type: Boolean})
+    // TODO: polymer 3 migration - check if this observer is needed
+    @property({type: Boolean, observer: 'updateStyles'})
     requestInProcess: boolean = false;
 
     @property({type: Boolean})
@@ -56,9 +58,6 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       super.connectedCallback();
 
       this.editedItem = cloneDeep(this.itemModel);
-      this._addObserverEffect('requestInProcess', 'updateStyles');
-      this._addObserverEffect('canBeRemoved', 'updateStyles');
-
     }
 
     _dataItemsChanged(data) {
