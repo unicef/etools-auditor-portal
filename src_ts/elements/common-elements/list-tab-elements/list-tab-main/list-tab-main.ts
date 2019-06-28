@@ -10,6 +10,7 @@ import { moduleStyles } from '../../../styles-elements/module-styles';
 
 import QueryParamsController from '../../../app-mixins//query-params-controller';
 import { GenericObject } from '../../../../types/global';
+import {ListTabMainStyles} from './list-tab-main-styles';
 
 /**
  * @polymer
@@ -20,7 +21,7 @@ class ListTabMain extends QueryParamsController(PolymerElement) {
 
   static get template() {
     return html`
-  ${sharedStyles} ${moduleStyles}
+  ${sharedStyles} ${moduleStyles} ${ListTabMainStyles}
   <style>
       :host {
           display: block;
