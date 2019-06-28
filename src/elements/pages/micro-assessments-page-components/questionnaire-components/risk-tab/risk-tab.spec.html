@@ -146,8 +146,17 @@
 
             it('throws if there are questionnaire.children and no category-id attribute on event.target', function() {
                 myEl.questionnaire = {children: [{}]};
+                var spy = {localTarget: {getAttribute: sinon.stub().returns(null)}};
+                sinon.stub(Polymer, 'dom').returns(spy);
+
                 assert.throws(myEl.openEditDialog.bind(myEl, {model: {item: 'test'}}));
-                assert.doesNotThrow(myEl.openEditDialog.bind(myEl, {target: {getAttribute: function() {return true;}}, model: {item: {}}}))
+                Polymer.dom.restore();
+
+                var spy2 = {localTarget: {getAttribute: sinon.stub().returns('12')}};
+                sinon.stub(Polymer, 'dom').returns(spy2);
+                assert.doesNotThrow(myEl.openEditDialog.bind(myEl, {model: {item: 'test'}}))
+
+                Polymer.dom.restore();
             });
 
             it('prepare data, add risk field if it is not defined, calls fire method with data', function() {
