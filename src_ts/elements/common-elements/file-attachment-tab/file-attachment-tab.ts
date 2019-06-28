@@ -52,7 +52,6 @@ import {fireEvent} from "../../utils/fire-custom-event";
 class FileAttachmentTab extends EtoolsAjaxRequestMixin(TableElementsMixin(CommonMethodsMixin(ErrorHandlerMixin(
     EngagementMixin(UserControllerMixin(DateMixin(PolymerElement))))))) {
 
-  // Define optional shadow DOM template
   static get template() {
     // language=HTML
     return html`
