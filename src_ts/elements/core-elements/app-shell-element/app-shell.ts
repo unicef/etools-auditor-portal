@@ -33,7 +33,8 @@ import {fireEvent} from '../../utils/fire-custom-event.js';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
 import {GenericObject} from '../../../types/global.js';
-
+import {sharedStyles} from '../../styles-elements/shared-styles';
+import {pageLayoutStyles} from '../../styles-elements/page-layout-styles';
 
 setRootPath('/ap_poly3/');
 
@@ -47,6 +48,29 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     // main template
     // language=HTML
     return html`
+      ${pageLayoutStyles} ${sharedStyles}
+      <style>
+          :host {
+            display: block;
+          }
+          app-drawer {
+            visibility: visible;
+            right: auto;
+            z-index: 65 !important;
+            --app-drawer-width: 220px;
+            --app-drawer-content-container: {
+                  transform: translate3d(0, 0, 0);
+                  background-color: var(--light-theme-content-color);
+              };
+          }
+          app-drawer-layout {
+            padding-left: 220px;
+          }
+          app-header {
+            padding-left: 220px;
+            z-index: 60 !important;
+          }
+      </style>
       <static-data></static-data>
 
       <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
