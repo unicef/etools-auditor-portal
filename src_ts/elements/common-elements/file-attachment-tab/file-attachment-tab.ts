@@ -37,6 +37,7 @@ import get from 'lodash-es/get';
 import uniqueId from 'lodash-es/uniqueId';
 import clone from 'lodash-es/clone';
 import {fireEvent} from "../../utils/fire-custom-event";
+import EndpointsMixin from '../../app-config/endpoints-mixin';
 
 /**
  * @customElement
@@ -49,8 +50,14 @@ import {fireEvent} from "../../utils/fire-custom-event";
  * @appliesMixin UserControllerMixin
  * @appliesMixin DateMixin
  */
-class FileAttachmentTab extends EtoolsAjaxRequestMixin(TableElementsMixin(CommonMethodsMixin(ErrorHandlerMixin(
-    EngagementMixin(UserControllerMixin(DateMixin(PolymerElement))))))) {
+class FileAttachmentTab extends EndpointsMixin(
+    TableElementsMixin(
+      CommonMethodsMixin(
+        ErrorHandlerMixin(
+         EngagementMixin(
+             DateMixin(
+              UserControllerMixin(
+                EtoolsAjaxRequestMixin(PolymerElement)))))))) {
 
   static get template() {
     // language=HTML
@@ -202,8 +209,7 @@ class FileAttachmentTab extends EtoolsAjaxRequestMixin(TableElementsMixin(Common
                       error-message="{{errors.file_type}}"
                       on-focus="_resetFieldError"
                       on-tap="_resetFieldError"
-                      hide-search
-                      no-title-attr>
+                      hide-search>
                   </etools-dropdown-multi>
                 </div>
               </div>
@@ -483,7 +489,7 @@ class FileAttachmentTab extends EtoolsAjaxRequestMixin(TableElementsMixin(Common
         !this.collectionExists(`${basePath}.POST`));
   }
 
-  _hideShare(basePermissionPath) {
+  _hideShare_(basePermissionPath) { // TODO -is this still used?
     return this.isTabReadonly(basePermissionPath) || basePermissionPath.includes('new');
   }
 
