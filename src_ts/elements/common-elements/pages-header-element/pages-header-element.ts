@@ -81,7 +81,7 @@ class PagesHeaderElement extends PolymerElement {
     `;
   }
 
-  @property({type: string})
+  @property({type: String})
   title: string = '';
 
   @property({type: Object})
