@@ -6,7 +6,7 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@unicef-polymer/etools-app-selector';
 import '@unicef-polymer/etools-profile-dropdown';
 import './countries-dropdown/countries-dropdown';
-
+import './support-btn';
 
 import {isProductionServer, checkEnvironment} from '../../app-config/config.js';
 import {property} from '@polymer/decorators';
@@ -33,6 +33,10 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
 
         .titlebar {
           color: var(--header-color);
+        }
+
+        support-btn {
+          color: var(--light-secondary-text-color);
         }
 
         #menuButton {
@@ -90,6 +94,8 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
           <countries-dropdown id="countries"
                               countries="[[user.countries_available]]"
                               country-id="[[user.country.id]]"></countries-dropdown>
+
+          <support-btn></support-btn>
 
           <etools-profile-dropdown profile="[[user]]"></etools-profile-dropdown>
 
