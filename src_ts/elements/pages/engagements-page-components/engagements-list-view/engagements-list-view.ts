@@ -10,6 +10,8 @@ import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
+import '../../../common-elements/search-and-filter-element/search-and-filter';
+import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
 
 /**
  * @customElement
