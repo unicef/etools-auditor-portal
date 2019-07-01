@@ -328,10 +328,11 @@ class PartnerDetailsTab extends
 
     //check <etools-searchable-multiselection-menu> debouncer state
     // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
-    if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
-      microTask.run(this._setActivePd);
-      return false;
-    }
+    // INFINITE LOOP on engagements list :) ... to be removed soon
+    // if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
+    //   microTask.run(this._setActivePd.bind(this));
+    //   return false;
+    // }
 
     let originalPartnerId = this.get('originalData.partner.id');
     let partnerId = this.get('partner.id');
