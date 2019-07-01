@@ -151,8 +151,8 @@ class EngagementsPageMain extends PermissionControllerMixin(QueryParamsControlle
   }
 
   _configListParams(noNotify: boolean = false) {
-    let queriesUpdates: GenericObject = {},
-        queries = this.parseQueries() || {};
+    let queriesUpdates: GenericObject = {};
+    let queries = this.parseQueries() || {};
 
     if (!queries.page_size) { queriesUpdates.page_size = '10'; }
     if (!queries.ordering) { queriesUpdates.ordering = 'unique_id'; }
@@ -174,6 +174,7 @@ class EngagementsPageMain extends PermissionControllerMixin(QueryParamsControlle
 
   _queryParamsChanged() {
     if (!~this.route.prefix.indexOf('/engagements') || !this.routeData) { return; }
+
     if (this.routeData.view === 'list') {
       let queries = this._configListParams();
       this._setEngagementsListQueries(queries);
