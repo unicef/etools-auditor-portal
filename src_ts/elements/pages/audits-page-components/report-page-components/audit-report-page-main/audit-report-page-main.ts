@@ -3,7 +3,8 @@ import {property} from "@polymer/decorators/lib/decorators";
 import {GenericObject} from "../../../../../types/global";
 
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
-
+import '../findings-summary/fundings-summary';
+import '../financial-findings/financial-findings';
 /**
  * @customElement
  * @polymer

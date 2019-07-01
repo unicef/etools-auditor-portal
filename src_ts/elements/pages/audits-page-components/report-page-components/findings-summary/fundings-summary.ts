@@ -11,7 +11,7 @@ import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
+import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
@@ -155,13 +155,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
 
               <div class="input-container">
                 <!-- Audit opinion -->
-                <etools-searchable-multiselection-menu
+                <etools-dropdown
                     class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
-                    value="{{editedItem.opinion}}"
+                    selected="{{editedItem.opinion}}"
                     label$="[[getLabel('audit_opinion', basePermissionPath)]]"
                     placeholder$="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
                     options="[[auditOpinions]]"
-                    custom-object-options
                     option-label="display_name"
                     option-value="value"
                     required$="[[_setRequired('audit_opinion', basePermissionPath)]]"
@@ -171,10 +170,10 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
                     error-message="{{errors.audit_opinion}}"
                     on-focus="_resetFieldError"
                     on-tap="_resetFieldError"
-                    on-value-change="_changeAuditOpinion"
-                    hide-search
-                    no-title-attr>
-                </etools-searchable-multiselection-menu>
+                    trigger-value-change-event
+                    on-etools-selected-items-changed="_changeAuditOpinion"
+                    hide-search>
+                </etools-dropdown>
               </div>
 
               <div class="input-container">
