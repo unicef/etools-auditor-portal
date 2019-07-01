@@ -22,6 +22,7 @@ import './../app-footer/page-footer.js'
 
 import './../../styles-elements/app-theme.js';
 import '../../data-elements/static-data';
+import '../../pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main';
 
 
 // Gesture events like tap and track generated from touch will not be
