@@ -5,15 +5,18 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
-import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
-import {property} from '@polymer/decorators';
+import {property, query} from '@polymer/decorators';
 import isNumber from 'lodash-es/isNumber';
 import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
+import {fireEvent} from '../../../../utils/fire-custom-event';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
+import {GenericObject} from '../../../../../types/global';
 
 
-class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin(PolymerElement)) {
+class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   static get template() {
     return html`
       ${moduleStyles} ${tabInputsStyles}
@@ -103,11 +106,17 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
             <div class="row-h group">
               <div class="input-container  input-container-ms">
                 <!-- Risk Assessment -->
-                <etools-dropdown id="riskAssessmentInput" class="disabled-as-readonly required validate-input"
-                  value="{{_setRiskValue(editedItem.risk.value, riskOptions)}}" label="Risk Assessment"
-                  placeholder="Select Risk Assessment" options="[[riskOptions]]" option-label="display_name"
-                  option-value="display_name" required disabled="[[requestInProcess]]" readonly="[[requestInProcess]]"
-                  invalid="{{riskAssessmentInvalid}}" error-message="This field is required" on-focus="_resetFieldError"
+                <etools-dropdown id="riskAssessmentDropdown" class="disabled-as-readonly
+                  required validate-input"
+                  selected="{{_setRiskValue(editedItem.risk.value, riskOptions)}}"
+                  label="Risk Assessment"
+                  placeholder="Select Risk Assessment"
+                  options="[[riskOptions]]" option-label="display_name"
+                  option-value="display_name"
+                  disabled="[[requestInProcess]]"
+                  readonly="[[requestInProcess]]"
+                  invalid="{{riskAssessmentInvalid}}"
+                  error-message="This field is required" on-focus="_resetFieldError"
                   hide-search>
                 </etools-dropdown>
               </div>
@@ -116,9 +125,13 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
             <div class="row-h group">
               <div class="input-container input-container-l comment-container">
                 <!-- Comments -->
-                <paper-textarea id="riskAssessmentComments" class="disabled-as-readonly validate-input"
-                  value="{{editedItem.risk.extra.comments}}" label="Comments" placeholder="Enter Comments"
-                  disabled$="[[requestInProcess]]" max-rows="4" error-message="This field is required"
+                <paper-textarea id="riskAssessmentComments"
+                  class="disabled-as-readonly validate-input"
+                  value="{{editedItem.risk.extra.comments}}"
+                  label="Comments" placeholder="Enter Comments"
+                  disabled$="[[requestInProcess]]"
+                  max-rows="4"
+                  error-message="This field is required"
                   on-focus="_resetFieldError">
                 </paper-textarea>
               </div>
@@ -133,7 +146,7 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
   data!: object;
 
   @property({type: Object})
-  questionnaire = {};
+  questionnaire: { children?: []} = {};
 
   @property({type: Boolean})
   riskRatingOptions = {
@@ -157,11 +170,30 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
   @property({type: Array})
   changedData = [];
 
-  @property({type: Number})
+  @property({type: Number, readOnly: true})
   requests: number = 0;
 
   @property({type: String})
   riskAssessment: string = '';
+
+  @property({type: String})
+  basePermissionPath!: string; // engagement_[id]
+
+  @property({type: Object})
+  editedItem!: GenericObject;
+
+  @property({type: Boolean})
+  dialogOpened: boolean = false;
+
+  @property({type: Boolean})
+  requestInProcess: boolean = false;
+
+  @query('#riskAssessmentDropdown')
+  riskAssessmentDropdown!: EtoolsDropdownEl;
+
+  private tabId!: string;
+  private categoryId!: string;
+  private originalComments!: string;
 
   static get observers() {
     return [
@@ -176,16 +208,16 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
     let riskOptions = this.getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
 
-    this.addEventListener('edit-blueprint', this._openEditDialog);
-    this.addEventListener('risk-value-changed', this._riskValueChanged);
+    this.addEventListener('edit-blueprint', this._openEditDialog as any);
+    this.addEventListener('risk-value-changed', this._riskValueChanged as any);
 
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
-    this.removeEventListener('edit-blueprint', this._openEditDialog);
-    this.removeEventListener('risk-value-changed', this._riskValueChanged);
+    this.removeEventListener('edit-blueprint', this._openEditDialog as any);
+    this.removeEventListener('risk-value-changed', this._riskValueChanged as any);
   }
 
   _dataChanged(data) {
@@ -257,15 +289,15 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
       children: [detail.data]
     });
     this.requestsCount(1);
-    this.fire('action-activated', {type: 'save', quietAdding: true});
+    fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }
 
   _addItemFromDialog() {
     if (!this.dialogOpened || !this.validate()) {return;}
 
     if (this.originalComments === this.editedItem.risk.extra.comments &&
-      this.$.riskAssessmentInput.value &&
-      this.$.riskAssessmentInput.value.value === this.editedItem.risk.value) {
+      this.riskAssessmentDropdown.selected &&
+      this.riskAssessmentDropdown.selected === this.editedItem.risk.value) {
 
       this.dialogOpened = false;
       this.resetDialog();
@@ -273,12 +305,12 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
     }
 
     this.requestInProcess = true;
-    this.fire('action-activated', {type: 'save', quietAdding: true});
+    fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }
 
   validate() {
-    let riskValid = this.$.riskAssessmentInput.validate(),
-      commentsValid = this.$.riskAssessmentComments.validate();
+    let riskValid = this.riskAssessmentDropdown.validate(),
+      commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
 
     return riskValid && commentsValid;
   }
@@ -301,7 +333,7 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
 
   getDataFromDialog() {
     let blueprintRisk = {
-      value: this.$.riskAssessmentInput.value.value,
+      value: this.riskAssessmentDropdown.selected,
       extra: this.editedItem.risk && this.editedItem.risk.extra || {}
     };
     let data = {
@@ -334,7 +366,7 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
   }
 
   getElements(className) {
-    return Polymer.dom(this.root).querySelectorAll(`.${className}`);
+    return this.shadowRoot!.querySelectorAll(`.${className}`);
   }
 
   getScore(score) {
@@ -346,29 +378,30 @@ class QuestionnairePageMain extends PermissionControllerMixin(CommonMethodsMixin
     return ratingString ? `- ${rating}` : '';
   }
 
-  resetDialog(opened) {
+  resetDialog(opened?) {
     if (opened) {return;}
-    this.$.riskAssessmentInput.invalid = false;
-    this.$.riskAssessmentInput.value = '';
 
-    this.$.riskAssessmentComments.invalid = false;
-    this.$.riskAssessmentComments.value = '';
+    this.riskAssessmentDropdown.invalid = false;
+    this.riskAssessmentDropdown.selected = null;
+
+    (this.$.riskAssessmentComments as PaperTextareaElement).invalid = false;
+    (this.$.riskAssessmentComments as PaperTextareaElement).value = '';
   }
 
   savingError(errorObj) {
     if (this.requestInProcess) {
       this.requestInProcess = false;
-      this.fire('toast', {text: 'Can not save data'});
+      fireEvent(this, 'toast', {text: 'Can not save data'});
     }
     if (!errorObj || !errorObj.questionnaire) {return;}
 
     let nonField = this.checkNonField(errorObj.questionnaire);
     let data = this.refactorErrorObject(errorObj.questionnaire);
     if (isString(data)) {
-      this.fire('toast', {text: `Qustionnaire: ${data}`});
+      fireEvent(this, 'toast', {text: `Qustionnaire: ${data}`});
     }
     if (nonField) {
-      this.fire('toast', {text: `Qustionnaire: ${nonField}`});
+      fireEvent(this, 'toast', {text: `Qustionnaire: ${nonField}`});
     }
   }
 

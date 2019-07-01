@@ -20,6 +20,7 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import assign from 'lodash-es/assign';
+import '../questionnaire-components/questionnaire-page-main/questionnaire-page-main';
 
 
 class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
