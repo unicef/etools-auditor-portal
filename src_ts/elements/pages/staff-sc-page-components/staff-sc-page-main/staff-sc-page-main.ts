@@ -195,6 +195,9 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(PermissionCo
   }
 
   _queryParamsChanged() {
+    if (!this.route) {
+      return;
+    }
     if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {return;}
     if (this.routeData.view === 'list') {
       let queries = this._configListParams();
