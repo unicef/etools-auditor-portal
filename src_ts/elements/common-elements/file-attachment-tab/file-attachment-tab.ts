@@ -612,8 +612,8 @@ class FileAttachmentTab extends EndpointsMixin(
     if (!this.dialogOpened && !fileData) {
       return {};
     }
-    let {id, file, type} = fileData || this.editedItem,
-        data = {file};
+    let {id, file, type} = fileData || this.editedItem;
+    let data: GenericObject = {file};
 
     if (id) {
       data.id = id;

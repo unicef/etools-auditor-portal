@@ -2,6 +2,7 @@ import {PolymerElement} from '@polymer/polymer';
 import {Constructor} from '../../types/global';
 import {microTask} from '@polymer/polymer/lib/utils/async';
 
+// TODO - is this mixin needed?
 /**
  * @polymer
  * @mixinFunction

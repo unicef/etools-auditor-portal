@@ -334,8 +334,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _validateBasicInfo(property) {
-      let detailsValid = this.getElement('#engagementDetails').validate(),
-          partnerDetailsValid = this.getElement('#partnerDetails').validate();
+      let detailsValid = this.getElement('#engagementDetails').validate();
+      let partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
       if (!detailsValid || !partnerDetailsValid) {
         let openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
