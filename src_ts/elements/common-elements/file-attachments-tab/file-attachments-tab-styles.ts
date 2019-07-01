@@ -1,7 +1,7 @@
 import {html} from '@polymer/polymer/polymer-element';
 
 // language=HTML
-export const fileAttachmentTabStyles = html`
+export const fileAttachmentsTabStyles = html`
   <style>
     :host a {
       padding-left: 5px;

@@ -12,26 +12,26 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 
-import {sharedStyles} from "../../styles-elements/shared-styles";
-import {tabInputsStyles} from "../../styles-elements/tab-inputs-styles";
-import {tabLayoutStyles} from "../../styles-elements/tab-layout-styles";
-import {moduleStyles} from "../../styles-elements/module-styles";
-import {fileAttachmentTabStyles} from "./file-attachment-tab-styles";
+import {sharedStyles} from '../../styles-elements/shared-styles';
+import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
+import {tabLayoutStyles} from '../../styles-elements/tab-layout-styles';
+import {moduleStyles} from '../../styles-elements/module-styles';
+import {fileAttachmentsTabStyles} from './file-attachments-tab-styles';
 import '../../data-elements/get-attachments';
 import '../../data-elements/update-attachments';
 import '../list-tab-elements/list-header/list-header';
 import '../list-tab-elements/list-element/list-element';
 import '../simple-list-item/simple-list-item';
 import '../share-documents/share-documents';
-import DateMixin from "../../app-mixins/date-mixin";
-import UserControllerMixin from "../../app-mixins/user-controller-mixin";
-import EngagementMixin from "../../app-mixins/engagement-mixin";
-import ErrorHandlerMixin from "../../app-mixins/error-handler-mixin";
-import CommonMethodsMixin from "../../app-mixins/common-methods-mixin";
-import TableElementsMixin from "../../app-mixins/table-elements-mixin";
-import EtoolsAjaxRequestMixin from "@unicef-polymer/etools-ajax/etools-ajax-request-mixin";
-import {property} from "@polymer/decorators/lib/decorators";
-import {GenericObject} from "../../../types/global";
+import DateMixin from '../../app-mixins/date-mixin';
+import UserControllerMixin from '../../app-mixins/user-controller-mixin';
+import EngagementMixin from '../../app-mixins/engagement-mixin';
+import ErrorHandlerMixin from '../../app-mixins/error-handler-mixin';
+import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
+import TableElementsMixin from '../../app-mixins/table-elements-mixin';
+import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../types/global';
 
 import get from 'lodash-es/get';
 import uniqueId from 'lodash-es/uniqueId';
@@ -50,7 +50,7 @@ import EndpointsMixin from '../../app-config/endpoints-mixin';
  * @appliesMixin UserControllerMixin
  * @appliesMixin DateMixin
  */
-class FileAttachmentTab extends EndpointsMixin(
+class FileAttachmentsTab extends EndpointsMixin(
     TableElementsMixin(
       CommonMethodsMixin(
         ErrorHandlerMixin(
@@ -62,7 +62,7 @@ class FileAttachmentTab extends EndpointsMixin(
   static get template() {
     // language=HTML
     return html`
-      ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentTabStyles}
+      ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
       <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
                        endpoint-name="[[endpointName]]"></get-attachments>
       <update-attachments
@@ -856,4 +856,4 @@ class FileAttachmentTab extends EndpointsMixin(
 
 }
 
-window.customElements.define('file-attachment-tab', FileAttachmentTab);
+window.customElements.define('file-attachments-tab', FileAttachmentsTab);
