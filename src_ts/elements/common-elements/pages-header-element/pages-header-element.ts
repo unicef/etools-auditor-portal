@@ -34,12 +34,12 @@ class PagesHeaderElement extends PolymerElement {
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" hidden$="[[!exportLinks.length]]">
               <paper-menu-button id="dropdown" hidden$="[[!_isDropDown(exportLinks)]]" on-tap="_toggleOpened" horizontal-align="right">
-                <paper-button class="grey-buttons" class="dropdown-trigger">
+                <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
                   <iron-icon icon="file-download"></iron-icon>
                   Export
                 </paper-button>
 
-                <paper-listbox id="dropdownMenu" class="dropdown-content" class="mw-150">
+                <paper-listbox id="dropdownMenu" slot="dropdown-content" class="dropdown-content" class="mw-150">
                   <template is="dom-repeat" items="[[exportLinks]]">
                     <paper-item on-tap="exportData">[[item.name]]</paper-item>
                   </template>

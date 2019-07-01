@@ -190,9 +190,6 @@ class EngagementsListView extends
   isStaffSc: boolean = false;
 
   @property({type: Array})
-  isStaffSc: any[] = [];
-
-  @property({type: Array})
   exportLinks: any[] = [];
 
   @property({type: String})

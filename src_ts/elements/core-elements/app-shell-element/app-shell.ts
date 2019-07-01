@@ -2,7 +2,8 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import {setPassiveTouchGestures, setRootPath} from '@polymer/polymer/lib/utils/settings.js';
 
-// These are the elements needed by this element.
+import '@polymer/app-route/app-route';
+import '@polymer/app-route/app-location.js';
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header-layout/app-header-layout.js';
@@ -54,7 +55,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
       <app-route
               route="{{route}}"
-              pattern="[[baseUrl]]:page"
+              pattern="[[rootPath]]:page"
               data="{{routeData}}"
               query-params="{{queryParams}}"
               tail="{{subroute}}">
@@ -184,8 +185,8 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === '/ap/') {
-      this._configPath();
+    if (this.initLoadingComplete && this.route.path === '/ap_poly3/') {
+      this._setDefaultLandingPage();
     }
 
     (this.$.drawer as AppDrawerElement).$.scrim.remove();
@@ -244,7 +245,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
       fireEvent(this, 'global-loading', {type: 'initialisation'});
 
-      if (this.route.path === '/ap/') {this._configPath();}
+      if (this.route.path === '/ap/') {this._setDefaultLandingPage();}
     })
     .catch((_err) => {console.error(_err); this._pageNotFound()});
   }
@@ -268,7 +269,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     this.staticDataLoaded = true;// TODO -what is this flag doing???
     if (this.routeData && this.staticDataLoaded) {
       this.user = this.getUserData();
-      this.page = this.routeData.page || this._configPath();
+      this.page = this.routeData.page || this._setDefaultLandingPage();
     }
   }
 
@@ -293,8 +294,8 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     }
   }
 
-  _configPath() {// TODO ???
-    let path = `${(window.location.port === '8080') ? '/' : '/ap/'}engagements/list`;
+  _setDefaultLandingPage() {// _configPath
+    let path = `${this.rootPath}engagements/list`;
     this.set('route.path', path);
     return 'engagements';
   }

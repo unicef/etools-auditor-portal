@@ -20,18 +20,20 @@ import QueryParamsController from '../../../app-mixins/query-params-controller';
 import {sharedStyles} from "../../../styles-elements/shared-styles";
 import {moduleStyles} from "../../../styles-elements/module-styles";
 import {mainPageStyles} from "../../../styles-elements/main-page-styles";
+import '../../../common-elements/file-attachment-tab/file-attachment-tab';
+import '../../../common-elements/status-tab-element/status-tab-element';
+import '../../../common-elements/pages-header-element/pages-header-element';
+import '../../../data-elements/add-new-engagement';
+import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
+import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
+import '../../../common-elements/file-attachment-tab/file-attachment-tab';
+
 
 /**
  * TODO: polymer 3 migration
  *    - migrate and use:
- *        - status-tab-element
- *        - pages-header-element
- *        - add-new-engagement
- *        - engagement-info-details
- *        - partner-details-tab
- *        - specific-procedure
- *        - engagement-staff-members-tab
- *        - file-attachments-tab
  *     - add behaviors: etoolsAppConfig.globals aka EndpointsMixin and EtoolsAjaxRequestMixin ???????????????????
  *
  * @customElement
@@ -334,11 +336,12 @@ class NewEngagementView extends
         specific_procedures: []
       });
 
-      this.$.engagement_attachments.resetData();
-      this.$.engagementDetails.resetValidationErrors();
-      this.$.engagementDetails.resetAgreement();
-      this.$.partnerDetails.resetValidationErrors();
-      this.$.engagementDetails.resetType();
+      // TODO
+      // this.$.engagement_attachments.resetData();
+      // this.$.engagementDetails.resetValidationErrors();
+      // this.$.engagementDetails.resetAgreement();
+      // this.$.partnerDetails.resetValidationErrors();
+      // this.$.engagementDetails.resetType();
     }
 
     if (page === 'new' && isStaffSc) {
