@@ -2,6 +2,8 @@ import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {property} from "@polymer/decorators/lib/decorators";
 import {GenericObject} from "../../../../../types/global";
 
+import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+
 /**
  * @customElement
  * @polymer
