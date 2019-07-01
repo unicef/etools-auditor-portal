@@ -7,8 +7,8 @@ documentContainer.innerHTML = `
     <style>
         html {
           --primary-color: #0099ff;
-          --primary-background-color: white;
-          --secondary-background-color: var(--paper-indigo-700);
+          --primary-background-color: #ffffff;
+          --secondary-background-color: #eeeeee;
           --ternary-background-color: var(--paper-indigo-800);
           --accent-color: var(--paper-light-blue-a200);
           --error-color: var(--paper-deep-orange-a700);
