@@ -129,7 +129,7 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
 
   _refreshPage() {
       this.refreshInProgress = false;
-      window.location.href = `${window.location.origin}/ap/`;
+      window.location.href = `${window.location.origin}/ap_poly3/`;
   }
 }
 

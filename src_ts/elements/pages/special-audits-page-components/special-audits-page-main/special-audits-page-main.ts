@@ -12,8 +12,8 @@ import '../../../../elements/common-elements/follow-up-components/follow-up-main
 import '../../../../elements/common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../../elements/data-elements/update-engagement';
 import '../../../../elements/data-elements/engagement-info-data';
-// import sa-report-page-main.js   //TODO:polymer3 not migrated
-// import file-attachments-tab.js  //TODO:polymer3 not migrated
+import '../../../../elements/pages/special-audits-page-components/report-page-components/sa-report-page-main/sa-report-page-main';
+import '../../../../elements/common-elements/file-attachment-tab/file-attachment-tab';
 import '../../../common-elements/pages-header-element/pages-header-element';
 
 import EngagementMixin from '../../../app-mixins/engagement-mixin';

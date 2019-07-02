@@ -22,6 +22,7 @@ import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
 
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
+import {searchAndFilterStyles} from './search-and-filter-styles';
 
 /**
  * @customElement
@@ -33,7 +34,8 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
   static get template() {
     // language=HTML
     return html`
-      ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
+      <style include="iron-flex"></style>
+      ${sharedStyles} ${moduleStyles} ${tabInputsStyles} ${searchAndFilterStyles}
       <paper-card class="second-header horizontal layout center">
         <div class="flex horizontal layout wrap">
           <div class="layout horizontal search-input-container">
@@ -44,7 +46,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
                 on-value-changed="searchKeyDown"
                 inline>
 
-              <iron-icon icon="search" prefix></iron-icon>
+              <iron-icon icon="search" slot="prefix"></iron-icon>
             </paper-input>
           </div>
 
@@ -73,7 +75,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
           <paper-menu-button horizontal-align="right"
                              ignore-select
                              no-overlap>
-            <paper-button class="dropdown-trigger">
+            <paper-button slot="dropdown-trigger">
               <iron-icon icon="filter-list"
                          class="filter-list-icon"></iron-icon>
 
@@ -81,7 +83,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
 
             </paper-button>
 
-            <paper-listbox multi class="dropdown-content" selected="0">
+            <paper-listbox multi slot="dropdown-content" selected="0">
               <template is="dom-repeat"
                         items="[[availableFilters]]">
                 <paper-icon-item on-tap="addFilter">

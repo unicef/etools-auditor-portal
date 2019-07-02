@@ -15,7 +15,7 @@ class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjax
 
     @property({type: Array, readOnly: true, notify: true})
     engagementsList!: [];
-  
+
     @property({type: Object})
     requestQueries!: any;
 
