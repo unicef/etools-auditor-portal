@@ -15,8 +15,8 @@ class InsertHtml extends PolymerElement {
   @property({type: String, observer: '_htmlChanged'})
   html: string = '';
 
-  _htmlChanged (html) {
-    this.shadowRoot.innerHTML = html || '--';
+  _htmlChanged(html) {
+    this.shadowRoot!.innerHTML = html || '--';
   }
 }
 

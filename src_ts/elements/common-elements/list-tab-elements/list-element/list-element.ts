@@ -17,6 +17,8 @@ import LocalizationMixin from '../../../app-mixins/localization-mixin';
 import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import '../../insert-html/insert-html';
+
 /**
  * @polymer
  * @customElement

@@ -7,6 +7,9 @@ import PermissionControllerMixin from '../../app-mixins/permission-controller-mi
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 declare const moment: any;
+import '../insert-html/insert-html';
+import './action-buttons';
+
 
 class StatusTabElement extends CommonMethodsMixin(PermissionControllerMixin(PolymerElement)) {
 
@@ -205,8 +208,8 @@ class StatusTabElement extends CommonMethodsMixin(PermissionControllerMixin(Poly
   @property({type: Boolean})
   cancelled: boolean = false;
 
-  @property({type: Object})// TODO is this an object or what is it?
-  permissionBase;
+  @property({type: String})
+  permissionBase!: string;
 
   private statuses = ['partner_contacted', 'field_visit', 'draft_issued_to_unicef',
     'comments_received_by_partner', 'draft_issued_to_partner',
@@ -216,7 +219,7 @@ class StatusTabElement extends CommonMethodsMixin(PermissionControllerMixin(Poly
     'date_of_comments_by_ip', 'date_of_draft_report_to_unicef',
     'date_of_comments_by_unicef', 'date_of_report_submit', 'date_of_report_submit'];
 
-  static get observer() {
+  static get observers() {
     return [
       'checkCancelled(engagementData.status)',
       'setActions(permissionBase)',

@@ -14,6 +14,7 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
+import '../risk-tab/risk-tab';
 
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
@@ -111,7 +112,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                   selected="{{_setRiskValue(editedItem.risk.value, riskOptions)}}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
-                  options="[[riskOptions]]" option-label="display_name"
+                  options="[[riskOptions]]"
+                  option-label="display_name"
                   option-value="display_name"
                   disabled="[[requestInProcess]]"
                   readonly="[[requestInProcess]]"

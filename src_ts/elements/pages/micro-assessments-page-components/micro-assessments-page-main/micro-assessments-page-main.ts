@@ -21,6 +21,7 @@ import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import assign from 'lodash-es/assign';
 import '../questionnaire-components/questionnaire-page-main/questionnaire-page-main';
+import '../../../common-elements/status-tab-element/status-tab-element';
 
 
 class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
