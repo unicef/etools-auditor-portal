@@ -2,6 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer';
 import '@polymer/app-route/app-route';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-tabs/paper-tab';
+import '@polymer/paper-tabs/paper-tabs';
 import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {mainPageStyles} from '../../../styles-elements/main-page-styles';
@@ -22,7 +23,7 @@ import {fireEvent} from '../../../utils/fire-custom-event';
 import assign from 'lodash-es/assign';
 import '../questionnaire-components/questionnaire-page-main/questionnaire-page-main';
 import '../../../common-elements/status-tab-element/status-tab-element';
-
+import '@polymer/paper-input/paper-textarea';
 
 class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
   static get template() {
