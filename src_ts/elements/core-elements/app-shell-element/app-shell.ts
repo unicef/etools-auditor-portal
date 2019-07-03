@@ -232,7 +232,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
     var resolvedPageUrl;
     if (page === 'not-found') {
-      resolvedPageUrl = 'elements/pages/not-found-page-view/not-found-page-view.html';
+      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/not-found-page-view/not-found-page-view.js`;
     } else if (page === 'staff-sc' && !this._checkSSCPage(this.user)) {
       this._pageNotFound();
       return;
