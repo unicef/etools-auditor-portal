@@ -24,6 +24,7 @@ import {GenericObject} from '../../../../types/global';
 class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
   PermissionControllerMixin(
     QueryParamsController(PolymerElement)))) {
+  
   static get template() {
     return html`
       <style>
@@ -186,6 +187,7 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
   }
 
   _configListParams(noNotify?) {
+
     let queriesUpdates: GenericObject = {};
     let queries: GenericObject = this.parseQueries() || {};
 
