@@ -20,7 +20,7 @@ import QueryParamsController from '../../../app-mixins/query-params-controller';
 import {sharedStyles} from "../../../styles-elements/shared-styles";
 import {moduleStyles} from "../../../styles-elements/module-styles";
 import {mainPageStyles} from "../../../styles-elements/main-page-styles";
-import '../../../common-elements/file-attachment-tab/file-attachment-tab';
+import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../data-elements/add-new-engagement';
@@ -28,7 +28,7 @@ import '../../../common-elements/engagement-overview-components/engagement-info-
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import '../../../common-elements/file-attachment-tab/file-attachment-tab';
+import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 
 
 /**
