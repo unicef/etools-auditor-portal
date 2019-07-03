@@ -9,8 +9,8 @@ class NotFoundPageView extends (PolymerElement) {
   static get template() {
     // language=HTML
     return html`
-        ${sharedStyles}
-      <style>
+       ${sharedStyles}
+      <style include="paper-material-styles">
         :host {
           display: block;
         }
@@ -24,28 +24,18 @@ class NotFoundPageView extends (PolymerElement) {
           background-color: var(--light-theme-content-color);
         }
       </style>
-      
+
       <div id="pageContent">
         <div class="paper-material" elevation="1">
-            404 <a href$="[[getLink()]]" class="link">Head back home.</a>
+            404 <a href$="[[rootPath]]engagements/list" class="link">Head back home.</a>
         </div>
       </div>
     `;
-
-    // behaviors: [
-    //   etoolsAppConfig.globals
-    // ]
-
-  }
-
-  getLink() {
-    return this.getAbsolutePath('engagements/list');
   }
 
   openDrawer() {
     fireEvent(this, 'drawer');
   }
-
 
 }
 
