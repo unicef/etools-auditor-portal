@@ -1,6 +1,8 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/app-route/app-route';
+import '@polymer/paper-tabs/paper-tabs';
+import '@polymer/paper-tabs/paper-tab';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '../../../../elements/core-elements/app-main-header/page-header';
@@ -43,7 +45,7 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
-        
+
       </style>
 
       <app-route
@@ -241,8 +243,8 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
           </div>
         </etools-dialog>
       </template>
-    
-    
+
+
     `;
   }
 
@@ -331,4 +333,4 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
 
 }
 
-window.customElements.define('special-audit-page-main', SpecialAuditsPageMain);
+window.customElements.define('special-audits-page-main', SpecialAuditsPageMain);
