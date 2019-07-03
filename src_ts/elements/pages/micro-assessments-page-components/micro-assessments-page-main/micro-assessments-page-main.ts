@@ -24,6 +24,7 @@ import assign from 'lodash-es/assign';
 import '../questionnaire-components/questionnaire-page-main/questionnaire-page-main';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '@polymer/paper-input/paper-textarea';
+import '../report-page-components/ma-report-page-main';
 
 class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
   static get template() {

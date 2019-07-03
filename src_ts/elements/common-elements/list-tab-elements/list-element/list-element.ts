@@ -374,6 +374,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   @property({type: Boolean, reflectToAttribute: true})
   hover!: boolean;
 
+  @property({type: Array})
+  headings!: [];
+
   public connectedCallback() {
     super.connectedCallback();
     this._initListeners();
@@ -406,11 +409,11 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _setRightPadding() {
-    if (!(this as any).headings) {return;}
+    if (!this.headings) {return;}
     let rightPadding = 0;
     let padding;
 
-    (this as any).headings.forEach((heading) => {
+    this.headings.forEach((heading) => {
       if (typeof heading.size === 'string') {
         padding = parseInt(heading.size, 10) || 0;
         rightPadding += padding;

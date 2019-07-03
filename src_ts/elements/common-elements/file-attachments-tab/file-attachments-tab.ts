@@ -38,6 +38,9 @@ import uniqueId from 'lodash-es/uniqueId';
 import clone from 'lodash-es/clone';
 import {fireEvent} from "../../utils/fire-custom-event";
 import EndpointsMixin from '../../app-config/endpoints-mixin';
+import uniqBy from 'lodash-es/uniqBy';
+import pickBy from 'lodash-es/pickBy';
+import isEmpty from 'lodash-es/isEmpty';
 
 /**
  * @customElement
@@ -457,7 +460,7 @@ class FileAttachmentsTab extends EndpointsMixin(
     const options = Object.assign(this.auditLinksOptions, {method: 'GET'});
     this.sendRequest(options)
         .then(res => {
-          this.set('linkedAttachments', _.uniqBy(res, 'attachment'));
+          this.set('linkedAttachments', uniqBy(res, 'attachment'));
           this.set('requestInProcess', false);
         })
         .catch(this._errorHandler.bind(this));
@@ -595,12 +598,12 @@ class FileAttachmentsTab extends EndpointsMixin(
       return attachmentsData;
     }
 
-    let data = _.pickBy(attachmentsData, (value, key) => original[key] !== value);
+    let data = pickBy(attachmentsData, (value, key) => original[key] !== value);
     if (data.file && this._fileAlreadySelected()) {
       delete data.file;
     }
 
-    if (_.isEmpty(data)) {
+    if (isEmpty(data)) {
       return null;
     } else {
       data.id = attachmentsData.id;
