@@ -246,7 +246,7 @@
                 } else if (this.actionUrl && ~this.actionUrl.indexOf('submit')) {
                     //Finish data updating, run submitting if submit url has been saved
                     this.fire('engagement-updated', {success: true, data: engagement});
-                    
+
                     this.fire('global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
                     this.fire('global-loading', {type: 'update-engagement'});
                     this.url = this.actionUrl;

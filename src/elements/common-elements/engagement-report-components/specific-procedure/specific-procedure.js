@@ -86,11 +86,6 @@
             }
         },
 
-        listeners: {
-            'dialog-confirmed': '_addItemFromDialog',
-            'delete-confirmed': 'removeItem',
-        },
-
         observers: [
             'resetDialog(dialogOpened)',
             '_errorHandler(errorObject.specific_procedures)',
@@ -121,6 +116,13 @@
 
         canAddSP: function(basePermissionPath, readonlyTab, withoutFindingColumn) {
             return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
+        },
+
+        _removeItem: function(event) {
+            if (this.deleteCanceled(event)) {
+                return;
+            }
+            this.removeItem();
         }
 
     });

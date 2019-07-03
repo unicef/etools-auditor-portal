@@ -46,7 +46,6 @@ Polymer({
     listeners: {
         'engagement-info-loaded': '_infoLoaded',
         'engagement-updated': '_engagementUpdated',
-        'dialog-confirmed': '_cancelEngagement',
         'main-action-activated': '_mainActionActivated'
     },
 

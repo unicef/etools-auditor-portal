@@ -49,8 +49,7 @@ Polymer({
     },
 
     listeners: {
-        'open-edit-dialog': 'openEditDialog',
-        'dialog-confirmed': '_saveEditedArea'
+        'open-edit-dialog': 'openEditDialog'
     },
 
     observers: [

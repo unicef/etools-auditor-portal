@@ -35,7 +35,7 @@ paper-icon-button.textsec {
 
 .rightfloat {
     float: right;
-    @apply(--list-pagination-styles);
+    @apply --list-pagination-styles;
 }
 
 .lh {

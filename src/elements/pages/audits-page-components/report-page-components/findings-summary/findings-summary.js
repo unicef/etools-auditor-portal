@@ -100,10 +100,6 @@ Polymer({
         }
     },
 
-    listeners: {
-        'dialog-confirmed': '_addItemFromDialog'
-    },
-
     observers: [
         'resetDialog(dialogOpened)',
         '_errorHandler(errorObject)',

@@ -1,5 +1,5 @@
 :host {
-    @apply(--layout-vertical);
+    @apply --layout-vertical;
 
     height: 100%;
     overflow-y: auto;
@@ -7,8 +7,8 @@
     outline: 1px solid var(--dark-divider-color);
 
     .menu-header {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+        @apply --layout-horizontal;
+        @apply --layout-center;
 
         background-color: #4c6f80;
         color: white;
@@ -45,7 +45,7 @@
     }
 
     .nav-menu {
-        @apply(--layout-vertical);
+        @apply --layout-vertical;
 
         background: #fff;
         padding-top: 8px;
@@ -56,7 +56,7 @@
 
     .nav-menu,
     .nav-menu iron-selector[role="navigation"] {
-        @apply(--layout-flex);
+        @apply --layout-flex;
     }
 
     .secondary-header {
