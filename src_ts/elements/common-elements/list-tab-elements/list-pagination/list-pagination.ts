@@ -1,4 +1,3 @@
-
 import {PolymerElement, html} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 
@@ -9,8 +8,9 @@ import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
 import QueryParamsController from '../../../app-mixins//query-params-controller';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+
 
 /**
  * @polymer
@@ -24,9 +24,9 @@ class ListPagination extends QueryParamsController(PolymerElement) {
       ${sharedStyles} ${moduleStyles}
       <style>
           :host {
+              /*flex-direction: row;*/
               display: block;
               margin-top: 0;
-              --paper-dropdown-menu-width: 50px;
               --paper-dropdown-menu-padding: 0 30px;
               --paper-input-container-input-font-size: 12px;
               --paper-input-container-input-color: var(--gray-mid);
@@ -36,6 +36,7 @@ class ListPagination extends QueryParamsController(PolymerElement) {
               background-color: white;
           }
           .chevron-container {
+              display: inline;
               width: 200px;
               margin: 0 0 0 30px;
           }
@@ -62,6 +63,7 @@ class ListPagination extends QueryParamsController(PolymerElement) {
           }
           paper-dropdown-menu {
               color: var(--gray-mid);
+              width: 50px;
               --paper-input-container-input-font-size: 13px;
               --paper-input-container-input-box-sizing: border-box;
               --paper-input-container-input-white-space: nowrap;
@@ -101,7 +103,7 @@ class ListPagination extends QueryParamsController(PolymerElement) {
           <div class="chevron-container layout around-justified horizontal">
               <paper-icon-button
                       disabled$="{{_disableButton(currentPage, datalength)}}"
-                      icon="pagination:first-page"
+                      icon="first-page"
                       on-click="goToFirst"
                       class$="chev back-arr [[pageMarker]]">
               </paper-icon-button>
@@ -122,7 +124,7 @@ class ListPagination extends QueryParamsController(PolymerElement) {
 
               <paper-icon-button
                       disabled$="{{_disableButton(currentPage, datalength, pageSize)}}"
-                      icon="pagination:last-page"
+                      icon="last-page"
                       on-click="goToLast"
                       class$="chev next-arr [[pageMarker]]">
               </paper-icon-button>

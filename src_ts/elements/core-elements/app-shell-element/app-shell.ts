@@ -35,6 +35,7 @@ import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
 import {GenericObject} from '../../../types/global.js';
 import {getDomainByEnv} from '../../app-config/config.js';
+import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 
 
 setRootPath('/ap_poly3/');
@@ -49,6 +50,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     // main template
     // language=HTML
     return html`
+      ${appDrawerStyles}
       <static-data></static-data>
 
       <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>

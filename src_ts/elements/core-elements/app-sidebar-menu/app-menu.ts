@@ -6,10 +6,9 @@ import '@polymer/iron-icons/maps-icons.js';
 import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-ripple/paper-ripple.js';
-
+import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '../../utils/fire-custom-event.js';
 import { property } from '@polymer/decorators';
-import {NavMenuStyle} from './styles/nav-menu-styles.js';
 
 /**
  * @polymer
@@ -22,7 +21,7 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
     // main template
     // language=HTML
     return html`
-      ${NavMenuStyle}
+      ${navMenuStyles} 
 
       <div class="menu-header">
         <span id="app-name">
