@@ -11,7 +11,11 @@ import EngagementMixin from '../../elements/app-mixins/engagement-mixin';
 import { GenericObject } from "../../types/global.js";
 
 //TO DO must use EngagementMixin, will create more errors...
-class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(EngagementMixin(PolymerElement))))) {
+class EngagementInfoData extends LastCreatedMixin(
+  PermissionControllerMixin(
+  EndpointsMixin(
+    EtoolsAjaxRequestMixin(
+    EngagementMixin(PolymerElement))))) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.LastCreatedController,
@@ -26,7 +30,7 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
 
     @property({type: String})
     engagementType!: string;
-  
+
     @property({type: Object, notify: true,  observer: '_setToResponse'})
     engagementInfo!: {};
 
@@ -41,7 +45,7 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
         postfix: 'report_attachments',
         requestName: 'reportAttachments'
     };
-  
+
     @property({ type: Object })
     atmOptions = {
         postfix: 'attachments',
@@ -92,7 +96,7 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
             !this.requestsCompleted.reportAttachments) { return; }
 
         if (data) { this.engagementInfo = data; }
-        
+
        fireEvent(this, 'global-loading', {type: 'engagement-info'});
        fireEvent(this, 'engagement-info-loaded');
         this.persistCurrentEngagement(data, this.engagementType);
@@ -157,7 +161,7 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
             postfix: 'report_attachments',
             requestName: 'reportAttachments'
         }, this.getEndpoint('reportAttachments', {id: id}));
-        
+
 
         let lastCreated = this.getLastEngagementData(id);
         // load engagement info if it was just created
@@ -168,7 +172,7 @@ class EngagementInfoData extends LastCreatedMixin(PermissionControllerMixin(Endp
         }
 
         // otherwise fetch info
-        
+
         this._getEngagementInfo(id);
 
         if (this.collectionExists(`engagement_${id}`)) {

@@ -21,6 +21,7 @@ import {fireEvent} from '../../../utils/fire-custom-event';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
+import '@polymer/paper-input/paper-textarea';
 
 /**
  * @polymer

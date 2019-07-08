@@ -24,7 +24,6 @@ export const navMenuStyles = html`
       paper-tooltip {
         display: none;
       }
-
       :host([small-menu]) {
         overflow-x: hidden;
       }
