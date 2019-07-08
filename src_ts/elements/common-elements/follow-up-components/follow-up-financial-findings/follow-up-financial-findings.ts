@@ -55,7 +55,6 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PermissionController(
                                 label="[[getLabel('audit_opinion', basePermissionPath)]]"
                                 placeholder="[[getReadonlyPlaceholder(engagement)]]"
                                 options="[[auditOpinionChoices]]"
-                                custom-object-options
                                 option-label="display_name"
                                 option-value="value"
                                 selected="{{engagement.audit_opinion}}"

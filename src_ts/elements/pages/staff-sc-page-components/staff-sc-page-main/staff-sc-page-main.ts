@@ -18,9 +18,13 @@ import isUndefined from 'lodash-es/isUndefined';
 import isEqual from 'lodash-es/isEqual';
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
+import {GenericObject} from '../../../../types/global';
 
 
-class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(PermissionControllerMixin(QueryParamsController(PolymerElement)))) {
+class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
+  PermissionControllerMixin(
+    QueryParamsController(PolymerElement)))) {
+  
   static get template() {
     return html`
       <style>
@@ -113,6 +117,15 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(PermissionCo
   @property({type: String})
   endpointName = 'staffSCList';
 
+  @property({type: Object})
+  route!: GenericObject;
+
+  @property({type: Object})
+  routeData!: GenericObject;
+
+  @property({type: Object})
+  partnersListQueries!: GenericObject;
+
   static get observers() {
     return [
       '_routeConfig(routeData.view, selectedPage)'
@@ -174,8 +187,9 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(PermissionCo
   }
 
   _configListParams(noNotify?) {
-    let queriesUpdates = {},
-      queries = this.parseQueries() || {};
+
+    let queriesUpdates: GenericObject = {};
+    let queries: GenericObject = this.parseQueries() || {};
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
