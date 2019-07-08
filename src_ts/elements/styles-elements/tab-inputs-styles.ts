@@ -1,5 +1,5 @@
 import {html} from '@polymer/polymer/polymer-element';
-
+// TODO - remove etools-searchable.. styles
 // language=HTML
 export const tabInputsStyles = html`
   <style>
@@ -332,7 +332,7 @@ export const tabInputsStyles = html`
         color: var(--gray-dark) !important;
       };
     }
-    
+
     #bottom-actions {
       display: -ms-flexbox;
       display: -webkit-flex;

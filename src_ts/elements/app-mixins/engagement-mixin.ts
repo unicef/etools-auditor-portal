@@ -11,7 +11,6 @@ import {fireEvent} from '../utils/fire-custom-event';
 import {Constructor, GenericObject} from '../../types/global';
 import PermissionControllerMixin from './permission-controller-mixin';
 import ErrorHandlerMixin from './error-handler-mixin';
-import TextareaMaxRowsMixin from './textarea-max-rows-mixin';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
 
@@ -27,8 +26,12 @@ import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin
 
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends
-      EndpointsMixin(PermissionControllerMixin(
-          UserControllerMixin(ErrorHandlerMixin(TextareaMaxRowsMixin(baseClass as Constructor<PolymerElement>))))) {
+      EndpointsMixin(
+        PermissionControllerMixin(
+          UserControllerMixin(
+            ErrorHandlerMixin(
+             // TextareaMaxRowsMixin( TODO - is this mixin needed????
+                baseClass as Constructor<PolymerElement>)))) {
 
     @property({type: Number})
     engagementId!: number;
@@ -148,7 +151,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     _openCancelDialog() {
       let input = this.getElement('#cancellationReasonInput');
       if (input) {
-        this.setMaxHeight(input);
+        //this.setMaxHeight(input); TODO - is this needed
       }
       this.dialogOpened = true;
     }
@@ -334,8 +337,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _validateBasicInfo(property) {
-      let detailsValid = this.getElement('#engagementDetails').validate(),
-          partnerDetailsValid = this.getElement('#partnerDetails').validate();
+      let detailsValid = this.getElement('#engagementDetails').validate();
+      let partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
       if (!detailsValid || !partnerDetailsValid) {
         let openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
@@ -356,7 +359,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     getElement(selector) {
-      return this.shadowRoot!.querySelector(selector);
+      if (!this.shadowRoot) {
+        return;
+      }
+      return this.shadowRoot.querySelector(selector);
     }
 
     _attachmentsReadonly(base, type) {

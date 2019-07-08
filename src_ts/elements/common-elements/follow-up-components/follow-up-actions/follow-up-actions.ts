@@ -256,7 +256,6 @@ class FollowUpActions extends
                                     label="[[getLabel('category', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('category', editedApBase, 'select')]]"
                                     options="[[categories]]"
-                                    custom-object-options
                                     option-label="display_name"
                                     option-value="value"
                                     required$="[[_setRequired('category', editedApBase)]]"
@@ -393,7 +392,7 @@ class FollowUpActions extends
                 <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
             </div>
         </etools-dialog>
-            
+
             `;
   }
   static get observers() {
