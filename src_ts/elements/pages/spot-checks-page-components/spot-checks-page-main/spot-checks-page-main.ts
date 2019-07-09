@@ -13,11 +13,11 @@ import '../../../common-elements/status-tab-element/status-tab-element';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import '../report-page-components/sc-report-page-main/sc-report-page-main';
 
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-// sc-report-page-main
 
 import '../../../data-elements/update-engagement';
 import '../../../data-elements/engagement-info-data';

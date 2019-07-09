@@ -1,7 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../overview-element/overview-element';
-// summary-findings-element
+import '../summary-findings-element/summary-findings-element';
 import '../internal-controls/internal-controls';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
@@ -10,6 +10,9 @@ import concat from 'lodash-es/concat';
 import isNull from 'lodash-es/isNull';
 
 
+/**
+ * @polymer
+ */
 class ScReportPageMain extends (PolymerElement) {
   static get template() {
     // language=HTML
