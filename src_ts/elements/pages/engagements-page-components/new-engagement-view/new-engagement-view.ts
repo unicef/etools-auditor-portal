@@ -30,7 +30,6 @@ import '../../../common-elements/engagement-report-components/specific-procedure
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 
-
 /**
  * TODO: polymer 3 migration
  *    - migrate and use:

@@ -22,6 +22,7 @@ import '../../../common-elements/engagement-overview-components/engagement-staff
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
+import '../report-page-components/audit-report-page-main/audit-report-page-main';
 import {property} from "@polymer/decorators/lib/decorators";
 import {GenericObject} from "../../../../types/global";
 import EngagementMixin from "../../../app-mixins/engagement-mixin";
@@ -32,9 +33,6 @@ import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
 
 /**
- * TODO: polymer 3 migration
- *    - migrate: audit-report-page-main,
- *
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
