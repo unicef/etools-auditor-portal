@@ -43,6 +43,11 @@ documentContainer.innerHTML = `
           --subtitle-background-color: #eeeeee;
           --toolbar-height: 60px;
           --side-bar-scrolling: hidden;
+
+          --esmm-external-wrapper: {
+            width: 100%;
+            margin: 0;
+          }
         }
       
     </style>
