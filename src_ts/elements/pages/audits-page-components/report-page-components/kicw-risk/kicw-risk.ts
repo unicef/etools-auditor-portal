@@ -29,10 +29,10 @@ class KicwRisk extends PolymerElement {
           position: relative;
           display: block;
         }
-        :host .hover-icons {
+        .hover-icons {
           background-color: #eee;
         }
-        :host .edit-icon-slot {
+        .edit-icon-slot {
           align-items: flex-start;
         }
         list-element.list-element {
