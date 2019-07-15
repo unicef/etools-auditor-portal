@@ -57,7 +57,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
             base-permission-path="{{permissionBase}}">
       </update-engagement>
 
-      <template is="dom-if" if="{{engagement.id}}" restamp>
+      <template is="dom-if" if="[[engagement.id]]" restamp>
         <pages-header-element show-export-button hide-print-button export-links="[[_setExportLinks(engagement)]]"
           engagement="[[engagement]]" page-title="[[engagement.partner.name]] - Micro Assessment">
         </pages-header-element>
@@ -68,15 +68,15 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
               <span class="tab-content">Engagement Overview</span>
             </paper-tab>
 
-            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+            <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
               <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
             </template>
 
-            <template is="dom-if" if="{{_showQuestionnaire(permissionBase, engagement)}}" restamp>
+            <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
               <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>
             </template>
 
-            <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
+            <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
               <paper-tab name="follow-up">
                 <span class="tab-content">Follow-Up</span>
               </paper-tab>
@@ -90,7 +90,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
           <div id="pageContent">
             <iron-pages id="info-tabs" selected="{{tab}}" attr-for-selected="name">
               <div name="overview">
-                <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
+                <template is="dom-if" if="[[_showCancellationReason(engagement)]]">
                   <etools-content-panel class="cancellation-tab" panel-title="">
                     <div slot="panel-btns" class="bookmark">
                       <iron-icon icon="bookmark"></iron-icon>
@@ -115,14 +115,15 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                 </engagement-staff-members-tab>
               </div>
 
-              <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+              <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
                 <div name="report">
                   <ma-report-page-main id="report" original-data="[[originalData]]" engagement="{{engagement}}"
                     error-object="{{errorObject}}" permission-base="{{permissionBase}}">
                   </ma-report-page-main>
                 </div>
               </template>
-              <template is="dom-if" if="{{_showQuestionnaire(permissionBase, engagement)}}" restamp>
+
+              <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
                 <div name="questionnaire">
                   <questionnaire-page-main id="questionnaire" data="[[engagement.questionnaire]]"
                     risk-assessment="[[engagement.overall_risk_assessment.blueprints.0.risk.value_display]]"
@@ -131,7 +132,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                 </div>
               </template>
 
-              <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
+              <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
                 <div name="follow-up">
                   <follow-up-main id="follow-up" original-data="[[originalData]]" error-object="{{errorObject}}"
                     engagement="{{engagement}}" permission-base="{{permissionBase}}">
@@ -145,7 +146,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                   error-property="engagement_attachments" endpoint-name="attachments">
                 </file-attachments-tab>
 
-                <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
+                <template is="dom-if" if="[[hasReportAccess(permissionBase, engagement)]]" restamp>
                   <file-attachments-tab id="report_attachments" is-report-tab="true" data-base-path="[[permissionBase]]"
                     path-postfix="report_attachments" base-id="[[engagement.id]]" error-object="{{errorObject}}"
                     error-property="report_attachments" endpoint-name="reportAttachments">
