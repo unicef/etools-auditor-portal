@@ -28,7 +28,6 @@ import '../../../common-elements/engagement-overview-components/engagement-info-
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 
 /**
  * TODO: polymer 3 migration

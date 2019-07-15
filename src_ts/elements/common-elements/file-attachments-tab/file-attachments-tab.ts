@@ -412,6 +412,9 @@ class FileAttachmentsTab extends EndpointsMixin(
   @property({type: Boolean, computed: '_checkIsUnicefUser(dataBasePath)'})
   _isUnicefUser: boolean = false;
 
+  @property({type: String, reflectToAttribute: true})
+  endpointName!: string;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
@@ -445,7 +448,11 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   _setLinksEndpoint() {
-    const {details: engagement, type: engagementType} = this.getCurrentEngagement();
+    const currEngagement = this.getCurrentEngagement();
+    if (!currEngagement) {
+      return;
+    }
+    const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
       endpoint: this.getEndpoint('auditLinks', {
