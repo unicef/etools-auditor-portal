@@ -5,6 +5,9 @@ import {GenericObject} from "../../../../../types/global";
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../findings-summary/fundings-summary';
 import '../financial-findings/financial-findings';
+import '../assessment-of-controls/assessment-of-controls';
+import '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
+
 /**
  * @customElement
  * @polymer
