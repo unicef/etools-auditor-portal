@@ -25,7 +25,7 @@ class GetAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElemen
     }
 
     _baseIdChanged(baseId) {
-        if (!baseId) { return; }
+        if (!baseId || !this.endpointName) { return; }
         let url = this.getEndpoint(this.endpointName, {id: baseId}).url;
 
         this.sendRequest({
