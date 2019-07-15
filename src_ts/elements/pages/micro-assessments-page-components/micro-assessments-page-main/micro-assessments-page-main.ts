@@ -25,6 +25,7 @@ import '../questionnaire-components/questionnaire-page-main/questionnaire-page-m
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '@polymer/paper-input/paper-textarea';
 import '../report-page-components/ma-report-page-main';
+import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 
 class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
   static get template() {

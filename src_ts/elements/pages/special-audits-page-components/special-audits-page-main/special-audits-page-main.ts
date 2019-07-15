@@ -15,7 +15,7 @@ import '../../../../elements/common-elements/engagement-report-components/specif
 import '../../../../elements/data-elements/update-engagement';
 import '../../../../elements/data-elements/engagement-info-data';
 import '../../../../elements/pages/special-audits-page-components/report-page-components/sa-report-page-main/sa-report-page-main';
-import '../../../../elements/common-elements/file-attachment-tab/file-attachment-tab';
+import '../../../../elements/common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/pages-header-element/pages-header-element';
 
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
