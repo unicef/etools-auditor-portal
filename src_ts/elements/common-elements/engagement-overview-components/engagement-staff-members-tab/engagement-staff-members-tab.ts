@@ -213,7 +213,7 @@ class EngagementStaffMembersTab extends
                             unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}"></check-user-existence>
       <!--end requests-->
 
-      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])">
+      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])" list>
           <div slot="panel-btns">
               <div class="add-button-container">
                   <paper-icon-button
