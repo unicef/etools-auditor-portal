@@ -134,7 +134,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
-                          min-date="{{minDate(data.date_of_draft_report_to_unicef)}}"
+                          min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
                           max-date="{{maxDate}}">
                   </datepicker-lite>
               </div>
@@ -261,7 +261,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
   }
 
   minDate(date) {
-    return date ? new Date(moment(date).format()) : false;
+    return date ? new Date(moment(date).format()) : undefined;
   }
 
   _checkFieldInvalid(error) {
