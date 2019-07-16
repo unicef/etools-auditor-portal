@@ -37,7 +37,7 @@ function StaticDataMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class StaticDataMixin extends baseClass {
 
     _setData(key, data) {
-      if (!key || !data || _staticData[key]) {
+      if (!key || !data) {
         return false;
       }
       _staticData[key] = cloneDeep(data);
