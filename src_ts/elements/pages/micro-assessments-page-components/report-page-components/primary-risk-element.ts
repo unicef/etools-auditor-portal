@@ -20,17 +20,13 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       <style>
         etools-content-panel.overal-risks {
           margin: 20px 0;
+        }
 
-          --ecp-header-title: {
-              font-weight: 500;
-              line-height: 51px;
-          };
+        etools-content-panel.overal-risks {
 
-          --epc-toolbar: {
-              height: 51px;
-              padding: 2px;
-              background-color: var(--module-warning);
-          };
+          --ecp-header-height: 51px;
+          --ecp-header-bg: var(--module-warning);
+
         }
       </style>
 

@@ -24,18 +24,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       <style>
         etools-content-panel.totals {
           margin-bottom: 24px;
-          --ecp-header-title: {
-                            font-weight: 500;
-                            line-height: 51px;
-                        };
-          --epc-toolbar: {
-                            height: 51px;
-                            padding: 2px;
-                            background-color: var(--module-warning);
-                        };
-          --ecp-content: {
-                            padding: 0;
-                        };
+
+          --ecp-header-height: 51px;
+          --ecp-header-bg: var(--module-warning);
         }
         .result-element {
           position: relative;

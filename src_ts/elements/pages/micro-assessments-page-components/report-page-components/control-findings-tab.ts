@@ -42,9 +42,9 @@ class ControlFindingsTab extends TableElementsMixin(CommonMethodsMixin(PolymerEl
         }
 
         etools-content-panel {
-          --ecp-content: #{'{
-              padding: 0;
-          }'};
+          --ecp-content: {
+            padding: 0;
+          };
         }
       </style>
 

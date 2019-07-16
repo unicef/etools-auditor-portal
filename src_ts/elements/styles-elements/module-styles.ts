@@ -96,10 +96,6 @@ export const moduleStyles = html`
     etools-content-panel {
       position: relative;
 
-      --ecp-header-title: {
-        line-height: 48px;
-      };
-
       --ecp-expand-btn: {
         position: absolute;
         top: 3px;
@@ -110,7 +106,7 @@ export const moduleStyles = html`
 
       --ecp-header-title: {
         font-weight: 500;
-        line-height: 48px;
+        line-height: 43px;
         padding: 0 30px;
       };
 

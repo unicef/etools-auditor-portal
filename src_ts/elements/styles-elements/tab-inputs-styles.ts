@@ -478,6 +478,7 @@ export const tabInputsStyles = html`
     etools-content-panel:not([list]) {
       --ecp-content: {
         padding: 8px 12px;
+        padding-left: 12px;
       };
     }
 
