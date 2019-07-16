@@ -86,8 +86,8 @@ export const RiskTabStyles = html`
       --ecp-header-bg: var(--module-primary);
 
       --ecp-content: {
-          padding: 0;
-        };
+        padding: 0;
+      };
     }
 
   </style>

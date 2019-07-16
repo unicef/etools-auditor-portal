@@ -48,7 +48,7 @@ class ControlFindingsTab extends TableElementsMixin(CommonMethodsMixin(PolymerEl
         }
       </style>
 
-      <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations">
+      <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
         <div slot="panel-btns">
           <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
             <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box">

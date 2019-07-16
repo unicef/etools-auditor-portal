@@ -166,7 +166,9 @@ class EngagementStaffMembersTab extends
           line-height: 48px;
       }
       etools-content-panel {
-          --ecp-content-padding: 0;
+        --ecp-content: {
+          padding: 0;
+        }
       }
       list-pagination {
           --list-pagination-styles-margin-bottom: -8px;

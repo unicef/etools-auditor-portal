@@ -126,13 +126,13 @@ export const tabInputsStyles = html`
       };
     }
 
-    etools-searchable-multiselection-menu,
+    etools-dropdown,
+    etools-dropdown-multi,
     paper-input,
     paper-textarea,
     paper-dropdown-menu,
     etools-currency-amount-input {
       outline: none !important;
-      --esmm-placeholder-color: var(--gray-20);
       --paper-input-container-color: var(--gray-20);
       --paper-input-container-focus-color: var(--module-primary);
       --paper-input-container-input: {
@@ -176,7 +176,7 @@ export const tabInputsStyles = html`
       };
     }
 
-    etools-searchable-multiselection-menu.no-data-fetched,
+    etools-dropdown.no-data-fetched,
     paper-input.no-data-fetched {
       --esmm-placeholder-color: var(--gray-dark);
       --paper-input-container-color: var(--gray-dark);
@@ -285,7 +285,7 @@ export const tabInputsStyles = html`
 
     }
 
-    etools-searchable-multiselection-menu.required:not([disabled]) {
+    etools-dropdown.required:not([disabled]) {
       --paper-input-container-label: {
         background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
         width: auto !important;
@@ -473,6 +473,12 @@ export const tabInputsStyles = html`
     etools-currency-amount-input {
       padding: 0 12px;
       box-sizing: border-box;
+    }
+    etools-content-panel[list] {
+      --ecp-content: {
+        padding: 0;
+        padding-left: 0;
+      };
     }
 
     etools-content-panel:not([list]) {

@@ -23,7 +23,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     return html`
       ${tabInputsStyles} ${moduleStyles}
       ${KeyInternalControlsTabStyles}
-      <etools-content-panel panel-title="[[subjectAreas.header]]">
+      <etools-content-panel panel-title="[[subjectAreas.header]]" list>
         <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
         <template is="dom-repeat" items="[[subjectAreas.children]]">

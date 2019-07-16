@@ -41,6 +41,7 @@ export const moduleStyles = html`
       --module-submitted: rgba(206, 188, 6, .6);
       --module-sent: rgba(30, 134, 191, .45);
       --module-completed: rgba(141, 198, 63, 1);
+      --paper-button_-_color: #fff;
     }
 
     *[hidden] {
