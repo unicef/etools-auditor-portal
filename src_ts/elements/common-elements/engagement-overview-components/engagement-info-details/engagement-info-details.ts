@@ -230,7 +230,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               slot="field"
                               id="engagementType"
                               class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
-                              selected="{{_processValue(data.engagement_type)}}"
+                              selected="[[_processValue(data.engagement_type)]]"
                               label="[[getLabel('engagement_type', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
                               options="[[engagementTypes]]"
@@ -511,8 +511,8 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     }
   }
 
-  _setEngagementType(e: any, value: any) {
-    this.set('data.engagement_type', value.selectedValues);
+  _setEngagementType(event: CustomEvent) {
+    this.set('data.engagement_type', event.detail.selectedItem ? event.detail.selectedItem.value : null);
   }
 
   poKeydown(event: any) {
