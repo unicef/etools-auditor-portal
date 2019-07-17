@@ -170,8 +170,6 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
                     error-message="{{errors.audit_opinion}}"
                     on-focus="_resetFieldError"
                     on-tap="_resetFieldError"
-                    trigger-value-change-event
-                    on-etools-selected-items-changed="_changeAuditOpinion"
                     hide-search>
                 </etools-dropdown>
               </div>
@@ -377,13 +375,6 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
         }
       }, {});
     }
-  }
-
-  _changeAuditOpinion(e, detail) {
-    if (!detail || !detail.selectedValues) {
-      return;
-    }
-    this.editedItem.audit_opinion = detail.selectedValues.value;
   }
 
   _setAuditOpinion(auditOpinionValue, auditOpinions) {

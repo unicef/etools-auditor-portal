@@ -315,7 +315,7 @@ class FollowUpActions extends
                             <!-- Sections -->
                             <etools-dropdown
                                     class$="disabled-as-readonly validate-input [[_setRequired('section', editedApBase)]] fua-person"
-                                    value="{{editedItem.section}}"
+                                    selected="{{editedItem.section}}"
                                     selected="[[getLabel('section', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
                                     options="[[sections]]"

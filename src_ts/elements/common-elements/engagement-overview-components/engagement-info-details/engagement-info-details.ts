@@ -169,11 +169,12 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                   <datepicker-lite
                           id="contractStartDateInput"
                           class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
-                          value="[[prettyDate(data.agreement.contract_start_date)]]"
+                          value="{{data.agreement.contract_start_date}}"
                           label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
                           placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
                           disabled
                           readonly
+                          selected-date-display-format="D MMM YYYY"
                           hidden$="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
                           icon="date-range">
                   </datepicker-lite>
@@ -193,7 +194,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           error-message="{{errors.contract_end_date}}"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          selected-date-display-format="YYYY-MM-DD"
+                          selected-date-display-format="D MMM YYYY"
                           min-date="{{_setExpiryMinDate(data.agreement.contract_start_date)}}">
                   </datepicker-lite>
                   <etools-loading
@@ -218,7 +219,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           error-message="{{errors.partner_contacted_at}}"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          selected-date-display-format="YYYY-MM-DD"
+                          selected-date-display-format="D MMM YYYY"
                           max-date="{{maxDate}}">
                   </datepicker-lite>
               </div>
@@ -230,7 +231,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               slot="field"
                               id="engagementType"
                               class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
-                              selected="{{_processValue(data.engagement_type)}}"
+                              selected="{{data.engagement_type}}"
                               label="[[getLabel('engagement_type', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
                               options="[[engagementTypes]]"
@@ -243,8 +244,6 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               error-message="{{errors.engagement_type}}"
                               on-focus="_resetFieldError"
                               on-tap="_resetFieldError"
-                              trigger-value-change-event
-                              on-etools-selected-item-changed="_setEngagementType"
                               hide-search>
                       </etools-dropdown>
                       <span slot="message">Attach FACE Form Requesting Funding, <br>
@@ -291,7 +290,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               error-message="{{errors.end_date}}"
                               on-focus="_resetFieldError"
                               on-tap="_resetFieldError"
-                              selected-date-display-format="YYYY-MM-DD">
+                              selected-date-display-format="D MMM YYYY">
                       </datepicker-lite>
                   </div>
               </template>
@@ -509,10 +508,6 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     } else {
       return value;
     }
-  }
-
-  _setEngagementType(e: any, value: any) {
-    this.set('data.engagement_type', value.selectedValues);
   }
 
   poKeydown(event: any) {
