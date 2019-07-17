@@ -22,7 +22,7 @@ class SimpleListItem extends PolymerElement {
                     @apply --hover-style;
                 }
             }
-            paper-material {
+            .paper-material {
                 display: flex;
                 width: 100%;
                 height: 48px;
@@ -34,15 +34,13 @@ class SimpleListItem extends PolymerElement {
                 box-sizing: border-box;
                 @apply --simple-list-item-custom-style;
             }
-            paper-material ::content > * {  /* TODO translate to slotted() */
-              width: 100%;
-              display: flex;
-              align-items: center;
-            }
             iron-icon {
               color: var(--dark-icon-color, rgba(0, 0, 0, 0.54));
             }
-            paper-material ::slotted(*) {
+            .paper-material ::slotted(*) {
+              width: 100%;
+              display: flex;
+              align-items: center;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
