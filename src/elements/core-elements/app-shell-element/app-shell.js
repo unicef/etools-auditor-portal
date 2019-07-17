@@ -33,10 +33,7 @@ Polymer({
             value: function() {return [];}
         },
         user: {
-            type: Object,
-            // value: function() {
-            //     return {};
-            // }
+            type: Object
         }
     },
 
