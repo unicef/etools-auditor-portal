@@ -290,7 +290,6 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
 
   // TODO: polymer 3 migration - test this on selection change handler for etools-dropdown-multi
   _changeFilterValue(e, detail) {
-    debugger;
     if (!e || !e.currentTarget || !detail) {
       return;
     }
