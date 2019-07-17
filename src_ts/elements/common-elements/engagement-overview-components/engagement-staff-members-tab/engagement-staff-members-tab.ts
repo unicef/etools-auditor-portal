@@ -166,7 +166,9 @@ class EngagementStaffMembersTab extends
           line-height: 48px;
       }
       etools-content-panel {
-          --ecp-content-padding: 0;
+        --ecp-content: {
+          padding: 0;
+        }
       }
       list-pagination {
           --list-pagination-styles-margin-bottom: -8px;
@@ -211,7 +213,7 @@ class EngagementStaffMembersTab extends
                             unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}"></check-user-existence>
       <!--end requests-->
 
-      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])">
+      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])" list>
           <div slot="panel-btns">
               <div class="add-button-container">
                   <paper-icon-button

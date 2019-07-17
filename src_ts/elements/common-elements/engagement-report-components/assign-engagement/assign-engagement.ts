@@ -39,7 +39,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                   <datepicker-lite
                           id="dateVisitInput"
                           class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]] validate-date"
-                          value="[[prettyDate(data.date_of_field_visit)]]"
+                          value="{{data.date_of_field_visit}}"
                           label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
@@ -49,7 +49,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                           validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          format="YYYY-MM-DD"
+                          selected-date-display-format="D MMM YYYY"
                           date="[[prepareDate(data.date_of_field_visit)]]">
                   </datepicker-lite>
               </div>
@@ -59,7 +59,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                   <datepicker-lite
                           id="draftReportToIpInput"
                           class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
-                          value="[[prettyDate(data.date_of_draft_report_to_ip)]]"
+                          value="{{data.date_of_draft_report_to_ip}}"
                           label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
@@ -69,7 +69,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                           validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          format="YYYY-MM-DD"
+                          selected-date-display-format="D MMM YYYY"
                           max-date="{{maxDate}}">
                   </datepicker-lite>
               </div>
@@ -79,7 +79,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                   <datepicker-lite
                           id="commentsReceivedByIpInput"
                           class$="disabled-as-readonly [[_setRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
-                          value="[[prettyDate(data.date_of_comments_by_ip)]]"
+                          value="{{data.date_of_comments_by_ip}}"
                           label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
@@ -89,7 +89,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                           validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          format="YYYY-MM-DD"
+                          selected-date-display-format="D MMM YYYY"
                           min-date="{{minDate(data.date_of_draft_report_to_ip)}}"
                           max-date="{{maxDate}}">
                   </datepicker-lite>
@@ -102,7 +102,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                   <datepicker-lite
                           id="draftReportUnicefInput"
                           class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
-                          value="[[prettyDate(data.date_of_draft_report_to_unicef)]]"
+                          value="{{data.date_of_draft_report_to_unicef}}"
                           label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
@@ -112,7 +112,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                           validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          format="YYYY-MM-DD"
+                          selected-date-display-format="D MMM YYYY"
                           min-date="{{minDate(data.date_of_comments_by_ip)}}"
                           max-date="{{maxDate}}">
                   </datepicker-lite>
@@ -123,7 +123,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                   <datepicker-lite
                           id="commentsReceivedUnicefInput"
                           class$="disabled-as-readonly [[_setRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
-                          value="[[prettyDate(data.date_of_comments_by_unicef)]]"
+                          value="{{data.date_of_comments_by_unicef}}"
                           label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
@@ -133,8 +133,8 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
                           validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
-                          format="YYYY-MM-DD"
-                          min-date="{{minDate(data.date_of_draft_report_to_unicef)}}"
+                          selected-date-display-format="D MMM YYYY"
+                          min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
                           max-date="{{maxDate}}">
                   </datepicker-lite>
               </div>
@@ -261,7 +261,7 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
   }
 
   minDate(date) {
-    return date ? new Date(moment(date).format()) : false;
+    return date ? new Date(moment(date).format()) : undefined;
   }
 
   _checkFieldInvalid(error) {

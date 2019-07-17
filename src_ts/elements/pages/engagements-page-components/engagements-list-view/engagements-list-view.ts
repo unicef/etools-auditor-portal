@@ -12,6 +12,7 @@ import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/search-and-filter-element/search-and-filter';
 import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
+import {SearchAndFilterEl} from '../../../common-elements/search-and-filter-element/search-and-filter';
 
 /**
  * @customElement
@@ -214,7 +215,7 @@ class EngagementsListView extends
   }
 
   _engagementsFiltersUpdated() {
-    let filtersElement = this.$.filters;
+    let filtersElement = this.$.filters as SearchAndFilterEl;
     this.setFiltersSelections();
 
     if (filtersElement) {

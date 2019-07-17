@@ -309,3 +309,5 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
 }
 
 window.customElements.define('search-and-filter', SearchAndFilter);
+
+export {SearchAndFilter as SearchAndFilterEl};
