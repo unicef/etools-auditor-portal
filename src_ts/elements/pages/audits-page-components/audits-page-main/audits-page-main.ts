@@ -262,17 +262,20 @@ class AuditsPageMain extends CommonMethodsMixin(StaticDataMixin(EngagementMixin(
     super.connectedCallback();
     this._infoLoaded = this._infoLoaded.bind(this);
     this._engagementUpdated = this._engagementUpdated.bind(this);
-    this._mainActionActivated = this._mainActionActivated.bind(this);
+    //dci not found
+    // this._mainActionActivated = this._mainActionActivated.bind(this);
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    this.addEventListener('main-action-activated', this._mainActionActivated);
+    //dci not found
+    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
-    this.removeEventListener('main-action-activated', this._mainActionActivated);
+    //dci not found
+    // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {

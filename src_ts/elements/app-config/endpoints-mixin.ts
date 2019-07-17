@@ -11,6 +11,8 @@ function EndpointsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       let endpoint = clone(famEndpoints[endpointName]);
       if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
           endpoint.url = window.location.origin + this._generateUrlFromTemplate(endpoint.template, data);
+      } else {
+        endpoint.url = window.location.origin + endpoint.url;
       }
       return endpoint;
     }

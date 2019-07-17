@@ -82,8 +82,6 @@ class PartnerDetailsTab extends
                           on-etools-selected-item-changed="_requestPartner"
                           dynamic-align>
                   </etools-dropdown>
-
-                  <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                   <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
               </div>
 

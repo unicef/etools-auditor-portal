@@ -76,7 +76,7 @@ class FileAttachmentsTab extends EndpointsMixin(
           request-in-process="{{requestInProcess}}"
           errors="{{errors}}"></update-attachments>
 
-      <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
+      <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]" list>
         <div slot="panel-btns">
           <div class="layout horizontal">
             <div hidden$="[[_hideShare]]">

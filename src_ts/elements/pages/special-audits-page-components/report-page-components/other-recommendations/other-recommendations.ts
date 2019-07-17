@@ -35,24 +35,26 @@ class OtherRecommendations extends (TextareaMaxRowsMixin(PermissionControllerMix
     return html`
         ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
-      
+
         :host {
           .repeatable-item-container[without-line] {
               min-width: 0 !important;
               margin-bottom: 0 !important;
           }
-      
+
           .confirm-text {
               padding: 5px 86px 0 23px !important;
           }
         }
-        
+
         etools-content-panel {
-          --ecp-content: padding: 0;
+          --ecp-content: {
+            padding: 0;
+          };
         }
-      
+
       </style>
-      
+
       <etools-content-panel
                 class="content-section clearfix"
                 panel-title="[[getLabel('other_recommendations', basePermissionPath)]]">
@@ -101,7 +103,7 @@ class OtherRecommendations extends (TextareaMaxRowsMixin(PermissionControllerMix
                   no-animation>
           </list-element>
         </template>
-        
+
         </etools-content-panel>
         <etools-dialog theme="confirmation" size="md"
                 keep-dialog-open
@@ -145,8 +147,8 @@ class OtherRecommendations extends (TextareaMaxRowsMixin(PermissionControllerMix
             </div>
           </div>
         </etools-dialog>
-      
-      
+
+
     `;
   }
 
