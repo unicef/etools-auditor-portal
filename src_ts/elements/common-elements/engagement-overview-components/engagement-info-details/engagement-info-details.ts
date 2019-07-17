@@ -231,7 +231,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               slot="field"
                               id="engagementType"
                               class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
-                              selected="[[_processValue(data.engagement_type)]]"
+                              selected="{{data.engagement_type}}"
                               label="[[getLabel('engagement_type', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
                               options="[[engagementTypes]]"
@@ -244,8 +244,6 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               error-message="{{errors.engagement_type}}"
                               on-focus="_resetFieldError"
                               on-tap="_resetFieldError"
-                              trigger-value-change-event
-                              on-etools-selected-item-changed="_setEngagementType"
                               hide-search>
                       </etools-dropdown>
                       <span slot="message">Attach FACE Form Requesting Funding, <br>
@@ -510,10 +508,6 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     } else {
       return value;
     }
-  }
-
-  _setEngagementType(event: CustomEvent) {
-    this.set('data.engagement_type', event.detail.selectedItem ? event.detail.selectedItem.value : null);
   }
 
   poKeydown(event: any) {

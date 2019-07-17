@@ -101,12 +101,16 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                   </etools-content-panel>
                 </template>
 
-                <engagement-info-details id="engagementDetails" data="{{engagement}}" original-data="[[originalData]]"
-                  error-object="{{errorObject}}" base-permission-path="{{permissionBase}}">
+                <engagement-info-details id="engagementDetails"
+                  data="{{engagement}}" original-data="[[originalData]]"
+                  error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}">
                 </engagement-info-details>
 
-                <partner-details-tab original-data="[[originalData]]" id="partnerDetails" engagement="{{engagement}}"
-                  error-object="{{errorObject}}" base-permission-path="{{permissionBase}}">
+                <partner-details-tab original-data="[[originalData]]"
+                  id="partnerDetails" engagement="{{engagement}}"
+                  error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}">
                 </partner-details-tab>
 
 
