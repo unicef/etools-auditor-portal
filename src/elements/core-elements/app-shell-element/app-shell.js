@@ -34,9 +34,9 @@ Polymer({
         },
         user: {
             type: Object,
-            value: function() {
-                return {};
-            }
+            // value: function() {
+            //     return {};
+            // }
         }
     },
 
