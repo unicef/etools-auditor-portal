@@ -121,15 +121,14 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           on-keydown="poKeydown"
                           on-blur="_requestAgreement">
                   </paper-input>
-              </div>
-
-              <etools-loading
+                  <etools-loading
                           active="[[requestInProcess]]"
                           no-overlay
                           loading-text=""
                           class="po-loading">
-              </etools-loading>
-
+                  </etools-loading>
+              </div>
+              
               <div class="input-container">
                   <!-- Auditor -->
                   <paper-input
@@ -199,13 +198,14 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           selected-date-display-format="D MMM YYYY"
                           min-date="{{_setExpiryMinDate(data.agreement.contract_start_date)}}">
                   </datepicker-lite>
-              </div>
-              <etools-loading
+                  <etools-loading
                           active="{{poUpdating}}"
                           no-overlay
                           loading-text=""
                           class="po-loading">
-              </etools-loading>
+                  </etools-loading>
+              </div>
+              
               <div class="input-container" hidden$="[[_hideField('partner_contacted_at', basePermissionPath)]]">
                   <!-- Date Partner Was Contacted -->
                   <datepicker-lite
