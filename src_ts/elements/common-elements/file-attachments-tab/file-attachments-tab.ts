@@ -67,14 +67,17 @@ class FileAttachmentsTab extends EndpointsMixin(
     return html`
       ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
       <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
-                       endpoint-name="[[endpointName]]"></get-attachments>
+                       endpoint-name="[[endpointName]]">
+      </get-attachments>
+
       <update-attachments
           base-id="[[baseId]]"
           attachments="{{dataItems}}"
           request-data="{{requestData}}"
           endpoint-name="[[endpointName]]"
           request-in-process="{{requestInProcess}}"
-          errors="{{errors}}"></update-attachments>
+          errors="{{errors}}">
+      </update-attachments>
 
       <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]" list>
         <div slot="panel-btns">

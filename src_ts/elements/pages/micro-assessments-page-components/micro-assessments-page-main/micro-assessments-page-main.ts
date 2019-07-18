@@ -149,15 +149,23 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
               </template>
 
               <div name="attachments">
-                <file-attachments-tab id="engagement_attachments" data-base-path="[[permissionBase]]"
-                  path-postfix="attachments" base-id="[[engagement.id]]" error-object="{{errorObject}}"
-                  error-property="engagement_attachments" endpoint-name="attachments">
+                <file-attachments-tab id="engagement_attachments"
+                  data-base-path="[[permissionBase]]"
+                  path-postfix="attachments"
+                  base-id="[[engagement.id]]"
+                  error-object="{{errorObject}}"
+                  error-property="engagement_attachments"
+                  endpoint-name="attachments">
                 </file-attachments-tab>
 
                 <template is="dom-if" if="[[hasReportAccess(permissionBase, engagement)]]" restamp>
-                  <file-attachments-tab id="report_attachments" is-report-tab="true" data-base-path="[[permissionBase]]"
-                    path-postfix="report_attachments" base-id="[[engagement.id]]" error-object="{{errorObject}}"
-                    error-property="report_attachments" endpoint-name="reportAttachments">
+                  <file-attachments-tab id="report_attachments"
+                    is-report-tab="true" data-base-path="[[permissionBase]]"
+                    path-postfix="report_attachments"
+                    base-id="[[engagement.id]]"
+                    error-object="{{errorObject}}"
+                    error-property="report_attachments"
+                    endpoint-name="reportAttachments">
                   </file-attachments-tab>
                 </template>
               </div>
