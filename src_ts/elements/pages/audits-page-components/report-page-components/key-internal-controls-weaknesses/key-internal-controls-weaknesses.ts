@@ -6,6 +6,7 @@ import '@polymer/paper-input/paper-textarea';
 
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
@@ -151,14 +152,13 @@ class KeyInternalControlsWeaknesses extends
                       <div class="row-h group">
                           <div class="input-container input-container-l">
                               <!-- Risk Assessment -->
-                              <etools-searchable-multiselection-menu
+                              <etools-dropdown
                                       id="riskRatingInput"
                                       class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}} validate-input"
-                                      value="{{editedBlueprint.risks.0.value}}"
+                                      selected="{{editedBlueprint.risks.0.value}}"
                                       label="Risk rating"
                                       placeholder="Select Risk rating"
                                       options="[[riskOptions]]"
-                                      custom-object-options
                                       option-label="display_name"
                                       option-value="display_name"
                                       required="{{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}}"
@@ -167,9 +167,8 @@ class KeyInternalControlsWeaknesses extends
                                       invalid="{{errors.blueprints.0.risks.value}}"
                                       error-message="{{errors.blueprints.0.risks.value}}"
                                       on-focus="_resetFieldError"
-                                      hide-search
-                                      no-title-attr="">
-                              </etools-searchable-multiselection-menu>
+                                      hide-search>
+                              </etools-dropdown>
                           </div>
                       </div>
 
