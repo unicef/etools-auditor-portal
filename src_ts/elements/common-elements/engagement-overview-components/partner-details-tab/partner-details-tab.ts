@@ -86,8 +86,8 @@ class PartnerDetailsTab extends
 
                   <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                   <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
-              </div>
 
+              </div>
               <div class="input-container input-container-m">
                   <!-- Partner Address -->
                   <paper-input
