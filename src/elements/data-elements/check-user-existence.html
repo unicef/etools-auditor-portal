@@ -89,16 +89,16 @@
                             id: user.staff_member_id,
                             hidden: false,
                             hasAccess: true,
-                            user: _.omit(user, ['id', 'auditor_firm', 'staff_member_id', 'hidden'])
+                            user: _.omit(user, ['user', 'auditor_firm', 'staff_member_id', 'hidden'])
                         };
                     } else if (details.length) {
                         //if user exists but doesn't belong to any auditor_firm
                         let user = details[0],
-                            user_pk = user.id;
+                            user_pk = user.user;
 
                         this.editedItem = {
                             hasAccess: true,
-                            user: _.omit(user, ['id', 'auditor_firm']),
+                            user: _.omit(user, ['user', 'auditor_firm']),
                             user_pk
                         };
                     } else if (this.unicefUsersAllowed) {
