@@ -56,7 +56,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
               <etools-dropdown-multi
                   id="[[item.query]]"
                   class="filter-dropdown"
-                  selected-values="[[item.selectedValues]]"
+                  selected-values="{{item.selectedValues}}"
                   label="[[item.label]]"
                   placeholder$="&#8212;"
                   options="[[item.selection]]"
