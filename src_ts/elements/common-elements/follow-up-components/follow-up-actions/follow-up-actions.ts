@@ -504,9 +504,6 @@ class FollowUpActions extends
   @property({type: Object})
   requestData!: GenericObject;
 
-  @property({type: Object})
-  originalEditedObj!: GenericObject;
-
   public connectedCallback() {
     super.connectedCallback();
 

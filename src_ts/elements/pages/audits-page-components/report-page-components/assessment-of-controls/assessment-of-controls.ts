@@ -56,7 +56,7 @@ class AssessmentOfControls extends
 
       <etools-content-panel
             class="content-section clearfix"
-            panel-title="[[getLabel('key_internal_controls', basePermissionPath)]]">
+            panel-title="[[getLabel('key_internal_controls', basePermissionPath)]]" list>
         <div class="header-content">
             <div class="static-text">
                 We have reviewed the status of implementation of the recommendations from the micro assessment

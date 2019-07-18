@@ -96,9 +96,15 @@ export const moduleStyles = html`
 
     etools-dropdown, etools-dropdown-multi {
       padding: 0 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
     }
     datepicker-lite {
       padding: 0 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
     }
 
     etools-content-panel {

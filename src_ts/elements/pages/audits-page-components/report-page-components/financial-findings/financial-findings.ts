@@ -59,7 +59,7 @@ class FinancialFindings extends
 
       <etools-content-panel
           class="content-section clearfix"
-          panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]">
+          panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]" list>
         <div slot="panel-btns">
           <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
             <paper-icon-button

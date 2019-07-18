@@ -92,7 +92,8 @@ class KeyInternalControlsWeaknesses extends
         }
       </style>
 
-      <etools-content-panel class="content-section clearfix" panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]">
+      <etools-content-panel class="content-section clearfix"
+        panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]" list>
           <div class="header-content">
               <div class="static-text">
                   We have reviewed the implementation of applicable key internal controls and noted the following weaknesses:
@@ -300,7 +301,7 @@ class KeyInternalControlsWeaknesses extends
 
   @property({type: Boolean})
   requestInProcess!: boolean;
-  
+
   @property({type: String})
   basePermissionPath!: string;
 
