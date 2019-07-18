@@ -155,7 +155,7 @@ class KeyInternalControlsWeaknesses extends
                               <etools-dropdown
                                       id="riskRatingInput"
                                       class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}} validate-input"
-                                      value="{{editedBlueprint.risks.0.value}}"
+                                      selected="{{editedBlueprint.risks.0.value}}"
                                       label="Risk rating"
                                       placeholder="Select Risk rating"
                                       options="[[riskOptions]]"
