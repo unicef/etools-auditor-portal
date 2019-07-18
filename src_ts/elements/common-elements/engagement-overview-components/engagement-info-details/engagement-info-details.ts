@@ -121,6 +121,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           on-keydown="poKeydown"
                           on-blur="_requestAgreement">
                   </paper-input>
+
                   <etools-loading
                           active="[[requestInProcess]]"
                           no-overlay
@@ -128,7 +129,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           class="po-loading">
                   </etools-loading>
               </div>
-              
+
               <div class="input-container">
                   <!-- Auditor -->
                   <paper-input
@@ -205,7 +206,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           class="po-loading">
                   </etools-loading>
               </div>
-              
+
               <div class="input-container" hidden$="[[_hideField('partner_contacted_at', basePermissionPath)]]">
                   <!-- Date Partner Was Contacted -->
                   <datepicker-lite
