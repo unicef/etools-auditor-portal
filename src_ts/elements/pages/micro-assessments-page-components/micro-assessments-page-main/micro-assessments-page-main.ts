@@ -114,15 +114,19 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                 </partner-details-tab>
 
 
-                <engagement-staff-members-tab id="staffMembers" engagement="{{engagement}}"
-                  base-permission-path="{{permissionBase}}" error-object="{{errorObject}}">
+                <engagement-staff-members-tab id="staffMembers"
+                  engagement="{{engagement}}"
+                  base-permission-path="{{permissionBase}}"
+                  error-object="{{errorObject}}">
                 </engagement-staff-members-tab>
               </div>
 
               <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
                 <div name="report">
-                  <ma-report-page-main id="report" original-data="[[originalData]]" engagement="{{engagement}}"
-                    error-object="{{errorObject}}" permission-base="{{permissionBase}}">
+                  <ma-report-page-main id="report" original-data="[[originalData]]"
+                    engagement="{{engagement}}"
+                    error-object="{{errorObject}}"
+                    permission-base="{{permissionBase}}">
                   </ma-report-page-main>
                 </div>
               </template>
