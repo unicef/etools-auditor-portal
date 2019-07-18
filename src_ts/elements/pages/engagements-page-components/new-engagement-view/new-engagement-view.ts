@@ -220,6 +220,10 @@ class NewEngagementView extends
   @property({type: Object})
   auditFirm: GenericObject = {};
 
+  @property({type: String})
+  basePermissionPath!: string;
+
+
   static get observers() {
     return [
       '_pageChanged(page, isStaffSc, auditFirm)'

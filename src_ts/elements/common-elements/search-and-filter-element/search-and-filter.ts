@@ -56,7 +56,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
               <etools-dropdown-multi
                   id="[[item.query]]"
                   class="filter-dropdown"
-                  selected-values="[[item.selectedValues]]"
+                  selected-values="{{item.selectedValues}}"
                   label="[[item.label]]"
                   placeholder$="&#8212;"
                   options="[[item.selection]]"
@@ -297,10 +297,10 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
     let query = e.currentTarget.id;
     let queryObject = {page: '1'};
 
-    if (detail.selectedValues && query) {
+    if (detail.selectedItems && query) {
       let filter = this._getFilter(query);
       let optionValue = filter.optionValue || 'value';
-      queryObject[query] = detail.selectedValues.map(val => val[optionValue]).join(',');
+      queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
     }
     this.updateQueries(queryObject);
 
