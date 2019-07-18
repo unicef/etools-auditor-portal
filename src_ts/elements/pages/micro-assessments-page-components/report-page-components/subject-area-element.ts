@@ -15,8 +15,8 @@ import isNumber from 'lodash-es/isNumber';
 class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   static get template() {
     return html`
+      ${tabInputsStyles}
       <style>
-        ${tabInputsStyles}
         :host {
           position: relative;
           display: block;
@@ -44,6 +44,9 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object, notify: true})
   area!: GenericObject;
 
+  @property({type: Object})
+  originalData!: GenericObject;
+
   @property({type: String})
   basePermissionPath!: string;
 
@@ -55,7 +58,7 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
 
   static get observers() {
     return [
-      '_setData(area, riskOptions)'
+      '_setAreaData(area, riskOptions)'
     ];
   }
 
@@ -66,8 +69,8 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
     this.set('riskOptions', riskOptions);
   }
 
-_setData(data) {
-    if (!data) { return; }
+_setAreaData(data, riskOptions) {
+    if (!data || !riskOptions) { return; }
     if (!data.changed) {
         this.originalData = cloneDeep(data);
     }

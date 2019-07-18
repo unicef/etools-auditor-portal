@@ -28,6 +28,8 @@ import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import DateMixin from '../../../app-mixins/date-mixin';
+import '../../../data-elements/get-agreement-data';
+import '../../../data-elements/update-agreement-data';
 
 /**
  * @polymer
@@ -44,43 +46,43 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     return html`
       ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
-              .po-loading {
-                  position: absolute;
-                  top: 25px;
-                  left: auto;
-                  background-color: #fff;
-              }
-              .po-loading:not([active]) {
-                  display: none !important;
-              }
-                  etools-info-tooltip span[slot="message"] {
-                  white-space: nowrap;
-                  line-height: 15px;
-              }
-              etools-info-tooltip {
-                  --etools-tooltip-trigger-icon-margin-left: -2px;
-                  --etools-tooltip-trigger-icon-margin-top: 12px;
-                  --etools-tooltip-trigger-icon-color: var(--gray-50);
-                  --etools-tooltip-trigger-icon-cursor: pointer;
-              }
-              .join-audit {
-                  padding-left: 12px;
-                  margin-top: 24px;
-                  box-sizing: border-box;
-              }
-              .row-h.float {
-                  display: flex;
-                  position: relative;
-                  width: 100%;
-                  flex-direction: row;
-                  align-items: center;
-                  justify-content: flex-start;
-                  flex-wrap: wrap;
-                  margin-bottom: 0;
-              }
-              .row-h.float .input-container {
-                  margin-bottom: 8px;
-              }
+        .po-loading {
+            position: absolute;
+            top: 25px;
+            left: auto;
+            background-color: #fff;
+        }
+        .etools-loading:not([active]) {
+            display: none !important;
+        }
+            etools-info-tooltip span[slot="message"] {
+            white-space: nowrap;
+            line-height: 15px;
+        }
+        etools-info-tooltip {
+            --etools-tooltip-trigger-icon-margin-left: -2px;
+            --etools-tooltip-trigger-icon-margin-top: 12px;
+            --etools-tooltip-trigger-icon-color: var(--gray-50);
+            --etools-tooltip-trigger-icon-cursor: pointer;
+        }
+        .join-audit {
+            padding-left: 12px;
+            margin-top: 24px;
+            box-sizing: border-box;
+        }
+        .row-h.float {
+            display: flex;
+            position: relative;
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 0;
+        }
+        .row-h.float .input-container {
+            margin-bottom: 8px;
+        }
 
       </style>
 
@@ -109,7 +111,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           label="[[getLabel('agreement.order_number', basePermissionPath)]]"
                           placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
                           disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
-                          readonly="{{requestInProcess}}"
+                          readonly="[[requestInProcess]]"
                           maxlength="30"
                           required
                           invalid$="{{_checkInvalid(errors.agreement)}}"
@@ -121,7 +123,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                   </paper-input>
 
                   <etools-loading
-                          active="{{requestInProcess}}"
+                          active="[[requestInProcess]]"
                           no-overlay
                           loading-text=""
                           class="po-loading">
@@ -441,6 +443,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   connectedCallback() {
     super.connectedCallback();
     (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+    this.addEventListener('agreement-loaded', this._agreementLoaded);
   }
 
   _prepareData() {
