@@ -57,7 +57,7 @@ class OtherRecommendations extends (TextareaMaxRowsMixin(PermissionControllerMix
 
       <etools-content-panel
                 class="content-section clearfix"
-                panel-title="[[getLabel('other_recommendations', basePermissionPath)]]">
+                panel-title="[[getLabel('other_recommendations', basePermissionPath)]]" list>
         <div slot="panel-btns">
             <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
                 <paper-icon-button

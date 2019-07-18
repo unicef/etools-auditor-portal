@@ -94,6 +94,13 @@ export const moduleStyles = html`
       --paper-radio-button-checked-color: var(--module-primary);
     }
 
+    etools-dropdown, etools-dropdown-multi {
+      padding: 0 12px;
+    }
+    datepicker-lite {
+      padding: 0 12px;
+    }
+
     etools-content-panel {
       position: relative;
 

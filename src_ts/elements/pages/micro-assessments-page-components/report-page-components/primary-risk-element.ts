@@ -25,11 +25,8 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
         etools-content-panel.overal-risks {
           --ecp-header-height: 51px;
           --ecp-header-bg: var(--module-warning);
+        }
 
-        }
-        etools-dropdown {
-          padding-left: 12px;
-        }
       </style>
 
       <etools-content-panel panel-title="{{riskData.header}}" class="overal-risks">
