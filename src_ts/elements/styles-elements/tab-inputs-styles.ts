@@ -179,32 +179,6 @@ export const tabInputsStyles = html`
       --paper-input-container-focus-color: var(--module-primary);
     }
 
-    paper-input.readonly, paper-dropdown-menu.readonly, paper-textarea.readonly {
-      --paper-input-container-underline: {
-        display: none;
-      };
-    }
-
-    paper-textarea[readonly], paper-textarea[disabled].disabled-as-readonly,
-    paper-dropdown-menu[readonly], paper-dropdown-menu[disabled].disabled-as-readonly,
-    paper-input[readonly], paper-input[disabled].disabled-as-readonly {
-      --paper-input-container: {
-        opacity: 1 !important;
-      };
-      --paper-input-container-underline: {
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
-        border-color: rgba(0, 0, 0, 0.20) !important;
-        display: block !important;
-      };
-      --paper-input-container-underline-focus: {
-        display: none;
-      };
-      --paper-input-container-underline-disabled: {
-        display: none;
-      };
-
-    }
-
     paper-textarea[disabled].without-border,
     paper-input[disabled].without-border {
       --paper-input-container-label: {
@@ -248,32 +222,7 @@ export const tabInputsStyles = html`
         color: var(--gray-50);
       };
     }
-
-    etools-searchable-multiselection-menu.disabled-as-readonly {
-      --esmm-readonly-input-container-underline: {
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.20);
-      };
-      --esmm-readonly-input-container: {
-        opacity: 1 !important;
-      };
-      --esmm-input-container-label: {
-        color: var(--gray-50);
-      };
-    }
-
-    etools-searchable-multiselection-menu.readonly {
-      --esmm-readonly-input-container-underline: {
-        border-bottom: 1px solid var(--gray-50) !important;
-      };
-      --esmm-readonly-input-container: {
-        opacity: 1 !important;
-      };
-      --esmm-input-container-label: {
-        color: var(--gray-50);
-      };
-
-    }
-
+   
     etools-dropdown.required:not([disabled]) {
       --paper-input-container-label: {
         background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
@@ -306,19 +255,6 @@ export const tabInputsStyles = html`
     paper-input.deleted {
       --paper-input-container-input: {
         color: #b0b0b0;
-      };
-    }
-
-    etools-currency-amount-input[disabled].disabled-as-readonly {
-      --etools-currency-container-underline-disabled: {
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
-      };
-      --etools-currency-container-label: {
-        color: var(--gray-50);
-      };
-      --paper-input-container: {
-        opacity: 1 !important;
-        color: var(--gray-dark) !important;
       };
     }
 
@@ -482,21 +418,34 @@ export const tabInputsStyles = html`
         line-height: 0;
       };
     }
-
-    datepicker-lite[disabled],
-    datepicker-lite.disabled-as-readonly {
+    
+    paper-input[disabled],
+    etools-dropdown[disabled],
+    etools-dropdown-multi[disabled],
+    etools-currency-amount-input[disabled],
+    datepicker-lite[disabled] {
       --paper-input: {
           color: var(--gray-50);
-        }
-        --paper-input-prefix: {
+        }      
+        --paper-input-container-underline: {
+          color: rgba(0, 0, 0, 0.20);
+      }
+    }
+    datepicker-lite[disabled]
+    {
+      --paper-input-prefix: {
           color: var(--gray-50);
         }
     }
-
     datepicker-lite{
       --paper-input-container-label:{
         width: 133%;
       }
+      --paper-input-container:{
+        width: 100%;
+      }
     }
+
+   
   </style>
 `;

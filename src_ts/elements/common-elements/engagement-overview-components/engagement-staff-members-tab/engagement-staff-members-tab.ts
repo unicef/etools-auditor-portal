@@ -35,6 +35,9 @@ import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import '../../../data-elements/get-staff-members-list';
+import '../../list-tab-elements/list-header/list-header';
+import '../../list-tab-elements/list-element/list-element';
+import '../../list-tab-elements/list-pagination/list-pagination';
 
 /**
  * @polymer
@@ -234,7 +237,7 @@ class EngagementStaffMembersTab extends
                           placeholder="Search"
                           on-blur="searchBlur"
                           on-input="_searchChanged">
-                      <iron-icon class="panel-button" prefix icon="search"></iron-icon>
+                      <iron-icon icon="search" class="panel-button" slot="prefix"></iron-icon>
                   </paper-input>
               </div>
           </div>
