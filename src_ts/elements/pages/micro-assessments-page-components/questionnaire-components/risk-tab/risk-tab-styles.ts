@@ -82,18 +82,12 @@ export const RiskTabStyles = html`
 
     etools-content-panel {
       position: relative;
-      --ecp-header-title: {
-            font-weight: 500;
-            line-height: 51px;
-        };
-      --epc-toolbar: {
-            height: 51px;
-            padding: 2px;
-            background-color: var(--module-primary);
-        };
+      --ecp-header-height: 51px;
+      --ecp-header-bg: var(--module-primary);
+
       --ecp-content: {
-            padding: 0;
-        };
+        padding: 0;
+      };
     }
 
   </style>

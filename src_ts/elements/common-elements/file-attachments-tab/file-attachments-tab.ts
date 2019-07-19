@@ -67,16 +67,19 @@ class FileAttachmentsTab extends EndpointsMixin(
     return html`
       ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
       <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
-                       endpoint-name="[[endpointName]]"></get-attachments>
+                       endpoint-name="[[endpointName]]">
+      </get-attachments>
+
       <update-attachments
           base-id="[[baseId]]"
           attachments="{{dataItems}}"
           request-data="{{requestData}}"
           endpoint-name="[[endpointName]]"
           request-in-process="{{requestInProcess}}"
-          errors="{{errors}}"></update-attachments>
+          errors="{{errors}}">
+      </update-attachments>
 
-      <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]">
+      <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]" list>
         <div slot="panel-btns">
           <div class="layout horizontal">
             <div hidden$="[[_hideShare]]">
@@ -412,6 +415,9 @@ class FileAttachmentsTab extends EndpointsMixin(
   @property({type: Boolean, computed: '_checkIsUnicefUser(dataBasePath)'})
   _isUnicefUser: boolean = false;
 
+  @property({type: String, reflectToAttribute: true})
+  endpointName!: string;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
@@ -445,7 +451,11 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   _setLinksEndpoint() {
-    const {details: engagement, type: engagementType} = this.getCurrentEngagement();
+    const currEngagement = this.getCurrentEngagement();
+    if (!currEngagement) {
+      return;
+    }
+    const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
       endpoint: this.getEndpoint('auditLinks', {

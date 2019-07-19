@@ -28,7 +28,9 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     attachmentsOptions: false,
     filters: false,
     filterAuditors: false,
-    filterPartners: false
+    filterPartners: false,
+    engagementTypes: false,
+    statuses: false
   };
 
   connectedCallback() {
@@ -59,7 +61,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   }
 
   getPartners() {
-    let partnersEndpoint = famEndpoints.partnerOrganisations;
+    let partnersEndpoint = this.getEndpoint('partnerOrganisations');
     this.sendRequest({
       endpoint: partnersEndpoint
     })
@@ -90,8 +92,8 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     this.sendRequest({
       endpoint: officesEndpoint
     })
-      .then((resp) => this._apDataResponse(resp, 'offices'))
-      .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
+    .then((resp) => this._apDataResponse(resp, 'offices'))
+    .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
   }
 
   getSections() {
@@ -164,7 +166,8 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   }
 
   _filtersDataLoaded() {
-    if (this.dataLoaded.filterAuditors && this.dataLoaded.filterPartners) {
+    if (this.dataLoaded.filterAuditors && this.dataLoaded.filterPartners &&
+      this.dataLoaded.engagementTypes && this.dataLoaded.statuses) {
       this._triggerGlobalEvent('engagements-filters-updated');
 
       this.dataLoaded.filters = true;
@@ -182,13 +185,15 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   _updateEngagementsFilters() {
     let time = new Date().getTime();
 
-    let filterAuditorsUrl = famEndpoints.filterAuditors.url + `?reload=${time}`;
-    this.sendRequest(filterAuditorsUrl)
+    let filterAuditorsEndpoint = this.getEndpoint('filterAuditors');
+    filterAuditorsEndpoint.url += `?reload=${time}`;
+    this.sendRequest({endpoint: filterAuditorsEndpoint})
       .then((resp) => this._filterAuditorsLoaded(resp))
       .catch((err) => this._filterAuditorsLoaded(err));
 
-    let filterPartnersUrl = famEndpoints.filterPartners.url + `?reload=${time}`;
-    this.sendRequest(filterPartnersUrl)
+    let filterPartnersEndpoint = this.getEndpoint('filterPartners');
+    filterPartnersEndpoint.url += `?reload=${time}`;
+    this.sendRequest({endpoint: filterPartnersEndpoint})
       .then((resp) => this._filterPartnersLoaded(resp))
       .catch((err) => this._filterPartnersLoaded(err));
   }
@@ -249,7 +254,9 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       if (!engagementTypes) {this._responseError('Engagement types', 'Can not load engagement types data');}
 
       this._setData('statuses', statuses);
+      this.dataLoaded.statuses = true;
       this._setData('engagementTypes', engagementTypes);
+      this.dataLoaded.engagementTypes = true;
     }
 
     this.dataLoaded.engagementOptions = true;

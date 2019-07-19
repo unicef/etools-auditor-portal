@@ -14,6 +14,8 @@ import ErrorHandlerMixin from './error-handler-mixin';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
 
+
+let currentEngagement = {};
 /**
  * @polymer
  * @mixinFunction
@@ -275,12 +277,12 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     persistCurrentEngagement(engagement, type) {
-      const currentEngagement = {details: engagement, type};
+      currentEngagement = {details: engagement, type};
       this.set('currentEngagement', currentEngagement)
     }
 
     getCurrentEngagement() {
-      return this.currentEngagement;
+      return currentEngagement;
     }
 
     _prepareData(submit, finalize) {

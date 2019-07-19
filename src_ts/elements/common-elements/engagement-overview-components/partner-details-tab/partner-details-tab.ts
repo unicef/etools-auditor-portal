@@ -22,11 +22,12 @@ import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
-import {microTask} from '@polymer/polymer/lib/utils/async';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
+import '../../../data-elements/get-partner-data';
+
 
 /**
  * @polymer
@@ -65,7 +66,7 @@ class PartnerDetailsTab extends
                   <etools-dropdown
                           id="partner"
                           class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                          selected="{{engagement.partner}}"
+                          selected="{{engagement.partner.id}}"
                           label="[[getLabel('partner', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
                           options="[[partners]]"
@@ -85,8 +86,8 @@ class PartnerDetailsTab extends
 
                   <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                   <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
-              </div>
 
+              </div>
               <div class="input-container input-container-m">
                   <!-- Partner Address -->
                   <paper-input
@@ -133,7 +134,7 @@ class PartnerDetailsTab extends
                   <etools-dropdown
                           id="authorizedOfficer"
                           class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
-                          selected="{{authorizedOfficer}}"
+                          selected="{{authorizedOfficer.id}}"
                           label="[[getLabel('authorized_officers', basePermissionPath)]]"
                           placeholder="[[getReadonlyPlaceholder(partner)]]"
                           options="[[partner.partnerOfficers]]"
@@ -162,7 +163,7 @@ class PartnerDetailsTab extends
                               selected-values="{{activePd}}"
                               label="[[getLabel('active_pd', basePermissionPath)]]"
                               placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
-                              options="[[partner.interventions]]"                                
+                              options="[[partner.interventions]]"
                               option-label="number"
                               option-value="id"
                               disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
@@ -356,7 +357,7 @@ class PartnerDetailsTab extends
     this.set('activePd', null);
     this.set('authorizedOfficer', null);
 
-    let partnerId = (event && event.detail && event.detail.selectedValues && event.detail.selectedValues.id) || +id;
+    let partnerId = (event && event.detail && event.detail.selectedItem && event.detail.selectedItem.id || +id);
     if (!partnerId) {return;}
     if (this.isReadOnly('partner', this.basePermissionPath)) {
       this.partner = this.engagement.partner;

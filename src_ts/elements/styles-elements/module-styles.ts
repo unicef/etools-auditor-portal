@@ -41,6 +41,7 @@ export const moduleStyles = html`
       --module-submitted: rgba(206, 188, 6, .6);
       --module-sent: rgba(30, 134, 191, .45);
       --module-completed: rgba(141, 198, 63, 1);
+      --paper-button_-_color: #fff;
     }
 
     *[hidden] {
@@ -93,12 +94,21 @@ export const moduleStyles = html`
       --paper-radio-button-checked-color: var(--module-primary);
     }
 
+    etools-dropdown, etools-dropdown-multi {
+      padding: 0 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    datepicker-lite {
+      padding: 0 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
     etools-content-panel {
       position: relative;
-
-      --ecp-header-title: {
-        line-height: 48px;
-      };
 
       --ecp-expand-btn: {
         position: absolute;
@@ -110,7 +120,7 @@ export const moduleStyles = html`
 
       --ecp-header-title: {
         font-weight: 500;
-        line-height: 48px;
+        line-height: 43px;
         padding: 0 30px;
       };
 

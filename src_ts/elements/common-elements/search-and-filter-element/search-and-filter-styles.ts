@@ -63,6 +63,7 @@ export const searchAndFilterStyles = html`
     }
 
     .second-header #add-filter-container paper-button {
+      --paper-button_-_color: var(--module-primary);
       color: var(--module-primary);
       font-weight: bold;
     }

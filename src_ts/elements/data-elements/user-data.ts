@@ -24,7 +24,8 @@ class UserData extends EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement
   }
 
   _handleResponse(user) {
-    let previousUserId = JSON.parse(localStorage.getItem('userId') || '');
+    const storedUserId = localStorage.getItem('userId');
+    const previousUserId = storedUserId ? JSON.parse(storedUserId) : null;
     let countriesAvailable = get(user, 'countries_available') || [];
 
     countriesAvailable = sortBy(countriesAvailable, ['name']);

@@ -47,14 +47,16 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
               display: none !important;
           }
           etools-content-panel {
-              --ecp-content-padding: 0;
+            --ecp-content: {
+              padding: 0;
+            };
           }
 
       </style>
 
       <etools-content-panel
           class="content-section clearfix"
-          panel-title="[[getLabel('specific_procedures', basePermissionPath)]]">
+          panel-title="[[getLabel('specific_procedures', basePermissionPath)]]" list>
       <div slot="panel-btns">
           <div hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]">
               <paper-icon-button

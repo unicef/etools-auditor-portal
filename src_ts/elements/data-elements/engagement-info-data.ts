@@ -99,9 +99,9 @@ class EngagementInfoData extends LastCreatedMixin(
 
        fireEvent(this, 'global-loading', {type: 'engagement-info'});
        fireEvent(this, 'engagement-info-loaded');
-        this.persistCurrentEngagement(data, this.engagementType);
-        this.engagementId = null;
-        this.lastError = false;
+       this.persistCurrentEngagement(data, this.engagementType);
+       this.engagementId = null;
+       this.lastError = false;
     }
 
     _handleError() {
@@ -135,6 +135,7 @@ class EngagementInfoData extends LastCreatedMixin(
 
     _idChanged(id) {
         if (!id || isNaN(id) || !this.engagementType) { return; }
+
         if (+id === this.lastId) {
             this.lastError ? this._handleError() : this._finishRequests(this.responseData || {});
             return;

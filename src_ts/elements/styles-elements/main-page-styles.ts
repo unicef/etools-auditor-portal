@@ -85,21 +85,16 @@ export const mainPageStyles = html`
     etools-content-panel.cancellation-tab {
       margin-bottom: 20px;
 
-      --ecp-header-title: {
-          font-weight: 500;
-          line-height: 51px;
-      };
-  
-      --epc-toolbar: {
-          height: 4px;
+      --epc-header: {
           padding: 2px;
-          background-color: var(--module-warning);
       };
-  
+      --ecp-header-bg: var(--module-primary);
+      --ecp-header-height: 51px;
+
       --ecp-content: {
           padding-left: 100px;
       }
-  
+
       --ecp-header-btns-wrapper: {
           opacity: 1;
       };
@@ -133,7 +128,7 @@ export const mainPageStyles = html`
       -o-transform: scale(0.9, 1.5);
       transform: scale(0.9, 1.5);
     }
-    
+
     div[slot="panel-btns"].bookmark iron-icon {
       width: 70px !important;
       height: 70px !important;

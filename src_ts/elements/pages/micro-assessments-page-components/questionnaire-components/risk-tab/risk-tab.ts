@@ -41,7 +41,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                 <template is="dom-if" if="{{editMode}}">
                   <etools-dropdown
                     class="disabled-as-readonly required validate-input"
-                    selected="{{_setRiskValue(item.risk.value, riskOptions)}}"
+                    selected="[[_setRiskValue(item.risk.value, riskOptions)]]"
                     placeholder="&#8212;"
                     options="[[riskOptions]]"
                     option-label="display_name"
@@ -78,7 +78,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                   <template is="dom-if" if="{{editMode}}">
                     <etools-dropdown
                       class="disabled-as-readonly required validate-input"
-                      selected="{{_setRiskValue(item.risk.value, riskOptions)}}"
+                      selected="[[_setRiskValue(item.risk.value, riskOptions)]]"
                       placeholder="&#8212;"
                       options="[[riskOptions]]"
                       option-label="display_name"
@@ -196,10 +196,10 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     this.set('opened', !completed && !disabled);
   }
 
-  _riskValueChanged(event, value) {
-    let item = event && event.model && event.model.item,
-      changedValue = value && value.selectedValues && value.selectedValues.value,
-      data;
+  _riskValueChanged(event) {
+    let item = event && event.selectedItem;
+    let changedValue = item && item.value;
+    let data;
 
     if (!item.risk) {item.risk = {};}
     if ((!changedValue && changedValue !== 0) || changedValue === item.risk.value) {return;}

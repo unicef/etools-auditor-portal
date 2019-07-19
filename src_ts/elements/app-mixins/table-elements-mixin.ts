@@ -50,6 +50,9 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Boolean})
     confirmDialogOpened: boolean = false;
 
+    @property({type: Object})
+    originalEditedObj!: GenericObject;
+
     // TODO: added only for ts-lint, find a better way to make this accessible... might not be the best solution
     @property({type: Object})
     shadowRoot!: ShadowRoot;

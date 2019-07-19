@@ -69,12 +69,6 @@ class ShareDocuments extends
                 background-color: transparent;
             };
           }
-          simple-list-item paper-material {
-            --simple-list-item-custom-style: {
-                padding-left: 24px;
-                padding-right: 0;
-              };
-          }
           .right {
             text-align: right;
           }

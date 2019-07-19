@@ -34,6 +34,7 @@ import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
+import '../../../data-elements/get-staff-members-list';
 
 /**
  * @polymer
@@ -43,9 +44,9 @@ import {moduleStyles} from '../../../styles-elements/module-styles';
  * @appliesMixin UserControllerMixin
  */
 class EngagementStaffMembersTab extends
-  TableElementsMixin(
-    CommonMethodsMixin(
-      UserControllerMixin(PolymerElement))) {
+    UserControllerMixin(
+      TableElementsMixin(
+        CommonMethodsMixin(PolymerElement))) {
 
   static get template() {
     return html`
@@ -166,7 +167,9 @@ class EngagementStaffMembersTab extends
           line-height: 48px;
       }
       etools-content-panel {
-          --ecp-content-padding: 0;
+        --ecp-content: {
+          padding: 0;
+        }
       }
       list-pagination {
           --list-pagination-styles-margin-bottom: -8px;
@@ -211,7 +214,7 @@ class EngagementStaffMembersTab extends
                             unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}"></check-user-existence>
       <!--end requests-->
 
-      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])">
+      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])" list>
           <div slot="panel-btns">
               <div class="add-button-container">
                   <paper-icon-button
@@ -539,6 +542,27 @@ class EngagementStaffMembersTab extends
   @property({type: String})
   newEmail: string = '';
 
+  @property({type: Object})
+  engagement!: GenericObject;
+
+  @property({type: Number})
+  listSize!: number;
+
+  @property({type: Number})
+  lastSize!: number;
+
+  @property({type: Number})
+  listPage!: number;
+
+  @property({type: Number})
+  organisationId!: number;
+
+  @property({ type: String })
+  basePermissionPath: string = '';
+
+  @property({type: Boolean})
+  emailChecking!: boolean;
+
   private _newRequestDebouncer!: Debouncer;
 
   connectedCallback() {
@@ -631,9 +655,9 @@ class EngagementStaffMembersTab extends
     each(data, (staff, index) => {
       this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
     });
-    if (!this.originalTabData) {
-      this._dataItemsChanged(this.dataItems)
-    }
+    // if (!this.originalTabData) { // TODO* - This flag is nowhere elese in the app
+    //   this._dataItemsChanged(this.dataItems)
+    // }
   }
 
   _selectedStaffsChanged(data) {
@@ -647,7 +671,7 @@ class EngagementStaffMembersTab extends
       this.engagementStaffs[staff.user.email] = staff.id;
     });
     if (this.dataItems) {
-      each(this.dataItems, (staff, index) => {
+      each(this.dataItems, (staff: GenericObject, index) => {
         this.set(`dataItems.${index}.hasAccess`, !!this.engagementStaffs[staff.user.email]);
       });
     }
@@ -837,7 +861,7 @@ class EngagementStaffMembersTab extends
     this.resetDialog();
   }
 
-  manageEngagementStaff(staff, hasAccess) {
+  manageEngagementStaff(staff, hasAccess?) {
     if (hasAccess || staff.hasAccess) {
       this.engagementStaffs[staff.user.email] = staff.id;
     } else {
