@@ -153,17 +153,6 @@ export const tabInputsStyles = html`
         color: var(--gray-light);
       };
 
-    / / IE11 collapsed label fix --paper-input-container-label-floating: {
-      -webkit-transform: none;
-      -moz-transform: none;
-      -ms-transform: none;
-      -o-transform: none;
-      transform: none;
-      top: -21px;
-      width: 100%;
-      font-size: 12px;
-    };
-
       --etools-currency-container-label-floating: {
         -webkit-transform: none;
         -moz-transform: none;
@@ -492,6 +481,22 @@ export const tabInputsStyles = html`
       --etools-currency-container-input: {
         line-height: 0;
       };
+    }
+
+    datepicker-lite[disabled],
+    datepicker-lite.disabled-as-readonly {
+      --paper-input: {
+          color: var(--gray-50);
+        }
+        --paper-input-prefix: {
+          color: var(--gray-50);
+        }
+    }
+
+    datepicker-lite{
+      --paper-input-container-label:{
+        width: 133%;
+      }
     }
   </style>
 `;
