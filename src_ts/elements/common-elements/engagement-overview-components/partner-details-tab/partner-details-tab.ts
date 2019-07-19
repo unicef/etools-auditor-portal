@@ -67,6 +67,7 @@ class PartnerDetailsTab extends
                           id="partner"
                           class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
                           selected="{{engagement.partner.id}}"
+                          selected-item="{{engagement.partner}}"
                           label="[[getLabel('partner', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
                           options="[[partners]]"
