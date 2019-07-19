@@ -1,5 +1,4 @@
 import {html} from '@polymer/polymer/polymer-element';
-// TODO - remove etools-searchable.. styles
 // language=HTML
 export const tabInputsStyles = html`
   <style>
@@ -117,12 +116,6 @@ export const tabInputsStyles = html`
       };
       --iron-autogrow-textarea: {
         padding: 0;
-      };
-    }
-
-    etools-searchable-multiselection-menu {
-      --esmm-list-wrapper: {
-        -ms-overflow-style: auto;
       };
     }
 
