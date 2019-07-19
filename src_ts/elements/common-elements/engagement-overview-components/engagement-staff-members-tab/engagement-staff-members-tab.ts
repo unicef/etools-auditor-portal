@@ -191,7 +191,7 @@ class EngagementStaffMembersTab extends
           }
       }
       paper-input.search-input.filled {
--         --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+          --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
       }
       paper-input.email {
           --paper-input-error-position: relative !important;
