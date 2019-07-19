@@ -60,7 +60,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
             min-width: 0 !important;
             margin-bottom: 0 !important;
           }
-  
+
           .confirm-text {
             padding: 5px 86px 0 23px !important;
           }
@@ -79,7 +79,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
           /*}*/
         /*}*/
       </style>
-      
+
       <etools-content-panel
                 class="content-section clearfix"
                 panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations">
@@ -154,16 +154,16 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Category of Observation -->
-                            <etools-dropdown label="[[getLabel('findings.category_of_observation', basePermissionPath)]]" 
-                                             placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]" 
+                            <etools-dropdown label="[[getLabel('findings.category_of_observation', basePermissionPath)]]"
+                                             placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]"
                                              options="[[categoryOfObservation]]"
-                                             option-label="display_name" 
-                                             option-value="value" 
+                                             option-label="display_name"
+                                             option-value="value"
                                              selected="{{editedItem.category_of_observation}}"
                                              trigger-value-change-event
-                                             required$="[[_setRequired('findings.category_of_observation', basePermissionPath)]]" 
-                                             disabled$="{{requestInProcess}}" 
-                                             readonly$="{{requestInProcess}}" 
+                                             required$="[[_setRequired('findings.category_of_observation', basePermissionPath)]]"
+                                             disabled$="{{requestInProcess}}"
+                                             readonly$="{{requestInProcess}}"
                                              invalid="{{errors.category_of_observation}}"
                                              error-message="{{errors.category_of_observation}}"
                                              on-focus="_resetFieldError"
@@ -340,7 +340,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
     this.set('errors.deadline_of_action', false);
   }
 
-  getErrorBaseText:(priority) {
+  getErrorBaseText(priority) {
     if (!priority) {
       return '';
     }
