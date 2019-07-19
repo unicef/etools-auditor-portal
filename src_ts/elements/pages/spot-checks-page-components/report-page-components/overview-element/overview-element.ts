@@ -28,72 +28,29 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
     // language=HTML
     return html`
       ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
-      
+
       <etools-content-panel class="content-section clearfx" panel-title="Overview">
             <div class="row-h group">
                 <div class="input-container">
-                
-                
-                    <datepicker-lite 
-                                id="dateFaceStartInput" 
+
+                    <datepicker-lite
+                                id="dateFaceStartInput"
                                 label="[[getLabel('face_form_start_date', basePermissionPath)]]"
-                                value="{{prepareDate(data.face_form_start_date)}}" 
-                                selected-date-display-format="YYYY-MM-DD" 
-                                clearBtnInsideDr>
+                                value="{{data.face_form_start_date}}"
+                                selected-date-display-format="D MMM YYYY">
                     </datepicker-lite>
-                    <!--<paper-input-->
-                            <!--id="dateFaceStartInput"-->
-                            <!--class="disabled-as-readonly"-->
-                            <!--value="[[prettyDate(data.face_form_start_date)]]"-->
-                            <!--label="[[getLabel('face_form_start_date', basePermissionPath)]]"-->
-                            <!--placeholder="&#8212;"-->
-                            <!--data-selector="dateFaceStartSelector"-->
-                            <!--disabled-->
-                            <!--on-down="openDatePicker">-->
-                        
-                        <!--<etools-datepicker-->
-                                <!--id="dateFaceStartSelector"-->
-                                <!--modal="[[datepickerModal]]"-->
-                                <!--prefix-->
-                                <!--format="YYYY-MM-DD"-->
-                                <!--date="[[prepareDate(data.face_form_start_date)]]"-->
-                                <!--pretty-date="{{data.face_form_start_date}}"-->
-                                <!--no-init-->
-                                <!--show-clear-btn>-->
-                        <!--</etools-datepicker>-->
-                    <!--</paper-input>-->
+
                 </div>
 
                 <div class="input-container">
-                
-                    <datepicker-lite 
-                            id="dateFaceEndInput" 
-                            value="[[prettyDate(data.face_form_end_date)]]" 
-                            label="[[getLabel('face_form_end_date', basePermissionPath)]]" 
-                            selected-date-display-format="YYYY-MM-DD" 
-                            clearBtnInsideDr>
+
+                    <datepicker-lite
+                            id="dateFaceEndInput"
+                            value="{{data.face_form_end_date}}"
+                            label="[[getLabel('face_form_end_date', basePermissionPath)]]"
+                            selected-date-display-format="D MMM YYYY">
                     </datepicker-lite>
-                
-                    <!--<paper-input-->
-                            <!--id="dateFaceEndInput"-->
-                            <!--class="disabled-as-readonly"-->
-                            <!--value="[[prettyDate(data.face_form_end_date)]]"-->
-                            <!--label="[[getLabel('face_form_end_date', basePermissionPath)]]"-->
-                            <!--placeholder="&#8212;"-->
-                            <!--data-selector="dateFaceEndSelector"-->
-                            <!--disabled-->
-                            <!--on-down="openDatePicker">-->
-                        <!--<etools-datepicker-->
-                                <!--id="dateFaceEndSelector"-->
-                                <!--modal="[[datepickerModal]]"-->
-                                <!--prefix-->
-                                <!--format="YYYY-MM-DD"-->
-                                <!--date="[[prepareDate(data.face_form_end_date)]]"-->
-                                <!--pretty-date="{{data.face_form_end_date}}"-->
-                                <!--no-init-->
-                                <!--show-clear-btn>-->
-                        <!--</etools-datepicker>-->
-                    <!--</paper-input>-->
+
                 </div>
 
                 <div class="input-container">

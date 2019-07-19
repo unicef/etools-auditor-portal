@@ -274,3 +274,5 @@ class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(Poly
 
 }
 window.customElements.define('assign-engagement', AssignEngagement);
+
+export {AssignEngagement as AssignEngagementEl}

@@ -71,16 +71,10 @@ class SummaryFindingsElement extends (CommonMethodsMixin
             padding: 0;
           }
         }
-        /*  etools-searchable-multiselection-menu replaced with etools-dropdown   */
-        /*etools-searchable-multiselection-menu {*/
-          /*--esmm-list-wrapper {*/
-            /*max-height: 360px;*/
-            /*-ms-overflow-style: auto;*/
-          /*}*/
-        /*}*/
+
       </style>
 
-      <etools-content-panel
+      <etools-content-panel list
                 class="content-section clearfix"
                 panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations">
 
@@ -223,33 +217,15 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                             <!-- Deadline of Action -->
                             <datepicker-lite
                                         id="deadlineActionSelector"
-                                        selected-date-display-format="YYYY-MM-DD"
+                                        selected-date-display-format="D MMM YYYY"
                                         placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]"
                                         label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
-                                        value="[[prepareDate(editedItem.deadline_of_action)]]"
+                                        value="{{editedItem.deadline_of_action}}"
                                         error-message="{{errors.deadline_of_action}}"
                                         required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
                                         disabled$="{{requestInProcess}}"
-                                        readonly$="{{requestInProcess}}"
-                                        clearBtnInsideDr>
+                                        readonly$="{{requestInProcess}}">
                             </datepicker-lite>
-                            <!--<paper-input-->
-                                    <!--id="deadlineAction"-->
-                                    <!--class$="disabled-as-readonly [[_setRequired('findings.deadline_of_action', basePermissionPath)]]"-->
-                                    <!--value="[[prettyDate(editedItem.deadline_of_action)]]"-->
-                                    <!--label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"-->
-                                    <!--placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]"-->
-                                    <!--data-selector="deadlineActionSelector"-->
-                                    <!--required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"-->
-                                    <!--disabled$="{{requestInProcess}}"-->
-                                    <!--readonly$="{{requestInProcess}}"-->
-                                    <!--invalid="{{errors.deadline_of_action}}"-->
-                                    <!--error-message="{{errors.deadline_of_action}}"-->
-                                    <!--on-focus="_resetFieldError"-->
-                                    <!--on-tap="_resetFieldError"-->
-                                    <!--on-down="openDatePicker">-->
-                                <!---->
-                            <!--</paper-input>-->
                         </div>
                     </div>
                 </div>
@@ -353,6 +329,9 @@ class SummaryFindingsElement extends (CommonMethodsMixin
   }
 
   _getLength(dataItems) {
+    if (!dataItems) {
+      return;
+    }
     return dataItems.filter((item) => {
       return item.priority === this.priority.value;
     }).length;
@@ -361,8 +340,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
   _setPriority(itemModel, priority) {
     itemModel.priority = priority.value;
     if (priority.value === 'high') {
-      this.customStyle['--ecp-header-bg'] = 'var(--module-warning)';
-      this.updateStyles();
+      this.updateStyles({'--ecp-header-bg': 'var(--module-warning)'});
     }
   }
 

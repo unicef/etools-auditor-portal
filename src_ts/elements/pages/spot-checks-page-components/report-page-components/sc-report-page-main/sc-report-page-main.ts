@@ -8,12 +8,13 @@ import {GenericObject} from '../../../../../types/global';
 
 import concat from 'lodash-es/concat';
 import isNull from 'lodash-es/isNull';
+import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 
 
 /**
  * @polymer
  */
-class ScReportPageMain extends (PolymerElement) {
+class ScReportPageMain extends PolymerElement {
   static get template() {
     // language=HTML
     return html`
@@ -66,21 +67,21 @@ class ScReportPageMain extends (PolymerElement) {
 
   @property({type: Object})
   priorities: GenericObject = {
-                      low: {
-                        display_name: 'Low',
-                        value: 'low'
-                      },
-                      high: {
-                        display_name: 'High',
-                        value: 'high'
-                      }
-                    };
+    low: {
+      display_name: 'Low',
+      value: 'low'
+    },
+    high: {
+      display_name: 'High',
+      value: 'high'
+    }
+  };
 
   @property({type: Object, notify: true})
   engagement: GenericObject = {};
 
   validate(forSave) {
-    let assignTabValid = this.shadowRoot.querySelector('#assignEngagement').validate(forSave);
+    let assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagementEl).validate(forSave);
 
     return assignTabValid;
   }
@@ -98,7 +99,7 @@ class ScReportPageMain extends (PolymerElement) {
   }
 
   getAssignVisitData() {
-    return this.$.assignEngagement.getAssignVisitData() || null;
+    return (this.$.assignEngagement as AssignEngagementEl).getAssignVisitData() || null;
   }
 
   getOverviewData() {
