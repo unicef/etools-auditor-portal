@@ -47,9 +47,9 @@ import '../../list-tab-elements/list-pagination/list-pagination';
  * @appliesMixin UserControllerMixin
  */
 class EngagementStaffMembersTab extends
-    UserControllerMixin(
-      TableElementsMixin(
-        CommonMethodsMixin(PolymerElement))) {
+  UserControllerMixin(
+    TableElementsMixin(
+      CommonMethodsMixin(PolymerElement))) {
 
   static get template() {
     return html`
@@ -60,31 +60,31 @@ class EngagementStaffMembersTab extends
           position: relative;
           display: block;
       }
-      :host .email-loading {
+      .email-loading {
           position: absolute;
           top: 25px;
           left: auto;
           background-color: #fff;
       }
-      :host .email-loading:not([active]) {
+      .email-loading:not([active]) {
           display: none !important;
       }
-      :host etools-content-panel div[slot="panel-btns"] {
+      etools-content-panel div[slot="panel-btns"] {
           width: 100%;
           top: 0;
       }
-      :host etools-content-panel .add-button-container {
+      etools-content-panel .add-button-container {
           float: right;
           line-height: 48px;
       }
-      :host .search-input-container {
+      .search-input-container {
           float: right;
           height: 48px;
           color: #fff;
           overflow: hidden;
           width: 22%;
       }
-      :host .search-input-container .search-input {
+      .search-input-container .search-input {
           width: 5%;
           float: right;
           box-sizing: border-box;
@@ -93,32 +93,32 @@ class EngagementStaffMembersTab extends
           transition: 0.35s;
           cursor: pointer;
       }
-      :host .search-input-container .search-input[focused] {
+      .search-input-container .search-input[focused] {
           width: 100%;
       }
-      :host .search-input-container .search-input:not(.empty) {
+      .search-input-container .search-input:not(.empty) {
           width: 100% !important;
       }
-      :host .search-input-container .search-input iron-icon {
+      .search-input-container .search-input iron-icon {
           top: -1px;
           color: #fff;
       }
-      :host .edit-icon {
+      .edit-icon {
           padding: 5px;
           width: 33px;
           height: 33px;
           color: var(--gray-mid);
       }
-      :host .edit-icon-slot {
+      .edit-icon-slot {
           overflow: visible !important;
           display: flex;
           align-items: center;
           height: 100%;
       }
-      :host .check-icon {
+      .check-icon {
           margin-left: -3%;
       }
-      :host .form-title {
+      .form-title {
           position: relative;
           width: 100%;
           line-height: 40px;
@@ -128,24 +128,24 @@ class EngagementStaffMembersTab extends
           margin: 10px 0 0 !important;
           padding: 0 !important;
       }
-      :host .form-title .text {
+      .form-title .text {
           background-color: var(--gray-06);
           border-radius: 3px;
           margin: 0 24px;
           padding: 0 24px;
       }
-      :host .line {
+      .line {
           width: 'calc(100% - 48px)';
           margin-left: 24px;
           box-sizing: border-box;
           margin-bottom: 0 !important;
           border-bottom: 1px solid var(--gray-border);
       }
-      :host .notify-box {
+      .notify-box {
           padding-left: 12px;
           box-sizing: border-box;
       }
-      :host .confirm-backdrop[opened] {
+      .confirm-backdrop[opened] {
           position: fixed;
           top: 0;
           left: 0;
@@ -154,18 +154,18 @@ class EngagementStaffMembersTab extends
           background-color: rgba(0, 0, 0, 0.5);
           z-index: 104;
       }
-      :host .confirm-text {
+      .confirm-text {
           padding: 5px 86px 0 23px !important;
       }
-      :host .repeatable-item-container {
+      .repeatable-item-container {
           margin-bottom: 0 !important;
       }
-      :host .panel-content {
+      .panel-content {
           position: relative;
           margin-bottom: -7px;
           padding-bottom: 0;
       }
-      :host .checkbox {
+      .checkbox {
           overflow: visible !important;
           line-height: 48px;
       }
@@ -186,9 +186,12 @@ class EngagementStaffMembersTab extends
           --paper-input-container-input-color: #fff;
           --paper-input-container-underline-focus-border-bottom: 1px solid #fff;
           --paper-input-container-underline-border-bottom: none;
+          --paper-input-container-underline: {
+             display: none;
+          }
       }
       paper-input.search-input.filled {
-          --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+-         --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
       }
       paper-input.email {
           --paper-input-error-position: relative !important;
@@ -560,7 +563,7 @@ class EngagementStaffMembersTab extends
   @property({type: Number})
   organisationId!: number;
 
-  @property({ type: String })
+  @property({type: String})
   basePermissionPath: string = '';
 
   @property({type: Boolean})
