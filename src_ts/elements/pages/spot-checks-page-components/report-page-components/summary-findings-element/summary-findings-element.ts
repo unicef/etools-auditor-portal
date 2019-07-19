@@ -9,8 +9,8 @@ import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '../list-tab-elements/list-header/list-header';
-import '../list-element/list-element';
+import '../../../../common-elements/list-tab-elements/list-header/list-header';
+import '../../../../common-elements/list-tab-elements/list-element/list-element';
 
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';

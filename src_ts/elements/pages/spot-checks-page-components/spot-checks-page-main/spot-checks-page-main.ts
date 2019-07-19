@@ -6,7 +6,6 @@ import '@polymer/app-layout/app-layout';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import './../app-main-header/page-header.js';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
@@ -51,7 +50,28 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(StaticDataM
           margin-bottom: 0 !important;
         }
       </style>
-      
+
+      <app-route
+            route="{{route}}"
+            pattern="/:id/:tab"
+            data="{{routeData}}">
+      </app-route>
+
+      <engagement-info-data
+            engagement-id="{{engagementId}}"
+            engagement-type="[[pageType]]"
+            engagement-info="{{engagement}}">
+      </engagement-info-data>
+
+      <update-engagement
+            updated-engagement-data="{{updatedEngagement}}"
+            quiet-adding="{{quietAdding}}"
+            force-options-update="{{forceOptionsUpdate}}"
+            engagement="{{engagement}}"
+            error-object="{{errorObject}}"
+            base-permission-path="{{permissionBase}}">
+      </update-engagement>
+
       <template is="dom-if" if="{{engagement.id}}" restamp>
             <pages-header-element
                     show-export-button
@@ -225,7 +245,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(StaticDataM
                 </div>
             </etools-dialog>
         </template>
-    
+
     `;
   }
 
