@@ -107,7 +107,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
                           field="agreement"
                           value="{{data.agreement.order_number}}"
-                          allowed-pattern="[\d]"
+                          allowed-pattern="[0-9]"
                           label="[[getLabel('agreement.order_number', basePermissionPath)]]"
                           placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
                           disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
