@@ -67,7 +67,6 @@ class PartnerDetailsTab extends
                           id="partner"
                           class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
                           selected="{{engagement.partner.id}}"
-                          selected-item="{{engagement.partner}}"
                           label="[[getLabel('partner', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
                           options="[[partners]]"
@@ -358,8 +357,17 @@ class PartnerDetailsTab extends
     this.set('activePd', null);
     this.set('authorizedOfficer', null);
 
-    let partnerId = (event && event.detail && event.detail.selectedItem && event.detail.selectedItem.id || +id);
-    if (!partnerId) {return;}
+    let selectedPartner = event && event.detail && event.detail.selectedItem;
+    if (!selectedPartner) {
+      return;
+    }
+    this.set('engagement.partner', selectedPartner);
+
+    let partnerId = (selectedPartner && selectedPartner.id || +id);
+    if (!partnerId) {
+      return;
+    }
+
     if (this.isReadOnly('partner', this.basePermissionPath)) {
       this.partner = this.engagement.partner;
       this.set('partner.interventions', this.engagement.active_pd);
