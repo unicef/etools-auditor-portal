@@ -65,19 +65,23 @@ class ListPagination extends QueryParamsController(PolymerElement) {
           paper-dropdown-menu {
               color: var(--gray-mid);
               width: 30px;
-              height: 36px;
+              vertical-align: middle;
               margin-left:30px;
-              vertical-align:middle;
               --paper-input-container-input-box-sizing: border-box;
               --paper-input-container-input-white-space: nowrap;
               --paper-input-container-input-overflow: hidden;
               --paper-input-container-input-text-overflow: ellipsis;
               --paper-input-container-input-color: var(--gray-mid);
               --paper-input-container-focus-color: var(--module-primary);
+              --iron-icon-height: 18px;
               --paper-input-container-shared-input-style: {
                 font-size: 12px;
                 line-height: 12px;
-              }
+                vertical-align:middle;
+              };
+              --paper-input-container-underline: {
+                display: none;
+              };
           }
           paper-item {
           --paper-item: {
