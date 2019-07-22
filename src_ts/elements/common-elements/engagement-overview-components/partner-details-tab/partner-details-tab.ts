@@ -141,9 +141,9 @@ class PartnerDetailsTab extends
                           option-label="fullName"
                           option-value="id"
                           required="{{_setRequired('authorized_officers', basePermissionPath)}}"
+                          invalid="{{_checkInvalid(errors.authorized_officers)}}"
                           disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
                           readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-                          invalid="{{_checkInvalid(errors.authorized_officers)}}"
                           error-message="{{errors.authorized_officers}}"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
@@ -264,7 +264,7 @@ class PartnerDetailsTab extends
     if (engagementOfficer) {engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;}
 
     if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
-      this.partner.partnerOfficers = [engagementOfficer];
+      this.set('partner.partnerOfficers', [engagementOfficer]);
       this.authorizedOfficer = engagementOfficer;
     } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
       let officerIndex = !!(engagementOfficer && ~findIndex(partner.partnerOfficers, (officer: any) => {
@@ -357,8 +357,17 @@ class PartnerDetailsTab extends
     this.set('activePd', null);
     this.set('authorizedOfficer', null);
 
-    let partnerId = (event && event.detail && event.detail.selectedItem && event.detail.selectedItem.id || +id);
-    if (!partnerId) {return;}
+    let selectedPartner = event && event.detail && event.detail.selectedItem;
+    if (!selectedPartner) {
+      return;
+    }
+    this.set('engagement.partner', selectedPartner);
+
+    let partnerId = (selectedPartner && selectedPartner.id || +id);
+    if (!partnerId) {
+      return;
+    }
+
     if (this.isReadOnly('partner', this.basePermissionPath)) {
       this.partner = this.engagement.partner;
       this.set('partner.interventions', this.engagement.active_pd);

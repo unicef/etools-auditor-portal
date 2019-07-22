@@ -1,5 +1,4 @@
 import {html} from '@polymer/polymer/polymer-element';
-// TODO - remove etools-searchable.. styles
 // language=HTML
 export const tabInputsStyles = html`
   <style>
@@ -120,12 +119,6 @@ export const tabInputsStyles = html`
       };
     }
 
-    etools-searchable-multiselection-menu {
-      --esmm-list-wrapper: {
-        -ms-overflow-style: auto;
-      };
-    }
-
     etools-dropdown,
     etools-dropdown-multi,
     paper-input,
@@ -141,7 +134,6 @@ export const tabInputsStyles = html`
       --paper-input-container-label: {
         color: var(--gray-50);
       };
-
 
       --paper-input-container-invalid-color: var(--module-error);
 
@@ -179,32 +171,6 @@ export const tabInputsStyles = html`
       --paper-input-container-focus-color: var(--module-primary);
     }
 
-    paper-input.readonly, paper-dropdown-menu.readonly, paper-textarea.readonly {
-      --paper-input-container-underline: {
-        display: none;
-      };
-    }
-
-    paper-textarea[readonly], paper-textarea[disabled].disabled-as-readonly,
-    paper-dropdown-menu[readonly], paper-dropdown-menu[disabled].disabled-as-readonly,
-    paper-input[readonly], paper-input[disabled].disabled-as-readonly {
-      --paper-input-container: {
-        opacity: 1 !important;
-      };
-      --paper-input-container-underline: {
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
-        border-color: rgba(0, 0, 0, 0.20) !important;
-        display: block !important;
-      };
-      --paper-input-container-underline-focus: {
-        display: none;
-      };
-      --paper-input-container-underline-disabled: {
-        display: none;
-      };
-
-    }
-
     paper-textarea[disabled].without-border,
     paper-input[disabled].without-border {
       --paper-input-container-label: {
@@ -225,64 +191,30 @@ export const tabInputsStyles = html`
       };
     }
 
-    paper-dropdown-menu.required:not([disabled]),
-    paper-textarea.required:not([disabled]),
-    paper-input.required:not([disabled]) {
+    :host > * {
+      --required-star-style: {
+        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
+        width: auto !important;
+        max-width: 90%;
+        right: auto;
+        padding-right: 15px;
+        color: var(--gray-50);
+      };
+    }
+
+    paper-input[required]:not([disabled]),
+    paper-input-container[required]:not([disabled]),
+    datepicker-lite[required]:not([disabled]),
+    etools-dropdown[required]:not([disabled]),
+    etools-dropdown-multi[required]:not([disabled]),
+    etools-upload[required]:not([disabled]),
+    etools-currency-amount-input[required]:not([disabled]) {
       --paper-input-container-label: {
-        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
-        width: auto !important;
-        max-width: 90%;
-        right: auto;
-        padding-right: 15px;
-        color: var(--gray-50);
+        @apply --required-star-style;
       };
-    }
-
-    etools-currency-amount-input.required:not([disabled]) {
-      --etools-currency-container-label: {
-        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
-        width: auto !important;
-        max-width: 90%;
-        right: auto;
-        padding-right: 15px;
-        color: var(--gray-50);
-      };
-    }
-
-    etools-searchable-multiselection-menu.disabled-as-readonly {
-      --esmm-readonly-input-container-underline: {
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.20);
-      };
-      --esmm-readonly-input-container: {
-        opacity: 1 !important;
-      };
-      --esmm-input-container-label: {
-        color: var(--gray-50);
-      };
-    }
-
-    etools-searchable-multiselection-menu.readonly {
-      --esmm-readonly-input-container-underline: {
-        border-bottom: 1px solid var(--gray-50) !important;
-      };
-      --esmm-readonly-input-container: {
-        opacity: 1 !important;
-      };
-      --esmm-input-container-label: {
-        color: var(--gray-50);
-      };
-
-    }
-
-    etools-dropdown.required:not([disabled]) {
-      --paper-input-container-label: {
-        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
-        width: auto !important;
-        max-width: 90%;
-        right: auto;
-        padding-right: 15px;
-        color: var(--gray-50);
-      };
+      --paper-input-container-label-floating: {
+        @apply --required-star-style;
+      }
     }
 
     paper-input.bold {
@@ -306,19 +238,6 @@ export const tabInputsStyles = html`
     paper-input.deleted {
       --paper-input-container-input: {
         color: #b0b0b0;
-      };
-    }
-
-    etools-currency-amount-input[disabled].disabled-as-readonly {
-      --etools-currency-container-underline-disabled: {
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.20) !important;
-      };
-      --etools-currency-container-label: {
-        color: var(--gray-50);
-      };
-      --paper-input-container: {
-        opacity: 1 !important;
-        color: var(--gray-dark) !important;
       };
     }
 
@@ -482,21 +401,34 @@ export const tabInputsStyles = html`
         line-height: 0;
       };
     }
-
-    datepicker-lite[disabled],
-    datepicker-lite.disabled-as-readonly {
+    
+    paper-input[disabled],
+    etools-dropdown[disabled],
+    etools-dropdown-multi[disabled],
+    etools-currency-amount-input[disabled],
+    datepicker-lite[disabled] {
       --paper-input: {
           color: var(--gray-50);
-        }
-        --paper-input-prefix: {
+        }      
+        --paper-input-container-underline: {
+          color: rgba(0, 0, 0, 0.20);
+      }
+    }
+    datepicker-lite[disabled]
+    {
+      --paper-input-prefix: {
           color: var(--gray-50);
         }
     }
-
     datepicker-lite{
       --paper-input-container-label:{
         width: 133%;
       }
+      --paper-input-container:{
+        width: 100%;
+      }
     }
+
+   
   </style>
 `;
