@@ -78,7 +78,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
         }
       </style>
 
-      <app-toolbar sticky class="content-align">
+      <app-toolbar id="toolbar" sticky class="content-align">
         <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
 
         <div class="titlebar content-align">

@@ -9,6 +9,8 @@ import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
+import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
+
 import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
 import some from 'lodash-es/some';
@@ -52,7 +54,6 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     return html`
       ${appDrawerStyles}
       <static-data></static-data>
-
       <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
 
       <app-route
@@ -78,7 +79,6 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
         <!-- Main content -->
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
-
           <app-header slot="header" fixed shadow>
             <page-header id="pageheader" title="eTools" user="[[user]]"></page-header>
           </app-header>
@@ -199,8 +199,30 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     this.addEventListener('404', this._pageNotFound);
     this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
+    this.addEventListener('iron-overlay-opened', this._dialogOpening);
+    this.addEventListener('iron-overlay-closed', this._dialogClosing);
   }
 
+  _dialogOpening(event) {
+    let overlay = document.querySelector("iron-overlay-backdrop.opened");
+    if (overlay) {
+      if (!event.target.$.appHeadLayout.querySelector("iron-overlay-backdrop")) {
+        event.target.$.drawer.append(overlay.cloneNode(true));
+        event.target.$.pageheader.$.toolbar.append(overlay.cloneNode(true));
+        event.target.$.appHeadLayout.append(overlay.cloneNode(true));
+      } else {
+        event.target.$.appHeadLayout.querySelector("iron-overlay-backdrop").classList.add("opened");
+        event.target.$.drawer.querySelector("iron-overlay-backdrop").classList.add("opened");
+        event.target.$.pageheader.$.toolbar.querySelector("iron-overlay-backdrop").classList.add("opened");
+      }
+      overlay.classList.remove("opened");
+    }
+  }
+  _dialogClosing(event) {
+    event.target.$.appHeadLayout.querySelector("iron-overlay-backdrop").classList.remove("opened");
+    event.target.$.drawer.querySelector("iron-overlay-backdrop").classList.remove("opened");
+    event.target.$.pageheader.$.toolbar.querySelector("iron-overlay-backdrop").classList.remove("opened");
+  }
   queueToast(e, detail) {
     let notificationList = this.shadowRoot!.querySelector('multi-notification-list');
     if (!notificationList) {return;}
@@ -249,7 +271,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
       if (this.route.path === '/ap/') {this._setDefaultLandingPage();}
     })
-    .catch((_err) => {console.error(_err); this._pageNotFound()});
+      .catch((_err) => {console.error(_err); this._pageNotFound()});
   }
 
   _checkSSCPage(user) {
