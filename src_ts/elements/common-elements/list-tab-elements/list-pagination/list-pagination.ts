@@ -60,20 +60,28 @@ class ListPagination extends QueryParamsController(PolymerElement) {
           }
           span.textsec.lh {
               font-size: 12px;
+              margin-left: 40px;
           }
           paper-dropdown-menu {
               color: var(--gray-mid);
-              width: 50px;
-              --paper-input-container-input-font-size: 13px;
+              width: 30px;
+              vertical-align: middle;
+              margin-left:30px;
               --paper-input-container-input-box-sizing: border-box;
               --paper-input-container-input-white-space: nowrap;
               --paper-input-container-input-overflow: hidden;
               --paper-input-container-input-text-overflow: ellipsis;
-              --paper-input-container-input-padding-left: 3px;
               --paper-input-container-input-color: var(--gray-mid);
-              --paper-input-container-input-line-height: 24px;
-              --paper-input-container-input-height: 24px;
               --paper-input-container-focus-color: var(--module-primary);
+              --iron-icon-height: 18px;
+              --paper-input-container-shared-input-style: {
+                font-size: 12px;
+                line-height: 12px;
+                vertical-align:middle;
+              };
+              --paper-input-container-underline: {
+                display: none;
+              };
           }
           paper-item {
           --paper-item: {
