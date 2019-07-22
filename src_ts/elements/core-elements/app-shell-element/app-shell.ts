@@ -75,10 +75,12 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
           <app-menu root-path="[[rootPath]]"
             selected-option="[[_page]]"
             small-menu$="[[smallMenu]]"></app-menu>
+            <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
 
         <!-- Main content -->
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
+          <iron-overlay-backdrop id="appHeaderOverlay"></iron-overlay-backdrop>
           <app-header slot="header" fixed shadow>
             <page-header id="pageheader" title="eTools" user="[[user]]"></page-header>
           </app-header>
@@ -205,24 +207,26 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
   _dialogOpening(event) {
     let overlay = document.querySelector("iron-overlay-backdrop.opened");
-    if (overlay) {
-      if (!event.target.$.appHeadLayout.querySelector("iron-overlay-backdrop")) {
-        event.target.$.drawer.append(overlay.cloneNode(true));
-        event.target.$.pageheader.$.toolbar.append(overlay.cloneNode(true));
-        event.target.$.appHeadLayout.append(overlay.cloneNode(true));
-      } else {
-        event.target.$.appHeadLayout.querySelector("iron-overlay-backdrop").classList.add("opened");
-        event.target.$.drawer.querySelector("iron-overlay-backdrop").classList.add("opened");
-        event.target.$.pageheader.$.toolbar.querySelector("iron-overlay-backdrop").classList.add("opened");
-      }
-      overlay.classList.remove("opened");
-    }
+    if (!overlay) {return;}
+
+    overlay.classList.remove("opened");
+
+    // set zIndex in css ?
+    event.target.$.drawerOverlay.style.zIndex = (overlay as any).style.zIndex;
+    event.target.$.appHeaderOverlay.style.zIndex = (overlay as any).style.zIndex;
+    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = (overlay as any).style.zIndex;;
+
+    event.target.$.drawerOverlay.classList.add("opened");
+    event.target.$.appHeaderOverlay.classList.add("opened");
+    event.target.$.pageheader.$.toolBarOverlay.classList.add("opened");
   }
   _dialogClosing(event) {
-    event.target.$.appHeadLayout.querySelector("iron-overlay-backdrop").classList.remove("opened");
-    event.target.$.drawer.querySelector("iron-overlay-backdrop").classList.remove("opened");
-    event.target.$.pageheader.$.toolbar.querySelector("iron-overlay-backdrop").classList.remove("opened");
+    if(event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1){ return; }
+    event.target.$.drawerOverlay.classList.remove("opened");
+    event.target.$.appHeaderOverlay.classList.remove("opened");
+    event.target.$.pageheader.$.toolBarOverlay.classList.remove("opened");
   }
+
   queueToast(e, detail) {
     let notificationList = this.shadowRoot!.querySelector('multi-notification-list');
     if (!notificationList) {return;}
