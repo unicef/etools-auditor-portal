@@ -17,14 +17,16 @@ import PermissionControllerMixin from '../../../app-mixins/permission-controller
 import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
 import { tabLayoutStyles } from '../../../styles-elements/tab-layout-styles';
 import { moduleStyles } from '../../../styles-elements/module-styles';
+import DateMixin from '../../../app-mixins/date-mixin';
 
 /**
  * @polymer
  * @customElement
+ * @appliesMixin DateMixin
  * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
  */
-class AssignEngagement extends PermissionControllerMixin(CommonMethodsMixin(PolymerElement)) {
+class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethodsMixin(PolymerElement))) {
 
   static get template() {
     return html`
