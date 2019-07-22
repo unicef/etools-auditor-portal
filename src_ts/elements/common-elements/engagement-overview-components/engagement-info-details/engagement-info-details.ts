@@ -222,7 +222,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
-                          max-date="{{maxDate}}">
+                          max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
 
@@ -391,10 +391,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   engagementType = '';
 
   @property({type: Date})
-  maxDate = () => {
-    let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
-    return new Date(nextDay.getDate() - 1);
-  }
+  maxDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
 
   @property({type: String})
   contractExpiryDate = null;

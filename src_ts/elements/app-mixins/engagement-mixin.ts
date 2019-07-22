@@ -170,7 +170,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       event.target.invalid = false;
     }
 
-    _processAction(event, details) {
+    _processAction(event) {
+      let details = event.detail;
       if (!details || !details.type) {
         throw 'Event type is not provided!';
       }
