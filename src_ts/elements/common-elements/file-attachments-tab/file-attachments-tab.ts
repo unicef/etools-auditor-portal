@@ -199,10 +199,10 @@ class FileAttachmentsTab extends EndpointsMixin(
             <template is="dom-if" if="[[showFileTypes(basePermissionPath)]]">
               <div class="row-h group">
                 <div class="input-container input-container-ms">
-                  <etools-dropdown-multi
+                  <etools-dropdown
                       id="fileType"
                       class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
-                      selected-values="{{editedItem.type}}"
+                      selected="{{editedItem.type}}"
                       label="[[getLabel('file_type', basePermissionPath)]]"
                       placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
                       options="[[fileTypes]]"
@@ -216,7 +216,7 @@ class FileAttachmentsTab extends EndpointsMixin(
                       on-focus="_resetFieldError"
                       on-tap="_resetFieldError"
                       hide-search>
-                  </etools-dropdown-multi>
+                  </etools-dropdown>
                 </div>
               </div>
             </template>

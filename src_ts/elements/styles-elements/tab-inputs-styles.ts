@@ -135,7 +135,6 @@ export const tabInputsStyles = html`
         color: var(--gray-50);
       };
 
-
       --paper-input-container-invalid-color: var(--module-error);
 
       --paper-input-container-disabled: {
@@ -192,10 +191,8 @@ export const tabInputsStyles = html`
       };
     }
 
-    paper-dropdown-menu.required:not([disabled]),
-    paper-textarea.required:not([disabled]),
-    paper-input.required:not([disabled]) {
-      --paper-input-container-label: {
+    :host > * {
+      --required-star-style: {
         background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
         width: auto !important;
         max-width: 90%;
@@ -205,26 +202,19 @@ export const tabInputsStyles = html`
       };
     }
 
-    etools-currency-amount-input.required:not([disabled]) {
-      --etools-currency-container-label: {
-        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
-        width: auto !important;
-        max-width: 90%;
-        right: auto;
-        padding-right: 15px;
-        color: var(--gray-50);
-      };
-    }
-   
-    etools-dropdown.required:not([disabled]) {
+    paper-input[required]:not([disabled]),
+    paper-input-container[required]:not([disabled]),
+    datepicker-lite[required]:not([disabled]),
+    etools-dropdown[required]:not([disabled]),
+    etools-dropdown-multi[required]:not([disabled]),
+    etools-upload[required]:not([disabled]),
+    etools-currency-amount-input[required]:not([disabled]) {
       --paper-input-container-label: {
-        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
-        width: auto !important;
-        max-width: 90%;
-        right: auto;
-        padding-right: 15px;
-        color: var(--gray-50);
+        @apply --required-star-style;
       };
+      --paper-input-container-label-floating: {
+        @apply --required-star-style;
+      }
     }
 
     paper-input.bold {
