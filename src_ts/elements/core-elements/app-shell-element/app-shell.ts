@@ -206,15 +206,15 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   }
 
   _dialogOpening(event) {
-    let overlay = document.querySelector("iron-overlay-backdrop.opened");
-    if (!overlay) {return;}
+    let dialogOverlay = document.querySelector("iron-overlay-backdrop.opened");
+    if (!dialogOverlay) {return;}
 
-    overlay.classList.remove("opened");
+    dialogOverlay.classList.remove("opened");
 
     // set zIndex in css ?
-    event.target.$.drawerOverlay.style.zIndex = (overlay as any).style.zIndex;
-    event.target.$.appHeaderOverlay.style.zIndex = (overlay as any).style.zIndex;
-    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = (overlay as any).style.zIndex;
+    event.target.$.drawerOverlay.style.zIndex = (dialogOverlay as any).style.zIndex;
+    event.target.$.appHeaderOverlay.style.zIndex = (dialogOverlay as any).style.zIndex;
+    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = (dialogOverlay as any).style.zIndex;
 
     event.target.$.drawerOverlay.classList.add("opened");
     event.target.$.appHeaderOverlay.classList.add("opened");
