@@ -82,7 +82,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
         <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
 
         <div class="titlebar content-align">
-          <etools-app-selector id="selector"></etools-app-selector>
+          <etools-app-selector id="selector" user="[[user]]"></etools-app-selector>
           <img id="app-logo" src$="[[rootPath]]/../assets/images/etools_logo.svg">
 
           <template is="dom-if" if="[[environment]]">
