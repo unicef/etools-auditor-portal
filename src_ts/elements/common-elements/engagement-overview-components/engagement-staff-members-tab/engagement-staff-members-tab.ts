@@ -728,8 +728,8 @@ class EngagementStaffMembersTab extends
     let item = event && event.model && event.model.item;
     if (!item) {throw 'Can not get item model!';}
 
-    let me = this.getUserData() || {},
-      updateOptions = get(item, 'user.email') === me.email;
+    let me = this.getUserData() || {};
+    let updateOptions = get(item, 'user.email') === me.email;
 
     this.manageEngagementStaff(item);
     this._updateEngagement(true, updateOptions);

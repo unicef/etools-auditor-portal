@@ -38,6 +38,7 @@ import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
 import {GenericObject} from '../../../types/global.js';
 import {getDomainByEnv} from '../../app-config/config.js';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
+import '../../common-elements/multi-notifications/multi-notification-list';
 
 
 setRootPath('/ap_poly3/');
@@ -151,6 +152,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
         </app-header-layout>
       </app-drawer-layout>
+      <multi-notification-list></multi-notification-list>
     `;
   }
 
@@ -232,7 +234,8 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     event.target.$.pageheader.$.toolBarOverlay.classList.remove("opened");
   }
 
-  queueToast(e, detail) {
+  queueToast(e) {
+    let detail = e.detail;
     let notificationList = this.shadowRoot!.querySelector('multi-notification-list');
     if (!notificationList) {return;}
 

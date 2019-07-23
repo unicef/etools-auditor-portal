@@ -222,7 +222,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
-                          max-date="{{maxDate}}">
+                          max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
 
@@ -233,7 +233,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               slot="field"
                               id="engagementType"
                               class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
-                              selected="{{data.engagement_type}}"
+                              selected="[[_getOptionValue(data.engagement_type)]]"
                               label="[[getLabel('engagement_type', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
                               options="[[engagementTypes]]"
@@ -246,6 +246,8 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                               error-message="{{errors.engagement_type}}"
                               on-focus="_resetFieldError"
                               on-tap="_resetFieldError"
+                              trigger-value-change-event
+                              on-etools-selected-item-changed="_setEngagementTypeObject"
                               hide-search>
                       </etools-dropdown>
                       <span slot="message">Attach FACE Form Requesting Funding, <br>
@@ -391,10 +393,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   engagementType = '';
 
   @property({type: Date})
-  maxDate = () => {
-    let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
-    return new Date(nextDay.getDate() - 1);
-  }
+  maxDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
 
   @property({type: String})
   contractExpiryDate = null;
@@ -444,6 +443,18 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     super.connectedCallback();
     (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
+  }
+
+  _setEngagementTypeObject(e) {
+    this.set('data.engagement_type', e.detail.selectedItem);
+  }
+
+  _getOptionValue(engagementType) {
+    if (typeof engagementType === 'string') {
+      return engagementType;
+    } else {// it's object hopefully
+      return engagementType.value;
+    }
   }
 
   _prepareData() {
@@ -522,8 +533,8 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   _requestAgreement(event: any) {
     if (this.requestInProcess) {return;}
 
-    let input = event && event.target, // event.target works ok here
-      value = input && input.value;
+    let input = event && event.target;
+    let value = input && input.value;
 
     if ((+value || +value === 0) && value === this.orderNumber) {return;}
     this.resetAgreement();
@@ -596,7 +607,9 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {data.partner_contacted_at = this.data.partner_contacted_at;}
     if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) {data.agreement = this.data.agreement.id;}
     if (this.originalData.total_value !== this.data.total_value) {data.total_value = this.data.total_value;}
-    if (this.originalData.engagement_type !== this.data.engagement_type.value && !this.isStaffSc) {data.engagement_type = this.data.engagement_type.value;}
+    if (this.originalData.engagement_type !== this.data.engagement_type.value && !this.isStaffSc) {
+      data.engagement_type = this.data.engagement_type.value;
+    }
     if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) {data.po_item = this.data.po_item.id;}
     if (this.originalData.joint_audit !== this.data.joint_audit) {data.joint_audit = this.data.joint_audit;}
 
