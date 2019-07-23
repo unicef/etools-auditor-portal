@@ -214,7 +214,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     // set zIndex in css ?
     event.target.$.drawerOverlay.style.zIndex = (overlay as any).style.zIndex;
     event.target.$.appHeaderOverlay.style.zIndex = (overlay as any).style.zIndex;
-    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = (overlay as any).style.zIndex;;
+    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = (overlay as any).style.zIndex;
 
     event.target.$.drawerOverlay.classList.add("opened");
     event.target.$.appHeaderOverlay.classList.add("opened");
