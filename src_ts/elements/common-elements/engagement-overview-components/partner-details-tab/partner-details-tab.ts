@@ -358,10 +358,6 @@ class PartnerDetailsTab extends
     this.set('authorizedOfficer', null);
 
     let selectedPartner = event && event.detail && event.detail.selectedItem;
-    if (!selectedPartner) {
-      return;
-    }
-    this.set('engagement.partner', selectedPartner);
 
     let partnerId = (selectedPartner && selectedPartner.id || +id);
     if (!partnerId) {
@@ -372,6 +368,8 @@ class PartnerDetailsTab extends
       this.partner = this.engagement.partner;
       this.set('partner.interventions', this.engagement.active_pd);
       return;
+    } else {
+      this.set('engagement.partner', selectedPartner);
     }
 
     this.requestInProcess = true;
