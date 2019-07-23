@@ -3,6 +3,7 @@ import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-l
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-app-selector';
 import '@unicef-polymer/etools-profile-dropdown';
 import './countries-dropdown/countries-dropdown';
@@ -78,7 +79,8 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
         }
       </style>
 
-      <app-toolbar sticky class="content-align">
+      <app-toolbar id="toolbar" sticky class="content-align">
+        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
         <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
 
         <div class="titlebar content-align">
