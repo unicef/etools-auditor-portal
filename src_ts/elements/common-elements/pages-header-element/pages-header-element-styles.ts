@@ -41,6 +41,7 @@ const pagesHeaderElementStyles = html`
     .side-heading {
       margin: 0;
       height: 80px;
+      padding-top: 20px;
       padding-right: 275px;
       box-sizing: border-box;
     }

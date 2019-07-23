@@ -38,6 +38,7 @@ import '../../../data-elements/get-staff-members-list';
 import '../../list-tab-elements/list-header/list-header';
 import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
+import '../../../data-elements/check-user-existence';
 
 /**
  * @polymer
