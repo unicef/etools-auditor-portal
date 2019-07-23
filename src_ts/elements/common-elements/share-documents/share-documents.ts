@@ -306,8 +306,8 @@ class ShareDocuments extends
       this.set('attachmentsList', this.originalList);
       return;
     }
-    const {value} = selectedFileType;
-    const newFilteredList = this.originalList.filter(row => row.file_type.toLowerCase() === value.toLowerCase());
+    const file_type = selectedFileType.toLowerCase();
+    const newFilteredList = this.originalList.filter(row => row.file_type.toLowerCase() === file_type);
     this.set('attachmentsList', newFilteredList)
   }
 
