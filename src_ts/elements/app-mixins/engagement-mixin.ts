@@ -172,9 +172,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     _processAction(event) {
       let details = event.detail;
+
       if (!details || !details.type) {
         throw 'Event type is not provided!';
       }
+
       switch (details.type) {
         case 'save':
           this._saveProgress(event, details);
