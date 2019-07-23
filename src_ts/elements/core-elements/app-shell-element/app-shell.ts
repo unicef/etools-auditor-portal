@@ -221,7 +221,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     event.target.$.pageheader.$.toolBarOverlay.classList.add("opened");
   }
   _dialogClosing(event) {
-    if(event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1){ return; }
+    if (event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {return;}
     event.target.$.drawerOverlay.classList.remove("opened");
     event.target.$.appHeaderOverlay.classList.remove("opened");
     event.target.$.pageheader.$.toolBarOverlay.classList.remove("opened");
