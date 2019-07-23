@@ -7,7 +7,7 @@ import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
-import {fireEvent} from '../../utils/fire-custom-event.js';
+import {fireEvent} from '../../utils/fire-custom-event';
 import { property } from '@polymer/decorators';
 
 /**
@@ -52,10 +52,9 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
       <div class="nav-menu">
         <iron-selector selected="[[selectedOption]]"
                        attr-for-selected="menu-name"
-                       selectable="a"
                        role="navigation">
 
-          <a class="nav-menu-item" menu-name="page-one" href$="[[rootPath]]engagements/list?reload=true">
+          <a class="nav-menu-item" menu-name="engagements" href$="[[rootPath]]engagements/list?reload=true">
             <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
             <paper-tooltip for="iconEngagements" position="right">
               Engagements
@@ -63,7 +62,7 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
             <div class="name">Engagements</div>
           </a>
 
-          <a class="nav-menu-item" menu-name="page-two" href$="[[rootPath]]staff-sc/list?reload=true">
+          <a class="nav-menu-item" menu-name="staff-sc" href$="[[rootPath]]staff-sc/list?reload=true">
             <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
             <paper-tooltip for="iconStaffSpotCk" position="right">
               Staff Spot Checks

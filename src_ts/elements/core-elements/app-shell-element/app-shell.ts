@@ -72,7 +72,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
                     opened="[[_drawerOpened]]"
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
-            selected-option="[[_page]]"
+            selected-option="[[page]]"
             small-menu$="[[smallMenu]]"></app-menu>
         </app-drawer>
 
