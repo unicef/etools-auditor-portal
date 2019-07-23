@@ -212,16 +212,21 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
     dialogOverlay.classList.remove("opened");
 
     // set zIndex in css ?
-    event.target.$.drawerOverlay.style.zIndex = (dialogOverlay as any).style.zIndex;
-    event.target.$.appHeaderOverlay.style.zIndex = (dialogOverlay as any).style.zIndex;
-    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = (dialogOverlay as any).style.zIndex;
+    const zIndex = (dialogOverlay as any).style.zIndex;
+    event.target.$.drawerOverlay.style.zIndex = zIndex;
+    event.target.$.appHeaderOverlay.style.zIndex = zIndex;
+    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = zIndex;
 
     event.target.$.drawerOverlay.classList.add("opened");
     event.target.$.appHeaderOverlay.classList.add("opened");
     event.target.$.pageheader.$.toolBarOverlay.classList.add("opened");
   }
   _dialogClosing(event) {
-    if (event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {return;}
+    // chrome
+    if (event.path && event.path[0] && event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {return;}
+    // edge
+    if (event.__target && event.__target.is && event.__target.is.toLowerCase().indexOf('dropdown') > -1) {return;}
+
     event.target.$.drawerOverlay.classList.remove("opened");
     event.target.$.appHeaderOverlay.classList.remove("opened");
     event.target.$.pageheader.$.toolBarOverlay.classList.remove("opened");
