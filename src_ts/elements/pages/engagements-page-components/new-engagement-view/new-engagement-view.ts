@@ -28,6 +28,7 @@ import '../../../common-elements/engagement-overview-components/engagement-info-
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
+import {AP_DOMAIN} from '../../../app-config/config';
 
 /**
  * TODO: polymer 3 migration
@@ -281,7 +282,7 @@ class NewEngagementView extends
   }
 
   _engagementCreated(event) {
-    if (!event && !event.detail) {
+    if (!event || !event.detail) {
       return;
     }
 
@@ -303,8 +304,8 @@ class NewEngagementView extends
     if (!link && this.isStaffSc) {
       link = 'staff-spot-checks';
     }
-    let path = `${link}/${this.engagement.id}/overview`;
-    this.set('path', this.getAbsolutePath(path));
+    let path = `${AP_DOMAIN}${link}/${this.engagement.id}/overview`;
+    this.set('path', path);
 
     //reset data
     this.engagement = {

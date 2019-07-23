@@ -28,7 +28,7 @@ const DEV_DOMAIN = 'etools-dev.unicef.org';
 const DEMO_DOMAIN = 'etools-demo.unicef.org';
 const LOCAL_DOMAIN = 'localhost:8082';
 
-export const AP_DOMAIN = '/ap/';
+export const AP_DOMAIN = '/ap_poly3/';
 
 export const isProductionServer = () => {
   const location = window.location.href;
