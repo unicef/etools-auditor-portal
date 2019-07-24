@@ -11,6 +11,7 @@ import '@polymer/paper-button/paper-button';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
+import '@unicef-polymer/etools-upload/etools-upload';
 
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
@@ -223,6 +224,8 @@ class FileAttachmentsTab extends EndpointsMixin(
             </template>
 
             <div class="row-h group">
+
+
               <div class="input-container input-container-ms">
                 <template is="dom-if" if="[[!editedItem.filename]]">
                   <!-- File Upload -->
