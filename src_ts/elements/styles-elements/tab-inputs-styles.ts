@@ -436,7 +436,7 @@ export const tabInputsStyles = html`
       }
       --paper-input-container:{
         width: 100%;
-      }      
+      }
     }
 
    
