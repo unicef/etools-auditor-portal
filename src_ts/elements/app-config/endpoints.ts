@@ -84,7 +84,10 @@ const famEndpoints = {
     url: '/api/v2/dropdowns/static',
     exp: 6 * 60 * 60 * 1000, // 6h
     cachingKey: 'static'
-  }
+  },
+  attachmentsUpload: {
+    url: '/api/v2/attachments/upload/'
+  },
 }
 
 export default famEndpoints;
