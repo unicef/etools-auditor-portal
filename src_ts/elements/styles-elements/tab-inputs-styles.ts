@@ -401,7 +401,7 @@ export const tabInputsStyles = html`
         line-height: 0;
       };
     }
-    
+
     paper-input[disabled],
     etools-dropdown[disabled],
     etools-dropdown-multi[disabled],
@@ -411,7 +411,7 @@ export const tabInputsStyles = html`
           color: var(--gray-50);
         }      
         --paper-input-container-underline: {
-          color: rgba(0, 0, 0, 0.20);
+          color: var(--gray-20);
       }
     }
     datepicker-lite[disabled]
@@ -420,7 +420,17 @@ export const tabInputsStyles = html`
           color: var(--gray-50);
         }
     }
+
     datepicker-lite{
+      --paper-input: {
+          color: var(--gray-50);
+        }
+      --paper-input-prefix: {
+          color: var(--gray-50);
+        }
+      --paper-input-container-underline: {
+          border-bottom: solid 1px var(--gray-20);
+        }
       --paper-input-container-label:{
         width: 133%;
       }
