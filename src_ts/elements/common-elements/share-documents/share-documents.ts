@@ -41,7 +41,7 @@ class ShareDocuments extends
   static get template() {
     return html`
       
-      ${tabInputsStyles} ${moduleStyles} ${etoolsFileStyles}
+      ${moduleStyles}
       <style>
           :host {
             overflow: hidden;
@@ -51,6 +51,9 @@ class ShareDocuments extends
           }
           :host .subtitle {
             background-color: #eee;
+          }
+          :host etools-dropdown{
+            padding: 0 24px;
           }
           .content-wrapper {
             padding-bottom: 8px;
