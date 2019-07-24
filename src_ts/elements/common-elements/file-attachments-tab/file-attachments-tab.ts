@@ -65,6 +65,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   static get template() {
     // language=HTML
     return html`
+      <style include="iron-flex"></style>
       ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
       <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
                        endpoint-name="[[endpointName]]">
