@@ -15,8 +15,6 @@ import remove from 'lodash-es/remove';
 import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {moduleStyles} from '../../styles-elements/module-styles';
-import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
-import {etoolsFileStyles} from '../../styles-elements/etools-file-styles';
 
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import EndpointsMixin from '../../app-config/endpoints-mixin';
@@ -40,7 +38,7 @@ class ShareDocuments extends
 
   static get template() {
     return html`
-      
+
       ${moduleStyles}
       <style>
           :host {
@@ -103,7 +101,7 @@ class ShareDocuments extends
           .pd {
             flex: 0 0 14%;
           }
-        
+
       </style>
 
       <div>
@@ -134,7 +132,7 @@ class ShareDocuments extends
           </template>
           <template is="dom-if" if="[[attachmentsList.length]]">
             <div class="row-h repeatable-item-container list-items">
-            
+
               <template is="dom-repeat"
                         items="[[attachmentsList]]">
                 <simple-list-item>
@@ -157,7 +155,7 @@ class ShareDocuments extends
                     </div>
                     <span class="w12">[[item.created]]</span>
                   </div>
-    
+
                 </simple-list-item>
               </template>
             </div>
