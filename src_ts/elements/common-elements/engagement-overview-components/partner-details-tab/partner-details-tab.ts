@@ -377,7 +377,7 @@ class PartnerDetailsTab extends
     }
 
     this.requestInProcess = true;
-    this.partnerId = partnerId; // GET request for partner
+    this.partnerId = partnerId; // triggers GET request for partner
     return true;
   }
 
