@@ -135,7 +135,7 @@ class FollowUpActions extends
                               action-points="{{dataItems}}"></update-action-points>
         <get-partner-data partner="{{fullPartner}}" partner-id="{{partnerId}}"></get-partner-data>
 
-        <etools-content-panel panel-title="UNICEF Follow-Up Actions">
+        <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
             <div slot="panel-btns">
                 <div hidden$="[[!canBeChanged]]">
                     <paper-icon-button
