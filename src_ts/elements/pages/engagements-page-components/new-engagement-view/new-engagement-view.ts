@@ -45,8 +45,9 @@ import {AP_DOMAIN} from '../../../app-config/config';
  * @appliesMixin LastCreatedMixin
  */
 class NewEngagementView extends
-    QueryParamsController(CommonMethodsMixin(PermissionControllerMixin(
-        StaticDataMixin(EngagementMixin(LastCreatedMixin(PolymerElement)))))) {
+    QueryParamsController(PermissionControllerMixin(
+        StaticDataMixin(EngagementMixin(LastCreatedMixin
+          (CommonMethodsMixin(PolymerElement)))))) {
 
   static get template() {
     // language=HTML

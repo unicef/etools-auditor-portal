@@ -160,7 +160,7 @@ class PartnerDetailsTab extends
                       <etools-dropdown-multi
                               id="activePd"
                               class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                              selected-values="{{activePd}}"
+                              selected-items="{{activePd}}"
                               label="[[getLabel('active_pd', basePermissionPath)]]"
                               placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                               options="[[partner.interventions]]"
@@ -184,7 +184,7 @@ class PartnerDetailsTab extends
     return [
       '_engagementChanged(engagement, basePermissionPath)',
       '_errorHandler(errorObject)',
-      '_setActivePd(engagement, partner.interventions)',
+      '_setActivePd(engagement, partner.interventions, partnerId)',
       'updateStyles(basePermissionPath, requestInProcess, partner, engagement.engagement_type)',
       'setOfficers(partner, engagement, basePermissionPath)'
     ];
@@ -324,7 +324,11 @@ class PartnerDetailsTab extends
     return typeof partnerType === 'string' && types.every(type => !~partnerType.indexOf(type));
   }
 
-  _setActivePd() {
+  _setActivePd(engagement, partnerInterv) {
+    if (!partnerInterv || !engagement) {
+      this.set('activePd', []);
+      return;
+    }
     let partnerType = this.get('engagement.partner.partner_type');
 
     //check <etools-searchable-multiselection-menu> debouncer state
@@ -373,7 +377,7 @@ class PartnerDetailsTab extends
     }
 
     this.requestInProcess = true;
-    this.partnerId = partnerId;
+    this.partnerId = partnerId; // GET request for partner
     return true;
   }
 
