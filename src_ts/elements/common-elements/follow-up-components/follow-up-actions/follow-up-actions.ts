@@ -368,7 +368,7 @@ class FollowUpActions extends
                                     error-message="{{errors.due_date}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError"
-                                    format="YYYY-MM-DD">
+                                    selected-date-display-format="D MMM YYYY">
                             </datepicker-lite>
                         </div>
                     </div>
