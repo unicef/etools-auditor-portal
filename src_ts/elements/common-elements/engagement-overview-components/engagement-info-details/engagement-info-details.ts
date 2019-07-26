@@ -450,6 +450,9 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   }
 
   _getOptionValue(engagementType) {
+    if (!engagementType) {
+      return;
+    }
     if (typeof engagementType === 'string') {
       return engagementType;
     } else {// it's object hopefully
@@ -711,8 +714,11 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     return poItems;
   }
 
-  _isDataAgreementReadonly(field: any, basePermissionPath: any, agreement: any) {
-    return this.isReadOnly(field, basePermissionPath) || !agreement || !agreement.order_number;
+  _isDataAgreementReaonly(field: any, basePermissionPath: any, agreement: any) {
+    if (!agreement) {
+      return false;
+    }
+    return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
   }
 
   _hideField(fieldName: any, basePermissionPath: any) {
