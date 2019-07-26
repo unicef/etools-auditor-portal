@@ -135,7 +135,7 @@ class FollowUpActions extends
                               action-points="{{dataItems}}"></update-action-points>
         <get-partner-data partner="{{fullPartner}}" partner-id="{{partnerId}}"></get-partner-data>
 
-        <etools-content-panel panel-title="UNICEF Follow-Up Actions">
+        <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
             <div slot="panel-btns">
                 <div hidden$="[[!canBeChanged]]">
                     <paper-icon-button
@@ -368,7 +368,7 @@ class FollowUpActions extends
                                     error-message="{{errors.due_date}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError"
-                                    format="YYYY-MM-DD">
+                                    selected-date-display-format="D MMM YYYY">
                             </datepicker-lite>
                         </div>
                     </div>

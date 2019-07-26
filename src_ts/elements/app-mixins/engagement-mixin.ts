@@ -47,7 +47,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: String})
     engagementPrefix: string = '';
 
-    @property({type: Object, readOnly: true})
+    @property({type: Object})
     originalData!: GenericObject;
 
     @property({type: Object})
