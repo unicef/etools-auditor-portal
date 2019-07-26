@@ -39,6 +39,7 @@ import '../../list-tab-elements/list-header/list-header';
 import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
 import '../../../data-elements/check-user-existence';
+import '../../../data-elements/update-staff-members';
 
 /**
  * @polymer
@@ -570,6 +571,12 @@ class EngagementStaffMembersTab extends
   @property({type: Boolean})
   emailChecking!: boolean;
 
+  @property({type: Object})
+  newData!: GenericObject;
+
+  @property({type: Object})
+  lastSearchQuery!: GenericObject;
+
   private _newRequestDebouncer!: Debouncer;
 
   connectedCallback() {
@@ -816,7 +823,8 @@ class EngagementStaffMembersTab extends
     });
   }
 
-  _staffUpdated(event, details) {
+  _staffUpdated(event) {
+    let details = event.detail;
     if (!details) {throw 'Detail are not provided!';}
     if (details.error) {
       this._handleUpdateError(details.errorData);

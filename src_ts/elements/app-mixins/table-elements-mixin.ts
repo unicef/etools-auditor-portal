@@ -50,8 +50,20 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Boolean})
     confirmDialogOpened: boolean = false;
 
+    @property({type: Boolean})
+    addDialog: boolean = false;
+
+    @property({type: Boolean})
+    dialogOpened: boolean = false;
+
+    @property({type: Number})
+    editedIndex!: number;
+
     @property({type: Object})
     originalEditedObj!: GenericObject;
+
+    @property({type: Array})
+    originalTableData!: [];
 
     // TODO: added only for ts-lint, find a better way to make this accessible... might not be the best solution
     @property({type: Object})
