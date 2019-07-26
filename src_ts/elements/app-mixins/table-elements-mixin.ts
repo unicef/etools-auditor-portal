@@ -65,13 +65,8 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Array})
     originalTableData!: [];
 
-    // TODO: added only for ts-lint, find a better way to make this accessible... might not be the best solution
-    @property({type: Object})
-    shadowRoot!: ShadowRoot;
-
     connectedCallback() {
       super.connectedCallback();
-
       this.editedItem = cloneDeep(this.itemModel);
     }
 
