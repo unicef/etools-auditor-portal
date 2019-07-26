@@ -346,15 +346,18 @@ class KeyInternalControlsWeaknesses extends
       return;
     }
 
-    let value = this.riskOptions.find(option => option.value === risk.value);
-    return clone(value);
+    let option = this.riskOptions.find(option => option.value === risk.value);
+    if(option){return option.value};
+    return -1;
   }
 
   _canBeChanged(basePermissionPath) {
     return !this.isReadOnly('key_internal_weakness', basePermissionPath);
   }
 
-  openEditDialog(event, data) {
+  openEditDialog(event) {
+    if (!event || !event.detail) {return;}
+    let data = event.detail;
     if (data.blueprint) {
       let blueprint = data.blueprint,
         risk = blueprint.risks[0];
