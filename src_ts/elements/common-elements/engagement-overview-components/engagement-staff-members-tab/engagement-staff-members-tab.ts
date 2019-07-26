@@ -341,7 +341,7 @@ class EngagementStaffMembersTab extends
                                   on-focus="_resetFieldError"
                                   on-tap="_resetFieldError"
                                   on-blur="_checkEmail">
-                              <iron-icon prefix icon="communication:email"></iron-icon>
+                              <iron-icon slot="prefix" icon="communication:email"></iron-icon>
                           </paper-input>
                           <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.email)]]</paper-tooltip>
                           <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading"></etools-loading>
@@ -409,7 +409,7 @@ class EngagementStaffMembersTab extends
                           <paper-input
                                   class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
                                   value="{{editedItem.user.profile.phone_number}}"
-                                  allowed-pattern="[\d\s-]"
+                                  allowed-pattern="[0-9\\ \\.\\+\\-\\(\\)]"
                                   label="[[getLabel('user.profile.phone_number', staffsBase)]]"
                                   placeholder="Enter Phone"
                                   required="{{_setRequired('user.profile.phone_number', staffsBase)}}"
@@ -418,7 +418,7 @@ class EngagementStaffMembersTab extends
                                   maxlength="20"
                                   invalid="{{errors.user.profile.phone_number}}"
                                   error-message="{{errors.user.profile.phone_number}}">
-                              <iron-icon prefix icon="communication:phone"></iron-icon>
+                              <iron-icon slot="prefix" icon="communication:phone"></iron-icon>
                           </paper-input>
                       </div>
                   </div>
