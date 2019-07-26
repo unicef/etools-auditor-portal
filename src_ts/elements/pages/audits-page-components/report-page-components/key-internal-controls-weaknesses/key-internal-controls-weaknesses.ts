@@ -161,7 +161,7 @@ class KeyInternalControlsWeaknesses extends
                                       placeholder="Select Risk rating"
                                       options="[[riskOptions]]"
                                       option-label="display_name"
-                                      option-value="display_name"
+                                      option-value="value"
                                       required="{{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}}"
                                       disabled="{{requestInProcess}}"
                                       readonly$="{{requestInProcess}}"

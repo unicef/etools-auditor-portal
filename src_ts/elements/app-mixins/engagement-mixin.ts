@@ -123,8 +123,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _engagementUpdated(event) {
-      let data = event && event.detail && event.detail.data;
-      let success = event && event.detail.success;
+      if(!event || !event.detail){
+        return;
+      }
+      let data = event.detail.data;
+      let success = event.detail.success;
       if (data) {
         this.set('originalData', cloneDeep(this.engagement));
       }
