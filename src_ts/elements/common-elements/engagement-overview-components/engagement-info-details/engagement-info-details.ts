@@ -714,7 +714,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     return poItems;
   }
 
-  _isDataAgreementReaonly(field: any, basePermissionPath: any, agreement: any) {
+  _isDataAgreementReadonly(field: any, basePermissionPath: any, agreement: any) {
     if (!agreement) {
       return false;
     }
