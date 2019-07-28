@@ -268,7 +268,7 @@ class FileAttachmentsTab extends EndpointsMixin(
                       invalid="{{_checkInvalid(errors.file)}}"
                       error-message="{{errors.file}}"
                       on-tap="_openFileChooser">
-                    <iron-icon prefix icon="icons:attachment"></iron-icon>
+                    <iron-icon slot="prefix" icon="icons:attachment"></iron-icon>
                   </paper-input>
                 </template>
               </div>

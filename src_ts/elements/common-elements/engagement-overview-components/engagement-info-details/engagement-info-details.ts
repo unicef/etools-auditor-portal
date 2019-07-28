@@ -155,8 +155,8 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
                           option-label="number"
                           option-value="id"
                           required$="{{_setRequired('po_item', basePermissionPath)}}"
-                          disabled$="[[_isDataAgreementReaonly('po_item', basePermissionPath, data.agreement)]]"
-                          readonly$="[[_isDataAgreementReaonly('po_item', basePermissionPath, data.agreement)]]"
+                          disabled$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
+                          readonly$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
                           invalid="{{_checkInvalid(errors.po_item)}}"
                           error-message="{{errors.po_item}}"
                           on-focus="_resetFieldError"
@@ -456,7 +456,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     if (typeof engagementType === 'string') {
       return engagementType;
     } else {// it's object hopefully
-      return engagementType.value;
+      return engagementType ? engagementType.value : null;
     }
   }
 
@@ -714,7 +714,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
     return poItems;
   }
 
-  _isDataAgreementReaonly(field: any, basePermissionPath: any, agreement: any) {
+  _isDataAgreementReadonly(field: any, basePermissionPath: any, agreement: any) {
     if (!agreement) {
       return false;
     }
