@@ -39,6 +39,7 @@ import '../../list-tab-elements/list-header/list-header';
 import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
 import '../../../data-elements/check-user-existence';
+import '../../../data-elements/update-staff-members';
 
 /**
  * @polymer
@@ -340,7 +341,7 @@ class EngagementStaffMembersTab extends
                                   on-focus="_resetFieldError"
                                   on-tap="_resetFieldError"
                                   on-blur="_checkEmail">
-                              <iron-icon prefix icon="communication:email"></iron-icon>
+                              <iron-icon slot="prefix" icon="communication:email"></iron-icon>
                           </paper-input>
                           <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.email)]]</paper-tooltip>
                           <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading"></etools-loading>
@@ -408,7 +409,7 @@ class EngagementStaffMembersTab extends
                           <paper-input
                                   class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
                                   value="{{editedItem.user.profile.phone_number}}"
-                                  allowed-pattern="[\d\s-]"
+                                  allowed-pattern="[0-9\\ \\.\\+\\-\\(\\)]"
                                   label="[[getLabel('user.profile.phone_number', staffsBase)]]"
                                   placeholder="Enter Phone"
                                   required="{{_setRequired('user.profile.phone_number', staffsBase)}}"
@@ -417,7 +418,7 @@ class EngagementStaffMembersTab extends
                                   maxlength="20"
                                   invalid="{{errors.user.profile.phone_number}}"
                                   error-message="{{errors.user.profile.phone_number}}">
-                              <iron-icon prefix icon="communication:phone"></iron-icon>
+                              <iron-icon slot="prefix" icon="communication:phone"></iron-icon>
                           </paper-input>
                       </div>
                   </div>
@@ -569,6 +570,12 @@ class EngagementStaffMembersTab extends
 
   @property({type: Boolean})
   emailChecking!: boolean;
+
+  @property({type: Object})
+  newData!: GenericObject;
+
+  @property({type: Object})
+  lastSearchQuery!: GenericObject;
 
   private _newRequestDebouncer!: Debouncer;
 
@@ -728,8 +735,8 @@ class EngagementStaffMembersTab extends
     let item = event && event.model && event.model.item;
     if (!item) {throw 'Can not get item model!';}
 
-    let me = this.getUserData() || {},
-      updateOptions = get(item, 'user.email') === me.email;
+    let me = this.getUserData() || {};
+    let updateOptions = get(item, 'user.email') === me.email;
 
     this.manageEngagementStaff(item);
     this._updateEngagement(true, updateOptions);
@@ -816,7 +823,8 @@ class EngagementStaffMembersTab extends
     });
   }
 
-  _staffUpdated(event, details) {
+  _staffUpdated(event) {
+    let details = event.detail;
     if (!details) {throw 'Detail are not provided!';}
     if (details.error) {
       this._handleUpdateError(details.errorData);

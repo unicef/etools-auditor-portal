@@ -104,6 +104,14 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
       </etools-content-panel>
     `;
   }
+  @property({type: Object})
+  data!: GenericObject;
+
+  @property({type: Object})
+  originalData!: GenericObject;
+
+  @property({type: Object})
+  errorObject!: GenericObject;
 
   @property({type: String, observer: '_basePathChanged'})
   basePermissionPath: string = '';
@@ -129,7 +137,7 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
   getOverviewData() {
     return pickBy(this.data, (value, key) => {
       return ~['total_amount_tested',
-        'total_amount_of_ineligible_expenditure'].indexOf(key) && value !== this.originalData[key];
+        'total_amount_of_ineligible_expenditure'].indexOf(key) && value !== (this.originalData ? this.originalData[key] : undefined);
     });
   }
 

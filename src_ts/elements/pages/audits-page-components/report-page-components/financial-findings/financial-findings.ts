@@ -138,7 +138,6 @@ class FinancialFindings extends
                 <!-- Title -->
                 <etools-dropdown
                     class$="disabled-as-readonly validate-input [[_setRequired('financial_finding_set.title', basePermissionPath)]]"
-                    selected="{{title}}"
                     label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
                     placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
                     options="[[titleOptions]]"

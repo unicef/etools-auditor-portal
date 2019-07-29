@@ -47,7 +47,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: String})
     engagementPrefix: string = '';
 
-    @property({type: Object, readOnly: true})
+    @property({type: Object})
     originalData!: GenericObject;
 
     @property({type: Object})
@@ -123,8 +123,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _engagementUpdated(event) {
-      let data = event && event.detail && event.detail.data;
-      let success = event && event.detail.success;
+      if(!event || !event.detail){
+        return;
+      }
+      let data = event.detail.data;
+      let success = event.detail.success;
       if (data) {
         this.set('originalData', cloneDeep(this.engagement));
       }
@@ -170,10 +173,13 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       event.target.invalid = false;
     }
 
-    _processAction(event, details) {
+    _processAction(event) {
+      let details = event.detail;
+
       if (!details || !details.type) {
         throw 'Event type is not provided!';
       }
+
       switch (details.type) {
         case 'save':
           this._saveProgress(event, details);
@@ -203,8 +209,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      let quietAdding = event && event.detail && event.detail.quietAdding,
-          forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
+      let quietAdding = event && event.detail && event.detail.quietAdding;
+      let forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
 
       return this._prepareData()
           .then((data) => {
@@ -378,10 +384,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     _getBasicInfo(data) {
       data = data || {};
 
-      let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData(),
-          partnerDetailsData = this.getElement('#partnerDetails').getPartnerData(),
-          authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer(),
-          staffMembersData = this.getElement('#staffMembers').getTabData();
+      let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
+      let partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
+      let authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer();
+      let staffMembersData = this.getElement('#staffMembers').getTabData();
 
       if (engagementDetailsData) {
         assign(data, engagementDetailsData);
