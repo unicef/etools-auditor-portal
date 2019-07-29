@@ -198,6 +198,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
   _riskValueChanged(event) {
     let item = event && event.selectedItem;
+    if (!item) {
+      return;
+    }
     let changedValue = item && item.value;
     let data;
 

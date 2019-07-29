@@ -257,12 +257,12 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     return !this._checkCompleted(previous);
   }
 
-  _openEditDialog(event, detail) {
-    let item = detail && detail.data;
+  _openEditDialog(event) {
+    let item = event.detail && event.detail.data;
     if (!item) {throw Error('Can not find user data');}
 
-    this.tabId = detail.tabId;
-    this.categoryId = detail.childId;
+    this.tabId = event.detail.tabId;
+    this.categoryId = event.detail.childId;
     this.editedItem = item;
     this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
     // this.$.questionHeader.innerHTML = item.header;
@@ -277,9 +277,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     return value;
   }
 
-  _riskValueChanged(event, detail) {
+  _riskValueChanged(event) {
     this.changedData.push({
-      children: [detail.data]
+      children: [event.detail.data]
     });
     this.requestsCount(1);
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
