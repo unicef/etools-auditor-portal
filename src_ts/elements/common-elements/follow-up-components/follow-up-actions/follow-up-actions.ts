@@ -229,7 +229,7 @@ class FollowUpActions extends
                             <!-- PD/SSFA -->
                             <etools-dropdown
                                     class$="disabled-as-readonly validate-input [[_setRequired('intervention', editedApBase)]] fua-person"
-                                    selected="{{editedItem.intervention}}"
+                                    selected="{{editedItem.intervention.id}}"
                                     label="[[getLabel('intervention', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('intervention', editedApBase, 'select')]]"
                                     options="[[fullPartner.interventions]]"
@@ -293,9 +293,10 @@ class FollowUpActions extends
                     <div class="row-h group">
                         <div class="input-container input-container-ms">
                             <!-- Assigned To -->
+
                             <etools-dropdown
                                     class$="disabled-as-readonly validate-input [[_setRequired('assigned_to', editedApBase)]] fua-person"
-                                    selected="{{editedItem.assigned_to}}"
+                                    selected="{{editedItem.assigned_to.id}}"
                                     label="[[getLabel('assigned_to', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
                                     options="[[users]]"
@@ -313,9 +314,10 @@ class FollowUpActions extends
 
                         <div class="input-container input-container-ms">
                             <!-- Sections -->
+
                             <etools-dropdown
                                     class$="disabled-as-readonly validate-input [[_setRequired('section', editedApBase)]] fua-person"
-                                    selected="{{editedItem.section}}"
+                                    selected="{{editedItem.section.id}}"
                                     selected="[[getLabel('section', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
                                     options="[[sections]]"
@@ -335,9 +337,10 @@ class FollowUpActions extends
                     <div class="row-h group">
                         <div class="input-container input-container-ms">
                             <!-- Offices -->
+
                             <etools-dropdown
                                     class$="disabled-as-readonly validate-input [[_setRequired('office', editedApBase)]] fua-person"
-                                    selected="{{editedItem.office}}"
+                                    selected="{{editedItem.office.id}}"
                                     label="[[getLabel('office', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('office', editedApBase, 'select')]]"
                                     options="[[offices]]"
@@ -504,6 +507,15 @@ class FollowUpActions extends
   @property({type: Object})
   requestData!: GenericObject;
 
+  @property({type: Number})
+  _selectedAPIndex!: number | null;
+
+  @property({type: Boolean})
+  copyDialog!: boolean;
+
+  @property({type: String})
+  editedApBase!: string;
+
   public connectedCallback() {
     super.connectedCallback();
 
@@ -612,11 +624,9 @@ class FollowUpActions extends
         return !isEqual(value, this.originalEditedObj[fieldName]);
       }
     });
-
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
-      if (data[field]) {data[field] = data[field].id;}
+      if (data[field] && data[field].id) {data[field] = data[field].id;}
     });
-
     if (this.editedItem.id && !isEmpty(data)) {data.id = this.editedItem.id;}
 
     return isEmpty(data) ? null : data;
@@ -633,23 +643,24 @@ class FollowUpActions extends
       let method = apData.id ? 'PATCH' : 'POST';
       this.requestData = {method, apData};
     } else {
-      this._requestCompleted(null, {success: true});
+      this._requestCompleted({detail: {success: true}});
     }
   }
 
-  _requestCompleted(event, detail) {
+  _requestCompleted(event) {
+    if (!event || !event.detail) {return;}
+    let detail = event.detail;
     this.requestInProcess = false;
     if (detail && detail.success) {
       this.dialogOpened = false;
     }
   }
 
-  isValidateInput(category) {
-    return this._showPersonField(category) ? 'validate-input' : '';
-  }
-
   _openAddDialog() {
     this.originalEditedObj = {};
+    each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
+      this.editedItem[field] = {id: null};
+    });
     this.editedApBase = this.basePermissionPath;
     this.openAddDialog();
   }

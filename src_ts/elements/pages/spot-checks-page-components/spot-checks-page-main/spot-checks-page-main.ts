@@ -1,6 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/app-route/app-route';
 import '@polymer/app-route/app-location';
+import '@polymer/polymer/lib/elements/dom-if';
 import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/app-layout/app-layout';
 import '@polymer/paper-tabs/paper-tabs';
@@ -13,6 +14,7 @@ import '../../../common-elements/engagement-overview-components/engagement-staff
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../report-page-components/sc-report-page-main/sc-report-page-main';
+import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
