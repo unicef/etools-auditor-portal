@@ -6,7 +6,6 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property, query} from '@polymer/decorators';
-import isNumber from 'lodash-es/isNumber';
 import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
@@ -100,16 +99,18 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                 <!-- Risk Assessment -->
                 <etools-dropdown id="riskAssessmentDropdown" class="disabled-as-readonly
                   required validate-input"
-                  selected="{{_setRiskValue(editedItem.risk.value, riskOptions)}}"
+                  selected=[[editedItem.risk.value]]
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
                   options="[[riskOptions]]"
                   option-label="display_name"
-                  option-value="display_name"
+                  option-value="value"
                   disabled="[[requestInProcess]]"
                   readonly="[[requestInProcess]]"
                   invalid="{{riskAssessmentInvalid}}"
                   error-message="This field is required" on-focus="_resetFieldError"
+                  trigger-value-change-event
+                  on-etools-selected-item-changed="_setSelectedRiskRatingEntity"
                   hide-search>
                 </etools-dropdown>
               </div>
@@ -269,12 +270,17 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.dialogOpened = true;
   }
 
-  _setRiskValue(value, options) {
-    if (!options) {return;}
-    if (isNumber(value)) {
-      return options[value];
+  _setSelectedRiskRatingEntity(event) {
+    let selectedItem = event.detail.selectedItem;
+    if (!selectedItem) {
+      return;
     }
-    return value;
+    if (!this.editedItem.risk) {
+      this.editedItem.risk = {};
+    }
+
+    this.set('editedItem.risk.value', selectedItem.value);
+    this.set('editedItem.risk.display_name', selectedItem.display_name);
   }
 
   _riskValueChanged(event) {
@@ -296,6 +302,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       this.resetDialog();
       return;
     }
+
 
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});

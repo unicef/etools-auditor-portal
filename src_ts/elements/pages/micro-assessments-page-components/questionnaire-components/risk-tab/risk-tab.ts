@@ -41,11 +41,11 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                 <template is="dom-if" if="{{editMode}}">
                   <etools-dropdown
                     class="disabled-as-readonly required validate-input"
-                    selected="[[_setRiskValue(item.risk.value, riskOptions)]]"
+                    selected="[[item.risk.value]]"
                     placeholder="&#8212;"
                     options="[[riskOptions]]"
                     option-label="display_name"
-                    option-value="display_name"
+                    option-value="value"
                     on-focus="_resetFieldError"
                     trigger-value-change-event
                     on-etools-selected-item-changed="_riskValueChanged"
@@ -78,11 +78,11 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                   <template is="dom-if" if="{{editMode}}">
                     <etools-dropdown
                       class="disabled-as-readonly required validate-input"
-                      selected="[[_setRiskValue(item.risk.value, riskOptions)]]"
+                      selected="[[item.risk.value]]"
                       placeholder="&#8212;"
                       options="[[riskOptions]]"
                       option-label="display_name"
-                      option-value="display_name"
+                      option-value="value"
                       category-id$="{{category.id}}"
                       on-focus="_resetFieldError"
                       trigger-value-change-event
@@ -197,36 +197,45 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _riskValueChanged(event) {
-    let item = event && event.selectedItem;
-    if (!item) {
+    let blueprint = event && event.model.item;
+    if (!blueprint) {
       return;
     }
-    let changedValue = item && item.value;
-    let data;
+    let changedRiskRValue = event.detail.selectedItem && event.detail.selectedItem.value;
 
-    if (!item.risk) {item.risk = {};}
-    if ((!changedValue && changedValue !== 0) || changedValue === item.risk.value) {return;}
-
-    item.risk.value = changedValue;
-
-    let childId = null;
-    if (this.questionnaire.children.length) {
-      childId = event.target && event.target.getAttribute('category-id');
-      if (!childId) {throw 'Can not find category id!';}
-      data = {
-        id: this.questionnaire.id,
-        children: [{
-          id: childId,
-          blueprints: [{risk: {value: changedValue}, id: item.id}]
-        }]
-      };
-    } else {
-      data = {
-        id: this.questionnaire.id,
-        blueprints: [{risk: {value: changedValue}, id: item.id}]
-      };
+    if (!blueprint.risk) {
+      blueprint.risk = {};
     }
-    fireEvent(this, 'risk-value-changed', {data: data});
+    if ((!changedRiskRValue && changedRiskRValue !== 0) || changedRiskRValue === blueprint.risk.value) {
+      return;
+    }
+
+    blueprint.risk.value = changedRiskRValue;
+
+    fireEvent(this, 'risk-value-changed', {
+      data: this._getQuestionnaireDataToSave(changedRiskRValue, blueprint.id, event.target)
+    });
+  }
+
+  _getQuestionnaireDataToSave(changedRiskRValue, blueprintId, eventTarget) {
+    let questionnaireToSave: GenericObject = {
+      id: this.questionnaire.id
+    }
+
+    if (this.questionnaire.children.length) {
+      let childId = eventTarget && eventTarget.getAttribute('category-id');
+      if (!childId) {throw 'Can not find category id!';}
+
+      questionnaireToSave.children = [{
+        id: childId,
+        blueprints: [{risk: {value: changedRiskRValue}, id: blueprintId}]
+      }];
+
+    } else {
+      questionnaireToSave.blueprints = [{risk: {value: changedRiskRValue}, id: blueprintId}];
+    }
+
+    return questionnaireToSave;
   }
 
   _resetFieldError() {
