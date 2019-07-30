@@ -109,6 +109,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                   readonly="[[requestInProcess]]"
                   invalid="{{riskAssessmentInvalid}}"
                   error-message="This field is required" on-focus="_resetFieldError"
+                  required
                   trigger-value-change-event
                   on-etools-selected-item-changed="_setSelectedRiskRatingEntity"
                   hide-search>
