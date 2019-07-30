@@ -53,10 +53,9 @@ import DateMixin from '../../../app-mixins/date-mixin';
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class FollowUpActions extends
-  StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(
-    TableElementsMixin(TextareaMaxRowsMixin(
-      DateMixin(CommonMethodsMixin(PolymerElement))))))) {
-
+  EndpointsMixin(EtoolsAjaxRequestMixin(
+    CommonMethodsMixin(TextareaMaxRowsMixin(TableElementsMixin(
+      StaticDataMixin(DateMixin(PolymerElement))))))) {
 
   static get template() {
     return html`
@@ -318,7 +317,7 @@ class FollowUpActions extends
                             <etools-dropdown
                                     class$="disabled-as-readonly validate-input [[_setRequired('section', editedApBase)]] fua-person"
                                     selected="{{editedItem.section.id}}"
-                                    selected="[[getLabel('section', editedApBase)]]"
+                                    label="[[getLabel('section', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
                                     options="[[sections]]"
                                     option-label="name"
