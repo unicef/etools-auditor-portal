@@ -9,6 +9,7 @@ import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-inpu
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '../follow-up-actions/follow-up-actions';
+import '../follow-up-financial-findings/follow-up-financial-findings';
 import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';

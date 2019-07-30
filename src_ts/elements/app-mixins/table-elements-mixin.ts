@@ -65,6 +65,15 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Array})
     originalTableData!: [];
 
+    @property({type: String})
+    dialogTitle!: string;
+
+    @property({type: String})
+    confirmBtnText!: string;
+
+    @property({type: String})
+    cancelBtnText!: string;
+
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
