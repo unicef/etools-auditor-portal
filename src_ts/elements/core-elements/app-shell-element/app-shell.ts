@@ -249,7 +249,9 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _routePageChanged() {
     if (!this.initLoadingComplete || !this.routeData.page) {return;}
     this.page = this.routeData.page || 'engagements';
-    this.scroll(0, 0);
+    if (this.scroll) {
+      this.scroll(0, 0);
+    }
   }
 
   _pageChanged(page) {

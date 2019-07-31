@@ -22,7 +22,6 @@ let currentEngagement = {};
  * @appliesMixin PermissionControllerMixin
  * @appliesMixin UserControllerMixin
  * @appliesMixin ErrorHandlerMixin
- * @appliesMixin TextareaMaxRowsMixin
  */
 // TODO: in old behavior config globals was used, check usage
 
@@ -32,7 +31,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         PermissionControllerMixin(
           UserControllerMixin(
             ErrorHandlerMixin(
-             // TextareaMaxRowsMixin( TODO - is this mixin needed????
                 baseClass as Constructor<PolymerElement>)))) {
 
     @property({type: Number})

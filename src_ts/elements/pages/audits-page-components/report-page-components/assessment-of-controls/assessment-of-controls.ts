@@ -17,7 +17,6 @@ import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
@@ -27,12 +26,11 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin StaticDataMixin
  */
 class AssessmentOfControls extends
-  CommonMethodsMixin(TextareaMaxRowsMixin(TableElementsMixin(StaticDataMixin(PolymerElement)))) {
+  CommonMethodsMixin(TableElementsMixin(StaticDataMixin(PolymerElement))) {
 
   static get template() {
     return html`

@@ -14,10 +14,8 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import isString from 'lodash-es/isString';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import TextareaMaxRowsMixin from '../../../app-mixins/textarea-max-rows-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {fireEvent} from '../../../utils/fire-custom-event';
-
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
@@ -27,10 +25,9 @@ import '@polymer/paper-input/paper-textarea';
  * @polymer
  * @customElement
  * @appliesMixin TableElementsMixin
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMethodsMixin(PolymerElement))) {
+class SpecificProcedure extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -181,85 +178,85 @@ class SpecificProcedure extends TableElementsMixin(TextareaMaxRowsMixin(CommonMe
   }
 
   @property({type: Object})
-  findingColumn: GenericObject = {
-    'size': 40,
-    'label': 'Finding',
-    'labelPath': 'specific_procedures.finding',
-    'path': 'finding'
-  };
+findingColumn: GenericObject = {
+  'size': 40,
+  'label': 'Finding',
+  'labelPath': 'specific_procedures.finding',
+  'path': 'finding'
+};
 
-  @property({type: Array, notify: true})
-  dataItems!: [];
+@property({type: Array, notify: true})
+dataItems!: [];
 
-  @property({type: String})
-  mainProperty: string = 'specific_procedures';
+@property({type: String})
+mainProperty: string = 'specific_procedures';
 
-  @property({type: Object})
-  itemModel: GenericObject = {description: '', finding: ''};
+@property({type: Object})
+itemModel: GenericObject = {description: '', finding: ''};
 
-  @property({type: Array})
-  columns = [{
-    'size': 20,
-    'name': 'finding',
-    'label': 'Procedure',
-  }, {
-    'size': 40,
-    'label': 'Description',
-    'labelPath': 'specific_procedures.description',
-    'path': 'description'
-  }, {
-    'size': 40,
-    'label': 'Finding',
-    'labelPath': 'specific_procedures.finding',
-    'path': 'finding'
-  }];;
+@property({type: Array})
+columns = [{
+  'size': 20,
+  'name': 'finding',
+  'label': 'Procedure',
+}, {
+  'size': 40,
+  'label': 'Description',
+  'labelPath': 'specific_procedures.description',
+  'path': 'description'
+}, {
+  'size': 40,
+  'label': 'Finding',
+  'labelPath': 'specific_procedures.finding',
+  'path': 'finding'
+}];;
 
-  @property({type: Object})
-  addDialogTexts: GenericObject = {title: 'Add New Procedure'};
+@property({type: Object})
+addDialogTexts: GenericObject = {title: 'Add New Procedure'};
 
-  @property({type: Object})
-  editDialogTexts: GenericObject = {title: 'Edit Finding'};
+@property({type: Object})
+editDialogTexts: GenericObject = {title: 'Edit Finding'};
 
-  @property({type: String})
-  deleteTitle: string = 'Are you sure that you want to delete this finding?';
+@property({type: String})
+deleteTitle: string = 'Are you sure that you want to delete this finding?';
 
-  @property({type: Boolean, reflectToAttribute: true})
-  withoutFindingColumn: boolean = false;
+@property({type: Boolean, reflectToAttribute: true})
+withoutFindingColumn: boolean = false;
 
-  @property({type: Boolean})
-  readonlyTab: boolean = false;
+@property({type: Boolean})
+readonlyTab: boolean = false;
 
-  _checkNonField(error) {
-    if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) {return;}
+_checkNonField(error) {
+  if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) {return;}
 
-    let nonField = this.checkNonField(error);
-    if (nonField || isString(error)) {
-      fireEvent(this, 'toast', {text: `Specific Procedures: ${nonField || error}`});
-    }
+  let nonField = this.checkNonField(error);
+  if (nonField || isString(error)) {
+    fireEvent(this, 'toast', {text: `Specific Procedures: ${nonField || error}`});
   }
+}
 
-  _manageColumns(removeFinding, columns) {
-    if (removeFinding && columns.length === 3) {
-      this.splice('columns', 2, 1);
-    } else if (!removeFinding && columns.length === 2) {
-      this.splice('columns', 2, 0, this.findingColumn);
-    }
+_manageColumns(removeFinding, columns) {
+  if (removeFinding && columns.length === 3) {
+    this.splice('columns', 2, 1);
+  } else if (!removeFinding && columns.length === 2) {
+    this.splice('columns', 2, 0, this.findingColumn);
   }
+}
 
-  _hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab) {
-    return withoutFindingColumn || readonlyTab || !this._canBeChanged(basePermissionPath);
-  }
+_hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab) {
+  return withoutFindingColumn || readonlyTab || !this._canBeChanged(basePermissionPath);
+}
 
-  canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn) {
-    return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
-  }
+canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn) {
+  return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
+}
 
-  _removeItem(event) {
-    if (this.deleteCanceled(event)) {
-      return;
-    }
-    this.removeItem();
+_removeItem(event) {
+  if (this.deleteCanceled(event)) {
+    return;
   }
+  this.removeItem();
+}
 
 }
 window.customElements.define('specific-procedure', SpecificProcedure);

@@ -16,7 +16,6 @@ import '../../../../common-elements/list-tab-elements/list-element/list-element'
 import '../kicw-risk/kicw-risk';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
 import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
@@ -24,20 +23,18 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isEqual from 'lodash-es/isEqual';
-import clone from 'lodash-es/clone';
 import isNil from 'lodash-es/isNil';
 
 
 /**
  * @customElement
  * @polymer
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin PermissionControllerMixin
  * @appliesMixin StaticDataMixin
  */
 class KeyInternalControlsWeaknesses extends
-  TextareaMaxRowsMixin(CommonMethodsMixin(PermissionControllerMixin(StaticDataMixin(PolymerElement)))) {
+  CommonMethodsMixin(PermissionControllerMixin(StaticDataMixin(PolymerElement))) {
 
   static get template() {
     return html`
