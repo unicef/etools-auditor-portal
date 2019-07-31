@@ -152,9 +152,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           background-color: var(--primary-background-color, #fff);
           padding: 0 14px 0 72px !important;
           box-sizing: border-box;
-      }
-      div[list-item] {
-          overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
       }

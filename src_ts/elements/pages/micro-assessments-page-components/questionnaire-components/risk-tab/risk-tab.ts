@@ -20,9 +20,6 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return html`
       ${tabInputsStyles} ${moduleStyles} ${RiskTabStyles}
       <style>
-        etools-dropdown{
-          --dropdownmenu-position: fixed !important;
-        }
       </style>
       <div class="tab-container">
         <etools-content-panel list completed$="[[completed]]" show-expand-btn
