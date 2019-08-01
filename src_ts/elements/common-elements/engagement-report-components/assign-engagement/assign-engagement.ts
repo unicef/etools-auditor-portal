@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer';
 
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
@@ -6,18 +6,19 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import isEmpty from 'lodash-es/isEmpty';
 import each from 'lodash-es/each';
 import pickBy from 'lodash-es/pickBy';
-import { property } from '@polymer/decorators';
+import {property} from '@polymer/decorators';
 import '@polymer/polymer/lib/elements/dom-if';
 declare const moment: any;
-import { GenericObject } from '../../../../types/global';
-import { fireEvent } from '../../../utils/fire-custom-event';
+import {GenericObject} from '../../../../types/global';
+import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 
-import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
-import { tabLayoutStyles } from '../../../styles-elements/tab-layout-styles';
-import { moduleStyles } from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
 import DateMixin from '../../../app-mixins/date-mixin';
+import DatePickerLite from '@unicef-polymer/etools-date-time/datepicker-lite';
 
 /**
  * @polymer
@@ -48,7 +49,6 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
                           disabled$="[[_isReadOnly('date_of_field_visit', 'true', falseValue, basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
                           error-message="{{errors.date_of_field_visit}}"
-                          validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
@@ -68,11 +68,10 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
                           disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip, basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
                           error-message="{{errors.date_of_draft_report_to_ip}}"
-                          validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
-                          max-date="{{maxDate}}">
+                          max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
 
@@ -88,12 +87,11 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
                           disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
                           error-message="{{errors.date_of_comments_by_ip}}"
-                          validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
-                          min-date="{{minDate(data.date_of_draft_report_to_ip)}}"
-                          max-date="{{maxDate}}">
+                          min-date="[[minDate(data.date_of_draft_report_to_ip)]]"
+                          max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
           </div>
@@ -111,12 +109,11 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
                           disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
                           error-message="{{errors.date_of_draft_report_to_unicef}}"
-                          validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
-                          min-date="{{minDate(data.date_of_comments_by_ip)}}"
-                          max-date="{{maxDate}}">
+                          min-date="[[minDate(data.date_of_comments_by_ip)]]"
+                          max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
 
@@ -132,12 +129,11 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
                           disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
                           error-message="{{errors.date_of_comments_by_unicef}}"
-                          validator="dateValidator"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           selected-date-display-format="D MMM YYYY"
                           min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
-                          max-date="{{maxDate}}">
+                          max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
 
@@ -164,8 +160,6 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
           </div>
       </etools-content-panel>
 
-      <custom-validator id="date-validator" validator-name="dateValidator"></custom-validator>
-
   `;
   }
   static get observers() {
@@ -180,25 +174,26 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
     ];
   }
 
-  @property({ type: Object })
+  @property({type: Object})
   data!: GenericObject;
 
-  @property({ type: Object })
+  @property({type: Object})
   originalData!: GenericObject;
 
-  @property({ type: String, observer: '_updateStyles' })
+  @property({type: String, observer: '_updateStyles'})
   basePermissionPath!: string;
 
-  @property({ type: Date })
+  @property({type: Date})
   maxDate = (() => {
     let nextDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
-    return new Date(nextDay.getDate() - 1);
+    // @ts-ignore
+    return new Date(nextDay - 1);
   })();
 
-  @property({ type: Boolean, readOnly: true })
+  @property({type: Boolean, readOnly: true})
   falseValue: boolean = false;
 
-  @property({ type: Object })
+  @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Engagement Status',
     fields: [
@@ -208,11 +203,6 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
 
   connectedCallback() {
     super.connectedCallback();
-    this.$['date-validator'].validate = this._validDate.bind(this);
-  }
-
-  _validDate(date) {
-    return !!(date);
   }
 
   _updateStyles() {
@@ -225,11 +215,10 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
   }
 
   validate(forSave) {
-    let elements = this.shadowRoot!.querySelectorAll('.validate-date');
+    let elements = this.shadowRoot!.querySelectorAll('.validate-date') as NodeListOf<DatePickerLite>;
     let valid = true;
     each(elements, (element, index) => {
       let previousElement = index > 1 ? elements[index - 1] : null;
-
       if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
         element.errorMessage = 'Field is required';
         element.invalid = true;
@@ -237,24 +226,24 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
       }
     });
 
-    if (!valid) { fireEvent(this, 'toast', { text: `${this.tabTexts.name}: Please correct errors` }); }
+    if (!valid) {fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});}
     return valid;
   }
 
   checkDateValues() {
-    if (!this.data) { return; }
-    if (!this.data.date_of_field_visit) { this.data.date_of_field_visit = null; }
-    if (!this.data.date_of_draft_report_to_ip) { this.data.date_of_draft_report_to_ip = null; }
-    if (!this.data.date_of_comments_by_ip) { this.data.date_of_comments_by_ip = null; }
-    if (!this.data.date_of_draft_report_to_unicef) { this.data.date_of_draft_report_to_unicef = null; }
-    if (!this.data.date_of_comments_by_unicef) { this.data.date_of_comments_by_unicef = null; }
+    if (!this.data) {return;}
+    if (!this.data.date_of_field_visit) {this.data.date_of_field_visit = null;}
+    if (!this.data.date_of_draft_report_to_ip) {this.data.date_of_draft_report_to_ip = null;}
+    if (!this.data.date_of_comments_by_ip) {this.data.date_of_comments_by_ip = null;}
+    if (!this.data.date_of_draft_report_to_unicef) {this.data.date_of_draft_report_to_unicef = null;}
+    if (!this.data.date_of_comments_by_unicef) {this.data.date_of_comments_by_unicef = null;}
   }
 
   getAssignVisitData() {
     let data = pickBy(this.data, (value, key) => {
       let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
         'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'exchange_rate'];
-      if (!~properties.indexOf(key)) { return false; }
+      if (!~properties.indexOf(key)) {return false;}
 
       return !this.originalData || this.originalData[key] !== value;
     });
@@ -262,8 +251,14 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
     return isEmpty(data) ? null : data;
   }
 
-  minDate(date) {
-    return date ? new Date(moment(date).format()) : undefined;
+  minDate(strDate) {
+    if (strDate) {
+      let date = new Date(moment(strDate).format());
+      date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      // @ts-ignore
+      return new Date(date - 1);
+    }
+    return undefined;
   }
 
   _checkFieldInvalid(error) {
