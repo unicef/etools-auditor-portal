@@ -208,7 +208,8 @@ export const tabInputsStyles = html`
     etools-dropdown[required]:not([disabled]),
     etools-dropdown-multi[required]:not([disabled]),
     etools-upload[required]:not([disabled]),
-    etools-currency-amount-input[required]:not([disabled]) {
+    etools-currency-amount-input[required]:not([disabled]),
+    paper-textarea[required]:not([disabled]) {
       --paper-input-container-label: {
         @apply --required-star-style;
       };
