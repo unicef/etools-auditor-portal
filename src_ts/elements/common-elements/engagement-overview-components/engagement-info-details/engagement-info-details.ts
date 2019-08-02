@@ -393,7 +393,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   engagementType = '';
 
   @property({type: Date})
-  maxDate = (() => { return new Date(); })();
+  maxDate = new Date();
 
   @property({type: String})
   contractExpiryDate = null;

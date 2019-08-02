@@ -184,7 +184,7 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
   basePermissionPath!: string;
 
   @property({type: Date})
-  maxDate = (() => { return new Date(); })();
+  maxDate = new Date();
 
   @property({type: Boolean, readOnly: true})
   falseValue: boolean = false;
