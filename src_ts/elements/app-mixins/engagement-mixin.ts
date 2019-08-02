@@ -180,19 +180,19 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       switch (details.type) {
         case 'save':
-          this._saveProgress(event, details);
+          this._saveProgress(event);
           break;
         case 'create':
-          this._saveNewEngagement(event, details);
+          this._saveNewEngagement();
           break;
         case 'submit':
-          this._submitReport(event, details);
+          this._submitReport();
           break;
         case 'finalize':
-          this._finalizeReport(event, details);
+          this._finalizeReport();
           break;
         case 'cancel':
-          this._openCancelDialog(event, details);
+          this._openCancelDialog();
           break;
         default:
           throw `Unknown event type: ${details.type}`;
@@ -298,8 +298,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       let [data, engagementId] = this._getBasicInfo({});
 
       //Add assign report info
-      let reportTab = this.getElement('#report'),
-          assignReportData = reportTab && reportTab.getAssignVisitData();
+      let reportTab = this.getElement('#report');
+      let assignReportData = reportTab && reportTab.getAssignVisitData();
       if (assignReportData) {
         assign(data, assignReportData);
       }
@@ -368,7 +368,14 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!this.shadowRoot) {
         return;
       }
-      return this.shadowRoot.querySelector(selector);
+      let el = this.shadowRoot.querySelector(selector);
+      if(!el){
+        const pageContent = this.closest('#pageContent');
+        if(pageContent){
+          el = pageContent.querySelector(selector);
+        }
+      }
+      return el;
     }
 
     _attachmentsReadonly(base, type) {

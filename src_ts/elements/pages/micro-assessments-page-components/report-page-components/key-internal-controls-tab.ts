@@ -48,12 +48,12 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                 <!-- Risk Assessment -->
                 <etools-dropdown id="riskAssessmentInput"
                   class="disabled-as-readonly validate-input required"
-                  selected="{{editedArea.blueprints.0.risk.value}}"
+                  selected="{{editedArea.blueprints.0.risk.value.value}}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
                   options="[[riskOptions]]"
                   option-label="display_name"
-                  option-value="display_name"
+                  option-value="value"
                   required disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   invalid="{{errors.children.0.blueprints.0.risk.value}}"
@@ -133,7 +133,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   editedAreaIndex!: number;
 
   @property({type: Object})
-  originalEditedObj!: object;
+  originalEditedObj!: GenericObject;
 
   static get observers() {
     return [
@@ -223,10 +223,14 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     if ((!index && index !== 0) || !~index) {
       throw 'Can not find data';
     }
-
     let data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
-    this.originalEditedObj = cloneDeep(data);
+
+    if (this.editedArea.blueprints[0] && !this.editedArea.blueprints[0].risk.value) {
+      this.editedArea.blueprints[0].risk.value = {value: -1, display_name: ''};
+    }
+
+    this.originalEditedObj = cloneDeep(this.editedArea);
     this.editedAreaIndex = index;
     this.dialogOpened = true;
   }
