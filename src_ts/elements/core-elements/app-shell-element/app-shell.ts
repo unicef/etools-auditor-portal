@@ -192,7 +192,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === '/ap/') {
+    if (this.initLoadingComplete && this.route.path === AP_DOMAIN) {
       this._setDefaultLandingPage();
     }
 
