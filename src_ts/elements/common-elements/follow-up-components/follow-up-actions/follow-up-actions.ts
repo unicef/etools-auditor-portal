@@ -36,7 +36,6 @@ import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import EndpointsMixin from '../../../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import TextareaMaxRowsMixin from '../../../app-mixins/textarea-max-rows-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import DateMixin from '../../../app-mixins/date-mixin';
@@ -47,15 +46,14 @@ import DateMixin from '../../../app-mixins/date-mixin';
  * @appliesMixin DateMixin
  * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class FollowUpActions extends
   EndpointsMixin(EtoolsAjaxRequestMixin(
-    CommonMethodsMixin(TextareaMaxRowsMixin(TableElementsMixin(
-      StaticDataMixin(DateMixin(PolymerElement))))))) {
+    CommonMethodsMixin(TableElementsMixin(
+      StaticDataMixin(DateMixin(PolymerElement)))))) {
 
   static get template() {
     return html`
@@ -514,6 +512,9 @@ class FollowUpActions extends
 
   @property({type: String})
   editedApBase!: string;
+
+  @property({type: Array})
+  itemsToDisplay!: GenericObject[];
 
   public connectedCallback() {
     super.connectedCallback();

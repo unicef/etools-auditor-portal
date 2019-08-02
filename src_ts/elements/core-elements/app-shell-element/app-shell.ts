@@ -75,7 +75,8 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
             selected-option="[[page]]"
-            small-menu$="[[smallMenu]]"></app-menu>
+            small-menu$="[[smallMenu]]"
+            show-ssc-page="[[_checkSSCPage(user)]]"></app-menu>
             <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
 
@@ -249,7 +250,9 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _routePageChanged() {
     if (!this.initLoadingComplete || !this.routeData.page) {return;}
     this.page = this.routeData.page || 'engagements';
-    this.scroll(0, 0);
+    if (this.scroll) {
+      this.scroll(0, 0);
+    }
   }
 
   _pageChanged(page) {

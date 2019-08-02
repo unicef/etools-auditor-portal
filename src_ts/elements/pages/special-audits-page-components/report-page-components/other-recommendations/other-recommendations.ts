@@ -16,7 +16,6 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
 import { fireEvent } from '../../../../utils/fire-custom-event';
 import {GenericObject} from '../../../../../types/global';
 
@@ -27,10 +26,9 @@ import {GenericObject} from '../../../../../types/global';
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin PermissionControllerMixin
- * @appliesMixin TextareaMaxRowsMixin
  */
-class OtherRecommendations extends (TextareaMaxRowsMixin(PermissionControllerMixin(TableElementsMixin(
-    CommonMethodsMixin(PolymerElement))))) {
+class OtherRecommendations extends (PermissionControllerMixin(TableElementsMixin(
+    CommonMethodsMixin(PolymerElement)))) {
   static get template() {
     return html`
         ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
