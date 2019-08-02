@@ -36,8 +36,8 @@ function QueryParamsController<T extends Constructor<PolymerElement>>(baseClass:
 
     getPath() {
       let path = this.getLocationProperty('pathname');
-      if (~path.indexOf('/ap_poly3')) { // TODO sqitch to '/ap'
-        path = path.replace('/ap_poly3','');
+      if (~path.indexOf('/ap')) {
+        path = path.replace('/ap','');
       }
       return path.slice(1);
     }

@@ -14,7 +14,7 @@
       a) Add a `basePath` property to the build configuration in your `polymer.json`.
       b) Use the `--base-path` command-line option for `polymer build`.
     -->
-    <base href="/ap_poly3/">
+    <base href="/ap/">
 
     <link rel="icon" href="assets/images/favicon.ico">
 
@@ -45,12 +45,12 @@
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
 
-    <!-- <script>
+    <script>
       // Load and register pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('service-worker.js', {
-            scope: '/ap_poly3/',
+            scope: '/ap/',
           });
         });
       }
@@ -58,7 +58,7 @@
       // Redux assumes `process.env.NODE_ENV` exists in the ES module build.
       // https://github.com/reactjs/redux/issues/2907
       window.process = { env: { NODE_ENV: 'production' } };
-    </script> -->
+    </script>
 
     <!-- Add any global styles for body, document, etc. -->
     <style>

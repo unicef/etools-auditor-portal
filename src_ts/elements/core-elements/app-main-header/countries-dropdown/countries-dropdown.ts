@@ -11,6 +11,7 @@ import famEndpoints from '../../../app-config/endpoints';
 import { HeaderStyles } from './header-styles';
 import { PaperMenuButton } from '@polymer/paper-menu-button';
 import { GenericObject } from '../../../../types/global';
+import {AP_DOMAIN} from '../../../app-config/config';
 
 /**
  * @polymer
@@ -129,7 +130,7 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
 
   _refreshPage() {
       this.refreshInProgress = false;
-      window.location.href = `${window.location.origin}/ap_poly3/`;
+      window.location.href = `${window.location.origin}${AP_DOMAIN}}`;
   }
 }
 

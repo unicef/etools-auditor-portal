@@ -36,12 +36,12 @@ import {fireEvent} from '../../utils/fire-custom-event.js';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
 import {GenericObject} from '../../../types/global.js';
-import {getDomainByEnv} from '../../app-config/config.js';
+import {getDomainByEnv, AP_DOMAIN} from '../../app-config/config.js';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
 
 
-setRootPath('/ap_poly3/');
+setRootPath(AP_DOMAIN);
 
 /**
  * @customElement
@@ -192,7 +192,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === '/ap_poly3/') {
+    if (this.initLoadingComplete && this.route.path === '/ap/') {
       this._setDefaultLandingPage();
     }
 
