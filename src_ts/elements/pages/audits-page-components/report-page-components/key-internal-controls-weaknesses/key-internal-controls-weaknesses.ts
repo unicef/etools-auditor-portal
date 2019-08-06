@@ -15,7 +15,7 @@ import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import '../kicw-risk/kicw-risk';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
-import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
@@ -30,11 +30,10 @@ import isNil from 'lodash-es/isNil';
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin StaticDataMixin
  */
 class KeyInternalControlsWeaknesses extends
-  CommonMethodsMixin(PermissionControllerMixin(StaticDataMixin(PolymerElement))) {
+  CommonMethodsMixin(StaticDataMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -314,7 +313,7 @@ class KeyInternalControlsWeaknesses extends
 
   connectedCallback() {
     super.connectedCallback();
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
     this.set('riskOptions', riskOptions);
     this.editedBlueprint = cloneDeep(this.dataModel);
     this._initListeners();
@@ -344,7 +343,7 @@ class KeyInternalControlsWeaknesses extends
     }
 
     let option = this.riskOptions.find(option => option.value === risk.value);
-    if(option){return option.value};
+    if (option) {return option.value};
     return -1;
   }
 

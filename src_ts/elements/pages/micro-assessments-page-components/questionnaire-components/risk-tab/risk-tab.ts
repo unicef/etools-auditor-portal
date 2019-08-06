@@ -9,6 +9,7 @@ import {RiskTabStyles} from './risk-tab-styles';
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
@@ -176,7 +177,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
   }
 

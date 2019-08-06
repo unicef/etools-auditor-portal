@@ -12,7 +12,7 @@ import '@polymer/paper-item/paper-icon-item';
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
-import QueryParamsController from '../../app-mixins/query-params-controller';
+import {updateQueries} from '../../app-mixins/query-params-controller';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
@@ -27,9 +27,8 @@ import {searchAndFilterStyles} from './search-and-filter-styles';
 /**
  * @customElement
  * @polymer
- * @appliesMixin QueryParamsController
  */
-class SearchAndFilter extends QueryParamsController(PolymerElement) {
+class SearchAndFilter extends PolymerElement {
 
   static get template() {
     // language=HTML
@@ -138,13 +137,13 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
     this.previousSearchValue = value;
 
     this._searchKeyDownDebounce = Debouncer.debounce(this._searchKeyDownDebounce,
-        timeOut.after(300),
-        () => {
-          if (this.searchString.length !== 1) {
-            let query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
-            this.updateQueries({search: query, page: '1'});
-          }
-        });
+      timeOut.after(300),
+      () => {
+        if (this.searchString.length !== 1) {
+          let query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
+          updateQueries({search: query, page: '1'});
+        }
+      });
   }
 
   _isSelected(filter) {
@@ -168,7 +167,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
       if (this.queryParams[query] === undefined) {
         let queryObject = {};
         queryObject[query] = true;
-        this.updateQueries(queryObject);
+        updateQueries(queryObject);
       }
     } else {
       this.removeFilter(e);
@@ -184,7 +183,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
       return;
     }
 
-    let queryObject = {};
+    let queryObject: GenericObject = {};
     queryObject[query] = undefined;
 
     if (this.queryParams[query]) {
@@ -194,7 +193,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
     if (indexToRemove !== -1) {
       this.splice('usedFilters', indexToRemove, 1);
     }
-    this.updateQueries(queryObject);
+    updateQueries(queryObject);
   }
 
   _reloadFilters() {
@@ -204,31 +203,31 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
 
   _restoreFilters() {
     this._restoreFiltersDebounce = Debouncer.debounce(this._restoreFiltersDebounce,
-        timeOut.after(50),
-        () => {
-          let queryParams = this.queryParams;
+      timeOut.after(50),
+      () => {
+        let queryParams = this.queryParams;
 
-          if (!queryParams) {
-            return;
+        if (!queryParams) {
+          return;
+        }
+
+        this.filters.forEach((filter) => {
+          let usedFilter = this.usedFilters.find(used => used.query === filter.query);
+
+          if (!usedFilter && queryParams[filter.query] !== undefined) {
+            this.addFilter(filter.query);
+          } else if (queryParams[filter.query] === undefined) {
+            this.removeFilter(filter.query);
           }
-
-          this.filters.forEach((filter) => {
-            let usedFilter = this.usedFilters.find(used => used.query === filter.query);
-
-            if (!usedFilter && queryParams[filter.query] !== undefined) {
-              this.addFilter(filter.query);
-            } else if (queryParams[filter.query] === undefined) {
-              this.removeFilter(filter.query);
-            }
-          });
-
-          if (queryParams.search) {
-            this.set('searchString', queryParams.search);
-          } else {
-            this.set('searchString', '');
-          }
-          this.set('availableFilters', clone(this.filters));
         });
+
+        if (queryParams.search) {
+          this.set('searchString', queryParams.search);
+        } else {
+          this.set('searchString', '');
+        }
+        this.set('availableFilters', clone(this.filters));
+      });
   }
 
   _getFilterIndex(query) {
@@ -263,7 +262,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
     let optionValue = filter.optionValue;
 
     const exists = filter.selection.find(
-        (selectionItem) => filterValue.indexOf(selectionItem[optionValue].toString()) !== -1);
+      (selectionItem) => filterValue.indexOf(selectionItem[optionValue].toString()) !== -1);
 
     if (!exists) {
       return;
@@ -302,7 +301,7 @@ class SearchAndFilter extends QueryParamsController(PolymerElement) {
       let optionValue = filter.optionValue || 'value';
       queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
     }
-    this.updateQueries(queryObject);
+    updateQueries(queryObject);
 
   }
 

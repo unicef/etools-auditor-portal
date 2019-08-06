@@ -22,6 +22,7 @@ import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import sortBy from 'lodash-es/sortBy';
 
 /**
@@ -352,7 +353,7 @@ class FinancialFindings extends
   }
 
   setChoices(basePath) {
-    let unsortedOptions = this.getChoices(`${basePath}.financial_finding_set.title`);
+    let unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
     let titleOptions = sortBy(
         unsortedOptions,
         ['display_name']);

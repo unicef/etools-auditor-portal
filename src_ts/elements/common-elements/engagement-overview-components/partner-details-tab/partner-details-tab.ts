@@ -20,7 +20,7 @@ import isEqual from 'lodash-es/isEqual';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
+import {permsIsReadonly} from '../../../app-mixins/permission-controller';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
@@ -33,13 +33,10 @@ import '../../../data-elements/get-partner-data';
  * @polymer
  * @customElement
  * @appliesMixin StaticDataMixin
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
  */
 class PartnerDetailsTab extends
-  StaticDataMixin(
-    PermissionControllerMixin(
-      CommonMethodsMixin(PolymerElement))) {
+  StaticDataMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -329,7 +326,7 @@ class PartnerDetailsTab extends
       this.set('activePd', []);
       return;
     }
-    let partnerType = this.get('engagement.partner.partner_type');
+    //let partnerType = this.get('engagement.partner.partner_type');
 
     //check <etools-searchable-multiselection-menu> debouncer state
     // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
@@ -430,7 +427,7 @@ class PartnerDetailsTab extends
 
   activePdPlaceholder(basePermissionPath, partner) {
     if (!partner || !partner.id) {return '-';}
-    return this.isReadonly(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
+    return permsIsReadonly(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
     // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
   }
 

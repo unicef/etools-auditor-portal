@@ -16,7 +16,6 @@ import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from "../../../../styles-elements/module-styles";
 
-import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
 import DateMixin from '../../../../app-mixins/date-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
@@ -38,11 +37,9 @@ import cloneWith from 'lodash-es/cloneWith';
  * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin DateMixin
- * @appliesMixin PermissionControllerMixin
  */
 class SummaryFindingsElement extends (CommonMethodsMixin
-  (StaticDataMixin(TableElementsMixin(DateMixin
-    (PermissionControllerMixin(PolymerElement)))))) {
+  (StaticDataMixin(TableElementsMixin(DateMixin(PolymerElement))))) {
 
   static get template() {
     // language=HTML

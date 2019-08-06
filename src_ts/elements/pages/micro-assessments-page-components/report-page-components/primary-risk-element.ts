@@ -5,6 +5,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
+import {getChoices, isRequired} from '../../../app-mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '../../../utils/fire-custom-event';
@@ -105,7 +106,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
   }
 
@@ -126,7 +127,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
     this.set('primaryArea.risk.value', find(this.riskOptions, risk => risk.value === this.riskData.blueprints[0].risk.value));
     this.set('primaryArea.risk.extra', extra);
-}
+  }
 
   validate(forSave) {
     if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
@@ -135,7 +136,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return false;
     }
     if (!this.basePermissionPath || forSave) {return true;}
-    let required = this.isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
+    let required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
     if (!required) {return true;}
 
     let riskValid = this.$.riskAssessmentInput.validate(),
