@@ -21,6 +21,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return html`
       ${tabInputsStyles} ${moduleStyles} ${RiskTabStyles}
       <style>
+      list-element{
+        --list-item-overflow: visible;
+      }
       </style>
       <div class="tab-container">
         <etools-content-panel list completed$="[[completed]]" show-expand-btn
