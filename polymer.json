@@ -15,6 +15,12 @@
     "src/elements/pages/special-audits-page-components/special-audits-page-main/special-audits-page-main.js",
     "src/elements/pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main.js"
   ],
+  "extraDependencies": [
+    "manifest.json",
+    "node_modules/@webcomponents/webcomponentsjs/**",
+    "node_modules/web-animations-js/web-animations-next-lite.min.js",
+    "node_modules/moment/min/moment.min.js"
+  ],
   "builds": [
     {
       "name": "esm-bundled",
