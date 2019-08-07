@@ -1,6 +1,8 @@
 {
   "name": "fam",
   "version": "3.0.0",
+  "revision": "revNo",
+  "buildDate": "bDate",
   "description": "Financial Assurance Module, formerly known as Auditor Portal",
   "repository": {
     "type": "git",
