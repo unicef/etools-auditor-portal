@@ -103,7 +103,7 @@ export function getFieldAttribute(path, attribute, actionType?) {
 
 }
 
-export function permsIsReadonly(path) {//isReadonly
+export function readonlyPermission(path) {//isReadonly
   return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
 }
 

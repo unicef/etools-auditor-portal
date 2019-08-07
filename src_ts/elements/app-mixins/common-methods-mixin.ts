@@ -5,7 +5,7 @@ import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import ErrorHandlerMixin from './error-handler-mixin';
-import {permsIsReadonly, isRequired, getFieldAttribute, getChoices} from './permission-controller';
+import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import StaticDataMixin from './static-data-mixin';
 import {Constructor} from "../../types/global";
 import {fireEvent} from "../utils/fire-custom-event";
@@ -37,7 +37,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return true;
       }
 
-      let readOnly = permsIsReadonly(`${basePermissionPath}.${field}`);
+      let readOnly = readonlyPermission(`${basePermissionPath}.${field}`);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -135,7 +135,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     getPlaceholderText(path, base, datepicker) {
-      if (permsIsReadonly(`${base}.${path}`)) {
+      if (readonlyPermission(`${base}.${path}`)) {
         return 'Empty Field'
       }
 
@@ -169,7 +169,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _showPrefix(path, base, value, readonly) {
-      return (!permsIsReadonly(`${base}.${path}`) && !readonly) || !!value;
+      return (!readonlyPermission(`${base}.${path}`) && !readonly) || !!value;
     }
 
     getTooltipText(selectedValues, options, field) {

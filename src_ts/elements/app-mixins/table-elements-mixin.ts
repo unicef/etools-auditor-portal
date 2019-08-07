@@ -5,7 +5,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from "../utils/fire-custom-event";
-import {permsIsReadonly, isRequired} from "./permission-controller";
+import {readonlyPermission, isRequired} from "./permission-controller";
 import ErrorHandlerMixin from "./error-handler-mixin";
 
 /**
@@ -125,7 +125,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return true;
       }
 
-      let readOnly = permsIsReadonly(`${path}.${this.mainProperty}`);
+      let readOnly = readonlyPermission(`${path}.${this.mainProperty}`);
       if (readOnly === null) {
         readOnly = true;
       }

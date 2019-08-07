@@ -39,7 +39,7 @@ import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-requ
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import DateMixin from '../../../app-mixins/date-mixin';
-import {collectionExists, addToCollection, updateCollection, getChoices, permsIsReadonly, actionAllowed} from '../../../app-mixins/permission-controller';
+import {collectionExists, addToCollection, updateCollection, getChoices, readonlyPermission, actionAllowed} from '../../../app-mixins/permission-controller';
 
 /**
  * @polymer
@@ -606,7 +606,7 @@ class FollowUpActions extends
   setPermissionPath(basePath) {
     this.basePermissionPath = basePath ? `${basePath}_ap` : '';
     this.set('categories', getChoices(`${this.basePermissionPath}.category`) || []);
-    this.canBeChanged = !permsIsReadonly(`${this.basePermissionPath}.POST`);
+    this.canBeChanged = !readonlyPermission,(`${this.basePermissionPath}.POST`);
   }
 
   _checkNonField(error) {

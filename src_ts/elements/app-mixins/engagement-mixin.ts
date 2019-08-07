@@ -13,7 +13,7 @@ import {getChoices} from './permission-controller';
 import ErrorHandlerMixin from './error-handler-mixin';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import {getUserData} from '../../elements/app-mixins/user-controller';
-import {permsIsReadonly, getCollection, isValidCollection, actionAllowed} from './permission-controller';
+import {readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 
 let currentEngagement = {};
 /**
@@ -376,7 +376,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _attachmentsReadonly(base, type) {
-      let readOnly = permsIsReadonly(`${base}.${type}`);
+      let readOnly = readonlyPermission(`${base}.${type}`);
       if (readOnly === null) {
         readOnly = true;
       }

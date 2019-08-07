@@ -20,7 +20,7 @@ import isEqual from 'lodash-es/isEqual';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {permsIsReadonly} from '../../../app-mixins/permission-controller';
+import {readonlyPermission} from '../../../app-mixins/permission-controller';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
@@ -427,7 +427,7 @@ class PartnerDetailsTab extends
 
   activePdPlaceholder(basePermissionPath, partner) {
     if (!partner || !partner.id) {return '-';}
-    return permsIsReadonly(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
+    return readonlyPermission(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
     // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
   }
 
