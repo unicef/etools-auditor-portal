@@ -157,7 +157,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
                 <!-- Audit opinion -->
                 <etools-dropdown
                     class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
-                    selected="{{editedItem.opinion}}"
+                    selected="{{editedItem.audit_opinion}}"
                     label$="[[getLabel('audit_opinion', basePermissionPath)]]"
                     placeholder$="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
                     options="[[auditOpinions]]"
