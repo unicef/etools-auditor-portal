@@ -37,12 +37,12 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
               <!-- Risk Assessment -->
               <etools-dropdown id="riskAssessmentInput"
                 class="validate-input disabled-as-readonly required"
-                selected="{{primaryArea.risk.value}}"
+                selected="{{primaryArea.risk.value.value}}"
                 label="Risk Assessment"
                 placeholder="Select Risk Assessment"
                 options="[[riskOptions]]"
                 option-label="display_name"
-                option-value="display_name"
+                option-value="value"
                 required
                 disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
                 readonly="[[isReadOnly('test_subject_areas', basePermissionPath)]]"

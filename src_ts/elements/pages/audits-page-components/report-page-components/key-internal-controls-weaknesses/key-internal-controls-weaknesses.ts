@@ -378,7 +378,9 @@ class KeyInternalControlsWeaknesses extends
     this.dialogOpened = true;
   }
 
-  openDeleteDialog(event, data) {
+  openDeleteDialog(event) {
+    if (!event || !event.detail) {return;}
+    let data = event.detail;
     this.dialogTexts = this.deleteDialogTexts;
     this.set('editedBlueprint', data.blueprint);
     this.confirmDialogOpened = true;
