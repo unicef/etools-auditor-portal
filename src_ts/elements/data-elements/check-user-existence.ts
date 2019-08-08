@@ -1,4 +1,4 @@
-import { PolymerElement } from "@polymer/polymer";
+import { PolymerElement } from "@polymer/polymer/polymer-element";
 import { property } from "@polymer/decorators";
 import get from 'lodash-es/get';
 import pick from 'lodash-es/pick';
@@ -10,16 +10,16 @@ class CheckUserExistence extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEl
 
     @property({type: String, notify: true, observer: '_emailChanged'})
     email: string | null = null;
-  
+
     @property({type: Boolean, notify: true})
     emailChecking = false;
-  
+
     @property({type: Object, notify: true})
     errors: any | null = null;
 
     @property({type: Boolean, notify: true})
     unicefUsersAllowed!: boolean;
-  
+
     @property({type: Object, notify: true})
     editedItem!: {};
 
@@ -67,7 +67,7 @@ class CheckUserExistence extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEl
                     hasAccess = false;
                 this.editedItem = { user: { email }, hasAccess };
             }
-            
+
             if (firmId === this.organisationId) {
                 //if user was deleted from current organization
                 let user = details[0] as any;
