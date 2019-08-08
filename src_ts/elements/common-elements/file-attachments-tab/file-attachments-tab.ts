@@ -25,7 +25,7 @@ import '../list-tab-elements/list-element/list-element';
 import '../simple-list-item/simple-list-item';
 import '../share-documents/share-documents';
 import DateMixin from '../../app-mixins/date-mixin';
-import UserControllerMixin from '../../app-mixins/user-controller-mixin';
+import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
 import ErrorHandlerMixin from '../../app-mixins/error-handler-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
@@ -42,6 +42,7 @@ import EndpointsMixin from '../../app-config/endpoints-mixin';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
+import {getChoices, collectionExists, getFieldAttribute} from '../../app-mixins/permission-controller';
 
 /**
  * @customElement
@@ -51,7 +52,6 @@ import isEmpty from 'lodash-es/isEmpty';
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin ErrorHandlerMixin
  * @appliesMixin EngagementMixin
- * @appliesMixin UserControllerMixin
  * @appliesMixin DateMixin
  */
 class FileAttachmentsTab extends EndpointsMixin(
@@ -60,8 +60,7 @@ class FileAttachmentsTab extends EndpointsMixin(
         ErrorHandlerMixin(
          EngagementMixin(
              DateMixin(
-              UserControllerMixin(
-                EtoolsAjaxRequestMixin(PolymerElement)))))))) {
+                EtoolsAjaxRequestMixin(PolymerElement))))))) {
 
   static get template() {
     // language=HTML
@@ -444,7 +443,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   _checkIsUnicefUser() {
-    const user = this.getUserData();
+    const user = getUserData();
     return Boolean(user.groups.find(({name}) => name === 'UNICEF User'));
   }
 
@@ -485,9 +484,9 @@ class FileAttachmentsTab extends EndpointsMixin(
     let base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
     this.set('basePermissionPath', base);
     if (base) {
-      let title = this.getFieldAttribute(base, 'title');
+      let title = getFieldAttribute(base, 'title');
       this.set('tabTitle', title);
-      this.fileTypes = this.getChoices(`${base}.file_type`);
+      this.fileTypes = getChoices(`${base}.file_type`);
     }
   }
 
@@ -502,8 +501,8 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   isTabReadonly(basePath) {
-    return !basePath || (!this.collectionExists(`${basePath}.PUT`) &&
-        !this.collectionExists(`${basePath}.POST`));
+    return !basePath || (!collectionExists(`${basePath}.PUT`) &&
+        !collectionExists(`${basePath}.POST`));
   }
 
   _hideShare_(basePermissionPath) { // TODO -is this still used?
@@ -511,7 +510,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   showFileTypes(basePath) {
-    return !!basePath && this.collectionExists(`${basePath}.file_type`, 'GET');
+    return !!basePath && collectionExists(`${basePath}.file_type`, 'GET');
   }
 
   _resetDialog(dialogOpened) {
@@ -532,7 +531,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   _openFileChooser() {
-    let elem = this.shadowRoot.querySelector('#fileInput');
+    let elem = this.shadowRoot!.querySelector('#fileInput');
     if (elem && document.createEvent) {
       let evt = document.createEvent('MouseEvents');
       evt.initEvent('click', true, false);
@@ -678,7 +677,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   validate() {
-    let dropdown = this.shadowRoot.querySelector('#fileType');
+    let dropdown = this.shadowRoot!.querySelector('#fileType');
     let editedItem = this.editedItem;
     let valid = true;
 
@@ -784,7 +783,7 @@ class FileAttachmentsTab extends EndpointsMixin(
 
   _openShareDialog() {
     this.shareDialogOpened = true;
-    const shareModal = this.shadowRoot.querySelector('#shareDocuments');
+    const shareModal = this.shadowRoot!.querySelector('#shareDocuments');
     shareModal.updateShareParams();
   }
 

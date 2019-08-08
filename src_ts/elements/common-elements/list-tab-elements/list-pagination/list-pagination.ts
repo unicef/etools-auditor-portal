@@ -7,7 +7,6 @@ import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
-import QueryParamsController from '../../../app-mixins//query-params-controller';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {sharedStyles} from '../../../styles-elements/shared-styles';
 
@@ -15,9 +14,8 @@ import {sharedStyles} from '../../../styles-elements/shared-styles';
 /**
  * @polymer
  * @customElement
- * @appliesMixin QueryParamsController
  */
-class ListPagination extends QueryParamsController(PolymerElement) {
+class ListPagination extends PolymerElement {
 
   static get template() {
     return html`

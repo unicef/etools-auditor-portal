@@ -15,8 +15,7 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
-import { fireEvent } from '../../../../utils/fire-custom-event';
+import {fireEvent} from '../../../../utils/fire-custom-event';
 import {GenericObject} from '../../../../../types/global';
 
 
@@ -25,12 +24,11 @@ import {GenericObject} from '../../../../../types/global';
  * @mixinFunction
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
- * @appliesMixin PermissionControllerMixin
  */
-class OtherRecommendations extends (PermissionControllerMixin(TableElementsMixin(
-    CommonMethodsMixin(PolymerElement)))) {
-  static get template() {
-    return html`
+class OtherRecommendations extends
+  TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
+    static get template() {
+      return html`
         ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
 
@@ -148,55 +146,55 @@ class OtherRecommendations extends (PermissionControllerMixin(TableElementsMixin
 
 
     `;
-  }
+    }
 
   @property({type: Array, notify: true})
-  dataItems: [] = [];
+dataItems: [] = [];
 
-  @property({type: String})
-  mainProperty: string = 'other_recommendations';
+@property({type: String})
+mainProperty: string = 'other_recommendations';
 
-  @property({type: Object})
-  itemModel: {} = {description: ''};
+@property({type: Object})
+itemModel: {} = {description: ''};
 
-  @property({type: Array})
-  columns: GenericObject[] = [{
-                  'size': 25,
-                  'name': 'finding',
-                  'label': 'Recommendation Number',
-                }, {
-                  'size': 75,
-                  'label': 'Description',
-                  'labelPath': 'other_recommendations.description',
-                  'path': 'description'
-                }];
+@property({type: Array})
+columns: GenericObject[] = [{
+  'size': 25,
+  'name': 'finding',
+  'label': 'Recommendation Number',
+}, {
+  'size': 75,
+  'label': 'Description',
+  'labelPath': 'other_recommendations.description',
+  'path': 'description'
+}];
 
-  @property({type: Object})
-  addDialogTexts: GenericObject = { title: 'Add New Recommendation' };
+@property({type: Object})
+addDialogTexts: GenericObject = {title: 'Add New Recommendation'};
 
-  @property({type: Object})
-  editDialogTexts: GenericObject = { title: 'Edit Recommendation' };
+@property({type: Object})
+editDialogTexts: GenericObject = {title: 'Edit Recommendation'};
 
-  @property({type: String})
-  deleteTitle: string = 'Are you sure that you want to delete this Recommendation?';
+@property({type: String})
+deleteTitle: string = 'Are you sure that you want to delete this Recommendation?';
 
   static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_errorHandler(errorObject.other_recommendations)',
-      '_checkNonField(errorObject.other_recommendations)'
-    ];
-  }
+  return [
+    'resetDialog(dialogOpened)',
+    'resetDialog(confirmDialogOpened)',
+    '_errorHandler(errorObject.other_recommendations)',
+    '_checkNonField(errorObject.other_recommendations)'
+  ];
+}
 
-  _checkNonField(error) {
-    if (!error) { return; }
+_checkNonField(error) {
+  if (!error) {return;}
 
-    let nonField = this.checkNonField(error);
-    if (nonField) {
-      fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
-    }
+  let nonField = this.checkNonField(error);
+  if (nonField) {
+    fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
   }
+}
 
 
 }

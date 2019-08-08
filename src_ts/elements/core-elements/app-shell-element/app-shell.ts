@@ -34,7 +34,7 @@ import {property} from '@polymer/decorators';
 import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '../../utils/fire-custom-event.js';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
-import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
+import {getUserData} from '../../app-mixins/user-controller';
 import {GenericObject} from '../../../types/global.js';
 import {getDomainByEnv} from '../../app-config/config.js';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
@@ -47,7 +47,7 @@ setRootPath('/ap_poly3/');
  * @customElement
  * @polymer
  */
-class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElement))) {
+class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   public static get template() {
     // main template
@@ -307,7 +307,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _initialDataLoaded(e) {
     this.staticDataLoaded = true;// TODO -what is this flag doing???
     if (this.routeData && this.staticDataLoaded) {
-      this.user = this.getUserData();
+      this.user = getUserData();
       this.page = this.routeData.page || this._setDefaultLandingPage();
     }
   }

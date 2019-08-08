@@ -19,6 +19,7 @@ import '../../../common-elements/follow-up-components/follow-up-main/follow-up-m
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
+import {getChoices} from '../../../app-mixins/permission-controller';
 
 import '../../../data-elements/update-engagement';
 import '../../../data-elements/engagement-info-data';
@@ -341,7 +342,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(StaticDataM
 
   loadChoices(property) {
     if (this.getData(property)) { return; }
-    let choices = this.getChoices(`engagement_${this.engagement.id}.findings.${property}`);
+    let choices = getChoices(`engagement_${this.engagement.id}.findings.${property}`);
     if (!choices) { return; }
     const sortedChoices = sortBy(
         choices,
