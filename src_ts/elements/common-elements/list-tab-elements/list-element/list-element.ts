@@ -18,7 +18,7 @@ import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import '../../insert-html/insert-html';
-
+import {getChoices} from '../../../app-mixins/permission-controller';
 /**
  * @polymer
  * @customElement
@@ -154,6 +154,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           box-sizing: border-box;
           white-space: nowrap;
           text-overflow: ellipsis;
+      }
+      :host div[list-item] {
+        overflow: var(--list-item-overflow, hidden);
       }
       :host([no-additional]) div[list-item] {
           padding: 0 16px 0 24px !important;
@@ -538,8 +541,8 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   _setItemValues(base) {
     if (!base) {return;}
     if (!this.get('itemValues')) {this.set('itemValues', {});}
-    this.setField(this.getChoices(`${base}.engagement_type`), 'engagement_type');
-    this.setField(this.getChoices(`${base}.status`), 'status');
+    this.setField(getChoices(`${base}.engagement_type`), 'engagement_type');
+    this.setField(getChoices(`${base}.status`), 'status');
     this.set('itemValues.link_type', {
       ma: 'micro-assessments',
       audit: 'audits',

@@ -13,6 +13,7 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import '../risk-tab/risk-tab';
 
 
@@ -71,7 +72,10 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
           margin-bottom: 0 !important;
           min-width: 0 !important;
         }
-
+        div[list-item]{
+           overflow: visible !important;
+           background: yellow;
+        }
       </style>
 
       <etools-content-panel class="totals" panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
@@ -95,7 +99,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
           <div class="repeatable-item-content">
             <div class="row-h group">
-              <div class="input-container  input-container-ms">
+            
+              <div class="input-container  input-container-ms" style='background:yellow;overflow:visible'>
                 <!-- Risk Assessment -->
                 <etools-dropdown id="riskAssessmentDropdown" class="disabled-as-readonly
                   required validate-input"
@@ -200,7 +205,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback()
 
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
 
     this.addEventListener('edit-blueprint', this._openEditDialog as any);

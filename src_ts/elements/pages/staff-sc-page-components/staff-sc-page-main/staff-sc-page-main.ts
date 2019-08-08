@@ -6,8 +6,8 @@ import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import '../../engagements-page-components/engagements-list-view/engagements-list-view';
 import '../../engagements-page-components/new-engagement-view/new-engagement-view';
-import QueryParamsController from '../../../app-mixins/query-params-controller';
-import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
+import {clearQueries, parseQueries, updateQueries} from '../../../app-mixins/query-params-controller';
+import {actionAllowed} from '../../../app-mixins/permission-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {property} from '@polymer/decorators';
 import EndpointsMixin from '../../../app-config/endpoints-mixin';
@@ -21,10 +21,9 @@ import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../../types/global';
 
 
-class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
-  PermissionControllerMixin(
-    QueryParamsController(PolymerElement)))) {
-  
+class StaffScPageMain extends
+  EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+
   static get template() {
     return html`
       <style>
@@ -59,7 +58,7 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
                     is-staff-sc>
             </engagements-list-view>
 
-            <template is="dom-if" if="{{actionAllowed('new_staff_sc', 'create')}}" restamp>
+            <template is="dom-if" if="[[allowNew]]" restamp>
                 <new-engagement-view
                         name="new"
                         id="creationPage"
@@ -126,6 +125,21 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
   @property({type: Object})
   partnersListQueries!: GenericObject;
 
+  @property({type: String})
+  view!: string;
+
+  @property({type: String})
+  lastView!: string | null;
+
+  @property({type: Object})
+  lastParams!: GenericObject;
+
+  @property({type: Object})
+  auditFirm: GenericObject = {};
+
+  @property({type: Boolean})
+  allowNew: boolean = false;
+  
   static get observers() {
     return [
       '_routeConfig(routeData.view, selectedPage)'
@@ -136,7 +150,7 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
 
   connectedCallback() {
     super.connectedCallback();
-
+    this.allowNew = actionAllowed('new_staff_sc', 'create');
     this.sendRequest({
       endpoint: {url: this.getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     }).then(resp => {
@@ -158,13 +172,13 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
       this._setEngagementsListQueries(queries);
       this._fireUpdateEngagementsFilters();
       this.view = 'list';
-    } else if (view === 'new' && this.actionAllowed('new_staff_sc', 'create')) {
-      this.clearQueries();
+    } else if (view === 'new' && actionAllowed('new_staff_sc', 'create')) {
+      clearQueries();
       this.view = 'new';
     } else if (view === '' || isUndefined(view)) {
       this.set('route.path', '/list');
     } else {
-      this.clearQueries();
+      clearQueries();
       fireEvent(this, '404');
     }
 
@@ -182,14 +196,14 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
     this._updateEngagementsFiltersDebouncer = Debouncer.debounce(this._updateEngagementsFiltersDebouncer,
       timeOut.after(100),
       () => {
-      document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-    });
+        document.dispatchEvent(new CustomEvent('update-engagements-filters'));
+      });
   }
 
   _configListParams(noNotify?) {
 
     let queriesUpdates: GenericObject = {};
-    let queries: GenericObject = this.parseQueries() || {};
+    let queries: GenericObject = parseQueries() || {};
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
@@ -204,8 +218,8 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
       this.lastParams = clone(queries);
     }
 
-    this.updateQueries(queriesUpdates, null, noNotify);
-    return this.parseQueries();
+    updateQueries(queriesUpdates, null, noNotify);
+    return parseQueries();
   }
 
   _queryParamsChanged() {
@@ -217,7 +231,7 @@ class StaffScPageMain extends EndpointsMixin(EtoolsAjaxRequestMixin(
       let queries = this._configListParams();
       this._setEngagementsListQueries(queries);
     } else if (!isNaN(+this.routeData.view)) {
-      this.clearQueries();
+      clearQueries();
     }
   }
 

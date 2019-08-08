@@ -2,8 +2,8 @@ import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
-import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
-import QueryParamsController from '../../../app-mixins/query-params-controller';
+import {actionAllowed} from '../../../app-mixins/permission-controller';
+import {buildQueryString} from '../../../app-mixins/query-params-controller';
 import EndpointsMixin from '../../../app-config/endpoints-mixin';
 import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
 import {sharedStyles} from '../../../styles-elements/shared-styles';
@@ -18,12 +18,10 @@ import {SearchAndFilterEl} from '../../../common-elements/search-and-filter-elem
  * @customElement
  * @polymer
  * @appliesMixin EndpointsMixin
- * @appliesMixin QueryParamsController
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin StaticDataMixin
  */
 class EngagementsListView extends
-    EndpointsMixin(QueryParamsController(PermissionControllerMixin(StaticDataMixin(PolymerElement)))) {
+  EndpointsMixin(StaticDataMixin(PolymerElement)) {
 
   static get template() {
     // language=HTML
@@ -224,7 +222,7 @@ class EngagementsListView extends
   }
 
   _showAddButton(hideAddButton) {
-    return this.actionAllowed('new_engagement', 'create') && !hideAddButton;
+    return actionAllowed('new_engagement', 'create') && !hideAddButton;
   }
 
   _getFilterIndex(query) {
@@ -262,7 +260,7 @@ class EngagementsListView extends
 
   _setExportLinks() {
     const endpoint = this.getEndpoint(this.endpointName);
-    const queryString = this.buildQueryString(this.queryParams);
+    const queryString = buildQueryString(this.queryParams);
     const exportLinks = endpoint ? [{
       name: 'Export Engagements',
       url: `${endpoint.url}csv/?${queryString}`

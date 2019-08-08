@@ -2,7 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer';
 import famEndpoints from '../app-config/endpoints';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
+import {addToCollection, getChoices, isValidCollection} from '../app-mixins/permission-controller';
 import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
@@ -12,7 +12,7 @@ import './user-data';
 
 
 
-class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)))) {
+class StaticData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
 
   public static get template() {
     return html`
@@ -242,13 +242,13 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   _handleNewEngagementResponse(details) {
     let actions = details && details.actions;
-    if (!details || details.error || !this.isValidCollection(actions)) {
+    if (!details || details.error || !isValidCollection(actions)) {
       this._responseError('Engagement Permissions', details.error);
     } else {
-      this._addToCollection('new_engagement', actions);
+      addToCollection('new_engagement', actions);
 
-      let statuses = this.getChoices('new_engagement.status') || [];
-      let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
+      let statuses = getChoices('new_engagement.status') || [];
+      let engagementTypes = getChoices('new_engagement.engagement_type') || [];
 
       if (!statuses) {this._responseError('Statuses', 'Can not load engagement statuses data');}
       if (!engagementTypes) {this._responseError('Engagement types', 'Can not load engagement types data');}
@@ -273,7 +273,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       throw new Error('Please provide collection and dataName attributes');
     }
 
-    this._addToCollection(collection, actions, name);
+    addToCollection(collection, actions, name);
     this.dataLoaded[dataName] = true;
   }
 
@@ -282,8 +282,8 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let name = get(data, 'name', '');
 
     if (actions) {
-      this._addToCollection(`new_engagement_attachments`, actions || {}, name);
-      this._addToCollection(`new_staff_sc_attachments`, actions || {}, name);
+      addToCollection(`new_engagement_attachments`, actions || {}, name);
+      addToCollection(`new_staff_sc_attachments`, actions || {}, name);
     } else {
       this._responseError('Engagement Attachments Permissions', data && data.type);
     }

@@ -5,17 +5,16 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from "../utils/fire-custom-event";
-import PermissionControllerMixin from "./permission-controller-mixin";
+import {readonlyPermission, isRequired} from "./permission-controller";
 import ErrorHandlerMixin from "./error-handler-mixin";
 
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin PermissionController
  * @appliesMixin ErrorHandlerMixin
  */
 function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class TableElementsMixinClass extends PermissionControllerMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>)) {
+  class TableElementsMixinClass extends ErrorHandlerMixin(baseClass as Constructor<PolymerElement>) {
 
     @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
     dataItems: any[] = [];
@@ -102,7 +101,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return null;
       }
 
-      let data = [];
+      let data: any[] = [];
 
       each(this.dataItems, (item, index) => {
         if (!isEqual(item, this.originalTableData[index])) {
@@ -126,7 +125,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return true;
       }
 
-      let readOnly = this.isReadonly(`${path}.${this.mainProperty}`);
+      let readOnly = readonlyPermission(`${path}.${this.mainProperty}`);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -138,8 +137,8 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (this.editedItem && this.editedItem._delete) {
         return true;
       }
-      let elements = this.shadowRoot.querySelectorAll('.validate-input'),
-          valid = true;
+      let elements = this.shadowRoot!.querySelectorAll('.validate-input'),
+        valid = true;
 
       Array.prototype.forEach.call(elements, (element) => {
         if (element.required && !element.validate()) {
@@ -157,7 +156,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let required = this.isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
+      let required = isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
 
       return required ? 'required' : false;
     }
@@ -198,7 +197,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     _getIndex(event) {
       let item = event && event.model && event.model.item,
-          index = this.dataItems && this.dataItems.indexOf(item);
+        index = this.dataItems && this.dataItems.indexOf(item);
 
       if ((!index && index !== 0) || index < 0) {
         throw Error('Can not find user data');
@@ -266,7 +265,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (opened) {
         return;
       }
-      let elements = this.shadowRoot.querySelectorAll('.validate-input');
+      let elements = this.shadowRoot!.querySelectorAll('.validate-input');
 
       Array.prototype.forEach.call(elements, element => {
         element.invalid = false;
