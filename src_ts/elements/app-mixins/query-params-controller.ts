@@ -29,7 +29,7 @@ export function getQueriesString() {
 
 function getPath() {
   let path = _getLocationProperty('pathname');
-  if (~path.indexOf(`/${BASE_PATH}`)) { // TODO sqitch to '/ap'
+  if (~path.indexOf(`/${BASE_PATH}`)) {
     path = path.replace(`/${BASE_PATH}`, '');
   }
   return path.slice(1);
