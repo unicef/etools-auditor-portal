@@ -39,9 +39,9 @@ import {GenericObject} from '../../../types/global.js';
 import {getDomainByEnv} from '../../app-config/config.js';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
+import {BASE_PATH} from '../../app-config/config';
 
-
-setRootPath('/ap_poly3/');
+setRootPath(`/${BASE_PATH}/`);
 
 /**
  * @customElement
@@ -167,7 +167,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   page: string = '';
 
   @property({type: Boolean, reflectToAttribute: true})
-  narrow: Boolean = false
+  narrow: boolean = false
 
   @property({type: Object})
   _toast: PolymerElement | null = null;
@@ -192,7 +192,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === '/ap_poly3/') {
+    if (this.initLoadingComplete && this.route.path === `/${BASE_PATH}/`) {
       this._setDefaultLandingPage();
     }
 

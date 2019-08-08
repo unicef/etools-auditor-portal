@@ -6,11 +6,12 @@ import {property} from '@polymer/decorators';
 import {DomRepeat} from '@polymer/polymer/lib/elements/dom-repeat.js';
 import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin.js';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import { fireEvent } from '../../../utils/fire-custom-event';
+import {fireEvent} from '../../../utils/fire-custom-event';
 import famEndpoints from '../../../app-config/endpoints';
-import { HeaderStyles } from './header-styles';
-import { PaperMenuButton } from '@polymer/paper-menu-button';
-import { GenericObject } from '../../../../types/global';
+import {HeaderStyles} from './header-styles';
+import {PaperMenuButton} from '@polymer/paper-menu-button';
+import {GenericObject} from '../../../../types/global';
+import {BASE_PATH} from '../../../app-config/config';
 
 /**
  * @polymer
@@ -61,8 +62,8 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
 
   public static get observers() {
     return [
-        '_setCountryIndex(countries, countryId)'
-      ];
+      '_setCountryIndex(countries, countryId)'
+    ];
   }
 
   connectedCallback() {
@@ -74,10 +75,10 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
   }
 
   _setCountryIndex(countries, countryId) {
-    if (!(countries instanceof Array)) { return; }
+    if (!(countries instanceof Array)) {return;}
 
     this.countryIndex = countries.findIndex((country) => {
-        return country.id === countryId;
+      return country.id === countryId;
     });
   }
 
@@ -91,45 +92,45 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
   }
 
   _countrySelected(e) {
-      this.country = (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
+    this.country = (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
   }
 
   _changeCountry(event) {
-      let country = event && event.model && event.model.item;
-      let id = country && country.id;
+    let country = event && event.model && event.model.item;
+    let id = country && country.id;
 
-      if (Number(parseFloat(id)) !== id) {
-         throw 'Can not find country id!';
-      }
-      fireEvent(this, 'global-loading', {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
+    if (Number(parseFloat(id)) !== id) {
+      throw 'Can not find country id!';
+    }
+    fireEvent(this, 'global-loading', {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
 
-      this._sendChangeCountryRequest(id);
+    this._sendChangeCountryRequest(id);
   }
 
   _sendChangeCountryRequest(countryId) {
-      const options = {
-          method: 'POST',
-          body: {country: countryId},
-          endpoint: famEndpoints.changeCountry
-      };
-      this.sendRequest(options)
-          .then(this._handleResponse.bind(this))
-          .catch(this._handleError.bind(this))
+    const options = {
+      method: 'POST',
+      body: {country: countryId},
+      endpoint: famEndpoints.changeCountry
+    };
+    this.sendRequest(options)
+      .then(this._handleResponse.bind(this))
+      .catch(this._handleError.bind(this))
   }
 
   _handleError() {
-      fireEvent(this, 'global-loading', {type: 'change-country'});
-      fireEvent(this, 'toast', {text: 'Can not change country. Please, try again later'});
+    fireEvent(this, 'global-loading', {type: 'change-country'});
+    fireEvent(this, 'toast', {text: 'Can not change country. Please, try again later'});
   }
 
   _handleResponse() {
-      this.refreshInProgress = true;
-      this.clearDexieDbs();
+    this.refreshInProgress = true;
+    this.clearDexieDbs();
   }
 
   _refreshPage() {
-      this.refreshInProgress = false;
-      window.location.href = `${window.location.origin}/ap_poly3/`;
+    this.refreshInProgress = false;
+    window.location.href = `${window.location.origin}/${BASE_PATH}/`;
   }
 }
 
