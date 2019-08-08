@@ -1,4 +1,4 @@
-import {PolymerElement} from "@polymer/polymer";
+import {PolymerElement} from "@polymer/polymer/polymer-element";
 import {property} from "@polymer/decorators";
 import { fireEvent } from "../utils/fire-custom-event.js";
 import findIndex from 'lodash-es/findIndex';
@@ -17,7 +17,7 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     @property({type: Object, notify: true})
     errors!: GenericObject;
 
-    @property({type: Number})    
+    @property({type: Number})
     baseId!: number;
 
     @property({type: String})

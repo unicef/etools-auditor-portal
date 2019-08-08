@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {Constructor} from "../../types/global";
 import {property} from "@polymer/decorators/lib/decorators";
 

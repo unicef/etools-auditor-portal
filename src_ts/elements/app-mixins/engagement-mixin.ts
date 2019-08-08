@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from "@polymer/decorators";
 import isUndefined from 'lodash-es/isUndefined';
 import includes from 'lodash-es/includes';

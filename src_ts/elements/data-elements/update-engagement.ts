@@ -1,4 +1,4 @@
-import {PolymerElement} from "@polymer/polymer";
+import {PolymerElement} from "@polymer/polymer/polymer-element";
 import {property} from "@polymer/decorators";
 import { fireEvent } from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';
@@ -18,7 +18,7 @@ class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAj
     @property({type: String, notify: true})
     basePermissionPath!: string;
 
-    @property({type: Boolean, notify: true})    
+    @property({type: Boolean, notify: true})
     quietAdding!: boolean;
 
     @property({type: Object, notify: true})
@@ -191,7 +191,7 @@ class UpdateEngagement extends PermissionControllerMixin(EndpointsMixin(EtoolsAj
                 response = {};
             }
         }
-        
+
 
         if (status === 400) {
             this.set('errorObject', response);
