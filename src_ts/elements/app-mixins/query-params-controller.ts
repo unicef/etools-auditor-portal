@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer/polymer-element';
 import isObject from 'lodash-es/isObject';
 import keys from 'lodash-es/keys';
 import isString from 'lodash-es/isString';

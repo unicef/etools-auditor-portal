@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';

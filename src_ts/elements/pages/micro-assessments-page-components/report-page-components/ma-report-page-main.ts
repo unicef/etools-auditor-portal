@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
 import {property} from '@polymer/decorators';
 import '../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';

@@ -1,4 +1,4 @@
-import { PolymerElement } from "@polymer/polymer";
+import { PolymerElement } from "@polymer/polymer/polymer-element";
 import { property } from "@polymer/decorators";
 import { fireEvent } from "../utils/fire-custom-event.js";
 import EndpointsMixin from '../app-config/endpoints-mixin';
@@ -35,7 +35,7 @@ class GetActionPoints extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEleme
                 url,
             }
         };
-        
+
         this.sendRequest(requestOptions)
             .then(resp => this._handleResponse(resp))
             .catch((err => this._handleError()));
