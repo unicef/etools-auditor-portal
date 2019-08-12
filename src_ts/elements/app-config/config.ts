@@ -28,7 +28,7 @@ const DEV_DOMAIN = 'etools-dev.unicef.org';
 const DEMO_DOMAIN = 'etools-demo.unicef.org';
 const LOCAL_DOMAIN = 'localhost:8082';
 
-export const AP_DOMAIN = '/ap_poly3/';
+export const BASE_PATH = 'ap_poly3';
 
 export const isProductionServer = () => {
   const location = window.location.href;
@@ -72,7 +72,7 @@ export const resetOldUserData = () => {
 
 export const getDomainByEnv = () => {
   if (window.location.port === '8082') {
-    return 'http://localhost:8082/ap_poly3';
+    return `http://localhost:8082/${BASE_PATH}`;
   }
   if (isStagingServer()) {
     return 'https://etools-staging.unicef.org/ap';
