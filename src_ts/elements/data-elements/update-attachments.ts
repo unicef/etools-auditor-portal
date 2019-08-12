@@ -8,7 +8,7 @@ import { GenericObject } from "../../types/global.js";
 
 class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
 
-    @property({type: String, observer: '_dateChanged'})
+    @property({type: String, observer: '_requestDataChanged'})
     requestData!: string;
 
     @property({type: Array, notify: true})
@@ -17,7 +17,7 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     @property({type: Object, notify: true})
     errors!: GenericObject;
 
-    @property({type: Number})    
+    @property({type: Number})
     baseId!: number;
 
     @property({type: String})
@@ -32,23 +32,23 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     @property({type: Object})
     postData!: GenericObject;
 
-    _dataChanged(data = {}) {
-        let {method, attachmentsData} = data as any;
-        if (!method || !attachmentsData || !this.baseId) {
+    _requestDataChanged(data = {}) {
+        let {method, attachmentData} = data as any;
+        if (!method || !attachmentData || !this.baseId) {
             return;
         }
 
         let url = this.getEndpoint(this.endpointName, {id: this.baseId}).url;
-        if (attachmentsData.id) {
-            url += `${attachmentsData.id}/`;
+        if (attachmentData.id) {
+            url += `${attachmentData.id}/`;
         }
-        this.postData = attachmentsData;
+        this.postData = attachmentData;
         this.method = method;
 
         let options = {
             method: method,
             endpoint: {url},
-            body: attachmentsData,
+            body: attachmentData,
             multiPart: true,
             prepareMultipartData: true
         };
@@ -61,8 +61,8 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     }
 
     _handleResponse(detail) {
-        let deleteRequest = this.method === 'DELETE',
-            id = deleteRequest ? this.postData.id : detail.id;
+        let deleteRequest = this.method === 'DELETE';
+        let id = deleteRequest ? this.postData.id : detail.id;
 
         let index = findIndex(this.attachments, (item: any) => item.id === id);
 

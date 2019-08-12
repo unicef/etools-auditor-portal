@@ -100,6 +100,9 @@ export const moduleStyles = html`
       -moz-box-sizing: border-box;
       box-sizing: border-box;
     }
+    etools-upload {
+      padding: 0 12px;
+    }
     datepicker-lite {
       padding: 0 12px;
       -webkit-box-sizing: border-box;
