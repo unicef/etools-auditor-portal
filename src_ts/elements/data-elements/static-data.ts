@@ -1,6 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import famEndpoints from '../app-config/endpoints';
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {addToCollection, getChoices, isValidCollection} from '../app-mixins/permission-controller';
 import {setStaticData, updateStaticData} from '../../elements/app-mixins/static-data-controller';
@@ -11,8 +11,7 @@ import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
 
 
-
-class StaticData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   public static get template() {
     return html`
@@ -61,7 +60,7 @@ class StaticData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) 
   }
 
   getPartners() {
-    let partnersEndpoint = this.getEndpoint('partnerOrganisations');
+    let partnersEndpoint = getEndpoint('partnerOrganisations');
     this.sendRequest({
       endpoint: partnersEndpoint
     })
@@ -144,7 +143,7 @@ class StaticData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) 
 
   getAtmOptions() {
     const options = {
-      endpoint: this.getEndpoint('attachments', {id: 'new'}),
+      endpoint: getEndpoint('attachments', {id: 'new'}),
       csrf: true,
       method: 'OPTIONS'
     }
@@ -185,13 +184,13 @@ class StaticData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) 
   _updateEngagementsFilters() {
     let time = new Date().getTime();
 
-    let filterAuditorsEndpoint = this.getEndpoint('filterAuditors');
+    let filterAuditorsEndpoint = getEndpoint('filterAuditors');
     filterAuditorsEndpoint.url += `?reload=${time}`;
     this.sendRequest({endpoint: filterAuditorsEndpoint})
       .then((resp) => this._filterAuditorsLoaded(resp))
       .catch((err) => this._filterAuditorsLoaded(err));
 
-    let filterPartnersEndpoint = this.getEndpoint('filterPartners');
+    let filterPartnersEndpoint = getEndpoint('filterPartners');
     filterPartnersEndpoint.url += `?reload=${time}`;
     this.sendRequest({endpoint: filterPartnersEndpoint})
       .then((resp) => this._filterPartnersLoaded(resp))

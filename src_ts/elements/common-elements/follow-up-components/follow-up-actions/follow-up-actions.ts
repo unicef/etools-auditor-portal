@@ -34,7 +34,7 @@ import {moduleStyles} from '../../../styles-elements/module-styles';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import EndpointsMixin from '../../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
@@ -47,13 +47,12 @@ import {collectionExists, addToCollection, updateCollection, getChoices, readonl
  * @appliesMixin DateMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class FollowUpActions extends
-  EndpointsMixin(EtoolsAjaxRequestMixin(
+  EtoolsAjaxRequestMixin(
     CommonMethodsMixin(TableElementsMixin(
-      DateMixin(PolymerElement))))) {
+      DateMixin(PolymerElement)))) {
 
   static get template() {
     return html`
@@ -605,7 +604,7 @@ class FollowUpActions extends
   setPermissionPath(basePath) {
     this.basePermissionPath = basePath ? `${basePath}_ap` : '';
     this.set('categories', getChoices(`${this.basePermissionPath}.category`) || []);
-    this.canBeChanged = !readonlyPermission,(`${this.basePermissionPath}.POST`);
+    this.canBeChanged = !readonlyPermission, (`${this.basePermissionPath}.POST`);
   }
 
   _checkNonField(error) {
@@ -684,7 +683,7 @@ class FollowUpActions extends
     this._selectedAPIndex = index;
 
     let id = get(this, `dataItems.${index}.id`);
-    let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
+    let apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
       url = `${apBaseUrl}action-points/${id}/`;
 
     this._sendOptionsRequest(url);

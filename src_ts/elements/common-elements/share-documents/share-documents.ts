@@ -17,7 +17,7 @@ import isEmpty from 'lodash-es/isEmpty';
 import {moduleStyles} from '../../styles-elements/module-styles';
 
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
-import EndpointsMixin from '../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../app-mixins/static-data-controller';
@@ -28,12 +28,11 @@ import {fireEvent} from '../../utils/fire-custom-event';
  * @customElement
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class ShareDocuments extends
-  EndpointsMixin(EtoolsAjaxRequestMixin(
-    TableElementsMixin(CommonMethodsMixin(PolymerElement)))) {
+  EtoolsAjaxRequestMixin(
+    TableElementsMixin(CommonMethodsMixin(PolymerElement))) {
 
   static get template() {
     return html`
@@ -224,7 +223,7 @@ class ShareDocuments extends
 
   _getPartnerAttachments(partner) {
     const options = {
-      endpoint: this.getEndpoint('globalAttachments'),
+      endpoint: getEndpoint('globalAttachments'),
       params: {
         partner: partner,
         source: 'Partnership Management Portal'

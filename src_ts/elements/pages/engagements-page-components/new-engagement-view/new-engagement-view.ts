@@ -32,7 +32,7 @@ import {BASE_PATH} from '../../../app-config/config';
 /**
  * TODO: polymer 3 migration
  *    - migrate and use:
- *     - add behaviors: etoolsAppConfig.globals aka EndpointsMixin and EtoolsAjaxRequestMixin ???????????????????
+ *     - add behaviors: etoolsAppConfig.globals and EtoolsAjaxRequestMixin ???????????????????
  *
  * @customElement
  * @polymer

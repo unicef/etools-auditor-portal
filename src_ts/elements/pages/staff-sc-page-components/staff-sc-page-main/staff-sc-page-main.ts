@@ -10,7 +10,8 @@ import {clearQueries, parseQueries, updateQueries} from '../../../app-mixins/que
 import {actionAllowed} from '../../../app-mixins/permission-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {property} from '@polymer/decorators';
-import EndpointsMixin from '../../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../../app-config/endpoints-controller';
+
 import {fireEvent} from '../../../utils/fire-custom-event';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
@@ -21,8 +22,7 @@ import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../../types/global';
 
 
-class StaffScPageMain extends
-  EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   static get template() {
     return html`
@@ -139,7 +139,7 @@ class StaffScPageMain extends
 
   @property({type: Boolean})
   allowNew: boolean = false;
-  
+
   static get observers() {
     return [
       '_routeConfig(routeData.view, selectedPage)'
@@ -152,7 +152,7 @@ class StaffScPageMain extends
     super.connectedCallback();
     this.allowNew = actionAllowed('new_staff_sc', 'create');
     this.sendRequest({
-      endpoint: {url: this.getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
+      endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     }).then(resp => {
       this._auditFirmLoaded(resp);
     }).catch(err => {

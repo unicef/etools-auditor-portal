@@ -6,12 +6,12 @@ import keys from 'lodash-es/keys';
 import pull from 'lodash-es/pull';
 import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
 import {GenericObject} from "../../types/global.js";
 
-class EngagementListData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   @property({type: Array, readOnly: true, notify: true})
   engagementsList!: [];
@@ -56,7 +56,7 @@ class EngagementListData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEl
 
     fireEvent(this, 'global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
 
-    let endpoint = this.getEndpoint(this.endpointName);
+    let endpoint = getEndpoint(this.endpointName);
     endpoint.url += getQueriesString();
 
     if (this.requestQueries.reload) {

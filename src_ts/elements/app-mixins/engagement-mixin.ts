@@ -10,7 +10,7 @@ import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
 import {Constructor, GenericObject} from '../../types/global';
 import ErrorHandlerMixin from './error-handler-mixin';
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import {getUserData} from '../../elements/app-mixins/user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 
@@ -24,7 +24,7 @@ let currentEngagement = {};
 
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends
-    EndpointsMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>)) {
+    ErrorHandlerMixin(baseClass as Constructor<PolymerElement>) {
 
     @property({type: Number})
     engagementId!: number;
@@ -326,8 +326,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return '';
       }
       let type = this.getType(engagement.engagement_type) || 'engagements',
-        pdfLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
-        csvLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
+        pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
+        csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
       return [{
         name: 'Export PDF',
