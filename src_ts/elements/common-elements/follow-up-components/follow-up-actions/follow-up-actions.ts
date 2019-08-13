@@ -37,7 +37,7 @@ import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import EndpointsMixin from '../../../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
 import {collectionExists, addToCollection, updateCollection, getChoices, readonlyPermission, actionAllowed} from '../../../app-mixins/permission-controller';
 
@@ -45,7 +45,6 @@ import {collectionExists, addToCollection, updateCollection, getChoices, readonl
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EndpointsMixin
@@ -54,7 +53,7 @@ import {collectionExists, addToCollection, updateCollection, getChoices, readonl
 class FollowUpActions extends
   EndpointsMixin(EtoolsAjaxRequestMixin(
     CommonMethodsMixin(TableElementsMixin(
-      StaticDataMixin(DateMixin(PolymerElement)))))) {
+      DateMixin(PolymerElement))))) {
 
   static get template() {
     return html`
@@ -529,10 +528,10 @@ class FollowUpActions extends
   public connectedCallback() {
     super.connectedCallback();
 
-    this.set('users', this.getData('users') || []);
-    this.set('offices', this.getData('offices') || []);
-    this.set('sections', this.getData('sections') || []);
-    this.set('partners', this.getData('partners') || []);
+    this.set('users', getStaticData('users') || []);
+    this.set('offices', getStaticData('offices') || []);
+    this.set('sections', getStaticData('sections') || []);
+    this.set('partners', getStaticData('partners') || []);
 
     if (!collectionExists('edited_ap_options')) {
       addToCollection('edited_ap_options', {});

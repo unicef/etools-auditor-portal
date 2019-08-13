@@ -4,10 +4,10 @@ import { fireEvent } from "../utils/fire-custom-event.js";
 import clone from 'lodash-es/clone';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
+import {getStaticData, setStaticData} from '../../elements/app-mixins/static-data-controller';
 import { GenericObject } from "../../types/global.js";
 
-class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
+class GetPartnerData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
 
     @property({type: Number, notify: true, observer: '_partnerIdChanged'})
     partnerId!: number | null;
@@ -30,7 +30,7 @@ class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMix
             return;
         }
         this.lastData = clone(detail);
-        let officers = this.getData(`officers_${detail.id}`);
+        let officers = getStaticData(`officers_${detail.id}`);
         if (officers) {
             this.lastData.partnerOfficers = officers;
             this.finishRequest();
@@ -57,7 +57,7 @@ class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMix
                 partnerOfficer.fullName = `${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
                 return partnerOfficer;
             });
-            this._setData(`officers_${this.lastData.id}`, activePartnerOfficers);
+            setStaticData(`officers_${this.lastData.id}`, activePartnerOfficers);
             this.lastData.partnerOfficers = activePartnerOfficers;
             this.finishRequest();
         }
@@ -68,9 +68,9 @@ class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMix
         fireEvent(this, 'partner-loaded', {success: true});
 
         let partnerDataId = `partner_${this.partner.id}`,
-            partner = this.getData(partnerDataId);
+            partner = getStaticData(partnerDataId);
         if (!partner) {
-            this._setData(partnerDataId, this.partner);
+            setStaticData(partnerDataId, this.partner);
         }
     }
 
@@ -96,7 +96,7 @@ class GetPartnerData extends StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMix
         this.lastError = false;
         this.lastNumber = partnerId;
 
-        let partner = this.getData(`partner_${partnerId}`);
+        let partner = getStaticData(`partner_${partnerId}`);
         if (partner) {
             this._handleResponse(partner);
         } else {

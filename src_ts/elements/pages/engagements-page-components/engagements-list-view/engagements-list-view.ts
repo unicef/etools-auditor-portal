@@ -1,7 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
 import {buildQueryString} from '../../../app-mixins/query-params-controller';
 import EndpointsMixin from '../../../app-config/endpoints-mixin';
@@ -18,10 +18,9 @@ import {SearchAndFilterEl} from '../../../common-elements/search-and-filter-elem
  * @customElement
  * @polymer
  * @appliesMixin EndpointsMixin
- * @appliesMixin StaticDataMixin
  */
 class EngagementsListView extends
-  EndpointsMixin(StaticDataMixin(PolymerElement)) {
+  EndpointsMixin(PolymerElement) {
 
   static get template() {
     // language=HTML
@@ -246,7 +245,7 @@ class EngagementsListView extends
 
     queryAndKeyPairs.forEach((pair) => {
       let filterIndex = this._getFilterIndex(pair.query);
-      let data = this.getData(pair.dataKey) || [];
+      let data = getStaticData(pair.dataKey) || [];
       this.setFilterSelection(filterIndex, data);
     });
   }

@@ -20,21 +20,20 @@ import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import EndpointsMixin from '../../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import StaticDataMixin from '../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../app-mixins/static-data-controller';
 import {fireEvent} from '../../utils/fire-custom-event';
 
 /**
  * @polymer
  * @customElement
- * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class ShareDocuments extends
-  StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(
-    TableElementsMixin(CommonMethodsMixin(PolymerElement))))) {
+  EndpointsMixin(EtoolsAjaxRequestMixin(
+    TableElementsMixin(CommonMethodsMixin(PolymerElement)))) {
 
   static get template() {
     return html`
@@ -242,7 +241,7 @@ class ShareDocuments extends
   }
 
   _getFileTypesFromStatic() {
-    const fileTypes = this.getData("staticDropdown").attachment_types
+    const fileTypes = getStaticData("staticDropdown").attachment_types
       .filter(val => !isEmpty(val))
       .map(
         typeStr => ({label: typeStr, value: typeStr})

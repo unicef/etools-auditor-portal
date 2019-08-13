@@ -9,11 +9,10 @@ import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
 import {Constructor, GenericObject} from '../../types/global';
-import {getChoices} from './permission-controller';
 import ErrorHandlerMixin from './error-handler-mixin';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import {getUserData} from '../../elements/app-mixins/user-controller';
-import {readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
+import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 
 let currentEngagement = {};
 /**
