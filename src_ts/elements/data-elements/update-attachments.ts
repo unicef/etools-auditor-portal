@@ -48,9 +48,7 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
         let options = {
             method: method,
             endpoint: {url},
-            body: attachmentData,
-            multiPart: true,
-            prepareMultipartData: true
+            body: attachmentData
         };
         this.sendRequest(options)
             .then((resp) => {

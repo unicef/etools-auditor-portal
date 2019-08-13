@@ -56,12 +56,12 @@ import {ShareDocumentsEl} from '../share-documents/share-documents';
  * @appliesMixin EngagementMixin
  * @appliesMixin DateMixin
  */
-class FileAttachmentsTab extends EndpointsMixin(
+class FileAttachmentsTab extends
     TableElementsMixin(
         EngagementMixin(
           DateMixin(
             EtoolsAjaxRequestMixin(
-              CommonMethodsMixin(PolymerElement)))))) {
+              CommonMethodsMixin(PolymerElement))))) {
 
   static get template() {
     // language=HTML
@@ -118,11 +118,11 @@ class FileAttachmentsTab extends EndpointsMixin(
                 <iron-icon icon="icons:attachment"
                            class="download-icon">
                 </iron-icon>
-                <a href$="[[item.file]]"
+                <a href$="[[item.attachment]]"
                    class="truncate"
-                   target="_blank">[[item.filename]]
+                   target="_blank">[[getFileNameFromURL(item.attachment)]]
                 </a>
-                <paper-tooltip offset="0">[[item.filename]]</paper-tooltip>
+                <paper-tooltip offset="0">[[getFileNameFromURL(item.attachment)]]</paper-tooltip>
 
               </div>
               <span class="delete-icon" hidden$="[[isTabReadonly(basePermissionPath)]]">
@@ -204,7 +204,7 @@ class FileAttachmentsTab extends EndpointsMixin(
                   <etools-dropdown
                       id="fileType"
                       class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
-                      selected="{{editedItem.type}}"
+                      selected="{{editedItem.file_type}}"
                       label="[[getLabel('file_type', basePermissionPath)]]"
                       placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
                       options="[[fileTypes]]"
@@ -230,7 +230,8 @@ class FileAttachmentsTab extends EndpointsMixin(
                   upload-endpoint="[[uploadEndpoint]]"
                   on-upload-started="_onUploadStarted"
                   on-upload-finished="_attachmentUploadFinished"
-                  invalid="[[errors.file]]">
+                  invalid="[[errors.file]]"
+                  show-delete-btn="[[showDeleteBtn]]">
                 </etools-upload>
             </div>
           </div>
@@ -285,10 +286,8 @@ class FileAttachmentsTab extends EndpointsMixin(
 
   @property({type: Object})
   itemModel: GenericObject = {
-    file: undefined,
-    file_name: undefined,
-    file_type: undefined,
-    type: {}
+    attachment: undefined,
+    file_type: undefined
   };
 
   @property({type: Array, notify: true})
@@ -388,10 +387,12 @@ class FileAttachmentsTab extends EndpointsMixin(
   @property({type: String})
   uploadEndpoint: string = famEndpoints.attachmentsUpload.url;
 
+  @property({type: Boolean})
+  showDeleteBtn: boolean = false;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
-      '_filesChange(dataItems.*, fileTypes.*)',
       '_resetDialog(dialogOpened)',
       '_errorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)',
@@ -401,12 +402,12 @@ class FileAttachmentsTab extends EndpointsMixin(
   connectedCallback() {
     super.connectedCallback();
     this._requestCompleted = this._requestCompleted.bind(this);
-    this.addEventListener('attachments-request-completed', this._requestCompleted);
+    this.addEventListener('attachments-request-completed', this._requestCompleted as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('attachments-request-completed', this._requestCompleted);
+    this.removeEventListener('attachments-request-completed', this._requestCompleted as any);
   }
 
   _checkIsUnicefUser() {
@@ -507,45 +508,26 @@ class FileAttachmentsTab extends EndpointsMixin(
     }
   }
 
-  _fileSelected(e) {
-    if (!e || !e.currentTarget) {
-      return false;
-    }
-
-    let files = e.currentTarget.files || {};
-    let file = files[0];
-
-    if (file && file instanceof File) {
-      this.set('editedItem.filename', file.name);
-      this.editedItem.file = file;
-
-      return !this._fileAlreadySelected();
-    }
-  }
-
-
-  _filesChange() {
-    if (!this.dataItems) {
-      return false;
-    }
-
-    this.dataItems.forEach((file) => {
-      if (file.file_type !== undefined && !file.display_name) {
-        let type = this._getFileType(file.file_type) || {};
-        file.type = type;
-        file.display_name = type.display_name;
-      }
-    });
-  }
   _onUploadStarted() {
     this.requestInProcess = true;
   }
 
   _attachmentUploadFinished(e) {
+    this.requestInProcess = false;
     if (e.detail.success) {
-      this.set('editedItem.attachment', e .detail.success.id);
-      this.requestInProcess = false;
+      let uploadResponse = JSON.parse(e .detail.success);
+      this.set('editedItem.attachment', uploadResponse.id);
+      this.set('editedItem.filename', uploadResponse.filename);
+
     }
+  }
+
+  getFileNameFromURL(url: string) {
+    if (!url) {
+      return '';
+    }
+    // @ts-ignore
+    return url.split('?').shift().split('/').pop();
   }
 
   _saveAttachment(e) {
@@ -589,8 +571,8 @@ class FileAttachmentsTab extends EndpointsMixin(
     }
 
     let data = pickBy(attachmentData, (value, key) => original[key] !== value);
-    if (data.file && this._fileAlreadySelected()) {
-      delete data.file;
+    if (data.attachment && this._fileAlreadySelected()) {
+      delete data.attachment;
     }
 
     if (isEmpty(data)) {
@@ -605,25 +587,23 @@ class FileAttachmentsTab extends EndpointsMixin(
     if (!this.dialogOpened && (!fileData && !this.editedItem)) {
       return {};
     }
-    let {id, attachment, type} = fileData || this.editedItem;
+    let {id, attachment, file_type} = fileData || this.editedItem;
     let data: GenericObject = {attachment};
 
     if (id) {
       data.id = id;
     }
-
-    if (type) {
-      data.file_type = type.value;
-    }
+    data.file_type = file_type;
 
     return data;
   }
 
   _getAttachmentType(attachment) {
-    return this.fileTypes.find(fileType => fileType.value === attachment.file_type).display_name;
+    return this.fileTypes.find(f => f.value === attachment.file_type)!.display_name;
   }
 
-  _requestCompleted(event, detail = {}) {
+  _requestCompleted(event, detail) {
+    detail = detail || event.detail;
     this.requestInProcess = false;
     if (detail.success) {
       this.dialogOpened = false;
@@ -635,8 +615,8 @@ class FileAttachmentsTab extends EndpointsMixin(
       return false;
     }
 
-    let alreadySelectedIndex = this.dataItems.findIndex((file) => {
-      return file.filename === this.editedItem.filename;
+    let alreadySelectedIndex = this.dataItems.findIndex((item) => {
+      return this.getFileNameFromURL(item.attachment) === this.editedItem.filename;
     });
 
     if (alreadySelectedIndex !== -1) {
@@ -649,8 +629,6 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   validate() {
-
-    let editedItem = this.editedItem;
     let valid = true;
 
     valid = this._validateFileType();
@@ -659,7 +637,7 @@ class FileAttachmentsTab extends EndpointsMixin(
       valid = false;
     }
 
-    if (this.addDialog && !editedItem.attachment) {
+    if (this.addDialog && !this.editedItem.attachment) {
       this.set('errors.file', 'File is not selected');
       valid = false;
     }
