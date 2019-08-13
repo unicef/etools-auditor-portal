@@ -67,7 +67,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
       <etools-loading id="global-loading" absolute></etools-loading>
 
-      <app-drawer-layout id="layout" responsive-width="850px"
+      <app-drawer-layout id="layout" responsive-width="1200px"
                         fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" transition-duration="350"
