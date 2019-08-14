@@ -56,11 +56,12 @@ import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
  * @appliesMixin DateMixin
  */
 class FileAttachmentsTab extends
+  CommonMethodsMixin(
     TableElementsMixin(
         EngagementMixin(
           DateMixin(
             EtoolsAjaxRequestMixin(
-              CommonMethodsMixin(PolymerElement))))) {
+              PolymerElement))))) {
 
   static get template() {
     // language=HTML
