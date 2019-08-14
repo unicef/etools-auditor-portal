@@ -27,7 +27,6 @@ import '../share-documents/share-documents';
 import DateMixin from '../../app-mixins/date-mixin';
 import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
-import ErrorHandlerMixin from '../../app-mixins/error-handler-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
@@ -37,7 +36,6 @@ import {GenericObject} from '../../../types/global';
 import get from 'lodash-es/get';
 import clone from 'lodash-es/clone';
 import {fireEvent} from "../../utils/fire-custom-event";
-import EndpointsMixin from '../../app-config/endpoints-mixin';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
@@ -45,6 +43,7 @@ import {getChoices, collectionExists, getFieldAttribute} from '../../app-mixins/
 import famEndpoints from '../../app-config/endpoints';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocumentsEl} from '../share-documents/share-documents';
+import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
 
 /**
  * @customElement
@@ -66,7 +65,11 @@ class FileAttachmentsTab extends
   static get template() {
     // language=HTML
     return html`
-      <style include="iron-flex"></style>
+      <style include="iron-flex">
+        .padd-top {
+          padding-top: 26px;
+        }
+      </style>
       ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
       <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
                        endpoint-name="[[endpointName]]">
@@ -223,7 +226,7 @@ class FileAttachmentsTab extends
               </div>
             </template>
 
-            <div class="row-h group">
+            <div class="row-h group padd-top">
                 <etools-upload
                   label="[[uploadLabel]]"
                   file-url="[[editedItem.attachment]]"
@@ -231,7 +234,9 @@ class FileAttachmentsTab extends
                   on-upload-started="_onUploadStarted"
                   on-upload-finished="_attachmentUploadFinished"
                   invalid="[[errors.file]]"
-                  show-delete-btn="[[showDeleteBtn]]">
+                  show-delete-btn="[[showDeleteBtn]]"
+                  current-attachment-id="[[editedItem.id]]">
+                  <!--Here editedItem.id is the same as the uploaded attachment id--!>
                 </etools-upload>
             </div>
           </div>
@@ -286,8 +291,10 @@ class FileAttachmentsTab extends
 
   @property({type: Object})
   itemModel: GenericObject = {
-    attachment: undefined,
-    file_type: undefined
+    attachment: null,
+    file_type: null,
+    id: null
+
   };
 
   @property({type: Array, notify: true})
@@ -485,6 +492,8 @@ class FileAttachmentsTab extends
     if (!dialogOpened) {
       this.originalEditedObj = null;
     }
+    let etoolUpload = this.shadowRoot!.querySelector('etools-upload') as EtoolsUpload;
+    etoolUpload.invalid = false;
     this.resetDialog(dialogOpened);
   }
 

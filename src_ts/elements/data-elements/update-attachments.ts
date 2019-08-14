@@ -59,21 +59,22 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
     }
 
     _handleResponse(detail) {
-        let deleteRequest = this.method === 'DELETE';
-        let id = deleteRequest ? this.postData.id : detail.id;
+      this._updateAttachmentsList(detail);
+      fireEvent(this, 'attachments-request-completed', {success: true});
+    }
 
-        let index = findIndex(this.attachments, (item: any) => item.id === id);
+    _updateAttachmentsList(detail) {
+      let wasDeleteRequest = this.method === 'DELETE';
+      let id = wasDeleteRequest ? this.postData.id : detail.id;
+      let index = findIndex(this.attachments, (item: any) => item.id === id);
 
-
-        if (deleteRequest && ~index) {
-            this.splice('attachments', index, 1);
-        } else if (~index) {
-            this.splice('attachments', index, 1, detail);
-        } else if (!deleteRequest) {
-            this.push('attachments', detail);
-        }
-
-        fireEvent(this, 'attachments-request-completed', {success: true});
+      if (wasDeleteRequest && ~index) {
+        this.splice('attachments', index, 1);
+      } else if (~index) {
+          this.splice('attachments', index, 1, detail);
+      } else if (!wasDeleteRequest) {
+          this.push('attachments', detail);
+      }
     }
 
     _handleError(error) {
