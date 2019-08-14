@@ -74,7 +74,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
         }
         div[list-item]{
            overflow: visible !important;
-           background: yellow;
         }
       </style>
 
@@ -99,8 +98,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
           <div class="repeatable-item-content">
             <div class="row-h group">
-            
-              <div class="input-container  input-container-ms" style='background:yellow;overflow:visible'>
+              <div class="input-container  input-container-ms">
                 <!-- Risk Assessment -->
                 <etools-dropdown id="riskAssessmentDropdown" class="disabled-as-readonly
                   required validate-input"

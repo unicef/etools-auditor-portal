@@ -26,7 +26,6 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getChoices, collectionExists} from '../../../app-mixins/permission-controller';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import DateMixin from '../../../app-mixins/date-mixin';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
@@ -35,10 +34,9 @@ import '../../../data-elements/update-agreement-data';
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin CommonMethodsMixin
  */
-class EngagementInfoDetails extends DateMixin(StaticDataMixin(CommonMethodsMixin(PolymerElement))) {
+class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`

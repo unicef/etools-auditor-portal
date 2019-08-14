@@ -6,7 +6,7 @@ import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import ErrorHandlerMixin from './error-handler-mixin';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
-import StaticDataMixin from './static-data-mixin';
+import {setStaticData, getStaticData} from './static-data-controller';
 import {Constructor} from "../../types/global";
 import {fireEvent} from "../utils/fire-custom-event";
 
@@ -14,10 +14,9 @@ import {fireEvent} from "../utils/fire-custom-event";
  * @polymer
  * @mixinFunction
  * @appliesMixin ErrorHandlerMixin
- * @appliesMixin StaticDataMixin
  */
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class CommonMethodsMixinClass extends StaticDataMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>)) {
+  class CommonMethodsMixinClass extends ErrorHandlerMixin(baseClass as Constructor<PolymerElement>) {
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -153,13 +152,13 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return;
       }
 
-      let choices = this.getData(`${path}_choices`);
+      let choices = getStaticData(`${path}_choices`);
       if (!choices) {
         choices = getChoices(path);
       }
 
       if (choices instanceof Array) {
-        this._setData(`${path}_choices`, choices);
+        setStaticData(`${path}_choices`, choices);
         return choices;
       }
     }

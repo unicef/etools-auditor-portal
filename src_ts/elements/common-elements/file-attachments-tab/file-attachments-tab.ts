@@ -38,7 +38,7 @@ import get from 'lodash-es/get';
 import uniqueId from 'lodash-es/uniqueId';
 import clone from 'lodash-es/clone';
 import {fireEvent} from "../../utils/fire-custom-event";
-import EndpointsMixin from '../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../app-config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
@@ -54,13 +54,13 @@ import {getChoices, collectionExists, getFieldAttribute} from '../../app-mixins/
  * @appliesMixin EngagementMixin
  * @appliesMixin DateMixin
  */
-class FileAttachmentsTab extends EndpointsMixin(
+class FileAttachmentsTab extends
     TableElementsMixin(
       CommonMethodsMixin(
         ErrorHandlerMixin(
          EngagementMixin(
              DateMixin(
-                EtoolsAjaxRequestMixin(PolymerElement))))))) {
+                EtoolsAjaxRequestMixin(PolymerElement)))))) {
 
   static get template() {
     // language=HTML
@@ -461,7 +461,7 @@ class FileAttachmentsTab extends EndpointsMixin(
     const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
-      endpoint: this.getEndpoint('auditLinks', {
+      endpoint: getEndpoint('auditLinks', {
         type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
         id: engagement.id
       })
@@ -849,7 +849,7 @@ class FileAttachmentsTab extends EndpointsMixin(
 
     this.sendRequest({
       method: 'DELETE',
-      endpoint: this.getEndpoint('linkAttachment', {id})
+      endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
         .catch(err => this._errorHandler(err));
   }

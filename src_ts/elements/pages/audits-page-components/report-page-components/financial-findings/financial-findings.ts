@@ -16,7 +16,6 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
@@ -30,10 +29,9 @@ import sortBy from 'lodash-es/sortBy';
  * @polymer
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
- * @appliesMixin StaticDataMixin
  */
 class FinancialFindings extends
-    CommonMethodsMixin(TableElementsMixin(StaticDataMixin(PolymerElement))) {
+    CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
 
   static get template() {
     // language=HTML
