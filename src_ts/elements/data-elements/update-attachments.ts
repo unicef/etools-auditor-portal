@@ -88,7 +88,7 @@ class UpdateAttachments extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerEle
         }
 
         this.set('errors', response);
-        fireEvent(this, 'attachments-request-completed');
+        fireEvent(this, 'attachments-request-completed', {success: false});
     }
 }
 window.customElements.define("update-attachments", UpdateAttachments);

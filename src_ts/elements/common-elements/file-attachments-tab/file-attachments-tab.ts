@@ -235,6 +235,7 @@ class FileAttachmentsTab extends
                   on-upload-started="_onUploadStarted"
                   on-upload-finished="_attachmentUploadFinished"
                   invalid="[[errors.file]]"
+                  error-message="[[errors.file]]"
                   show-delete-btn="[[showDeleteBtn]]"
                   current-attachment-id="[[editedItem.id]]"
                   required>
@@ -660,18 +661,20 @@ class FileAttachmentsTab extends
     let valid = true;
     let dropdown = this.shadowRoot!.querySelector('#fileType') as EtoolsDropdownEl;
 
-    let fileTypeRequired = this._setRequired('file_type');
+    let fileTypeRequired = dropdown.required;
 
-    if (fileTypeRequired && (!this.fileTypes || !this.fileTypes.length)) {
-      this.set('errors.file_type', 'File types are not defined');
-      valid = false;
-    } else {
-      this.set('errors.file_type', false);
-    }
+    if (fileTypeRequired) {
+      if (!this.fileTypes || !this.fileTypes.length) {
+        this.set('errors.file_type', 'File types are not defined');
+        valid = false;
+      } else {
+        this.set('errors.file_type', false);
+      }
 
-    if (fileTypeRequired && !dropdown.validate()) {
-      this.set('errors.file_type', 'This field is required');
-      valid = false;
+      if (!dropdown.validate()) {
+        this.set('errors.file_type', 'This field is required');
+        valid = false;
+      }
     }
 
     return valid;
