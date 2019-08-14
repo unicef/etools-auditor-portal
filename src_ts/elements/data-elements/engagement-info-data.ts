@@ -4,7 +4,7 @@ import { fireEvent } from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import EndpointsMixin from '../app-config/endpoints-mixin';
-import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
+import {addToCollection, collectionExists} from '../app-mixins/permission-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import LastCreatedMixin from '../../elements/app-mixins/last-created-mixin';
 import EngagementMixin from '../../elements/app-mixins/engagement-mixin';
@@ -12,14 +12,10 @@ import { GenericObject } from "../../types/global.js";
 
 //TO DO must use EngagementMixin, will create more errors...
 class EngagementInfoData extends LastCreatedMixin(
-  PermissionControllerMixin(
-  EndpointsMixin(
-    EtoolsAjaxRequestMixin(
-    EngagementMixin(PolymerElement))))) {
+  EndpointsMixin(EtoolsAjaxRequestMixin(EngagementMixin(PolymerElement)))) {
     // behaviors: [
     //     etoolsAppConfig.globals,
     //     APBehaviors.LastCreatedController,
-    //     APBehaviors.PermissionController,
     //     APBehaviors.EngagementBehavior,
     //     EtoolsAjaxRequestBehavior
     // ],
@@ -67,7 +63,7 @@ class EngagementInfoData extends LastCreatedMixin(
     _handleOptionsResponse(data) {
         let actions = get(data,'actions', null);
         if (actions) {
-            this._addToCollection(`engagement_${this.engagementId}`, actions);
+            addToCollection(`engagement_${this.engagementId}`, actions);
         } else {
             console.error('Can not load permissions for engagement');
         }
@@ -83,7 +79,7 @@ class EngagementInfoData extends LastCreatedMixin(
     }
 
     _handleEngagementOptions({postfix, requestName}, actions, name) {
-        this._addToCollection(`engagement_${this.engagementId}_${postfix}`, actions, name);
+        addToCollection(`engagement_${this.engagementId}_${postfix}`, actions, name);
         this.requestsCompleted[requestName] = true;
         this._finishRequests(this.responseData || {});
     }
@@ -176,7 +172,7 @@ class EngagementInfoData extends LastCreatedMixin(
 
         this._getEngagementInfo(id);
 
-        if (this.collectionExists(`engagement_${id}`)) {
+        if (collectionExists(`engagement_${id}`)) {
             this.requestsCompleted.options = true;
         } else {
             this._requestOptions(id);

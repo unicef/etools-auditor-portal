@@ -18,23 +18,22 @@ import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import sortBy from 'lodash-es/sortBy';
 
 /**
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin StaticDataMixin
  */
 class FinancialFindings extends
-    CommonMethodsMixin(TextareaMaxRowsMixin(TableElementsMixin(StaticDataMixin(PolymerElement)))) {
+    CommonMethodsMixin(TableElementsMixin(StaticDataMixin(PolymerElement))) {
 
   static get template() {
     // language=HTML
@@ -354,7 +353,7 @@ class FinancialFindings extends
   }
 
   setChoices(basePath) {
-    let unsortedOptions = this.getChoices(`${basePath}.financial_finding_set.title`);
+    let unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
     let titleOptions = sortBy(
         unsortedOptions,
         ['display_name']);

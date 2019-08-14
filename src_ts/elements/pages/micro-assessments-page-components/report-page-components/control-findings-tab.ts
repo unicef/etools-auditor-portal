@@ -14,7 +14,7 @@ import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../../utils/fire-custom-event';
 
-class ControlFindingsTab extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
+class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
   static get template() {
     return html`
       ${tabInputsStyles} ${moduleStyles}
@@ -91,7 +91,7 @@ class ControlFindingsTab extends TableElementsMixin(CommonMethodsMixin(PolymerEl
                   value="{{editedItem.finding}}"
                   label="[[getLabel('findings.finding', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
-                  required="{{_setRequired('findings.finding', basePermissionPath)}}"
+                  required$="[[_setRequired('findings.finding', basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   maxlength="400"
@@ -110,7 +110,7 @@ class ControlFindingsTab extends TableElementsMixin(CommonMethodsMixin(PolymerEl
                   value="{{editedItem.recommendation}}" allowed-pattern="[\d\s]"
                   label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                  required="{{_setRequired('findings.recommendation', basePermissionPath)}}"
+                  required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   max-rows="4" invalid="{{errors.0.recommendation}}"

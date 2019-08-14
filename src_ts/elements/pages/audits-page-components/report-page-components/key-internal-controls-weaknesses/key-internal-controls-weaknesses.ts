@@ -15,8 +15,7 @@ import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import '../kicw-risk/kicw-risk';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
-import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
@@ -24,20 +23,17 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isEqual from 'lodash-es/isEqual';
-import clone from 'lodash-es/clone';
 import isNil from 'lodash-es/isNil';
 
 
 /**
  * @customElement
  * @polymer
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin StaticDataMixin
  */
 class KeyInternalControlsWeaknesses extends
-  TextareaMaxRowsMixin(CommonMethodsMixin(PermissionControllerMixin(StaticDataMixin(PolymerElement)))) {
+  CommonMethodsMixin(StaticDataMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -317,7 +313,7 @@ class KeyInternalControlsWeaknesses extends
 
   connectedCallback() {
     super.connectedCallback();
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
     this.set('riskOptions', riskOptions);
     this.editedBlueprint = cloneDeep(this.dataModel);
     this._initListeners();
@@ -347,7 +343,7 @@ class KeyInternalControlsWeaknesses extends
     }
 
     let option = this.riskOptions.find(option => option.value === risk.value);
-    if(option){return option.value};
+    if (option) {return option.value};
     return -1;
   }
 
@@ -382,7 +378,9 @@ class KeyInternalControlsWeaknesses extends
     this.dialogOpened = true;
   }
 
-  openDeleteDialog(event, data) {
+  openDeleteDialog(event) {
+    if (!event || !event.detail) {return;}
+    let data = event.detail;
     this.dialogTexts = this.deleteDialogTexts;
     this.set('editedBlueprint', data.blueprint);
     this.confirmDialogOpened = true;

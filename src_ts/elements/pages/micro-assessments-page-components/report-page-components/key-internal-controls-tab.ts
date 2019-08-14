@@ -9,6 +9,7 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
+import {getChoices, isRequired} from '../../../app-mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import isEqual from 'lodash-es/isEqual';
 import {fireEvent} from '../../../utils/fire-custom-event';
@@ -48,12 +49,12 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                 <!-- Risk Assessment -->
                 <etools-dropdown id="riskAssessmentInput"
                   class="disabled-as-readonly validate-input required"
-                  selected="{{editedArea.blueprints.0.risk.value}}"
+                  selected="{{editedArea.blueprints.0.risk.value.value}}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
                   options="[[riskOptions]]"
                   option-label="display_name"
-                  option-value="display_name"
+                  option-value="value"
                   required disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   invalid="{{errors.children.0.blueprints.0.risk.value}}"
@@ -133,7 +134,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   editedAreaIndex!: number;
 
   @property({type: Object})
-  originalEditedObj!: object;
+  originalEditedObj!: GenericObject;
 
   static get observers() {
     return [
@@ -147,7 +148,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
     this.addEventListener('open-edit-dialog', this.openEditDialog);
   }
@@ -159,7 +160,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   getRiskData() {
     if (this.dialogOpened && !this.saveWithButton) {return this.getCurrentData();}
     let elements = this.shadowRoot!.querySelectorAll('.area-element'),
-      riskData = [];
+      riskData:any[] = [];
 
     Array.prototype.forEach.call(elements, element => {
       let data = element.getRiskData();
@@ -205,7 +206,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
   validate(forSave) {
     if (!this.basePermissionPath || forSave) {return true;}
-    let required = this.isRequired(`${this.basePermissionPath}.test_subject_areas`);
+    let required = isRequired(`${this.basePermissionPath}.test_subject_areas`);
     if (!required) {return true;}
 
     let elements = this.shadowRoot!.querySelectorAll('.area-element'),
@@ -223,10 +224,14 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     if ((!index && index !== 0) || !~index) {
       throw 'Can not find data';
     }
-
     let data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
-    this.originalEditedObj = cloneDeep(data);
+
+    if (this.editedArea.blueprints[0] && !this.editedArea.blueprints[0].risk.value) {
+      this.editedArea.blueprints[0].risk.value = {value: -1, display_name: ''};
+    }
+
+    this.originalEditedObj = cloneDeep(this.editedArea);
     this.editedAreaIndex = index;
     this.dialogOpened = true;
   }

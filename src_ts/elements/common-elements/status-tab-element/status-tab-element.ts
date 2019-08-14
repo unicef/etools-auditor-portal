@@ -3,7 +3,7 @@ import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import {property} from '@polymer/decorators';
 import each from 'lodash-es/each';
-import PermissionControllerMixin from '../../app-mixins/permission-controller-mixin';
+import {getActions} from '../../app-mixins/permission-controller';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 declare const moment: any;
@@ -11,7 +11,7 @@ import '../insert-html/insert-html';
 import './action-buttons';
 
 
-class StatusTabElement extends CommonMethodsMixin(PermissionControllerMixin(PolymerElement)) {
+class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     return html`
@@ -228,7 +228,7 @@ class StatusTabElement extends CommonMethodsMixin(PermissionControllerMixin(Poly
   }
 
   setActions(permissionBase) {
-    let actions = permissionBase ? this.getActions(permissionBase) : [];
+    let actions = permissionBase ? getActions(permissionBase) : [];
     this.set('actions', actions);
   }
 

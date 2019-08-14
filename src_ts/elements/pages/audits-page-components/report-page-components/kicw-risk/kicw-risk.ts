@@ -126,7 +126,7 @@ class KicwRisk extends PolymerElement {
     fireEvent(this, 'kicw-risk-edit', {blueprint});
   }
 
-  removeRisk() {
+  removeRisk(event) {
     let blueprint = this._createBlueprintFromEvent(event);
     blueprint.risks[0]._delete = true;
     fireEvent(this, 'kicw-risk-delete', {blueprint, delete: true});

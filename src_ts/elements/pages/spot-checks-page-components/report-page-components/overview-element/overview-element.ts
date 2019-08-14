@@ -3,7 +3,6 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@polymer/paper-input/paper-input';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
-import '../../../../../elements/common-elements/custom-validator/custom-validator';
 
 import DateMixin from '../../../../app-mixins/date-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';

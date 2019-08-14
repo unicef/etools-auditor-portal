@@ -34,20 +34,20 @@ import {property} from '@polymer/decorators';
 import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '../../utils/fire-custom-event.js';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
-import UserControllerMixin from '../../app-mixins/user-controller-mixin.js';
+import {getUserData} from '../../app-mixins/user-controller';
 import {GenericObject} from '../../../types/global.js';
 import {getDomainByEnv} from '../../app-config/config.js';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
+import {BASE_PATH} from '../../app-config/config';
 
-
-setRootPath('/ap_poly3/');
+setRootPath(`/${BASE_PATH}/`);
 
 /**
  * @customElement
  * @polymer
  */
-class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElement))) {
+class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   public static get template() {
     // main template
@@ -67,7 +67,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
       <etools-loading id="global-loading" absolute></etools-loading>
 
-      <app-drawer-layout id="layout" responsive-width="850px"
+      <app-drawer-layout id="layout" responsive-width="1200px"
                         fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" transition-duration="350"
@@ -75,7 +75,8 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
             selected-option="[[page]]"
-            small-menu$="[[smallMenu]]"></app-menu>
+            small-menu$="[[smallMenu]]"
+            show-ssc-page="[[_checkSSCPage(user)]]"></app-menu>
             <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
 
@@ -166,7 +167,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   page: string = '';
 
   @property({type: Boolean, reflectToAttribute: true})
-  narrow: Boolean = false
+  narrow: boolean = false
 
   @property({type: Object})
   _toast: PolymerElement | null = null;
@@ -191,7 +192,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === '/ap_poly3/') {
+    if (this.initLoadingComplete && this.route.path === `/${BASE_PATH}/`) {
       this._setDefaultLandingPage();
     }
 
@@ -249,7 +250,9 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _routePageChanged() {
     if (!this.initLoadingComplete || !this.routeData.page) {return;}
     this.page = this.routeData.page || 'engagements';
-    this.scroll(0, 0);
+    if (this.scroll) {
+      this.scroll(0, 0);
+    }
   }
 
   _pageChanged(page) {
@@ -304,7 +307,7 @@ class AppShell extends UserControllerMixin(LoadingMixin(AppMenuMixin(PolymerElem
   _initialDataLoaded(e) {
     this.staticDataLoaded = true;// TODO -what is this flag doing???
     if (this.routeData && this.staticDataLoaded) {
-      this.user = this.getUserData();
+      this.user = getUserData();
       this.page = this.routeData.page || this._setDefaultLandingPage();
     }
   }

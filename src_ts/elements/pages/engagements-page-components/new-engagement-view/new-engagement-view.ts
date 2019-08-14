@@ -14,9 +14,9 @@ import isUndefined from 'lodash-es/isUndefined';
 import LastCreatedMixin from '../../../app-mixins/last-created-mixin';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
 import StaticDataMixin from '../../../app-mixins/static-data-mixin';
-import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import QueryParamsController from '../../../app-mixins/query-params-controller';
+import {clearQueries} from '../../../app-mixins/query-params-controller';
+import '../../../app-mixins/permission-controller';
 import {sharedStyles} from "../../../styles-elements/shared-styles";
 import {moduleStyles} from "../../../styles-elements/module-styles";
 import {mainPageStyles} from "../../../styles-elements/main-page-styles";
@@ -28,7 +28,7 @@ import '../../../common-elements/engagement-overview-components/engagement-info-
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import {AP_DOMAIN} from '../../../app-config/config';
+import {BASE_PATH} from '../../../app-config/config';
 
 /**
  * TODO: polymer 3 migration
@@ -37,17 +37,13 @@ import {AP_DOMAIN} from '../../../app-config/config';
  *
  * @customElement
  * @polymer
- * @appliesMixin QueryParamsController
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin StaticDataMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin LastCreatedMixin
  */
 class NewEngagementView extends
-    QueryParamsController(PermissionControllerMixin(
-        StaticDataMixin(EngagementMixin(LastCreatedMixin
-          (CommonMethodsMixin(PolymerElement)))))) {
+  StaticDataMixin(EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement)))) {
 
   static get template() {
     // language=HTML
@@ -95,7 +91,6 @@ class NewEngagementView extends
       </style>
 
       <app-location path="{{path}}"></app-location>
-
       <app-route
           route="{{route}}"
           pattern="/:tab"
@@ -255,7 +250,7 @@ class NewEngagementView extends
     } else if (!includes(this.tabsList, currentTab)) {
       fireEvent(this, '404');
     }
-    this.clearQueries();
+    clearQueries();
   }
 
   _saveNewEngagement() {
@@ -264,9 +259,9 @@ class NewEngagementView extends
     }
 
     this._prepareData()
-        .then((data) => {
-          this.newEngagementData = data;
-        });
+      .then((data) => {
+        this.newEngagementData = data;
+      });
   }
 
   customDataPrepare(data) {
@@ -305,7 +300,8 @@ class NewEngagementView extends
     if (!link && this.isStaffSc) {
       link = 'staff-spot-checks';
     }
-    let path = `${AP_DOMAIN}${link}/${this.engagement.id}/overview`;
+
+    let path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
     this.set('path', path);
 
     //reset data

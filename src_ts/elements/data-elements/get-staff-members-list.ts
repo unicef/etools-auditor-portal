@@ -6,12 +6,20 @@ import {property} from "@polymer/decorators";
 import get from 'lodash-es/get';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
-import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
+import {collectionExists, addToCollection} from '../app-mixins/permission-controller';
+import {getUserData} from '../../elements/app-mixins/user-controller';
 import {GenericObject} from "../../types/global";
 import each from 'lodash-es/each';
 
-class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement)))) {
+
+/**
+ * @customElement
+ * @polymer
+ * @appliesMixin EndpointsMixin
+ * @appliesMixin EtoolsAjaxRequestMixin
+ */
+
+class GetStaffMembersList extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
   static get template() {
     return html`
       <app-location
@@ -80,7 +88,7 @@ class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(Etool
 
     this.requestsCompleted = {};
     this.url = this.getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
-    if (this.collectionExists(`staff_members_${organisationId}`)) {
+    if (collectionExists(`staff_members_${organisationId}`)) {
       this.requestsCompleted.options = true;
     } else {
       this._getOptions(organisationId, listQueries);
@@ -107,7 +115,7 @@ class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(Etool
 
     });
 
-    const profile = this.getUserData() as any;
+    const profile = getUserData() as any;
     const countryFilter = get(this.routeData, 'page', '').includes('staff') ? `user__profile__countries_available__name=${profile.country.name}` : '';
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
   }
@@ -121,7 +129,7 @@ class GetStaffMembersList extends PermissionControllerMixin(EndpointsMixin(Etool
   _handleOptionsResponse(data) {
     let actions = data && data.actions;
     if (actions) {
-      this._addToCollection(`staff_members_${this.organisationId}`, actions);
+      addToCollection(`staff_members_${this.organisationId}`, actions);
     } else {
       console.error('Can not load permissions for engagement');
     }

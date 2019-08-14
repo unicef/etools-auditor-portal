@@ -1,6 +1,6 @@
-import { PolymerElement } from "@polymer/polymer";
-import { property } from "@polymer/decorators";
-import { fireEvent } from "../utils/fire-custom-event.js";
+import {PolymerElement} from "@polymer/polymer";
+import {property} from "@polymer/decorators";
+import {fireEvent} from "../utils/fire-custom-event.js";
 import cloneDeep from 'lodash-es/cloneDeep';
 import keys from 'lodash-es/keys';
 import pull from 'lodash-es/pull';
@@ -8,108 +8,108 @@ import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
 import EndpointsMixin from '../app-config/endpoints-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import QueryParamsController from '../app-mixins/query-params-controller';
-import { GenericObject } from "../../types/global.js";
+import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
+import {GenericObject} from "../../types/global.js";
 
-class EngagementListData extends QueryParamsController(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement))) {
+class EngagementListData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
 
-    @property({type: Array, readOnly: true, notify: true})
-    engagementsList!: [];
+  @property({type: Array, readOnly: true, notify: true})
+  engagementsList!: [];
 
-    @property({type: Object})
-    requestQueries!: any;
+  @property({type: Object})
+  requestQueries!: any;
 
-    @property({type: Object})
-    lastState: GenericObject = {};
+  @property({type: Object})
+  lastState: GenericObject = {};
 
-    @property({type: Number, notify: true})
-    listLength!: number;
+  @property({type: Number, notify: true})
+  listLength!: number;
 
-    @property({ type: String })
-    endpointName: string = '';
+  @property({type: String})
+  endpointName: string = '';
 
-    static get observers() {
-        return [ 'getEngagementsList(requestQueries.*)'];
+  static get observers() {
+    return ['getEngagementsList(requestQueries.*)'];
+  }
+
+  _engagementsLoaded(detail) {
+    if (!detail) {
+      fireEvent(this, 'toast', {text: 'An error occured, try again.'});
+      return;
     }
 
-    _engagementsLoaded(detail) {
-        if (!detail) {
-            fireEvent(this, 'toast', {text: 'An error occured, try again.'});
-            return;
-        }
+    // @ts-ignore
+    this._setEngagementsList(detail.results);
+    this.listLength = detail.count;
+    updateQueries({reload: false});
+    fireEvent(this, 'update-export-links');
+    fireEvent(this, 'global-loading', {type: 'engagements-list'});
+  }
 
-        // @ts-ignore
-        this._setEngagementsList(detail.results);
-        this.listLength = detail.count;
-        this.updateQueries({reload: false});
-        fireEvent(this, 'update-export-links');
-        fireEvent(this, 'global-loading', {type: 'engagements-list'});
+  getEngagementsList() {
+    let reloadRequired = this.reloadRequired() || this.requestQueries.reload;
+    this.lastState = cloneDeep(this.requestQueries);
+    if (!reloadRequired || !this.endpointName) {
+      //not reload the page
+      return;
     }
 
-    getEngagementsList() {
-        let reloadRequired = this.reloadRequired() || this.requestQueries.reload;
-        this.lastState = cloneDeep(this.requestQueries);
-        if (!reloadRequired || !this.endpointName) {
-            //not reload the page
-            return;
-        }
+    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
 
-        fireEvent(this, 'global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
+    let endpoint = this.getEndpoint(this.endpointName);
+    endpoint.url += getQueriesString();
 
-        let endpoint = this.getEndpoint(this.endpointName);
-        endpoint.url += this.getQueriesString();
-
-        if (this.requestQueries.reload) {
-            endpoint.url += `&reload=${new Date().getTime()}`;
-        }
-
-        endpoint.url = endpoint.url.replace(/[&?]{1}/, '?');
-        this.sendRequest({
-            endpoint: endpoint
-        }).then(resp => {
-           this._engagementsLoaded(resp);
-        }).catch(err => {
-            this._responseError(err);
-        });
+    if (this.requestQueries.reload) {
+      endpoint.url += `&reload=${new Date().getTime()}`;
     }
 
-    reloadRequired() {
-        let lastKeys = keys(this.lastState);
-        let requestQueriesKeys = keys(this.requestQueries);
-        let filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit', 'staff_members__user', 'sc'];
-        let queriesKeys = lastKeys.concat(requestQueriesKeys);
+    endpoint.url = endpoint.url.replace(/[&?]{1}/, '?');
+    this.sendRequest({
+      endpoint: endpoint
+    }).then(resp => {
+      this._engagementsLoaded(resp);
+    }).catch(err => {
+      this._responseError(err);
+    });
+  }
 
-        queriesKeys = uniq(queriesKeys);
-        queriesKeys = difference(queriesKeys, filtersKeys);
-        pull(queriesKeys, 'reload');
+  reloadRequired() {
+    let lastKeys = keys(this.lastState);
+    let requestQueriesKeys = keys(this.requestQueries);
+    let filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit', 'staff_members__user', 'sc'];
+    let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
-        let otherQueriesChanged = queriesKeys.some((key) => {
-            let lastValue = this.lastState[key];
-            let newValue = this.requestQueries[key];
-            return lastValue !== newValue;
-        });
+    queriesKeys = uniq(queriesKeys);
+    queriesKeys = difference(queriesKeys, filtersKeys);
+    pull(queriesKeys, 'reload');
 
-        let filtersChanged = !filtersKeys.every((key) => {
-            let lastValue = this.lastState[key];
-            let newValue = this.requestQueries[key];
-            return lastValue === newValue || (lastValue === true && newValue === undefined);
-        });
+    let otherQueriesChanged = queriesKeys.some((key) => {
+      let lastValue = this.lastState[key];
+      let newValue = this.requestQueries[key];
+      return lastValue !== newValue;
+    });
 
-        return otherQueriesChanged || filtersChanged;
+    let filtersChanged = !filtersKeys.every((key) => {
+      let lastValue = this.lastState[key];
+      let newValue = this.requestQueries[key];
+      return lastValue === newValue || (lastValue === true && newValue === undefined);
+    });
+
+    return otherQueriesChanged || filtersChanged;
+  }
+
+  _responseError(err) {
+    let {status} = (err || {}) as any;
+
+    //wrong page in queries
+    if (status === 404 && this.requestQueries.page !== '1') {
+      updateQueries({page: '1'});
+      return;
     }
 
-    _responseError(err) {
-        let {status} = (err || {}) as any;
-
-        //wrong page in queries
-        if (status === 404 && this.requestQueries.page !== '1') {
-            this.updateQueries({page: '1'});
-            return;
-        }
-
-        this.updateQueries({reload: false});
-        fireEvent(this, 'global-loading', {type: 'engagements-list'});
-        fireEvent(this, 'toast', {text: 'Page not found.'});
-    }
+    updateQueries({reload: false});
+    fireEvent(this, 'global-loading', {type: 'engagements-list'});
+    fireEvent(this, 'toast', {text: 'Page not found.'});
+  }
 }
 window.customElements.define("engagements-list-data", EngagementListData);

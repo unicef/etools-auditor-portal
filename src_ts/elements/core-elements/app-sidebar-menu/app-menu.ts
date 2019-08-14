@@ -61,15 +61,15 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
             </paper-tooltip>
             <div class="name">Engagements</div>
           </a>
-
-          <a class="nav-menu-item" menu-name="staff-sc" href$="[[rootPath]]staff-sc/list?reload=true">
-            <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
-            <paper-tooltip for="iconStaffSpotCk" position="right">
-              Staff Spot Checks
-            </paper-tooltip>
-            <div class="name">Staff Spot Checks</div>
-          </a>
-
+          <template is="dom-if" if="[[showSscPage]]">
+            <a class="nav-menu-item" menu-name="staff-sc" href$="[[rootPath]]staff-sc/list?reload=true">
+              <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
+              <paper-tooltip for="iconStaffSpotCk" position="right">
+                Staff Spot Checks
+              </paper-tooltip>
+              <div class="name">Staff Spot Checks</div>
+            </a>
+          </template>
         </iron-selector>
 
         <div class="nav-menu-item section-title">
@@ -116,6 +116,8 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
   @property({type: Boolean, reflectToAttribute: true, observer: '_menuSizeChange'})
   smallMenu!: Boolean;
 
+  @property({type: Boolean})
+  showSscPage: boolean = false;
 
   // @ts-ignore
   private _menuSizeChange(newVal: boolean, oldVal: boolean): void {

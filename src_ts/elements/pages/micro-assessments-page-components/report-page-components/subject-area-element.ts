@@ -3,6 +3,7 @@ import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import '../../../common-elements/list-tab-elements/list-element/list-element';
 import '@polymer/paper-icon-button/paper-icon-button';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
+import {getChoices} from '../../../app-mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import clone from 'lodash-es/clone';
@@ -65,57 +66,57 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
   }
 
-_setAreaData(data, riskOptions) {
-    if (!data || !riskOptions) { return; }
+  _setAreaData(data, riskOptions) {
+    if (!data || !riskOptions) {return;}
     if (!data.changed) {
-        this.originalData = cloneDeep(data);
+      this.originalData = cloneDeep(data);
     }
 
     if (data.blueprints[0].risk && isNumber(data.blueprints[0].risk.value)) {
-        this.area.blueprints[0].risk.value = this.riskOptions[this.area.blueprints[0].risk.value];
+      this.area.blueprints[0].risk.value = this.riskOptions[this.area.blueprints[0].risk.value];
     }
 
     let risk = get(data, 'blueprints[0].risk') || {extra: {}};
     if (this.isJSONObj(risk.extra)) {
-        risk.extra = JSON.parse(risk.extra);
+      risk.extra = JSON.parse(risk.extra);
     }
     data.blueprints[0].risk = risk;
 
     this.areaData = clone(data.blueprints[0]);
-}
+  }
 
-openEditDialog() {
+  openEditDialog() {
     fireEvent(this, 'open-edit-dialog', {data: this.area});
-}
+  }
 
-getRiskData() {
-    if (!this.area.blueprints[0].risk || !this.area.blueprints[0].risk.value) { return null; }
+  getRiskData() {
+    if (!this.area.blueprints[0].risk || !this.area.blueprints[0].risk.value) {return null;}
     if (this.area.blueprints[0].risk.value.value === this.originalData.blueprints[0].risk.value &&
-        isEqual(this.area.blueprints[0].risk.extra, this.originalData.blueprints[0].risk.extra)) { return null; }
+      isEqual(this.area.blueprints[0].risk.extra, this.originalData.blueprints[0].risk.extra)) {return null;}
 
     let risk = {
-        extra: this.area.blueprints[0].risk.extra,
-        value: this.area.blueprints[0].risk.value.value
+      extra: this.area.blueprints[0].risk.extra,
+      value: this.area.blueprints[0].risk.value.value
     };
 
     let blueprint = {
-        id: this.area.blueprints[0].id,
-        risk: risk
+      id: this.area.blueprints[0].id,
+      risk: risk
     };
 
     return {
-        id: this.area.id,
-        blueprints: [blueprint]
+      id: this.area.id,
+      blueprints: [blueprint]
     };
-}
+  }
 
-validate() {
+  validate() {
     return !!this.area.blueprints[0].risk.value && this.area.blueprints[0].risk.extra !== null;
-}
+  }
 }
 
 window.customElements.define('subject-area-element', SubjectAreaElement);

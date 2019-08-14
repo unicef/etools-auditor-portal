@@ -16,11 +16,9 @@ import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from "../../../../styles-elements/module-styles";
 
-import PermissionControllerMixin from '../../../../app-mixins/permission-controller-mixin';
 import DateMixin from '../../../../app-mixins/date-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {GenericObject} from "../../../../../types/global";
 
@@ -36,19 +34,12 @@ import cloneWith from 'lodash-es/cloneWith';
  * @polymer
  * @mixinFunction
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin DateMixin
- * @appliesMixin PermissionControllerMixin
  */
 class SummaryFindingsElement extends (CommonMethodsMixin
-                                      (TextareaMaxRowsMixin
-                                      (StaticDataMixin
-                                      (TableElementsMixin
-                                      (DateMixin
-                                      (PermissionControllerMixin
-                                      (PolymerElement))))))) {
+  (StaticDataMixin(TableElementsMixin(DateMixin(PolymerElement))))) {
 
   static get template() {
     // language=HTML
@@ -283,10 +274,10 @@ class SummaryFindingsElement extends (CommonMethodsMixin
   }];
 
   @property({type: Object})
-  addDialogTexts: GenericObject = { title: 'Add New Finding' };
+  addDialogTexts: GenericObject = {title: 'Add New Finding'};
 
   @property({type: Object})
-  editDialogTexts: GenericObject = { title: 'Edit Finding' };
+  editDialogTexts: GenericObject = {title: 'Edit Finding'};
 
   @property({type: Object})
   priority: GenericObject = {};
@@ -370,9 +361,9 @@ class SummaryFindingsElement extends (CommonMethodsMixin
       }
       let compareItems = (changedObj, originalObj) => {
         return !((changedObj.category_of_observation && changedObj.category_of_observation !== originalObj.category_of_observation) ||
-            (changedObj.deadline_of_action && changedObj.deadline_of_action !== originalObj.deadline_of_action) ||
-            (changedObj.recommendation && changedObj.recommendation !== originalObj.recommendation) ||
-            (changedObj.agreed_action_by_ip && changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip));
+          (changedObj.deadline_of_action && changedObj.deadline_of_action !== originalObj.deadline_of_action) ||
+          (changedObj.recommendation && changedObj.recommendation !== originalObj.recommendation) ||
+          (changedObj.agreed_action_by_ip && changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip));
       };
       if (!isEqualWith(dataItem, this.originalData[index], compareItems)) {
         data.push(dataItem);

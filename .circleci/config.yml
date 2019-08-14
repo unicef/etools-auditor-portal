@@ -53,8 +53,8 @@ jobs:
           command: |
             REVNO=${CIRCLE_SHA1}
             BUILDDATE=$(date -u +%F_%T)
-            sed -i "0,/revNo/s//$REVNO/" bower.json
-            sed -i "0,/bDate/s//$BUILDDATE/" bower.json
+            sed -i "0,/revNo/s//$REVNO/" package.json
+            sed -i "0,/bDate/s//$BUILDDATE/" package.json
       - run:
           name: Building the image
           command: |

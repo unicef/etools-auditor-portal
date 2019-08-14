@@ -7,7 +7,6 @@ import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
 
-import TextareaMaxRowsMixin from '../../../../app-mixins/textarea-max-rows-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 
 import {GenericObject} from "../../../../../types/global";
@@ -18,10 +17,9 @@ import isEqual from 'lodash-es/isEqual';
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin TextareaMaxRowsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class InternalControls extends (CommonMethodsMixin(TextareaMaxRowsMixin(PolymerElement))) {
+class InternalControls extends CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     // language=HTML
@@ -78,9 +76,9 @@ class InternalControls extends (CommonMethodsMixin(TextareaMaxRowsMixin(PolymerE
 
   @property({type: Object})
   tabTexts: GenericObject = {
-                            name: 'Internal controls',
-                            fields: ['internal_controls']
-                          };
+    name: 'Internal controls',
+    fields: ['internal_controls']
+  };
 
   getInternalControlsData() {
     let data = null;

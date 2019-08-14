@@ -28,6 +28,7 @@ import {GenericObject} from "../../../../types/global";
 import EngagementMixin from "../../../app-mixins/engagement-mixin";
 import StaticDataMixin from "../../../app-mixins/static-data-mixin";
 import CommonMethodsMixin from "../../../app-mixins/common-methods-mixin";
+import {getChoices} from '../../../app-mixins/permission-controller';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
@@ -347,7 +348,7 @@ class AuditsPageMain extends CommonMethodsMixin(StaticDataMixin(EngagementMixin(
     if (this.getData('audit_opinions')) {
       return;
     }
-    let auditOpinions = this.getChoices(`engagement_${this.engagement.id}.audit_opinion`);
+    let auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
     if (!auditOpinions) {
       return;
     }
