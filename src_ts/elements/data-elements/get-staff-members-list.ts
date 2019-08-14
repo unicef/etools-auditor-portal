@@ -4,7 +4,7 @@ import '@polymer/app-route/app-location.js';
 import '@unicef-polymer/etools-ajax/etools-ajax';
 import {property} from "@polymer/decorators";
 import get from 'lodash-es/get';
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {collectionExists, addToCollection} from '../app-mixins/permission-controller';
 import {getUserData} from '../../elements/app-mixins/user-controller';
@@ -15,11 +15,10 @@ import each from 'lodash-es/each';
 /**
  * @customElement
  * @polymer
- * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 
-class GetStaffMembersList extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   static get template() {
     return html`
       <app-location
@@ -87,7 +86,7 @@ class GetStaffMembersList extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerE
     let queriesString = this._prepareQueries(listQueries);
 
     this.requestsCompleted = {};
-    this.url = this.getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
+    this.url = getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
     if (collectionExists(`staff_members_${organisationId}`)) {
       this.requestsCompleted.options = true;
     } else {
@@ -98,7 +97,7 @@ class GetStaffMembersList extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerE
   _getOptions(organisationId, params) {
     const options = {
       method: 'OPTIONS',
-      endpoint: this.getEndpoint('staffMembers', {id: organisationId}),
+      endpoint: getEndpoint('staffMembers', {id: organisationId}),
       params
     };
     this.sendRequest(options)
@@ -110,7 +109,7 @@ class GetStaffMembersList extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerE
     let queries: string[] = [];
     each(listQueries, (value, key) => {
       if (key !== 'search' || !!value) {
-          queries.push(`${key}=${value}`);
+        queries.push(`${key}=${value}`);
       }
 
     });

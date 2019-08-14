@@ -16,7 +16,7 @@ import '../../../common-elements/engagement-overview-components/partner-details-
 import '../report-page-components/sc-report-page-main/sc-report-page-main';
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
+import {setStaticData, getStaticData} from '../../../app-mixins/static-data-controller';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getChoices} from '../../../app-mixins/permission-controller';
@@ -39,10 +39,9 @@ import sortBy from 'lodash-es/sortBy';
  * @polymer
  * @mixinFunction
  * @appliesMixin EngagementMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin CommonMethodsMixin
  */
-class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(StaticDataMixin(PolymerElement)))) {
+class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElement))) {
 
   static get template() {
     // language=HTML
@@ -341,13 +340,13 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(StaticDataM
   }
 
   loadChoices(property) {
-    if (this.getData(property)) { return; }
+    if (getStaticData(property)) { return; }
     let choices = getChoices(`engagement_${this.engagement.id}.findings.${property}`);
     if (!choices) { return; }
     const sortedChoices = sortBy(
         choices,
         ['display_name']);
-    this._setData(property, sortedChoices);
+    setStaticData(property, sortedChoices);
   }
 
 }

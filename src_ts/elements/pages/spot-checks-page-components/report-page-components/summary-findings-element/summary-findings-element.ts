@@ -18,7 +18,7 @@ import {moduleStyles} from "../../../../styles-elements/module-styles";
 
 import DateMixin from '../../../../app-mixins/date-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../../../app-mixins/static-data-controller';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {GenericObject} from "../../../../../types/global";
 
@@ -34,12 +34,11 @@ import cloneWith from 'lodash-es/cloneWith';
  * @polymer
  * @mixinFunction
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin DateMixin
  */
 class SummaryFindingsElement extends (CommonMethodsMixin
-  (StaticDataMixin(TableElementsMixin(DateMixin(PolymerElement))))) {
+  (TableElementsMixin(DateMixin(PolymerElement)))) {
 
   static get template() {
     // language=HTML
@@ -303,7 +302,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
     super.connectedCallback();
     this.addEventListener('dialog-confirmed', this._addItemFromDialog);
     this.addEventListener('delete-confirmed', this.removeItem);
-    this.categoryOfObservation = this.getData('category_of_observation');
+    this.categoryOfObservation = getStaticData('category_of_observation');
     this.set('errors.deadline_of_action', false);
   }
 

@@ -2,12 +2,12 @@ import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
 import {fireEvent} from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {updateCollection} from '../app-mixins/permission-controller';
 import {GenericObject} from "../../types/global.js";
 
-class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   @property({type: Object, observer: '_engagementChanged'})
   updatedEngagementData!: GenericObject;
@@ -134,7 +134,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
     }
     this.actionUrl = '';
 
-    const optionsEndpoint = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type});
+    const optionsEndpoint = getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type});
 
     this.sendRequest({
       method: 'OPTIONS',
@@ -143,7 +143,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
       .then(this._handleOptionsResponse.bind(this))
       .catch(this._handleOptionsError.bind(this));
 
-    const attachmentsEndpoint = this.getEndpoint('attachments', {id: this.updatedEngagementData.id});
+    const attachmentsEndpoint = getEndpoint('attachments', {id: this.updatedEngagementData.id});
     this.sendRequest({
       method: 'OPTIONS',
       endpoint: attachmentsEndpoint
@@ -151,7 +151,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
       .then(this._handleDataOptionsResponse('attachments', 'attachments'))
       .catch(this._handleDataOptionsResponse('attachments', 'attachments'));
 
-    const reportAttachmentsEndpoint = this.getEndpoint('reportAttachments', {id: this.updatedEngagementData.id});
+    const reportAttachmentsEndpoint = getEndpoint('reportAttachments', {id: this.updatedEngagementData.id});
     this.sendRequest({
       method: 'OPTIONS',
       endpoint: reportAttachmentsEndpoint
@@ -159,7 +159,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
       .then(this._handleDataOptionsResponse('report_attachments', 'reportAttachments'))
       .catch(this._handleDataOptionsResponse('report_attachments', 'reportAttachments'));
 
-    let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
+    let apBaseUrl = getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
     this.sendRequest({
       method: 'OPTIONS',
       endpoint: {
@@ -222,7 +222,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
 
     if (engagement.submit && !this.actionUrl) {
       //Prepare submit request. Save submit url, update engagement data at first
-      let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
+      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
       this.actionUrl = url + engagement.submit;
       // this.requestOptions.method = 'PATCH';
       this.set('requestOptions', {
@@ -253,7 +253,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
     } else if (engagement.finalize) {
       //Run finalizing
       fireEvent(this, 'global-loading', {type: 'finalize-engagement', active: true, message: 'Finalizing engagement...'});
-      let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.finalize;
+      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.finalize;
       // this.requestOptions.method = 'POST';
       // this.url = url;
 
@@ -270,7 +270,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
     } else if (engagement.cancel) {
       //Run finalizing
       fireEvent(this, 'global-loading', {type: 'cancel-engagement', active: true, message: 'Canceling engagement...'});
-      let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.cancel;
+      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.cancel;
       this.actionUrl = url;
       this.postData = engagement.data;
       this.set('requestOptions', {
@@ -283,7 +283,7 @@ class UpdateEngagement extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
       this._performUpdate();
     } else {
       //Simple engagement data updating
-      let url = this.getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
+      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
       this.actionUrl = '';
       this.set('requestOptions', {
         method: 'PATCH',

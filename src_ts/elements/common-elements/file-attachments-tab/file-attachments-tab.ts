@@ -36,6 +36,7 @@ import {GenericObject} from '../../../types/global';
 import get from 'lodash-es/get';
 import clone from 'lodash-es/clone';
 import {fireEvent} from "../../utils/fire-custom-event";
+import {getEndpoint} from '../../app-config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
@@ -439,7 +440,7 @@ class FileAttachmentsTab extends
     const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
-      endpoint: this.getEndpoint('auditLinks', {
+      endpoint: getEndpoint('auditLinks', {
         type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
         id: engagement.id
       })
@@ -823,7 +824,7 @@ class FileAttachmentsTab extends
 
     this.sendRequest({
       method: 'DELETE',
-      endpoint: this.getEndpoint('linkAttachment', {id})
+      endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
         .catch(err => this._errorHandler(err));
   }
