@@ -18,6 +18,7 @@ export const fileAttachmentsTabStyles = html`
         max-height: 180px;
         -ms-overflow-style: auto;
       };
+      margin-top: 2px;
     }
 
     paper-input-container {

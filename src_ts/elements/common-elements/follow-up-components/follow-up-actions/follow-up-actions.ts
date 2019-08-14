@@ -97,14 +97,14 @@ class FollowUpActions extends
                 padding: 0;
             };
         }
-        etools-searchable-multiselection-menu.fua-category {
-          --esmm-list-wrapper: {
+        etools-dropdown.fua-category {
+          --paper-listbox: {
                 max-height: 340px;
                 -ms-overflow-style: auto;
             };
         }
-        etools-searchable-multiselection-menu.fua-person {
-          --esmm-list-wrapper: {
+        etools-dropdown.fua-person {
+          --paper-listbox: {
                 max-height: 140px;
                 -ms-overflow-style: auto;
             };

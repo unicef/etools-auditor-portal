@@ -235,7 +235,8 @@ class FileAttachmentsTab extends
                   on-upload-finished="_attachmentUploadFinished"
                   invalid="[[errors.file]]"
                   show-delete-btn="[[showDeleteBtn]]"
-                  current-attachment-id="[[editedItem.id]]">
+                  current-attachment-id="[[editedItem.id]]"
+                  required>
                   <!--Here editedItem.id is the same as the uploaded attachment id--!>
                 </etools-upload>
             </div>
