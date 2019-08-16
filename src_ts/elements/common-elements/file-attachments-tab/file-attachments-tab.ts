@@ -45,6 +45,7 @@ import famEndpoints from '../../app-config/endpoints';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocumentsEl} from '../share-documents/share-documents';
 import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
+import {checkNonField, refactorErrorObject} from '../../app-mixins/error-handler';
 
 /**
  * @customElement
@@ -52,7 +53,6 @@ import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
  * @appliesMixin EtoolsAjaxRequestMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin ErrorHandlerMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin DateMixin
  */
@@ -692,8 +692,8 @@ class FileAttachmentsTab extends
     if (!errorData || !errorData[mainProperty]) {
       return;
     }
-    let refactoredData = this.refactorErrorObject(errorData[mainProperty]);
-    let nonField = this.checkNonField(errorData[mainProperty]);
+    let refactoredData = refactorErrorObject(errorData[mainProperty]);
+    let nonField = checkNonField(errorData[mainProperty]);
 
     if (this.dialogOpened && typeof refactoredData[0] === 'object') {
       this.set('errors', refactoredData[0]);
@@ -785,7 +785,7 @@ class FileAttachmentsTab extends
   }
 
   _handleShareError(err) {
-    let nonField = this.checkNonField(err);
+    let nonField = checkNonField(err);
     let message;
     if (nonField) {
       message = `Nonfield error: ${nonField}`

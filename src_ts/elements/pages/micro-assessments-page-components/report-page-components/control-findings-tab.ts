@@ -13,6 +13,7 @@ import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../../utils/fire-custom-event';
+import {checkNonField} from '../../../app-mixins/error-handler';
 
 class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
   static get template() {
@@ -180,7 +181,7 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   _checkNonField(error) {
     if (!error) { return; }
 
-    let nonField = this.checkNonField(error);
+    let nonField = checkNonField(error);
     if (nonField) {
         fireEvent(this, 'toast', {text: `Findings and Recommendations: ${nonField}`});
     }
