@@ -14,10 +14,11 @@ export const fileAttachmentsTabStyles = html`
     }
 
     #fileType {
-      --esmm-list-wrapper: {
+      --paper-listbox: {
         max-height: 180px;
         -ms-overflow-style: auto;
       };
+      margin-top: 2px;
     }
 
     paper-input-container {
@@ -53,21 +54,6 @@ export const fileAttachmentsTabStyles = html`
     etools-content-panel {
       --ecp-content: {
         padding: 0;
-      };
-    }
-
-    .upload-button {
-      --paper-button: {
-        display: block;
-        width: 120px;
-        font-weight: bold;
-        font-size: 14px;
-        margin: 0;
-        padding-left: 0;
-        padding-right: 4px;
-        height: 36px;
-        color: var(--module-primary);
-        background-color: #ffffff;
       };
     }
 

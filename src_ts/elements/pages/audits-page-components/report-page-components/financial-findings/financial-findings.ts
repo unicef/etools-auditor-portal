@@ -23,6 +23,7 @@ import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
 import {getChoices} from '../../../../app-mixins/permission-controller';
 import sortBy from 'lodash-es/sortBy';
+import {checkNonField} from '../../../../app-mixins/error-handler';
 
 /**
  * @customElement
@@ -363,7 +364,7 @@ class FinancialFindings extends
       return;
     }
 
-    let nonField = this.checkNonField(error);
+    let nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Financial Findings: ${nonField}`});
     }

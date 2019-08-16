@@ -4,19 +4,18 @@ import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
-import ErrorHandlerMixin from './error-handler-mixin';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import {setStaticData, getStaticData} from './static-data-controller';
 import {Constructor} from "../../types/global";
 import {fireEvent} from "../utils/fire-custom-event";
+import {refactorErrorObject, checkNonField} from './error-handler';
 
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin ErrorHandlerMixin
  */
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class CommonMethodsMixinClass extends ErrorHandlerMixin(baseClass as Constructor<PolymerElement>) {
+  class CommonMethodsMixinClass extends baseClass {
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -61,7 +60,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
-      this.set('errors', clone(this.refactorErrorObject(errorData)));
+      this.set('errors', clone(refactorErrorObject(errorData)));
       if (this.tabTexts && this.tabTexts.fields.some(field => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }
@@ -73,8 +72,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let data = this.refactorErrorObject(errorData);
-      let nonField = this.checkNonField(errorData);
+      let data = refactorErrorObject(errorData);
+      let nonField = checkNonField(errorData);
 
       if (!this.dialogOpened && isString(data)) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${data}`});

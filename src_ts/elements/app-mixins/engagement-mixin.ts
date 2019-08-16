@@ -9,22 +9,20 @@ import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
 import {Constructor, GenericObject} from '../../types/global';
-import ErrorHandlerMixin from './error-handler-mixin';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import {getUserData} from '../../elements/app-mixins/user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
+import {whichPageTrows} from './error-handler';
 
 let currentEngagement = {};
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin ErrorHandlerMixin
  */
 // TODO: in old behavior config globals was used, check usage
 
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class EngagementMixinClass extends
-    ErrorHandlerMixin(baseClass as Constructor<PolymerElement>) {
+  class EngagementMixinClass extends baseClass {
 
     @property({type: Number})
     engagementId!: number;
@@ -440,7 +438,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!errorObj || !isObject(errorObj)) {
         return;
       }
-      let page = this.whichPageTrows(errorObj);
+      let page = whichPageTrows(errorObj);
       if (page) {
         let tab = this.tab ? 'tab' : 'routeData.tab';
         this.set(tab, page);

@@ -731,5 +731,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     return isStaffSc;
   }
 
+  _checkInvalid(value) {
+    return !!value;
+  }
+
 }
 window.customElements.define('engagement-info-details', EngagementInfoDetails);

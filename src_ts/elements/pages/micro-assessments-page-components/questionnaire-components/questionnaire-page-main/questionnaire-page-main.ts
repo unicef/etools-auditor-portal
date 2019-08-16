@@ -15,6 +15,7 @@ import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
 import {getChoices} from '../../../../app-mixins/permission-controller';
 import '../risk-tab/risk-tab';
+import {checkNonField} from '../../../../app-mixins/error-handler';
 
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
@@ -399,8 +400,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     }
     if (!errorObj || !errorObj.questionnaire) {return;}
 
-    let nonField = this.checkNonField(errorObj.questionnaire);
-    let data = this.refactorErrorObject(errorObj.questionnaire);
+    let nonField = checkNonField(errorObj.questionnaire);
+    let data = refactorErrorObject(errorObj.questionnaire);
     if (isString(data)) {
       fireEvent(this, 'toast', {text: `Qustionnaire: ${data}`});
     }

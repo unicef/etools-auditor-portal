@@ -447,5 +447,9 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       .join(', ');
   }
 
+  _checkInvalid(value) {
+    return !!value;
+  }
+
 }
 window.customElements.define('partner-details-tab', PartnerDetailsTab);

@@ -20,6 +20,7 @@ import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
+import {checkNonField} from '../../../../app-mixins/error-handler';
 
 /**
  * @customElement
@@ -239,7 +240,7 @@ class AssessmentOfControls extends
       return;
     }
 
-    let nonField = this.checkNonField(error);
+    let nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Assessment of Key Internal Controls: ${nonField}`});
     }
