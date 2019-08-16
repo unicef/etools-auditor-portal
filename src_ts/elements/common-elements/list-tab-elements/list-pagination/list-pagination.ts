@@ -9,7 +9,7 @@ import '@polymer/polymer/lib/elements/dom-repeat';
 
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {sharedStyles} from '../../../styles-elements/shared-styles';
-
+import {updateQueries} from '../../../app-mixins/query-params-controller';
 
 /**
  * @polymer
@@ -159,7 +159,12 @@ class ListPagination extends PolymerElement {
 
 
   _sizeChanged(newSize) {
-    if (this.sizesAllowed.indexOf(newSize) < 0) {this.set('pageSize', '10');}
+    newSize = newSize ? String(newSize) : '10';
+    if (this.sizesAllowed.indexOf(newSize) < 0)
+    {
+      this.set('pageSize', '10');
+    }
+    updateQueries({page_size: newSize });
   }
 
   goToFirst() {this.set('pageNumber', '1');}
@@ -183,7 +188,9 @@ class ListPagination extends PolymerElement {
   }
 
   _pageChanged(pageNumber) {
-    this.currentPage = pageNumber || 1;
+    const newPage =  pageNumber || 1;
+    this.set('currentPage', newPage);
+    updateQueries({page: newPage });
   }
 
 }
