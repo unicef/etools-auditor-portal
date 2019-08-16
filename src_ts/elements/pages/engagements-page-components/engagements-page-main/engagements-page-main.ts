@@ -158,8 +158,9 @@ class EngagementsPageMain extends PolymerElement {
   }
 
   _configListParams(noNotify: boolean = false) {
-    let queriesUpdates: GenericObject = {};
-    let queries = parseQueries() || {};
+    let queries = this.route.__queryParams || {};
+    let queriesUpdates: GenericObject = clone(queries);
+
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
@@ -176,7 +177,7 @@ class EngagementsPageMain extends PolymerElement {
     }
 
     updateQueries(queriesUpdates, null, noNotify);
-    return parseQueries();
+    return queriesUpdates;
   }
 
   _queryParamsChanged() {
