@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import {property} from '@polymer/decorators';

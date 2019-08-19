@@ -1,5 +1,5 @@
 
-import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {setPassiveTouchGestures, setRootPath} from '@polymer/polymer/lib/utils/settings.js';
 
 import '@polymer/app-route/app-route';
@@ -42,6 +42,7 @@ import '../../common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from '../../app-config/config';
 
 setRootPath(`/${BASE_PATH}/`);
+
 
 /**
  * @customElement
@@ -276,7 +277,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       this._pageNotFound();
       return;
     } else {
-      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
+      resolvedPageUrl = `${getDomainByEnv()}src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
     }
 
     import(resolvedPageUrl).then(() => {

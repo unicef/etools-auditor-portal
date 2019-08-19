@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/polymer/lib/elements/dom-repeat';
 import './multi-notification-item';
 import {property} from '@polymer/decorators';

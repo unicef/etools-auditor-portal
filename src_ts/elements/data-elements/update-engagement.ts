@@ -1,4 +1,4 @@
-import {PolymerElement} from "@polymer/polymer";
+import {PolymerElement} from "@polymer/polymer/polymer-element";
 import {property} from "@polymer/decorators";
 import {fireEvent} from "../utils/fire-custom-event.js";
 import get from 'lodash-es/get';

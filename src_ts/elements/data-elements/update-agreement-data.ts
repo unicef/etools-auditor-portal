@@ -1,4 +1,4 @@
-import {PolymerElement} from "@polymer/polymer";
+import {PolymerElement} from "@polymer/polymer/polymer-element";
 import {property} from "@polymer/decorators";
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';

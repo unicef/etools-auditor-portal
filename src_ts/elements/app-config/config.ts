@@ -68,7 +68,7 @@ export const resetOldUserData = () => {
   localStorage.removeItem('userId');
   (etoolsCustomDexieDb as any).collectionsList.clear();
   (etoolsCustomDexieDb as any).partners.clear();
-}
+};
 
 export const getDomainByEnv = () => {
   if (window.location.port === '8082') {

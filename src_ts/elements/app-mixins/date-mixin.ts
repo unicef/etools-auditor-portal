@@ -1,5 +1,5 @@
 import {Constructor} from '../../types/global';
-import {PolymerElement} from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer/polymer-element';
 
 declare const moment: any;
 /**

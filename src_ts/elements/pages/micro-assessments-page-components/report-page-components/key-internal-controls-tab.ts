@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {KeyInternalControlsTabStyles} from './key-internal-controls-tab-styles';
