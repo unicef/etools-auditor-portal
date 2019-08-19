@@ -24,6 +24,16 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     return html`
       ${tabInputsStyles} ${moduleStyles}
       ${KeyInternalControlsTabStyles}
+      <style>
+        etools-dropdown#riskAssessmentInput {
+          --paper-listbox: {
+            max-height: 140px;
+          };
+        }
+        .input-container{
+          padding-top: 2px;
+        }
+      </style>
       <etools-content-panel panel-title="[[subjectAreas.header]]" list>
         <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 

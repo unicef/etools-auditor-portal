@@ -75,6 +75,11 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
         div[list-item]{
            overflow: visible !important;
         }
+        etools-dropdown#riskAssessmentDropdown {
+          --paper-listbox: {
+            max-height: 140px;
+          };
+        }
       </style>
 
       <etools-content-panel class="totals" panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
