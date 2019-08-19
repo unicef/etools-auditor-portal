@@ -29,6 +29,7 @@ import transform from 'lodash-es/transform';
 import toNumber from 'lodash-es/toNumber';
 import values from 'lodash-es/values';
 import {fireEvent} from '../../../../utils/fire-custom-event';
+import {refactorErrorObject} from '../../../../app-mixins/error-handler';
 
 /**
  * @customElement
@@ -399,7 +400,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
       return;
     }
 
-    let refactoredData = this.refactorErrorObject(errorData);
+    let refactoredData = refactorErrorObject(errorData);
     let itemModelKeys = keys(this.itemModel) || [];
     itemModelKeys = itemModelKeys.filter((key) => {
       return key !== 'partner' && key !== 'opinion';

@@ -25,7 +25,7 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
     // language=HTML
     return html`
         ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
-      
+
       <etools-content-panel
                 class="content-section clearfx"
                 panel-title="[[getLabel('internal_controls', basePermissionPath)]]">
@@ -86,6 +86,10 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
       data = this.data;
     }
     return data;
+  }
+
+  _checkInvalid(value) {
+    return !!value;
   }
 
 

@@ -6,15 +6,14 @@ import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from "../utils/fire-custom-event";
 import {readonlyPermission, isRequired} from "./permission-controller";
-import ErrorHandlerMixin from "./error-handler-mixin";
+import {refactorErrorObject} from './error-handler';
 
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin ErrorHandlerMixin
  */
 function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class TableElementsMixinClass extends ErrorHandlerMixin(baseClass as Constructor<PolymerElement>) {
+  class TableElementsMixinClass extends baseClass {
 
     @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
     dataItems: any[] = [];
@@ -59,7 +58,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     editedIndex!: number;
 
     @property({type: Object})
-    originalEditedObj!: GenericObject;
+    originalEditedObj!: GenericObject | null;
 
     @property({type: Array})
     originalTableData!: [];
@@ -162,7 +161,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _resetFieldError(e: Event) {
-      e.target.invalid = false;
+      (e.target! as any).invalid = false;
     }
 
     openAddDialog() {
@@ -174,7 +173,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     openEditDialog(event = {}) {
-      let index = event.itemIndex;
+      let index = event.itemIndex;// TODO is event.itemIndex ever valid?
       if (isNaN(index) || !~index) {
         index = this._getIndex(event);
       }
@@ -309,7 +308,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!errorData) {
         return;
       }
-      let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData)[0] : this.refactorErrorObject(errorData);
+      let refactoredData = this.dialogOpened ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
       this.set('errors', refactoredData);
     }
 

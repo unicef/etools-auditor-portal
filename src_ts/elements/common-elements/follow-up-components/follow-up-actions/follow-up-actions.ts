@@ -40,6 +40,7 @@ import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
 import {collectionExists, addToCollection, updateCollection, getChoices, readonlyPermission, actionAllowed} from '../../../app-mixins/permission-controller';
+import {checkNonField} from '../../../app-mixins/error-handler';
 
 /**
  * @polymer
@@ -95,14 +96,14 @@ class FollowUpActions extends
                 padding: 0;
             };
         }
-        etools-searchable-multiselection-menu.fua-category {
-          --esmm-list-wrapper: {
+        etools-dropdown.fua-category {
+          --paper-listbox: {
                 max-height: 340px;
                 -ms-overflow-style: auto;
             };
         }
-        etools-searchable-multiselection-menu.fua-person {
-          --esmm-list-wrapper: {
+        etools-dropdown.fua-person {
+          --paper-listbox: {
                 max-height: 140px;
                 -ms-overflow-style: auto;
             };
@@ -610,7 +611,7 @@ class FollowUpActions extends
   _checkNonField(error) {
     if (!error) {return;}
 
-    let nonField = this.checkNonField(error);
+    let nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Follow-Up Actions: ${nonField}`});
     }

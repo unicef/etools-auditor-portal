@@ -140,6 +140,10 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
     });
   }
 
+  _checkInvalid(value) {
+    return !!value;
+  }
+
 }
 
 window.customElements.define('overview-element', OverviewElement);
