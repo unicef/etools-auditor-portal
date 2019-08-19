@@ -14,7 +14,6 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import '../kicw-risk/kicw-risk';
-import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
 import {getChoices} from '../../../../app-mixins/permission-controller';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
@@ -30,10 +29,9 @@ import isNil from 'lodash-es/isNil';
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin StaticDataMixin
  */
 class KeyInternalControlsWeaknesses extends
-  CommonMethodsMixin(StaticDataMixin(PolymerElement)) {
+  CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     return html`

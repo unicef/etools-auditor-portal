@@ -1,10 +1,10 @@
 import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
 import {fireEvent} from "../utils/fire-custom-event.js";
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
-class GetAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class GetAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   @property({type: Number, notify: true, observer: '_orderNumberChanged'})
   orderNumber!: number;
@@ -26,7 +26,7 @@ class GetAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElem
       return;
     }
     this.sendRequest({
-      endpoint: {url: this.getEndpoint('agreementData', {id: orderNumber}).url}
+      endpoint: {url: getEndpoint('agreementData', {id: orderNumber}).url}
     }).then(resp => {
       this._handleResponse(resp);
     }).catch(err => {

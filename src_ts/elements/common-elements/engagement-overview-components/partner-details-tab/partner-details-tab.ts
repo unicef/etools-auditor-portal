@@ -21,7 +21,7 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {readonlyPermission} from '../../../app-mixins/permission-controller';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
@@ -32,11 +32,9 @@ import '../../../data-elements/get-partner-data';
 /**
  * @polymer
  * @customElement
- * @appliesMixin StaticDataMixin
  * @appliesMixin CommonMethodsMixin
  */
-class PartnerDetailsTab extends
-  StaticDataMixin(CommonMethodsMixin(PolymerElement)) {
+class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     return html`
@@ -227,7 +225,7 @@ class PartnerDetailsTab extends
 
   connectedCallback() {
     super.connectedCallback();
-    this.set('partners', this.getData('partners'));
+    this.set('partners', getStaticData('partners'));
     this._initListeners();
   }
 
@@ -447,6 +445,10 @@ class PartnerDetailsTab extends
     return [partner.address, partner.postal_code, partner.city, partner.country]
       .filter((info) => !!info)
       .join(', ');
+  }
+
+  _checkInvalid(value) {
+    return !!value;
   }
 
 }

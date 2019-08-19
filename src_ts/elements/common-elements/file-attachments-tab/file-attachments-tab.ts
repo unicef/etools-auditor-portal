@@ -27,7 +27,6 @@ import '../share-documents/share-documents';
 import DateMixin from '../../app-mixins/date-mixin';
 import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
-import ErrorHandlerMixin from '../../app-mixins/error-handler-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
@@ -35,14 +34,18 @@ import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 
 import get from 'lodash-es/get';
-import uniqueId from 'lodash-es/uniqueId';
 import clone from 'lodash-es/clone';
 import {fireEvent} from "../../utils/fire-custom-event";
-import EndpointsMixin from '../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../app-config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {getChoices, collectionExists, getFieldAttribute} from '../../app-mixins/permission-controller';
+import famEndpoints from '../../app-config/endpoints';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
+import {ShareDocumentsEl} from '../share-documents/share-documents';
+import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
+import {checkNonField, refactorErrorObject} from '../../app-mixins/error-handler';
 
 /**
  * @customElement
@@ -50,22 +53,25 @@ import {getChoices, collectionExists, getFieldAttribute} from '../../app-mixins/
  * @appliesMixin EtoolsAjaxRequestMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin ErrorHandlerMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin DateMixin
  */
-class FileAttachmentsTab extends EndpointsMixin(
+class FileAttachmentsTab extends
+  CommonMethodsMixin(
     TableElementsMixin(
-      CommonMethodsMixin(
-        ErrorHandlerMixin(
-         EngagementMixin(
-             DateMixin(
-                EtoolsAjaxRequestMixin(PolymerElement))))))) {
+        EngagementMixin(
+          DateMixin(
+            EtoolsAjaxRequestMixin(
+              PolymerElement))))) {
 
   static get template() {
     // language=HTML
     return html`
-      <style include="iron-flex"></style>
+      <style include="iron-flex">
+        .padd-top {
+          padding-top: 26px;
+        }
+      </style>
       ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
       <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
                        endpoint-name="[[endpointName]]">
@@ -117,11 +123,11 @@ class FileAttachmentsTab extends EndpointsMixin(
                 <iron-icon icon="icons:attachment"
                            class="download-icon">
                 </iron-icon>
-                <a href$="[[item.file]]"
+                <a href$="[[item.attachment]]"
                    class="truncate"
-                   target="_blank">[[item.filename]]
+                   target="_blank">[[getFileNameFromURL(item.attachment)]]
                 </a>
-                <paper-tooltip offset="0">[[item.filename]]</paper-tooltip>
+                <paper-tooltip offset="0">[[getFileNameFromURL(item.attachment)]]</paper-tooltip>
 
               </div>
               <span class="delete-icon" hidden$="[[isTabReadonly(basePermissionPath)]]">
@@ -203,7 +209,7 @@ class FileAttachmentsTab extends EndpointsMixin(
                   <etools-dropdown
                       id="fileType"
                       class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
-                      selected="{{editedItem.type}}"
+                      selected="{{editedItem.file_type}}"
                       label="[[getLabel('file_type', basePermissionPath)]]"
                       placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
                       options="[[fileTypes]]"
@@ -222,55 +228,20 @@ class FileAttachmentsTab extends EndpointsMixin(
               </div>
             </template>
 
-            <div class="row-h group">
-
-
-              <div class="input-container input-container-ms">
-                <template is="dom-if" if="[[!editedItem.filename]]">
-                  <!-- File Upload -->
-                  <paper-input-container
-                      class="validate-input"
-                      always-float-label
-                      disabled$="[[requestInProcess]]"
-                      readonly$="[[requestInProcess]]"
-                      invalid="{{errors.file}}">
-                    <label aria-hidden="true" for="uploadButton">[[uploadLabel]]</label>
-
-                    <paper-button id="uploadButton" class="upload-button" on-tap="_openFileChooser">
-                      <iron-icon icon="file-upload"></iron-icon>
-                      [[uploadLabel]]
-                    </paper-button>
-
-                    <template is="dom-if" if="[[errors.file]]">
-                      <paper-input-error aria-live="assertive">[[errors.file]]</paper-input-error>
-                    </template>
-
-                    <input id="fileInput"
-                           class="validate-input"
-                           type="file"
-                           hidden
-                           required
-                           disabled$="[[requestInProcess]]"
-                           readonly$="[[requestInProcess]]"
-                           on-change="_fileSelected">
-                  </paper-input-container>
-                </template>
-
-                <template is="dom-if" if="[[editedItem.filename]]">
-                  <paper-input
-                      class="disabled-as-readonly validate-input"
-                      value="{{editedItem.filename}}"
-                      label="[[uploadLabel]]"
-                      required
-                      disabled$="[[requestInProcess]]"
-                      readonly
-                      invalid="{{_checkInvalid(errors.file)}}"
-                      error-message="{{errors.file}}"
-                      on-tap="_openFileChooser">
-                    <iron-icon slot="prefix" icon="icons:attachment"></iron-icon>
-                  </paper-input>
-                </template>
-              </div>
+            <div class="row-h group padd-top">
+                <etools-upload
+                  label="[[uploadLabel]]"
+                  file-url="[[editedItem.attachment]]"
+                  upload-endpoint="[[uploadEndpoint]]"
+                  on-upload-started="_onUploadStarted"
+                  on-upload-finished="_attachmentUploadFinished"
+                  invalid="[[errors.file]]"
+                  error-message="[[errors.file]]"
+                  show-delete-btn="[[showDeleteBtn]]"
+                  current-attachment-id="[[editedItem.id]]"
+                  required>
+                  <!--Here editedItem.id is the same as the uploaded attachment id--!>
+                </etools-upload>
             </div>
           </div>
         </div>
@@ -313,7 +284,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   @property({type: String})
   basePermissionPath: string = '';
 
-  @property({type: String})
+  @property({type: String}) // ex. engagement_57
   dataBasePath: string = '';
 
   @property({type: String})
@@ -324,10 +295,10 @@ class FileAttachmentsTab extends EndpointsMixin(
 
   @property({type: Object})
   itemModel: GenericObject = {
-    file: undefined,
-    file_name: undefined,
-    file_type: undefined,
-    type: {}
+    attachment: null,
+    file_type: null,
+    id: null
+
   };
 
   @property({type: Array, notify: true})
@@ -401,7 +372,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   linkedAttachments: any[] = [];
 
   @property({type: Array})
-  fileTypes: any[] = [];
+  fileTypes: {value: string, display_name: string}[] = [];
 
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this attachment?';
@@ -421,10 +392,18 @@ class FileAttachmentsTab extends EndpointsMixin(
   @property({type: String, reflectToAttribute: true})
   endpointName!: string;
 
+  @property({type: Object})
+  requestData!: GenericObject;
+
+  @property({type: String})
+  uploadEndpoint: string = famEndpoints.attachmentsUpload.url;
+
+  @property({type: Boolean})
+  showDeleteBtn: boolean = false;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
-      '_filesChange(dataItems.*, fileTypes.*)',
       '_resetDialog(dialogOpened)',
       '_errorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)',
@@ -434,12 +413,12 @@ class FileAttachmentsTab extends EndpointsMixin(
   connectedCallback() {
     super.connectedCallback();
     this._requestCompleted = this._requestCompleted.bind(this);
-    this.addEventListener('attachments-request-completed', this._requestCompleted);
+    this.addEventListener('attachments-request-completed', this._requestCompleted as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('attachments-request-completed', this._requestCompleted);
+    this.removeEventListener('attachments-request-completed', this._requestCompleted as any);
   }
 
   _checkIsUnicefUser() {
@@ -461,7 +440,7 @@ class FileAttachmentsTab extends EndpointsMixin(
     const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
-      endpoint: this.getEndpoint('auditLinks', {
+      endpoint: getEndpoint('auditLinks', {
         type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
         id: engagement.id
       })
@@ -517,6 +496,8 @@ class FileAttachmentsTab extends EndpointsMixin(
     if (!dialogOpened) {
       this.originalEditedObj = null;
     }
+    let etoolUpload = this.shadowRoot!.querySelector('etools-upload') as EtoolsUpload;
+    etoolUpload.invalid = false;
     this.resetDialog(dialogOpened);
   }
 
@@ -540,35 +521,26 @@ class FileAttachmentsTab extends EndpointsMixin(
     }
   }
 
-  _fileSelected(e) {
-    if (!e || !e.currentTarget) {
-      return false;
-    }
+  _onUploadStarted() {
+    this.requestInProcess = true;
+  }
 
-    let files = e.currentTarget.files || {};
-    let file = files[0];
+  _attachmentUploadFinished(e) {
+    this.requestInProcess = false;
+    if (e.detail.success) {
+      let uploadResponse = JSON.parse(e .detail.success);
+      this.set('editedItem.attachment', uploadResponse.id);
+      this.set('editedItem.filename', uploadResponse.filename);
 
-    if (file && file instanceof File) {
-      this.set('editedItem.filename', file.name);
-      this.editedItem.file = file;
-
-      return !this._fileAlreadySelected();
     }
   }
 
-
-  _filesChange() {
-    if (!this.dataItems) {
-      return false;
+  getFileNameFromURL(url: string) {
+    if (!url) {
+      return '';
     }
-
-    this.dataItems.forEach((file) => {
-      if (file.file_type !== undefined && !file.display_name) {
-        let type = this._getFileType(file.file_type) || {};
-        file.type = type;
-        file.display_name = type.display_name;
-      }
-    });
+    // @ts-ignore
+    return url.split('?').shift().split('/').pop();
   }
 
   _saveAttachment(e) {
@@ -578,15 +550,15 @@ class FileAttachmentsTab extends EndpointsMixin(
 
     this.requestInProcess = true;
 
-    let attachmentsData = this._getFileData();
-    let method = attachmentsData.id ? 'PATCH' : 'POST';
+    let attachmentData = this._getFileData();
+    let method = attachmentData.id ? 'PATCH' : 'POST';
 
-    attachmentsData = method === 'PATCH' ? this._getChanges(attachmentsData) : attachmentsData;
-    if (!attachmentsData) {
+    attachmentData = method === 'PATCH' ? this._getChanges(attachmentData) : attachmentData;
+    if (!attachmentData) {
       this._requestCompleted(null, {success: true});
       return;
     }
-    this.requestData = {method, attachmentsData};
+    this.requestData = {method, attachmentData};
   }
 
   _deleteAttachment(event) {
@@ -601,57 +573,50 @@ class FileAttachmentsTab extends EndpointsMixin(
 
     this.requestData = {
       method: 'DELETE',
-      attachmentsData: {id: this.editedItem.id}
+      attachmentData: {id: this.editedItem.id}
     };
   }
 
-  _getChanges(attachmentsData) {
-    let original = this.originalEditedObj && this._getFileData(false, this.originalEditedObj);
+  _getChanges(attachmentData) {
+    let original = this.originalEditedObj && this._getFileData(this.originalEditedObj);
     if (!original) {
-      return attachmentsData;
+      return attachmentData;
     }
 
-    let data = pickBy(attachmentsData, (value, key) => original[key] !== value);
-    if (data.file && this._fileAlreadySelected()) {
-      delete data.file;
+    let data = pickBy(attachmentData, (value, key) => original[key] !== value);
+    if (data.attachment && this._fileAlreadySelected()) {
+      delete data.attachment;
     }
 
     if (isEmpty(data)) {
       return null;
     } else {
-      data.id = attachmentsData.id;
+      data.id = attachmentData.id;
       return data;
     }
   }
 
-  _getFileData(addName, fileData) {
-    if (!this.dialogOpened && !fileData) {
+  _getFileData(fileData?) {
+    if (!this.dialogOpened && (!fileData && !this.editedItem)) {
       return {};
     }
-    let {id, file, type} = fileData || this.editedItem;
-    let data: GenericObject = {file};
+    let {id, attachment, file_type} = fileData || this.editedItem;
+    let data: GenericObject = {attachment};
 
     if (id) {
       data.id = id;
     }
-
-    if (type) {
-      data.file_type = type.value;
-    }
-
-    if (addName) {
-      data.filename = this.editedItem.filename;
-      data.unique_id = uniqueId();
-    }
+    data.file_type = file_type;
 
     return data;
   }
 
   _getAttachmentType(attachment) {
-    return this.fileTypes.find(fileType => fileType.value === attachment.file_type).display_name;
+    return this.fileTypes.find(f => f.value === attachment.file_type)!.display_name;
   }
 
-  _requestCompleted(event, detail = {}) {
+  _requestCompleted(event, detail) {
+    detail = detail || event.detail;
     this.requestInProcess = false;
     if (detail.success) {
       this.dialogOpened = false;
@@ -663,8 +628,8 @@ class FileAttachmentsTab extends EndpointsMixin(
       return false;
     }
 
-    let alreadySelectedIndex = this.dataItems.findIndex((file) => {
-      return file.filename === this.editedItem.filename;
+    let alreadySelectedIndex = this.dataItems.findIndex((item) => {
+      return this.getFileNameFromURL(item.attachment) === this.editedItem.filename;
     });
 
     if (alreadySelectedIndex !== -1) {
@@ -677,30 +642,40 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   validate() {
-    let dropdown = this.shadowRoot!.querySelector('#fileType');
-    let editedItem = this.editedItem;
     let valid = true;
 
-    let fileTypeRequired = this._setRequired('file_type', this.basePermissionPath);
-    if (fileTypeRequired && (!this.fileTypes || !this.fileTypes.length)) {
-      this.set('errors.file_type', 'File types are not defined');
-      valid = false;
-    } else {
-      this.set('errors.file_type', false);
-    }
-
-    if (fileTypeRequired && !dropdown.validate()) {
-      this.set('errors.file_type', 'This field is required');
-      valid = false;
-    }
+    valid = this._validateFileType();
 
     if (this.addDialog && this._fileAlreadySelected()) {
       valid = false;
     }
 
-    if (this.addDialog && !editedItem.file) {
+    if (this.addDialog && !this.editedItem.attachment) {
       this.set('errors.file', 'File is not selected');
       valid = false;
+    }
+
+    return valid;
+  }
+
+  _validateFileType() {
+    let valid = true;
+    let dropdown = this.shadowRoot!.querySelector('#fileType') as EtoolsDropdownEl;
+
+    let fileTypeRequired = dropdown.required;
+
+    if (fileTypeRequired) {
+      if (!this.fileTypes || !this.fileTypes.length) {
+        this.set('errors.file_type', 'File types are not defined');
+        valid = false;
+      } else {
+        this.set('errors.file_type', false);
+      }
+
+      if (!dropdown.validate()) {
+        this.set('errors.file_type', 'This field is required');
+        valid = false;
+      }
     }
 
     return valid;
@@ -717,8 +692,8 @@ class FileAttachmentsTab extends EndpointsMixin(
     if (!errorData || !errorData[mainProperty]) {
       return;
     }
-    let refactoredData = this.refactorErrorObject(errorData[mainProperty]);
-    let nonField = this.checkNonField(errorData[mainProperty]);
+    let refactoredData = refactorErrorObject(errorData[mainProperty]);
+    let nonField = checkNonField(errorData[mainProperty]);
 
     if (this.dialogOpened && typeof refactoredData[0] === 'object') {
       this.set('errors', refactoredData[0]);
@@ -774,7 +749,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   getFiles() {
-    return this.dataItems.map((file) => this._getFileData(false, file));
+    return this.dataItems.map((file) => this._getFileData(file));
   }
 
   resetData() {
@@ -783,7 +758,7 @@ class FileAttachmentsTab extends EndpointsMixin(
 
   _openShareDialog() {
     this.shareDialogOpened = true;
-    const shareModal = this.shadowRoot!.querySelector('#shareDocuments');
+    const shareModal = this.shadowRoot!.querySelector('#shareDocuments') as ShareDocumentsEl;
     shareModal.updateShareParams();
   }
 
@@ -810,7 +785,7 @@ class FileAttachmentsTab extends EndpointsMixin(
   }
 
   _handleShareError(err) {
-    let nonField = this.checkNonField(err);
+    let nonField = checkNonField(err);
     let message;
     if (nonField) {
       message = `Nonfield error: ${nonField}`
@@ -849,7 +824,7 @@ class FileAttachmentsTab extends EndpointsMixin(
 
     this.sendRequest({
       method: 'DELETE',
-      endpoint: this.getEndpoint('linkAttachment', {id})
+      endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
         .catch(err => this._errorHandler(err));
   }

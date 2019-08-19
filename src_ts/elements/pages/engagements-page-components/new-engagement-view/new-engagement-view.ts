@@ -13,7 +13,6 @@ import includes from 'lodash-es/includes';
 import isUndefined from 'lodash-es/isUndefined';
 import LastCreatedMixin from '../../../app-mixins/last-created-mixin';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {clearQueries} from '../../../app-mixins/query-params-controller';
 import '../../../app-mixins/permission-controller';
@@ -33,17 +32,16 @@ import {BASE_PATH} from '../../../app-config/config';
 /**
  * TODO: polymer 3 migration
  *    - migrate and use:
- *     - add behaviors: etoolsAppConfig.globals aka EndpointsMixin and EtoolsAjaxRequestMixin ???????????????????
+ *     - add behaviors: etoolsAppConfig.globals and EtoolsAjaxRequestMixin ???????????????????
  *
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin LastCreatedMixin
  */
 class NewEngagementView extends
-  StaticDataMixin(EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement)))) {
+  EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement))) {
 
   static get template() {
     // language=HTML

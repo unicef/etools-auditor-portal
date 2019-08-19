@@ -17,24 +17,22 @@ import isEmpty from 'lodash-es/isEmpty';
 import {moduleStyles} from '../../styles-elements/module-styles';
 
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
-import EndpointsMixin from '../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import StaticDataMixin from '../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../app-mixins/static-data-controller';
 import {fireEvent} from '../../utils/fire-custom-event';
 
 /**
  * @polymer
  * @customElement
- * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class ShareDocuments extends
-  StaticDataMixin(EndpointsMixin(EtoolsAjaxRequestMixin(
-    TableElementsMixin(CommonMethodsMixin(PolymerElement))))) {
+  EtoolsAjaxRequestMixin(
+    TableElementsMixin(CommonMethodsMixin(PolymerElement))) {
 
   static get template() {
     return html`
@@ -225,7 +223,7 @@ class ShareDocuments extends
 
   _getPartnerAttachments(partner) {
     const options = {
-      endpoint: this.getEndpoint('globalAttachments'),
+      endpoint: getEndpoint('globalAttachments'),
       params: {
         partner: partner,
         source: 'Partnership Management Portal'
@@ -242,7 +240,7 @@ class ShareDocuments extends
   }
 
   _getFileTypesFromStatic() {
-    const fileTypes = this.getData("staticDropdown").attachment_types
+    const fileTypes = getStaticData("staticDropdown").attachment_types
       .filter(val => !isEmpty(val))
       .map(
         typeStr => ({label: typeStr, value: typeStr})
@@ -315,3 +313,4 @@ class ShareDocuments extends
 
 }
 window.customElements.define('share-documents', ShareDocuments);
+export {ShareDocuments as ShareDocumentsEl}

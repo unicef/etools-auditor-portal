@@ -20,6 +20,7 @@ import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import '@polymer/paper-input/paper-textarea';
+import {checkNonField} from '../../../app-mixins/error-handler';
 
 /**
  * @polymer
@@ -229,7 +230,7 @@ readonlyTab: boolean = false;
 _checkNonField(error) {
   if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) {return;}
 
-  let nonField = this.checkNonField(error);
+  let nonField = checkNonField(error);
   if (nonField || isString(error)) {
     fireEvent(this, 'toast', {text: `Specific Procedures: ${nonField || error}`});
   }
@@ -256,6 +257,10 @@ _removeItem(event) {
     return;
   }
   this.removeItem();
+}
+
+_checkInvalid(value) {
+  return !!value;
 }
 
 }

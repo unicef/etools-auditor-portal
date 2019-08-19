@@ -15,7 +15,7 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../../../app-mixins/static-data-controller';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
@@ -29,15 +29,15 @@ import transform from 'lodash-es/transform';
 import toNumber from 'lodash-es/toNumber';
 import values from 'lodash-es/values';
 import {fireEvent} from '../../../../utils/fire-custom-event';
+import {refactorErrorObject} from '../../../../app-mixins/error-handler';
 
 /**
  * @customElement
  * @polymer
- * @appliesMixin  StaticDataMixin
  * @appliesMixin  TableElementsMixin
  * @appliesMixin  CommonMethodsMixin
  */
-class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMixin(PolymerElement))) {
+class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
 
   static get template() {
     // language=HTML
@@ -324,7 +324,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
   connectedCallback() {
     super.connectedCallback();
 
-    this.auditOpinions = this.getData('audit_opinions') || [];
+    this.auditOpinions = getStaticData('audit_opinions') || [];
     let headerColumns = cloneDeep(this.columns),
         group = headerColumns.slice(-3),
         groupColumn = {
@@ -400,7 +400,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(StaticDataMi
       return;
     }
 
-    let refactoredData = this.refactorErrorObject(errorData);
+    let refactoredData = refactorErrorObject(errorData);
     let itemModelKeys = keys(this.itemModel) || [];
     itemModelKeys = itemModelKeys.filter((key) => {
       return key !== 'partner' && key !== 'opinion';
