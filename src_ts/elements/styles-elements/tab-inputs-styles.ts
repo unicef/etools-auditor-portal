@@ -124,6 +124,7 @@ export const tabInputsStyles = html`
     paper-input,
     paper-textarea,
     paper-dropdown-menu,
+    datepicker-lite,
     etools-currency-amount-input {
       outline: none !important;
       --paper-input-container-color: var(--gray-20);
@@ -134,7 +135,9 @@ export const tabInputsStyles = html`
       --paper-input-container-label: {
         color: var(--gray-50);
       };
-
+      --paper-input-container-label-floating: {
+        color: var(--gray-50);
+      }
       --paper-input-container-invalid-color: var(--module-error);
 
       --paper-input-container-disabled: {
@@ -410,7 +413,7 @@ export const tabInputsStyles = html`
     datepicker-lite[disabled] {
       --paper-input: {
           color: var(--gray-50);
-        }      
+        }
         --paper-input-container-underline: {
           color: var(--gray-20);
       }
@@ -440,6 +443,6 @@ export const tabInputsStyles = html`
       }
     }
 
-   
+
   </style>
 `;
