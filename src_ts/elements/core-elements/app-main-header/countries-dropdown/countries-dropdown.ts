@@ -8,9 +8,9 @@ import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import famEndpoints from '../../../app-config/endpoints';
-import { HeaderStyles } from './header-styles';
-import { PaperMenuButton } from '@polymer/paper-menu-button';
-import { GenericObject } from '../../../../types/global';
+import {HeaderStyles} from './header-styles';
+import {PaperMenuButton} from '@polymer/paper-menu-button';
+import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../app-config/config';
 
 /**

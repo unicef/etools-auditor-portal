@@ -36,7 +36,7 @@ import {fireEvent} from '../../utils/fire-custom-event.js';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import {getUserData} from '../../app-mixins/user-controller';
 import {GenericObject} from '../../../types/global.js';
-import {getDomainByEnv, AP_DOMAIN} from '../../app-config/config.js';
+import {getDomainByEnv} from '../../app-config/config.js';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from '../../app-config/config';
