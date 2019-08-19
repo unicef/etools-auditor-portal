@@ -67,4 +67,3 @@ workflows:
                 - master
                 - staging
                 - develop
-                - prepare-for-deploy2
