@@ -20,11 +20,14 @@ import {sharedStyles} from "../../../styles-elements/shared-styles";
 import {moduleStyles} from "../../../styles-elements/module-styles";
 import {mainPageStyles} from "../../../styles-elements/main-page-styles";
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
+import {FileAttachmentsTabEl} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../data-elements/add-new-engagement';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import {EngagementInfoDetailsEl} from '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import {PartnerDetailsTabEl} from '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import {BASE_PATH} from '../../../app-config/config';
@@ -334,12 +337,12 @@ class NewEngagementView extends
         specific_procedures: []
       });
 
-      // TODO
-      // this.$.engagement_attachments.resetData();
-      // this.$.engagementDetails.resetValidationErrors();
-      // this.$.engagementDetails.resetAgreement();
-      // this.$.partnerDetails.resetValidationErrors();
-      // this.$.engagementDetails.resetType();
+      (this.$.engagement_attachments as FileAttachmentsTabEl).resetData();
+      const engagementDetails = this.$.engagementDetails as EngagementInfoDetailsEl;
+      engagementDetails.resetValidationErrors();
+      engagementDetails.resetAgreement();
+      engagementDetails.resetType();
+      (this.$.partnerDetails as PartnerDetailsTabEl).resetValidationErrors();
     }
 
     if (page === 'new' && isStaffSc) {
