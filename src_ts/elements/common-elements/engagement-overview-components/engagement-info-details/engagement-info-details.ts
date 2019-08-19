@@ -740,3 +740,5 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
 }
 window.customElements.define('engagement-info-details', EngagementInfoDetails);
+
+export {EngagementInfoDetails as EngagementInfoDetailsEl};

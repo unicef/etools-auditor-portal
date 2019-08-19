@@ -240,7 +240,7 @@ class FileAttachmentsTab extends
                   show-delete-btn="[[showDeleteBtn]]"
                   current-attachment-id="[[editedItem.id]]"
                   required>
-                  <!--Here editedItem.id is the same as the uploaded attachment id--!>
+                  <!-- Here editedItem.id is the same as the uploaded attachment id -->
                 </etools-upload>
             </div>
           </div>
@@ -848,3 +848,5 @@ class FileAttachmentsTab extends
 }
 
 window.customElements.define('file-attachments-tab', FileAttachmentsTab);
+
+export {FileAttachmentsTab as FileAttachmentsTabEl}

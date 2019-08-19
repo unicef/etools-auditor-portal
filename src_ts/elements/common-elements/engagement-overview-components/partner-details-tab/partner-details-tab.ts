@@ -453,3 +453,5 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
 }
 window.customElements.define('partner-details-tab', PartnerDetailsTab);
+
+export {PartnerDetailsTab as PartnerDetailsTabEl}
