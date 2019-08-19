@@ -34,26 +34,26 @@ import {moduleStyles} from '../../../styles-elements/module-styles';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import EndpointsMixin from '../../../app-config/endpoints-mixin';
+import {getEndpoint} from '../../../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
+import {collectionExists, addToCollection, updateCollection, getChoices, readonlyPermission, actionAllowed} from '../../../app-mixins/permission-controller';
+import {checkNonField} from '../../../app-mixins/error-handler';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EndpointsMixin
  * @appliesMixin EtoolsAjaxRequestMixin
  */
 class FollowUpActions extends
-  EndpointsMixin(EtoolsAjaxRequestMixin(
+  EtoolsAjaxRequestMixin(
     CommonMethodsMixin(TableElementsMixin(
-      StaticDataMixin(DateMixin(PolymerElement)))))) {
+      DateMixin(PolymerElement)))) {
 
   static get template() {
     return html`
@@ -66,23 +66,6 @@ class FollowUpActions extends
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
         }
-        :host div[slot="additional"] {
-          padding: 10px 0 9px 12px;
-        }
-        :host div[slot="additional"] paper-button {
-          height: 38px;
-          font-weight: 500;
-          padding-right: 0;
-        }
-        :host div[slot="additional"] iron-icon {
-          width: 20px;
-          color: var(--gray-mid);
-          margin-left: 5px;
-        }
-        :host div[slot="additional"] a {
-          color: var(--gray-mid);
-          text-decoration: none;
-        }
         :host .copy-warning {
           position: relative;
           margin-bottom: 10px;
@@ -91,19 +74,36 @@ class FollowUpActions extends
           color: #212121;
           font-size: 15px;
         }
+        div.action-complete {
+          padding: 10px 0 9px 20px;
+        }
+        div.action-complete paper-button {
+          height: 38px;
+          font-weight: 500;
+          padding-right: 0;
+        }
+        div.action-complete iron-icon {
+          width: 20px;
+          color: var(--gray-mid);
+          margin-left: 5px;
+        }
+        div.action-complete a {
+          color: var(--gray-mid);
+          text-decoration: none;
+        }
         etools-content-panel {
           --ecp-content: {
                 padding: 0;
             };
         }
-        etools-searchable-multiselection-menu.fua-category {
-          --esmm-list-wrapper: {
+        etools-dropdown.fua-category {
+          --paper-listbox: {
                 max-height: 340px;
                 -ms-overflow-style: auto;
             };
         }
-        etools-searchable-multiselection-menu.fua-person {
-          --esmm-list-wrapper: {
+        etools-dropdown.fua-person {
+          --paper-listbox: {
                 max-height: 140px;
                 -ms-overflow-style: auto;
             };
@@ -388,7 +388,7 @@ class FollowUpActions extends
                 </div>
             </div>
 
-            <div slot="additional" hidden$="[[!actionAllowed(editedApBase, 'complete')]]">
+            <div class="action-complete" hidden$="[[!_allowComplete(editedApBase)]]">
                 <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
             </div>
         </etools-dialog>
@@ -516,16 +516,25 @@ class FollowUpActions extends
   @property({type: Array})
   itemsToDisplay!: GenericObject[];
 
+  @property({type: Boolean})
+  canBeChanged!: boolean;
+
+  @property({type: Array})
+  categories!: GenericObject[];
+
+  @property({type: Number})
+  engagementId!: number;
+
   public connectedCallback() {
     super.connectedCallback();
 
-    this.set('users', this.getData('users') || []);
-    this.set('offices', this.getData('offices') || []);
-    this.set('sections', this.getData('sections') || []);
-    this.set('partners', this.getData('partners') || []);
+    this.set('users', getStaticData('users') || []);
+    this.set('offices', getStaticData('offices') || []);
+    this.set('sections', getStaticData('sections') || []);
+    this.set('partners', getStaticData('partners') || []);
 
-    if (!this.collectionExists('edited_ap_options')) {
-      this._addToCollection('edited_ap_options', {});
+    if (!collectionExists('edited_ap_options')) {
+      addToCollection('edited_ap_options', {});
     }
 
     this._requestCompleted = this._requestCompleted.bind(this);
@@ -538,7 +547,9 @@ class FollowUpActions extends
     this.removeEventListener('ap-request-completed', this._requestCompleted as any);
   }
 
-
+  _allowComplete(editedApBase) {
+    return actionAllowed(editedApBase, 'complete');
+  }
   _requestPartner(partner) {
     let id = partner && +partner.id || null;
     this.partnerId = id;
@@ -593,14 +604,14 @@ class FollowUpActions extends
 
   setPermissionPath(basePath) {
     this.basePermissionPath = basePath ? `${basePath}_ap` : '';
-    this.set('categories', this.getChoices(`${this.basePermissionPath}.category`) || []);
-    this.canBeChanged = !this.isReadonly(`${this.basePermissionPath}.POST`);
+    this.set('categories', getChoices(`${this.basePermissionPath}.category`) || []);
+    this.canBeChanged = !readonlyPermission, (`${this.basePermissionPath}.POST`);
   }
 
   _checkNonField(error) {
     if (!error) {return;}
 
-    let nonField = this.checkNonField(error);
+    let nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Follow-Up Actions: ${nonField}`});
     }
@@ -673,7 +684,7 @@ class FollowUpActions extends
     this._selectedAPIndex = index;
 
     let id = get(this, `dataItems.${index}.id`);
-    let apBaseUrl = this.getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
+    let apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
       url = `${apBaseUrl}action-points/${id}/`;
 
     this._sendOptionsRequest(url);
@@ -720,13 +731,13 @@ class FollowUpActions extends
   _handleOptionResponse(detail) {
     fireEvent(this, 'global-loading', {type: 'get-ap-options'});
     if (detail && detail.actions) {
-      this._updateCollection('edited_ap_options', detail.actions);
+      updateCollection('edited_ap_options', detail.actions);
     }
     this.editedApBase = 'edited_ap_options';
     let itemIndex = this._selectedAPIndex;
     this._selectedAPIndex = null;
 
-    if (this.collectionExists('edited_ap_options.PUT')) {
+    if (collectionExists('edited_ap_options.PUT')) {
       this.openEditDialog({itemIndex});
     } else {
       this.dialogTitle = get(this, 'viewDialogTexts.title');

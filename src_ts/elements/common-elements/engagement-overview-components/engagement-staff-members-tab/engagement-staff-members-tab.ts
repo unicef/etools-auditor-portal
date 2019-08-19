@@ -29,7 +29,7 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
-import UserControllerMixin from '../../../app-mixins/user-controller-mixin';
+import {getUserData} from '../../../../elements/app-mixins/user-controller';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
@@ -40,18 +40,17 @@ import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
 import '../../../data-elements/check-user-existence';
 import '../../../data-elements/update-staff-members';
+import {refactorErrorObject, checkNonField} from '../../../app-mixins/error-handler';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin UserControllerMixin
  */
 class EngagementStaffMembersTab extends
-  UserControllerMixin(
     TableElementsMixin(
-      CommonMethodsMixin(PolymerElement))) {
+      CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -735,7 +734,7 @@ class EngagementStaffMembersTab extends
     let item = event && event.model && event.model.item;
     if (!item) {throw 'Can not get item model!';}
 
-    let me = this.getUserData() || {};
+    let me = getUserData() || {};
     let updateOptions = get(item, 'user.email') === me.email;
 
     this.manageEngagementStaff(item);
@@ -831,7 +830,7 @@ class EngagementStaffMembersTab extends
       return;
     }
 
-    let me = this.getUserData() || {},
+    let me = getUserData() || {},
       updateOptions = get(details, 'data.user.email') === me.email;
 
     details.data = details.data || {};
@@ -892,8 +891,8 @@ class EngagementStaffMembersTab extends
   }
 
   _handleUpdateError(errorData) {
-    let nonField = this.checkNonField(errorData);
-    let error = this.refactorErrorObject(errorData);
+    let nonField = checkNonField(errorData);
+    let error = refactorErrorObject(errorData);
 
     this.set('errors', error);
     this.requestInProcess = false;

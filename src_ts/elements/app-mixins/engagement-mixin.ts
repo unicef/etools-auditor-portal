@@ -9,29 +9,20 @@ import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
 import {Constructor, GenericObject} from '../../types/global';
-import PermissionControllerMixin from './permission-controller-mixin';
-import ErrorHandlerMixin from './error-handler-mixin';
-import EndpointsMixin from '../app-config/endpoints-mixin';
-import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
-
+import {getEndpoint} from '../app-config/endpoints-controller';
+import {getUserData} from '../../elements/app-mixins/user-controller';
+import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
+import {whichPageTrows} from './error-handler';
 
 let currentEngagement = {};
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin PermissionControllerMixin
- * @appliesMixin UserControllerMixin
- * @appliesMixin ErrorHandlerMixin
  */
 // TODO: in old behavior config globals was used, check usage
 
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class EngagementMixinClass extends
-      EndpointsMixin(
-        PermissionControllerMixin(
-          UserControllerMixin(
-            ErrorHandlerMixin(
-                baseClass as Constructor<PolymerElement>)))) {
+  class EngagementMixinClass extends baseClass {
 
     @property({type: Number})
     engagementId!: number;
@@ -59,6 +50,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     @property({type: Boolean, observer: 'resetInputDialog'})
     dialogOpened: boolean = false;
+
+    @property({type: String})
+    tab!: string;
 
     connectedCallback() {
       super.connectedCallback();
@@ -98,7 +92,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
       let tab = route.path.split('/')[2];
       if ((tab === 'report') && !this._showReportTabs(permissionBase, engagement) ||
-          (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
+        (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
         let id = route.path.split('/')[1];
         this.set('route.path', `/${id}/overview`);
       }
@@ -121,7 +115,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _engagementUpdated(event) {
-      if(!event || !event.detail){
+      if (!event || !event.detail) {
         return;
       }
       let data = event.detail.data;
@@ -147,8 +141,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       } else {
         this.permissionBase = `engagement_${id}`;
       }
-      this.reportFileTypes = this.getChoices(`${this.permissionBase}.report_attachments.file_type`);
-      this.engagementFileTypes = this.getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
+      this.reportFileTypes = getChoices(`${this.permissionBase}.report_attachments.file_type`);
+      this.engagementFileTypes = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
     }
 
     _openCancelDialog() {
@@ -211,11 +205,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       let forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
 
       return this._prepareData()
-          .then((data) => {
-            this.quietAdding = quietAdding;
-            this.forceOptionsUpdate = forceOptionsUpdate;
-            this.updatedEngagement = data;
-          });
+        .then((data) => {
+          this.quietAdding = quietAdding;
+          this.forceOptionsUpdate = forceOptionsUpdate;
+          this.updatedEngagement = data;
+        });
     }
 
     _submitReport() {
@@ -224,9 +218,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       return this._prepareData(true)
-          .then((data) => {
-            this.updatedEngagement = data;
-          });
+        .then((data) => {
+          this.updatedEngagement = data;
+        });
     }
 
     _finalizeReport() {
@@ -235,9 +229,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       return this._prepareData(false, true)
-          .then((data) => {
-            this.updatedEngagement = data;
-          });
+        .then((data) => {
+          this.updatedEngagement = data;
+        });
     }
 
     _cancelEngagement() {
@@ -316,13 +310,13 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       //leave for compatibility with other code
       return Promise.all([])
-          .then(() => ({
-            engagement_type: type,
-            id: engagementId,
-            data: data,
-            submit: submit ? 'submit/' : null,
-            finalize: finalize ? 'finalize/' : null
-          }));
+        .then(() => ({
+          engagement_type: type,
+          id: engagementId,
+          data: data,
+          submit: submit ? 'submit/' : null,
+          finalize: finalize ? 'finalize/' : null
+        }));
     }
 
     _setExportLinks(engagement) {
@@ -330,8 +324,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return '';
       }
       let type = this.getType(engagement.engagement_type) || 'engagements',
-          pdfLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
-          csvLink = this.getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
+        pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
+        csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
       return [{
         name: 'Export PDF',
@@ -369,9 +363,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
       let el = this.shadowRoot.querySelector(selector);
-      if(!el){
+      if (!el) {
         const pageContent = this.closest('#pageContent');
-        if(pageContent){
+        if (pageContent) {
           el = pageContent.querySelector(selector);
         }
       }
@@ -379,7 +373,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _attachmentsReadonly(base, type) {
-      let readOnly = this.isReadonly(`${base}.${type}`);
+      let readOnly = readonlyPermission(`${base}.${type}`);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -414,14 +408,14 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!permissionBase || !engagement) {
         return false;
       }
-      const userIsFocalPoint = find(this.getUserData().groups, {name: 'UNICEF Audit Focal Point'});
+      const userIsFocalPoint = find(getUserData().groups, {name: 'UNICEF Audit Focal Point'});
       return this.hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
     }
 
     hasReportAccess(permissionBase, engagement) {
-      return this.actionAllowed(permissionBase, 'submit') ||
-          engagement.status === 'report_submitted' ||
-          engagement.status === 'final'
+      return actionAllowed(permissionBase, 'submit') ||
+        engagement.status === 'report_submitted' ||
+        engagement.status === 'final'
     }
 
     _showQuestionnaire(permissionBase, engagement) {
@@ -432,8 +426,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _showFollowUpTabs(permissionBase) {
-      let collection = this._getCollection(`${permissionBase}_ap`, 'GET');
-      return this.isValidCollection(collection);
+      let collection = getCollection(`${permissionBase}_ap`, 'GET');
+      return isValidCollection(collection);
     }
 
     _showCancellationReason(engagement) {
@@ -444,7 +438,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!errorObj || !isObject(errorObj)) {
         return;
       }
-      let page = this.whichPageTrows(errorObj);
+      let page = whichPageTrows(errorObj);
       if (page) {
         let tab = this.tab ? 'tab' : 'routeData.tab';
         this.set(tab, page);

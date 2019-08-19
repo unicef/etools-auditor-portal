@@ -25,8 +25,7 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
-import StaticDataMixin from '../../../app-mixins/static-data-mixin';
+import {getChoices, collectionExists} from '../../../app-mixins/permission-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
@@ -35,12 +34,9 @@ import '../../../data-elements/update-agreement-data';
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
- * @appliesMixin StaticDataMixin
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
  */
-class EngagementInfoDetails extends DateMixin(StaticDataMixin(
-  PermissionControllerMixin(CommonMethodsMixin(PolymerElement)))) {
+class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -472,7 +468,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   }
 
   _setSharedIpWith(basePermissionPath: String) {
-    let sharedIpWithOptions = this.getChoices(`${basePermissionPath}.shared_ip_with.child`);
+    let sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
     return sharedIpWithOptions || [];
   }
 
@@ -668,7 +664,7 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   }
 
   _setEngagementTypes(basePermissionPath: any) {
-    let types = this.getChoices(`${basePermissionPath}.engagement_type`);
+    let types = getChoices(`${basePermissionPath}.engagement_type`);
     if (!types) {return;}
 
     let links: {[key: string]: string} = {
@@ -724,15 +720,19 @@ class EngagementInfoDetails extends DateMixin(StaticDataMixin(
   _hideField(fieldName: any, basePermissionPath: any) {
     if (!fieldName || !basePermissionPath) {return false;}
     let path = `${basePermissionPath}.${fieldName}`;
-    let collectionNotExists = !this.collectionExists(path, 'POST') &&
-      !this.collectionExists(path, 'PUT') &&
-      !this.collectionExists(path, 'GET');
+    let collectionNotExists = !collectionExists(path, 'POST') &&
+      !collectionExists(path, 'PUT') &&
+      !collectionExists(path, 'GET');
 
     return collectionNotExists;
   }
 
   _hideForSc(isStaffSc: any) {
     return isStaffSc;
+  }
+
+  _checkInvalid(value) {
+    return !!value;
   }
 
 }

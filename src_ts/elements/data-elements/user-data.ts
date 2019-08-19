@@ -4,11 +4,11 @@ import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
 import {fireEvent} from "../utils/fire-custom-event.js";
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import UserControllerMixin from '../../elements/app-mixins/user-controller-mixin';
+import {setUserData} from '../../elements/app-mixins/user-controller';
 import {resetOldUserData} from '../app-config/config.js';
 import famEndpoints from '../app-config/endpoints.js';
 
-class UserData extends EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement)) {
+class UserData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   public connectedCallback() {
     super.connectedCallback();
@@ -37,7 +37,7 @@ class UserData extends EtoolsAjaxRequestMixin(UserControllerMixin(PolymerElement
 
     localStorage.setItem('userId', user.user);
 
-    this._setUserData(user);
+    setUserData(user);
     fireEvent(this, 'user-profile-loaded');
   }
 

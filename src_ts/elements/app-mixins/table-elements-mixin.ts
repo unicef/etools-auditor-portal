@@ -5,17 +5,15 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from "../utils/fire-custom-event";
-import PermissionControllerMixin from "./permission-controller-mixin";
-import ErrorHandlerMixin from "./error-handler-mixin";
+import {readonlyPermission, isRequired} from "./permission-controller";
+import {refactorErrorObject} from './error-handler';
 
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin PermissionController
- * @appliesMixin ErrorHandlerMixin
  */
 function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class TableElementsMixinClass extends PermissionControllerMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>)) {
+  class TableElementsMixinClass extends baseClass {
 
     @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
     dataItems: any[] = [];
@@ -60,7 +58,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     editedIndex!: number;
 
     @property({type: Object})
-    originalEditedObj!: GenericObject;
+    originalEditedObj!: GenericObject | null;
 
     @property({type: Array})
     originalTableData!: [];
@@ -102,7 +100,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return null;
       }
 
-      let data = [];
+      let data: any[] = [];
 
       each(this.dataItems, (item, index) => {
         if (!isEqual(item, this.originalTableData[index])) {
@@ -126,7 +124,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return true;
       }
 
-      let readOnly = this.isReadonly(`${path}.${this.mainProperty}`);
+      let readOnly = readonlyPermission(`${path}.${this.mainProperty}`);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -138,8 +136,8 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (this.editedItem && this.editedItem._delete) {
         return true;
       }
-      let elements = this.shadowRoot.querySelectorAll('.validate-input'),
-          valid = true;
+      let elements = this.shadowRoot!.querySelectorAll('.validate-input'),
+        valid = true;
 
       Array.prototype.forEach.call(elements, (element) => {
         if (element.required && !element.validate()) {
@@ -157,13 +155,13 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let required = this.isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
+      let required = isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
 
       return required ? 'required' : false;
     }
 
     _resetFieldError(e: Event) {
-      e.target.invalid = false;
+      (e.target! as any).invalid = false;
     }
 
     openAddDialog() {
@@ -175,7 +173,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     openEditDialog(event = {}) {
-      let index = event.itemIndex;
+      let index = event.itemIndex;// TODO is event.itemIndex ever valid?
       if (isNaN(index) || !~index) {
         index = this._getIndex(event);
       }
@@ -198,7 +196,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     _getIndex(event) {
       let item = event && event.model && event.model.item,
-          index = this.dataItems && this.dataItems.indexOf(item);
+        index = this.dataItems && this.dataItems.indexOf(item);
 
       if ((!index && index !== 0) || index < 0) {
         throw Error('Can not find user data');
@@ -266,7 +264,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (opened) {
         return;
       }
-      let elements = this.shadowRoot.querySelectorAll('.validate-input');
+      let elements = this.shadowRoot!.querySelectorAll('.validate-input');
 
       Array.prototype.forEach.call(elements, element => {
         element.invalid = false;
@@ -310,7 +308,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!errorData) {
         return;
       }
-      let refactoredData = this.dialogOpened ? this.refactorErrorObject(errorData)[0] : this.refactorErrorObject(errorData);
+      let refactoredData = this.dialogOpened ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
       this.set('errors', refactoredData);
     }
 

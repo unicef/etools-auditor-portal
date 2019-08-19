@@ -15,22 +15,21 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import StaticDataMixin from '../../../../app-mixins/static-data-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
+import {checkNonField} from '../../../../app-mixins/error-handler';
 
 /**
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
- * @appliesMixin StaticDataMixin
  */
 class AssessmentOfControls extends
-  CommonMethodsMixin(TableElementsMixin(StaticDataMixin(PolymerElement))) {
+  CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -241,7 +240,7 @@ class AssessmentOfControls extends
       return;
     }
 
-    let nonField = this.checkNonField(error);
+    let nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Assessment of Key Internal Controls: ${nonField}`});
     }

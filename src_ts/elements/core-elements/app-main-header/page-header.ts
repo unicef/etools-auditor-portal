@@ -72,7 +72,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
           font-size: 18px;
         }
 
-        @media (min-width: 850px) {
+        @media (min-width: 1200px) {
           #menuButton {
             display: none;
           }

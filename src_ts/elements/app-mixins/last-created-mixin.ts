@@ -1,33 +1,31 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {Constructor} from "../../types/global";
-import {property} from "@polymer/decorators/lib/decorators";
+
+
+let _engagementData: object | null = null;
 
 /**
  * @polymer
  * @mixinFunction
  */
 function LastCreatedMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-    class LastCreatedMixinClass extends (baseClass) {
-
-        @property({type: Object})
-        _engagementData: object | null = null;
-
-        _setLastEngagementData(data) {
-            if (!data || !data.id) { return false; }
-            this._engagementData = data;
-            return true;
-        }
-
-        getLastEngagementData(id) {
-            if (!this._engagementData) { return null; }
-
-            let data = this._engagementData as any;
-            this._engagementData = null;
-
-            return +data.id === +id ? data : null;
-        }
+  class LastCreatedMixinClass extends (baseClass) {
+    _setLastEngagementData(data) {
+      if (!data || !data.id) { return false; }
+      _engagementData = data;
+      return true;
     }
-    return LastCreatedMixinClass;
+
+    getLastEngagementData(id) {
+      if (!_engagementData) { return null; }
+
+      let data = _engagementData as any;
+      _engagementData = null;
+
+      return +data.id === +id ? data : null;
+    }
+  }
+  return LastCreatedMixinClass;
 }
 
 export default LastCreatedMixin;

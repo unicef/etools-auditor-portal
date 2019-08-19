@@ -12,7 +12,7 @@ import pickBy from 'lodash-es/pickBy';
 import each from 'lodash-es/each';
 
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import PermissionController from '../../../app-mixins/permission-controller-mixin';
+import {getChoices} from '../../../app-mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
@@ -21,9 +21,8 @@ import {moduleStyles} from '../../../styles-elements/module-styles';
  * @polymer
  * @customElement
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin PermissionController
  */
-class FollowUpFinancialFindings extends CommonMethodsMixin(PermissionController(PolymerElement)) {
+class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     return html`
@@ -242,7 +241,7 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PermissionController(
 
   setAuditOpinionChoices(basePermissionPath) {
     if (!basePermissionPath) {return [];}
-    this.set('auditOpinionChoices', this.getChoices(`${basePermissionPath}.audit_opinion`) || []);
+    this.set('auditOpinionChoices', getChoices(`${basePermissionPath}.audit_opinion`) || []);
   }
 
   getFindingsData() {

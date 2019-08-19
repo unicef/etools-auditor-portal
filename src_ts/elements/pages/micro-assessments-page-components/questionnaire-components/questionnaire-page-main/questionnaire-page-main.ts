@@ -13,7 +13,9 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
+import {getChoices} from '../../../../app-mixins/permission-controller';
 import '../risk-tab/risk-tab';
+import {checkNonField} from '../../../../app-mixins/error-handler';
 
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
@@ -71,7 +73,14 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
           margin-bottom: 0 !important;
           min-width: 0 !important;
         }
-
+        div[list-item]{
+           overflow: visible !important;
+        }
+        etools-dropdown#riskAssessmentDropdown {
+          --paper-listbox: {
+            max-height: 140px;
+          };
+        }
       </style>
 
       <etools-content-panel class="totals" panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
@@ -200,7 +209,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback()
 
-    let riskOptions = this.getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+    let riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
 
     this.addEventListener('edit-blueprint', this._openEditDialog as any);
@@ -396,8 +405,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     }
     if (!errorObj || !errorObj.questionnaire) {return;}
 
-    let nonField = this.checkNonField(errorObj.questionnaire);
-    let data = this.refactorErrorObject(errorObj.questionnaire);
+    let nonField = checkNonField(errorObj.questionnaire);
+    let data = refactorErrorObject(errorObj.questionnaire);
     if (isString(data)) {
       fireEvent(this, 'toast', {text: `Qustionnaire: ${data}`});
     }

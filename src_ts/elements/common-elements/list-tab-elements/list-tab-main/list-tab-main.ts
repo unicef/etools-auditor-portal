@@ -8,19 +8,18 @@ import '@polymer/polymer/lib/elements/dom-if';
 import { sharedStyles } from '../../../styles-elements/shared-styles';
 import { moduleStyles } from '../../../styles-elements/module-styles';
 
-import QueryParamsController from '../../../app-mixins//query-params-controller';
 import { GenericObject } from '../../../../types/global';
 import {ListTabMainStyles} from './list-tab-main-styles';
 import '../list-header/list-header';
 import '../list-element/list-element';
 import '../list-pagination/list-pagination';
+import {BooleanLiteral} from 'babel-types';
 
 /**
  * @polymer
  * @customElement
- * @appliesMixin QueryParamsController
  */
-class ListTabMain extends QueryParamsController(PolymerElement) {
+class ListTabMain extends PolymerElement {
 
   static get template() {
     return html`
@@ -153,6 +152,10 @@ class ListTabMain extends QueryParamsController(PolymerElement) {
 
   @property({ type: Boolean })
   noAdditional: boolean = false;
+
+  @property({ type: Boolean })
+  noAnimation!: boolean;
+  
 
   _orderChanged(newOrder) {
     if (!newOrder || !(this.headings instanceof Array)) { return false; }

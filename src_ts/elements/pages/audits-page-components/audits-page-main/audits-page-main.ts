@@ -26,8 +26,9 @@ import '../report-page-components/audit-report-page-main/audit-report-page-main'
 import {property} from "@polymer/decorators/lib/decorators";
 import {GenericObject} from "../../../../types/global";
 import EngagementMixin from "../../../app-mixins/engagement-mixin";
-import StaticDataMixin from "../../../app-mixins/static-data-mixin";
+import {setStaticData, getStaticData} from "../../../app-mixins/static-data-controller";
 import CommonMethodsMixin from "../../../app-mixins/common-methods-mixin";
+import {getChoices} from '../../../app-mixins/permission-controller';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
@@ -36,15 +37,14 @@ import isNull from 'lodash-es/isNull';
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin StaticDataMixin
  * @appliesMixin EngagementMixin
  */
-class AuditsPageMain extends CommonMethodsMixin(StaticDataMixin(EngagementMixin(PolymerElement))) {
+class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
 
   static get template() {
     // language=HTML
     return html`
-      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles} 
+      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
       <style>
         .repeatable-item-container {
           margin-bottom: 0 !important;
@@ -344,14 +344,14 @@ class AuditsPageMain extends CommonMethodsMixin(StaticDataMixin(EngagementMixin(
   }
 
   infoLoaded() {
-    if (this.getData('audit_opinions')) {
+    if (getStaticData('audit_opinions')) {
       return;
     }
-    let auditOpinions = this.getChoices(`engagement_${this.engagement.id}.audit_opinion`);
+    let auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
     if (!auditOpinions) {
       return;
     }
-    this._setData('audit_opinions', auditOpinions);
+    setStaticData('audit_opinions', auditOpinions);
   }
 
 }

@@ -1,10 +1,10 @@
 import {PolymerElement} from "@polymer/polymer/polymer-element";
 import {property} from "@polymer/decorators";
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {GenericObject} from "../../types/global";
 
-class UpdateAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)) {
+class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   @property({type: String, observer: '_dateChanged'})
   newDate!: string;
@@ -23,7 +23,7 @@ class UpdateAgreementData extends EndpointsMixin(EtoolsAjaxRequestMixin(PolymerE
     if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {return;}
 
     this.poUpdating = true;
-    let url = this.getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
+    let url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
     this.sendRequest({
       method: 'PATCH',
       endpoint: {url},

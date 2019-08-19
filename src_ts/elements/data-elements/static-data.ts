@@ -1,9 +1,9 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import famEndpoints from '../app-config/endpoints';
-import EndpointsMixin from '../app-config/endpoints-mixin';
+import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import PermissionControllerMixin from '../../elements/app-mixins/permission-controller-mixin';
-import StaticDataMixin from '../../elements/app-mixins/static-data-mixin';
+import {addToCollection, getChoices, isValidCollection} from '../app-mixins/permission-controller';
+import {setStaticData, updateStaticData} from '../../elements/app-mixins/static-data-controller';
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
@@ -11,8 +11,7 @@ import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
 
 
-
-class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixin(EtoolsAjaxRequestMixin(PolymerElement)))) {
+class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   public static get template() {
     return html`
@@ -61,7 +60,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   }
 
   getPartners() {
-    let partnersEndpoint = this.getEndpoint('partnerOrganisations');
+    let partnersEndpoint = getEndpoint('partnerOrganisations');
     this.sendRequest({
       endpoint: partnersEndpoint
     })
@@ -92,8 +91,8 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     this.sendRequest({
       endpoint: officesEndpoint
     })
-    .then((resp) => this._apDataResponse(resp, 'offices'))
-    .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
+      .then((resp) => this._apDataResponse(resp, 'offices'))
+      .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
   }
 
   getSections() {
@@ -111,7 +110,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       endpoint: famEndpoints.static
     };
 
-    this.sendRequest(reqOpts).then(resp => this._setData('staticDropdown', resp));
+    this.sendRequest(reqOpts).then(resp => setStaticData('staticDropdown', resp));
   }
 
   makeOptionsCalls() {
@@ -144,7 +143,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   getAtmOptions() {
     const options = {
-      endpoint: this.getEndpoint('attachments', {id: 'new'}),
+      endpoint: getEndpoint('attachments', {id: 'new'}),
       csrf: true,
       method: 'OPTIONS'
     }
@@ -185,13 +184,13 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
   _updateEngagementsFilters() {
     let time = new Date().getTime();
 
-    let filterAuditorsEndpoint = this.getEndpoint('filterAuditors');
+    let filterAuditorsEndpoint = getEndpoint('filterAuditors');
     filterAuditorsEndpoint.url += `?reload=${time}`;
     this.sendRequest({endpoint: filterAuditorsEndpoint})
       .then((resp) => this._filterAuditorsLoaded(resp))
       .catch((err) => this._filterAuditorsLoaded(err));
 
-    let filterPartnersEndpoint = this.getEndpoint('filterPartners');
+    let filterPartnersEndpoint = getEndpoint('filterPartners');
     filterPartnersEndpoint.url += `?reload=${time}`;
     this.sendRequest({endpoint: filterPartnersEndpoint})
       .then((resp) => this._filterPartnersLoaded(resp))
@@ -203,7 +202,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       this._responseError('Partners', '', 'warn');
     } else {
       let partners = sortBy(details, ['name']);
-      this._setData('partners', partners);
+      setStaticData('partners', partners);
     }
     this.dataLoaded.partners = true;
     this._allDataLoaded();
@@ -215,9 +214,9 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     }
     let filterAuditors = details || details.results || [];
     if (this.dataLoaded.filters) {
-      this._updateData('filterAuditors', filterAuditors);
+      updateStaticData('filterAuditors', filterAuditors);
     } else {
-      this._setData('filterAuditors', filterAuditors);
+      setStaticData('filterAuditors', filterAuditors);
     }
 
     this.dataLoaded.filterAuditors = true;
@@ -231,9 +230,9 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
     let filterPartners = details || [];
     if (this.dataLoaded.filters) {
-      this._updateData('filterPartners', filterPartners);
+      updateStaticData('filterPartners', filterPartners);
     } else {
-      this._setData('filterPartners', filterPartners);
+      setStaticData('filterPartners', filterPartners);
     }
 
     this.dataLoaded.filterPartners = true;
@@ -242,20 +241,20 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
   _handleNewEngagementResponse(details) {
     let actions = details && details.actions;
-    if (!details || details.error || !this.isValidCollection(actions)) {
+    if (!details || details.error || !isValidCollection(actions)) {
       this._responseError('Engagement Permissions', details.error);
     } else {
-      this._addToCollection('new_engagement', actions);
+      addToCollection('new_engagement', actions);
 
-      let statuses = this.getChoices('new_engagement.status') || [];
-      let engagementTypes = this.getChoices('new_engagement.engagement_type') || [];
+      let statuses = getChoices('new_engagement.status') || [];
+      let engagementTypes = getChoices('new_engagement.engagement_type') || [];
 
       if (!statuses) {this._responseError('Statuses', 'Can not load engagement statuses data');}
       if (!engagementTypes) {this._responseError('Engagement types', 'Can not load engagement types data');}
 
-      this._setData('statuses', statuses);
+      setStaticData('statuses', statuses);
       this.dataLoaded.statuses = true;
-      this._setData('engagementTypes', engagementTypes);
+      setStaticData('engagementTypes', engagementTypes);
       this.dataLoaded.engagementTypes = true;
     }
 
@@ -273,7 +272,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
       throw new Error('Please provide collection and dataName attributes');
     }
 
-    this._addToCollection(collection, actions, name);
+    addToCollection(collection, actions, name);
     this.dataLoaded[dataName] = true;
   }
 
@@ -282,8 +281,8 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
     let name = get(data, 'name', '');
 
     if (actions) {
-      this._addToCollection(`new_engagement_attachments`, actions || {}, name);
-      this._addToCollection(`new_staff_sc_attachments`, actions || {}, name);
+      addToCollection(`new_engagement_attachments`, actions || {}, name);
+      addToCollection(`new_staff_sc_attachments`, actions || {}, name);
     } else {
       this._responseError('Engagement Attachments Permissions', data && data.type);
     }
@@ -301,7 +300,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
           `${user.first_name} ${user.last_name}` :
           'Unnamed User';
       });
-      this._setData('users', details);
+      setStaticData('users', details);
     }
     this.dataLoaded.users = true;
     this._allDataLoaded();
@@ -316,7 +315,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
           `${user.first_name} ${user.last_name}` :
           'Unnamed User';
       });
-      this._setData('staffMembersUsers', details);
+      setStaticData('staffMembersUsers', details);
     }
     this.dataLoaded.staffUsers = true;
     this._allDataLoaded();
@@ -327,7 +326,7 @@ class StaticData extends StaticDataMixin(PermissionControllerMixin(EndpointsMixi
 
     if (!collection || !details) {return;}
 
-    this._setData(collection, details);
+    setStaticData(collection, details);
   }
 
   _responseError(message, type, eventType = 'error') {

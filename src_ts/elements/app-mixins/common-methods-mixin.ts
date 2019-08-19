@@ -4,21 +4,18 @@ import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
-import ErrorHandlerMixin from './error-handler-mixin';
-import PermissionControllerMixin from './permission-controller-mixin';
-import StaticDataMixin from './static-data-mixin';
+import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
+import {setStaticData, getStaticData} from './static-data-controller';
 import {Constructor} from "../../types/global";
 import {fireEvent} from "../utils/fire-custom-event";
+import {refactorErrorObject, checkNonField} from './error-handler';
 
 /**
  * @polymer
  * @mixinFunction
- * @appliesMixin ErrorHandlerMixin
- * @appliesMixin PermissionController
- * @appliesMixin StaticDataMixin
  */
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class CommonMethodsMixinClass extends StaticDataMixin(PermissionControllerMixin(ErrorHandlerMixin(baseClass as Constructor<PolymerElement>))) {
+  class CommonMethodsMixinClass extends baseClass {
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -38,7 +35,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return true;
       }
 
-      let readOnly = this.isReadonly(`${basePermissionPath}.${field}`);
+      let readOnly = readonlyPermission(`${basePermissionPath}.${field}`);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -51,7 +48,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let required = this.isRequired(`${basePermissionPath}.${field}`);
+      let required = isRequired(`${basePermissionPath}.${field}`);
 
       return required ? 'required' : false;
     }
@@ -63,7 +60,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
-      this.set('errors', clone(this.refactorErrorObject(errorData)));
+      this.set('errors', clone(refactorErrorObject(errorData)));
       if (this.tabTexts && this.tabTexts.fields.some(field => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }
@@ -75,8 +72,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let data = this.refactorErrorObject(errorData);
-      let nonField = this.checkNonField(errorData);
+      let data = refactorErrorObject(errorData);
+      let nonField = checkNonField(errorData);
 
       if (!this.dialogOpened && isString(data)) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${data}`});
@@ -108,8 +105,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!base) {
         return '';
       }
-      return this.getFieldAttribute(`${base}.${path}`, 'label', 'POST') ||
-          this.getFieldAttribute(`${base}.${path}`, 'label', 'GET');
+      return getFieldAttribute(`${base}.${path}`, 'label', 'POST') ||
+        getFieldAttribute(`${base}.${path}`, 'label', 'GET');
     }
 
     getDisplayName(path, base, value) {
@@ -132,16 +129,16 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!base) {
         return '';
       }
-      return this.getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
+      return getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
     }
 
     getPlaceholderText(path, base, datepicker) {
-      if (this.isReadonly(`${base}.${path}`)) {
+      if (readonlyPermission(`${base}.${path}`)) {
         return 'Empty Field'
       }
 
       let label = this.getLabel(path, base),
-          prefix = datepicker ? 'Select' : 'Enter';
+        prefix = datepicker ? 'Select' : 'Enter';
       return `${prefix} ${label}`;
     }
 
@@ -154,13 +151,13 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return;
       }
 
-      let choices = this.getData(`${path}_choices`);
+      let choices = getStaticData(`${path}_choices`);
       if (!choices) {
-        choices = this.getChoices(path);
+        choices = getChoices(path);
       }
 
       if (choices instanceof Array) {
-        this._setData(`${path}_choices`, choices);
+        setStaticData(`${path}_choices`, choices);
         return choices;
       }
     }
@@ -170,11 +167,11 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _showPrefix(path, base, value, readonly) {
-      return (!this.isReadonly(`${base}.${path}`) && !readonly) || !!value;
+      return (!readonlyPermission(`${base}.${path}`) && !readonly) || !!value;
     }
 
     getTooltipText(selectedValues, options, field) {
-      let tooltip = [];
+      let tooltip:any[] = [];
       each(selectedValues, (value) => {
         let displayValue = filter(options, ['id', +value]);
         if (displayValue.length > 0) {

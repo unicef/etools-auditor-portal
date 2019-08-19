@@ -12,7 +12,7 @@ declare const moment: any;
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import PermissionControllerMixin from '../../../app-mixins/permission-controller-mixin';
+import {collectionExists} from '../../../app-mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
@@ -24,10 +24,9 @@ import DatePickerLite from '@unicef-polymer/etools-date-time/datepicker-lite';
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
- * @appliesMixin PermissionControllerMixin
  * @appliesMixin CommonMethodsMixin
  */
-class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethodsMixin(PolymerElement))) {
+class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -262,7 +261,11 @@ class AssignEngagement extends DateMixin(PermissionControllerMixin(CommonMethods
   }
 
   showExchange(basePath) {
-    return basePath && this.collectionExists(`${basePath}.exchange_rate`, 'GET');
+    return basePath && collectionExists(`${basePath}.exchange_rate`, 'GET');
+  }
+
+  _checkInvalid(value) {
+    return !!value;
   }
 
 }
