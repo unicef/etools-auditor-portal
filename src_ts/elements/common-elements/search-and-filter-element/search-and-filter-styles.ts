@@ -109,7 +109,7 @@ export const searchAndFilterStyles = html`
       min-width: 200px;
       max-width: 350px;
 
-      --esmm-list-wrapper: {
+      --paper-listbox: {
         margin-top: 0;
         padding-bottom: 8px;
         -ms-overflow-style: auto;

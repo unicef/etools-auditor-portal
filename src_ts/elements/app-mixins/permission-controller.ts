@@ -2,9 +2,14 @@ import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
 import {GenericObject} from '../../types/global';
 
-let _permissionCollection: GenericObject = {};
+let _permissionCollection: {
+  edited_ap_options?: {allowed_actions:[]},
+  new_engagement?: {POST:GenericObject, GET: GenericObject, allowed_actions:[]},
+  new_staff_sc?:{POST:GenericObject, GET:GenericObject, title:string, allowed_actions:[]},
+  [key:string]: any
+} = {};
 
-export function addToCollection(collectionName, data, title?) { //_addToCollection
+export function addToCollection(collectionName, data, title?) {
   //check arguments
   if (!collectionName || !data) {
     console.warn('collectionName and data arguments must be provided!');
@@ -33,7 +38,7 @@ export function addToCollection(collectionName, data, title?) { //_addToCollecti
   return true;
 }
 
-export function updateCollection(collectionName, data, title?) {//_updateCollection
+export function updateCollection(collectionName, data, title?) {
   if (!_permissionCollection[collectionName]) {
     console.warn(`Collection ${collectionName} does not exist!`);
     return false;

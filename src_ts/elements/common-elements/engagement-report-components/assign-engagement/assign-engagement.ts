@@ -264,6 +264,10 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
     return basePath && collectionExists(`${basePath}.exchange_rate`, 'GET');
   }
 
+  _checkInvalid(value) {
+    return !!value;
+  }
+
 }
 window.customElements.define('assign-engagement', AssignEngagement);
 

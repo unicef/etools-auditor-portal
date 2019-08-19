@@ -17,6 +17,7 @@ import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import {fireEvent} from '../../../../utils/fire-custom-event';
 import {GenericObject} from '../../../../../types/global';
+import {checkNonField} from '../../../../app-mixins/error-handler';
 
 
 /**
@@ -190,10 +191,14 @@ deleteTitle: string = 'Are you sure that you want to delete this Recommendation?
 _checkNonField(error) {
   if (!error) {return;}
 
-  let nonField = this.checkNonField(error);
+  let nonField = checkNonField(error);
   if (nonField) {
     fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
   }
+}
+
+_checkInvalid(value) {
+  return !!value;
 }
 
 

@@ -202,15 +202,17 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _configListParams(noNotify?) {
 
-    let queriesUpdates: GenericObject = {};
-    let queries: GenericObject = parseQueries() || {};
+    let queries = this.route.__queryParams || {};
+    let queriesUpdates: GenericObject = clone(queries);
+
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
     if (!queries.page) {queriesUpdates.page = '1';}
 
     let page = +queries.page;
-    if (isNaN(page) || (this.lastParams && (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
+    if (isNaN(page) || (this.lastParams &&
+      (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
       queriesUpdates.page = '1';
     }
 
@@ -219,7 +221,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
 
     updateQueries(queriesUpdates, null, noNotify);
-    return parseQueries();
+    return queriesUpdates;
   }
 
   _queryParamsChanged() {

@@ -40,6 +40,7 @@ import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
 import '../../../data-elements/check-user-existence';
 import '../../../data-elements/update-staff-members';
+import {refactorErrorObject, checkNonField} from '../../../app-mixins/error-handler';
 
 /**
  * @polymer
@@ -890,8 +891,8 @@ class EngagementStaffMembersTab extends
   }
 
   _handleUpdateError(errorData) {
-    let nonField = this.checkNonField(errorData);
-    let error = this.refactorErrorObject(errorData);
+    let nonField = checkNonField(errorData);
+    let error = refactorErrorObject(errorData);
 
     this.set('errors', error);
     this.requestInProcess = false;
