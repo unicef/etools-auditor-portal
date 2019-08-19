@@ -16,7 +16,7 @@ import {GenericObject} from '../../../../../types/global';
 import {getChoices} from '../../../../app-mixins/permission-controller';
 import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../app-mixins/error-handler';
-
+import {refactorErrorObject} from '../../../../app-mixins/error-handler';
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -106,6 +106,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
             <div class="row-h group">
               <div class="input-container  input-container-ms">
                 <!-- Risk Assessment -->
+
                 <etools-dropdown id="riskAssessmentDropdown" class="disabled-as-readonly
                   required validate-input"
                   selected=[[editedItem.risk.value]]
@@ -150,7 +151,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   data!: object;
 
   @property({type: Object})
-  questionnaire: { children?: []} = {};
+  questionnaire: {children?: []} = {};
 
   @property({type: Boolean})
   riskRatingOptions = {
@@ -172,7 +173,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   overalRiskOpen: boolean = false;
 
   @property({type: Array})
-  changedData = [];
+  changedData: GenericObject[] = [];
 
   @property({type: Number, readOnly: true})
   requests: number = 0;
@@ -415,7 +416,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     }
   }
 
-  requestsCount(number) {
+  requestsCount(number?) {
     if (!number || isNaN(+number)) {return this.requests;}
     let count = number > 0 ? this.requests + 1 : this.requests - 1;
     if (count < 0) {count = 0;}

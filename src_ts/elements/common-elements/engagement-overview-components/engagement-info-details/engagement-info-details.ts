@@ -457,6 +457,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _prepareData() {
+    // reset orderNumber
+    this.set('orderNumber', null);
+
     let poItem = this.get('data.po_item');
     if (!poItem) {return;}
 
@@ -539,13 +542,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.resetAgreement();
 
     if (!value) {
-      this.orderNumber = null;
+      this.set('orderNumber', null);
       return;
     }
 
     if (!this._validatePOLength(value)) {
       this.set('errors.agreement', 'Purchase order number must be 10 digits');
-      this.orderNumber = null;
+      this.set('orderNumber', null);
       return;
     }
 

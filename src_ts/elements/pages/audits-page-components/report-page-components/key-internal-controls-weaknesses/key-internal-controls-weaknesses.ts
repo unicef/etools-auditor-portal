@@ -447,3 +447,5 @@ class KeyInternalControlsWeaknesses extends
 }
 
 window.customElements.define('key-internal-controls-weaknesses', KeyInternalControlsWeaknesses);
+
+export {KeyInternalControlsWeaknesses as KeyInternalControlsWeaknessesEl};

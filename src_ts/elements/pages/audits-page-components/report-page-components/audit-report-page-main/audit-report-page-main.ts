@@ -3,10 +3,15 @@ import {property} from "@polymer/decorators/lib/decorators";
 import {GenericObject} from "../../../../../types/global";
 
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../findings-summary/fundings-summary';
+import {FindingsSummaryEl} from '../findings-summary/fundings-summary';
 import '../financial-findings/financial-findings';
+import {FinancialFindingsEl} from '../financial-findings/financial-findings';
 import '../assessment-of-controls/assessment-of-controls';
+import {AssessmentOfControlsEl} from '../assessment-of-controls/assessment-of-controls';
 import '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
+import {KeyInternalControlsWeaknessesEl} from '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 
 /**
  * @customElement
@@ -81,27 +86,27 @@ class AuditReportPageMain extends PolymerElement {
 
   // TODO: polymer 3 migration - is this still used???
   validate(forSave) {
-    return this.shadowRoot.querySelector('#assignEngagement')!.validate(forSave);
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(forSave);
   }
 
   getAssignVisitData() {
-    return this.$.assignEngagement.getAssignVisitData();
+    return (this.$.assignEngagement as AssignEngagementEl).getAssignVisitData();
   }
 
   getFinancialFindingsData() {
-    return this.$.financialFindings.getTabData();
+    return (this.$.financialFindings as FinancialFindingsEl).getTabData();
   }
 
   getFindingsSummaryData() {
-    return this.$.findingsSummary.getFindingsSummaryData();
+    return (this.$.findingsSummary as FindingsSummaryEl).getFindingsSummaryData();
   }
 
   getAssessmentOfControlsData() {
-    return this.$.assessmentOfControls.getTabData();
+    return (this.$.assessmentOfControls as AssessmentOfControlsEl).getTabData();
   }
 
   getKeyInternalWeaknessData() {
-    return this.$.keyInternalControlsWeaknesses.getKeyInternalWeaknessData();
+    return (this.$.keyInternalControlsWeaknesses as KeyInternalControlsWeaknessesEl).getKeyInternalWeaknessData();
   }
 
 }
