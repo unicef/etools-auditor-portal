@@ -9,6 +9,9 @@ import {GenericObject} from '../../../../../types/global';
 import concat from 'lodash-es/concat';
 import isNull from 'lodash-es/isNull';
 import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
+import {InternalControlsElement} from '../internal-controls/internal-controls';
+import {OverviewElement} from '../overview-element/overview-element';
 
 
 /**
@@ -87,14 +90,14 @@ class ScReportPageMain extends PolymerElement {
   }
 
   getFindingsData() {
-    let findingsLowPriority = this.$.findingsLowPriority.getFindingsData();
-    let findingsHighPriority = this.$.findingsHighPriority.getFindingsData();
+    let findingsLowPriority = (this.$.findingsLowPriority as SummaryFindingsElement).getFindingsData();
+    let findingsHighPriority = (this.$.findingsHighPriority as SummaryFindingsElement).getFindingsData();
     let findings = concat(findingsLowPriority || [], findingsHighPriority || []);
     return findings.length ? findings : null;
   }
 
   getInternalControlsData() {
-    let internalControlsData = this.$.internalControls.getInternalControlsData();
+    let internalControlsData = (this.$.internalControls as InternalControlsElement).getInternalControlsData();
     return !isNull(internalControlsData) ? internalControlsData : null;
   }
 
@@ -103,7 +106,7 @@ class ScReportPageMain extends PolymerElement {
   }
 
   getOverviewData() {
-    return this.$.overviewEngagement.getOverviewData() || null;
+    return (this.$.overviewEngagement as OverviewElement).getOverviewData() || null;
   }
 }
 

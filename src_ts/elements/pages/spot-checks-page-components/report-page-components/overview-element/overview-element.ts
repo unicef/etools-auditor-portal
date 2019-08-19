@@ -147,3 +147,4 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
 }
 
 window.customElements.define('overview-element', OverviewElement);
+export {OverviewElement};
