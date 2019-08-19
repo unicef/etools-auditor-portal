@@ -53,6 +53,11 @@ class FinancialFindings extends
             padding: 0;
           };
         }
+        etools-dropdown#titleOptionsDropDown {
+          --paper-listbox: {
+            max-height: 340px;
+          };
+        }
       </style>
 
       <etools-content-panel
@@ -134,7 +139,7 @@ class FinancialFindings extends
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <!-- Title -->
-                <etools-dropdown
+                <etools-dropdown id="titleOptionsDropDown"
                     class$="disabled-as-readonly validate-input [[_setRequired('financial_finding_set.title', basePermissionPath)]]"
                     label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
                     placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
