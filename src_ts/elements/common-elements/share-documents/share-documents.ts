@@ -313,4 +313,4 @@ class ShareDocuments extends
 
 }
 window.customElements.define('share-documents', ShareDocuments);
-export {ShareDocuments as ShareDocumentsEl}
+export {ShareDocuments as ShareDocumentsEl};

@@ -37,6 +37,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
           <div class="row-h group">
             <div class="input-container">
               <!-- Risk Assessment -->
+
               <etools-dropdown id="riskAssessmentInput"
                 class="validate-input disabled-as-readonly required"
                 selected="{{primaryArea.risk.value.value}}"
@@ -80,7 +81,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   @property({type: Object})
-  primaryArea = {risk: {extra: {}}};
+  primaryArea = {risk: {extra: {}, value: {}}};
 
   @property({type: String})
   errorBaseText = 'Overall Risk Assessment: ';
@@ -101,7 +102,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   riskOptions!: [];
 
   @property({type: Object})
-  originalData!: ValueAndDisplayName;
+  originalData!: GenericObject;
 
   static get observers() {
     return [
@@ -114,11 +115,12 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    let riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
-    this.set('riskOptions', riskOptions);
+    this._populateRiskOptions();
   }
 
   _setValues(data) {
+    this._populateRiskOptions();
+
     if (!data) {
       return;
     }
@@ -135,6 +137,13 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
     this.set('primaryArea.risk.value', find(this.riskOptions, (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value));
     this.set('primaryArea.risk.extra', extra);
+  }
+
+  _populateRiskOptions() {
+    if (!this.riskOptions) {
+      let riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
+      this.set('riskOptions', riskOptions);
+    }
   }
 
   validate(forSave) {

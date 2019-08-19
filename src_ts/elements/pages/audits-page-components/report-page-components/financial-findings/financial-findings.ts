@@ -374,3 +374,5 @@ class FinancialFindings extends
 }
 
 window.customElements.define('financial-findings', FinancialFindings);
+
+export {FinancialFindings as FinancialFindingsEl};

@@ -432,3 +432,5 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 }
 
 window.customElements.define('findings-summary', FindingsSummary);
+
+export {FindingsSummary as FindingsSummaryEl};
