@@ -277,7 +277,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       this._pageNotFound();
       return;
     } else {
-      resolvedPageUrl = `${getDomainByEnv()}src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
+      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
     }
 
     import(resolvedPageUrl).then(() => {
