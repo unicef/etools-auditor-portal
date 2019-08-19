@@ -10,3 +10,8 @@ export interface GenericObject {
   [key: string]: any;
 }
 
+export interface ValueAndDisplayName {
+  value: string,
+  display_name: string
+}
+
