@@ -96,3 +96,4 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
 }
 
 window.customElements.define('internal-controls', InternalControls);
+export {InternalControls as InternalControlsElement}

@@ -12,7 +12,9 @@ import {fireEvent} from '../../../utils/fire-custom-event';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import find from 'lodash-es/find';
-import {GenericObject} from '../../../../types/global';
+import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 
 class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -95,6 +97,12 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   riskData!: GenericObject;
 
+  @property({type: Array})
+  riskOptions!: [];
+
+  @property({type: Object})
+  originalData!: ValueAndDisplayName;
+
   static get observers() {
     return [
       '_setValues(riskData, riskOptions)',
@@ -125,7 +133,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       extra = JSON.parse(extra);
     }
 
-    this.set('primaryArea.risk.value', find(this.riskOptions, risk => risk.value === this.riskData.blueprints[0].risk.value));
+    this.set('primaryArea.risk.value', find(this.riskOptions, (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value));
     this.set('primaryArea.risk.extra', extra);
   }
 
@@ -139,8 +147,8 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
     let required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
     if (!required) {return true;}
 
-    let riskValid = this.$.riskAssessmentInput.validate(),
-      commentsValid = this.$.briefJustification.validate(),
+    let riskValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate(),
+      commentsValid = (this.$.briefJustification as PaperTextareaElement).validate(),
       valid = riskValid && commentsValid;
 
     let errors = {

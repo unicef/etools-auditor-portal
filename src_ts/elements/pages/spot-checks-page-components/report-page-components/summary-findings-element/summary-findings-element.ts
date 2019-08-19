@@ -387,3 +387,4 @@ class SummaryFindingsElement extends (CommonMethodsMixin
 }
 
 window.customElements.define('summary-findings-element', SummaryFindingsElement);
+export {SummaryFindingsElement};
