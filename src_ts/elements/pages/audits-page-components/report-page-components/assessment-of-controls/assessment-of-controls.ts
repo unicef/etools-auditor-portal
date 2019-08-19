@@ -249,3 +249,5 @@ class AssessmentOfControls extends
 }
 
 window.customElements.define('assessment-of-controls', AssessmentOfControls);
+
+export {AssessmentOfControls as AssessmentOfControlsEl};

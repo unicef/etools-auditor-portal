@@ -271,4 +271,4 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 }
 window.customElements.define('assign-engagement', AssignEngagement);
 
-export {AssignEngagement as AssignEngagementEl}
+export {AssignEngagement as AssignEngagementEl};

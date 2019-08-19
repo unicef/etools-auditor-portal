@@ -49,6 +49,11 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
             padding: 0;
           };
         }
+        etools-dropdown#auditOpinionDropDown {
+          --paper-listbox: {
+            max-height: 140px;
+          };
+        }
       </style>
 
       <etools-content-panel list panel-title="Summary of Audit Findings">
@@ -155,7 +160,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
               <div class="input-container">
                 <!-- Audit opinion -->
-                <etools-dropdown
+                <etools-dropdown id="auditOpinionDropDown"
                     class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
                     selected="{{editedItem.audit_opinion}}"
                     label$="[[getLabel('audit_opinion', basePermissionPath)]]"
@@ -432,3 +437,5 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 }
 
 window.customElements.define('findings-summary', FindingsSummary);
+
+export {FindingsSummary as FindingsSummaryEl};

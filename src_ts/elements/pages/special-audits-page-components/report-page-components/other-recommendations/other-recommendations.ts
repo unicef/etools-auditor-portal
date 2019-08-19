@@ -205,3 +205,5 @@ _checkInvalid(value) {
 }
 
 window.customElements.define('other-recommendations', OtherRecommendations);
+
+export {OtherRecommendations as OtherRecommendationsEl};
