@@ -150,6 +150,10 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return valid;
     }
 
+    _resetFieldError(e: Event) {
+      (e.target! as any).invalid = false;
+    }
+
     openAddDialog() {
       this.dialogTitle = (this.addDialogTexts && this.addDialogTexts.title) || 'Add New Item';
       this.confirmBtnText = (this.addDialogTexts && this.addDialogTexts.confirmBtn) || 'Add';
