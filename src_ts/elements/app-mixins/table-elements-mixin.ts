@@ -5,7 +5,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from "../utils/fire-custom-event";
-import {readonlyPermission, isRequired} from "./permission-controller";
+import {readonlyPermission} from "./permission-controller";
 import {refactorErrorObject} from './error-handler';
 
 /**
@@ -148,16 +148,6 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       });
 
       return valid;
-    }
-
-    _setRequired(field) {
-      if (!this.basePermissionPath) {
-        return false;
-      }
-
-      let required = isRequired(`${this.basePermissionPath}.${this.mainProperty}.${field}`);
-
-      return required ? 'required' : false;
     }
 
     _resetFieldError(e: Event) {
