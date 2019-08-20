@@ -1,7 +1,6 @@
 import {PolymerElement, html} from "@polymer/polymer";
 import '@polymer/app-route/app-route.js';
 import '@polymer/app-route/app-location.js';
-import '@unicef-polymer/etools-ajax/etools-ajax';
 import {property} from "@polymer/decorators";
 import get from 'lodash-es/get';
 import {getEndpoint} from '../app-config/endpoints-controller';
@@ -30,13 +29,6 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
           pattern="/:view/:page"
           data="{{routeData}}">
       </app-route>
-
-      <etools-ajax
-          method="GET"
-          url="{{url}}"
-          on-success="_handleDataResponse"
-          on-fail="_handleError">
-      </etools-ajax>
     `;
   }
 
@@ -87,6 +79,16 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     this.requestsCompleted = {};
     this.url = getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
+
+    const options = {
+      method: 'GET',
+      endpoint: {url: this.url},
+    };
+
+    this.sendRequest(options)
+      .then(this._handleDataResponse.bind(this))
+      .catch(this._handleError.bind(this));
+
     if (collectionExists(`staff_members_${organisationId}`)) {
       this.requestsCompleted.options = true;
     } else {
@@ -120,7 +122,7 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleDataResponse(data) {
-    this.responseData = data.detail;
+    this.responseData = data;
     this.requestsCompleted.data = true;
     this._handleResponse(this.responseData);
   }
@@ -149,7 +151,7 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.staffsBase = `staff_members_${this.organisationId}`;
   }
 
-  _handleError(event, error) {
+  _handleError(error) {
     let responseData = error && error.request && error.request.detail &&
       error.request.detail.request && error.request.detail.request.xhr;
     console.error(responseData);
