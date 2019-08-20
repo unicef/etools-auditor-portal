@@ -91,7 +91,7 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
                             currency="$"
                             label="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-                            required$="[[_setRequired('total_amount_of_ineligible_expenditure')]]"
+                            required$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             disabled$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
                             error-message="{{errors.total_amount_of_ineligible_expenditure}}"
