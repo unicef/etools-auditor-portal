@@ -154,7 +154,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
 
 
-  _allDataLoaded() {// TODO -rename _checkAllDataLoaded
+  _checkAllDataLoaded() {
     if (this.dataLoaded.partners &&
       this.dataLoaded.engagementOptions &&
       this.dataLoaded.users &&
@@ -205,7 +205,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       setStaticData('partners', partners);
     }
     this.dataLoaded.partners = true;
-    this._allDataLoaded();
+    this._checkAllDataLoaded();
   }
 
   _filterAuditorsLoaded(details) {
@@ -259,7 +259,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
 
     this.dataLoaded.engagementOptions = true;
-    this._allDataLoaded();
+    this._checkAllDataLoaded();
   }
 
   _handleStaffSCOptionsResponse(data) {
@@ -288,7 +288,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
 
     this.dataLoaded.attachmentsOptions = true;
-    this._allDataLoaded();
+    this._checkAllDataLoaded();
   }
 
   _handleUsersResponse(details) {
@@ -303,7 +303,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       setStaticData('users', details);
     }
     this.dataLoaded.users = true;
-    this._allDataLoaded();
+    this._checkAllDataLoaded();
   }
 
   _handleStaffUsersResponse(details) {
@@ -318,7 +318,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       setStaticData('staffMembersUsers', details);
     }
     this.dataLoaded.staffUsers = true;
-    this._allDataLoaded();
+    this._checkAllDataLoaded();
   }
 
   _apDataResponse(details?, cacheKey?) {

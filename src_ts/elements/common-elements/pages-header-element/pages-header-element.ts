@@ -15,16 +15,12 @@ import {moduleStyles} from '../../styles-elements/module-styles';
 import pagesHeaderElementStyles from './pages-header-element-styles';
 
 /**
- * TODO: polymer 3 migration
- *    -  add endponts mixin
- *
- * @customElement
  * @polymer
+ * @customElement
  */
 class PagesHeaderElement extends PolymerElement {
 
   static get template() {
-    // language=HTML
     return html`
       ${sharedStyles} ${moduleStyles} ${pagesHeaderElementStyles}
       <div class="header-wrapper">
@@ -100,19 +96,14 @@ class PagesHeaderElement extends PolymerElement {
   csvEndpoint: string = '';
 
   @property({type: String})
-  baseUrl: string = '';
-
-  @property({type: String})
   link: string = '';
 
   @property({type: Array})
-  exportLinks: string[] = [];
+  exportLinks: GenericObject[] = [];
 
 
   connectedCallback() {
     super.connectedCallback();
-    // TODO: polymer 3 migration - Why?????????
-    this.baseUrl = this.basePath;
   }
 
   _hideAddButton(show) {
@@ -139,12 +130,10 @@ class PagesHeaderElement extends PolymerElement {
   }
 
   exportData(e) {
-    if (this.exportLinks < 1) {
+    if (this.exportLinks.length < 1) {
       throw 'Can not find export link!';
     }
-    // TODO: polymer 3 migration - check if e.model.item still works
-    let url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
-    window.open(url, '_blank');
+    window.open(this.exportLinks[0].url, '_blank');
   }
 
   _isDropDown(exportLinks) {

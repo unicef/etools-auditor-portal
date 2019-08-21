@@ -84,7 +84,6 @@ class AuditReportPageMain extends PolymerElement {
   @property({type: Object})
   permissionBase: GenericObject = {};
 
-  // TODO: polymer 3 migration - is this still used???
   validate(forSave) {
     return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(forSave);
   }

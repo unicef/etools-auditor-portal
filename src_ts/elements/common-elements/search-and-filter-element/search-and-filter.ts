@@ -152,7 +152,6 @@ class SearchAndFilter extends PolymerElement {
   }
 
   addFilter(e) {
-    // TODO: polymer 3 migration - make sure e.model.item works
     let query = (typeof e === 'string') ? e : e.model.item.query;
     let isSelected = this._isSelected(query);
 
@@ -287,7 +286,6 @@ class SearchAndFilter extends PolymerElement {
     }
   }
 
-  // TODO: polymer 3 migration - test this on selection change handler for etools-dropdown-multi
   _changeFilterValue(e, detail) {
     if (!e || !e.currentTarget || !detail) {
       return;

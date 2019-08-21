@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 
 /**
@@ -58,7 +58,7 @@ class PageFooter extends PolymerElement {
       <footer>
         <div id="footer-content">
         <span id="unicef-logo">
-          <img src$="[[rootPath]]/images/UNICEF_logo.png" alt="UNICEF logo">
+          <img src$="[[rootPath]]assets/images/UNICEF_logo.png" alt="UNICEF logo">
         </span>
           <!-- TODO: modify span to a with proper href values after footer pages are ready -->
           <!--   <span class="footer-link">Contact</span>

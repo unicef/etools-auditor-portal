@@ -189,7 +189,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
       #collapse-wrapper {
           padding: 14px 24px 4px 24px;
           background-color: #eee;
-      /* TODO: replace with app-theme var */
           border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
       }
 

@@ -85,9 +85,6 @@ class EngagementsPageMain extends PolymerElement {
   @property({type: Object, notify: true, observer: '_queryParamsChanged'})
   queryParams!: GenericObject;
 
-  @property({type: Number})
-  initiation: number = 0;
-
   @property({type: String})
   endpointName: string = 'engagementsList';
 
@@ -102,7 +99,6 @@ class EngagementsPageMain extends PolymerElement {
   @property({type: Object})
   lastParams!: GenericObject;
 
-  // TODO: polymer 3 migration - is this still needed?
   @property({type: Object})
   partnersListQueries!: GenericObject;
 
@@ -126,8 +122,7 @@ class EngagementsPageMain extends PolymerElement {
     }
 
     if (view === 'list') {
-      // TODO: polymer 3 migration - why is this initiation property needed??????? To be removed in the future.
-      let queries = this._configListParams(!!++this.initiation);
+      let queries = this._configListParams(true);
       this._setEngagementsListQueries(queries);
       this._fireUpdateEngagementsFilters();
       this.view = 'list';

@@ -151,10 +151,11 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
             </iron-pages>
 
           </main>
-
+          <page-footer></page-footer>
         </app-header-layout>
       </app-drawer-layout>
       <multi-notification-list></multi-notification-list>
+
     `;
   }
 
@@ -201,7 +202,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('toast', this.queueToast as any);
-    // this.addEventListener('drawer-toggle-tap', this._toggleDrawer as any); TODO
     this.addEventListener('404', this._pageNotFound);
     this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
@@ -257,7 +257,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _pageChanged(page) {
-    if (!page) { // TODO
+    if (!page) {
       return;
     }
     if (page === 'staff-spot-checks') {
@@ -306,8 +306,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _initialDataLoaded(e) {
-    this.staticDataLoaded = true;// TODO -what is this flag doing???
-    if (this.routeData && this.staticDataLoaded) {
+    if (this.routeData) {
       this.user = getUserData();
       this.page = this.routeData.page || this._setDefaultLandingPage();
     }

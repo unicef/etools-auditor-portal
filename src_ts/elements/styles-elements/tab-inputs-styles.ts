@@ -196,7 +196,7 @@ export const tabInputsStyles = html`
 
     :host > * {
       --required-star-style: {
-        background: url("/ap/images/required.svg") no-repeat 98% 14%/7px;
+        background: url("./assets/images/required.svg") no-repeat 98% 14%/7px;
         width: auto !important;
         max-width: 90%;
         right: auto;

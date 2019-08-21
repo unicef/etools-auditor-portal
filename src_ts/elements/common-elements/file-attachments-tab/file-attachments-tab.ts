@@ -484,10 +484,6 @@ class FileAttachmentsTab extends
         !collectionExists(`${basePath}.POST`));
   }
 
-  _hideShare_(basePermissionPath) { // TODO -is this still used?
-    return this.isTabReadonly(basePermissionPath) || basePermissionPath.includes('new');
-  }
-
   showFileTypes(basePath) {
     return !!basePath && collectionExists(`${basePath}.file_type`, 'GET');
   }
