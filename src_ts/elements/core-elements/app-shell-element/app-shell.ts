@@ -202,7 +202,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('toast', this.queueToast as any);
-    // this.addEventListener('drawer-toggle-tap', this._toggleDrawer as any); TODO
     this.addEventListener('404', this._pageNotFound);
     this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
