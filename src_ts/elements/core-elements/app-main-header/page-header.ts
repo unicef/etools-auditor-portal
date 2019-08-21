@@ -99,7 +99,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
 
           <support-btn></support-btn>
 
-          <etools-profile-dropdown profile="[[user]]"></etools-profile-dropdown>
+          <etools-profile-dropdown profile="[[user]]" on-sign-out="_signOut"></etools-profile-dropdown>
 
           <!--<paper-icon-button id="refresh" icon="refresh" on-tap="_openDataRefreshDialog"></paper-icon-button>-->
         </div>
@@ -130,6 +130,21 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
       this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
     }
   }
+
+  protected _signOut() {
+    this._clearDexieDbs();
+    this._clearLocalStorage();
+    window.location.href = window.location.origin + '/logout';
+  }
+
+  protected _clearDexieDbs() {
+    window.EtoolsFamApp.DexieDb.delete();
+  }
+
+  protected _clearLocalStorage() {
+    localStorage.clear();
+  }
+
 }
 
 window.customElements.define('page-header', PageHeader);
