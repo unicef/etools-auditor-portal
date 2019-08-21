@@ -668,9 +668,9 @@ class EngagementStaffMembersTab extends
     each(data, (staff, index) => {
       this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
     });
-    // if (!this.originalTabData) { // TODO* - This flag is nowhere elese in the app
-    //   this._dataItemsChanged(this.dataItems)
-    // }
+     if (!this.originalTableData) {
+       this._dataItemsChanged(this.dataItems)
+    }
   }
 
   _selectedStaffsChanged(data) {

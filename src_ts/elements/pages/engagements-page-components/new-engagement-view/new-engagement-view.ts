@@ -33,10 +33,6 @@ import '../../../common-elements/engagement-overview-components/engagement-staff
 import {BASE_PATH} from '../../../app-config/config';
 
 /**
- * TODO: polymer 3 migration
- *    - migrate and use:
- *     - add behaviors: etoolsAppConfig.globals and EtoolsAjaxRequestMixin ???????????????????
- *
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin

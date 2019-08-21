@@ -279,12 +279,11 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
   }
 
   _validateEngagement() {
-    let basicInfoValid = this._validateBasicInfo(),
-        reportValid = this.getElement('#report').validate();
-
+    let basicInfoValid = this._validateBasicInfo();
     if (!basicInfoValid) {
       return false;
     }
+    let reportValid = this.getElement('#report').validate();
     if (!reportValid) {
       this.set('tab', 'report');
       return false;

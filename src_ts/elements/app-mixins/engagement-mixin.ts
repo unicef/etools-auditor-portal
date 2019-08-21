@@ -146,10 +146,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _openCancelDialog() {
-      let input = this.getElement('#cancellationReasonInput');
-      if (input) {
-        //this.setMaxHeight(input); TODO - is this needed
-      }
       this.dialogOpened = true;
     }
 
@@ -336,13 +332,12 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }];
     }
 
-    _validateBasicInfo(property) {
+    _validateBasicInfo(property?) {
       let detailsValid = this.getElement('#engagementDetails').validate();
       let partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
       if (!detailsValid || !partnerDetailsValid) {
         let openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
-
         this.set(property || 'tab', openTab);
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;

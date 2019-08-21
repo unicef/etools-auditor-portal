@@ -102,7 +102,6 @@ class EngagementsPageMain extends PolymerElement {
   @property({type: Object})
   lastParams!: GenericObject;
 
-  // TODO: polymer 3 migration - is this still needed?
   @property({type: Object})
   partnersListQueries!: GenericObject;
 
