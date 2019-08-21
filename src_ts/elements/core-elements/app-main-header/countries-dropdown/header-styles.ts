@@ -90,28 +90,8 @@ export const HeaderStyles = html`
       color: var(--dark-primary-text-color);
     }
 
-    :host([opened]) paper-button .arrow-down, :host([opened]) paper-button .arrow-up
+    :host([opened]) paper-button .arrow-down, :host([opened]) paper-button .arrow-up{
     color: var(--dark-icon-color);
-    }
-
-
-    /* TODO - is this style needed? */
-    paper-listbox.no-focus {
-      --paper-menu-focused-item-after: {
-          background: var(--primary-background-color);
-          opacity: 0;
-      };
-    }
-
-    paper-listbox.no-focus paper-item {
-      --paper-item-focused-before: {
-          background: var(--primary-background-color);
-          opacity: 0;
-      };
-    }
-
-    paper-listbox.no-focus paper-item:hover {
-      background: #EEEEEE;
     }
 
 </style>
