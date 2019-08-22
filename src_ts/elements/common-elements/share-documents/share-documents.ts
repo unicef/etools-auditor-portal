@@ -15,6 +15,7 @@ import remove from 'lodash-es/remove';
 import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {moduleStyles} from '../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import {getEndpoint} from '../../app-config/endpoints-controller';
@@ -37,13 +38,14 @@ class ShareDocuments extends
   static get template() {
     return html`
 
-      ${moduleStyles}
+      ${moduleStyles} ${tabInputsStyles}
       <style>
           :host {
             overflow: hidden;
           }
           :host .modal-pad, :host .subtitle {
             padding: 16px 24px;
+            display: block;
           }
           :host .subtitle {
             background-color: #eee;
