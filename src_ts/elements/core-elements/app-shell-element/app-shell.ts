@@ -215,7 +215,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     dialogOverlay.classList.remove("opened");
 
-    // set zIndex in css ?
     const zIndex = (dialogOverlay as any).style.zIndex;
     event.target.$.drawerOverlay.style.zIndex = zIndex;
     event.target.$.appHeaderOverlay.style.zIndex = zIndex;
@@ -230,6 +229,10 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     if (event.path && event.path[0] && event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {return;}
     // edge
     if (event.__target && event.__target.is && event.__target.is.toLowerCase().indexOf('dropdown') > -1) {return;}
+
+    event.target.$.drawerOverlay.style.zIndex = '';
+    event.target.$.appHeaderOverlay.style.zIndex = '';
+    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = '';
 
     event.target.$.drawerOverlay.classList.remove("opened");
     event.target.$.appHeaderOverlay.classList.remove("opened");
