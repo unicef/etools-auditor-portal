@@ -243,7 +243,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      let type = this.getType(this.engagement.engagement_type);
+      let type = this.getType(this.engagement.engagement_type.value);
 
       this.updatedEngagement = {
         engagement_type: type,
