@@ -117,9 +117,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                   option-value="value"
                   disabled="[[requestInProcess]]"
                   readonly="[[requestInProcess]]"
-                  invalid="{{riskAssessmentInvalid}}"
+                  invalid="[[riskAssessmentInvalid]]"
                   error-message="This field is required" on-focus="_resetFieldError"
-                  required
                   trigger-value-change-event
                   on-etools-selected-item-changed="_setSelectedRiskRatingEntity"
                   hide-search>
@@ -152,6 +151,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
   @property({type: Object})
   questionnaire: {children?: []} = {};
+
+  @property({type: Boolean, notify: true})
+  riskAssessmentInvalid: boolean = false;
 
   @property({type: Object})
   riskRatingOptions = {
@@ -216,7 +218,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
     this.addEventListener('edit-blueprint', this._openEditDialog as any);
     this.addEventListener('risk-value-changed', this._riskValueChanged as any);
-
   }
 
   disconnectedCallback() {
@@ -295,6 +296,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
     this.set('editedItem.risk.value', selectedItem.value);
     this.set('editedItem.risk.display_name', selectedItem.display_name);
+    this.riskAssessmentInvalid = false;
   }
 
   _riskValueChanged(event) {
@@ -325,8 +327,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   validate() {
-    let riskValid = this.riskAssessmentDropdown.validate(),
-      commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
+    let riskValid = this.editedItem.risk && !isNaN(parseInt(this.editedItem.risk.value));
+    this.riskAssessmentInvalid = !riskValid;
+    let commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
     return riskValid && commentsValid;
   }
 
