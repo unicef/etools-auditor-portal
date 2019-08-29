@@ -153,7 +153,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   questionnaire: {children?: []} = {};
 
-  @property({type: Boolean})
+  @property({type: Object})
   riskRatingOptions = {
     'na': 'N/A',
     'low': 'Low',
@@ -199,6 +199,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   private tabId!: string;
   private categoryId!: string;
   private originalComments!: string;
+  private originalRiskValue!: string;
 
   static get observers() {
     return [
@@ -226,6 +227,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   _dataChanged(data) {
+
     if (!data) {return;}
     if (!isEmpty(this.questionnaire) && this.firstRun) {
       this.firstRun = false;
@@ -277,6 +279,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.categoryId = event.detail.childId;
     this.editedItem = item;
     this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
+    this.originalRiskValue = item.risk ? item.risk.value : '';
     // this.$.questionHeader.innerHTML = item.header;
     this.dialogOpened = true;
   }
@@ -295,6 +298,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   _riskValueChanged(event) {
+
     this.changedData.push({
       children: [event.detail.data]
     });
@@ -305,9 +309,10 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   _addItemFromDialog() {
     if (!this.dialogOpened || !this.validate()) {return;}
 
+
     if (this.originalComments === this.editedItem.risk.extra.comments &&
       this.riskAssessmentDropdown.selected &&
-      this.riskAssessmentDropdown.selected === this.editedItem.risk.value) {
+      this.originalRiskValue === this.editedItem.risk.value) {
 
       this.dialogOpened = false;
       this.resetDialog();
@@ -322,7 +327,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   validate() {
     let riskValid = this.riskAssessmentDropdown.validate(),
       commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
-
     return riskValid && commentsValid;
   }
 
@@ -343,6 +347,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   getDataFromDialog() {
+
     let blueprintRisk = {
       value: this.riskAssessmentDropdown.selected,
       extra: this.editedItem.risk && this.editedItem.risk.extra || {}

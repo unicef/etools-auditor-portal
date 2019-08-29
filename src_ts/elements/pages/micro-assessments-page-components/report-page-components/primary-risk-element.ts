@@ -177,7 +177,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   getRiskData() {
-    if (!this.primaryArea.risk.value) {
+    if (!this.primaryArea.risk.value || !this.primaryArea.risk.value.value) {
       return null;
     }
 
