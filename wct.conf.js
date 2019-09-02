@@ -1,10 +1,17 @@
 module.exports = {
   plugins: {
-    local: {
-      // browsers: ["chrome", ]
-      browsers: ["firefox", ]
-    },
-    sauce: false,
-  },
-  skipUpdateCheck: true
+    "local": {
+      "disabled": false,
+      "browsers": [{
+          "browserName": "firefox"
+        }
+      ],
+      browserOptions: {
+        firefox: [
+          "http://localhost:8081/components/tpm/generated-index.html?cli_browser_id=0",
+          "--headless"
+        ]
+      }
+    }
+  }
 };
