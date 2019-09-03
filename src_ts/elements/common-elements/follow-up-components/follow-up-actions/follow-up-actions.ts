@@ -605,7 +605,7 @@ class FollowUpActions extends
   setPermissionPath(basePath) {
     this.basePermissionPath = basePath ? `${basePath}_ap` : '';
     this.set('categories', getChoices(`${this.basePermissionPath}.category`) || []);
-    this.canBeChanged = !readonlyPermission, (`${this.basePermissionPath}.POST`);
+    this.canBeChanged = !readonlyPermission(`${this.basePermissionPath}.POST`);
   }
 
   _checkNonField(error) {
