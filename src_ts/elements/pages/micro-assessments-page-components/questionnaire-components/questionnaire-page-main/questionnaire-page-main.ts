@@ -199,6 +199,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   private tabId!: string;
   private categoryId!: string;
   private originalComments!: string;
+  private originalRiskValue!: string;
 
   static get observers() {
     return [
@@ -277,6 +278,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.categoryId = event.detail.childId;
     this.editedItem = item;
     this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
+    this.originalRiskValue = item.risk ? item.risk.value : '';
     // this.$.questionHeader.innerHTML = item.header;
     this.dialogOpened = true;
   }
@@ -307,7 +309,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
     if (this.originalComments === this.editedItem.risk.extra.comments &&
       this.riskAssessmentDropdown.selected &&
-      this.riskAssessmentDropdown.selected === this.editedItem.risk.value) {
+      this.originalRiskValue === this.editedItem.risk.value) {
 
       this.dialogOpened = false;
       this.resetDialog();
