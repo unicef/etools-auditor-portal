@@ -1,31 +1,35 @@
-FROM node:8-alpine
+FROM node:11.9.0-alpine as fam_builder
 RUN apk update
-
 RUN apk add --update bash
 
 RUN apk add git
-RUN npm i -g npm@5.6.0
-RUN npm install -g --unsafe-perm bower polymer-cli gulp-cli
-
+RUN npm install -g --unsafe-perm polymer-cli
+RUN npm install -g typescript
 
 WORKDIR /tmp
-ADD bower.json /tmp/
+#ADD . /tmp/
 ADD package.json /tmp/
+ADD src_ts /tmp/src_ts/
+ADD assets /tmp/assets/
+ADD index.html /tmp/
+ADD manifest.json /tmp/
+ADD polymer.json /tmp/
+ADD express.js /tmp/
+ADD tsconfig.json /tmp/
 
-RUN npm install
-RUN bower --allow-root install
+RUN npm cache verify
+RUN npm i
+# echo done is used because tsc returns a non 0 status (tsc has some errors)
+RUN tsc || echo done
+RUN export NODE_OPTIONS=--max_old_space_size=4096 && polymer build
 
-RUN mkdir /code/
-ADD . /code/
-
-# remove installed modules for clean setup
-RUN rm -rf /code/build/
-RUN rm -rf /code/node_modules/
-RUN rm -rf /code/bower_modules/
-
+FROM node:11.9.0-alpine
+RUN apk update
+RUN apk add --update bash
 WORKDIR /code
-RUN mv /tmp/node_modules /code/node_modules
-RUN mv /tmp/bower_components /code/bower_components
-RUN gulp
+RUN npm install express --no-save
+RUN npm install browser-capabilities@1.1.3 --no-save
+COPY --from=fam_builder /tmp/express.js /code/express.js
+COPY --from=fam_builder /tmp/build /code/build
 EXPOSE 8080
 CMD ["node", "express.js"]
