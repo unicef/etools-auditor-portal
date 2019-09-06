@@ -1,22 +1,57 @@
 {
-  "entrypoint": "src/index.html",
-  "shell": "src/elements/core-elements/app-shell-element/app-shell.html",
-  "fragments": [
-    "src/elements/pages/not-found-page-view/not-found-page-view.html",
-    "src/elements/pages/engagements-page-components/engagements-page-main/engagements-page-main.html",
-    "src/elements/pages/micro-assessments-page-components/micro-assessments-page-main/micro-assessments-page-main.html",
-    "src/elements/pages/spot-checks-page-components/spot-checks-page-main/spot-checks-page-main.html",
-    "src/elements/pages/audits-page-components/audits-page-main/audits-page-main.html",
-    "src/elements/pages/special-audits-page-components/special-audits-page-main/special-audits-page-main.html",
-    "src/elements/pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main.html"
+  "entrypoint": "index.html",
+  "shell": "src/elements/core-elements/app-shell-element/app-shell.js",
+  "sources": [
+    "src/**/*",
+    "assets/**/*",
+    "package.json"
   ],
-  "sourceGlobs": [
-    "src/assets/**/*",
-    "src/elements/**/*",
-    "!src/assets/data/**/*",
-    "src/manifest.json",
-    "src/bower_components/webcomponentsjs/webcomponents-lite.min.js",
-    "src/bower_components/webcomponentsjs/webcomponents-lite.js",
-    "src/assets/data/countries.json"
-  ]
+  "fragments": [
+    "src/elements/pages/not-found-page-view/not-found-page-view.js",
+    "src/elements/pages/engagements-page-components/engagements-page-main/engagements-page-main.js",
+    "src/elements/pages/micro-assessments-page-components/micro-assessments-page-main/micro-assessments-page-main.js",
+    "src/elements/pages/spot-checks-page-components/spot-checks-page-main/spot-checks-page-main.js",
+    "src/elements/pages/audits-page-components/audits-page-main/audits-page-main.js",
+    "src/elements/pages/special-audits-page-components/special-audits-page-main/special-audits-page-main.js",
+    "src/elements/pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main.js"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "node_modules/@webcomponents/webcomponentsjs/**",
+    "node_modules/web-animations-js/web-animations-next-lite.min.js",
+    "node_modules/moment/min/moment.min.js"
+  ],
+  "builds": [
+    {
+      "name": "esm-bundled",
+      "browserCapabilities": [
+        "es2015",
+        "modules"
+      ],
+      "js": {
+        "minify": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": true,
+      "addServiceWorker": true
+    },
+    {
+      "name": "es6-bundled",
+      "preset": "es6-bundled",
+      "addServiceWorker": true
+    },
+    {
+      "name": "es5-bundled",
+      "preset": "es5-bundled",
+      "addServiceWorker": true
+    }
+  ],
+  "moduleResolution": "node",
+  "npm": true
+
 }
