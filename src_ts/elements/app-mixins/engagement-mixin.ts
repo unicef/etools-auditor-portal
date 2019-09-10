@@ -243,7 +243,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      let type = this.getType(this.engagement.engagement_type.value);
+      let type = this.getLongEngType(this.engagement.engagement_type);
 
       this.updatedEngagement = {
         engagement_type: type,
@@ -254,10 +254,16 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       this.dialogOpened = false;
       if (this.tab === 'report') {
         this.tab = 'overview';
+
       }
     }
 
-    getType(type) {
+    getLongEngType(type) {
+      if (typeof type !== 'string') {
+        if (type && type.hasOwnProperty('value')) {
+          type = type.value;
+        }
+      }
       switch (type) {
         case 'ma':
           return 'micro-assessments';
@@ -268,6 +274,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         case 'sa':
           return 'special-audits';
       }
+
     }
 
     persistCurrentEngagement(engagement, type) {
@@ -294,9 +301,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         assign(data, assignReportData);
       }
 
-      let type = this.getType(this.engagement.engagement_type);
-      if (!type && !this.isStaffSc) {
-        type = this.engagement.engagement_type.link;
+      let type = this.getLongEngType(this.engagement.engagement_type);
+      if (!this.isStaffSc) {
         data.engagement_type = this.engagement.engagement_type.value;
       }
 
@@ -319,7 +325,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!engagement || !engagement.engagement_type || !engagement.id) {
         return '';
       }
-      let type = this.getType(engagement.engagement_type) || 'engagements',
+      let type = this.getLongEngType(engagement.engagement_type) || 'engagements',
         pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
         csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
