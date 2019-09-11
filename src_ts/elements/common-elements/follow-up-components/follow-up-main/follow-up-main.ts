@@ -58,6 +58,9 @@ class FollowUpMain extends PolymerElement {
   }
 
   showFindings(type) {
+    if (typeof type === 'object' && type && type.value) {
+      type = type.value;
+    }
     return !!type && !~['ma', 'sa'].indexOf(type);
   }
 }
