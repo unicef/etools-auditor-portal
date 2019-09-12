@@ -338,7 +338,7 @@ class FileAttachmentsTab extends
     'special-audits': 'special-audit'
   };
 
-  @property({type: Array, observer:'dataChange'})
+  @property({type: Array})
   dataItems: any[] = [];
 
   @property({type: Object})
@@ -368,7 +368,7 @@ class FileAttachmentsTab extends
   @property({type: Object})
   auditLinksOptions: GenericObject = {};
 
-  @property({type: Array, notify: true, observer:'dataChange'})
+  @property({type: Array, notify: true})
   linkedAttachments: any[] = [];
 
   @property({type: Array})
@@ -473,6 +473,7 @@ class FileAttachmentsTab extends
       this.set('tabTitle', title);
       this.fileTypes = getChoices(`${base}.file_type`);
     }
+    this.setReadOnly();
   }
 
   _handleLinksInDetailsView(dataBase) {
@@ -485,7 +486,7 @@ class FileAttachmentsTab extends
     }
   }
 
-  dataChange(){
+  setReadOnly(){
     this.isTabReadonly = !this.basePermissionPath || (!collectionExists(`${this.basePermissionPath}.PUT`) && !collectionExists(`${this.basePermissionPath}.POST`));
     this.hideAddAttachments =  this.isTabReadonly || this._isNewEngagement();
   }
