@@ -237,7 +237,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   @property({type: String})
-  basePermissionPath: string = '';
+  basePermissionPath!: string;
 
   @property({type: String})
   mainProperty: string = 'financial_findings';
