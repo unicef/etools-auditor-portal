@@ -15,6 +15,7 @@ import find from 'lodash-es/find';
 import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
+import {isEmpty} from 'lodash-es';
 
 class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -177,7 +178,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   getRiskData() {
-    if (!this.primaryArea.risk.value) {
+    if (isEmpty(this.primaryArea.risk.value)) {
       return null;
     }
 
