@@ -216,26 +216,26 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
     fireEvent(this, 'toast', {text: 'Can not update permissions data. Please reload the page!'});
   }
 
-  _engagementChanged(engagement) {
+  _engagementChanged(engagementInfo) {//what kind of person would write a method like this?
     //return if no data changed
-    if (!engagement) {return;}
+    if (!engagementInfo) {return;}
 
-    if (engagement.submit && !this.actionUrl) {
+    if (engagementInfo.submit && !this.actionUrl) {
       //Prepare submit request. Save submit url, update engagement data at first
-      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
-      this.actionUrl = url + engagement.submit;
+      let url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
+      this.actionUrl = url + engagementInfo.submit;
       // this.requestOptions.method = 'PATCH';
       this.set('requestOptions', {
         method: 'PATCH',
         endpoint: {
           url,
         },
-        body: engagement.data
+        body: engagementInfo.data
       });
       this._saveEngagement();
     } else if (this.actionUrl && ~this.actionUrl.indexOf('submit')) {
       //Finish data updating, run submitting if submit url has been saved
-      fireEvent(this, 'engagement-updated', {success: true, data: engagement});
+      fireEvent(this, 'engagement-updated', {success: true, data: engagementInfo});
 
       fireEvent(this, 'global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
@@ -250,15 +250,15 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
 
       this._performUpdate()
 
-    } else if (engagement.finalize) {
+    } else if (engagementInfo.finalize) {
       //Run finalizing
       fireEvent(this, 'global-loading', {type: 'finalize-engagement', active: true, message: 'Finalizing engagement...'});
-      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.finalize;
+      let url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url + engagementInfo.finalize;
       // this.requestOptions.method = 'POST';
       // this.url = url;
 
       this.actionUrl = url;
-      this.postData = engagement.data;
+      this.postData = engagementInfo.data;
       this.set('requestOptions', {
         method: 'POST',
         endpoint: {
@@ -267,12 +267,12 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
         body: this.postData
       });
       this._performUpdate();
-    } else if (engagement.cancel) {
+    } else if (engagementInfo.cancel) {
       //Run finalizing
       fireEvent(this, 'global-loading', {type: 'cancel-engagement', active: true, message: 'Canceling engagement...'});
-      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url + engagement.cancel;
+      let url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url + engagementInfo.cancel;
       this.actionUrl = url;
-      this.postData = engagement.data;
+      this.postData = engagementInfo.data;
       this.set('requestOptions', {
         method: 'POST',
         endpoint: {
@@ -283,14 +283,14 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
       this._performUpdate();
     } else {
       //Simple engagement data updating
-      let url = getEndpoint('engagementInfo', {type: engagement.engagement_type, id: engagement.id}).url;
+      let url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
       this.actionUrl = '';
       this.set('requestOptions', {
         method: 'PATCH',
         endpoint: {
           url
         },
-        body: engagement.data
+        body: engagementInfo.data
       });
       this._saveEngagement();
     }
