@@ -190,7 +190,7 @@ class AssessmentOfControls extends
   dataItems: GenericObject[] = [];
 
   @property({type: String})
-  mainProperty: string = 'key_internal_controls'
+  mainProperty: string = 'key_internal_controls';
 
   @property({type: Object})
   itemModel: GenericObject = {};
@@ -225,6 +225,9 @@ class AssessmentOfControls extends
 
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this assessment?'
+
+  @property({type: String})
+  basePermissionPath!: string;
 
   static get observers() {
     return [
