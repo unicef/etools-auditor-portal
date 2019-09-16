@@ -42,7 +42,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
             base-permission-path="{{basePermissionPath}}"
             area="{{item}}"
             details="[[details]]"
-            edit-mode="[[_canBeChanged(basePermissionPath)]]"
+            edit-mode="[[canBeChanged]]"
             headings="[[columns]]">
           </subject-area-element>
         </template>
@@ -146,11 +146,15 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   originalEditedObj!: GenericObject;
 
+  @property({type: Boolean})
+  canBeChanged: boolean = false;
+
   static get observers() {
     return [
       'resetDialog(dialogOpened)',
       'updateStyles(requestInProcess)',
       '_dataChanged(subjectAreas)',
+      'dataChanged(subjectAreas)',
       '_complexErrorHandler(errorObject.test_subject_areas)'
     ];
   }
@@ -163,14 +167,14 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     this.addEventListener('open-edit-dialog', this.openEditDialog);
   }
 
-  _canBeChanged(basePermissionPath) {
-    return !this.isReadOnly('test_subject_areas', basePermissionPath);
+  dataChanged() {
+    this.canBeChanged = !this.isReadOnly('test_subject_areas', this.basePermissionPath);
   }
 
   getRiskData() {
     if (this.dialogOpened && !this.saveWithButton) {return this.getCurrentData();}
     let elements = this.shadowRoot!.querySelectorAll('.area-element'),
-      riskData:any[] = [];
+      riskData: any[] = [];
 
     Array.prototype.forEach.call(elements, element => {
       let data = element.getRiskData();

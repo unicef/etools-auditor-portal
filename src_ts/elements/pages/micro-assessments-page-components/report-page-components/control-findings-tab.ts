@@ -51,7 +51,7 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
 
       <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
+          <div hidden$="[[!canBeChanged]]">
             <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box">
             </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
@@ -61,9 +61,10 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
         <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
         <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
+
           <list-element class="list-element" data="[[item]]" base-permission-path="[[basePermissionPath]]"
             headings="[[columns]]" details="[[details]]" has-collapse no-animation>
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
+            <div slot="hover" class="edit-icon-slot" hidden$="[[!canBeChanged]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
               <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
             </div>
@@ -126,7 +127,7 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
     `;
   }
 
-  @property({type: Array, notify: true})
+  @property({type: Array, notify: true, observer:'dataItemsChanged'})
   dataItems!: [];
 
   @property({type: String})
@@ -169,6 +170,12 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
+  @property({type: String})
+  basePermissionPath: string = '';
+
+  @property({type: Boolean})
+  canBeChanged: boolean = false;
+
   static get observers() {
     return [
       'resetDialog(dialogOpened)',
@@ -185,6 +192,10 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
     if (nonField) {
         fireEvent(this, 'toast', {text: `Findings and Recommendations: ${nonField}`});
     }
+  }
+
+  dataItemsChanged(){
+    this.canBeChanged = this._canBeChanged(this.basePermissionPath);
   }
 
 }
