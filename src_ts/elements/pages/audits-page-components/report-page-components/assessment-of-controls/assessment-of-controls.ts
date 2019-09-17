@@ -190,7 +190,7 @@ class AssessmentOfControls extends
   dataItems: GenericObject[] = [];
 
   @property({type: String})
-  mainProperty: string = 'key_internal_controls';
+  mainProperty = 'key_internal_controls';
 
   @property({type: Object})
   itemModel: GenericObject = {};

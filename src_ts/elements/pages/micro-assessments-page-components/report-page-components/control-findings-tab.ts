@@ -171,7 +171,7 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
   @property({type: String})
-  basePermissionPath: string = '';
+  basePermissionPath!: string;
 
   @property({type: Boolean})
   canBeChanged: boolean = false;
