@@ -172,7 +172,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   basePermissionPath!: string;
 
   @property({type: Array})
-  riskOptions!: {value: string | number, display_name: string };
+  riskOptions!: {value: string | number, display_name: string }[];
 
   static get observers() {
     return [
