@@ -254,6 +254,9 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
   }
 
   showFields(type, expectedType) {
+    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
+      type = type.value;
+    }
     return type === expectedType;
   }
 

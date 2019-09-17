@@ -96,7 +96,7 @@ class FileAttachmentsTab extends
               </paper-icon-button>
               <paper-tooltip offset="0">Share Documents</paper-tooltip>
             </div>
-            <div hidden$="[[_hideAddAttachments(basePermissionPath, baseId)]]">
+            <div hidden$="[[hideAddAttachments]]">
               <paper-icon-button class="panel-button"
                                  on-tap="_openAddDialog"
                                  icon="add-box">
@@ -130,7 +130,7 @@ class FileAttachmentsTab extends
                 <paper-tooltip offset="0">[[getFileNameFromURL(item.attachment)]]</paper-tooltip>
 
               </div>
-              <span class="delete-icon" hidden$="[[isTabReadonly(basePermissionPath)]]">
+              <span class="delete-icon" hidden$="[[isTabReadonly]]">
                                         <paper-icon-button icon="icons:create" class="edit-icon"
                                                            on-tap="openEditDialog"></paper-icon-button>
 
@@ -161,7 +161,7 @@ class FileAttachmentsTab extends
                 <a on-click="_openDeleteLinkDialog"
                    class="delete-icon">
                   <iron-icon
-                      hidden$="[[isTabReadonly(basePermissionPath)]]"
+                      hidden$="[[isTabReadonly]]"
                       icon="icons:cancel"></iron-icon>
 
                   <paper-tooltip offset="0">Remove</paper-tooltip>
@@ -401,6 +401,12 @@ class FileAttachmentsTab extends
   @property({type: Boolean})
   showDeleteBtn: boolean = false;
 
+  @property({type: Boolean})
+  isTabReadonly: boolean = true;
+
+  @property({type: Boolean})
+  hideAddAttachments: boolean = true;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
@@ -467,6 +473,7 @@ class FileAttachmentsTab extends
       this.set('tabTitle', title);
       this.fileTypes = getChoices(`${base}.file_type`);
     }
+    this.setReadOnly();
   }
 
   _handleLinksInDetailsView(dataBase) {
@@ -479,9 +486,9 @@ class FileAttachmentsTab extends
     }
   }
 
-  isTabReadonly(basePath) {
-    return !basePath || (!collectionExists(`${basePath}.PUT`) &&
-        !collectionExists(`${basePath}.POST`));
+  setReadOnly(){
+    this.isTabReadonly = !this.basePermissionPath || (!collectionExists(`${this.basePermissionPath}.PUT`) && !collectionExists(`${this.basePermissionPath}.POST`));
+    this.hideAddAttachments =  this.isTabReadonly || this._isNewEngagement();
   }
 
   showFileTypes(basePath) {
@@ -799,9 +806,7 @@ class FileAttachmentsTab extends
   }
 
   _getClassFor(field) {
-    return `w${this.headings.find(
-        heading => heading.name === field
-    ).size}`
+    return `w${this.headings.find(heading => heading.name === field).size}`
   }
 
   _openDeleteLinkDialog(e) {
@@ -831,10 +836,6 @@ class FileAttachmentsTab extends
 
   _isNewEngagement() {
     return !this.baseId;
-  }
-
-  _hideAddAttachments(basePermissionPath, _baseId) {
-    return this.isTabReadonly(basePermissionPath) || this._isNewEngagement();
   }
 
   _showEmptyRow(length1, length2) {

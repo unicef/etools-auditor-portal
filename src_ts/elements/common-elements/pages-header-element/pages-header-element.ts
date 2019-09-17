@@ -131,14 +131,15 @@ class PagesHeaderElement extends PolymerElement {
 
   exportData(e) {
     if (this.exportLinks.length < 1) {
-      throw 'Can not find export link!';
+      throw new Error('Can not find export link!');
     }
-    window.open(this.exportLinks[0].url, '_blank');
+    let url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
+    window.open(url, '_blank');
   }
 
   _isDropDown(exportLinks) {
     return exportLinks && (exportLinks.length > 1 ||
-        (exportLinks[0] && exportLinks[0].useDropdown));
+      (exportLinks[0] && exportLinks[0].useDropdown));
   }
 
   _toggleOpened() {

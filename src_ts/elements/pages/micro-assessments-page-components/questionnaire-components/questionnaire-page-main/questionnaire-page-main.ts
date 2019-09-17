@@ -90,7 +90,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       <template is="dom-repeat" items="{{questionnaire.children}}">
         <risk-tab questionnaire="{{item}}" base-permission-path="{{basePermissionPath}}" class="validatable-tab risk-tab"
           index="{{index}}" first-run="[[firstRun]]" completed="{{_checkCompleted(item)}}"
-          disabled="{{_checkDisabled(index, item)}}" edit-mode="[[!isReadOnly('questionnaire', basePermissionPath)]]">
+          disabled="{{_checkDisabled(index, item)}}" edit-mode="[[editMode]]">
         </risk-tab>
       </template>
 
@@ -147,13 +147,13 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     `;
   }
 
-  @property({type: Object, observer: '_dataChanged'})
+  @property({type: Object, observer: 'dataChanged'})
   data!: object;
 
   @property({type: Object})
   questionnaire: {children?: []} = {};
 
-  @property({type: Boolean})
+  @property({type: Object})
   riskRatingOptions = {
     'na': 'N/A',
     'low': 'Low',
@@ -196,9 +196,13 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @query('#riskAssessmentDropdown')
   riskAssessmentDropdown!: EtoolsDropdownEl;
 
+  @property({type: Boolean})
+  editMode: boolean = false;
+
   private tabId!: string;
   private categoryId!: string;
   private originalComments!: string;
+  private originalRiskValue!: string;
 
   static get observers() {
     return [
@@ -225,7 +229,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.removeEventListener('risk-value-changed', this._riskValueChanged as any);
   }
 
-  _dataChanged(data) {
+  dataChanged(data) {
+    this.editMode = !this.isReadOnly('questionnaire', this.basePermissionPath);
+
     if (!data) {return;}
     if (!isEmpty(this.questionnaire) && this.firstRun) {
       this.firstRun = false;
@@ -277,6 +283,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.categoryId = event.detail.childId;
     this.editedItem = item;
     this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
+    this.originalRiskValue = item.risk ? item.risk.value : '';
     // this.$.questionHeader.innerHTML = item.header;
     this.dialogOpened = true;
   }
@@ -307,7 +314,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
     if (this.originalComments === this.editedItem.risk.extra.comments &&
       this.riskAssessmentDropdown.selected &&
-      this.riskAssessmentDropdown.selected === this.editedItem.risk.value) {
+      this.originalRiskValue === this.editedItem.risk.value) {
 
       this.dialogOpened = false;
       this.resetDialog();
