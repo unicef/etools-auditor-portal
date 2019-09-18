@@ -46,19 +46,25 @@ class FollowUpMain extends PolymerElement {
             </follow-up-financial-findings>
       </template>
 
-      <summary-findings-element
-            id="findingsHighPriority"
-            data-items="{{engagement.findings}}"
-            error-object="{{errorObject}}"
-            original-data="[[originalData.findings]]"
-            priority="{{priority}}"
-            base-permission-path="{{permissionBase}}">
-      </summary-findings-element>
+      <template is="dom-if" if="{{_showSummary(engagement.engagement_type)}}" restamp>
+          <summary-findings-element
+                id="followUpFindingsHighPriority"
+                data-items="{{engagement.findings}}"
+                error-object="{{errorObject}}"
+                original-data="[[originalData.findings]]"
+                priority="{{priorities.high}}"
+                base-permission-path="{{permissionBase}}">
+          </summary-findings-element>
+      </template>
       `;
   }
 
   @property({type: Object})
-  priority: GenericObject = {
+  priorities: GenericObject = {
+    low: {
+      display_name: 'Low',
+      value: 'low'
+    },
     high: {
       display_name: 'High',
       value: 'high'
@@ -70,6 +76,7 @@ class FollowUpMain extends PolymerElement {
       //Audit Financial Findings
       followUpFindings = this.shadowRoot!.querySelector('#followUpFF'),
       followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
+
     if (followUpFindingsData) {
       assign(data, followUpFindingsData);
     }
@@ -83,5 +90,13 @@ class FollowUpMain extends PolymerElement {
     }
     return !!type && !~['ma', 'sa'].indexOf(type);
   }
+
+  _showSummary(type) {
+    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
+      type = type.value;
+    }
+    return type && ['audit', 'sc'].indexOf(type) >= 0;
+  }
+
 }
 window.customElements.define('follow-up-main', FollowUpMain);
