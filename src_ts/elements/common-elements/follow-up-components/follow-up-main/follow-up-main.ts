@@ -12,10 +12,10 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '../follow-up-actions/follow-up-actions';
 import '../follow-up-financial-findings/follow-up-financial-findings';
+import '../../../../elements/pages/spot-checks-page-components/report-page-components/summary-findings-element/summary-findings-element';
 import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
-import {SummaryFindingsElement} from '../../../pages/spot-checks-page-components/report-page-components/summary-findings-element/summary-findings-element';
 
 /**
  * @polymer
@@ -66,20 +66,13 @@ class FollowUpMain extends PolymerElement {
   };
 
   getFollowUpData() {
-    let data = {};
-    // Audit Financial Findings
-    let followUpFindings = this.shadowRoot!.querySelector('#followUpFF');
-    const followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
-    // Findings High Priority
-    // let findingsHighPriority = this.shadowRoot!.querySelector('#findingsHighPriority');
-    // const findingsHighPriorityData = findingsHighPriority && (findingsHighPriority as SummaryFindingsElement).getFindingsData();
-
+    let data = {},
+    //Audit Financial Findings
+    followUpFindings = this.shadowRoot!.querySelector('#followUpFF'),
+    followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
     if (followUpFindingsData) {
       assign(data, followUpFindingsData);
     }
-    // if (findingsHighPriorityData) {
-    //   assign(data, findingsHighPriorityData);
-    // }
 
     return isEmpty(data) ? null : data;
   }
