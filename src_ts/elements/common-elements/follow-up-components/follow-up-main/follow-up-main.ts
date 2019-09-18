@@ -67,9 +67,9 @@ class FollowUpMain extends PolymerElement {
 
   getFollowUpData() {
     let data = {},
-    //Audit Financial Findings
-    followUpFindings = this.shadowRoot!.querySelector('#followUpFF'),
-    followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
+      //Audit Financial Findings
+      followUpFindings = this.shadowRoot!.querySelector('#followUpFF'),
+      followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
     if (followUpFindingsData) {
       assign(data, followUpFindingsData);
     }
