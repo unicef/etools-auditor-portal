@@ -46,7 +46,7 @@ class FollowUpMain extends PolymerElement {
             </follow-up-financial-findings>
       </template>
 
-      <template is="dom-if" if="{{_showSummary(engagement.engagement_type)}}" restamp>
+      <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'sc')}}" restamp>
           <summary-findings-element
                 id="followUpFindingsHighPriority"
                 data-items="{{engagement.findings}}"
@@ -55,6 +55,16 @@ class FollowUpMain extends PolymerElement {
                 priority="{{priorities.high}}"
                 base-permission-path="{{permissionBase}}">
           </summary-findings-element>
+      </template>
+
+      <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'audit')}}" restamp>
+        <financial-findings
+            id="financialFindings"
+            class="mb-24"
+            error-object="{{errorObject}}"
+            data-items="{{engagement.financial_finding_set}}"
+            base-permission-path="{{permissionBase}}">
+        </financial-findings>
       </template>
       `;
   }
@@ -91,11 +101,11 @@ class FollowUpMain extends PolymerElement {
     return !!type && !~['ma', 'sa'].indexOf(type);
   }
 
-  _showSummary(type) {
+  _showCard(type: any, validType: string) {
     if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
       type = type.value;
     }
-    return type && ['audit', 'sc'].indexOf(type) >= 0;
+    return type && validType === type;
   }
 
 }
