@@ -12,8 +12,9 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '../follow-up-actions/follow-up-actions';
 import '../follow-up-financial-findings/follow-up-financial-findings';
-import '../../../../elements/pages/spot-checks-page-components/report-page-components/summary-findings-element/summary-findings-element';
 import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
+import '../../../../elements/pages/spot-checks-page-components/report-page-components/summary-findings-element/summary-findings-element';
+import '../../../../elements/pages/audits-page-components/report-page-components/financial-findings/financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
 
