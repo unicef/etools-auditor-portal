@@ -43,7 +43,6 @@ import {BASE_PATH} from '../../app-config/config';
 
 setRootPath(`/${BASE_PATH}/`);
 
-
 /**
  * @customElement
  * @polymer
@@ -56,7 +55,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return html`
       ${appDrawerStyles}
       <static-data></static-data>
-      <app-location route="{{route}}" query-params="{{queryParams}}" url-space-regex="^[[rootPath]]"></app-location>
+      <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
 
       <app-route
               route="{{route}}"
@@ -169,7 +168,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   page: string = '';
 
   @property({type: Boolean, reflectToAttribute: true})
-  narrow: boolean = false
+  narrow: boolean = false;
 
   @property({type: Object})
   _toast: PolymerElement | null = null;
@@ -251,8 +250,15 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
   }
 
+  allowPageChange() {
+    const urlSpaceRegex = new RegExp(`^${this.rootPath}`);
+    return urlSpaceRegex.test(this.route.path);
+  }
+
   _routePageChanged() {
-    if (!this.initLoadingComplete || !this.routeData.page) {return;}
+    if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
+      return;
+    }
     this.page = this.routeData.page || 'engagements';
     if (this.scroll) {
       this.scroll(0, 0);
@@ -288,7 +294,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
       fireEvent(this, 'global-loading', {type: 'initialisation'});
 
-      if (this.route.path === '/ap/') {this._setDefaultLandingPage();}
+      if (this.route.path === this.rootPath) {this._setDefaultLandingPage();}
     })
       .catch((_err) => {console.error(_err); this._pageNotFound()});
   }
