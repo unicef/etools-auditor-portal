@@ -13,6 +13,7 @@ import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/search-and-filter-element/search-and-filter';
 import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
 import {SearchAndFilterEl} from '../../../common-elements/search-and-filter-element/search-and-filter';
+import {BASE_PATH} from '../../../app-config/config';
 
 /**
  * @customElement
@@ -171,7 +172,7 @@ class EngagementsListView extends PolymerElement {
   engagementsList: any[] = [];
 
   @property({type: String})
-  newBtnLink: string = '/engagements/new/overview';
+  newBtnLink: string = `/${BASE_PATH}/engagements/new/overview`;
 
   @property({type: Boolean})
   hasCollapse: boolean = false;
