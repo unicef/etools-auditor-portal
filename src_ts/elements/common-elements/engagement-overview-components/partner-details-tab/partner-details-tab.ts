@@ -58,27 +58,33 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
           <div class="row-h group">
               <div class="input-container">
                   <!-- Partner -->
-                  <etools-dropdown
-                          id="partner"
-                          class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                          selected="{{engagement.partner.id}}"
-                          label="[[getLabel('partner', basePermissionPath)]]"
-                          placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
-                          options="[[partners]]"
-                          option-label="name"
-                          option-value="id"
-                          required$="{{_setRequired('partner', basePermissionPath)}}"
-                          disabled$="[[isReadOnly('partner', basePermissionPath)]]"
-                          readonly$="[[isReadOnly('partner', basePermissionPath, requestInProcess)]]"
-                          invalid="{{errors.partner}}"
-                          error-message="{{errors.partner}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          trigger-value-change-event
-                          on-etools-selected-item-changed="_requestPartner"
-                          dynamic-align>
-                  </etools-dropdown>
-
+                  <template is="dom-if" if="[[isReadOnly('partner', basePermissionPath)]]">
+                    <paper-input
+                            value="{{partner.name}}"
+                            disabled
+                            readonly>
+                    </paper-input>
+                  </template>
+                  <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
+                    <etools-dropdown
+                            id="partner"
+                            class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
+                            selected="{{engagement.partner.id}}"
+                            label="[[getLabel('partner', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
+                            options="[[partners]]"
+                            option-label="name"
+                            option-value="id"
+                            required$="{{_setRequired('partner', basePermissionPath)}}"
+                            invalid="{{errors.partner}}"
+                            error-message="{{errors.partner}}"
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError"
+                            trigger-value-change-event
+                            on-etools-selected-item-changed="_requestPartner"
+                            dynamic-align>
+                    </etools-dropdown>
+                  </template>
                   <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
                   <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
 
@@ -351,6 +357,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   _requestPartner(event, id) {
     if (this.requestInProcess) {return;}
+
+
 
     this.set('partner', {});
     this.set('activePd', null);
