@@ -358,8 +358,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   _requestPartner(event, id) {
     if (this.requestInProcess) {return;}
 
-
-
     this.set('partner', {});
     this.set('activePd', null);
     this.set('authorizedOfficer', null);
