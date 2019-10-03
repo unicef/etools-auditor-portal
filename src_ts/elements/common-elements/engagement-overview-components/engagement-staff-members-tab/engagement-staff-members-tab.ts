@@ -49,8 +49,8 @@ import {refactorErrorObject, checkNonField} from '../../../app-mixins/error-hand
  * @appliesMixin CommonMethodsMixin
  */
 class EngagementStaffMembersTab extends
-    TableElementsMixin(
-      CommonMethodsMixin(PolymerElement)) {
+  TableElementsMixin(
+    CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -195,10 +195,11 @@ class EngagementStaffMembersTab extends
           --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
       }
       paper-input.email {
-          --paper-input-error-position: relative !important;
-          --paper-input-error-white-space: normal;
+        --paper-input-error:	{
+        position: relative !important;
+        white-space: normal;
+        }
       }
-
   </style>
 
     <!--requests-->
@@ -668,8 +669,8 @@ class EngagementStaffMembersTab extends
     each(data, (staff, index) => {
       this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
     });
-     if (!this.originalTableData) {
-       this._dataItemsChanged(this.dataItems)
+    if (!this.originalTableData) {
+      this._dataItemsChanged(this.dataItems)
     }
   }
 
