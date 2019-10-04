@@ -20,7 +20,7 @@ import isEqual from 'lodash-es/isEqual';
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../../types/global';
-
+import {BASE_PATH} from '../../../app-config/config';
 
 class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -53,7 +53,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
                     base-permission-path="new_engagement"
                     filters="[[filters]]"
                     add-btn-text="Add New Staff Spot Checks"
-                    new-btn-link="/staff-sc/new/overview"
+                    new-btn-link={{newBtnLink}}
                     endpoint-name="{{endpointName}}"
                     is-staff-sc>
             </engagements-list-view>
@@ -83,6 +83,9 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   @property({type: Number})
   initiation: number = 0;
+
+  @property({type: String})
+  newBtnLink: string = `/${BASE_PATH}/staff-sc/new/overview`;
 
   @property({type: Array})
   filters = [

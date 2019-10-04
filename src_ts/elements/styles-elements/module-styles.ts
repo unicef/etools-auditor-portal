@@ -266,6 +266,10 @@ export const moduleStyles = html`
       width: 30%;
     }
 
+    .w32 {
+      width: 32%;
+    }
+
     .w35 {
       width: 35%;
     }
@@ -296,6 +300,10 @@ export const moduleStyles = html`
 
     .w70 {
       width: 70%;
+    }
+
+    .w75 {
+      width: 75%;
     }
 
     .w80 {

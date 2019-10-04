@@ -1,4 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../../types/global';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
@@ -11,6 +13,8 @@ import '@polymer/paper-input/paper-textarea.js';
 import '../follow-up-actions/follow-up-actions';
 import '../follow-up-financial-findings/follow-up-financial-findings';
 import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
+import '../../../../elements/pages/spot-checks-page-components/report-page-components/summary-findings-element/summary-findings-element';
+import '../../../../elements/pages/audits-page-components/report-page-components/financial-findings/financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
 
@@ -27,22 +31,56 @@ class FollowUpMain extends PolymerElement {
             display: block;
         }
       </style>
+      <follow-up-actions
+            engagement-id="[[engagement.id]]"
+            partner-data="[[engagement.partner]]"
+            base-engagement-path="{{permissionBase}}">
+      </follow-up-actions>
+
       <template is="dom-if" if="[[showFindings(engagement.engagement_type)]]" restamp>
             <follow-up-financial-findings
-                    id="followUpFF"
-                    engagement="[[engagement]]"
-                    original-data="[[originalData]]"
-                    error-object="{{errorObject}}"
-                    base-permission-path="{{permissionBase}}"
-            ></follow-up-financial-findings>
-        </template>
-        <follow-up-actions
-                engagement-id="[[engagement.id]]"
-                partner-data="[[engagement.partner]]"
-                base-engagement-path="{{permissionBase}}">
-        </follow-up-actions>
+                  id="followUpFF"
+                  engagement="[[engagement]]"
+                  original-data="[[originalData]]"
+                  error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}">
+            </follow-up-financial-findings>
+      </template>
+
+      <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'sc')}}" restamp>
+          <summary-findings-element
+                id="followUpFindingsHighPriority"
+                data-items="{{engagement.findings}}"
+                error-object="{{errorObject}}"
+                original-data="[[originalData.findings]]"
+                priority="{{priorities.high}}"
+                base-permission-path="{{permissionBase}}">
+          </summary-findings-element>
+      </template>
+
+      <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'audit')}}" restamp>
+        <financial-findings
+            id="financialFindings"
+            class="mb-24"
+            error-object="{{errorObject}}"
+            data-items="{{engagement.financial_finding_set}}"
+            base-permission-path="{{permissionBase}}">
+        </financial-findings>
+      </template>
       `;
   }
+
+  @property({type: Object})
+  priorities: GenericObject = {
+    low: {
+      display_name: 'Low',
+      value: 'low'
+    },
+    high: {
+      display_name: 'High',
+      value: 'high'
+    }
+  };
 
   getFollowUpData() {
     let data = {},
@@ -58,7 +96,18 @@ class FollowUpMain extends PolymerElement {
   }
 
   showFindings(type) {
+    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
+      type = type.value;
+    }
     return !!type && !~['ma', 'sa'].indexOf(type);
   }
+
+  _showCard(type: any, validType: string) {
+    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
+      type = type.value;
+    }
+    return type && validType === type;
+  }
+
 }
 window.customElements.define('follow-up-main', FollowUpMain);

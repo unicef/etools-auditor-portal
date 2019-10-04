@@ -15,6 +15,7 @@ import find from 'lodash-es/find';
 import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
+import isEmpty from 'lodash-es/isEmpty';
 
 class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -47,8 +48,8 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
                 option-label="display_name"
                 option-value="value"
                 required
-                disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
-                readonly="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
+                disabled="[[isDisabled]]"
+                readonly="[[isDisabled]]"
                 invalid="{{errors.children.0.blueprints.0.risk.value}}"
                 error-message="{{errors.children.0.blueprints.0.risk.value}}"
                 on-focus="_resetFieldError"
@@ -66,7 +67,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
                 value="{{primaryArea.risk.extra.comments}}"
                 label="Brief Justification for Rating (main internal control gaps)"
                 placeholder="Enter Brief Justification"
-                required disabled="[[isReadOnly('test_subject_areas', basePermissionPath)]]"
+                required disabled="[[isDisabled]]"
                 max-rows="4"
                 invalid="{{errors.children.0.blueprints.0.risk.extra}}"
                 error-message="{{errors.children.0.blueprints.0.risk.extra}}"
@@ -104,6 +105,9 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   originalData!: GenericObject;
 
+  @property({type: Boolean})
+  isDisabled: boolean = true;
+
   static get observers() {
     return [
       '_setValues(riskData, riskOptions)',
@@ -120,10 +124,12 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
   _setValues(data) {
     this._populateRiskOptions();
+    this.isDisabled = this.isReadOnly('test_subject_areas', this.basePermissionPath);
 
     if (!data) {
       return;
     }
+
     this.originalData = cloneDeep(data);
 
     if (!this.riskData.blueprints[0].risk || isNaN(+this.riskData.blueprints[0].risk.value)) {
@@ -177,7 +183,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   getRiskData() {
-    if (!this.primaryArea.risk.value) {
+    if (isEmpty(this.primaryArea.risk.value)) {
       return null;
     }
 

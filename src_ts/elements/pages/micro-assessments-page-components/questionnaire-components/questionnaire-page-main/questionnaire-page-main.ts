@@ -90,7 +90,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       <template is="dom-repeat" items="{{questionnaire.children}}">
         <risk-tab questionnaire="{{item}}" base-permission-path="{{basePermissionPath}}" class="validatable-tab risk-tab"
           index="{{index}}" first-run="[[firstRun]]" completed="{{_checkCompleted(item)}}"
-          disabled="{{_checkDisabled(index, item)}}" edit-mode="[[!isReadOnly('questionnaire', basePermissionPath)]]">
+          disabled="{{_checkDisabled(index, item)}}" edit-mode="[[editMode]]">
         </risk-tab>
       </template>
 
@@ -147,13 +147,13 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     `;
   }
 
-  @property({type: Object, observer: '_dataChanged'})
+  @property({type: Object, observer: 'dataChanged'})
   data!: object;
 
   @property({type: Object})
   questionnaire: {children?: []} = {};
 
-  @property({type: Boolean})
+  @property({type: Object})
   riskRatingOptions = {
     'na': 'N/A',
     'low': 'Low',
@@ -196,6 +196,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @query('#riskAssessmentDropdown')
   riskAssessmentDropdown!: EtoolsDropdownEl;
 
+  @property({type: Boolean})
+  editMode: boolean = false;
+
   private tabId!: string;
   private categoryId!: string;
   private originalComments!: string;
@@ -226,7 +229,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.removeEventListener('risk-value-changed', this._riskValueChanged as any);
   }
 
-  _dataChanged(data) {
+  dataChanged(data) {
+    this.editMode = !this.isReadOnly('questionnaire', this.basePermissionPath);
+
     if (!data) {return;}
     if (!isEmpty(this.questionnaire) && this.firstRun) {
       this.firstRun = false;

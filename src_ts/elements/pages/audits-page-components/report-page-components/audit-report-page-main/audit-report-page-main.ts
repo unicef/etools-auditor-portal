@@ -81,8 +81,8 @@ class AuditReportPageMain extends PolymerElement {
   @property({type: Object})
   errorObject: GenericObject = {};
 
-  @property({type: Object})
-  permissionBase: GenericObject = {};
+  @property({type: String})
+  permissionBase!: string;
 
   validate(forSave) {
     return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(forSave);
