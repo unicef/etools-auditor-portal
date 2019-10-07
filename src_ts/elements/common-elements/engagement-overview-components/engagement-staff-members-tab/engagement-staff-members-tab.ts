@@ -775,7 +775,7 @@ class EngagementStaffMembersTab extends
   _addStaffFromDialog(force) {
     if (this.requestInProcess && !force) {return;}
 
-    // check if errors object(only email is che) is not already set by check-user-existence
+    // check if errors object is not already set by check-user-existence
     if(this.errors && this.errors.user && this.errors.user.email){
       return;
     }
