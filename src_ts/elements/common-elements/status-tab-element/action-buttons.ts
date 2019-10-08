@@ -54,7 +54,7 @@ class ActionButtons extends PolymerElement {
   statusBtnMenuOpened!: boolean;
 
   @property({type: Object})
-  submitConfirmationDialog!: EtoolsDialog
+  submitConfirmationDialog!: EtoolsDialog;
 
   connectedCallback() {
     super.connectedCallback();

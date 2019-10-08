@@ -1,5 +1,5 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
 import get from 'lodash-es/get';
 import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
@@ -40,8 +40,8 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: {url}
     }).then(resp => {
       this._handleResponse(resp);
-    }).catch(err => {
-      this._handleError(err);
+    }).catch(() => {
+      this._handleError();
     });
 
   }
@@ -111,7 +111,7 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.email = null;
   }
 
-  _handleError(err) {
+  _handleError() {
     this._setError(`Can't get Email data!`);
     this.emailChecking = false;
     this.email = null;
@@ -123,4 +123,4 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (!this.errors.user.email) {this.set('errors.user.email', error);}
   }
 }
-window.customElements.define("check-user-existence", CheckUserExistence);
+window.customElements.define('check-user-existence', CheckUserExistence);

@@ -255,7 +255,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
     if (isEqual(this.originalEditedObj, this.editedArea)) {
       this.dialogOpened = false;
-      this.resetDialog();
+      this.resetDialog(this.dialogOpened);
       return;
     }
 

@@ -130,7 +130,7 @@ class SearchAndFilter extends PolymerElement {
     ];
   }
 
-  searchKeyDown(event, {value}) {
+  searchKeyDown({value}) {
     if ((!this.previousSearchValue && !value) || value === this.previousSearchValue) {
       return;
     }

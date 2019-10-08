@@ -213,7 +213,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      return this._prepareData(true)
+      return this._prepareData(true, false)
         .then((data) => {
           this.updatedEngagement = data;
         });

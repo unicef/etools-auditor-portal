@@ -440,7 +440,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     });
   }
 
-  _getValue(item, data?, bool?) {
+  _getValue(item, bool?) {
     let value;
 
     if (!item.path) {
