@@ -81,7 +81,7 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
   };
 
   getInternalControlsData() {
-    let data;
+    let data: GenericObject | null = null;
     if (!isEqual(this.originalData, this.data)) {
       data = this.data;
     }

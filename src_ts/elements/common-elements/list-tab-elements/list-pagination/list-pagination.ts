@@ -174,8 +174,8 @@ class ListPagination extends PolymerElement {
 
   goToLast() {this.set('pageNumber', this.lastPage);}
 
-  _disableButton( datalength, pageSize) {
-    if ((+this.currentPage === 1 && !pageSize) || (+this.currentPage === +this.lastPage && pageSize) || this.pageSize >= datalength) {return true;}
+  _disableButton( currentPage, datalength, pageSize) {
+    if ((+currentPage === 1 && !pageSize) || (+currentPage === +this.lastPage && pageSize) || this.pageSize >= datalength) {return true;}
   }
 
   _calcLastPage(dataLength, size) {
