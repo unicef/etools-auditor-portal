@@ -56,7 +56,6 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
                                 options="[[auditOpinionChoices]]"
                                 option-label="display_name"
                                 option-value="value"
-                                selected="{{engagement.audit_opinion}}"
                                 disabled readonly>
                         </etools-dropdown>
                     </div>
