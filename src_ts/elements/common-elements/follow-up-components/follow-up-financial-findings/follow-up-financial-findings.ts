@@ -50,7 +50,7 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
                         <etools-dropdown
                                 id="test"
                                 class="disabled-as-readonly"
-                                selected="{{auditOpinion}}"
+                                selected="{{engagement.audit_opinion}}"
                                 label="[[getLabel('audit_opinion', basePermissionPath)]]"
                                 placeholder="[[getReadonlyPlaceholder(engagement)]]"
                                 options="[[auditOpinionChoices]]"
