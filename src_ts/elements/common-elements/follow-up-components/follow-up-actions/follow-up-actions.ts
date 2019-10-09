@@ -275,7 +275,7 @@ class FollowUpActions extends
                                     allowed-pattern="[\d\s]"
                                     label="[[getLabel('description', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('description', editedApBase)]]"
-                                    required="{{_setRequired('description', editedApBase)}}"
+                                    required$="{{_setRequired('description', editedApBase)}}"
                                     disabled="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     max-rows="4"
