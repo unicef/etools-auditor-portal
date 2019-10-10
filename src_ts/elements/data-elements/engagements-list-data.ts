@@ -1,6 +1,6 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event.js';
 import cloneDeep from 'lodash-es/cloneDeep';
 import keys from 'lodash-es/keys';
 import pull from 'lodash-es/pull';
@@ -9,7 +9,7 @@ import difference from 'lodash-es/difference';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
-import {GenericObject} from "../../types/global.js";
+import {GenericObject} from '../../types/global.js';
 
 class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -47,16 +47,17 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   getEngagementsList() {
-    let reloadRequired = this.reloadRequired() || this.requestQueries.reload;
+    const reloadRequired = this.reloadRequired() || this.requestQueries.reload;
     this.lastState = cloneDeep(this.requestQueries);
     if (!reloadRequired || !this.endpointName) {
-      //not reload the page
+      // not reload the page
       return;
     }
 
-    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true, message: 'Loading of engagements list...'});
+    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true,
+      message: 'Loading of engagements list...'});
 
-    let endpoint = getEndpoint(this.endpointName);
+    const endpoint = getEndpoint(this.endpointName);
     endpoint.url += getQueriesString();
 
     if (this.requestQueries.reload) {
@@ -66,32 +67,33 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     endpoint.url = endpoint.url.replace(/[&?]{1}/, '?');
     this.sendRequest({
       endpoint: endpoint
-    }).then(resp => {
+    }).then((resp) => {
       this._engagementsLoaded(resp);
-    }).catch(err => {
+    }).catch((err) => {
       this._responseError(err);
     });
   }
 
   reloadRequired() {
-    let lastKeys = keys(this.lastState);
-    let requestQueriesKeys = keys(this.requestQueries);
-    let filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit', 'staff_members__user', 'sc'];
+    const lastKeys = keys(this.lastState);
+    const requestQueriesKeys = keys(this.requestQueries);
+    const filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit',
+      'staff_members__user', 'sc'];
     let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
     queriesKeys = uniq(queriesKeys);
     queriesKeys = difference(queriesKeys, filtersKeys);
     pull(queriesKeys, 'reload');
 
-    let otherQueriesChanged = queriesKeys.some((key) => {
-      let lastValue = this.lastState[key];
-      let newValue = this.requestQueries[key];
+    const otherQueriesChanged = queriesKeys.some((key) => {
+      const lastValue = this.lastState[key];
+      const newValue = this.requestQueries[key];
       return lastValue !== newValue;
     });
 
-    let filtersChanged = !filtersKeys.every((key) => {
-      let lastValue = this.lastState[key];
-      let newValue = this.requestQueries[key];
+    const filtersChanged = !filtersKeys.every((key) => {
+      const lastValue = this.lastState[key];
+      const newValue = this.requestQueries[key];
       return lastValue === newValue || (lastValue === true && newValue === undefined);
     });
 
@@ -99,9 +101,9 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _responseError(err) {
-    let {status} = (err || {}) as any;
+    const {status} = (err || {}) as any;
 
-    //wrong page in queries
+    // wrong page in queries
     if (status === 404 && this.requestQueries.page !== '1') {
       updateQueries({page: '1'});
       return;
@@ -112,4 +114,4 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     fireEvent(this, 'toast', {text: 'Page not found.'});
   }
 }
-window.customElements.define("engagements-list-data", EngagementListData);
+window.customElements.define('engagements-list-data', EngagementListData);

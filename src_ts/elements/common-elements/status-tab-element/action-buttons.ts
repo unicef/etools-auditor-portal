@@ -15,7 +15,10 @@ class ActionButtons extends PolymerElement {
   static get template() {
     return html`
     ${moduleStyles} ${ActionButtonsStyles}
-    <paper-button class$="main-action status-tab-button {{withActionsMenu(actions.length)}}" raised on-tap="_btnClicked">
+    <paper-button 
+            class$="main-action status-tab-button {{withActionsMenu(actions.length)}}" 
+            raised 
+            on-tap="_btnClicked">
       <span class="main-action text">[[_setButtonText(actions.0)]]</span>
       <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
 
@@ -67,7 +70,7 @@ class ActionButtons extends PolymerElement {
   }
 
   createSubmitConfirmationDialog() {
-    let dialogContent =  document.createElement('span');
+    const dialogContent = document.createElement('span');
     dialogContent.innerText = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
                                You will not be able to make any further changes to the report.`;
     const dialogConfig: ConfigObj = {
@@ -87,30 +90,31 @@ class ActionButtons extends PolymerElement {
   }
 
   _setButtonText(item) {
-      if (!item) { return ''; }
-      let text = item.display_name || item.replace('_', ' ');
+    if (!item) {return '';}
+    const text = item.display_name || item.replace('_', ' ');
 
-      if (!text) { throw 'Can not get button text!'; }
+    if (!text) {throw new Error('Can not get button text!');}
 
-      return text.toUpperCase();
+    return text.toUpperCase();
   }
 
   _btnClicked(event) {
-      if (!event || !event.target) { return; }
-      let target = event.target.classList.contains('other-options') ? event.target : event.target.parentElement || event.target,
-          isMainAction = event.target.classList.contains('main-action');
+    if (!event || !event.target) {return;}
+    const target = event.target.classList.contains('other-options') ?
+      event.target : event.target.parentElement || event.target;
+    const isMainAction = event.target.classList.contains('main-action');
 
-      let action = isMainAction ?
-          (this.actions[0].code || this.actions[0]) :
-          target && target.getAttribute('action-code');
+    const action = isMainAction ?
+      (this.actions[0].code || this.actions[0]) :
+      target && target.getAttribute('action-code');
 
-      if (action) {
-        if (action === 'submit') {
-          this.showSubmitConfirmation();
-        } else {
-          this.fireActionActivated(action);
-        }
+    if (action) {
+      if (action === 'submit') {
+        this.showSubmitConfirmation();
+      } else {
+        this.fireActionActivated(action);
       }
+    }
   }
 
   submitConfirmationClosed(event: CustomEvent) {
@@ -129,24 +133,24 @@ class ActionButtons extends PolymerElement {
   }
 
   _showOtherActions(length) {
-      return length > 1;
+    return length > 1;
   }
 
   withActionsMenu(length) {
-      return length > 1 ? 'with-menu' : '';
+    return length > 1 ? 'with-menu' : '';
   }
 
   _filterActions(action) {
-      return !isEqual(action, this.actions[0]);
+    return !isEqual(action, this.actions[0]);
   }
 
   _setIcon(item, icons) {
-      if (!icons || !item) { return ''; }
-      return icons[(item.code || item)] || '';
+    if (!icons || !item) {return '';}
+    return icons[(item.code || item)] || '';
   }
 
   _setActionCode(item) {
-      return item && (item.code || item);
+    return item && (item.code || item);
   }
 
 }

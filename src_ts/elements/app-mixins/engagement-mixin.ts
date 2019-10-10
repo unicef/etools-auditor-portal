@@ -1,5 +1,5 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from "@polymer/decorators";
+import {property} from '@polymer/decorators';
 import isUndefined from 'lodash-es/isUndefined';
 import includes from 'lodash-es/includes';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -73,7 +73,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       fireEvent(this, 'toast', {reset: true});
       this.errorObject = {};
 
-      let id = this.routeData ? this.routeData.id : route.path.split('/')[1];
+      const id = this.routeData ? this.routeData.id : route.path.split('/')[1];
       let tab = this.routeData ? this.routeData.tab : route.path.split('/')[2];
       if (tab === '' || isUndefined(tab)) {
         this.set('route.path', `/${id}/overview`);
@@ -90,19 +90,19 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!route || !permissionBase || !engagement) {
         return;
       }
-      let tab = route.path.split('/')[2];
+      const tab = route.path.split('/')[2];
       if ((tab === 'report') && !this._showReportTabs(permissionBase, engagement) ||
         (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
-        let id = route.path.split('/')[1];
+        const id = route.path.split('/')[1];
         this.set('route.path', `/${id}/overview`);
       }
     }
 
     _infoLoaded() {
-      //save data copy
+      // save data copy
       this.set('originalData', cloneDeep(this.engagement));
 
-      let tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
+      const tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
       if (!~this.tabsList.indexOf(tab)) {
         this.routeData.tab = this.tabsList[0] || '';
         return;
@@ -118,8 +118,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!event || !event.detail) {
         return;
       }
-      let data = event.detail.data;
-      let success = event.detail.success;
+      const data = event.detail.data;
+      const success = event.detail.success;
       if (data) {
         this.set('originalData', cloneDeep(this.engagement));
       }
@@ -150,7 +150,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     resetInputDialog(opened) {
-      let input = this.getElement('#cancellationReasonInput');
+      const input = this.getElement('#cancellationReasonInput');
       if (!opened && input) {
         input.value = '';
         this._resetFieldError({target: input});
@@ -162,10 +162,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _processAction(event) {
-      let details = event.detail;
+      const details = event.detail;
 
       if (!details || !details.type) {
-        throw 'Event type is not provided!';
+        throw new Error('Event type is not provided!');
       }
 
       switch (details.type) {
@@ -185,7 +185,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
           this._openCancelDialog();
           break;
         default:
-          throw `Unknown event type: ${details.type}`;
+          throw new Error(`Unknown event type: ${details.type}`);
       }
     }
 
@@ -197,8 +197,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      let quietAdding = event && event.detail && event.detail.quietAdding;
-      let forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
+      const quietAdding = event && event.detail && event.detail.quietAdding;
+      const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
 
       return this._prepareData()
         .then((data) => {
@@ -234,16 +234,16 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!this.dialogOpened) {
         return;
       }
-      let input = this.getElement('#cancellationReasonInput');
+      const input = this.getElement('#cancellationReasonInput');
 
       if (!input) {
-        throw 'Can not find input!'
+        throw new Error('Can not find input!');
       }
       if (!input.validate()) {
         return;
       }
 
-      let type = this.getLongEngType(this.engagement.engagement_type);
+      const type = this.getLongEngType(this.engagement.engagement_type);
 
       this.updatedEngagement = {
         engagement_type: type,
@@ -279,7 +279,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     persistCurrentEngagement(engagement, type) {
       currentEngagement = {details: engagement, type};
-      this.set('currentEngagement', currentEngagement)
+      this.set('currentEngagement', currentEngagement);
     }
 
     getCurrentEngagement() {
@@ -291,17 +291,17 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return Promise.reject('You need engagement object');
       }
 
-      //Check basic info
+      // Check basic info
       let [data, engagementId] = this._getBasicInfo({});
 
-      //Add assign report info
-      let reportTab = this.getElement('#report');
-      let assignReportData = reportTab && reportTab.getAssignVisitData();
+      // Add assign report info
+      const reportTab = this.getElement('#report');
+      const assignReportData = reportTab && reportTab.getAssignVisitData();
       if (assignReportData) {
         assign(data, assignReportData);
       }
 
-      let type = this.getLongEngType(this.engagement.engagement_type);
+      const type = this.getLongEngType(this.engagement.engagement_type);
       if (!this.isStaffSc) {
         data.engagement_type = this.engagement.engagement_type.value;
       }
@@ -310,7 +310,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         data = this.customDataPrepare(data);
       }
 
-      //leave for compatibility with other code
+      // leave for compatibility with other code
       return Promise.all([])
         .then(() => ({
           engagement_type: type,
@@ -325,9 +325,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!engagement || !engagement.engagement_type || !engagement.id) {
         return '';
       }
-      let type = this.getLongEngType(engagement.engagement_type) || 'engagements',
-        pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/',
-        csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
+      const type = this.getLongEngType(engagement.engagement_type) || 'engagements';
+      const pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/';
+      const csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
       return [{
         name: 'Export PDF',
@@ -339,11 +339,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _validateBasicInfo(property?) {
-      let detailsValid = this.getElement('#engagementDetails').validate();
-      let partnerDetailsValid = this.getElement('#partnerDetails').validate();
+      const detailsValid = this.getElement('#engagementDetails').validate();
+      const partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
       if (!detailsValid || !partnerDetailsValid) {
-        let openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
+        const openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
         this.set(property || 'tab', openTab);
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
@@ -384,10 +384,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     _getBasicInfo(data) {
       data = data || {};
 
-      let engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
-      let partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
-      let authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer();
-      let staffMembersData = this.getElement('#staffMembers').getTabData();
+      const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
+      const partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
+      const authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer();
+      const staffMembersData = this.getElement('#staffMembers').getTabData();
 
       if (engagementDetailsData) {
         assign(data, engagementDetailsData);
@@ -416,7 +416,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     hasReportAccess(permissionBase, engagement) {
       return actionAllowed(permissionBase, 'submit') ||
         engagement.status === 'report_submitted' ||
-        engagement.status === 'final'
+        engagement.status === 'final';
     }
 
     _showQuestionnaire(permissionBase, engagement) {
@@ -427,7 +427,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _showFollowUpTabs(permissionBase) {
-      let collection = getCollection(`${permissionBase}_ap`, 'GET');
+      const collection = getCollection(`${permissionBase}_ap`, 'GET');
       return isValidCollection(collection);
     }
 
@@ -439,9 +439,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!errorObj || !isObject(errorObj)) {
         return;
       }
-      let page = whichPageTrows(errorObj);
+      const page = whichPageTrows(errorObj);
       if (page) {
-        let tab = this.tab ? 'tab' : 'routeData.tab';
+        const tab = this.tab ? 'tab' : 'routeData.tab';
         this.set(tab, page);
       }
     }

@@ -1,6 +1,6 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
@@ -23,8 +23,8 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _engagementIdChanged(engagementId) {
     if (!engagementId) {return;}
-    let apBaseUrl = getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
-    let url = `${apBaseUrl}action-points/?page_size=all`;
+    const apBaseUrl = getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
+    const url = `${apBaseUrl}action-points/?page_size=all`;
 
     this._getActionPoints(url);
   }
@@ -32,13 +32,13 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   _getActionPoints(url) {
     const requestOptions = {
       endpoint: {
-        url,
+        url
       }
     };
 
     this.sendRequest(requestOptions)
       .then(resp => this._handleResponse(resp))
-      .catch((err => this._handleError()));
+      .catch((() => this._handleError()));
   }
 }
-window.customElements.define("get-action-points", GetActionPoints);
+window.customElements.define('get-action-points', GetActionPoints);

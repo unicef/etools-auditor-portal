@@ -64,7 +64,8 @@ export const RiskTabStyles = html`
     .tab-container .risk-result-container .result-element .value.medium {
       color: var(--module-warning);
     }
-    .tab-container .risk-result-container .result-element .value.significant, :host .tab-container .risk-result-container .result-element .value.high {
+    .tab-container .risk-result-container .result-element .value.significant, 
+    :host .tab-container .risk-result-container .result-element .value.high {
       color: var(--module-error);
     }
     .tab-container .risk-result-container .result-element.risk-rating .value {

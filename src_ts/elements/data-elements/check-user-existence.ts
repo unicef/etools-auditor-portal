@@ -1,5 +1,5 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
 import get from 'lodash-es/get';
 import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
@@ -31,16 +31,16 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (isNaN(+this.organisationId)) {return;}
 
     this.emailChecking = true;
-    let url = getEndpoint('userExistence', {
+    const url = getEndpoint('userExistence', {
       email: encodeURIComponent(email),
       id: this.organisationId
     }).url;
 
     this.sendRequest({
       endpoint: {url}
-    }).then(resp => {
+    }).then((resp) => {
       this._handleResponse(resp);
-    }).catch(err => {
+    }).catch((err) => {
       this._handleError(err);
     });
 
@@ -53,24 +53,25 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
   _handleResponse(details = []) {
     const user = get(details, '0');
     if (user) {
-      let firmId = user.auditor_firm,
-        userIsNotDeleted = firmId === this.organisationId && !user.hidden,
-        alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
+      const firmId = user.auditor_firm;
+      const userIsNotDeleted = firmId === this.organisationId && !user.hidden;
+      const alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
       if (!this.unicefUsersAllowed && this._isUnicefUser(user.email)) {
-        this._setError('UNICEF users can not be added to this engagement type.')
+        this._setError('UNICEF users can not be added to this engagement type.');
         this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
       }
       if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
-        //if user exists in other firm, or in current but is not deleted, or user exists and unicefUsersAllowed is false
+        // if user exists in other firm, or in current but is not deleted,
+        // or user exists and unicefUsersAllowed is false
         this._setError(`This user is already assigned to firm : ${user.auditor_firm_description}`);
-        let email = get(this, 'editedItem.user.email'),
-          hasAccess = false;
+        const email = get(this, 'editedItem.user.email');
+        const hasAccess = false;
         this.editedItem = {user: {email}, hasAccess};
       }
 
       if (firmId === this.organisationId) {
-        //if user was deleted from current organization
-        let user = details[0] as any;
+        // if user was deleted from current organization
+        const user = details[0] as any;
         user.is_active = true;
         this.editedItem = {
           id: user.staff_member_id,
@@ -79,9 +80,9 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
           user: omit(user, ['id', 'auditor_firm', 'staff_member_id', 'hidden'])
         };
       } else if (details.length) {
-        //if user exists but doesn't belong to any auditor_firm
-        let user = details[0] as any,
-          user_pk = user.id;
+        // if user exists but doesn't belong to any auditor_firm
+        const user = details[0] as any;
+        const user_pk = user.id;
 
         this.editedItem = {
           hasAccess: true,
@@ -89,21 +90,22 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
           user_pk
         };
       } else if (this.unicefUsersAllowed) {
-        //if is new user and unicefUsersAllowed
+        // if is new user and unicefUsersAllowed
         this._setError(`You can't add new user to this firm.`);
         this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
       } else {
-        //if is new user
+        // if is new user
         this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
       }
     } else if (this.unicefUsersAllowed) {
-      const errorMsg = this._isUnicefUser(this.email) ? `We could not find this user at this time, please try again later or contact support if the issue persists` :
+      const errorMsg = this._isUnicefUser(this.email) ?
+        `We could not find this user at this time, please try again later or contact support if the issue persists` :
         'Only UNICEF users can be added to a Staff Spot Check';
       this._setError(errorMsg);
       this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
 
     } else if (this._isUnicefUser(this.email)) {
-      this._setError('UNICEF users can not be added to this engagement type.')
+      this._setError('UNICEF users can not be added to this engagement type.');
       this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
     }
 
@@ -123,4 +125,4 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (!this.errors.user.email) {this.set('errors.user.email', error);}
   }
 }
-window.customElements.define("check-user-existence", CheckUserExistence);
+window.customElements.define('check-user-existence', CheckUserExistence);

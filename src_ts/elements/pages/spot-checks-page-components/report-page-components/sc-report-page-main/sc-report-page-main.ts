@@ -8,6 +8,7 @@ import {GenericObject} from '../../../../../types/global';
 
 import concat from 'lodash-es/concat';
 import isNull from 'lodash-es/isNull';
+// eslint-disable-next-line
 import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
 import {InternalControlsElement} from '../internal-controls/internal-controls';
@@ -84,20 +85,21 @@ class ScReportPageMain extends PolymerElement {
   engagement: GenericObject = {};
 
   validate(forSave) {
-    let assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagementEl).validate(forSave);
+    const assignTabValid =
+          (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagementEl).validate(forSave);
 
     return assignTabValid;
   }
 
   getFindingsData() {
-    let findingsLowPriority = (this.$.findingsLowPriority as SummaryFindingsElement).getFindingsData();
-    let findingsHighPriority = (this.$.findingsHighPriority as SummaryFindingsElement).getFindingsData();
-    let findings = concat(findingsLowPriority || [], findingsHighPriority || []);
+    const findingsLowPriority = (this.$.findingsLowPriority as SummaryFindingsElement).getFindingsData();
+    const findingsHighPriority = (this.$.findingsHighPriority as SummaryFindingsElement).getFindingsData();
+    const findings = concat(findingsLowPriority || [], findingsHighPriority || []);
     return findings.length ? findings : null;
   }
 
   getInternalControlsData() {
-    let internalControlsData = (this.$.internalControls as InternalControlsElement).getInternalControlsData();
+    const internalControlsData = (this.$.internalControls as InternalControlsElement).getInternalControlsData();
     return !isNull(internalControlsData) ? internalControlsData : null;
   }
 

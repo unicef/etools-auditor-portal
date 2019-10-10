@@ -9,7 +9,7 @@ import '@unicef-polymer/etools-profile-dropdown';
 import './countries-dropdown/countries-dropdown';
 import './support-btn';
 
-import {isProductionServer, checkEnvironment} from '../../app-config/config.js';
+import {isProductionServer, checkEnvironment} from '../../app-config/config';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
 

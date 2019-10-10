@@ -1,7 +1,7 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
-import {property} from "@polymer/decorators";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators';
 import findIndex from 'lodash-es/findIndex';
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
@@ -23,15 +23,15 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   engagementId!: number;
 
   _dataChanged(data = {}) {
-    let {method, apData, complete} = data as any;
+    const {method, apData, complete} = data as any;
     if (!method || !apData) {
       return;
     }
 
-    let apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
-      url = `${apBaseUrl}action-points/`;
+    const apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url;
+    let url = `${apBaseUrl}action-points/`;
 
-    if (apData.id) {url += `${apData.id}/`}
+    if (apData.id) {url += `${apData.id}/`;}
     if (complete) {url += 'complete/';}
 
     this._sendUpdateRequest(url, apData, method);
@@ -52,7 +52,7 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleResponse(detail) {
-    let index = findIndex(this.actionPoints, (item: any) => item.id === detail.id);
+    const index = findIndex(this.actionPoints, (item: any) => item.id === detail.id);
 
     if (~index) {
       this.splice('actionPoints', index, 1, detail);
@@ -79,4 +79,4 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
 }
-window.customElements.define("update-action-points", UpdateActionPoints);
+window.customElements.define('update-action-points', UpdateActionPoints);

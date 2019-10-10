@@ -1,12 +1,12 @@
 import Dexie from 'dexie';
 
 declare global {
-  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any;}
+  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any}
 }
 
 window.EtoolsFamApp = window.EtoolsFamApp || {};
 
-//------------Dexie------------
+// ------------Dexie------------
 var etoolsCustomDexieDb = new Dexie('AP');
 
 etoolsCustomDexieDb.version(1).stores({
@@ -21,7 +21,7 @@ window.EtoolsRequestCacheDb = etoolsCustomDexieDb;
 window.EtoolsFamApp.DexieDb = etoolsCustomDexieDb;
 
 
-//-----------Environment------
+// -----------Environment------
 const PROD_DOMAIN = 'etools.unicef.org';
 const STAGING_DOMAIN = 'etools-staging.unicef.org';
 const DEV_DOMAIN = 'etools-dev.unicef.org';

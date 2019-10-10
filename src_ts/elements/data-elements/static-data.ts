@@ -3,7 +3,7 @@ import famEndpoints from '../app-config/endpoints';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {addToCollection, getChoices, isValidCollection} from '../app-mixins/permission-controller';
-import {setStaticData, updateStaticData} from '../../elements/app-mixins/static-data-controller';
+import {setStaticData, updateStaticData} from '../app-mixins/static-data-controller';
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
@@ -49,7 +49,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   loadStaticData() {
     this.getPartners();
-    this.getUsers()
+    this.getUsers();
     this.getStaffUsers();
     this.getOffices();
     this.getSections();
@@ -60,47 +60,47 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   getPartners() {
-    let partnersEndpoint = getEndpoint('partnerOrganisations');
+    const partnersEndpoint = getEndpoint('partnerOrganisations');
     this.sendRequest({
       endpoint: partnersEndpoint
     })
-      .then((resp) => this._partnersLoaded(resp))
-      .catch((err) => this._partnersLoaded(err));
+      .then(resp => this._partnersLoaded(resp))
+      .catch(err => this._partnersLoaded(err));
   }
 
   getUsers() {
-    let usersEndpoint = famEndpoints.users;
+    const usersEndpoint = famEndpoints.users;
     this.sendRequest({
       endpoint: usersEndpoint
     })
-      .then((resp) => this._handleUsersResponse(resp))
-      .catch((err) => this._handleUsersResponse(err));
+      .then(resp => this._handleUsersResponse(resp))
+      .catch(err => this._handleUsersResponse(err));
   }
 
   getStaffUsers() {
-    let staffUsersEndpoint = famEndpoints.staffMembersUsers;
+    const staffUsersEndpoint = famEndpoints.staffMembersUsers;
     this.sendRequest({
       endpoint: staffUsersEndpoint
     })
-      .then((resp) => this._handleStaffUsersResponse(resp))
-      .catch((err) => this._handleStaffUsersResponse(err));
+      .then(resp => this._handleStaffUsersResponse(resp))
+      .catch(err => this._handleStaffUsersResponse(err));
   }
 
   getOffices() {
-    let officesEndpoint = famEndpoints.offices;
+    const officesEndpoint = famEndpoints.offices;
     this.sendRequest({
       endpoint: officesEndpoint
     })
-      .then((resp) => this._apDataResponse(resp, 'offices'))
+      .then(resp => this._apDataResponse(resp, 'offices'))
       .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
   }
 
   getSections() {
-    let sectionsEndpoint = famEndpoints.sectionsCovered;
+    const sectionsEndpoint = famEndpoints.sectionsCovered;
     this.sendRequest({
       endpoint: sectionsEndpoint
     })
-      .then((resp) => this._apDataResponse(resp, 'sections'))
+      .then(resp => this._apDataResponse(resp, 'sections'))
       .catch(() => this._apDataResponse());// This doesn't actually handle the error in any way
   }
 
@@ -124,10 +124,10 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: famEndpoints.createEngagement,
       csrf: true,
       method: 'OPTIONS'
-    }
+    };
     this.sendRequest(options)
-      .then((resp) => this._handleNewEngagementResponse(resp))
-      .catch((err) => this._handleNewEngagementResponse(err));
+      .then(resp => this._handleNewEngagementResponse(resp))
+      .catch(err => this._handleNewEngagementResponse(err));
   }
 
   getNewStaffSCOptions() {
@@ -135,10 +135,10 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: famEndpoints.staffSCList,
       csrf: true,
       method: 'OPTIONS'
-    }
+    };
     this.sendRequest(options)
-      .then((resp) => this._handleStaffSCOptionsResponse(resp))
-      .catch((err) => this._handleStaffSCOptionsResponse(err));
+      .then(resp => this._handleStaffSCOptionsResponse(resp))
+      .catch(err => this._handleStaffSCOptionsResponse(err));
   }
 
   getAtmOptions() {
@@ -146,12 +146,11 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: getEndpoint('attachments', {id: 'new'}),
       csrf: true,
       method: 'OPTIONS'
-    }
+    };
     this.sendRequest(options)
-      .then((resp) => this._atmOptionsResponse(resp))
-      .catch((err) => this._atmOptionsResponse(err));
+      .then(resp => this._atmOptionsResponse(resp))
+      .catch(err => this._atmOptionsResponse(err));
   }
-
 
 
   _checkAllDataLoaded() {
@@ -176,32 +175,32 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _triggerGlobalEvent(eventName, data?) {
-    let detail = {detail: data};
-    let event = new CustomEvent(eventName, detail);
+    const detail = {detail: data};
+    const event = new CustomEvent(eventName, detail);
     document.dispatchEvent(event);
   }
 
   _updateEngagementsFilters() {
-    let time = new Date().getTime();
+    const time = new Date().getTime();
 
-    let filterAuditorsEndpoint = getEndpoint('filterAuditors');
+    const filterAuditorsEndpoint = getEndpoint('filterAuditors');
     filterAuditorsEndpoint.url += `?reload=${time}`;
     this.sendRequest({endpoint: filterAuditorsEndpoint})
-      .then((resp) => this._filterAuditorsLoaded(resp))
-      .catch((err) => this._filterAuditorsLoaded(err));
+      .then(resp => this._filterAuditorsLoaded(resp))
+      .catch(err => this._filterAuditorsLoaded(err));
 
-    let filterPartnersEndpoint = getEndpoint('filterPartners');
+    const filterPartnersEndpoint = getEndpoint('filterPartners');
     filterPartnersEndpoint.url += `?reload=${time}`;
     this.sendRequest({endpoint: filterPartnersEndpoint})
-      .then((resp) => this._filterPartnersLoaded(resp))
-      .catch((err) => this._filterPartnersLoaded(err));
+      .then(resp => this._filterPartnersLoaded(resp))
+      .catch(err => this._filterPartnersLoaded(err));
   }
 
   _partnersLoaded(details) {
     if (!details || details.error) { // TODO is .error ok?
       this._responseError('Partners', '', 'warn');
     } else {
-      let partners = sortBy(details, ['name']);
+      const partners = sortBy(details, ['name']);
       setStaticData('partners', partners);
     }
     this.dataLoaded.partners = true;
@@ -212,7 +211,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (!details || details.error) {
       this._responseError('Auditors', '');
     }
-    let filterAuditors = details || details.results || [];
+    const filterAuditors = details || details.results || [];
     if (this.dataLoaded.filters) {
       updateStaticData('filterAuditors', filterAuditors);
     } else {
@@ -228,7 +227,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       this._responseError('Partners', '');
     }
 
-    let filterPartners = details || [];
+    const filterPartners = details || [];
     if (this.dataLoaded.filters) {
       updateStaticData('filterPartners', filterPartners);
     } else {
@@ -240,14 +239,14 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleNewEngagementResponse(details) {
-    let actions = details && details.actions;
+    const actions = details && details.actions;
     if (!details || details.error || !isValidCollection(actions)) {
       this._responseError('Engagement Permissions', details.error);
     } else {
       addToCollection('new_engagement', actions);
 
-      let statuses = getChoices('new_engagement.status') || [];
-      let engagementTypes = getChoices('new_engagement.engagement_type') || [];
+      const statuses = getChoices('new_engagement.status') || [];
+      const engagementTypes = getChoices('new_engagement.engagement_type') || [];
 
       if (!statuses) {this._responseError('Statuses', 'Can not load engagement statuses data');}
       if (!engagementTypes) {this._responseError('Engagement types', 'Can not load engagement types data');}
@@ -263,10 +262,10 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleStaffSCOptionsResponse(data) {
-    let actions = get(data, 'actions') || {};
-    let name = get(data, 'name', '');
-    let collection = 'new_staff_sc';
-    let dataName = 'staffSCPermissions';
+    const actions = get(data, 'actions') || {};
+    const name = get(data, 'name', '');
+    const collection = 'new_staff_sc';
+    const dataName = 'staffSCPermissions';
 
     if (!collection || !dataName) {
       throw new Error('Please provide collection and dataName attributes');
@@ -277,8 +276,8 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _atmOptionsResponse(data) {
-    let actions = get(data, 'actions', {});
-    let name = get(data, 'name', '');
+    const actions = get(data, 'actions', {});
+    const name = get(data, 'name', '');
 
     if (actions) {
       addToCollection(`new_engagement_attachments`, actions || {}, name);
@@ -322,7 +321,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _apDataResponse(details?, cacheKey?) {
-    let collection = cacheKey;// the cacheKey on the endpoint
+    const collection = cacheKey;// the cacheKey on the endpoint
 
     if (!collection || !details) {return;}
 

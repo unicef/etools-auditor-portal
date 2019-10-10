@@ -96,7 +96,12 @@ class ListPagination extends PolymerElement {
                   no-label-float
                   vertical-align="bottom"
                   horizontal-align="right">
-              <paper-listbox slot="dropdown-content" id="selecta" class="dropdown-content" attr-for-selected="name" selected="{{pageSize}}">
+              <paper-listbox 
+                    slot="dropdown-content" 
+                    id="selecta" 
+                    class="dropdown-content" 
+                    attr-for-selected="name" 
+                    selected="{{pageSize}}">
                   <!--on-iron-select="itemsNrChanged"-->
                   <template is="dom-repeat" items="[[sizesAllowed]]">
                       <paper-item name="[[item]]">[[item]]</paper-item>
@@ -175,7 +180,9 @@ class ListPagination extends PolymerElement {
   goToLast() {this.set('pageNumber', this.lastPage);}
 
   _disableButton(currentPage, datalength, pageSize) {
-    if ((+this.currentPage === 1 && !pageSize) || (+this.currentPage === +this.lastPage && pageSize) || this.pageSize >= datalength) {return true;}
+    if ((+currentPage === 1 && !pageSize) ||
+        (+currentPage === +this.lastPage && pageSize) ||
+        this.pageSize >= datalength) {return true;}
   }
 
   _calcLastPage(dataLength, size) {

@@ -8,7 +8,7 @@ let _groups: object[] | string[] = [];
 
 export function setUserData(user: any) {
   if (_user) {
-    throw 'User already exists!';
+    throw new Error('User already exists!');
   }
 
   if (!user || !isObject(user) || isArray(user)) {
@@ -30,8 +30,11 @@ function _setGroups(user) {
   if (!user.groups.length) {
     throw new Error('Can not find user group!');
   }
-  _groups = user.groups.map((group) => {
-    return group.name;
-  });
+  if (_groups !== undefined) {
+    _groups = user.groups.map((group) => {
+      return group.name;
+    });
+  }
+
 }
 

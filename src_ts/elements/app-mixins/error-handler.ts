@@ -22,73 +22,73 @@ const FollowUpProperties = ['additional_supporting_documentation_provided', 'amo
   'justification_provided_and_accepted', 'write_off_required',
   'explanation_for_additional_information', 'action_points'];
 
-  export function refactorErrorObject(errorData) {
-    if (!errorData) {
-      return {};
-    }
-
-    if (!isObject(errorData)) {
-      return errorData;
-    }
-
-    if (isArray(errorData)) {
-      return isObject(errorData[0]) && !!errorData[0]
-          ? errorData.map(object => refactorErrorObject(object))
-          : errorData[0];
-    } else {
-      forOwn(errorData, (value, key) => {
-        errorData[key] = refactorErrorObject(value);
-      });
-      return errorData;
-    }
-
+export function refactorErrorObject(errorData) {
+  if (!errorData) {
+    return {};
   }
 
-  export function whichPageTrows(errorObj) {
-    let overviewError, attachmentError, reportError, questionnaireError;
+  if (!isObject(errorData)) {
+    return errorData;
+  }
 
+  if (isArray(errorData)) {
+    return isObject(errorData[0]) && !!errorData[0]
+      ? errorData.map(object => refactorErrorObject(object))
+      : errorData[0];
+  } else {
+    forOwn(errorData, (value, key) => {
+      errorData[key] = refactorErrorObject(value);
+    });
+    return errorData;
+  }
+
+}
+
+export function whichPageTrows(errorObj) {
+  let overviewError; let attachmentError; let reportError; let questionnaireError;
+
+  each(errorObj, (value, key) => {
+    if (~OverviewProperties.indexOf(key)) {
+      overviewError = 'overview';
+    }
+    if (~AttachmentsProperties.indexOf(key)) {
+      attachmentError = 'attachments';
+    }
+    if (~ReportProperties.indexOf(key)) {
+      reportError = 'report';
+    }
+    if (key === 'questionnaire') {
+      questionnaireError = 'questionnaire';
+    }
+    if (~FollowUpProperties.indexOf(key)) {
+      reportError = 'follow-up';
+    }
+  });
+
+  return overviewError || attachmentError || questionnaireError || reportError || null;
+}
+
+export function checkNonField(errorObj) {
+  if (!isObject(errorObj)) {
+    return null;
+  }
+
+  let message = null;
+  if (isArray(errorObj)) {
+    each(errorObj, (value) => {
+      const recursive = checkNonField(value);
+      recursive && !message ? message = recursive : null;
+    });
+  } else {
     each(errorObj, (value, key) => {
-      if (~OverviewProperties.indexOf(key)) {
-        overviewError = 'overview';
-      }
-      if (~AttachmentsProperties.indexOf(key)) {
-        attachmentError = 'attachments';
-      }
-      if (~ReportProperties.indexOf(key)) {
-        reportError = 'report';
-      }
-      if (key === 'questionnaire') {
-        questionnaireError = 'questionnaire';
-      }
-      if (~FollowUpProperties.indexOf(key)) {
-        reportError = 'follow-up';
+      if (key === 'non_field_errors') {
+        message = value;
+      } else {
+        const recursive = checkNonField(value);
+        recursive && !message ? message = recursive : null;
       }
     });
-
-    return overviewError || attachmentError || questionnaireError || reportError || null;
   }
-
-  export function checkNonField(errorObj) {
-    if (!isObject(errorObj)) {
-      return null;
-    }
-
-    let message = null;
-    if (isArray(errorObj)) {
-      each(errorObj, value => {
-        let recursive = checkNonField(value);
-        recursive && !message ? message = recursive : null;
-      });
-    } else {
-      each(errorObj, (value, key) => {
-        if (key === 'non_field_errors') {
-          message = value;
-        } else {
-          let recursive = checkNonField(value);
-          recursive && !message ? message = recursive : null;
-        }
-      });
-    }
-    return message;
-  }
+  return message;
+}
 

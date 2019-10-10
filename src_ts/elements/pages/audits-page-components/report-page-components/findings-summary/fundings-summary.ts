@@ -107,7 +107,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <!-- Audited expenditure (USD) -->
                 <etools-currency-amount-input
                     id="audited-expenditure"
-                    class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure', basePermissionPath)]]"
+                    class$="[[_setRequired('audited_expenditure', basePermissionPath)]]
+                            validate-input disabled-as-readonly"
                     value="{{editedItem.audited_expenditure}}"
                     currency="$"
                     label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
@@ -127,7 +128,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <!-- Financial findings (USD) -->
                 <etools-currency-amount-input
                     id="financial-findings"
-                    class$="validate-input disabled-as-readonly [[_setRequired('financial_findings', basePermissionPath)]]"
+                    class$="[[_setRequired('financial_findings', basePermissionPath)]]
+                            validate-input disabled-as-readonly"
                     value="{{editedItem.financial_findings}}"
                     currency="$"
                     label$="[[getLabel('financial_findings', basePermissionPath)]]"
@@ -330,15 +332,15 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     super.connectedCallback();
 
     this.auditOpinions = getStaticData('audit_opinions') || [];
-    let headerColumns = cloneDeep(this.columns),
-        group = headerColumns.slice(-3),
-        groupColumn = {
-          'group': true,
-          'label': 'No. of Key Control Weaknesses',
-          'align': 'center',
-          'size': '180px',
-          'columns': group
-        };
+    const headerColumns = cloneDeep(this.columns);
+    const group = headerColumns.slice(-3);
+    const groupColumn = {
+      'group': true,
+      'label': 'No. of Key Control Weaknesses',
+      'align': 'center',
+      'size': '180px',
+      'columns': group
+    };
     this.headerColumns = headerColumns.slice(0, -3).concat([groupColumn]);
   }
 
@@ -357,7 +359,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     }
 
     let itemModelKeys = keys(this.itemModel) || [];
-    let originalData;
+    const originalData;
     let data;
 
     itemModelKeys = itemModelKeys.filter((key) => {
@@ -373,7 +375,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
 
     if (!isEqual(data, originalData)) {
-      //return only changed values
+      // return only changed values
       return transform(data, function(result, value, key) {
         if (value !== originalData[key]) {
           result[key] = value;
@@ -384,7 +386,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
   _setAuditOpinion(auditOpinionValue, auditOpinions) {
     if (auditOpinions && auditOpinions.length > 0) {
-      let auditOpinion = auditOpinions.find(function(auditOpinion) {
+      const auditOpinion = auditOpinions.find(function(auditOpinion) {
         return auditOpinion.value === auditOpinionValue;
       }) || {};
       this.data.opinion = auditOpinion;
@@ -393,9 +395,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   _setAuditedExpenditure(financialFindings, auditedExpenditure) {
-    let ffNumber = toNumber(financialFindings);
-    let aeNumber = toNumber(auditedExpenditure);
-    let val = aeNumber === 0 ? 0 : Math.floor(ffNumber / aeNumber * 100);
+    const ffNumber = toNumber(financialFindings);
+    const aeNumber = toNumber(auditedExpenditure);
+    const val = aeNumber === 0 ? 0 : Math.floor(ffNumber / aeNumber * 100);
     this.set('editedItem.percent_of_audited_expenditure', val);
   }
 
@@ -405,12 +407,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
       return;
     }
 
-    let refactoredData = refactorErrorObject(errorData);
+    const refactoredData = refactorErrorObject(errorData);
     let itemModelKeys = keys(this.itemModel) || [];
     itemModelKeys = itemModelKeys.filter((key) => {
       return key !== 'partner' && key !== 'opinion';
     });
-    let findingsSummaryErrors = pick(refactoredData, itemModelKeys);
+    const findingsSummaryErrors = pick(refactoredData, itemModelKeys);
 
     if (!this.dialogOpened && values(findingsSummaryErrors).length) {
       fireEvent(this, 'toast', {text: 'Please fill in the Summary of Audit Findings.'});
@@ -420,10 +422,10 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   customValidation() {
-    let ffElement = this.$['financial-findings'],
-        ffNumber = ffElement && toNumber(ffElement.value);
-    let aeElement = this.$['audited-expenditure'],
-        aeNumber = aeElement && toNumber(aeElement.value);
+    const ffElement = this.$['financial-findings'];
+    const ffNumber = ffElement && toNumber(ffElement.value);
+    const aeElement = this.$['audited-expenditure'];
+    const aeNumber = aeElement && toNumber(aeElement.value);
 
     if (aeNumber < ffNumber) {
       ffElement.invalid = 'Cannot exceed Audited Expenditure';

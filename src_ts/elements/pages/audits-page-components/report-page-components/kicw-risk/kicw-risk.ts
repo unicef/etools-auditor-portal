@@ -110,34 +110,34 @@ class KicwRisk extends PolymerElement {
   }, {
     'size': 30,
     'label': 'Key control observation',
-    'path': 'extra.key_control_observation',
+    'path': 'extra.key_control_observation'
   }, {
     'size': 30,
     'label': 'Recommendation',
-    'path': 'extra.recommendation',
+    'path': 'extra.recommendation'
   }, {
     'size': 30,
     'label': 'IP response',
-    'path': 'extra.ip_response',
+    'path': 'extra.ip_response'
   }];
 
   editRisk(event) {
-    let blueprint = this._createBlueprintFromEvent(event);
+    const blueprint = this._createBlueprintFromEvent(event);
     fireEvent(this, 'kicw-risk-edit', {blueprint});
   }
 
   removeRisk(event) {
-    let blueprint = this._createBlueprintFromEvent(event);
+    const blueprint = this._createBlueprintFromEvent(event);
     blueprint.risks[0]._delete = true;
     fireEvent(this, 'kicw-risk-delete', {blueprint, delete: true});
   }
 
   _createBlueprintFromEvent(event) {
-    let item = event && event.model && event.model.item,
-      index = this.risksData.indexOf(item);
+    const item = event && event.model && event.model.item;
+    const index = this.risksData.indexOf(item);
 
     if ((!index && index !== 0) || !~index) {
-      throw 'Can not find data';
+      throw new Error('Can not find data');
     }
 
     return {

@@ -96,13 +96,14 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
   }
 
   _changeCountry(event) {
-    let country = event && event.model && event.model.item;
-    let id = country && country.id;
+    const country = event && event.model && event.model.item;
+    const id = country && country.id;
 
     if (Number(parseFloat(id)) !== id) {
-      throw 'Can not find country id!';
+      throw new Error('Can not find country id!');
     }
-    fireEvent(this, 'global-loading', {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
+    fireEvent(this, 'global-loading',
+      {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
 
     this._sendChangeCountryRequest(id);
   }
@@ -115,7 +116,7 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
     };
     this.sendRequest(options)
       .then(this._handleResponse.bind(this))
-      .catch(this._handleError.bind(this))
+      .catch(this._handleError.bind(this));
   }
 
   _handleError() {
