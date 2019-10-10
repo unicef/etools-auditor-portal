@@ -546,7 +546,7 @@ class FileAttachmentsTab extends
     return url.split('?').shift().split('/').pop();
   }
 
-  _saveAttachment(e) {
+  _saveAttachment() {
     if (!this.validate()) {
       return;
     }
@@ -586,7 +586,7 @@ class FileAttachmentsTab extends
       return attachmentData;
     }
 
-    let data = pickBy(attachmentData, (value, key) => original[key] !== value);
+    let data = pickBy(attachmentData, (value, key) => original![key] !== value);
     if (data.attachment && this._fileAlreadySelected()) {
       delete data.attachment;
     }
@@ -806,7 +806,7 @@ class FileAttachmentsTab extends
   }
 
   _getClassFor(field) {
-    return `w${this.headings.find(heading => heading.name === field).size}`
+    return `w${this.headings.find(heading => heading.name === field)!.size}`
   }
 
   _openDeleteLinkDialog(e) {

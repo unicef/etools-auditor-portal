@@ -632,7 +632,7 @@ class FollowUpActions extends
       if (isObj) {
         return +value.id !== +get(this, `originalEditedObj.${fieldName}.id`, 0);
       } else {
-        return !isEqual(value, this.originalEditedObj[fieldName]);
+        return !isEqual(value, this.originalEditedObj![fieldName]);
       }
     });
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {

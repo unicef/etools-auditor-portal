@@ -1,6 +1,6 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
@@ -29,9 +29,10 @@ class GetAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: {url: getEndpoint('agreementData', {id: orderNumber}).url}
     }).then(resp => {
       this._handleResponse(resp);
-    }).catch(err => {
+    }).catch(() => {
       this._handleError();
     });
   }
 }
-window.customElements.define("get-agreement-data", GetAgreementData);
+
+window.customElements.define('get-agreement-data', GetAgreementData);
