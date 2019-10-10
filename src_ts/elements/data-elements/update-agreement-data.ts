@@ -43,7 +43,7 @@ class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
   _handleError(error) {
     this.poUpdating = false;
 
-    let {status, response} = (error || {}) as any;
+    let response = (error || {}) as any;
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);

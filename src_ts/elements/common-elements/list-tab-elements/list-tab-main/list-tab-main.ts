@@ -13,7 +13,7 @@ import {ListTabMainStyles} from './list-tab-main-styles';
 import '../list-header/list-header';
 import '../list-element/list-element';
 import '../list-pagination/list-pagination';
-import {BooleanLiteral} from 'babel-types';
+
 
 /**
  * @polymer
