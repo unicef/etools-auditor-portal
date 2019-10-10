@@ -291,7 +291,7 @@ class FollowUpActions extends
                                     allowed-pattern="[\d\s]"
                                     label="[[getLabel('description', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('description', editedApBase)]]"
-                                    required="{{_setRequired('description', editedApBase)}}"
+                                    required$="{{_setRequired('description', editedApBase)}}"
                                     disabled="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     max-rows="4"
@@ -656,7 +656,7 @@ class FollowUpActions extends
       if (isObj) {
         return +value.id !== +get(this, `originalEditedObj.${fieldName}.id`, 0);
       } else {
-        return !isEqual(value, this.originalEditedObj[fieldName]);
+        return !isEqual(value, this.originalEditedObj![fieldName]);
       }
     });
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {

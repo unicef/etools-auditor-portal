@@ -372,7 +372,7 @@ class FileAttachmentsTab extends
   linkedAttachments: any[] = [];
 
   @property({type: Array})
-  fileTypes: {value: string; display_name: string}[] = [];
+  fileTypes: {value: string, display_name: string}[] = [];
 
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this attachment?';
@@ -808,7 +808,7 @@ class FileAttachmentsTab extends
   }
 
   _getClassFor(field) {
-    return `w${this.headings.find(heading => heading.name === field).size}`;
+    return `w${this.headings.find(heading => heading.name === field)!.size}`;
   }
 
   _openDeleteLinkDialog(e) {

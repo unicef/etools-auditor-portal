@@ -357,7 +357,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
     if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
       return this.getCurrentData();
     }
-    const data = [];
+    const data: any[] = [];
     each(this.dataItems, (item, index) => {
       if (item.priority !== this.priority.value) {
         return;

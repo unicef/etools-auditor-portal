@@ -113,7 +113,7 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.email = null;
   }
 
-  _handleError(err) {
+  _handleError() {
     this._setError(`Can't get Email data!`);
     this.emailChecking = false;
     this.email = null;

@@ -241,7 +241,8 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   readonlyTab: boolean = false;
 
   _checkNonField(error) {
-    if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) {return;}
+    if (!error || !this._canBeChanged(this.basePermissionPath) ||
+        this._hideEditIcon(this.basePermissionPath, this.withoutFindingColumn, this.readonlyTab)) {return;}
 
     const nonField = checkNonField(error);
     if (nonField || isString(error)) {

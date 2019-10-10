@@ -1,10 +1,10 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../utils/fire-custom-event.js';
+import {fireEvent} from '../utils/fire-custom-event';
 import findIndex from 'lodash-es/findIndex';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {GenericObject} from '../../types/global.js';
+import {GenericObject} from '../../types/global';
 
 class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
 
