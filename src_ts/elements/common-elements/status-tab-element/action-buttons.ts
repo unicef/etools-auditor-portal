@@ -8,6 +8,8 @@ import {ActionButtonsStyles} from './action-buttons-styles';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../utils/fire-custom-event';
 import isEqual from 'lodash-es/isEqual';
+import {ConfigObj, createDynamicDialog, removeDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
+import EtoolsDialog from '@unicef-polymer/etools-dialog';
 
 class ActionButtons extends PolymerElement {
   static get template() {
@@ -51,6 +53,35 @@ class ActionButtons extends PolymerElement {
   @property({type: Boolean})
   statusBtnMenuOpened!: boolean;
 
+  @property({type: Object})
+  submitConfirmationDialog!: EtoolsDialog;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.createSubmitConfirmationDialog();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    removeDialog(this.submitConfirmationDialog);
+  }
+
+  createSubmitConfirmationDialog() {
+    let dialogContent =  document.createElement('span');
+    dialogContent.innerText = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
+                               You will not be able to make any further changes to the report.`;
+    const dialogConfig: ConfigObj = {
+      title: 'Submit',
+      size: 'md',
+      okBtnText: 'Yes',
+      cancelBtnText: 'No',
+      closeCallback: this.submitConfirmationClosed.bind(this),
+      content: dialogContent
+    };
+
+    this.submitConfirmationDialog = createDynamicDialog(dialogConfig);
+  }
+
   closeMenu() {
     this.statusBtnMenuOpened = false;
   }
@@ -74,9 +105,27 @@ class ActionButtons extends PolymerElement {
           target && target.getAttribute('action-code');
 
       if (action) {
-          fireEvent(this, `toast`, {reset: true});
-          fireEvent(this, `action-activated`, {type: action});
+        if (action === 'submit') {
+          this.showSubmitConfirmation();
+        } else {
+          this.fireActionActivated(action);
+        }
       }
+  }
+
+  submitConfirmationClosed(event: CustomEvent) {
+    if (event.detail.confirmed) {
+      this.fireActionActivated('submit');
+    }
+  }
+
+  fireActionActivated(action: string) {
+    fireEvent(this, `toast`, {reset: true});
+    fireEvent(this, `action-activated`, {type: action});
+  }
+
+  showSubmitConfirmation() {
+    this.submitConfirmationDialog.opened = true;
   }
 
   _showOtherActions(length) {

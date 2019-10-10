@@ -35,7 +35,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     saveWithButton: boolean = false;
 
     @property({type: Object})
-    errors: object = {};
+    errors: GenericObject = {};
 
     // TODO: polymer 3 migration - check if this observer is needed
     @property({type: Boolean, observer: 'updateStyles'})

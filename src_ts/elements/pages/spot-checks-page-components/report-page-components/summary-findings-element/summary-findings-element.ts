@@ -342,7 +342,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
     if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
       return this.getCurrentData();
     }
-    let data = [];
+    let data: any[] = [];
     each(this.dataItems, (item, index) => {
       if (item.priority !== this.priority.value) {
         return;
