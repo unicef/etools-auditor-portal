@@ -1,6 +1,6 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
@@ -38,7 +38,7 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     this.sendRequest(requestOptions)
       .then(resp => this._handleResponse(resp))
-      .catch((err => this._handleError()));
+      .catch((() => this._handleError()));
   }
 }
-window.customElements.define("get-action-points", GetActionPoints);
+window.customElements.define('get-action-points', GetActionPoints);
