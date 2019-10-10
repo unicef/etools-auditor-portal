@@ -9,11 +9,13 @@ window.EtoolsFamApp = window.EtoolsFamApp || {};
 //------------Dexie------------
 var etoolsCustomDexieDb = new Dexie('AP');
 
+// Sections, Offices,
+// Static data (agency_choices, agreement_amendment_types, attachment_types, cso_types, etc)
+// are stored in the 'ajaxDefaultDataTable'
 etoolsCustomDexieDb.version(1).stores({
-  collectionsList: '&name, expire',
   partners: '&id',
-  sections: '&id',
-  offices: '&id'
+  listsExpireMapTable: '&name, expire',
+  ajaxDefaultDataTable: '&cacheKey, data, expire'
 });
 
 // configure app dexie db to be used for caching
@@ -66,7 +68,7 @@ export const checkEnvironment = () => {
 
 export const resetOldUserData = () => {
   localStorage.removeItem('userId');
-  (etoolsCustomDexieDb as any).collectionsList.clear();
+  (etoolsCustomDexieDb as any).listsExpireMapTable.clear();
   (etoolsCustomDexieDb as any).partners.clear();
 };
 

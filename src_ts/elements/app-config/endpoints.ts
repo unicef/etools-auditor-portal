@@ -17,7 +17,7 @@ const famEndpoints = {
   partnerOrganisations: {
     url: '/api/v2/partners/?hidden=false',
     exp: 24 * 60 * 60 * 1000, // 24h
-    cachingKey: 'partners'
+    cacheTableName: 'partners'
   },
   partnerInfo: {
     template: '/api/v2/partners/<%=id%>/'
