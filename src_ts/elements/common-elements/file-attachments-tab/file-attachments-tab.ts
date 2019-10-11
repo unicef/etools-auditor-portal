@@ -201,7 +201,7 @@ class FileAttachmentsTab extends
                      disable-confirm-btn="{{requestInProcess}}"
                      on-confirm-btn-clicked="_saveAttachment">
 
-        <div class="row-h repeatable-item-container" without-line>
+        <div class="repeatable-item-container" without-line>
           <div class="repeatable-item-content">
             <template is="dom-if" if="[[showFileTypes(basePermissionPath)]]">
               <div class="row-h group">
