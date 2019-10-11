@@ -142,7 +142,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
     return window.EtoolsFamApp.DexieDb.delete();
   }
 
-  refreshBtnclicked() {
+  protected refreshBtnclicked() {
     this._clearDexieDb().then(() =>
     fireEvent(this, 'toast', {text: `Cached data was cleared`}));
   }
