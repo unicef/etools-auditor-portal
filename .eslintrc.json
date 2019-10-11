@@ -42,7 +42,7 @@
     "moment": true,
     "Promise": true,
     "Polymer": true,
-    "EtoolsPmpApp": true,
+    "EtoolsFamApp": true,
     "EtoolsRequestCacheDb": true,
     "ShadyCSS": true,
     "Set": true
