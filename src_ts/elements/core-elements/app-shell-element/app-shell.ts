@@ -55,13 +55,12 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return html`
       ${appDrawerStyles}
       <static-data></static-data>
-      <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+      <app-location route="{{route}}" query-params="{{queryParams}}" url-space-regex="^[[rootPath]]"></app-location>
 
       <app-route
               route="{{route}}"
               pattern="[[rootPath]]:page"
               data="{{routeData}}"
-              query-params="{{queryParams}}"
               tail="{{subroute}}">
       </app-route>
 
