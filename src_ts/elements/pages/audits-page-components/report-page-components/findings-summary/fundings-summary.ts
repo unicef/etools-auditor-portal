@@ -54,6 +54,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
             max-height: 140px;
           };
         }
+        .row-h{
+          margin-bottom: 0;
+        }
+        .input-container{
+          height: 75px;
+        }
       </style>
 
       <etools-content-panel list panel-title="Summary of Audit Findings">
@@ -144,9 +150,47 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                     on-tap="_resetFieldError">
                 </etools-currency-amount-input>
               </div>
-            </div>
 
-            <div class="row-h group">
+              <div class="input-container" hidden$="[[!showLocalCurrency]]">
+                  <!-- Audited expenditure (Local) -->
+                  <etools-currency-amount-input
+                      id="audited-expenditure-local"
+                      class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure_local', basePermissionPath)]]"
+                      value="{{editedItem.audited_expenditure_local}}"
+                      currency="[[data.currency_of_report]]"
+                      label$="[[getLocalLabel('audited_expenditure_local', basePermissionPath)]]"
+                      placeholder$="[[getPlaceholderText('audited_expenditure_local', basePermissionPath)]]"
+                      required$="[[_setRequired('audited_expenditure_local', basePermissionPath)]]"
+                      disabled$="[[requestInProcess]]"
+                      readonly$="[[requestInProcess]]"
+                      invalid="{{errors.audited_expenditure_local}}"
+                      error-message="{{errors.audited_expenditure_local}}"
+                      on-blur="customValidation"
+                      on-focus="_resetFieldError"
+                      on-tap="_resetFieldError">
+                  </etools-currency-amount-input>
+              </div>
+
+              <div class="input-container" hidden$="[[!showLocalCurrency]]">
+                <!-- Financial findings (Local) -->
+                <etools-currency-amount-input
+                    id="financial-findings-local"
+                    class$="validate-input disabled-as-readonly [[_setRequired('financial_findings_local', basePermissionPath)]]"
+                    value="{{editedItem.financial_findings_local}}"
+                    currency="[[data.currency_of_report]]"
+                    label$="[[getLocalLabel('financial_findings_local', basePermissionPath)]]"
+                    placeholder$="[[getPlaceholderText('financial_findings_local', basePermissionPath)]]"
+                    required$="[[_setRequired('financial_findings_local', basePermissionPath)]]"
+                    disabled$="[[requestInProcess]]"
+                    readonly$="[[requestInProcess]]"
+                    invalid="{{errors.financial_findings_local}}"
+                    error-message="{{errors.financial_findings_local}}"
+                    on-blur="customValidation"
+                    on-focus="_resetFieldError"
+                    on-tap="_resetFieldError">
+                </etools-currency-amount-input>
+              </div>
+
               <div class="input-container">
                 <!-- % of audited expenditure -->
                 <etools-currency-amount-input
@@ -192,9 +236,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                     readonly>
                 </paper-input>
               </div>
-            </div>
 
-            <div class="row-h group">
               <div class="input-container">
                 <!-- High risk -->
                 <paper-input
@@ -230,7 +272,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                     readonly>
                 </paper-input>
               </div>
-            </div>
+
+              </div>
           </div>
         </div>
 
@@ -248,6 +291,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   itemModel: GenericObject = {
     audited_expenditure: undefined,
     financial_findings: undefined,
+    audited_expenditure_local: undefined,
+    financial_findings_local: undefined,
     audit_opinion: undefined,
     partner: {
       name: undefined
@@ -266,31 +311,54 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   @property({type: Object})
   data: GenericObject = {};
 
+  @property({type: Boolean})
+  showLocalCurrency: boolean = false;
+
   @property({type: Array})
-  columns: GenericObject[] = [{
-    'size': 25,
+  headerColumns!: GenericObject[]
+
+  @property({type: Array})
+  columns!: GenericObject[]
+
+  @property({type: Array})
+  defaultColumns: GenericObject[] = [{
+    'size': 20,
     'label': 'IP name',
     'path': 'partner.name'
   }, {
-    'size': 20,
+    'size': 12,
     'name': 'currency',
     'label': 'Audited Expenditure $ ',
     'path': 'audited_expenditure',
     'align': 'right'
   }, {
-    'size': 15,
+    'size': 12,
     'name': 'currency',
     'label': 'Financial Findings $ ',
     'path': 'financial_findings',
     'align': 'right'
+  },
+  {
+    'size': 12,
+    'name': 'currency',
+    'label': 'Audited Expenditure ',
+    'path': 'audited_expenditure_local',
+    'align': 'right'
   }, {
-    'size': 20,
+    'size': 12,
+    'name': 'currency',
+    'label': 'Financial Findings ',
+    'path': 'financial_findings_local',
+    'align': 'right',
+  },
+  {
+    'size': 12,
     'name': 'percents',
     'label': '% Of Audited Expenditure',
     'path': 'percent_of_audited_expenditure',
     'align': 'right'
   }, {
-    'size': 20,
+    'size': 12,
     'label': 'Audit Opinion',
     'labelPath': 'audit_opinion',
     'path': 'display_name',
@@ -317,6 +385,13 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     'align': 'center'
   }];
 
+  @property({type: Object})
+  colSizesWithoutLocal: GenericObject = {
+    'audited_expenditure': 20,
+    'financial_findings': 15,
+    'display_name': 20,
+  };
+
   static get observers() {
     return [
       'resetDialog(dialogOpened)',
@@ -330,21 +405,42 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
   connectedCallback() {
     super.connectedCallback();
-
     this.auditOpinions = getStaticData('audit_opinions') || [];
-    const headerColumns = cloneDeep(this.columns);
-    const group = headerColumns.slice(-3);
-    const groupColumn = {
-      'group': true,
-      'label': 'No. of Key Control Weaknesses',
-      'align': 'center',
-      'size': '180px',
-      'columns': group
-    };
+    this.setColumnsAndHeaders();
+  }
+
+  setColumnsAndHeaders() {
+    // if local currency it's not used, local columns will not be displayed and the size of some displayed columns will be increased
+    let columns = cloneDeep(this.defaultColumns);
+    if (!this.showLocalCurrency) {
+      columns = columns.filter((col: GenericObject) => {
+        if (this.colSizesWithoutLocal[col.path]) {
+          col.size = this.colSizesWithoutLocal[col.path];
+        }
+        return (col.path !== 'audited_expenditure_local' && col.path !== 'financial_findings_local');
+      });
+    }
+
+    this.columns = columns;
+    let headerColumns = cloneDeep(columns),
+      group = headerColumns.slice(-3),
+      groupColumn = {
+        'group': true,
+        'label': 'No. of Key Control Weaknesses',
+        'align': 'center',
+        'size': '180px',
+        'columns': group
+      };
+    // for local currency columns need to avoid list-header logic of setting labels and set htmlLabel property for this
+    if (this.showLocalCurrency) {
+      headerColumns.filter(h => h.path === 'financial_findings_local' || h.path === 'audited_expenditure_local')
+        .forEach(h => h.htmlLabel = this.getLocalLabel(h.path, this.basePermissionPath));
+    }
     this.headerColumns = headerColumns.slice(0, -3).concat([groupColumn]);
   }
 
   _setDataItems() {
+    this.showLocalCurrency = this.data.currency_of_report !== '' && this.data.currency_of_report !== 'USD';
     if (this.data.percent_of_audited_expenditure) {
       this.set('data.percent_of_audited_expenditure', this.data.percent_of_audited_expenditure.toFixed(2));
     }
@@ -376,7 +472,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
     if (!isEqual(data, originalData)) {
       // return only changed values
-      return transform(data, function(result, value, key) {
+      return transform(data, function (result, value, key) {
         if (value !== originalData[key]) {
           result[key] = value;
         }
@@ -434,6 +530,10 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
       ffElement.invalid = '';
       return true;
     }
+  }
+
+  getLocalLabel(path, base) {
+    return String(this.getLabel(path, base)).replace('Local Currency', this.data.currency_of_report);
   }
 
 }
