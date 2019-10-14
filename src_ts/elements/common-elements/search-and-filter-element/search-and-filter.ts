@@ -121,8 +121,17 @@ class SearchAndFilter extends PolymerElement {
   @property({type: String})
   previousSearchValue: string = '';
 
+  @property({type: Boolean})
+  filtersDataLoaded: boolean = false;
+
   private _searchKeyDownDebounce!: Debouncer;
   private _restoreFiltersDebounce!: Debouncer;
+
+  static get observers() {
+    return [
+      '_restoreFilters(queryParams.*)'
+    ];
+  }
 
   searchKeyDown(_event, {value}) {
     if ((!this.previousSearchValue && !value) || value === this.previousSearchValue) {
@@ -191,6 +200,7 @@ class SearchAndFilter extends PolymerElement {
 
   _reloadFilters() {
     this.set('usedFilters', []);
+    this.filtersDataLoaded = true;
     this._restoreFilters();
   }
 
@@ -200,7 +210,7 @@ class SearchAndFilter extends PolymerElement {
       () => {
         let queryParams = this.queryParams;
 
-        if (!queryParams) {
+        if (!queryParams || !this.filtersDataLoaded) {
           return;
         }
 
