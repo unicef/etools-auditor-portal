@@ -124,12 +124,6 @@ class SearchAndFilter extends PolymerElement {
   private _searchKeyDownDebounce!: Debouncer;
   private _restoreFiltersDebounce!: Debouncer;
 
-  static get observers() {
-    return [
-      '_restoreFilters(queryParams.*)'
-    ];
-  }
-
   searchKeyDown(_event, {value}) {
     if ((!this.previousSearchValue && !value) || value === this.previousSearchValue) {
       return;
@@ -260,18 +254,7 @@ class SearchAndFilter extends PolymerElement {
     let splitValues = filterValue.split(',');
     let optionValue = filter.optionValue;
 
-    const exists = filter.selection.find(
-      (selectionItem) => filterValue.indexOf(selectionItem[optionValue].toString()) !== -1);
-
-    if (!exists) {
-      return;
-    }
-
-    return filter.selection.filter(selectionItem => {
-      let filVal = selectionItem[optionValue].toString();
-      return splitValues.includes(filVal);
-    });
-
+    return filter.selection.filter((option: any) => splitValues.includes(String(option[optionValue]))).map((option: any) => option[optionValue]);
   }
 
   _getFilter(query) {
