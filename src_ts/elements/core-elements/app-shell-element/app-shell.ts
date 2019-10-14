@@ -187,6 +187,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   @property({type: Object})
   routeData: GenericObject = {};
 
+  @property({type: Object})
+  queryParams!: GenericObject;
+
   public connectedCallback() {
     super.connectedCallback();
 
@@ -258,7 +261,14 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
       return;
     }
+
+    // clear url params(filters from previous page) on navigate between pages
+    const clearQueryParams = this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0;
     this.page = this.routeData.page || 'engagements';
+
+    if (clearQueryParams) {
+      this.set('queryParams', {});
+    }
     if (this.scroll) {
       this.scroll(0, 0);
     }
