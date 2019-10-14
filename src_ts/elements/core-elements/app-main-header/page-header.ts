@@ -12,6 +12,7 @@ import './support-btn';
 import {isProductionServer, checkEnvironment} from '../../app-config/config.js';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
+import {fireEvent} from "../../utils/fire-custom-event";
 
 /**
  * page header element
@@ -120,8 +121,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
   public menuBtnClicked() {
-    // store.dispatch(updateDrawerState(true));
-    // fireEvent(this, 'drawer');
+     fireEvent(this, 'drawer');
   }
 
   public _setBgColor() {
