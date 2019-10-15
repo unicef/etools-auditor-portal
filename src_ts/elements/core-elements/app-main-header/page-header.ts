@@ -43,7 +43,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
 
         #menuButton {
           display: block;
-          color: var(--header-color);
+          color: var(--light-secondary-text-color);
         }
 
         .titlebar {
