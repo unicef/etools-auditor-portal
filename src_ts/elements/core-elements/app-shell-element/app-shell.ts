@@ -159,7 +159,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.path)'
+      '_routePageChanged(route.path)',
+      '_viewChanged(routeData.view)'
     ];
   }
 
@@ -257,18 +258,20 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return urlSpaceRegex.test(this.route.path);
   }
 
+  _viewChanged() {
+    if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
+      // clear url params(filters from previous page) on navigate between pages
+      this.set('queryParams', {});
+    }
+  }
+
   _routePageChanged() {
     if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
       return;
     }
 
-    // clear url params(filters from previous page) on navigate between pages
-    const clearQueryParams = this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0;
     this.page = this.routeData.page || 'engagements';
 
-    if (clearQueryParams) {
-      this.set('queryParams', {});
-    }
     if (this.scroll) {
       this.scroll(0, 0);
     }
