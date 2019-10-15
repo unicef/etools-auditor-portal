@@ -23,6 +23,7 @@ export const appDrawerStyles = html`
 
     app-drawer {
       z-index: 100;
+      background: rgba(0,0,0,0.5);
     }
   </style>
 `;
