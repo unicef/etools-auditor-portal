@@ -269,9 +269,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
       return;
     }
-
     this.page = this.routeData.page || 'engagements';
-
     if (this.scroll) {
       this.scroll(0, 0);
     }
