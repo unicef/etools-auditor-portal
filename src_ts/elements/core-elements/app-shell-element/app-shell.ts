@@ -70,7 +70,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                         fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" transition-duration="350"
-                    opened="[[_drawerOpened]]"
+                    on-click="onDrawerClick"
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
             selected-option="[[page]]"
@@ -271,6 +271,19 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
     if (this.scroll) {
       this.scroll(0, 0);
+    }
+
+    // Close a non-persistent drawer when the module & route are changed.
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (!appDrawer.persistent) {
+      appDrawer.close();
+    }
+  }
+
+  onDrawerClick(e) {
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (e.target === appDrawer && appDrawer.opened) {
+      appDrawer.close();
     }
   }
 
