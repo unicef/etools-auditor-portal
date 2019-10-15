@@ -17,7 +17,7 @@ const famEndpoints = {
   partnerOrganisations: {
     url: '/api/v2/partners/?hidden=false',
     exp: 24 * 60 * 60 * 1000, // 24h
-    cachingKey: 'partners'
+    cacheTableName: 'partners'
   },
   partnerInfo: {
     template: '/api/v2/partners/<%=id%>/'
@@ -58,12 +58,12 @@ const famEndpoints = {
   sectionsCovered: {
     url: '/api/reports/sectors/',
     exp: 24 * 60 * 60 * 1000, // 24h
-    cachingKey: 'sections'
+    cacheTableName: 'sections'
   },
   offices: {
     url: '/api/offices/',
     exp: 23 * 60 * 60 * 1000, // 23h
-    cachingKey: 'offices'
+    cacheTableName: 'offices'
   },
   reportAttachments: {
     template: '/api/audit/engagements/<%=id%>/report-attachments/'
