@@ -12,7 +12,8 @@ import './support-btn';
 import {isProductionServer, checkEnvironment} from '../../app-config/config.js';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
-import {fireEvent} from "../../utils/fire-custom-event";
+import {fireEvent} from '../../utils/fire-custom-event';
+
 
 /**
  * page header element
@@ -37,7 +38,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
           color: var(--header-color);
         }
 
-        support-btn {
+        support-btn, paper-icon-button#refresh {
           color: var(--light-secondary-text-color);
         }
 
@@ -102,7 +103,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
 
           <etools-profile-dropdown profile="[[user]]" on-sign-out="_signOut"></etools-profile-dropdown>
 
-          <!--<paper-icon-button id="refresh" icon="refresh" on-tap="_openDataRefreshDialog"></paper-icon-button>-->
+          <paper-icon-button id="refresh" icon="refresh" on-tap="refreshBtnclicked"></paper-icon-button>
         </div>
       </app-toolbar>
     `;
@@ -132,13 +133,18 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
   protected _signOut() {
-    this._clearDexieDbs();
+    this._clearDexieDb();
     this._clearLocalStorage();
     window.location.href = window.location.origin + '/logout';
   }
 
-  protected _clearDexieDbs() {
-    window.EtoolsFamApp.DexieDb.delete();
+  protected _clearDexieDb() {
+    return window.EtoolsFamApp.DexieDb.delete();
+  }
+
+  protected refreshBtnclicked() {
+    this._clearDexieDb().then(() =>
+    fireEvent(this, 'toast', {text: `Cached data was cleared`}));
   }
 
   protected _clearLocalStorage() {
