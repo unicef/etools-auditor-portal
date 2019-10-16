@@ -455,7 +455,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     }
 
     let itemModelKeys = keys(this.itemModel) || [];
-    const originalData;
+    let originalData;
     let data;
 
     itemModelKeys = itemModelKeys.filter((key) => {
