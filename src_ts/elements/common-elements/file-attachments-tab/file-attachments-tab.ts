@@ -202,7 +202,7 @@ class FileAttachmentsTab extends
                      on-confirm-btn-clicked="_saveAttachment">
 
         <div class="repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
+          <div class="repeatable-item-content row-h">
             <template is="dom-if" if="[[showFileTypes(basePermissionPath)]]">
               <div class="row-h group">
                 <div class="input-container input-container-ms">
@@ -222,7 +222,7 @@ class FileAttachmentsTab extends
                       error-message="{{errors.file_type}}"
                       on-focus="_resetFieldError"
                       on-tap="_resetFieldError"
-                      hide-search>
+                      hide-search disable-on-focus-handling>
                   </etools-dropdown>
                 </div>
               </div>

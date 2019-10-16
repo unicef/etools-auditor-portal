@@ -62,6 +62,7 @@ class FollowUpActions extends
         :host .repeatable-item-container[without-line] {
           min-width: 0 !important;
           margin-bottom: 0 !important;
+          overflow: auto;
         }
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
