@@ -14,6 +14,7 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '../../utils/fire-custom-event';
 
+
 /**
  * page header element
  * @polymer
@@ -43,7 +44,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
 
         #menuButton {
           display: block;
-          color: var(--header-color);
+          color: var(--light-secondary-text-color);
         }
 
         .titlebar {
@@ -121,8 +122,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
   public menuBtnClicked() {
-    // store.dispatch(updateDrawerState(true));
-    // fireEvent(this, 'drawer');
+     fireEvent(this, 'drawer');
   }
 
   public _setBgColor() {
