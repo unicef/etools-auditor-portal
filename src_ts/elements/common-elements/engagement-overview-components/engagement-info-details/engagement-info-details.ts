@@ -18,7 +18,6 @@ import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 
-import isEqual from 'lodash-es/isEqual';
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
@@ -316,6 +315,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </template>
 
               <template is="dom-if" if="{{showJoinAudit}}" restamp>
+                  <!-- Joint Audit -->
                   <div class="input-container join-audit">
                       <paper-checkbox
                               checked="{{data.joint_audit}}"
@@ -326,6 +326,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </template>
 
               <template is="dom-if" if="{{showAdditionalInput}}" restamp>
+                  <!-- Shared Audit with-->
                   <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
                   <etools-dropdown-multi
                               class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
@@ -404,9 +405,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   @property({type: Array, computed: '_setSharedIpWith(basePermissionPath)'})
   sharedIpWithOptions: [] = [];
-
-  @property({type: Array})
-  sharedIpWith: any[] = [];
 
   @property({type: Boolean, computed: '_showJoinAudit(showInput, showAdditionalInput)'})
   showJoinAudit = false;
@@ -616,9 +614,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     if (this.originalData.joint_audit !== this.data.joint_audit) {data.joint_audit = this.data.joint_audit;}
 
     let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
-    let sharedIpWith = this.sharedIpWith || [];
-    sharedIpWith = sharedIpWith.map((shared: any) => shared.value);
-    if (!isEqual(originalSharedIpWith.sort(), sharedIpWith.sort()) && sharedIpWith.length) {
+    let sharedIpWith = this.data.shared_ip_with || [];
+    if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
       data.shared_ip_with = sharedIpWith;
     }
 
