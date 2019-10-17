@@ -198,7 +198,7 @@ export const tabInputsStyles = html`
       --required-star-style: {
         background: url("./assets/images/required.svg") no-repeat 98% 14%/7px;
         width: auto !important;
-        max-width: 90%;
+        max-width: 133%;
         right: auto;
         padding-right: 15px;
         color: var(--gray-50);
