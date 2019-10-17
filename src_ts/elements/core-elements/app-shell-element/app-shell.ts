@@ -70,7 +70,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                         fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" transition-duration="350"
-                    opened="[[_drawerOpened]]"
+                    on-click="onDrawerClick"
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
             selected-option="[[page]]"
@@ -159,7 +159,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.path)'
+      '_routePageChanged(route.path)',
+      '_viewChanged(routeData.view)'
     ];
   }
 
@@ -186,6 +187,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   @property({type: Object})
   routeData: GenericObject = {};
+
+  @property({type: Object})
+  queryParams!: GenericObject;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -254,6 +258,13 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return urlSpaceRegex.test(this.route.path);
   }
 
+  _viewChanged() {
+    if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
+      // clear url params(filters from previous page) on navigate between pages
+      this.set('queryParams', {});
+    }
+  }
+
   _routePageChanged() {
     if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
       return;
@@ -261,6 +272,19 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     this.page = this.routeData.page || 'engagements';
     if (this.scroll) {
       this.scroll(0, 0);
+    }
+
+    // Close a non-persistent drawer when the module & route are changed.
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (!appDrawer.persistent) {
+      appDrawer.close();
+    }
+  }
+
+  onDrawerClick(e) {
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (e.target === appDrawer && appDrawer.opened) {
+      appDrawer.close();
     }
   }
 
