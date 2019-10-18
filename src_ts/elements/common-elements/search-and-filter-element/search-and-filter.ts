@@ -121,6 +121,9 @@ class SearchAndFilter extends PolymerElement {
   @property({type: String})
   previousSearchValue: string = '';
 
+  @property({type: Boolean})
+  filtersDataLoaded: boolean = false;
+
   private _searchKeyDownDebounce!: Debouncer;
   private _restoreFiltersDebounce!: Debouncer;
 
@@ -197,6 +200,7 @@ class SearchAndFilter extends PolymerElement {
 
   _reloadFilters() {
     this.set('usedFilters', []);
+    this.filtersDataLoaded = true;
     this._restoreFilters();
   }
 
@@ -206,7 +210,7 @@ class SearchAndFilter extends PolymerElement {
       () => {
         const queryParams = this.queryParams;
 
-        if (!queryParams) {
+        if (!queryParams || !this.filtersDataLoaded) {
           return;
         }
 
@@ -260,18 +264,8 @@ class SearchAndFilter extends PolymerElement {
     const splitValues = filterValue.split(',');
     const optionValue = filter.optionValue;
 
-    const exists = filter.selection.find(
-      selectionItem => filterValue.indexOf(selectionItem[optionValue].toString()) !== -1);
-
-    if (!exists) {
-      return;
-    }
-
-    return filter.selection.filter((selectionItem) => {
-      const filVal = selectionItem[optionValue].toString();
-      return splitValues.includes(filVal);
-    });
-
+    return filter.selection.filter((option: any) =>
+        splitValues.includes(String(option[optionValue]))).map((option: any) => option[optionValue]);
   }
 
   _getFilter(query) {

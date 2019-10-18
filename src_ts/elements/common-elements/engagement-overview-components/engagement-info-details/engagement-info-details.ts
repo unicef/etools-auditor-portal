@@ -331,6 +331,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </template>
 
               <template is="dom-if" if="{{showJoinAudit}}" restamp>
+                  <!-- Joint Audit -->
                   <div class="input-container join-audit">
                       <paper-checkbox
                               checked="{{data.joint_audit}}"
@@ -341,6 +342,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </template>
 
               <template is="dom-if" if="{{showAdditionalInput}}" restamp>
+                  <!-- Shared Audit with-->
                   <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
                   <etools-dropdown-multi
                               class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', 
@@ -654,16 +656,11 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
         data.po_item = this.data.po_item.id;
       }
 
-      if (this.originalData.joint_audit !== this.data.joint_audit) {
-        data.joint_audit = this.data.joint_audit;
-      }
-
-      const originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
-      let sharedIpWith = this.sharedIpWith || [];
-      sharedIpWith = sharedIpWith.map((shared: any) => shared.value);
-      if (!isEqual(originalSharedIpWith.sort(), sharedIpWith.sort()) && sharedIpWith.length) {
-        data.shared_ip_with = sharedIpWith;
-      }
+    let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
+    let sharedIpWith = this.data.shared_ip_with || [];
+    if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
+      data.shared_ip_with = sharedIpWith;
+    }
 
       return data;
     }
