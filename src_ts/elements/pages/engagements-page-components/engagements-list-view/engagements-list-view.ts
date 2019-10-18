@@ -3,6 +3,7 @@ import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
+import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {buildQueryString} from '../../../app-mixins/query-params-controller';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
 import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
@@ -19,7 +20,7 @@ import {BASE_PATH} from '../../../app-config/config';
  * @customElement
  * @polymer
  */
-class EngagementsListView extends PolymerElement {
+class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     // language=HTML
@@ -168,7 +169,7 @@ class EngagementsListView extends PolymerElement {
     selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
   }];
 
-  @property({type: Object})
+  @property({type: Array})
   engagementsList: any[] = [];
 
   @property({type: String})
@@ -220,7 +221,7 @@ class EngagementsListView extends PolymerElement {
   }
 
   _showAddButton(hideAddButton) {
-    return actionAllowed('new_engagement', 'create') && !hideAddButton;
+    return !this.isReadOnly('partner', this.isStaffSc ? 'new_staff_sc' : 'new_engagement');
   }
 
   _getFilterIndex(query) {
