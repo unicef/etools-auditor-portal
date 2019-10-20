@@ -1,6 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/app-route/app-route';
-import '@polymer/app-route/app-location';
 import '@polymer/polymer/lib/elements/dom-if';
 import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/app-layout/app-layout';
@@ -154,7 +153,8 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
                                     id="staffMembers"
                                     base-permission-path="{{permissionBase}}"
                                     engagement="{{engagement}}"
-                                    error-object="{{errorObject}}">
+                                    error-object="{{errorObject}}"
+                                    filter-by-country="true">
                             </engagement-staff-members-tab>
                         </div>
 

@@ -1,6 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/app-route/app-location';
 import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
@@ -31,7 +30,7 @@ import {PartnerDetailsTabEl} from '../../../common-elements/engagement-overview-
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import {BASE_PATH} from '../../../app-config/config';
-
+import {navigateToUrl} from '../../../utils/navigate-helper';
 /**
  * @customElement
  * @polymer
@@ -87,7 +86,6 @@ class NewEngagementView extends
         }
       </style>
 
-      <app-location path="{{path}}"></app-location>
       <app-route
           route="{{route}}"
           pattern="/:tab"
@@ -299,7 +297,7 @@ class NewEngagementView extends
     }
 
     let path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
-    this.set('path', path);
+    navigateToUrl(path);
 
     //reset data
     this.engagement = {
