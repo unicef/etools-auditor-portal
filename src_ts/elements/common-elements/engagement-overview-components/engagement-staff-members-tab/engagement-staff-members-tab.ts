@@ -209,7 +209,8 @@ class EngagementStaffMembersTab extends
               datalength="{{datalength}}"
               queries="{{listQueries}}"
               data-items="{{dataItems}}"
-              list-loading="{{listLoading}}">
+              list-loading="{{listLoading}}"
+              page-type="[[pageType]]">
       </get-staff-members-list>
 
       <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
@@ -586,6 +587,9 @@ class EngagementStaffMembersTab extends
 
   @property({type: Object})
   lastSearchQuery!: GenericObject;
+
+  @property({type: String})
+  pageType: string = '';
 
   private _newRequestDebouncer!: Debouncer;
 

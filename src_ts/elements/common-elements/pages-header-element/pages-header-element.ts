@@ -63,7 +63,7 @@ class PagesHeaderElement extends PolymerElement {
             <paper-button
                 class="add-btn"
                 raised
-                hidden$="[[_hideAddButton(showAddButton)]]"
+                hidden$="[[hideAddButton]]"
                 on-tap="addNewTap">
               <template is="dom-if" if="{{_showLink(link)}}">
                 <a href="{{link}}" class="btn-link"></a>
@@ -88,7 +88,7 @@ class PagesHeaderElement extends PolymerElement {
   engagement: GenericObject = {};
 
   @property({type: Boolean})
-  showAddButton: boolean = false;
+  hideAddButton: boolean = true;
 
   @property({type: Boolean})
   hidePrintButton: boolean = false;
@@ -108,10 +108,6 @@ class PagesHeaderElement extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
-  }
-
-  _hideAddButton(show) {
-    return !show;
   }
 
   addNewTap() {

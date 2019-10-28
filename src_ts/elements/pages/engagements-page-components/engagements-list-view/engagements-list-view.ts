@@ -57,7 +57,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
           hide-print-button
           export-links="[[exportLinks]]"
           link="{{newBtnLink}}"
-          show-add-button="{{_showAddButton(hideAddButton)}}"
+          hide-add-button="[[_hideAddButton()]]"
           btn-text="{{addBtnText}}"
           page-title="Engagements">
       </pages-header-element>
@@ -178,9 +178,6 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   hasCollapse: boolean = false;
 
-  @property({type: Boolean})
-  hideAddButton: boolean = false;
-
   @property({type: String})
   addBtnText: string = 'Add New Engagement';
 
@@ -220,8 +217,8 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     }
   }
 
-  _showAddButton(hideAddButton) {
-    return !this.isReadOnly('partner', this.isStaffSc ? 'new_staff_sc' : 'new_engagement');
+  _hideAddButton() {
+    return this.isReadOnly('partner', this.isStaffSc ? 'new_staff_sc' : 'new_engagement');
   }
 
   _getFilterIndex(query) {
