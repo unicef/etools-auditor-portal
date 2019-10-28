@@ -9,25 +9,26 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 
-import {sharedStyles} from "../../../styles-elements/shared-styles";
-import {moduleStyles} from "../../../styles-elements/module-styles";
-import {mainPageStyles} from "../../../styles-elements/main-page-styles";
-import {tabInputsStyles} from "../../../styles-elements/tab-inputs-styles";
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+import {mainPageStyles} from '../../../styles-elements/main-page-styles';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import '../../../data-elements/engagement-info-data';
 import '../../../data-elements/update-engagement';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+// eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '../report-page-components/audit-report-page-main/audit-report-page-main';
-import {property} from "@polymer/decorators/lib/decorators";
-import {GenericObject} from "../../../../types/global";
-import EngagementMixin from "../../../app-mixins/engagement-mixin";
-import {setStaticData, getStaticData} from "../../../app-mixins/static-data-controller";
-import CommonMethodsMixin from "../../../app-mixins/common-methods-mixin";
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../../types/global';
+import EngagementMixin from '../../../app-mixins/engagement-mixin';
+import {setStaticData, getStaticData} from '../../../app-mixins/static-data-controller';
+import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getChoices} from '../../../app-mixins/permission-controller';
 
 import assign from 'lodash-es/assign';
@@ -262,11 +263,11 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     super.connectedCallback();
     this._infoLoaded = this._infoLoaded.bind(this);
     this._engagementUpdated = this._engagementUpdated.bind(this);
-    //dci not found
+    // dci not found
     // this._mainActionActivated = this._mainActionActivated.bind(this);
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    //dci not found
+    // dci not found
     // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
@@ -274,16 +275,16 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     super.disconnectedCallback();
     this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
-    //dci not found
+    // dci not found
     // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
-    let basicInfoValid = this._validateBasicInfo();
+    const basicInfoValid = this._validateBasicInfo();
     if (!basicInfoValid) {
       return false;
     }
-    let reportValid = this.getElement('#report').validate();
+    const reportValid = this.getElement('#report').validate();
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -294,22 +295,22 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
   customDataPrepare(data) {
     data = data || {};
 
-    //FollowUp data
-    let followUpPage = this.getElement('#follow-up'),
-        followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+    // FollowUp data
+    const followUpPage = this.getElement('#follow-up');
+    const followUpData = followUpPage && followUpPage.getFollowUpData() || {};
     assign(data, followUpData);
 
-    //Report Data
+    // Report Data
     const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
     if (!hasReport) {
       return data;
     }
-    let reportPage = this.getElement('#report');
+    const reportPage = this.getElement('#report');
 
-    let findingsSummaryData = reportPage.getFindingsSummaryData();
-    let assessmentOfControlsData = reportPage.getAssessmentOfControlsData();
-    let financialFindingData = reportPage.getFinancialFindingsData();
-    let keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
+    const findingsSummaryData = reportPage.getFindingsSummaryData();
+    const assessmentOfControlsData = reportPage.getAssessmentOfControlsData();
+    const financialFindingData = reportPage.getFinancialFindingsData();
+    const keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
 
     assign(data, findingsSummaryData);
 
@@ -329,12 +330,12 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
   }
 
   customBasicValidation() {
-    let reportTab = this.getElement('#report');
+    const reportTab = this.getElement('#report');
     if (!reportTab) {
       return true;
     }
 
-    let reportValid = reportTab.validate('forSave');
+    const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -346,7 +347,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     if (getStaticData('audit_opinions')) {
       return;
     }
-    let auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
+    const auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
     if (!auditOpinions) {
       return;
     }

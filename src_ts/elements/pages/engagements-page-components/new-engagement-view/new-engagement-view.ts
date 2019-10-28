@@ -3,9 +3,9 @@ import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
-import {property} from "@polymer/decorators/lib/decorators";
-import {GenericObject} from "../../../../types/global";
-import {fireEvent} from "../../../utils/fire-custom-event";
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../../types/global';
+import {fireEvent} from '../../../utils/fire-custom-event';
 import get from 'lodash-es/get';
 import assign from 'lodash-es/assign';
 import includes from 'lodash-es/includes';
@@ -15,19 +15,22 @@ import EngagementMixin from '../../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {clearQueries} from '../../../app-mixins/query-params-controller';
 import '../../../app-mixins/permission-controller';
-import {sharedStyles} from "../../../styles-elements/shared-styles";
-import {moduleStyles} from "../../../styles-elements/module-styles";
-import {mainPageStyles} from "../../../styles-elements/main-page-styles";
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+import {mainPageStyles} from '../../../styles-elements/main-page-styles';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import {FileAttachmentsTabEl} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../data-elements/add-new-engagement';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+// eslint-disable-next-line
 import {EngagementInfoDetailsEl} from '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+// eslint-disable-next-line
 import {PartnerDetailsTabEl} from '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
+// eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import {BASE_PATH} from '../../../app-config/config';
 import {navigateToUrl} from '../../../utils/navigate-helper';
@@ -239,7 +242,7 @@ class NewEngagementView extends
       return;
     }
 
-    let currentTab = this.routeData && this.routeData.tab;
+    const currentTab = this.routeData && this.routeData.tab;
     if (currentTab === '' || isUndefined(currentTab)) {
       this.set('route.path', '/overview');
     } else if (!includes(this.tabsList, currentTab)) {
@@ -264,8 +267,8 @@ class NewEngagementView extends
       return data;
     }
 
-    let specificProcedures = this.getElement('#specificProcedures');
-    let specificProceduresData = specificProcedures && specificProcedures.getTabData();
+    const specificProcedures = this.getElement('#specificProcedures');
+    const specificProceduresData = specificProcedures && specificProcedures.getTabData();
     if (specificProceduresData) {
       assign(data, {specific_procedures: specificProceduresData});
     }
@@ -278,8 +281,8 @@ class NewEngagementView extends
     }
 
     if (event.detail.success && event.detail.data) {
-      //save response data before redirecting
-      let engagement = event.detail.data;
+      // save response data before redirecting
+      const engagement = event.detail.data;
       this._setLastEngagementData(engagement);
       this.engagement.id = engagement.id;
 
@@ -290,7 +293,7 @@ class NewEngagementView extends
   _finishEngagementCreation() {
     this.reloadEngagementsList();
 
-    //redirect
+    // redirect
     let link = get(this, 'engagement.engagement_type.link');
     if (!link && this.isStaffSc) {
       link = 'staff-spot-checks';
@@ -299,7 +302,7 @@ class NewEngagementView extends
     let path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
     navigateToUrl(path);
 
-    //reset data
+    // reset data
     this.engagement = {
       status: '',
       staff_members: [],

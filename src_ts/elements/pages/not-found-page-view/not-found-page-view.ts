@@ -1,5 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {fireEvent} from "../../utils/fire-custom-event";
+import {fireEvent} from '../../utils/fire-custom-event';
 import '@polymer/paper-styles/element-styles/paper-material-styles';
 import {sharedStyles} from '../../styles-elements/shared-styles';
 

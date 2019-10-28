@@ -42,7 +42,8 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   <!-- Date of Field Visit -->
                   <datepicker-lite
                           id="dateVisitInput"
-                          class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]] validate-date"
+                          class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]]
+                                    validate-date"
                           value="{{data.date_of_field_visit}}"
                           label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
                           placeholder="&#8212;"
@@ -61,12 +62,14 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   <!-- Draft Report Issued to IP -->
                   <datepicker-lite
                           id="draftReportToIpInput"
-                          class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
+                          class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] 
+                                    disabled-as-readonly validate-date"
                           value="{{data.date_of_draft_report_to_ip}}"
                           label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip, basePermissionPath)]]"
+                          disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip,
+                                    basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
                           error-message="{{errors.date_of_draft_report_to_ip}}"
                           on-focus="_resetFieldError"
@@ -80,12 +83,14 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   <!-- Comments Received by IP -->
                   <datepicker-lite
                           id="commentsReceivedByIpInput"
-                          class$="disabled-as-readonly [[_setRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
+                          class$="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]
+                                    disabled-as-readonly validate-date"
                           value="{{data.date_of_comments_by_ip}}"
                           label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, data.date_of_draft_report_to_unicef, basePermissionPath)]]"
+                          disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, 
+                                        data.date_of_draft_report_to_unicef, basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
                           error-message="{{errors.date_of_comments_by_ip}}"
                           on-focus="_resetFieldError"
@@ -102,12 +107,14 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   <!-- Draft Report Issued to UNICEF -->
                   <datepicker-lite
                           id="draftReportUnicefInput"
-                          class$="disabled-as-readonly [[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
+                          class$="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]
+                                    disabled-as-readonly validate-date"
                           value="{{data.date_of_draft_report_to_unicef}}"
                           label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, data.date_of_comments_by_unicef, basePermissionPath)]]"
+                          disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, 
+                                    data.date_of_comments_by_unicef, basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
                           error-message="{{errors.date_of_draft_report_to_unicef}}"
                           on-focus="_resetFieldError"
@@ -122,12 +129,14 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   <!-- Comments Received by UNICEF -->
                   <datepicker-lite
                           id="commentsReceivedUnicefInput"
-                          class$="disabled-as-readonly [[_setRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
+                          class$="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]
+                                    disabled-as-readonly validate-date"
                           value="{{data.date_of_comments_by_unicef}}"
                           label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
                           placeholder="&#8212;"
                           required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef, '', basePermissionPath)]]"
+                          disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef,
+                                        '', basePermissionPath)]]"
                           invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
                           error-message="{{errors.date_of_comments_by_unicef}}"
                           on-focus="_resetFieldError"
@@ -138,22 +147,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   </datepicker-lite>
               </div>
 
-              <template is="dom-if" if="[[showCurrency(basePermissionPath)]]">
-                        <!-- Exchange Rate -->
-                        <!-- <etools-currency-amount-input
-                                class$="validate-input disabled-as-readonly [[_setRequired('exchange_rate', basePermissionPath)]]"
-                                value="{{data.exchange_rate}}"
-                                currency="$"
-                                label$="[[getLabel('exchange_rate', basePermissionPath)]]"
-                                placeholder$="[[getPlaceholderText('exchange_rate', basePermissionPath)]]"
-                                required$="[[_setRequired('exchange_rate', basePermissionPath)]]"
-                                disabled$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
-                                readonly$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
-                                invalid="{{_checkInvalid(errors.exchange_rate)}}"
-                                error-message="{{errors.exchange_rate}}"
-                                on-focus="_resetFieldError"
-                                on-tap="_resetFieldError">
-                        </etools-currency-amount-input> -->
+              <template is="dom-if" if="[[showCurrency(basePermissionPath)]]">               
                 <div class="input-container">
                         <!-- Currency of Report -->
                         <etools-dropdown
@@ -176,7 +170,6 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                         </etools-dropdown>
                 </div>
             </template>
-
           </div>
       </etools-content-panel>
 
@@ -216,7 +209,8 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   tabTexts: GenericObject = {
     name: 'Engagement Status',
     fields: [
-      'date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip', 'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef'
+      'date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip', 'date_of_draft_report_to_unicef',
+      'date_of_comments_by_unicef'
     ]
   };
 
@@ -235,10 +229,10 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   }
 
   validate(forSave) {
-    let elements = this.shadowRoot!.querySelectorAll('.validate-date') as NodeListOf<DatePickerLite>;
+    const elements = this.shadowRoot!.querySelectorAll('.validate-date') as NodeListOf<DatePickerLite>;
     let valid = true;
     each(elements, (element, index) => {
-      let previousElement = index > 1 ? elements[index - 1] : null;
+      const previousElement = index > 1 ? elements[index - 1] : null;
       if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
         element.errorMessage = 'Field is required';
         element.invalid = true;
@@ -246,7 +240,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
       }
     });
 
-    if (!valid) {fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});}
+    if (!valid) {
+      fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
+    }
     return valid;
   }
 

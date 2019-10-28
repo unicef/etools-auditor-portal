@@ -1,5 +1,5 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {Constructor} from "../../types/global";
+import {Constructor} from '../../types/global';
 
 
 let _engagementData: object | null = null;
@@ -11,15 +11,15 @@ let _engagementData: object | null = null;
 function LastCreatedMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class LastCreatedMixinClass extends (baseClass) {
     _setLastEngagementData(data) {
-      if (!data || !data.id) { return false; }
+      if (!data || !data.id) {return false;}
       _engagementData = data;
       return true;
     }
 
     getLastEngagementData(id) {
-      if (!_engagementData) { return null; }
+      if (!_engagementData) {return null;}
 
-      let data = _engagementData as any;
+      const data = _engagementData as any;
       _engagementData = null;
 
       return +data.id === +id ? data : null;

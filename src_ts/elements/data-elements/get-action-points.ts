@@ -23,8 +23,8 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _engagementIdChanged(engagementId) {
     if (!engagementId) {return;}
-    let apBaseUrl = getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
-    let url = `${apBaseUrl}action-points/?page_size=all`;
+    const apBaseUrl = getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
+    const url = `${apBaseUrl}action-points/?page_size=all`;
 
     this._getActionPoints(url);
   }
@@ -32,7 +32,7 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   _getActionPoints(url) {
     const requestOptions = {
       endpoint: {
-        url,
+        url
       }
     };
 

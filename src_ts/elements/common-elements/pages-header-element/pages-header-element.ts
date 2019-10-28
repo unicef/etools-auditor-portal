@@ -29,7 +29,11 @@ class PagesHeaderElement extends PolymerElement {
 
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" hidden$="[[!exportLinks.length]]">
-              <paper-menu-button id="dropdown" hidden$="[[!_isDropDown(exportLinks)]]" on-tap="_toggleOpened" horizontal-align="right">
+              <paper-menu-button 
+                    id="dropdown" 
+                    hidden$="[[!_isDropDown(exportLinks)]]" 
+                    on-tap="_toggleOpened" 
+                    horizontal-align="right">
                 <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
                   <iron-icon icon="file-download"></iron-icon>
                   Export
@@ -129,7 +133,7 @@ class PagesHeaderElement extends PolymerElement {
     if (this.exportLinks.length < 1) {
       throw new Error('Can not find export link!');
     }
-    let url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
+    const url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
     window.open(url, '_blank');
   }
 

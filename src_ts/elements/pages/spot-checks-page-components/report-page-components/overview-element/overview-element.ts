@@ -10,8 +10,8 @@ import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
-import {property} from "@polymer/decorators/lib/decorators";
-import {GenericObject} from "../../../../../types/global";
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../../../types/global';
 
 import pickBy from 'lodash-es/pickBy';
 
@@ -86,11 +86,13 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
 
                 <div class="input-container">
                     <etools-currency-amount-input
-                            class$="disabled-as-readonly [[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
+                            class$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]
+                                    disabled-as-readonly"
                             value="{{data.total_amount_of_ineligible_expenditure}}"
                             currency="$"
                             label="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure', 
+                                          basePermissionPath)]]"
                             required$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             disabled$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
@@ -124,19 +126,21 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Audit Overview',
-    fields: ['face_form_start_date', 'face_form_end_date', 'total_value', 'total_amount_tested', 'total_amount_of_ineligible_expenditure']
-  }
+    fields: ['face_form_start_date', 'face_form_end_date', 'total_value', 'total_amount_tested',
+      'total_amount_of_ineligible_expenditure']
+  };
 
   static get observers() {
     return [
       '_errorHandler(errorObject)'
-    ]
+    ];
   }
 
   getOverviewData() {
     return pickBy(this.data, (value, key) => {
       return ~['total_amount_tested',
-        'total_amount_of_ineligible_expenditure'].indexOf(key) && value !== (this.originalData ? this.originalData[key] : undefined);
+        'total_amount_of_ineligible_expenditure'].indexOf(key) &&
+                                                  value !== (this.originalData ? this.originalData[key] : undefined);
     });
   }
 

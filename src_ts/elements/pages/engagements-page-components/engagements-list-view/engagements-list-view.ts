@@ -209,7 +209,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
   }
 
   _engagementsFiltersUpdated() {
-    let filtersElement = this.$.filters as SearchAndFilterEl;
+    const filtersElement = this.$.filters as SearchAndFilterEl;
     this.setFiltersSelections();
 
     if (filtersElement) {
@@ -232,7 +232,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
   }
 
   setFiltersSelections() {
-    let queryAndKeyPairs = [
+    const queryAndKeyPairs = [
       {query: 'partner__in', dataKey: 'filterPartners'},
       {query: 'agreement__auditor_firm__in', dataKey: 'filterAuditors'},
       {query: 'status__in', dataKey: 'statuses'},
@@ -241,8 +241,8 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     ];
 
     queryAndKeyPairs.forEach((pair) => {
-      let filterIndex = this._getFilterIndex(pair.query);
-      let data = getStaticData(pair.dataKey) || [];
+      const filterIndex = this._getFilterIndex(pair.query);
+      const data = getStaticData(pair.dataKey) || [];
       this.setFilterSelection(filterIndex, data);
     });
   }

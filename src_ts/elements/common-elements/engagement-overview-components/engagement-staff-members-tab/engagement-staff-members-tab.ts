@@ -24,7 +24,7 @@ import isEqual from 'lodash-es/isEqual';
 import findIndex from 'lodash-es/findIndex';
 import isNumber from 'lodash-es/isNumber';
 import isString from 'lodash-es/isString';
-import {fireEvent} from "../../../utils/fire-custom-event";
+import {fireEvent} from '../../../utils/fire-custom-event';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
@@ -195,7 +195,7 @@ class EngagementStaffMembersTab extends
           --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
       }
       paper-input.email {
-        --paper-input-error:	{
+        --paper-input-error: {
         position: relative !important;
         white-space: normal;
         }
@@ -220,10 +220,13 @@ class EngagementStaffMembersTab extends
                             errors="{{errors}}"
                             organisation-id="[[organisationId]]"
                             edited-item="{{editedItem}}"
-                            unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}"></check-user-existence>
+                            unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}">
+      </check-user-existence>
       <!--end requests-->
 
-      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, dataItems.length, searchQuery)]])" list>
+      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, 
+                            dataItems.length, searchQuery)]])" 
+                            list>
           <div slot="panel-btns">
               <div class="add-button-container">
                   <paper-icon-button
@@ -249,7 +252,8 @@ class EngagementStaffMembersTab extends
           </div>
 
           <div class="panel-content group">
-              <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading"></etools-loading>
+              <etools-loading active="[[listLoading]]"  loading-text="Loading list data..." class="loading">
+              </etools-loading>
 
               <list-header
                       no-additional
@@ -266,8 +270,10 @@ class EngagementStaffMembersTab extends
                           headings="[[columns]]"
                           no-animation>
                       <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                          <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                          <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                          <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog">
+                          </paper-icon-button>
+                          <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog">
+                          </paper-icon-button>
                       </div>
 
                       <div slot="checkbox" class="checkbox">
@@ -345,7 +351,8 @@ class EngagementStaffMembersTab extends
                               <iron-icon slot="prefix" icon="communication:email"></iron-icon>
                           </paper-input>
                           <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.email)]]</paper-tooltip>
-                          <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading"></etools-loading>
+                          <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading">
+                          </etools-loading>
                       </div>
 
                       <div class="input-container">
@@ -429,8 +436,10 @@ class EngagementStaffMembersTab extends
                       <div class="staff-check-box notify-box input-container input-container-l">
                           <paper-checkbox
                                   checked="{{editedItem.hasAccess}}"
-                                  disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}"
-                                  readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, saveWithButton)}}">
+                                  disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, 
+                                            saveWithButton)}}"
+                                  readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, 
+                                            saveWithButton)}}">
                               Has Access
                           </paper-checkbox>
                       </div>
@@ -439,7 +448,7 @@ class EngagementStaffMembersTab extends
           </div>
       </etools-dialog>
 
-      `};
+      `;}
 
 
   static get observers() {
@@ -453,7 +462,7 @@ class EngagementStaffMembersTab extends
       '_queriesChanged(listSize, listPage, searchQuery)',
       '_staffMembersListChanged(dataItems, engagementStaffs)',
       '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-      'updateStyles(emailChecking, staffsBase, addDialog)',
+      'updateStyles(emailChecking, staffsBase, addDialog)'
     ];
   }
 
@@ -525,7 +534,7 @@ class EngagementStaffMembersTab extends
   listQueries: GenericObject = {
     page: 1,
     page_size: 10
-  }
+  };
 
   @property({type: Object})
   engagementStaffs: GenericObject = {};
@@ -533,7 +542,8 @@ class EngagementStaffMembersTab extends
   @property({type: Boolean})
   listLoading: boolean = false;
 
-  @property({type: String, computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, dataItems.length)'})
+  @property({type: String, computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' +
+                                      'dataItems.length)'})
   showingResults!: string;
 
   @property({type: Number})
@@ -607,12 +617,13 @@ class EngagementStaffMembersTab extends
 
   changePermission(basePermissionPath) {
     if (!basePermissionPath) {return;}
-    let editObj = this.columns && this.columns[0];
+    const editObj = this.columns && this.columns[0];
     if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
       each(this.columns, (value, index) => {
         this.set(`columns.${index}.size`, 18);
       });
-      this.unshift('columns', {'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess', 'checkbox': true});
+      this.unshift('columns', {'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess',
+        'checkbox': true});
     } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
       this.shift('columns');
       each(this.columns, (value, index) => {
@@ -653,10 +664,10 @@ class EngagementStaffMembersTab extends
   }
 
   validate() {
-    let emailImput = this.$.emailInput as PaperInputElement;
-    let elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)'),
-      valid = true,
-      emailValid = emailImput.disabled || emailImput.validate();
+    const emailImput = this.$.emailInput as PaperInputElement;
+    const elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)');
+    let valid = true;
+    const emailValid = emailImput.disabled || emailImput.validate();
 
     Array.prototype.forEach.call(elements, (element) => {
       if (element.required && !element.disabled && !element.validate()) {
@@ -674,7 +685,7 @@ class EngagementStaffMembersTab extends
       this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
     });
     if (!this.originalTableData) {
-      this._dataItemsChanged(this.dataItems)
+      this._dataItemsChanged(this.dataItems);
     }
   }
 
@@ -685,7 +696,7 @@ class EngagementStaffMembersTab extends
       return;
     }
     if (!this.engagementStaffs) {this.set('engagementStaffs', {});}
-    each(data, staff => {
+    each(data, (staff) => {
       this.engagementStaffs[staff.user.email] = staff.id;
     });
     if (this.dataItems) {
@@ -696,9 +707,9 @@ class EngagementStaffMembersTab extends
   }
 
   _calcShowingResults(datalength, listSize, listPage, searchQuery, itemsLength) {
-    let last = listSize * listPage,
-      first = last - listSize + 1,
-      length = searchQuery ? itemsLength : datalength;
+    let last = listSize * listPage;
+    let first = last - listSize + 1;
+    const length = searchQuery ? itemsLength : datalength;
 
     if (last > length) {last = length;}
     if (first > length) {first = 0;}
@@ -706,10 +717,10 @@ class EngagementStaffMembersTab extends
   }
 
   _validEmailAddress(emailInput) {
-    let value = trim(emailInput.value),
-      required = emailInput.required;
-
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const value = trim(emailInput.value);
+    const required = emailInput.required;
+    // eslint-disable-next-line
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (required && !value) {
       this.errors = {user: {email: 'Email is required'}};
@@ -736,11 +747,11 @@ class EngagementStaffMembersTab extends
   }
 
   _isActive(event) {
-    let item = event && event.model && event.model.item;
-    if (!item) {throw 'Can not get item model!';}
+    const item = event && event.model && event.model.item;
+    if (!item) {throw new Error('Can not get item model!');}
 
-    let me = getUserData() || {};
-    let updateOptions = get(item, 'user.email') === me.email;
+    const me = getUserData() || {};
+    const updateOptions = get(item, 'user.email') === me.email;
 
     this.manageEngagementStaff(item);
     this._updateEngagement(true, updateOptions);
@@ -753,8 +764,8 @@ class EngagementStaffMembersTab extends
   _checkEmail(event) {
     if (this.emailChecking) {return;}
 
-    let input = event && event.target,
-      value = input && input.value;
+    const input = event && event.target;
+    const value = input && input.value;
 
     if (value && this._validEmailAddress(input)) {
       this.newEmail = value;
@@ -762,7 +773,7 @@ class EngagementStaffMembersTab extends
   }
 
   _showAddButton(basePath, agreement, loading) {
-    let orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
+    const orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
 
     return !!orgId && !loading && this._canBeChanged();
   }
@@ -772,7 +783,7 @@ class EngagementStaffMembersTab extends
   }
 
   _staffLength(length, length2, search) {
-    let staffLength = search ? length2 : length || length2;
+    const staffLength = search ? length2 : length || length2;
     return staffLength || 0;
   }
 
@@ -780,7 +791,7 @@ class EngagementStaffMembersTab extends
     if (this.requestInProcess && !force) {return;}
 
     // check if errors object is not already set by check-user-existence
-    if(this.errors && this.errors.user && this.errors.user.email){
+    if (this.errors && this.errors.user && this.errors.user.email) {
       return;
     }
 
@@ -790,7 +801,7 @@ class EngagementStaffMembersTab extends
 
     this.requestInProcess = true;
 
-    let item = cloneDeep(this.editedItem);
+    const item = cloneDeep(this.editedItem);
     if ((!this.addDialog && !isNaN(this.editedIndex)) || item.id) {
       if (isEqual(this.originalEditedObj, this.editedItem)) {
         this.requestInProcess = false;
@@ -805,7 +816,7 @@ class EngagementStaffMembersTab extends
         id: `${item.id}/`
       });
     } else {
-      let data = item.user_pk ? {user_pk: item.user_pk} : item;
+      const data = item.user_pk ? {user_pk: item.user_pk} : item;
       this.set('newData', {
         method: 'POST',
         id: '',
@@ -815,8 +826,8 @@ class EngagementStaffMembersTab extends
   }
 
   removeStaff() {
-    let hasAccess = this.get('editedItem.hasAccess');
-    let removalForbidden = this._isCheckboxReadonly(hasAccess, this.engagementStaffs, this.saveWithButton);
+    const hasAccess = this.get('editedItem.hasAccess');
+    const removalForbidden = this._isCheckboxReadonly(hasAccess, this.engagementStaffs, this.saveWithButton);
 
     if (removalForbidden) {
       fireEvent(this, 'toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
@@ -834,22 +845,22 @@ class EngagementStaffMembersTab extends
   }
 
   _staffUpdated(event) {
-    let details = event.detail;
-    if (!details) {throw 'Detail are not provided!';}
+    const details = event.detail;
+    if (!details) {throw new Error('Detail are not provided!');}
     if (details.error) {
       this._handleUpdateError(details.errorData);
       return;
     }
 
-    let me = getUserData() || {},
-      updateOptions = get(details, 'data.user.email') === me.email;
+    const me = getUserData() || {};
+    const updateOptions = get(details, 'data.user.email') === me.email;
 
     details.data = details.data || {};
     details.data.hasAccess = this.editedItem.hasAccess;
     if (details.action === 'patch') {
       this.manageEngagementStaff(details.data, details.hasAccess);
       this._updateEngagement(false, updateOptions);
-      let index = ~details.index ? details.index : findIndex(this.dataItems, item => item.id === details.data.id);
+      const index = ~details.index ? details.index : findIndex(this.dataItems, item => item.id === details.data.id);
       if (isNumber(index) && ~index) {
         this.splice('dataItems', index, 1, details.data);
       } else {
@@ -862,8 +873,8 @@ class EngagementStaffMembersTab extends
       this.set('listPage', 0);
       this.set('listPage', 1);
     } else if (details.action === 'delete') {
-      let last = this.dataItems.length === 1 ? 1 : 0;
-      let email = this.editedItem.user.email;
+      const last = this.dataItems.length === 1 ? 1 : 0;
+      const email = this.editedItem.user.email;
       this.manageEngagementStaff({user: {email: email}});
       this.set('listQueries', {
         page_size: this.listSize,
@@ -902,13 +913,13 @@ class EngagementStaffMembersTab extends
   }
 
   _handleUpdateError(errorData) {
-    let nonField = checkNonField(errorData);
-    let error = refactorErrorObject(errorData);
+    const nonField = checkNonField(errorData);
+    const error = refactorErrorObject(errorData);
 
     this.set('errors', error);
     this.requestInProcess = false;
     if (isString(error)) {
-      let text = !!~error.indexOf('required') ? 'Please select at least one staff member.' : error;
+      const text = ~error.indexOf('required') ? 'Please select at least one staff member.' : error;
       fireEvent(this, 'toast', {text: `Audit Staff Team Members: ${text}`});
     }
     if (nonField) {
@@ -928,8 +939,8 @@ class EngagementStaffMembersTab extends
 
   getTabData() {
     if (!this._canBeChanged()) {return null;}
-    let staffs = [];
-    each(this.engagementStaffs, value => {
+    const staffs = [];
+    each(this.engagementStaffs, (value) => {
       staffs.push(value);
     });
 
@@ -955,7 +966,7 @@ class EngagementStaffMembersTab extends
   }
 
   _searchChanged() {
-    let value = (this.$.searchInput as any).value || '';
+    const value = (this.$.searchInput as any).value || '';
 
     if (value.length - 1) {
       this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer,
