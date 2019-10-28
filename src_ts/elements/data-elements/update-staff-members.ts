@@ -1,10 +1,10 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
-import {property} from "@polymer/decorators";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {GenericObject} from "../../types/global.js";
+import {GenericObject} from '../../types/global.js';
 
 class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -19,8 +19,8 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _dataChanged(data) {
     if (!data) {return;}
-    if (!this.organisationId) {throw 'Organisation id is not provided!';}
-    if (!data.method || !data.data) {throw 'Method or data are missing!'}
+    if (!this.organisationId) {throw new Error('Organisation id is not provided!');}
+    if (!data.method || !data.data) {throw new Error('Method or data are missing!');}
 
     this.lastRequestData = cloneDeep(data);
 
@@ -34,7 +34,7 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
         url: getEndpoint('staffMembers', {id: this.organisationId}).url + data.id
       },
       body: data.data
-    }
+    };
     this.sendRequest(options)
       .then(resp => this._handleResponse(resp))
       .catch(err => this._handleError(err));
@@ -63,4 +63,4 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
 }
-window.customElements.define("update-staff-members", UpdateStaffMembers);
+window.customElements.define('update-staff-members', UpdateStaffMembers);

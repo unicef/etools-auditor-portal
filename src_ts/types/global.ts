@@ -11,7 +11,7 @@ export interface GenericObject {
 }
 
 export interface ValueAndDisplayName {
-  value: string,
-  display_name: string
+  value: string;
+  display_name: string;
 }
 

@@ -68,7 +68,7 @@ class MultiNotificationList extends PolymerElement {
   }
 
   _onNotificationShift(e, id) {
-    let index = this.notifications.findIndex((notification) => {
+    const index = this.notifications.findIndex((notification) => {
       return notification.id === id;
     });
 
@@ -76,14 +76,14 @@ class MultiNotificationList extends PolymerElement {
       this.splice('notifications', index, 1);
     }
 
-    //Check and show notifications from queue
+    // Check and show notifications from queue
     if (this.notificationsQueue.length) {
       this.push('notifications', this.shift('notificationsQueue'));
     }
   }
 
   _onNotificationPush(e) {
-    let notification = {
+    const notification = {
       id: `toast___${this.count++}`,
       text: e.detail.text
     };
@@ -97,7 +97,7 @@ class MultiNotificationList extends PolymerElement {
 
   _resetNotifications() {
     ['notifications', 'notificationsQueue'].forEach((arrayName) => {
-      let result = this[arrayName].filter((toast) => toast.fixed);
+      const result = this[arrayName].filter(toast => toast.fixed);
       this.set(arrayName, result);
     });
   }

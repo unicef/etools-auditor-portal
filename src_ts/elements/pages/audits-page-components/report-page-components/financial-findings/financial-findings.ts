@@ -32,7 +32,7 @@ import {checkNonField} from '../../../../app-mixins/error-handler';
  * @appliesMixin TableElementsMixin
  */
 class FinancialFindings extends
-    CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
+  CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
 
   static get template() {
     // language=HTML
@@ -98,8 +98,14 @@ class FinancialFindings extends
               </paper-tooltip>
             </div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+              <paper-icon-button 
+                    icon="icons:create" 
+                    class="edit-icon" 
+                    on-tap="openEditDialog"></paper-icon-button>
+              <paper-icon-button 
+                    icon="icons:delete" 
+                    class="edit-icon" 
+                    on-tap="openDeleteDialog"></paper-icon-button>
             </div>
           </list-element>
         </template>
@@ -140,7 +146,8 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Title -->
                 <etools-dropdown id="titleOptionsDropDown"
-                    class$="disabled-as-readonly validate-input [[_setRequired('financial_finding_set.title', basePermissionPath)]]"
+                    class$="[[_setRequired('financial_finding_set.title', basePermissionPath)]] 
+                            disabled-as-readonly validate-input"
                     label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
                     placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
                     options="[[titleOptions]]"
@@ -164,7 +171,8 @@ class FinancialFindings extends
               <div class="input-container input-container-ms">
                 <!-- Amount (local) -->
                 <etools-currency-amount-input
-                    class$="disabled-as-readonly validate-input {{_setRequired('financial_finding_set.local_amount', basePermissionPath)}}"
+                    class$="{{_setRequired('financial_finding_set.local_amount', basePermissionPath)}} 
+                            disabled-as-readonly validate-input"
                     value="{{editedItem.local_amount}}"
                     currency=""
                     label="[[getLabel('financial_finding_set.local_amount', basePermissionPath)]]"
@@ -182,7 +190,8 @@ class FinancialFindings extends
               <div class="input-container input-container-ms">
                 <!-- Amount USD -->
                 <etools-currency-amount-input
-                    class$="disabled-as-readonly validate-input {{_setRequired('financial_finding_set.amount', basePermissionPath)}}"
+                    class$="{{_setRequired('financial_finding_set.amount', basePermissionPath)}} 
+                            disabled-as-readonly validate-input"
                     value="{{editedItem.amount}}"
                     currency="$"
                     label="[[getLabel('financial_finding_set.amount', basePermissionPath)]]"
@@ -202,7 +211,8 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Description -->
                 <paper-textarea
-                    class$="disabled-as-readonly fixed-width validate-input [[_setRequired('financial_finding_set.description', basePermissionPath)]]"
+                    class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]] 
+                            disabled-as-readonly fixed-width validate-input"
                     value="{{editedItem.description}}"
                     allowed-pattern="[\\d\\s]"
                     label="[[getLabel('financial_finding_set.description', basePermissionPath)]]"
@@ -223,7 +233,8 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
                 <paper-textarea
-                    class$="disabled-as-readonly fixed-width validate-input [[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]"
+                    class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]] 
+                            disabled-as-readonly fixed-width validate-input"
                     value="{{editedItem.recommendation}}"
                     allowed-pattern="[\\d\\s]"
                     label="[[getLabel('financial_finding_set.recommendation', basePermissionPath)]]"
@@ -244,7 +255,8 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- IP comments -->
                 <paper-textarea
-                    class$="disabled-as-readonly fixed-width validate-input [[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]"
+                    class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]] 
+                            disabled-as-readonly fixed-width validate-input"
                     value="{{editedItem.ip_comments}}"
                     allowed-pattern="[\\d\\s]"
                     label="[[getLabel('financial_finding_set.ip_comments', basePermissionPath)]]"
@@ -271,7 +283,7 @@ class FinancialFindings extends
   dataItems: GenericObject = {};
 
   @property({type: String})
-  mainProperty: string = 'financial_finding_set'
+  mainProperty: string = 'financial_finding_set';
 
   @property({type: Object})
   itemModel: GenericObject = {
@@ -287,7 +299,7 @@ class FinancialFindings extends
   columns: GenericObject[] = [{
     'size': 20,
     'name': 'finding',
-    'label': 'Finding Number',
+    'label': 'Finding Number'
   }, {
     'size': 40,
     'label': 'Title (Category)',
@@ -357,10 +369,10 @@ class FinancialFindings extends
   }
 
   setChoices(basePath) {
-    let unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
-    let titleOptions = sortBy(
-        unsortedOptions,
-        ['display_name']);
+    const unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
+    const titleOptions = sortBy(
+      unsortedOptions,
+      ['display_name']);
     this.set('titleOptions', titleOptions || []);
   }
 
@@ -369,7 +381,7 @@ class FinancialFindings extends
       return;
     }
 
-    let nonField = checkNonField(error);
+    const nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Financial Findings: ${nonField}`});
     }

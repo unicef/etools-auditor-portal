@@ -7,23 +7,26 @@ import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '../../../../elements/core-elements/app-main-header/page-header';
 import '../../../../elements/common-elements/status-tab-element/status-tab-element';
+// eslint-disable-next-line
 import '../../../../elements/common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
+// eslint-disable-next-line
 import '../../../../elements/common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../../elements/common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../../elements/common-elements/follow-up-components/follow-up-main/follow-up-main';
 import '../../../../elements/common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../../../elements/data-elements/update-engagement';
 import '../../../../elements/data-elements/engagement-info-data';
+// eslint-disable-next-line
 import '../../../../elements/pages/special-audits-page-components/report-page-components/sa-report-page-main/sa-report-page-main';
 import '../../../../elements/common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/pages-header-element/pages-header-element';
 
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
 
-import { sharedStyles } from "../../../styles-elements/shared-styles";
-import { moduleStyles } from "../../../styles-elements/module-styles";
-import { mainPageStyles } from "../../../styles-elements/main-page-styles";
-import { tabInputsStyles } from '../../../styles-elements/tab-inputs-styles';
+import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles-elements/module-styles';
+import {mainPageStyles} from '../../../styles-elements/main-page-styles';
+import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
@@ -282,10 +285,10 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
   }
 
   _validateEngagement() {
-    let basicInfoValid = this._validateBasicInfo(),
-        reportValid = this.getElement('#report').validate();
+    const basicInfoValid = this._validateBasicInfo();
+    const reportValid = this.getElement('#report').validate();
 
-    if (!basicInfoValid) { return false; }
+    if (!basicInfoValid) {return false;}
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -296,17 +299,17 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
   customDataPrepare(data) {
     data = data || {};
 
-    //FollowUp data
-    let followUpPage = this.getElement('#follow-up'),
-        followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+    // FollowUp data
+    const followUpPage = this.getElement('#follow-up');
+    const followUpData = followUpPage && followUpPage.getFollowUpData() || {};
     assign(data, followUpData);
 
-    //Report Data
-    let reportPage = this.getElement('#report');
-    if (!reportPage) { return data; }
+    // Report Data
+    const reportPage = this.getElement('#report');
+    if (!reportPage) {return data;}
 
-    let specificProceduresData = reportPage.getSpecificProceduresData();
-    let otherRecommendationsData = reportPage.getOtherRecommendationsData();
+    const specificProceduresData = reportPage.getSpecificProceduresData();
+    const otherRecommendationsData = reportPage.getOtherRecommendationsData();
 
     if (!isNull(specificProceduresData)) {
       data.specific_procedures = specificProceduresData;
@@ -320,10 +323,10 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
   }
 
   customBasicValidation() {
-    let reportTab = this.getElement('#report');
-    if (!reportTab) { return true; }
+    const reportTab = this.getElement('#report');
+    if (!reportTab) {return true;}
 
-    let reportValid = reportTab.validate('forSave');
+    const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
       this.set('tab', 'report');
       return false;

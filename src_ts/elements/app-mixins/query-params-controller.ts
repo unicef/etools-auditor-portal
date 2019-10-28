@@ -5,14 +5,14 @@ import {GenericObject} from '../../types/global';
 import {BASE_PATH} from '../../elements/app-config/config';
 
 export function parseQueries(): GenericObject {
-  let queriesOvj: GenericObject = {},
-    queries = getQueriesString()
-      .slice(1)
-      .split('&');
+  const queriesOvj: GenericObject = {};
+  const queries = getQueriesString()
+    .slice(1)
+    .split('&');
 
   if (queries[0] === '') return {};
   queries.forEach((query) => {
-    let [key, value] = query.split('=');
+    const [key, value] = query.split('=');
     queriesOvj[key] = value || true;
   });
 
@@ -37,8 +37,8 @@ function getPath() {
 
 export function buildQueryString(queryObj) {
   return keys(queryObj).map((key) => {
-    let value = typeof queryObj[key] === 'boolean' ? '' :
-      Boolean(queryObj[key]) ? `=${queryObj[key]}` : '';
+    const value = typeof queryObj[key] === 'boolean' ? '' :
+      queryObj[key] ? `=${queryObj[key]}` : '';
     return `${key}${value}`;
   }).join('&');
 }
@@ -47,7 +47,7 @@ export function updateQueries(newQueries, path?, noNotify?) {
   if (!isObject(newQueries)) {
     return false;
   }
-  let keys = Object.keys(newQueries);
+  const keys = Object.keys(newQueries);
 
   if (!keys.length) {
     return false;
@@ -55,7 +55,7 @@ export function updateQueries(newQueries, path?, noNotify?) {
 
   path = path && isString(path) ? path : getPath();
 
-  let queries = parseQueries();
+  const queries = parseQueries();
 
   keys.forEach((key) => {
     if (newQueries[key] === undefined || newQueries[key] === false) delete queries[key];
