@@ -1,8 +1,5 @@
-import {PolymerElement, html} from "@polymer/polymer";
-import '@polymer/app-route/app-route.js';
-import '@polymer/app-route/app-location.js';
+import {PolymerElement} from "@polymer/polymer";
 import {property} from "@polymer/decorators";
-import get from 'lodash-es/get';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {collectionExists, addToCollection} from '../app-mixins/permission-controller';
@@ -18,19 +15,6 @@ import each from 'lodash-es/each';
  */
 
 class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
-  static get template() {
-    return html`
-      <app-location
-          route="{{route}}">
-      </app-location>
-
-      <app-route
-          route="{{route}}"
-          pattern="/:view/:page"
-          data="{{routeData}}">
-      </app-route>
-    `;
-  }
 
   @property({type: Number, notify: true})
   organisationId!: number;
@@ -59,11 +43,11 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   @property({type: Object})
   responseData!: GenericObject;
 
-  @property({type: Object})
-  routeData!: GenericObject;
-
   @property({type: String})
   url!: string | null;
+
+  @property({type: String})
+  pageType: string = '';
 
   static get observers() {
     return [
@@ -115,9 +99,8 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
       }
 
     });
-
     const profile = getUserData() as any;
-    const countryFilter = get(this.routeData, 'page', '').includes('staff') ? `user__profile__countries_available__name=${profile.country.name}` : '';
+    const countryFilter = this.pageType.includes('staff') ? `user__profile__countries_available__name=${profile.country.name}` : '';
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
   }
 
