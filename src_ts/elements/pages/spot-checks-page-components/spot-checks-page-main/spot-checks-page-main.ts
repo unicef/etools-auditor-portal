@@ -154,7 +154,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
                                     base-permission-path="{{permissionBase}}"
                                     engagement="{{engagement}}"
                                     error-object="{{errorObject}}"
-                                    filter-by-country="true">
+                                    page-type="[[pageType]]">
                             </engagement-staff-members-tab>
                         </div>
 

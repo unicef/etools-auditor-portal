@@ -210,7 +210,7 @@ class EngagementStaffMembersTab extends
               queries="{{listQueries}}"
               data-items="{{dataItems}}"
               list-loading="{{listLoading}}"
-              filter-by-country="[[filterByCountry]]">
+              page-type="[[pageType]]">
       </get-staff-members-list>
 
       <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
@@ -578,8 +578,8 @@ class EngagementStaffMembersTab extends
   @property({type: Object})
   lastSearchQuery!: GenericObject;
 
-  @property({type: Boolean})
-  filterByCountry!: boolean;
+  @property({type: String})
+  pageType: string = '';
 
   private _newRequestDebouncer!: Debouncer;
 

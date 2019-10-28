@@ -46,8 +46,8 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   @property({type: String})
   url!: string | null;
 
-  @property({type: Boolean})
-  filterByCountry: boolean = false;
+  @property({type: String})
+  pageType: string = '';
 
   static get observers() {
     return [
@@ -99,9 +99,8 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
       }
 
     });
-
     const profile = getUserData() as any;
-    const countryFilter = this.filterByCountry ? `user__profile__countries_available__name=${profile.country.name}` : '';
+    const countryFilter = this.pageType.includes('staff') ? `user__profile__countries_available__name=${profile.country.name}` : '';
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
   }
 
