@@ -43,7 +43,6 @@ import {BASE_PATH} from '../../app-config/config';
 
 setRootPath(`/${BASE_PATH}/`);
 
-
 /**
  * @customElement
  * @polymer
@@ -62,7 +61,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
               route="{{route}}"
               pattern="[[rootPath]]:page"
               data="{{routeData}}"
-              query-params="{{queryParams}}"
               tail="{{subroute}}">
       </app-route>
 
@@ -72,7 +70,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                         fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" transition-duration="350"
-                    opened="[[_drawerOpened]]"
+                    on-click="onDrawerClick"
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
             selected-option="[[page]]"
@@ -161,7 +159,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.path)'
+      '_routePageChanged(route.path)',
+      '_viewChanged(routeData.view)'
     ];
   }
 
@@ -169,7 +168,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   page: string = '';
 
   @property({type: Boolean, reflectToAttribute: true})
-  narrow: boolean = false
+  narrow: boolean = false;
 
   @property({type: Object})
   _toast: PolymerElement | null = null;
@@ -188,6 +187,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   @property({type: Object})
   routeData: GenericObject = {};
+
+  @property({type: Object})
+  queryParams!: GenericObject;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -251,11 +253,38 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
   }
 
+  allowPageChange() {
+    const urlSpaceRegex = new RegExp(`^${this.rootPath}`);
+    return urlSpaceRegex.test(this.route.path);
+  }
+
+  _viewChanged() {
+    if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
+      // clear url params(filters from previous page) on navigate between pages
+      this.set('queryParams', {});
+    }
+  }
+
   _routePageChanged() {
-    if (!this.initLoadingComplete || !this.routeData.page) {return;}
+    if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
+      return;
+    }
     this.page = this.routeData.page || 'engagements';
     if (this.scroll) {
       this.scroll(0, 0);
+    }
+
+    // Close a non-persistent drawer when the module & route are changed.
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (!appDrawer.persistent) {
+      appDrawer.close();
+    }
+  }
+
+  onDrawerClick(e) {
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (e.target === appDrawer && appDrawer.opened) {
+      appDrawer.close();
     }
   }
 
@@ -288,7 +317,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
       fireEvent(this, 'global-loading', {type: 'initialisation'});
 
-      if (this.route.path === '/ap/') {this._setDefaultLandingPage();}
+      if (this.route.path === this.rootPath) {this._setDefaultLandingPage();}
     })
       .catch((_err) => {console.error(_err); this._pageNotFound()});
   }

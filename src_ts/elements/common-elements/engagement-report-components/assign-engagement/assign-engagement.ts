@@ -2,6 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 
 import isEmpty from 'lodash-es/isEmpty';
 import each from 'lodash-es/each';
@@ -19,6 +20,7 @@ import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import DateMixin from '../../../app-mixins/date-mixin';
 import DatePickerLite from '@unicef-polymer/etools-date-time/datepicker-lite';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 
 /**
  * @polymer
@@ -136,25 +138,44 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
                   </datepicker-lite>
               </div>
 
-              <template is="dom-if" if="[[showExchange(basePermissionPath)]]">
-                  <div class="input-container">
-                      <!-- Exchange Rate -->
-                      <etools-currency-amount-input
-                              class$="validate-input disabled-as-readonly [[_setRequired('exchange_rate', basePermissionPath)]]"
-                              value="{{data.exchange_rate}}"
-                              currency="$"
-                              label$="[[getLabel('exchange_rate', basePermissionPath)]]"
-                              placeholder$="[[getPlaceholderText('exchange_rate', basePermissionPath)]]"
-                              required$="[[_setRequired('exchange_rate', basePermissionPath)]]"
-                              disabled$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
-                              readonly$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
-                              invalid="{{_checkInvalid(errors.exchange_rate)}}"
-                              error-message="{{errors.exchange_rate}}"
-                              on-focus="_resetFieldError"
-                              on-tap="_resetFieldError">
-                      </etools-currency-amount-input>
-                  </div>
-              </template>
+              <template is="dom-if" if="[[showCurrency(basePermissionPath)]]">
+                        <!-- Exchange Rate -->
+                        <!-- <etools-currency-amount-input
+                                class$="validate-input disabled-as-readonly [[_setRequired('exchange_rate', basePermissionPath)]]"
+                                value="{{data.exchange_rate}}"
+                                currency="$"
+                                label$="[[getLabel('exchange_rate', basePermissionPath)]]"
+                                placeholder$="[[getPlaceholderText('exchange_rate', basePermissionPath)]]"
+                                required$="[[_setRequired('exchange_rate', basePermissionPath)]]"
+                                disabled$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
+                                readonly$="[[isReadOnly('exchange_rate', basePermissionPath)]]"
+                                invalid="{{_checkInvalid(errors.exchange_rate)}}"
+                                error-message="{{errors.exchange_rate}}"
+                                on-focus="_resetFieldError"
+                                on-tap="_resetFieldError">
+                        </etools-currency-amount-input> -->
+                <div class="input-container">
+                        <!-- Currency of Report -->
+                        <etools-dropdown
+                                    id="currency_of_report"
+                                    class$="validate-input disabled-as-readonly [[_setRequired('currency_of_report', basePermissionPath)]]"
+                                    selected="{{data.currency_of_report}}"
+                                    options="[[currencies]]"
+                                    option-label="label"
+                                    option-value="value"
+                                    label="[[getLabel('currency_of_report', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('currency_of_report', basePermissionPath, 'dropdown')]]"
+                                    required$="{{_setRequired('currency_of_report', basePermissionPath)}}"
+                                    disabled$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
+                                    readonly$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
+                                    invalid="{{_checkInvalid(errors.currency_of_report)}}"
+                                    error-message="{{errors.currency_of_report}}"
+                                    on-focus="_resetFieldError"
+                                    on-tap="_resetFieldError"
+                                    dynamic-align>
+                        </etools-dropdown>
+                </div>
+            </template>
 
           </div>
       </etools-content-panel>
@@ -188,6 +209,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   @property({type: Boolean, readOnly: true})
   falseValue: boolean = false;
 
+  @property({type: Array})
+  currencies!: [];
+
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Engagement Status',
@@ -198,6 +222,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   connectedCallback() {
     super.connectedCallback();
+    this.set('currencies', getStaticData('staticDropdown').currencies);
   }
 
   _updateStyles() {
@@ -237,7 +262,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   getAssignVisitData() {
     let data = pickBy(this.data, (value, key) => {
       let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
-        'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'exchange_rate'];
+        'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'currency_of_report'];
       if (!~properties.indexOf(key)) {return false;}
 
       return !this.originalData || this.originalData[key] !== value;
@@ -260,8 +285,8 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
     return !!error;
   }
 
-  showExchange(basePath) {
-    return basePath && collectionExists(`${basePath}.exchange_rate`, 'GET');
+  showCurrency(basePath) {
+    return basePath && collectionExists(`${basePath}.currency_of_report`, 'GET');
   }
 
   _checkInvalid(value) {

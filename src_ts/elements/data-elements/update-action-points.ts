@@ -64,7 +64,7 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleError(error) {
-    let {status, response} = (error || {}) as any;
+    let response = (error || {}) as any;
 
     if (typeof response === 'string') {
       try {

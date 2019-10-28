@@ -39,7 +39,7 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
         endpoint: {url: getEndpoint('authorizedOfficers', {id: detail.id}).url}
       }).then(resp => {
         this._handleOfficersResponse(resp);
-      }).catch(err => {
+      }).catch(() => {
         this._handleOfficersError();
       });
     }
@@ -104,7 +104,7 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
         endpoint: {url: getEndpoint('partnerInfo', {id: partnerId}).url}
       }).then(resp => {
         this._handleResponse(resp);
-      }).catch(err => {
+      }).catch(() => {
         this._handleError();
       });
     }
