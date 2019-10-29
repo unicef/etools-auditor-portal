@@ -72,10 +72,6 @@ export const searchAndFilterStyles = html`
       --paper-item: {
         cursor: pointer;
       };
-      --paper-item-selected: {
-        font-weight: normal !important;
-      };
-
       --paper-item-focused-before: {
         background: none;
         opacity: 0;
@@ -84,14 +80,21 @@ export const searchAndFilterStyles = html`
         background: none;
         opacity: 0;
       }
-      --paper-item-selected: {
-        background-color: rgb(220, 220, 220);
-      };
       --paper-item-focused: {
         background-color: rgb(198, 198, 198);
       };
       white-space: nowrap;
       text-transform: capitalize;
+    }
+
+    #add-filter-container paper-icon-item[selected] {
+      font-weight: normal !important;
+      background-color: rgb(220, 220, 220);
+    }
+
+    #add-filter-container paper-icon-item[focused] {
+      font-weight: normal !important;
+      background-color: rgb(198, 198, 198);
     }
 
     .second-header #add-filter-container paper-menu-button {

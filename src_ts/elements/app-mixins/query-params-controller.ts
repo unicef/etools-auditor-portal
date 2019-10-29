@@ -58,8 +58,11 @@ export function updateQueries(newQueries, path?, noNotify?) {
   const queries = parseQueries();
 
   keys.forEach((key) => {
-    if (newQueries[key] === undefined || newQueries[key] === false) delete queries[key];
-    else queries[key] = newQueries[key];
+    if (newQueries[key] === undefined || newQueries[key] === false || newQueries[key] === '') {
+      delete queries[key];
+    } else {
+      queries[key] = newQueries[key];
+    }
   });
 
   const queryString = buildQueryString(queries);
@@ -68,6 +71,7 @@ export function updateQueries(newQueries, path?, noNotify?) {
   if (!noNotify) {
     window.dispatchEvent(new CustomEvent('location-changed'));
   }
+
   return true;
 }
 
