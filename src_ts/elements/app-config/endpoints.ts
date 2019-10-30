@@ -87,7 +87,7 @@ const famEndpoints = {
   },
   attachmentsUpload: {
     url: '/api/v2/attachments/upload/'
-  },
-}
+  }
+};
 
 export default famEndpoints;

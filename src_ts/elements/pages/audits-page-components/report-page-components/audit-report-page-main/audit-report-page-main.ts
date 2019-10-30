@@ -1,8 +1,9 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from "@polymer/decorators/lib/decorators";
-import {GenericObject} from "../../../../../types/global";
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../../../types/global';
 
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+// eslint-disable-next-line
 import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../findings-summary/fundings-summary';
 import {FindingsSummaryEl} from '../findings-summary/fundings-summary';

@@ -147,11 +147,13 @@ export const StatusTabElementStyles = html`
     .status-container.active .status-icon .icon-wrapper, .status-container.completed .status-icon .icon-wrapper {
       background: var(--module-success);
     }
-    .status-container.active .status-icon .icon-wrapper iron-icon, .status-container.completed .status-icon .icon-wrapper iron-icon {
+    .status-container.active .status-icon .icon-wrapper iron-icon, 
+    .status-container.completed .status-icon .icon-wrapper iron-icon {
       --iron-icon-height: 100%;
       --iron-icon-width: 100%;
     }
-    .status-container.active .status-icon .icon-wrapper .status-nr, .status-container.completed .status-icon .icon-wrapper .status-nr {
+    .status-container.active .status-icon .icon-wrapper .status-nr, 
+    .status-container.completed .status-icon .icon-wrapper .status-nr {
       display: none;
     }
     .status-container.active .status, .status-container.completed .status {

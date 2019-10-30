@@ -1,8 +1,8 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
-import {property} from "@polymer/decorators";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {GenericObject} from "../../types/global";
+import {GenericObject} from '../../types/global';
 
 class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -23,14 +23,14 @@ class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {return;}
 
     this.poUpdating = true;
-    let url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
+    const url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
     this.sendRequest({
       method: 'PATCH',
       endpoint: {url},
       body: {contract_end_date: date}
-    }).then(resp => {
+    }).then((resp) => {
       this._handleResponse(resp);
-    }).catch(err => {
+    }).catch((err) => {
       this._handleError(err);
     });
   }
@@ -55,4 +55,4 @@ class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.set('errors', response);
   }
 }
-window.customElements.define("update-agreement-data", UpdateAgreementData);
+window.customElements.define('update-agreement-data', UpdateAgreementData);

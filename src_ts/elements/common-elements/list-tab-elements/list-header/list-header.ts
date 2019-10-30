@@ -98,7 +98,8 @@ class ListHeader extends LocalizationMixin(PolymerElement) {
           :host .heading-row-header .local-headings.no-order:hover .heading {
               color: inherit;
           }
-          :host .heading-row-header .local-headings.no-order iron-icon.up-icon, :host .heading-row-header .local-headings.no-order iron-icon.down-icon {
+          :host .heading-row-header .local-headings.no-order iron-icon.up-icon, 
+          :host .heading-row-header .local-headings.no-order iron-icon.down-icon {
               display: none;
           }
           :host .heading-row-header .local-headings.right {
@@ -250,9 +251,9 @@ class ListHeader extends LocalizationMixin(PolymerElement) {
   _changeOrder(event) {
     if (this.noOrdered) {return;}
 
-    let item = get(event, 'model.item');
+    const item = get(event, 'model.item');
     if (!item || (item.class && ~item.class.indexOf('no-order'))) {return;}
-    let newOrderName = item.name;
+    const newOrderName = item.name;
     let currentOrderName = this.orderBy || '';
     let direction = '-';
 

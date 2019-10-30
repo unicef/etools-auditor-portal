@@ -35,7 +35,7 @@ import {GenericObject} from '../../../types/global';
 
 import get from 'lodash-es/get';
 import clone from 'lodash-es/clone';
-import {fireEvent} from "../../utils/fire-custom-event";
+import {fireEvent} from '../../utils/fire-custom-event';
 import {getEndpoint} from '../../app-config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
@@ -59,10 +59,10 @@ import {checkNonField, refactorErrorObject} from '../../app-mixins/error-handler
 class FileAttachmentsTab extends
   CommonMethodsMixin(
     TableElementsMixin(
-        EngagementMixin(
-          DateMixin(
-            EtoolsAjaxRequestMixin(
-              PolymerElement))))) {
+      EngagementMixin(
+        DateMixin(
+          EtoolsAjaxRequestMixin(
+            PolymerElement))))) {
 
   static get template() {
     // language=HTML
@@ -412,7 +412,7 @@ class FileAttachmentsTab extends
       '_setBasePath(dataBasePath, pathPostfix)',
       '_resetDialog(dialogOpened)',
       '_errorHandler(errorObject)',
-      'updateStyles(requestInProcess, editedItem, basePermissionPath)',
+      'updateStyles(requestInProcess, editedItem, basePermissionPath)'
     ];
   }
 
@@ -457,19 +457,19 @@ class FileAttachmentsTab extends
     this.set('requestInProcess', true);
     const options = Object.assign(this.auditLinksOptions, {method: 'GET'});
     this.sendRequest(options)
-        .then(res => {
-          this.set('linkedAttachments', uniqBy(res, 'attachment'));
-          this.set('requestInProcess', false);
-        })
-        .catch(this._errorHandler.bind(this));
+      .then((res) => {
+        this.set('linkedAttachments', uniqBy(res, 'attachment'));
+        this.set('requestInProcess', false);
+      })
+      .catch(this._errorHandler.bind(this));
   }
 
   _setBasePath(dataBase, pathPostfix) {
     this._handleLinksInDetailsView(dataBase);
-    let base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
+    const base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
     this.set('basePermissionPath', base);
     if (base) {
-      let title = getFieldAttribute(base, 'title');
+      const title = getFieldAttribute(base, 'title');
       this.set('tabTitle', title);
       this.fileTypes = getChoices(`${base}.file_type`);
     }
@@ -477,7 +477,7 @@ class FileAttachmentsTab extends
   }
 
   _handleLinksInDetailsView(dataBase) {
-    if (!dataBase) { //null check
+    if (!dataBase) { // null check
       dataBase = '';
     }
     const isEngagementDetailsView = !dataBase.includes('new');
@@ -486,9 +486,11 @@ class FileAttachmentsTab extends
     }
   }
 
-  setReadOnly(){
-    this.isTabReadonly = !this.basePermissionPath || (!collectionExists(`${this.basePermissionPath}.PUT`) && !collectionExists(`${this.basePermissionPath}.POST`));
-    this.hideAddAttachments =  this.isTabReadonly || this._isNewEngagement();
+  setReadOnly() {
+    this.isTabReadonly = !this.basePermissionPath ||
+                          (!collectionExists(`${this.basePermissionPath}.PUT`) &&
+                          !collectionExists(`${this.basePermissionPath}.POST`));
+    this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
   showFileTypes(basePath) {
@@ -499,25 +501,25 @@ class FileAttachmentsTab extends
     if (!dialogOpened) {
       this.originalEditedObj = null;
     }
-    let etoolUpload = this.shadowRoot!.querySelector('etools-upload') as EtoolsUpload;
+    const etoolUpload = this.shadowRoot!.querySelector('etools-upload') as EtoolsUpload;
     etoolUpload.invalid = false;
     this.resetDialog(dialogOpened);
   }
 
   _getFileType(fileType) {
-    let length = get(this, 'fileTypes.length');
+    const length = get(this, 'fileTypes.length');
     if (!length) {
       return;
     }
 
-    let type = this.fileTypes.find((type) => parseInt(type.value, 10) === parseInt(fileType, 10));
+    const type = this.fileTypes.find(type => parseInt(type.value, 10) === parseInt(fileType, 10));
     return type || null;
   }
 
   _openFileChooser() {
-    let elem = this.shadowRoot!.querySelector('#fileInput');
+    const elem = this.shadowRoot!.querySelector('#fileInput');
     if (elem && document.createEvent) {
-      let evt = document.createEvent('MouseEvents');
+      const evt = document.createEvent('MouseEvents');
       evt.initEvent('click', true, false);
       elem.dispatchEvent(evt);
       this.set('errors.file', '');
@@ -531,7 +533,7 @@ class FileAttachmentsTab extends
   _attachmentUploadFinished(e) {
     this.requestInProcess = false;
     if (e.detail.success) {
-      let uploadResponse = JSON.parse(e .detail.success);
+      const uploadResponse = JSON.parse(e .detail.success);
       this.set('editedItem.attachment', uploadResponse.id);
       this.set('editedItem.filename', uploadResponse.filename);
 
@@ -554,7 +556,7 @@ class FileAttachmentsTab extends
     this.requestInProcess = true;
 
     let attachmentData = this._getFileData();
-    let method = attachmentData.id ? 'PATCH' : 'POST';
+    const method = attachmentData.id ? 'PATCH' : 'POST';
 
     attachmentData = method === 'PATCH' ? this._getChanges(attachmentData) : attachmentData;
     if (!attachmentData) {
@@ -581,12 +583,12 @@ class FileAttachmentsTab extends
   }
 
   _getChanges(attachmentData) {
-    let original = this.originalEditedObj && this._getFileData(this.originalEditedObj);
+    const original = this.originalEditedObj && this._getFileData(this.originalEditedObj);
     if (!original) {
       return attachmentData;
     }
 
-    let data = pickBy(attachmentData, (value, key) => original![key] !== value);
+    const data = pickBy(attachmentData, (value, key) => original[key] !== value);
     if (data.attachment && this._fileAlreadySelected()) {
       delete data.attachment;
     }
@@ -603,8 +605,8 @@ class FileAttachmentsTab extends
     if (!this.dialogOpened && (!fileData && !this.editedItem)) {
       return {};
     }
-    let {id, attachment, file_type} = fileData || this.editedItem;
-    let data: GenericObject = {attachment};
+    const {id, attachment, file_type} = fileData || this.editedItem;
+    const data: GenericObject = {attachment};
 
     if (id) {
       data.id = id;
@@ -631,7 +633,7 @@ class FileAttachmentsTab extends
       return false;
     }
 
-    let alreadySelectedIndex = this.dataItems.findIndex((item) => {
+    const alreadySelectedIndex = this.dataItems.findIndex((item) => {
       return this.getFileNameFromURL(item.attachment) === this.editedItem.filename;
     });
 
@@ -663,9 +665,9 @@ class FileAttachmentsTab extends
 
   _validateFileType() {
     let valid = true;
-    let dropdown = this.shadowRoot!.querySelector('#fileType') as EtoolsDropdownEl;
+    const dropdown = this.shadowRoot!.querySelector('#fileType') as EtoolsDropdownEl;
 
-    let fileTypeRequired = dropdown.required;
+    const fileTypeRequired = dropdown.required;
 
     if (fileTypeRequired) {
       if (!this.fileTypes || !this.fileTypes.length) {
@@ -690,13 +692,13 @@ class FileAttachmentsTab extends
   }
 
   _errorHandler(errorData) {
-    let mainProperty = this.errorProperty;
+    const mainProperty = this.errorProperty;
     this.requestInProcess = false;
     if (!errorData || !errorData[mainProperty]) {
       return;
     }
-    let refactoredData = refactorErrorObject(errorData[mainProperty]);
-    let nonField = checkNonField(errorData[mainProperty]);
+    const refactoredData = refactorErrorObject(errorData[mainProperty]);
+    const nonField = checkNonField(errorData[mainProperty]);
 
     if (this.dialogOpened && typeof refactoredData[0] === 'object') {
       this.set('errors', refactoredData[0]);
@@ -709,7 +711,7 @@ class FileAttachmentsTab extends
     }
 
     if (!this.dialogOpened) {
-      let filesErrors = this.getFilesErrors(refactoredData);
+      const filesErrors = this.getFilesErrors(refactoredData);
 
       filesErrors.forEach((fileError) => {
         fireEvent(this, 'toast', {text: `${fileError.fileName}: ${fileError.error}`});
@@ -719,7 +721,7 @@ class FileAttachmentsTab extends
 
   getFilesErrors(errors) {
     if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
-      let filesErrors = [];
+      const filesErrors = [];
 
       errors.forEach((error, index) => {
         let fileName = this.dataItems[index].filename;
@@ -752,7 +754,7 @@ class FileAttachmentsTab extends
   }
 
   getFiles() {
-    return this.dataItems.map((file) => this._getFileData(file));
+    return this.dataItems.map(file => this._getFileData(file));
   }
 
   resetData() {
@@ -774,27 +776,27 @@ class FileAttachmentsTab extends
     });
     this.set('requestInProcess', true);
     this.sendRequest(options)
-        .then(() => {
-          fireEvent(this, 'toast', {
-            text: 'Documents shared successfully.'
-          });
+      .then(() => {
+        fireEvent(this, 'toast', {
+          text: 'Documents shared successfully.'
+        });
 
-          this.set('requestInProcess', false);
-          this.set('shareDialogOpened', false);
-          this._getLinkedAttachments(); // refresh the list
-        })
-        .catch(this._handleShareError.bind(this))
+        this.set('requestInProcess', false);
+        this.set('shareDialogOpened', false);
+        this._getLinkedAttachments(); // refresh the list
+      })
+      .catch(this._handleShareError.bind(this));
 
   }
 
   _handleShareError(err) {
-    let nonField = checkNonField(err);
+    const nonField = checkNonField(err);
     let message;
     if (nonField) {
-      message = `Nonfield error: ${nonField}`
+      message = `Nonfield error: ${nonField}`;
     } else {
       message = err.response && err.response.detail ? `Error: ${err.response.detail}`
-          : 'Error sharing documents.';
+        : 'Error sharing documents.';
     }
     fireEvent(this, 'toast', {
       text: message
@@ -806,7 +808,7 @@ class FileAttachmentsTab extends
   }
 
   _getClassFor(field) {
-    return `w${this.headings.find(heading => heading.name === field)!.size}`
+    return `w${this.headings.find(heading => heading.name === field)!.size}`;
   }
 
   _openDeleteLinkDialog(e) {
@@ -827,9 +829,10 @@ class FileAttachmentsTab extends
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
-        .catch(err => this._errorHandler(err));
+      .catch(err => this._errorHandler(err));
   }
 
+  // @ts-ignore
   _shouldHideShare(isUnicefUser, baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
@@ -846,4 +849,4 @@ class FileAttachmentsTab extends
 
 window.customElements.define('file-attachments-tab', FileAttachmentsTab);
 
-export {FileAttachmentsTab as FileAttachmentsTabEl}
+export {FileAttachmentsTab as FileAttachmentsTabEl};

@@ -3,7 +3,7 @@ import clone from 'lodash-es/clone';
 
 
 export function getEndpoint(endpointName, data?) {
-  let endpoint = clone(famEndpoints[endpointName]);
+  const endpoint = clone(famEndpoints[endpointName]);
   if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
     endpoint.url = window.location.origin + _generateUrlFromTemplate(endpoint.template, data);
   } else {

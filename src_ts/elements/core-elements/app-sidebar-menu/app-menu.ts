@@ -1,4 +1,4 @@
-import { PolymerElement, html } from '@polymer/polymer/polymer-element';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icons/av-icons.js';
@@ -8,8 +8,8 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '../../utils/fire-custom-event';
-import { property } from '@polymer/decorators';
-import { apIcons } from '../../styles-elements/ap-icons';
+import {property} from '@polymer/decorators';
+import {apIcons} from '../../styles-elements/ap-icons';
 
 /**
  * @polymer
@@ -126,14 +126,14 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
   rootPath!: string;
 
   @property({type: Boolean, reflectToAttribute: true, observer: '_menuSizeChange'})
-  smallMenu!: Boolean;
+  smallMenu!: boolean;
 
   @property({type: Boolean})
   showSscPage: boolean = false;
 
   @property({type: String})
   etoolsNowLink: string = 'https://app.powerbi.com/groups/me/apps/' +
-    '2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/' + 
+    '2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/' +
     '5e60ab16-cce5-4c21-8620-de0c4c6415de/ReportSectionfe8562e6ef8c4eddcb52';
 
   // @ts-ignore

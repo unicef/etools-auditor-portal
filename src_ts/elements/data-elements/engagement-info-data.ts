@@ -1,6 +1,6 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {getEndpoint} from '../app-config/endpoints-controller';
@@ -8,7 +8,8 @@ import {addToCollection, collectionExists} from '../app-mixins/permission-contro
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import LastCreatedMixin from '../../elements/app-mixins/last-created-mixin';
 import EngagementMixin from '../../elements/app-mixins/engagement-mixin';
-import {GenericObject} from "../../types/global.js";
+import {GenericObject} from '../../types/global';
+import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 /**
  * @polymer
@@ -61,11 +62,11 @@ class EngagementInfoData extends LastCreatedMixin(
   }
 
   _handleOptionsResponse(data) {
-    let actions = get(data, 'actions', null);
+    const actions = get(data, 'actions', null);
     if (actions) {
       addToCollection(`engagement_${this.engagementId}`, actions);
     } else {
-      console.error('Can not load permissions for engagement');
+      logError('Can not load permissions for engagement');
     }
 
     this.requestsCompleted.options = true;
@@ -73,8 +74,8 @@ class EngagementInfoData extends LastCreatedMixin(
   }
 
   _handleDataOptionsResponse(data, params) {
-    let actions = get(data, 'actions', {}),
-      name = get(data, 'name', '');
+    const actions = get(data, 'actions', {});
+    const name = get(data, 'name', '');
     this._handleEngagementOptions(params, actions, name);
   }
 
@@ -125,8 +126,8 @@ class EngagementInfoData extends LastCreatedMixin(
       endpoint
     };
     this.sendRequest(options)
-      .then((resp) => this._handleDataOptionsResponse(resp, params))
-      .catch((error) => this._handleOptionsError(error, params));
+      .then(resp => this._handleDataOptionsResponse(resp, params))
+      .catch(error => this._handleOptionsError(error, params));
   }
 
   _idChanged(id) {
@@ -143,7 +144,7 @@ class EngagementInfoData extends LastCreatedMixin(
 
     fireEvent(this, 'global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
 
-    let apBaseUrl = getEndpoint('engagementInfo', {id: id, type: 'engagements'}).url;
+    const apBaseUrl = getEndpoint('engagementInfo', {id: id, type: 'engagements'}).url;
     this._makeOptionsRequest({
       postfix: 'ap',
       requestName: 'apOptions'
@@ -160,7 +161,7 @@ class EngagementInfoData extends LastCreatedMixin(
     }, getEndpoint('reportAttachments', {id: id}));
 
 
-    let lastCreated = this.getLastEngagementData(id);
+    const lastCreated = this.getLastEngagementData(id);
     // load engagement info if it was just created
     if (lastCreated) {
       this._handleDataResponse(lastCreated);
@@ -198,4 +199,4 @@ class EngagementInfoData extends LastCreatedMixin(
       .catch(this._handleOptionsResponse.bind(this));
   }
 }
-window.customElements.define("engagement-info-data", EngagementInfoData);
+window.customElements.define('engagement-info-data', EngagementInfoData);

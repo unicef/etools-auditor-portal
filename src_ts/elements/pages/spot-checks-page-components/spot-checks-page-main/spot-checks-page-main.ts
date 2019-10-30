@@ -1,6 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/app-route/app-route';
-import '@polymer/app-route/app-location';
 import '@polymer/polymer/lib/elements/dom-if';
 import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/app-layout/app-layout';
@@ -10,6 +9,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
+// eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
@@ -154,7 +154,8 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
                                     id="staffMembers"
                                     base-permission-path="{{permissionBase}}"
                                     engagement="{{engagement}}"
-                                    error-object="{{errorObject}}">
+                                    error-object="{{errorObject}}"
+                                    page-type="[[pageType]]">
                             </engagement-staff-members-tab>
                         </div>
 
@@ -274,7 +275,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
       '_setPermissionBase(engagement.id)',
       '_tabChanged(tab)',
       '_setType(isStaffSc)'
-    ]
+    ];
   }
 
   connectedCallback() {
@@ -285,16 +286,16 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
   }
 
   _setType(isStaffSc) {
-    let type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
+    const type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
     this.set('engagementPrefix', `/${type}`);
     this.set('pageType', type);
   }
 
   _validateEngagement() {
-    let basicInfoValid = this._validateBasicInfo(),
-        reportValid = this.getElement('#report').validate();
+    const basicInfoValid = this._validateBasicInfo();
+    const reportValid = this.getElement('#report').validate();
 
-    if (!basicInfoValid) { return false; }
+    if (!basicInfoValid) {return false;}
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -304,30 +305,30 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
 
   customDataPrepare(data) {
     data = data || {};
-    //Rport data
-    let reportPage = this.getElement('#report');
+    // Rport data
+    const reportPage = this.getElement('#report');
 
-    let findingData = reportPage && reportPage.getFindingsData();
-    if (findingData) { data.findings = findingData; }
+    const findingData = reportPage && reportPage.getFindingsData();
+    if (findingData) {data.findings = findingData;}
 
-    let internalControlsData = reportPage && reportPage.getInternalControlsData();
-    if (!isNull(internalControlsData)) { data.internal_controls = internalControlsData; }
+    const internalControlsData = reportPage && reportPage.getInternalControlsData();
+    if (!isNull(internalControlsData)) {data.internal_controls = internalControlsData;}
 
-    let overviewData = reportPage && reportPage.getOverviewData() || {};
+    const overviewData = reportPage && reportPage.getOverviewData() || {};
     assign(data, overviewData);
 
-    //FollowUp data
-    let followUpPage = this.getElement('#follow-up'),
-        followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+    // FollowUp data
+    const followUpPage = this.getElement('#follow-up');
+    const followUpData = followUpPage && followUpPage.getFollowUpData() || {};
     assign(data, followUpData);
 
     return data;
   }
 
   customBasicValidation() {
-    let reportTab = this.getElement('#report');
-    if (!reportTab) { return true; }
-    let reportValid = reportTab.validate('forSave');
+    const reportTab = this.getElement('#report');
+    if (!reportTab) {return true;}
+    const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -340,12 +341,12 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
   }
 
   loadChoices(property) {
-    if (getStaticData(property)) { return; }
-    let choices = getChoices(`engagement_${this.engagement.id}.findings.${property}`);
-    if (!choices) { return; }
+    if (getStaticData(property)) {return;}
+    const choices = getChoices(`engagement_${this.engagement.id}.findings.${property}`);
+    if (!choices) {return;}
     const sortedChoices = sortBy(
-        choices,
-        ['display_name']);
+      choices,
+      ['display_name']);
     setStaticData(property, sortedChoices);
   }
 

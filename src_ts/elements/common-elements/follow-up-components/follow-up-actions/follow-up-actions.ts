@@ -39,7 +39,13 @@ import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-requ
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
-import {collectionExists, addToCollection, updateCollection, getChoices, readonlyPermission, actionAllowed} from '../../../app-mixins/permission-controller';
+import {
+  collectionExists,
+  addToCollection,
+  updateCollection,
+  getChoices,
+  readonlyPermission,
+  actionAllowed} from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
 
 /**
@@ -166,8 +172,15 @@ class FollowUpActions extends
                         </paper-checkbox>
                     </div>
                     <div slot="hover" class="edit-icon-slot">
-                        <paper-icon-button icon="icons:content-copy" class="edit-icon" on-tap="_openCopyDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="_openEditDialog" hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
+                        <paper-icon-button 
+                            icon="icons:content-copy" 
+                            class="edit-icon" 
+                            on-tap="_openCopyDialog"></paper-icon-button>
+                        <paper-icon-button 
+                            icon="icons:create" 
+                            class="edit-icon" 
+                            on-tap="_openEditDialog" 
+                            hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -207,7 +220,8 @@ class FollowUpActions extends
                         <div class="input-container input-container-ms">
                             <!-- Partner -->
                             <etools-dropdown
-                                    class$="disabled-as-readonly validate-input [[_setRequired('partner', editedApBase)]] fua-person"
+                                    class$="[[_setRequired('partner', editedApBase)]] 
+                                              disabled-as-readonly validate-input fua-person"
                                     selected="{{selectedPartnerId}}"
                                     label="[[getLabel('partner', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
@@ -226,7 +240,8 @@ class FollowUpActions extends
                         <div class="input-container input-container-ms">
                             <!-- PD/SSFA -->
                             <etools-dropdown
-                                    class$="disabled-as-readonly validate-input [[_setRequired('intervention', editedApBase)]] fua-person"
+                                    class$="[[_setRequired('intervention', editedApBase)]]
+                                            disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.intervention.id}}"
                                     label="[[getLabel('intervention', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('intervention', editedApBase, 'select')]]"
@@ -249,7 +264,8 @@ class FollowUpActions extends
                         <div class="input-container input-container-ms">
                             <!-- Category -->
                             <etools-dropdown
-                                    class$="disabled-as-readonly validate-input [[_setRequired('category', editedApBase)]] fua-person"
+                                    class$="[[_setRequired('category', editedApBase)]]
+                                            disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.category}}"
                                     label="[[getLabel('category', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('category', editedApBase, 'select')]]"
@@ -293,7 +309,8 @@ class FollowUpActions extends
                             <!-- Assigned To -->
 
                             <etools-dropdown
-                                    class$="disabled-as-readonly validate-input [[_setRequired('assigned_to', editedApBase)]] fua-person"
+                                    class$="[[_setRequired('assigned_to', editedApBase)]]
+                                            disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.assigned_to.id}}"
                                     label="[[getLabel('assigned_to', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
@@ -314,7 +331,8 @@ class FollowUpActions extends
                             <!-- Sections -->
 
                             <etools-dropdown
-                                    class$="disabled-as-readonly validate-input [[_setRequired('section', editedApBase)]] fua-person"
+                                    class$="[[_setRequired('section', editedApBase)]] 
+                                            disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.section.id}}"
                                     label="[[getLabel('section', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
@@ -337,7 +355,8 @@ class FollowUpActions extends
                             <!-- Offices -->
 
                             <etools-dropdown
-                                    class$="disabled-as-readonly validate-input [[_setRequired('office', editedApBase)]] fua-person"
+                                    class$="[[_setRequired('office', editedApBase)]] 
+                                            disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.office.id}}"
                                     label="[[getLabel('office', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('office', editedApBase, 'select')]]"
@@ -358,7 +377,8 @@ class FollowUpActions extends
                             <!-- Due Date -->
                             <datepicker-lite
                                     id="deadlineAction"
-                                    class$="disabled-as-readonly validate-input [[_setRequired('due_date', editedApBase)]]"
+                                    class$="[[_setRequired('due_date', editedApBase)]] 
+                                            disabled-as-readonly validate-input"
                                     value="{{editedItem.due_date}}"
                                     label="[[getLabel('due_date', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('due_date', editedApBase, 'select')]]"
@@ -390,7 +410,11 @@ class FollowUpActions extends
             </div>
 
             <div class="action-complete" hidden$="[[!_allowComplete(editedApBase)]]">
-                <paper-button><a href$="[[editedItem.url]]" target="_blank">Go To action points to complete<iron-icon icon="icons:launch"></iron-icon></a></paper-button>
+                <paper-button>
+                    <a href$="[[editedItem.url]]" target="_blank">Go To action points to complete
+                        <iron-icon icon="icons:launch"></iron-icon>
+                    </a>
+                </paper-button>
             </div>
         </etools-dialog>
 
@@ -406,7 +430,7 @@ class FollowUpActions extends
       '_addComputedField(dataItems.*)',
       '_orderChanged(orderBy, columns, dataItems.*)',
       '_requestPartner(partnerData, selectedPartnerId, partners)'
-    ]
+    ];
   }
 
   @property({type: Array})
@@ -552,7 +576,7 @@ class FollowUpActions extends
     return actionAllowed(editedApBase, 'complete');
   }
   _requestPartner(partner) {
-    let id = partner && +partner.id || null;
+    const id = partner && +partner.id || null;
     this.partnerId = id;
     this.selectedPartnerId = id;
   }
@@ -587,18 +611,18 @@ class FollowUpActions extends
       }
     });
 
-    let sorted = sortBy(this.dataItems, (item) => item[orderBy]);
+    const sorted = sortBy(this.dataItems, item => item[orderBy]);
     this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
   }
 
   _addComputedField() {
     this.itemsToDisplay = this.dataItems.map((item: any) => {
       item.priority = item.high_priority && 'High' || ' ';
-      let assignedTo = get(item, 'assigned_to.name', '--'),
-        section = get(item, 'section.name', '--'),
-        office = get(item, 'office.name', '--');
+      const assignedTo = get(item, 'assigned_to.name', '--');
+      const section = get(item, 'section.name', '--');
+      const office = get(item, 'office.name', '--');
       item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
-      item.ap_category = find(this.categories, (category) => category.value === item.category);
+      item.ap_category = find(this.categories, category => category.value === item.category);
       return item;
     });
   }
@@ -612,7 +636,7 @@ class FollowUpActions extends
   _checkNonField(error) {
     if (!error) {return;}
 
-    let nonField = checkNonField(error);
+    const nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Follow-Up Actions: ${nonField}`});
     }
@@ -625,11 +649,11 @@ class FollowUpActions extends
     if (this.copyDialog) {
       this.originalEditedObj = {};
     }
-    let data = pickBy(this.editedItem, (value, fieldName) => {
+    const data = pickBy(this.editedItem, (value, fieldName) => {
       if (!~this.modelFields.indexOf(fieldName)) {
         return false;
       }
-      let isObj = isObject(value) && !isArray(value);
+      const isObj = isObject(value) && !isArray(value);
       if (isObj) {
         return +value.id !== +get(this, `originalEditedObj.${fieldName}.id`, 0);
       } else {
@@ -650,9 +674,9 @@ class FollowUpActions extends
     }
 
     this.requestInProcess = true;
-    let apData = this.getActionsData();
+    const apData = this.getActionsData();
     if (apData) {
-      let method = apData.id ? 'PATCH' : 'POST';
+      const method = apData.id ? 'PATCH' : 'POST';
       this.requestData = {method, apData};
     } else {
       this._requestCompleted({detail: {success: true}});
@@ -661,7 +685,7 @@ class FollowUpActions extends
 
   _requestCompleted(event) {
     if (!event || !event.detail) {return;}
-    let detail = event.detail;
+    const detail = event.detail;
     this.requestInProcess = false;
     if (detail && detail.success) {
       this.dialogOpened = false;
@@ -679,14 +703,15 @@ class FollowUpActions extends
 
   _openEditDialog(event) {
     this.editedApBase = '';
-    fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
+    fireEvent(this, 'global-loading',
+      {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
-    let index = this._getIndex(event);
+    const index = this._getIndex(event);
     this._selectedAPIndex = index;
 
-    let id = get(this, `dataItems.${index}.id`);
-    let apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url,
-      url = `${apBaseUrl}action-points/${id}/`;
+    const id = get(this, `dataItems.${index}.id`);
+    const apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url;
+    const url = `${apBaseUrl}action-points/${id}/`;
 
     this._sendOptionsRequest(url);
   }
@@ -696,7 +721,7 @@ class FollowUpActions extends
       method: 'OPTIONS',
       endpoint: {
         url
-      },
+      }
     };
     this.sendRequest(requestOptions)
       .then(this._handleOptionResponse.bind(this))
@@ -707,8 +732,8 @@ class FollowUpActions extends
     this.dialogTitle = (this.copyDialogTexts && this.copyDialogTexts.title) || 'Add New Item';
     this.confirmBtnText = 'Save';
     this.cancelBtnText = 'Cancel';
-    let index = this._getIndex(event),
-      data = omit(this.dataItems[index], ['id']);
+    const index = this._getIndex(event);
+    const data = omit(this.dataItems[index], ['id']);
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
     this.editedApBase = this.basePermissionPath;
@@ -720,7 +745,7 @@ class FollowUpActions extends
   _checkNotTouched(copyDialog) {
     if (!copyDialog || isEmpty(this.originalEditedObj)) {return false;}
     return every(this.originalEditedObj, (value, key) => {
-      let isObj = isObject(value);
+      const isObj = isObject(value);
       if (isObj) {
         return !value.id || +value.id === +get(this, `editedItem.${key}.id`);
       } else {
@@ -735,7 +760,7 @@ class FollowUpActions extends
       updateCollection('edited_ap_options', detail.actions);
     }
     this.editedApBase = 'edited_ap_options';
-    let itemIndex = this._selectedAPIndex;
+    const itemIndex = this._selectedAPIndex;
     this._selectedAPIndex = null;
 
     if (collectionExists('edited_ap_options.PUT')) {

@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash-es/cloneDeep';
 
-let _staticData = {
+const _staticData = {
   engagementTypes: [],
   offices: [],
   partners: [],

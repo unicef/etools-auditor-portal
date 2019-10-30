@@ -1,12 +1,13 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
 import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {fireEvent} from '../utils/fire-custom-event';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {setUserData} from '../../elements/app-mixins/user-controller';
-import {resetOldUserData} from '../app-config/config.js';
+import {setUserData} from '../app-mixins/user-controller';
+import {resetOldUserData} from '../app-config/config';
 import famEndpoints from '../app-config/endpoints.js';
+import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 class UserData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -15,10 +16,10 @@ class UserData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     this.sendRequest({
       endpoint: famEndpoints.userProfile
-    }).then(resp => {
+    }).then((resp) => {
       this._handleResponse(resp);
-    }).catch(err => {
-      console.log(err)
+    }).catch((err) => {
+      logError(err);
       this._handleError(err);
     });
   }
@@ -45,9 +46,9 @@ class UserData extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (err.status === 403) {
       window.location.href = window.location.origin + '/';
     } else {
-      console.error('Can\'t load user data');
+      logError('Can\'t load user data');
     }
   }
 
 }
-window.customElements.define("user-data", UserData);
+window.customElements.define('user-data', UserData);
