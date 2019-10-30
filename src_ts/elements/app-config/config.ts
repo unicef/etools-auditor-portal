@@ -1,12 +1,12 @@
 import Dexie from 'dexie';
 
 declare global {
-  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any;}
+  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any}
 }
 
 window.EtoolsFamApp = window.EtoolsFamApp || {};
 
-//------------Dexie------------
+// ------------Dexie------------
 var etoolsCustomDexieDb = new Dexie('AP');
 // Static data (agency_choices, agreement_amendment_types, attachment_types, cso_types, etc)
 // is stored in the 'ajaxDefaultDataTable'
@@ -23,7 +23,7 @@ window.EtoolsRequestCacheDb = etoolsCustomDexieDb;
 window.EtoolsFamApp.DexieDb = etoolsCustomDexieDb;
 
 
-//-----------Environment------
+// -----------Environment------
 const PROD_DOMAIN = 'etools.unicef.org';
 const STAGING_DOMAIN = 'etools-staging.unicef.org';
 const DEV_DOMAIN = 'etools-dev.unicef.org';

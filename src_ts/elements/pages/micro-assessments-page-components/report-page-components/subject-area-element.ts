@@ -66,7 +66,7 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    let riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+    const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
   }
 
@@ -80,7 +80,7 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
       this.area.blueprints[0].risk.value = this.riskOptions[this.area.blueprints[0].risk.value];
     }
 
-    let risk = get(data, 'blueprints[0].risk') || {extra: {}};
+    const risk = get(data, 'blueprints[0].risk') || {extra: {}};
     if (this.isJSONObj(risk.extra)) {
       risk.extra = JSON.parse(risk.extra);
     }
@@ -98,12 +98,12 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
     if (this.area.blueprints[0].risk.value.value === this.originalData.blueprints[0].risk.value &&
       isEqual(this.area.blueprints[0].risk.extra, this.originalData.blueprints[0].risk.extra)) {return null;}
 
-    let risk = {
+    const risk = {
       extra: this.area.blueprints[0].risk.extra,
       value: this.area.blueprints[0].risk.value.value
     };
 
-    let blueprint = {
+    const blueprint = {
       id: this.area.blueprints[0].id,
       risk: risk
     };

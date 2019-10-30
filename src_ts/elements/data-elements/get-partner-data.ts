@@ -1,11 +1,12 @@
-import {PolymerElement} from "@polymer/polymer";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event';
 import clone from 'lodash-es/clone';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {getStaticData, setStaticData} from '../../elements/app-mixins/static-data-controller';
-import {GenericObject} from "../../types/global.js";
+import {getStaticData, setStaticData} from '../app-mixins/static-data-controller';
+import {GenericObject} from '../../types/global';
+import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -30,14 +31,14 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
       return;
     }
     this.lastData = clone(detail);
-    let officers = getStaticData(`officers_${detail.id}`);
+    const officers = getStaticData(`officers_${detail.id}`);
     if (officers) {
       this.lastData.partnerOfficers = officers;
       this.finishRequest();
     } else {
       this.sendRequest({
         endpoint: {url: getEndpoint('authorizedOfficers', {id: detail.id}).url}
-      }).then(resp => {
+      }).then((resp) => {
         this._handleOfficersResponse(resp);
       }).catch(() => {
         this._handleOfficersError();
@@ -53,7 +54,7 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
         return officer && officer.active;
       });
       activePartnerOfficers = activePartnerOfficers.map((officer) => {
-        let partnerOfficer = clone(officer);
+        const partnerOfficer = clone(officer);
         partnerOfficer.fullName = `${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
         return partnerOfficer;
       });
@@ -67,15 +68,15 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.partner = clone(this.lastData);
     fireEvent(this, 'partner-loaded', {success: true});
 
-    let partnerDataId = `partner_${this.partner.id}`,
-      partner = getStaticData(partnerDataId);
+    const partnerDataId = `partner_${this.partner.id}`;
+    const partner = getStaticData(partnerDataId);
     if (!partner) {
       setStaticData(partnerDataId, this.partner);
     }
   }
 
   _handleOfficersError() {
-    console.error('Can not load partner officers!');
+    logError('Can not load partner officers!');
     this.finishRequest();
   }
 
@@ -88,7 +89,7 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (!partnerId) {return;}
     if (partnerId === this.lastNumber) {
       this.partnerId = null;
-      let detail = clone(this.lastData)
+      const detail = clone(this.lastData);
       this.lastError ? this._handleError() : this._handleResponse(detail);
       return;
     }
@@ -96,15 +97,15 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.lastError = false;
     this.lastNumber = partnerId;
 
-    let partner = getStaticData(`partner_${partnerId}`);
+    const partner = getStaticData(`partner_${partnerId}`);
     if (partner) {
       this._handleResponse(partner);
     } else {
       this.sendRequest({
         endpoint: {url: getEndpoint('partnerInfo', {id: partnerId}).url}
-      }).then(resp => {
+      }).then((resp) => {
         this._handleResponse(resp);
-      }).catch(() => {
+      }).catch((err) => {
         this._handleError();
       });
     }
@@ -112,4 +113,4 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.partnerId = null;
   }
 }
-window.customElements.define("get-partner-data", GetPartnerData);
+window.customElements.define('get-partner-data', GetPartnerData);

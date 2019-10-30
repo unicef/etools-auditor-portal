@@ -3,6 +3,7 @@ import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
+import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {buildQueryString} from '../../../app-mixins/query-params-controller';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
 import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
@@ -19,7 +20,7 @@ import {BASE_PATH} from '../../../app-config/config';
  * @customElement
  * @polymer
  */
-class EngagementsListView extends PolymerElement {
+class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   static get template() {
     // language=HTML
@@ -56,7 +57,7 @@ class EngagementsListView extends PolymerElement {
           hide-print-button
           export-links="[[exportLinks]]"
           link="{{newBtnLink}}"
-          show-add-button="{{_showAddButton(hideAddButton)}}"
+          hide-add-button="[[_hideAddButton()]]"
           btn-text="{{addBtnText}}"
           page-title="Engagements">
       </pages-header-element>
@@ -168,7 +169,7 @@ class EngagementsListView extends PolymerElement {
     selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
   }];
 
-  @property({type: Object})
+  @property({type: Array})
   engagementsList: any[] = [];
 
   @property({type: String})
@@ -176,9 +177,6 @@ class EngagementsListView extends PolymerElement {
 
   @property({type: Boolean})
   hasCollapse: boolean = false;
-
-  @property({type: Boolean})
-  hideAddButton: boolean = false;
 
   @property({type: String})
   addBtnText: string = 'Add New Engagement';
@@ -211,7 +209,7 @@ class EngagementsListView extends PolymerElement {
   }
 
   _engagementsFiltersUpdated() {
-    let filtersElement = this.$.filters as SearchAndFilterEl;
+    const filtersElement = this.$.filters as SearchAndFilterEl;
     this.setFiltersSelections();
 
     if (filtersElement) {
@@ -219,8 +217,8 @@ class EngagementsListView extends PolymerElement {
     }
   }
 
-  _showAddButton(hideAddButton) {
-    return actionAllowed('new_engagement', 'create') && !hideAddButton;
+  _hideAddButton() {
+    return this.isReadOnly('partner', this.isStaffSc ? 'new_staff_sc' : 'new_engagement');
   }
 
   _getFilterIndex(query) {
@@ -234,7 +232,7 @@ class EngagementsListView extends PolymerElement {
   }
 
   setFiltersSelections() {
-    let queryAndKeyPairs = [
+    const queryAndKeyPairs = [
       {query: 'partner__in', dataKey: 'filterPartners'},
       {query: 'agreement__auditor_firm__in', dataKey: 'filterAuditors'},
       {query: 'status__in', dataKey: 'statuses'},
@@ -243,8 +241,8 @@ class EngagementsListView extends PolymerElement {
     ];
 
     queryAndKeyPairs.forEach((pair) => {
-      let filterIndex = this._getFilterIndex(pair.query);
-      let data = getStaticData(pair.dataKey) || [];
+      const filterIndex = this._getFilterIndex(pair.query);
+      const data = getStaticData(pair.dataKey) || [];
       this.setFilterSelection(filterIndex, data);
     });
   }

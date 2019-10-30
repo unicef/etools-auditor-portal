@@ -14,6 +14,7 @@ import '../../../data-elements/update-engagement';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+// eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import EngagementMixin from '../../../app-mixins/engagement-mixin';
@@ -64,7 +65,14 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
         </pages-header-element>
 
         <div class="tab-selector">
-          <paper-tabs attr-for-selected="name" noink bottom-item role="tablist" tabindex="0" selected="{{tab}}" id="pageTabs">
+          <paper-tabs 
+                attr-for-selected="name" 
+                noink 
+                bottom-item 
+                role="tablist" 
+                tabindex="0" 
+                selected="{{tab}}" 
+                id="pageTabs">
             <paper-tab name="overview">
               <span class="tab-content">Engagement Overview</span>
             </paper-tab>
@@ -185,9 +193,14 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
             <div class="repeatable-item-content">
               <div class="row-h group">
                 <div class="input-container input-container-l">
-                  <paper-textarea id="cancellationReasonInput" class="required" label="Cancellation Reason"
-                    placeholder="Enter reason of cancellation" required max-rows="4" error-message="This field is required."
-                    on-focus="_resetFieldError">
+                  <paper-textarea 
+                        id="cancellationReasonInput" 
+                        class="required" 
+                        label="Cancellation Reason"
+                        placeholder="Enter reason of cancellation" 
+                        required max-rows="4" 
+                        error-message="This field is required."
+                        on-focus="_resetFieldError">
                   </paper-textarea>
                 </div>
               </div>
@@ -224,13 +237,13 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
 
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    //this.addEventListener('main-action-activated', this._mainActionActivated);
+    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
-    let basicInfoValid = this._validateBasicInfo();
-    let questionnaireValid = this.getElement('#questionnaire').validateComplited();
-    let reportValid = this.getElement('#report').validate();
+    const basicInfoValid = this._validateBasicInfo();
+    const questionnaireValid = this.getElement('#questionnaire').validateComplited();
+    const reportValid = this.getElement('#report').validate();
 
     if (!basicInfoValid) {return false;}
     if (!reportValid) {
@@ -247,28 +260,28 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
 
   customDataPrepare(data) {
     data = data || {};
-    let questionnaireTab = this.getElement('#questionnaire');
-    let questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
+    const questionnaireTab = this.getElement('#questionnaire');
+    const questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
     if (questionnaire) {
       data.questionnaire = questionnaire;
     } else {
       delete data.questionnaire;
     }
     const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
-    let reportTab = hasReport ? this.getElement('#report') : null;
+    const reportTab = hasReport ? this.getElement('#report') : null;
 
-    let subjectAreas = reportTab && reportTab.getInternalControlsData();
+    const subjectAreas = reportTab && reportTab.getInternalControlsData();
     if (subjectAreas) {data.test_subject_areas = subjectAreas;}
 
-    let overallRisk = reportTab && reportTab.getPrimaryRiskData();
+    const overallRisk = reportTab && reportTab.getPrimaryRiskData();
     if (overallRisk) {data.overall_risk_assessment = overallRisk;}
 
-    let findingsData = reportTab && reportTab.getFindingsData();
+    const findingsData = reportTab && reportTab.getFindingsData();
     if (findingsData && findingsData.length) {data.findings = findingsData;}
 
-    //FollowUp data
-    let followUpPage = this.getElement('#follow-up'),
-      followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+    // FollowUp data
+    const followUpPage = this.getElement('#follow-up');
+    const followUpData = followUpPage && followUpPage.getFollowUpData() || {};
     assign(data, followUpData);
 
     return data;
@@ -279,9 +292,9 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     if (!hasReport) {
       return true;
     }
-    let reportTab = this.getElement('#report');
+    const reportTab = this.getElement('#report');
 
-    let reportValid = reportTab.validate('forSave');
+    const reportValid = reportTab.validate('forSave');
 
     if (!reportValid) {
       this.set('tab', 'report');

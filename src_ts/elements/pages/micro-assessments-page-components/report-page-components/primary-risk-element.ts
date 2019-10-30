@@ -141,13 +141,14 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       extra = JSON.parse(extra);
     }
 
-    this.set('primaryArea.risk.value', find(this.riskOptions, (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value));
+    this.set('primaryArea.risk.value', find(this.riskOptions,
+      (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value));
     this.set('primaryArea.risk.extra', extra);
   }
 
   _populateRiskOptions() {
     if (!this.riskOptions) {
-      let riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
+      const riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
       this.set('riskOptions', riskOptions);
     }
   }
@@ -159,14 +160,14 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return false;
     }
     if (!this.basePermissionPath || forSave) {return true;}
-    let required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
+    const required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
     if (!required) {return true;}
 
-    let riskValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate(),
-      commentsValid = (this.$.briefJustification as PaperTextareaElement).validate(),
-      valid = riskValid && commentsValid;
+    const riskValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate();
+    const commentsValid = (this.$.briefJustification as PaperTextareaElement).validate();
+    const valid = riskValid && commentsValid;
 
-    let errors = {
+    const errors = {
       children: [{
         blueprints: [{
           risk: {
@@ -187,7 +188,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return null;
     }
 
-    let extra = this.isJSONObj(this.primaryArea.risk.extra) ?
+    const extra = this.isJSONObj(this.primaryArea.risk.extra) ?
       JSON.parse(this.primaryArea.risk.extra) :
       this.primaryArea.risk.extra;
 
@@ -200,12 +201,12 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return null;
     }
 
-    let risk = {
+    const risk = {
       value: this.primaryArea.risk.value.value,
       extra: this.primaryArea.risk.extra || {}
     };
 
-    let blueprint = {
+    const blueprint = {
       id: this.riskData.blueprints[0].id,
       risk: risk
     };

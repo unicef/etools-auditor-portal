@@ -1,15 +1,15 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event';
 import findIndex from 'lodash-es/findIndex';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import { GenericObject } from "../../types/global.js";
+import {GenericObject} from '../../types/global';
 
 class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     @property({type: String, observer: '_requestDataChanged'})
-    requestData!: string;
+  requestData!: string;
 
     @property({type: Array, notify: true})
     attachments!: [];
@@ -33,28 +33,28 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
     postData!: GenericObject;
 
     _requestDataChanged(data = {}) {
-        let {method, attachmentData} = data as any;
-        if (!method || !attachmentData || !this.baseId) {
-            return;
-        }
+      const {method, attachmentData} = data as any;
+      if (!method || !attachmentData || !this.baseId) {
+        return;
+      }
 
-        let url = getEndpoint(this.endpointName, {id: this.baseId}).url;
-        if (attachmentData.id) {
-            url += `${attachmentData.id}/`;
-        }
-        this.postData = attachmentData;
-        this.method = method;
+      let url = getEndpoint(this.endpointName, {id: this.baseId}).url;
+      if (attachmentData.id) {
+        url += `${attachmentData.id}/`;
+      }
+      this.postData = attachmentData;
+      this.method = method;
 
-        let options = {
-            method: method,
-            endpoint: {url},
-            body: attachmentData
-        };
-        this.sendRequest(options)
-            .then((resp) => {
-                this._handleResponse(resp);
-            }).catch((error) => {
-               this._handleError(error);
+      const options = {
+        method: method,
+        endpoint: {url},
+        body: attachmentData
+      };
+      this.sendRequest(options)
+        .then((resp) => {
+          this._handleResponse(resp);
+        }).catch((error) => {
+          this._handleError(error);
         });
     }
 
@@ -64,31 +64,31 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
 
     _updateAttachmentsList(detail) {
-      let wasDeleteRequest = this.method === 'DELETE';
-      let id = wasDeleteRequest ? this.postData.id : detail.id;
-      let index = findIndex(this.attachments, (item: any) => item.id === id);
+      const wasDeleteRequest = this.method === 'DELETE';
+      const id = wasDeleteRequest ? this.postData.id : detail.id;
+      const index = findIndex(this.attachments, (item: any) => item.id === id);
 
       if (wasDeleteRequest && ~index) {
         this.splice('attachments', index, 1);
       } else if (~index) {
-          this.splice('attachments', index, 1, detail);
+        this.splice('attachments', index, 1, detail);
       } else if (!wasDeleteRequest) {
-          this.push('attachments', detail);
+        this.push('attachments', detail);
       }
     }
 
     _handleError(error) {
-        let response = (error || {}) as any;
-        if (typeof response === 'string') {
-            try {
-                response = JSON.parse(response);
-            } catch (e) {
-                response = {};
-            }
+      let {status, response} = (error || {}) as any;
+      if (typeof response === 'string') {
+        try {
+          response = JSON.parse(response);
+        } catch (e) {
+          response = {};
         }
+      }
 
-        this.set('errors', response);
-        fireEvent(this, 'attachments-request-completed', {success: false});
+      this.set('errors', response);
+      fireEvent(this, 'attachments-request-completed', {success: false});
     }
 }
-window.customElements.define("update-attachments", UpdateAttachments);
+window.customElements.define('update-attachments', UpdateAttachments);
