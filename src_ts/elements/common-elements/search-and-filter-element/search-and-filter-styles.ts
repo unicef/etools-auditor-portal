@@ -69,6 +69,7 @@ export const searchAndFilterStyles = html`
     }
 
     .second-header #add-filter-container paper-icon-item {
+      --paper-item-selected-weight: normal;
       --paper-item: {
         cursor: pointer;
       };
