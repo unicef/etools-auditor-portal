@@ -27,12 +27,11 @@ class GetAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
     this.sendRequest({
       endpoint: {url: getEndpoint('agreementData', {id: orderNumber}).url}
-    }).then(resp => {
+    }).then((resp) => {
       this._handleResponse(resp);
     }).catch(() => {
       this._handleError();
     });
   }
 }
-
 window.customElements.define('get-agreement-data', GetAgreementData);

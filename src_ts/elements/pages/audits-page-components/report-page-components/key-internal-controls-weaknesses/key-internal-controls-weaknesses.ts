@@ -7,6 +7,7 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
@@ -90,7 +91,8 @@ class KeyInternalControlsWeaknesses extends
         panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]" list>
           <div class="header-content">
               <div class="static-text">
-                  We have reviewed the implementation of applicable key internal controls and noted the following weaknesses:
+                  We have reviewed the implementation of applicable key internal 
+                  controls and noted the following weaknesses:
               </div>
           </div>
           <list-header
@@ -108,7 +110,10 @@ class KeyInternalControlsWeaknesses extends
                       has-collapse
                       no-animation>
                   <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                      <paper-icon-button icon="icons:add-box" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+                      <paper-icon-button 
+                            icon="icons:add-box" 
+                            class="edit-icon" 
+                            on-tap="openEditDialog"></paper-icon-button>
                   </div>
                   <div class="collapse-container" slot="custom-details">
                       <kicw-risk risks-data="[[item.risks]]"
@@ -149,14 +154,16 @@ class KeyInternalControlsWeaknesses extends
                               <!-- Risk Assessment -->
                               <etools-dropdown
                                       id="riskRatingInput"
-                                      class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}} validate-input"
+                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
+                                                basePermissionPath)}} disabled-as-readonly validate-input"
                                       selected="{{editedBlueprint.risks.0.value}}"
                                       label="Risk rating"
                                       placeholder="Select Risk rating"
                                       options="[[riskOptions]]"
                                       option-label="display_name"
                                       option-value="value"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.value', basePermissionPath)}}"
+                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
+                                                basePermissionPath)}}"
                                       disabled="{{requestInProcess}}"
                                       readonly$="{{requestInProcess}}"
                                       invalid="{{errors.blueprints.0.risks.value}}"
@@ -170,11 +177,13 @@ class KeyInternalControlsWeaknesses extends
                       <div class="row-h group">
                           <div class="input-container input-container-l">
                               <paper-textarea
-                                      class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}} validate-input"
+                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}} disabled-as-readonly validate-input"
                                       value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
                                       label="Key control observation"
                                       placeholder="Enter Observation"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}}"
+                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}}"
                                       disabled="{{requestInProcess}}"
                                       readonly="{{requestInProcess}}"
                                       max-rows="4"
@@ -188,11 +197,13 @@ class KeyInternalControlsWeaknesses extends
                       <div class="row-h group">
                           <div class="input-container input-container-l">
                               <paper-textarea
-                                      class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}} validate-input"
+                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}} disabled-as-readonly validate-input"
                                       value="{{editedBlueprint.risks.0.extra.recommendation}}"
                                       label="Recommendation"
                                       placeholder="Enter Recommendation"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}}"
+                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}}"
                                       disabled="{{requestInProcess}}"
                                       readonly="{{requestInProcess}}"
                                       max-rows="4"
@@ -206,11 +217,13 @@ class KeyInternalControlsWeaknesses extends
                       <div class="row-h group">
                           <div class="input-container input-container-l">
                               <paper-textarea
-                                      class$="disabled-as-readonly {{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}} validate-input"
+                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}} validate-input disabled-as-readonly"
                                       value="{{editedBlueprint.risks.0.extra.ip_response}}"
                                       label="IP Response"
                                       placeholder="Enter Response"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', basePermissionPath)}}"
+                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}}"
                                       disabled="{{requestInProcess}}"
                                       readonly="{{requestInProcess}}"
                                       max-rows="4"
@@ -311,7 +324,7 @@ class KeyInternalControlsWeaknesses extends
 
   connectedCallback() {
     super.connectedCallback();
-    let riskOptions = getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
+    const riskOptions = getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
     this.set('riskOptions', riskOptions);
     this.editedBlueprint = cloneDeep(this.dataModel);
     this._initListeners();
@@ -336,12 +349,12 @@ class KeyInternalControlsWeaknesses extends
 
   _getRisValueData(risk) {
     if (!this.riskOptions || !risk || isNil(risk.value)) {
-      console.error('Can not get correct risk value');
+      logError('Can not get correct risk value');
       return;
     }
 
-    let option = this.riskOptions.find(option => option.value === risk.value);
-    if (option) {return option.value};
+    const option = this.riskOptions.find(option => option.value === risk.value);
+    if (option) {return option.value;}
     return -1;
   }
 
@@ -351,22 +364,22 @@ class KeyInternalControlsWeaknesses extends
 
   openEditDialog(event) {
     if (!event || !event.detail) {return;}
-    let data = event.detail;
+    const data = event.detail;
     if (data.blueprint) {
-      let blueprint = data.blueprint,
-        risk = blueprint.risks[0];
+      const blueprint = data.blueprint;
+      const risk = blueprint.risks[0];
 
       risk.value = this._getRisValueData(risk);
 
       this.set('editedBlueprint', blueprint);
       this.dialogTexts = this.editDialogTexts;
     } else {
-      let index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
+      const index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
       if ((!index && index !== 0) || !~index) {
-        throw 'Can not find data';
+        throw new Error('Can not find data');
       }
 
-      let blueprint = this.subjectAreas.blueprints[index];
+      const blueprint = this.subjectAreas.blueprints[index];
       this.set('editedBlueprint', cloneDeep(this.dataModel));
       this.editedBlueprint.id = blueprint.id;
       this.dialogTexts = this.addDialogTexts;
@@ -378,7 +391,7 @@ class KeyInternalControlsWeaknesses extends
 
   openDeleteDialog(event) {
     if (!event || !event.detail) {return;}
-    let data = event.detail;
+    const data = event.detail;
     this.dialogTexts = this.deleteDialogTexts;
     this.set('editedBlueprint', data.blueprint);
     this.confirmDialogOpened = true;
@@ -407,7 +420,7 @@ class KeyInternalControlsWeaknesses extends
 
   getKeyInternalWeaknessData() {
     if ((!this.dialogOpened && !this.confirmDialogOpened)) {return null;}
-    let blueprint = cloneDeep(this.editedBlueprint);
+    const blueprint = cloneDeep(this.editedBlueprint);
 
     if (blueprint.risks[0] && isObject(blueprint.risks[0].value)) {
       blueprint.risks[0].value = blueprint.risks[0].value.value;
@@ -422,7 +435,7 @@ class KeyInternalControlsWeaknesses extends
     if (opened) {
       return;
     }
-    let elements = this.shadowRoot!.querySelectorAll('.validate-input');
+    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
     elements.forEach((element: any) => {
       element.invalid = false;
       element.value = '';
@@ -431,7 +444,7 @@ class KeyInternalControlsWeaknesses extends
   }
 
   validate() {
-    let elements = this.shadowRoot!.querySelectorAll('.validate-input');
+    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
     let valid = true;
 
     elements.forEach((element: any) => {

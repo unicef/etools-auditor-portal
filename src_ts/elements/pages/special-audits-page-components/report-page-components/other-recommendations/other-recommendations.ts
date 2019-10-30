@@ -28,8 +28,8 @@ import {checkNonField} from '../../../../app-mixins/error-handler';
  */
 class OtherRecommendations extends
   TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
-    static get template() {
-      return html`
+  static get template() {
+    return html`
         ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
 
@@ -85,8 +85,14 @@ class OtherRecommendations extends
                   multiline
                   no-animation>
               <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                  <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                  <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                  <paper-icon-button 
+                        icon="icons:create" 
+                        class="edit-icon" 
+                        on-tap="openEditDialog"></paper-icon-button>
+                  <paper-icon-button 
+                        icon="icons:delete" 
+                        class="edit-icon" 
+                        on-tap="openDeleteDialog"></paper-icon-button>
               </div>
           </list-element>
         </template>
@@ -124,11 +130,13 @@ class OtherRecommendations extends
                   <div class="input-container input-container-l">
                       <!-- Description -->
                     <paper-textarea
-                            class$="disabled-as-readonly fixed-width validate-input [[_setRequired('other_recommendations.description', basePermissionPath)]]"
+                            class$="[[_setRequired('other_recommendations.description', basePermissionPath)]] 
+                                    disabled-as-readonly fixed-width validate-input"
                             value="{{editedItem.description}}"
                             allowed-pattern="[\\d\\s]"
                             label="[[getLabel('other_recommendations.description', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('other_recommendations.description', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('other_recommendations.description',
+                                          basePermissionPath)]]"
                             required$="[[_setRequired('other_recommendations.description', basePermissionPath)]]"
                             disabled$="[[requestInProcess]]"
                             readonly$="[[requestInProcess]]"
@@ -147,13 +155,13 @@ class OtherRecommendations extends
 
 
     `;
-    }
+  }
 
   @property({type: Array, notify: true})
-dataItems: [] = [];
+  dataItems: [] = [];
 
 @property({type: String})
-mainProperty: string = 'other_recommendations';
+  mainProperty: string = 'other_recommendations';
 
 @property({type: Object})
 itemModel: {} = {description: ''};
@@ -162,7 +170,7 @@ itemModel: {} = {description: ''};
 columns: GenericObject[] = [{
   'size': 25,
   'name': 'finding',
-  'label': 'Recommendation Number',
+  'label': 'Recommendation Number'
 }, {
   'size': 75,
   'label': 'Description',
@@ -179,7 +187,7 @@ editDialogTexts: GenericObject = {title: 'Edit Recommendation'};
 @property({type: String})
 deleteTitle: string = 'Are you sure that you want to delete this Recommendation?';
 
-  static get observers() {
+static get observers() {
   return [
     'resetDialog(dialogOpened)',
     'resetDialog(confirmDialogOpened)',
@@ -191,7 +199,7 @@ deleteTitle: string = 'Are you sure that you want to delete this Recommendation?
 _checkNonField(error) {
   if (!error) {return;}
 
-  let nonField = checkNonField(error);
+  const nonField = checkNonField(error);
   if (nonField) {
     fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
   }

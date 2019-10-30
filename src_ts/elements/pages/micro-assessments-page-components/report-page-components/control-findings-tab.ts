@@ -127,7 +127,7 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
     `;
   }
 
-  @property({type: Array, notify: true, observer:'dataItemsChanged'})
+  @property({type: Array, notify: true, observer: 'dataItemsChanged'})
   dataItems!: [];
 
   @property({type: String})
@@ -186,15 +186,15 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   }
 
   _checkNonField(error) {
-    if (!error) { return; }
+    if (!error) {return;}
 
-    let nonField = checkNonField(error);
+    const nonField = checkNonField(error);
     if (nonField) {
-        fireEvent(this, 'toast', {text: `Findings and Recommendations: ${nonField}`});
+      fireEvent(this, 'toast', {text: `Findings and Recommendations: ${nonField}`});
     }
   }
 
-  dataItemsChanged(){
+  dataItemsChanged() {
     this.canBeChanged = this._canBeChanged(this.basePermissionPath);
   }
 

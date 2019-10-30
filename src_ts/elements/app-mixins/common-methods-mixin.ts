@@ -6,8 +6,8 @@ import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import {setStaticData, getStaticData} from './static-data-controller';
-import {Constructor} from "../../types/global";
-import {fireEvent} from "../utils/fire-custom-event";
+import {Constructor} from '../../types/global';
+import {fireEvent} from '../utils/fire-custom-event';
 import {refactorErrorObject, checkNonField} from './error-handler';
 
 /**
@@ -22,7 +22,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let field = event.target.getAttribute('field');
+      const field = event.target.getAttribute('field');
       if (field) {
         this.set(`errors.${field}`, false);
       }
@@ -48,7 +48,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let required = isRequired(`${basePermissionPath}.${field}`);
+      const required = isRequired(`${basePermissionPath}.${field}`);
 
       return required ? 'required' : false;
     }
@@ -72,8 +72,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
 
-      let data = refactorErrorObject(errorData);
-      let nonField = checkNonField(errorData);
+      const data = refactorErrorObject(errorData);
+      const nonField = checkNonField(errorData);
 
       if (!this.dialogOpened && isString(data)) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${data}`});
@@ -114,12 +114,12 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return '';
       }
 
-      let choices = this._getSavedChoices(`${base}.${path}`);
+      const choices = this._getSavedChoices(`${base}.${path}`);
       if (!choices) {
         return '';
       }
 
-      let choice = choices.find((choice) => {
+      const choice = choices.find((choice) => {
         return choice && choice.value === value;
       });
       return (choice && choice.display_name) ? choice.display_name : '';
@@ -134,16 +134,16 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     getPlaceholderText(path, base, datepicker) {
       if (readonlyPermission(`${base}.${path}`)) {
-        return 'Empty Field'
+        return 'Empty Field';
       }
 
-      let label = this.getLabel(path, base),
-        prefix = datepicker ? 'Select' : 'Enter';
+      const label = this.getLabel(path, base);
+      const prefix = datepicker ? 'Select' : 'Enter';
       return `${prefix} ${label}`;
     }
 
     getReadonlyPlaceholder(data) {
-      return !!(data && data.id) ? 'Empty Field' : '-';
+      return data && data.id ? 'Empty Field' : '-';
     }
 
     _getSavedChoices(path) {
@@ -171,9 +171,9 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     getTooltipText(selectedValues, options, field) {
-      let tooltip:any[] = [];
+      const tooltip: any[] = [];
       each(selectedValues, (value) => {
-        let displayValue = filter(options, ['id', +value]);
+        const displayValue = filter(options, ['id', +value]);
         if (displayValue.length > 0) {
           tooltip.push(displayValue[0][field]);
         }
@@ -200,4 +200,4 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
 }
 
-export default CommonMethodsMixin
+export default CommonMethodsMixin;

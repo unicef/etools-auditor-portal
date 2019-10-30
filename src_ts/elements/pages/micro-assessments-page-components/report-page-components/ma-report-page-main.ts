@@ -46,32 +46,32 @@ class MaReportPageMain extends EngagementMixin(PolymerElement) {
 
 
   validate(forSave) {
-    let assignTabValid = this.getElement('#assignEngagement').validate(forSave);
-    let primaryValid = this.getElement('#primaryRisk').validate(forSave);
-    let internalControlsValid = this.getElement('#internalControls').validate(forSave);
+    const assignTabValid = this.getElement('#assignEngagement').validate(forSave);
+    const primaryValid = this.getElement('#primaryRisk').validate(forSave);
+    const internalControlsValid = this.getElement('#internalControls').validate(forSave);
 
     return assignTabValid && primaryValid && internalControlsValid;
   }
 
   getInternalControlsData() {
-      let internalControls = this.getElement('#internalControls');
-      let data = internalControls && internalControls.getRiskData() || [];
-      return data.length ? {children: data} : null;
+    const internalControls = this.getElement('#internalControls');
+    const data = internalControls && internalControls.getRiskData() || [];
+    return data.length ? {children: data} : null;
   }
 
   getPrimaryRiskData() {
-      let primaryRisk = this.getElement('#primaryRisk');
-      let primaryRiskData = primaryRisk && primaryRisk.getRiskData();
-      return primaryRiskData || null;
+    const primaryRisk = this.getElement('#primaryRisk');
+    const primaryRiskData = primaryRisk && primaryRisk.getRiskData();
+    return primaryRiskData || null;
   }
 
   getAssignVisitData() {
-      return this.getElement('#assignEngagement').getAssignVisitData();
+    return this.getElement('#assignEngagement').getAssignVisitData();
   }
 
   getFindingsData() {
-      return this.getElement('#controlFindings').getTabData();
+    return this.getElement('#controlFindings').getTabData();
   }
 }
 
-window.customElements.define('ma-report-page-main', MaReportPageMain)
+window.customElements.define('ma-report-page-main', MaReportPageMain);

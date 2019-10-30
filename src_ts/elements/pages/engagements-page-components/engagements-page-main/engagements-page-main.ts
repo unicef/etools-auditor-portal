@@ -122,7 +122,7 @@ class EngagementsPageMain extends PolymerElement {
     }
 
     if (view === 'list') {
-      let queries = this._configListParams(true);
+      const queries = this._configListParams(true);
       this._setEngagementsListQueries(queries);
       this._fireUpdateEngagementsFilters();
       this.view = 'list';
@@ -149,19 +149,19 @@ class EngagementsPageMain extends PolymerElement {
   _fireUpdateEngagementsFilters() {
     this._updateEngagementsFiltersDebouncer = Debouncer.debounce(this._updateEngagementsFiltersDebouncer,
       timeOut.after(100),
-      () => {document.dispatchEvent(new CustomEvent('update-engagements-filters'))});
+      () => {document.dispatchEvent(new CustomEvent('update-engagements-filters'));});
   }
 
   _configListParams(noNotify: boolean = false) {
-    let queries = this.route.__queryParams || {};
-    let queriesUpdates: GenericObject = clone(queries);
+    const queries = this.route.__queryParams || {};
+    const queriesUpdates: GenericObject = clone(queries);
 
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
     if (!queries.page) {queriesUpdates.page = '1';}
 
-    let page = +queries.page;
+    const page = +queries.page;
     if (isNaN(page) || (this.lastParams &&
       (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
       queriesUpdates.page = '1';
@@ -179,7 +179,7 @@ class EngagementsPageMain extends PolymerElement {
     if (!~this.route.prefix.indexOf('/engagements') || !this.routeData) {return;}
 
     if (this.routeData.view === 'list') {
-      let queries = this._configListParams();
+      const queries = this._configListParams();
       this._setEngagementsListQueries(queries);
     } else if (!isNaN(+this.routeData.view)) {
       clearQueries();
