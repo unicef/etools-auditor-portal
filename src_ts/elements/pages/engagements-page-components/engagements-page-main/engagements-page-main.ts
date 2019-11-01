@@ -122,8 +122,6 @@ class EngagementsPageMain extends PolymerElement {
     }
 
     if (view === 'list') {
-      const queries = this._configListParams(true);
-      this._setEngagementsListQueries(queries);
       this._fireUpdateEngagementsFilters();
       this.view = 'list';
     } else if (view === 'new' && actionAllowed('new_engagement', 'create')) {
