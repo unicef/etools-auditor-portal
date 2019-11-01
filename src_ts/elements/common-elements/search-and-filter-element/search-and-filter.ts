@@ -83,16 +83,14 @@ class SearchAndFilter extends PolymerElement {
             </paper-button>
 
             <paper-listbox multi slot="dropdown-content" selected="0">
-              <template is="dom-repeat"
-                        items="[[availableFilters]]">
-                <paper-icon-item on-tap="addFilter">
-                  <iron-icon icon="check"
-                             item-icon
-                             hidden$="[[!_isSelected(item, availableFilters)]]"></iron-icon>
-                  [[item.name]]
-                  </paper-item>
+              <template is="dom-repeat" items="[[availableFilters]]">
+                <paper-icon-item on-tap="addFilter" selected$="[[_isSelected(item, availableFilters)]]">
+                  <iron-icon icon="check" slot="item-icon" hidden$="[[!_isSelected(item, availableFilters)]]"></iron-icon>
+                  <paper-item-body>[[item.name]]</paper-item-body>
+                </paper-icon-item>
               </template>
             </paper-listbox>
+
           </paper-menu-button>
 
         </div>
@@ -162,18 +160,12 @@ class SearchAndFilter extends PolymerElement {
       const newFilter = this.filters.find((filter) => {
         return filter.query === query;
       });
-
       this._setFilterValue(newFilter);
       this.push('usedFilters', newFilter);
-
-      if (this.queryParams[query] === undefined) {
-        const queryObject = {};
-        queryObject[query] = true;
-        updateQueries(queryObject);
-      }
     } else {
       this.removeFilter(e);
     }
+    this.set('availableFilters', [...this.availableFilters]);
   }
 
   removeFilter(e) {
@@ -195,7 +187,10 @@ class SearchAndFilter extends PolymerElement {
     if (indexToRemove !== -1) {
       this.splice('usedFilters', indexToRemove, 1);
     }
-    updateQueries(queryObject);
+
+    if (this.queryParams[query] !== undefined) {
+      updateQueries(queryObject);
+    }
   }
 
   _reloadFilters() {
@@ -219,9 +214,8 @@ class SearchAndFilter extends PolymerElement {
 
           if (!usedFilter && queryParams[filter.query] !== undefined) {
             this.addFilter(filter.query);
-          } else if (queryParams[filter.query] === undefined) {
-            this.removeFilter(filter.query);
           }
+
         });
 
         if (queryParams.search) {
@@ -265,7 +259,7 @@ class SearchAndFilter extends PolymerElement {
     const optionValue = filter.optionValue;
 
     return filter.selection.filter((option: any) =>
-        splitValues.includes(String(option[optionValue]))).map((option: any) => option[optionValue]);
+      splitValues.includes(String(option[optionValue]))).map((option: any) => option[optionValue]);
   }
 
   _getFilter(query) {

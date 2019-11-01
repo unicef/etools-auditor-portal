@@ -15,13 +15,14 @@ class SupportBtn extends PolymerElement {
   static get template() {
     return html`
       <style>
-        :host(:hover) {
-          cursor: pointer;
-        }
-        a {
+        a, a:hover {
           color: inherit;
           text-decoration: none;
           font-size: 16px;
+          cursor: pointer;
+        }
+        paper-button {
+            text-transform: capitalize;
         }
         iron-icon {
           margin-right: 4px;
@@ -30,8 +31,11 @@ class SupportBtn extends PolymerElement {
 
       <a href="https://unicef.service-now.com/cc/?id=sc_cat_item&sys_id=35b00b1bdb255f00085184735b9619e6&sysparm_category=c6ab1444db5b5700085184735b961920"
         target="_blank">
-        <iron-icon icon="communication:textsms"></iron-icon>
-        Support
+        <!--    the paper-button fixes the cursor pointer issue when hovering over the icon label    -->
+        <paper-button>
+          <iron-icon icon="communication:textsms"></iron-icon>
+          Support
+        </paper-button>
       </a>
     `;
   }
