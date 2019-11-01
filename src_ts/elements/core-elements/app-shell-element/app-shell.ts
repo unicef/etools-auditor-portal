@@ -194,6 +194,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   public connectedCallback() {
     super.connectedCallback();
 
+    window.EtoolsEsmmFitIntoEl = this.$.appHeadLayout!.shadowRoot!.querySelector('#contentContainer');
+
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
     if (this.initLoadingComplete && this.route.path === `/${BASE_PATH}/`) {
