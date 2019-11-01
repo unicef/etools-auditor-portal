@@ -236,7 +236,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                           id="engagementType"
                           class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}}
                                   validate-field"
-                          selected="[[_getSelectedEngagementType(data.engagement_type)]]"
+                          selected="[[data.engagement_type]]"
                           label="[[getLabel('engagement_type', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
                           options="[[engagementTypes]]"
@@ -463,13 +463,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   _setEngagementTypeObject(e) {
     this.set('data.engagement_type_details', e.detail.selectedItem);
     this.set('data.engagement_type', e.detail.selectedItem ? e.detail.selectedItem.value : '');
-  }
-
-  _getSelectedEngagementType(engagementType) {
-    if (!engagementType) {
-      return;
-    }
-    return engagementType;
   }
 
   _prepareData() {
