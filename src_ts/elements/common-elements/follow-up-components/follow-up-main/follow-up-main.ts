@@ -97,17 +97,11 @@ class FollowUpMain extends PolymerElement {
   }
 
   showFindings(type) {
-    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
-      type = type.value;
-    }
     return !!type && !~['ma', 'sa'].indexOf(type);
   }
 
   _showCard(type: any, validType: string) {
-    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
-      type = type.value;
-    }
-    return type && validType === type;
+    return !!type && validType === type;
   }
 
 }
