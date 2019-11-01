@@ -48,6 +48,9 @@ documentContainer.innerHTML = `
             width: 100%;
             margin: 0;
           }
+          
+          --esmm-dropdown-menu-position: fixed;
+          
         }
       
     </style>

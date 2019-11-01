@@ -399,7 +399,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
       '_setDataItems(data)',
       '_setAuditOpinion(data.audit_opinion, auditOpinions)',
       'updateStyles(basePermissionPath, requestInProcess)',
-      '_setAuditedExpenditure(editedItem.financial_findings, editedItem.audited_expenditure)'
+      '_setAuditedExpenditure(editedItem.financial_findings, editedItem.audited_expenditure)',
+      'currencyChanged(data.currency_of_report)'
     ];
   }
 
@@ -440,7 +441,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   _setDataItems() {
-    this.showLocalCurrency = this.data.currency_of_report !== '' && this.data.currency_of_report !== 'USD';
+    this.setShowLocalCurrency();
     if (this.data.percent_of_audited_expenditure) {
       this.set('data.percent_of_audited_expenditure', this.data.percent_of_audited_expenditure.toFixed(2));
     }
@@ -482,7 +483,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
   _setAuditOpinion(auditOpinionValue, auditOpinions) {
     if (auditOpinions && auditOpinions.length > 0) {
-      const auditOpinion = auditOpinions.find(function(auditOpinion) {
+      const auditOpinion = auditOpinions.find(function (auditOpinion) {
         return auditOpinion.value === auditOpinionValue;
       }) || {};
       this.data.opinion = auditOpinion;
@@ -532,8 +533,20 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     }
   }
 
+  currencyChanged() {
+    const prevShowLocalCurrency = this.showLocalCurrency;
+    this.setShowLocalCurrency();
+    if (prevShowLocalCurrency != this.showLocalCurrency) {
+      this.setColumnsAndHeaders();
+    }
+  }
+
+  setShowLocalCurrency() {
+    this.showLocalCurrency = this.data.currency_of_report !== undefined && this.data.currency_of_report !== '' && this.data.currency_of_report !== 'USD';
+  }
+
   getLocalLabel(path, base) {
-    return String(this.getLabel(path, base)).replace('Local Currency', this.data.currency_of_report);
+    return String(this.getLabel(path, base));
   }
 
 }
