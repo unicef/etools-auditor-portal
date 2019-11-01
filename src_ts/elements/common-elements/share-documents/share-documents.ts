@@ -116,7 +116,7 @@ class ShareDocuments extends
                     label="[[getLabel('file_type', basePermissionPath)]]"
                     placeholder="Select"
                     options="[[fileTypes]]"
-                    empty-value
+                    enable-none-option
                     dynamic-align>
             </etools-dropdown>
           </div>
