@@ -188,7 +188,8 @@ class NewEngagementView extends
     id: null,
     status: '',
     staff_members: [],
-    engagement_type: {},
+    engagement_type: '',
+    engagement_type_details: {},
     engagement_attachments: [],
     agreement: {},
     date_of_field_visit: null,
@@ -294,7 +295,7 @@ class NewEngagementView extends
     this.reloadEngagementsList();
 
     // redirect
-    let link = get(this, 'engagement.engagement_type.link');
+    let link = get(this, 'engagement.engagement_type_details.link');
     if (!link && this.isStaffSc) {
       link = 'staff-spot-checks';
     }
@@ -322,7 +323,8 @@ class NewEngagementView extends
         id: null,
         status: '',
         staff_members: [],
-        engagement_type: {},
+        engagement_type: '',
+        engagement_type_details: {},
         engagement_attachments: [],
         agreement: {},
         date_of_field_visit: null,
@@ -344,7 +346,8 @@ class NewEngagementView extends
 
     if (page === 'new' && isStaffSc) {
       this.set('engagement.agreement.auditor_firm', auditFirm);
-      this.set('engagement.engagement_type', {value: 'sc', label: 'Spot Check'});
+      this.set('engagement.engagement_type', 'sc');
+      this.set('engagement.engagement_type_details', {value: 'sc', label: 'Spot Check'});
     }
   }
 

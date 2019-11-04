@@ -259,11 +259,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     getLongEngType(type) {
-      if (typeof type !== 'string') {
-        if (type && type.hasOwnProperty('value')) {
-          type = type.value;
-        }
-      }
       switch (type) {
         case 'ma':
           return 'micro-assessments';
@@ -274,7 +269,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         case 'sa':
           return 'special-audits';
       }
-
     }
 
     persistCurrentEngagement(engagement, type) {
@@ -303,7 +297,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       const type = this.getLongEngType(this.engagement.engagement_type);
       if (!this.isStaffSc) {
-        data.engagement_type = this.engagement.engagement_type.value;
+        data.engagement_type = this.engagement.engagement_type;
       }
 
       if (this.customDataPrepare) {
