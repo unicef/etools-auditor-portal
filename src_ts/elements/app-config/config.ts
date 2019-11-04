@@ -30,7 +30,7 @@ const DEV_DOMAIN = 'etools-dev.unicef.org';
 const DEMO_DOMAIN = 'etools-demo.unicef.org';
 const LOCAL_DOMAIN = 'localhost:8082';
 
-export const BASE_PATH = 'ap_poly3';
+export const BASE_PATH = 'ap';
 
 export const isProductionServer = () => {
   const location = window.location.href;
