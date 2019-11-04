@@ -85,13 +85,13 @@ class OtherRecommendations extends
                   multiline
                   no-animation>
               <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                  <paper-icon-button 
-                        icon="icons:create" 
-                        class="edit-icon" 
+                  <paper-icon-button
+                        icon="icons:create"
+                        class="edit-icon"
                         on-tap="openEditDialog"></paper-icon-button>
-                  <paper-icon-button 
-                        icon="icons:delete" 
-                        class="edit-icon" 
+                  <paper-icon-button
+                        icon="icons:delete"
+                        class="edit-icon"
                         on-tap="openDeleteDialog"></paper-icon-button>
               </div>
           </list-element>
@@ -130,7 +130,7 @@ class OtherRecommendations extends
                   <div class="input-container input-container-l">
                       <!-- Description -->
                     <paper-textarea
-                            class$="[[_setRequired('other_recommendations.description', basePermissionPath)]] 
+                            class$="[[_setRequired('other_recommendations.description', basePermissionPath)]]
                                     disabled-as-readonly fixed-width validate-input"
                             value="{{editedItem.description}}"
                             allowed-pattern="[\\d\\s]"
@@ -157,57 +157,62 @@ class OtherRecommendations extends
     `;
   }
 
-  @property({type: Array, notify: true})
+  @property({type: Array, notify: true, observer: '_preventAssignmentToUndef'})
   dataItems: [] = [];
 
-@property({type: String})
+  @property({type: String})
   mainProperty: string = 'other_recommendations';
 
-@property({type: Object})
-itemModel: {} = {description: ''};
+  @property({type: Object})
+  itemModel: {} = {description: ''};
 
-@property({type: Array})
-columns: GenericObject[] = [{
-  'size': 25,
-  'name': 'finding',
-  'label': 'Recommendation Number'
-}, {
-  'size': 75,
-  'label': 'Description',
-  'labelPath': 'other_recommendations.description',
-  'path': 'description'
-}];
+  @property({type: Array})
+  columns: GenericObject[] = [{
+    'size': 25,
+    'name': 'finding',
+    'label': 'Recommendation Number'
+  }, {
+    'size': 75,
+    'label': 'Description',
+    'labelPath': 'other_recommendations.description',
+    'path': 'description'
+  }];
 
-@property({type: Object})
-addDialogTexts: GenericObject = {title: 'Add New Recommendation'};
+  @property({type: Object})
+  addDialogTexts: GenericObject = {title: 'Add New Recommendation'};
 
-@property({type: Object})
-editDialogTexts: GenericObject = {title: 'Edit Recommendation'};
+  @property({type: Object})
+  editDialogTexts: GenericObject = {title: 'Edit Recommendation'};
 
-@property({type: String})
-deleteTitle: string = 'Are you sure that you want to delete this Recommendation?';
+  @property({type: String})
+  deleteTitle: string = 'Are you sure that you want to delete this Recommendation?';
 
-static get observers() {
-  return [
-    'resetDialog(dialogOpened)',
-    'resetDialog(confirmDialogOpened)',
-    '_errorHandler(errorObject.other_recommendations)',
-    '_checkNonField(errorObject.other_recommendations)'
-  ];
-}
-
-_checkNonField(error) {
-  if (!error) {return;}
-
-  const nonField = checkNonField(error);
-  if (nonField) {
-    fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
+  static get observers() {
+    return [
+      'resetDialog(dialogOpened)',
+      'resetDialog(confirmDialogOpened)',
+      '_errorHandler(errorObject.other_recommendations)',
+      '_checkNonField(errorObject.other_recommendations)'
+    ];
   }
-}
 
-_checkInvalid(value) {
-  return !!value;
-}
+  _preventAssignmentToUndef(old: any, newVal: any) {
+    if ((old instanceof Array || old === undefined) && newVal === undefined) {
+      this.dataItems = [];
+    }
+  }
+  _checkNonField(error) {
+    if (!error) {return;}
+
+    const nonField = checkNonField(error);
+    if (nonField) {
+      fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
+    }
+  }
+
+  _checkInvalid(value) {
+    return !!value;
+  }
 
 
 }
