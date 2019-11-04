@@ -17,6 +17,7 @@ import {getChoices} from '../../../../app-mixins/permission-controller';
 import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../app-mixins/error-handler';
 import {refactorErrorObject} from '../../../../app-mixins/error-handler';
+import '../../../../common-elements/insert-html/insert-html';
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -88,14 +89,14 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       </etools-content-panel>
 
       <template is="dom-repeat" items="{{questionnaire.children}}">
-        <risk-tab 
-              questionnaire="{{item}}" 
-              base-permission-path="{{basePermissionPath}}" 
+        <risk-tab
+              questionnaire="{{item}}"
+              base-permission-path="{{basePermissionPath}}"
               class="validatable-tab risk-tab"
-              index="{{index}}" 
-              first-run="[[firstRun]]" 
+              index="{{index}}"
+              first-run="[[firstRun]]"
               completed="{{_checkCompleted(item)}}"
-              disabled="{{_checkDisabled(index, item)}}" 
+              disabled="{{_checkDisabled(index, item)}}"
               edit-mode="[[editMode]]">
         </risk-tab>
       </template>
@@ -105,7 +106,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
         on-confirm-btn-clicked="_addItemFromDialog">
         <div class="row-h repeatable-item-container" without-line>
           <div class="form-title">
-            <div class="text" id="questionHeader">[[editedItem.header]]</div>
+            <div class="text" id="questionHeader">
+            <insert-html html="[[editedItem.header]]"></insert-html></div>
           </div>
 
           <div class="repeatable-item-content">
