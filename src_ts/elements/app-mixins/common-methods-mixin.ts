@@ -181,8 +181,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return tooltip.join(', ');
     }
 
-    isSpecialAudit(type) {
-      return type === 'sa' || type && type.value === 'sa';
+    isSpecialAudit(type: string) {
+      return type === 'sa';
     }
 
     isJSONObj(str) {
