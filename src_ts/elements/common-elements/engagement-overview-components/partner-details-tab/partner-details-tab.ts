@@ -164,7 +164,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                       <etools-dropdown-multi
                               id="activePd"
                               class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                              selected-values="{{activePd}}"
+                              selected-values="{{activePdIds}}"
                               label="[[getLabel('active_pd', basePermissionPath)]]"
                               placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                               options="[[partner.interventions]]"
@@ -221,7 +221,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   partner!: GenericObject;
 
   @property({type: Array})
-  activePd!: any[];
+  activePdIds!: any[];
 
   @property({type: Object})
   authorizedOfficer!: GenericObject;
@@ -285,7 +285,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     return this.validatePartner() && this.validateActivePd();
   }
 
-  validateActivePd() {
+  validateActivePd() { // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
     const activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
     const partnerType = this.get('engagement.partner.partner_type');
     const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
@@ -300,8 +300,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validatePartner() {
-    if (!this.$.partner || !(this.$.partner as EtoolsDropdownEl).required) {return true;}
-    if (!this.engagement || !this.engagement.partner || !this.engagement.partner.id) {
+    if (!this.$.partner || !(this.$.partner as EtoolsDropdownEl).required) {
+      return true;
+    }
+    if (!get(this, 'engagement.partner.id)') {
       this.set('errors.partner', 'Partner is required');
       (this.$.partner as EtoolsDropdownEl).invalid = true;
       return false;
@@ -332,7 +334,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   _setActivePd(engagement, partnerInterv) {
     if (!partnerInterv || !engagement) {
-      this.set('activePd', []);
+      this.set('activePdIds', []);
       return;
     }
     // let partnerType = this.get('engagement.partner.partner_type');
@@ -349,13 +351,13 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     const partnerId = this.get('partner.id');
 
     if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
-      this.set('activePd', []);
+      this.set('activePdIds', []);
       this.validateActivePd();
       return false;
     }
 
     const activePd = this.get('engagement.active_pd') || [];
-    this.set('activePd', activePd.map(pd => pd.id));
+    this.set('activePdIds', activePd.map(pd => pd.id));
     this.validateActivePd();
     return true;
   }
@@ -364,7 +366,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     if (this.requestInProcess) {return;}
 
     this.set('partner', {});
-    this.set('activePd', null);
+    this.set('activePdIds', null);
     this.set('authorizedOfficer', null);
 
     const selectedPartner = event && event.detail && event.detail.selectedItem;
@@ -390,7 +392,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   _engagementChanged(engagement) {
     if (!engagement || !engagement.partner) {
       this.set('partner', {});
-      this.set('activePd', null);
+      this.set('activePdIds', null);
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
@@ -404,7 +406,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     const partnerId = this.get('engagement.partner.id');
     const partnerType = this.get('engagement.partner.partner_type');
     let originalActivePd = this.get('originalData.active_pd') || [];
-    let activePd = (this.activePd || []).map(id => +id);
+    let activePdIds = (this.activePdIds || []).map(id => +id);
 
     originalActivePd = originalActivePd.map(pd => +pd.id);
 
@@ -412,8 +414,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       data.partner = partnerId;
     }
 
-    if (!isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
-      data.active_pd = activePd;
+    if (!isEqual(originalActivePd.sort(), activePdIds.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
+      data.active_pd = activePdIds;
     }
 
     if (isEqual(data, {})) {
