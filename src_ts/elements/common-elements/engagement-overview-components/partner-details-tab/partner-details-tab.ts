@@ -68,7 +68,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                   <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
                     <etools-dropdown
                             id="partner"
-                            class$="[[_setRequired('partner', basePermissionPath)]] 
+                            class$="[[_setRequired('partner', basePermissionPath)]]
                                     [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
                             selected="{{engagement.partner.id}}"
                             label="[[getLabel('partner', basePermissionPath)]]"
@@ -136,7 +136,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                   <!-- Partner  Officers-->
                   <etools-dropdown
                           id="authorizedOfficer"
-                          class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] 
+                          class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]]
                                 [[_setPlaceholderColor(partner)]]"
                           selected="{{authorizedOfficer.id}}"
                           label="[[getLabel('authorized_officers', basePermissionPath)]]"
@@ -164,7 +164,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                       <etools-dropdown-multi
                               id="activePd"
                               class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                              selected-items="{{activePd}}"
+                              selected-values="{{activePd}}"
                               label="[[getLabel('active_pd', basePermissionPath)]]"
                               placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                               options="[[partner.interventions]]"
@@ -220,8 +220,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   partner!: GenericObject;
 
-  @property({type: Object})
-  activePd!: GenericObject;
+  @property({type: Array})
+  activePd!: any[];
 
   @property({type: Object})
   authorizedOfficer!: GenericObject;
@@ -355,7 +355,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     }
 
     const activePd = this.get('engagement.active_pd') || [];
-    this.set('activePd', activePd);
+    this.set('activePd', activePd.map(pd => pd.id));
     this.validateActivePd();
     return true;
   }
@@ -404,10 +404,9 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     const partnerId = this.get('engagement.partner.id');
     const partnerType = this.get('engagement.partner.partner_type');
     let originalActivePd = this.get('originalData.active_pd') || [];
-    let activePd = this.activePd || [];
+    let activePd = (this.activePd || []).map(id => +id);
 
     originalActivePd = originalActivePd.map(pd => +pd.id);
-    activePd = activePd.map(pd => +pd.id);
 
     if (originalPartnerId !== partnerId) {
       data.partner = partnerId;
@@ -426,7 +425,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   getAuthorizedOfficer() {
     if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer ||
-                        !this.authorizedOfficer.id) {
+      !this.authorizedOfficer.id) {
       return null;
     }
     const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
