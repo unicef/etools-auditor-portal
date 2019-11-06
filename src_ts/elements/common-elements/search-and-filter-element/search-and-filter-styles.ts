@@ -120,6 +120,11 @@ export const searchAndFilterStyles = html`
       };
     }
 
+    .filter-date {
+      margin-left: 20px;
+      width: 200px;
+    }
+
     .filter-reset-button {
       margin: auto 12px;
       transform: translate(0, 8px);

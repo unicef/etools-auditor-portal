@@ -20,7 +20,7 @@ import {timeOut} from '@polymer/polymer/lib/utils/async';
 
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
-
+declare const moment: any;
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 import {searchAndFilterStyles} from './search-and-filter-styles';
 
@@ -52,19 +52,32 @@ class SearchAndFilter extends PolymerElement {
           <!-- FILTERS -->
           <template is="dom-repeat" items="[[usedFilters]]">
             <div class="layout horizontal">
-              <etools-dropdown-multi
-                  id="[[item.query]]"
-                  class="filter-dropdown"
-                  selected-values="{{item.selectedValues}}"
-                  label="[[item.label]]"
-                  placeholder$="&#8212;"
-                  options="[[item.selection]]"
-                  option-label="[[item.optionLabel]]"
-                  option-value="[[item.optionValue]]"
-                  trigger-value-change-event
-                  on-etools-selected-items-changed="_changeFilterValue"
-                  hide-search="[[item.hideSearch]]">
-              </etools-dropdown-multi>
+                <template is="dom-if" if="[[filterTypeIs('etools-dropdown-multi', item.type)]]">
+                  <etools-dropdown-multi
+                      id="[[item.query]]"
+                      class="filter-dropdown"
+                      selected-values="{{item.selectedValues}}"
+                      label="[[item.label]]"
+                      placeholder$="&#8212;"
+                      options="[[item.selection]]"
+                      option-label="[[item.optionLabel]]"
+                      option-value="[[item.optionValue]]"
+                      trigger-value-change-event
+                      on-etools-selected-items-changed="_changeFilterValue"
+                      hide-search="[[item.hideSearch]]">
+                  </etools-dropdown-multi>
+                </template>
+                <template is="dom-if" if="[[filterTypeIs('datepicker', item.type)]]">
+                  <datepicker-lite id="[[item.query]]"
+                      class="filter-date"
+                      label="[[item.label]]"
+                      placeholder="&#8212;"
+                      value="{{item.selectedValue}}"
+                      on-date-has-changed="_filterDateHasChanged"
+                      fire-date-has-changed
+                      selected-date-display-format="D MMM YYYY">
+                  </datepicker-lite>
+              </template>
             </div>
           </template>
         </div>
@@ -244,14 +257,27 @@ class SearchAndFilter extends PolymerElement {
 
     const filterValue = this.get(`queryParams.${filter.query}`);
 
-    if (filterValue !== undefined) {
-      filter.selectedValues = this._getFilterValue(filterValue, filter);
-    } else {
-      filter.selectedValues = undefined;
+    if (filter.type === 'etools-dropdown-multi') {
+      this._setDropDownFilterValue(filterValue, filter);
+    } else if (filter.type === 'datepicker') {
+      this._setDateFilterValue(filterValue, filter);
     }
   }
 
-  _getFilterValue(filterValue, filter) {
+  _setDropDownFilterValue(filterValue, filter) {
+    filter.selectedValues = filterValue ? this._getDropdownFilterValue(filterValue, filter) : undefined;
+  }
+
+  _setDateFilterValue(filterValue, filter) {
+    filter.selectedValue = filterValue ? this._getDatepickerFilterValue(filterValue) : undefined;
+  }
+
+  _getDatepickerFilterValue(filterValue) {
+    const date = moment(filterValue);
+    return date.isValid() ? date.format() : undefined;
+  }
+
+  _getDropdownFilterValue(filterValue, filter) {
     if (!filter || !filter.selection || filterValue === undefined) {
       return;
     }
@@ -288,7 +314,23 @@ class SearchAndFilter extends PolymerElement {
       queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
     }
     updateQueries(queryObject);
+  }
 
+  _filterDateHasChanged(e, detail) {
+    if (!e || !e.currentTarget || !detail) {
+      return;
+    }
+
+    const query = e.currentTarget.id;
+    const queryObject = {page: '1'};
+    if (query) {
+      queryObject[query] = detail.date ? moment(detail.date).format('YYYY-MM-DD') : '';
+    }
+    updateQueries(queryObject);
+  }
+
+  filterTypeIs(expectedType: string, checkedTypeValue: string) {
+    return expectedType === checkedTypeValue;
   }
 
 }
