@@ -12,9 +12,8 @@ import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/search-and-filter-element/search-and-filter';
 import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
-import {SearchAndFilterEl} from '../../../common-elements/search-and-filter-element/search-and-filter';
+import {SearchAndFilterEl, FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
 import {BASE_PATH} from '../../../app-config/config';
-
 /**
  * @customElement
  * @polymer
@@ -129,7 +128,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   @property({type: Array})
   filters: GenericObject[] = [{
-    type: 'etools-dropdown-multi',
+    type: FilterTypes.DropdownMulti,
     name: 'audit firm',
     label: 'Audit Firm',
     query: 'agreement__auditor_firm__in',
@@ -137,7 +136,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'name',
     selection: []
   }, {
-    type: 'etools-dropdown-multi',
+    type: FilterTypes.DropdownMulti,
     name: 'engagement type',
     label: 'Engagement Type',
     query: 'engagement_type__in',
@@ -146,7 +145,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'display_name',
     selection: []
   }, {
-    type: 'etools-dropdown-multi',
+    type: FilterTypes.DropdownMulti,
     name: 'partner',
     label: 'Partner',
     query: 'partner__in',
@@ -154,7 +153,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'name',
     selection: []
   }, {
-    type: 'etools-dropdown-multi',
+    type: FilterTypes.DropdownMulti,
     name: 'status',
     label: 'Status',
     query: 'status__in',
@@ -163,7 +162,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'display_name',
     selection: []
   }, {
-    type: 'etools-dropdown-multi',
+    type: FilterTypes.DropdownMulti,
     name: 'joint audit',
     label: 'Joint Audit',
     query: 'joint_audit',
@@ -173,14 +172,14 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
   },
   {
-    type: 'datepicker',
+    type: FilterTypes.Date,
     name: 'date IP was contacted before',
     label: 'Date IP was contacted before',
     query: 'partner_contacted_at__lte',
     hideSearch: true
   },
   {
-    type: 'datepicker',
+    type: FilterTypes.Date,
     name: 'date IP was contacted after',
     label: 'Date IP was contacted after',
     query: 'partner_contacted_at__gte',

@@ -24,6 +24,11 @@ declare const moment: any;
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 import {searchAndFilterStyles} from './search-and-filter-styles';
 
+export enum FilterTypes {
+  DropdownMulti,
+  Date
+}
+
 /**
  * @customElement
  * @polymer
@@ -52,7 +57,7 @@ class SearchAndFilter extends PolymerElement {
           <!-- FILTERS -->
           <template is="dom-repeat" items="[[usedFilters]]">
             <div class="layout horizontal">
-                <template is="dom-if" if="[[filterTypeIs('etools-dropdown-multi', item.type)]]">
+                <template is="dom-if" if="[[filterTypeIsDropdownMulti(item.type)]]">
                   <etools-dropdown-multi
                       id="[[item.query]]"
                       class="filter-dropdown"
@@ -63,11 +68,11 @@ class SearchAndFilter extends PolymerElement {
                       option-label="[[item.optionLabel]]"
                       option-value="[[item.optionValue]]"
                       trigger-value-change-event
-                      on-etools-selected-items-changed="_changeFilterValue"
+                      on-etools-selected-items-changed="_filterDropdownMultiHasChanged"
                       hide-search="[[item.hideSearch]]">
                   </etools-dropdown-multi>
                 </template>
-                <template is="dom-if" if="[[filterTypeIs('datepicker', item.type)]]">
+                <template is="dom-if" if="[[filterTypeIsDate(item.type)]]">
                   <datepicker-lite id="[[item.query]]"
                       class="filter-date"
                       label="[[item.label]]"
@@ -257,9 +262,9 @@ class SearchAndFilter extends PolymerElement {
 
     const filterValue = this.get(`queryParams.${filter.query}`);
 
-    if (filter.type === 'etools-dropdown-multi') {
+    if (filter.type === FilterTypes.DropdownMulti) {
       this._setDropDownFilterValue(filterValue, filter);
-    } else if (filter.type === 'datepicker') {
+    } else if (filter.type === FilterTypes.Date) {
       this._setDateFilterValue(filterValue, filter);
     }
   }
@@ -300,7 +305,7 @@ class SearchAndFilter extends PolymerElement {
     }
   }
 
-  _changeFilterValue(e, detail) {
+  _filterDropdownMultiHasChanged(e, detail) {
     if (!e || !e.currentTarget || !detail) {
       return;
     }
@@ -324,13 +329,17 @@ class SearchAndFilter extends PolymerElement {
     const query = e.currentTarget.id;
     const queryObject = {page: '1'};
     if (query) {
-      queryObject[query] = detail.date ? moment(detail.date).format('YYYY-MM-DD') : '';
+      queryObject[query] = detail.date ? moment(detail.date).format('YYYY-MM-DD') : undefined;
     }
     updateQueries(queryObject);
   }
 
-  filterTypeIs(expectedType: string, checkedTypeValue: string) {
-    return expectedType === checkedTypeValue;
+  filterTypeIsDropdownMulti(checkedTypeValue: FilterTypes) {
+    return checkedTypeValue === FilterTypes.DropdownMulti;
+  }
+
+  filterTypeIsDate(checkedTypeValue: FilterTypes) {
+    return checkedTypeValue === FilterTypes.Date;
   }
 
 }
