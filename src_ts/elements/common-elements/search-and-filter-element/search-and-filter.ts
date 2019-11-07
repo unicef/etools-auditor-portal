@@ -26,7 +26,7 @@ import {searchAndFilterStyles} from './search-and-filter-styles';
 
 export enum FilterTypes {
   DropdownMulti,
-  Date
+  Date,
 }
 
 /**
