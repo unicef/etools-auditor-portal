@@ -61,7 +61,7 @@ class SearchAndFilter extends PolymerElement {
                   <etools-dropdown-multi
                       id="[[item.query]]"
                       class="filter-dropdown"
-                      selected-values="{{item.selectedValues}}"
+                      selected-values="{{item.selectedValue}}"
                       label="[[item.label]]"
                       placeholder$="&#8212;"
                       options="[[item.selection]]"
@@ -178,7 +178,7 @@ class SearchAndFilter extends PolymerElement {
       const newFilter = this.filters.find((filter) => {
         return filter.query === query;
       });
-      this._setFilterValue(newFilter);
+      this._setFilterValueFromQueryParams(newFilter);
       this.push('usedFilters', newFilter);
     } else {
       this.removeFilter(e);
@@ -255,38 +255,35 @@ class SearchAndFilter extends PolymerElement {
     });
   }
 
-  _setFilterValue(filter) {
+  _setFilterValueFromQueryParams(filter) {
     if (!filter) {
       return;
     }
 
-    const filterValue = this.get(`queryParams.${filter.query}`);
+    const filterQueryParamValue = this.get(`queryParams.${filter.query}`);
+    filter.selectedValue = this._convertValueForFilter(filter, filterQueryParamValue);
+  }
 
+  _convertValueForFilter(filter, valueToConvert) {
     if (filter.type === FilterTypes.DropdownMulti) {
-      this._setDropDownFilterValue(filterValue, filter);
+      return this._convertValueForDropdownMulti(valueToConvert, filter);
     } else if (filter.type === FilterTypes.Date) {
-      this._setDateFilterValue(filterValue, filter);
+      return this._convertValueForDate(valueToConvert);
     }
   }
 
-  _setDropDownFilterValue(filterValue, filter) {
-    filter.selectedValues = filterValue ? this._getDropdownFilterValue(filterValue, filter) : undefined;
+  _convertValueForDate(valueToConvert) {
+    if (valueToConvert) {
+      const date = moment(valueToConvert);
+      return date.isValid() ? date.format() : undefined;
+    }
   }
 
-  _setDateFilterValue(filterValue, filter) {
-    filter.selectedValue = filterValue ? this._getDatepickerFilterValue(filterValue) : undefined;
-  }
-
-  _getDatepickerFilterValue(filterValue) {
-    const date = moment(filterValue);
-    return date.isValid() ? date.format() : undefined;
-  }
-
-  _getDropdownFilterValue(filterValue, filter) {
-    if (!filter || !filter.selection || filterValue === undefined) {
+  _convertValueForDropdownMulti(valueToConvert, filter) {
+    if (!filter || !filter.selection || valueToConvert === undefined) {
       return;
     }
-    const splitValues = filterValue.split(',');
+    const splitValues = valueToConvert.split(',');
     const optionValue = filter.optionValue;
 
     return filter.selection.filter((option: any) =>
