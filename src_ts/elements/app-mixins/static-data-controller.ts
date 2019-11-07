@@ -20,7 +20,9 @@ const _staticData = {
     local_curency: null,
     location_types: [],
     partner_file_types: [],
-    partner_types: []
+    partner_types: [],
+    offices: [],
+    sections: []
   },
   statuses: [],
   users: []

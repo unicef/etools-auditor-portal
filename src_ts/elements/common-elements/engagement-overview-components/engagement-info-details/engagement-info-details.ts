@@ -18,7 +18,6 @@ import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 
-import isEqual from 'lodash-es/isEqual';
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
@@ -29,7 +28,7 @@ import {getChoices, collectionExists} from '../../../app-mixins/permission-contr
 import DateMixin from '../../../app-mixins/date-mixin';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 /**
  * @polymer
  * @customElement
@@ -365,6 +364,57 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                   </etools-dropdown-multi>
                   </div>
               </template>
+
+              <template is="dom-if" if="{{showInput}}" restamp>
+              <!-- Sections -->
+              <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
+              <etools-dropdown-multi
+                          class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with',
+                                    basePermissionPath)]]"
+                          label="[[getLabel('sections', basePermissionPath)]]"
+                          placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
+                          options="[[sections]]"
+                          option-label="name"
+                          option-value="id"
+                          selected-values="{{data.shared_ip_with}}"
+                          required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
+                          disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                          readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                          invalid="{{errors.shared_ip_with}}"
+                          error-message="{{errors.shared_ip_with}}"
+                          on-focus="_resetFieldError"
+                          on-tap="_resetFieldError"
+                          dynamic-align
+                          hide-search>
+              </etools-dropdown-multi>
+              </div>
+          </template>
+
+          <template is="dom-if" if="{{showInput}}" restamp>
+          <!-- Offices -->
+          <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
+          <etools-dropdown-multi
+                      class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with',
+                                basePermissionPath)]]"
+                      label="[[getLabel('offices', basePermissionPath)]]"
+                      placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
+                      options="[[offices]]"
+                      option-label="name"
+                      option-value="id"
+                      selected-values="{{data.shared_ip_with}}"
+                      required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
+                      disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                      readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
+                      invalid="{{errors.shared_ip_with}}"
+                      error-message="{{errors.shared_ip_with}}"
+                      on-focus="_resetFieldError"
+                      on-tap="_resetFieldError"
+                      dynamic-align
+                      hide-search>
+          </etools-dropdown-multi>
+          </div>
+      </template>
+
           </div>
 
       </etools-content-panel>
@@ -441,6 +491,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Object})
   orderNumber!: GenericObject | null;
 
+  @property({type: Array})
+  sections: GenericObject[] = [];
+
+  @property({type: Array})
+  offices: GenericObject[] = [];
+
   static get observers() {
     return [
       '_errorHandler(errorObject)',
@@ -458,6 +514,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     (this.$.purchaseOrder as PaperInputElement).validate =
       this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
+
+    this.set('sections', getStaticData('sections') || []);
+    this.set('offices', getStaticData('offices') || []);
   }
 
   _setEngagementTypeObject(e) {
