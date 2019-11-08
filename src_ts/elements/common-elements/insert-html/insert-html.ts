@@ -1,5 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from "@polymer/decorators/lib/decorators";
+import {property} from '@polymer/decorators/lib/decorators';
 
 /**
  * @customElement

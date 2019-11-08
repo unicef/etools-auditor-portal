@@ -68,7 +68,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                   <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
                     <etools-dropdown
                             id="partner"
-                            class$="[[_setRequired('partner', basePermissionPath)]] [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
+                            class$="[[_setRequired('partner', basePermissionPath)]]
+                                    [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
                             selected="{{engagement.partner.id}}"
                             label="[[getLabel('partner', basePermissionPath)]]"
                             placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
@@ -85,7 +86,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                             dynamic-align>
                     </etools-dropdown>
                   </template>
-                  <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading"></etools-loading>
+                  <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading">
+                  </etools-loading>
                   <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
 
               </div>
@@ -134,7 +136,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                   <!-- Partner  Officers-->
                   <etools-dropdown
                           id="authorizedOfficer"
-                          class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]] [[_setPlaceholderColor(partner)]]"
+                          class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]]
+                                [[_setPlaceholderColor(partner)]]"
                           selected="{{authorizedOfficer.id}}"
                           label="[[getLabel('authorized_officers', basePermissionPath)]]"
                           placeholder="[[getReadonlyPlaceholder(partner)]]"
@@ -161,7 +164,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                       <etools-dropdown-multi
                               id="activePd"
                               class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                              selected-items="{{activePd}}"
+                              selected-values="{{activePdIds}}"
                               label="[[getLabel('active_pd', basePermissionPath)]]"
                               placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                               options="[[partner.interventions]]"
@@ -217,8 +220,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   partner!: GenericObject;
 
-  @property({type: Object})
-  activePd!: GenericObject;
+  @property({type: Array})
+  activePdIds!: any[];
 
   @property({type: Object})
   authorizedOfficer!: GenericObject;
@@ -260,15 +263,17 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       this.set('authorizedOfficer', null);
       return;
     }
-    let engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0],
-      partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
-    if (engagementOfficer) {engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;}
+    const engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0];
+    const partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
+    if (engagementOfficer) {
+      engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;
+    }
 
     if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
       this.set('partner.partnerOfficers', [engagementOfficer]);
       this.authorizedOfficer = engagementOfficer;
     } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-      let officerIndex = !!(engagementOfficer && ~findIndex(partner.partnerOfficers, (officer: any) => {
+      const officerIndex = !!(engagementOfficer && ~findIndex(partner.partnerOfficers, (officer: any) => {
         return officer.id === engagementOfficer.id;
       }));
 
@@ -280,10 +285,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     return this.validatePartner() && this.validateActivePd();
   }
 
-  validateActivePd() {
-    let activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
-    let partnerType = this.get('engagement.partner.partner_type');
-    let partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
+  validateActivePd() { // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
+    const activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
+    const partnerType = this.get('engagement.partner.partner_type');
+    const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
 
     if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
       activePdInput.invalid = true;
@@ -295,8 +300,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validatePartner() {
-    if (!this.$.partner || !(this.$.partner as EtoolsDropdownEl).required) {return true;}
-    if (!this.engagement || !this.engagement.partner || !this.engagement.partner.id) {
+    if (!this.$.partner || !(this.$.partner as EtoolsDropdownEl).required) {
+      return true;
+    }
+    if (!get(this, 'engagement.partner.id)') {
       this.set('errors.partner', 'Partner is required');
       (this.$.partner as EtoolsDropdownEl).invalid = true;
       return false;
@@ -327,12 +334,12 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   _setActivePd(engagement, partnerInterv) {
     if (!partnerInterv || !engagement) {
-      this.set('activePd', []);
+      this.set('activePdIds', []);
       return;
     }
-    //let partnerType = this.get('engagement.partner.partner_type');
+    // let partnerType = this.get('engagement.partner.partner_type');
 
-    //check <etools-searchable-multiselection-menu> debouncer state
+    // check <etools-searchable-multiselection-menu> debouncer state
     // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
     // INFINITE LOOP on engagements list :) ... to be removed soon
     // if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
@@ -340,17 +347,17 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     //   return false;
     // }
 
-    let originalPartnerId = this.get('originalData.partner.id');
-    let partnerId = this.get('partner.id');
+    const originalPartnerId = this.get('originalData.partner.id');
+    const partnerId = this.get('partner.id');
 
     if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
-      this.set('activePd', []);
+      this.set('activePdIds', []);
       this.validateActivePd();
       return false;
     }
 
-    let activePd = this.get('engagement.active_pd') || [];
-    this.set('activePd', activePd);
+    const activePd = this.get('engagement.active_pd') || [];
+    this.set('activePdIds', activePd.map(pd => pd.id));
     this.validateActivePd();
     return true;
   }
@@ -359,12 +366,12 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     if (this.requestInProcess) {return;}
 
     this.set('partner', {});
-    this.set('activePd', null);
+    this.set('activePdIds', null);
     this.set('authorizedOfficer', null);
 
-    let selectedPartner = event && event.detail && event.detail.selectedItem;
+    const selectedPartner = event && event.detail && event.detail.selectedItem;
 
-    let partnerId = (selectedPartner && selectedPartner.id || +id);
+    const partnerId = (selectedPartner && selectedPartner.id || +id);
     if (!partnerId) {
       return;
     }
@@ -385,7 +392,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   _engagementChanged(engagement) {
     if (!engagement || !engagement.partner) {
       this.set('partner', {});
-      this.set('activePd', null);
+      this.set('activePdIds', null);
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
@@ -394,22 +401,21 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   getPartnerData() {
     if (!this.validate()) {return null;}
 
-    let data = {} as any;
-    let originalPartnerId = this.get('originalData.partner.id');
-    let partnerId = this.get('engagement.partner.id');
-    let partnerType = this.get('engagement.partner.partner_type');
+    const data = {} as any;
+    const originalPartnerId = this.get('originalData.partner.id');
+    const partnerId = this.get('engagement.partner.id');
+    const partnerType = this.get('engagement.partner.partner_type');
     let originalActivePd = this.get('originalData.active_pd') || [];
-    let activePd = this.activePd || [];
+    let activePdIds = (this.activePdIds || []).map(id => +id);
 
     originalActivePd = originalActivePd.map(pd => +pd.id);
-    activePd = activePd.map(pd => +pd.id);
 
     if (originalPartnerId !== partnerId) {
       data.partner = partnerId;
     }
 
-    if (!isEqual(originalActivePd.sort(), activePd.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
-      data.active_pd = activePd;
+    if (!isEqual(originalActivePd.sort(), activePdIds.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
+      data.active_pd = activePdIds;
     }
 
     if (isEqual(data, {})) {
@@ -420,8 +426,11 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   getAuthorizedOfficer() {
-    if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) {return null;}
-    let engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
+    if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer ||
+      !this.authorizedOfficer.id) {
+      return null;
+    }
+    const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
     return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
   }
 
@@ -431,7 +440,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   activePdPlaceholder(basePermissionPath, partner) {
     if (!partner || !partner.id) {return '-';}
-    return readonlyPermission(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
+    return readonlyPermission(`${basePermissionPath}.active_pd`) ? 'Empty Field' :
+      'Select Relevant PD(s) or SSFA(s)';
     // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
   }
 
@@ -449,7 +459,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     if (!partner) {return '';}
 
     return [partner.address, partner.postal_code, partner.city, partner.country]
-      .filter((info) => !!info)
+      .filter(info => !!info)
       .join(', ');
   }
 
@@ -460,4 +470,4 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 }
 window.customElements.define('partner-details-tab', PartnerDetailsTab);
 
-export {PartnerDetailsTab as PartnerDetailsTabEl}
+export {PartnerDetailsTab as PartnerDetailsTabEl};

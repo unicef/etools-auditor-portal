@@ -29,7 +29,11 @@ class PagesHeaderElement extends PolymerElement {
 
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" hidden$="[[!exportLinks.length]]">
-              <paper-menu-button id="dropdown" hidden$="[[!_isDropDown(exportLinks)]]" on-tap="_toggleOpened" horizontal-align="right">
+              <paper-menu-button 
+                    id="dropdown" 
+                    hidden$="[[!_isDropDown(exportLinks)]]" 
+                    on-tap="_toggleOpened" 
+                    horizontal-align="right">
                 <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
                   <iron-icon icon="file-download"></iron-icon>
                   Export
@@ -59,7 +63,7 @@ class PagesHeaderElement extends PolymerElement {
             <paper-button
                 class="add-btn"
                 raised
-                hidden$="[[_hideAddButton(showAddButton)]]"
+                hidden$="[[hideAddButton]]"
                 on-tap="addNewTap">
               <template is="dom-if" if="{{_showLink(link)}}">
                 <a href="{{link}}" class="btn-link"></a>
@@ -84,7 +88,7 @@ class PagesHeaderElement extends PolymerElement {
   engagement: GenericObject = {};
 
   @property({type: Boolean})
-  showAddButton: boolean = false;
+  hideAddButton: boolean = true;
 
   @property({type: Boolean})
   hidePrintButton: boolean = false;
@@ -104,10 +108,6 @@ class PagesHeaderElement extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
-  }
-
-  _hideAddButton(show) {
-    return !show;
   }
 
   addNewTap() {
@@ -133,7 +133,7 @@ class PagesHeaderElement extends PolymerElement {
     if (this.exportLinks.length < 1) {
       throw new Error('Can not find export link!');
     }
-    let url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
+    const url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
     window.open(url, '_blank');
   }
 

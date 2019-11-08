@@ -89,8 +89,14 @@ class AssessmentOfControls extends
                     has-collapse
                     no-animation>
                 <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                    <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                    <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                    <paper-icon-button 
+                        icon="icons:create" 
+                        class="edit-icon" 
+                        on-tap="openEditDialog"></paper-icon-button>
+                    <paper-icon-button 
+                        icon="icons:delete" 
+                        class="edit-icon" 
+                        on-tap="openDeleteDialog"></paper-icon-button>
                 </div>
             </list-element>
         </template>
@@ -128,10 +134,12 @@ class AssessmentOfControls extends
                     <div class="input-container input-container-l">
                         <!-- Recommendation -->
                         <paper-textarea
-                                class$="validate-input disabled-as-readonly [[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]"
+                                class$="[[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]
+                                          validate-input disabled-as-readonly"
                                 value="{{editedItem.recommendation}}"
                                 label="[[getLabel('key_internal_controls.recommendation', basePermissionPath)]]"
-                                placeholder="[[getPlaceholderText('key_internal_controls.recommendation', basePermissionPath)]]"
+                                placeholder="[[getPlaceholderText('key_internal_controls.recommendation',
+                                            basePermissionPath)]]"
                                 required$="[[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]"
                                 disabled$="[[requestInProcess]]"
                                 readonly$="[[requestInProcess]]"
@@ -147,11 +155,14 @@ class AssessmentOfControls extends
                     <div class="input-container input-container-l">
                         <!-- Audit Observation -->
                         <paper-textarea
-                                class$="validate-input disabled-as-readonly [[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]]"
+                                class$="[[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]] 
+                                        validate-input disabled-as-readonly"
                                 value="{{editedItem.audit_observation}}"
                                 label="[[getLabel('key_internal_controls.audit_observation', basePermissionPath)]]"
-                                placeholder="[[getPlaceholderText('key_internal_controls.audit_observation', basePermissionPath)]]"
-                                required$="[[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]]"
+                                placeholder="[[getPlaceholderText('key_internal_controls.audit_observation',
+                                                basePermissionPath)]]"
+                                required$="[[_setRequired('key_internal_controls.audit_observation', 
+                                            basePermissionPath)]]"
                                 disabled$="[[requestInProcess]]"
                                 readonly$="[[requestInProcess]]"
                                 invalid$="{{errors.audit_observation}}"
@@ -166,10 +177,12 @@ class AssessmentOfControls extends
                     <div class="input-container input-container-l">
                         <!-- IP Response -->
                         <paper-textarea
-                                class$="validate-input disabled-as-readonly [[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]"
+                                class$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]] 
+                                          validate-input disabled-as-readonly"
                                 value="{{editedItem.ip_response}}"
                                 label="[[getLabel('key_internal_controls.ip_response', basePermissionPath)]]"
-                                placeholder="[[getPlaceholderText('key_internal_controls.ip_response', basePermissionPath)]]"
+                                placeholder="[[getPlaceholderText('key_internal_controls.ip_response', 
+                                                basePermissionPath)]]"
                                 required$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]"
                                 disabled$="[[requestInProcess]]"
                                 readonly$="[[requestInProcess]]"
@@ -234,7 +247,7 @@ class AssessmentOfControls extends
       'resetDialog(dialogOpened)',
       'resetDialog(confirmDialogOpened)',
       '_errorHandler(errorObject.key_internal_controls)',
-      '_checkNonField(errorObject.key_internal_controls)',
+      '_checkNonField(errorObject.key_internal_controls)'
     ];
   }
 
@@ -243,7 +256,7 @@ class AssessmentOfControls extends
       return;
     }
 
-    let nonField = checkNonField(error);
+    const nonField = checkNonField(error);
     if (nonField) {
       fireEvent(this, 'toast', {text: `Assessment of Key Internal Controls: ${nonField}`});
     }

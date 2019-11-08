@@ -162,7 +162,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    let riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+    const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
     this.addEventListener('open-edit-dialog', this.openEditDialog);
   }
@@ -173,11 +173,11 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
   getRiskData() {
     if (this.dialogOpened && !this.saveWithButton) {return this.getCurrentData();}
-    let elements = this.shadowRoot!.querySelectorAll('.area-element'),
-      riskData: any[] = [];
+    const elements = this.shadowRoot!.querySelectorAll('.area-element');
+    const riskData: any[] = [];
 
-    Array.prototype.forEach.call(elements, element => {
-      let data = element.getRiskData();
+    Array.prototype.forEach.call(elements, (element) => {
+      const data = element.getRiskData();
       if (data) {riskData.push(data);}
     });
 
@@ -186,7 +186,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
   getCurrentData() {
     if (!this.dialogOpened) {return null;}
-    let blueprint = pick(this.editedArea.blueprints[0], ['id', 'risk']);
+    const blueprint = pick(this.editedArea.blueprints[0], ['id', 'risk']);
     blueprint.risk = {
       value: blueprint.risk.value.value,
       extra: {comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''}
@@ -199,10 +199,10 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validateEditFields() {
-    let valueValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate(),
-      extraValid = (this.$.briefJustification as EtoolsDropdownEl).validate();
+    const valueValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate();
+    const extraValid = (this.$.briefJustification as EtoolsDropdownEl).validate();
 
-    let errors = {
+    const errors = {
       children: [{
         blueprints: [{
           risk: {
@@ -220,13 +220,13 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
   validate(forSave) {
     if (!this.basePermissionPath || forSave) {return true;}
-    let required = isRequired(`${this.basePermissionPath}.test_subject_areas`);
+    const required = isRequired(`${this.basePermissionPath}.test_subject_areas`);
     if (!required) {return true;}
 
-    let elements = this.shadowRoot!.querySelectorAll('.area-element'),
-      valid = true;
+    const elements = this.shadowRoot!.querySelectorAll('.area-element');
+    let valid = true;
 
-    Array.prototype.forEach.call(elements, element => {
+    Array.prototype.forEach.call(elements, (element) => {
       if (!element.validate()) {valid = false;}
     });
 
@@ -234,11 +234,11 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   openEditDialog(event) {
-    let index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
+    const index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
     if ((!index && index !== 0) || !~index) {
-      throw 'Can not find data';
+      throw new Error('Can not find data');
     }
-    let data = this.subjectAreas.children[index];
+    const data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
 
     if (this.editedArea.blueprints[0] && !this.editedArea.blueprints[0].risk.value) {
@@ -255,7 +255,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
     if (isEqual(this.originalEditedObj, this.editedArea)) {
       this.dialogOpened = false;
-      this.resetDialog();
+      this.resetDialog(this.dialogOpened);
       return;
     }
 
@@ -265,7 +265,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
       return;
     }
 
-    let data = cloneDeep(this.editedArea);
+    const data = cloneDeep(this.editedArea);
     data.changed = true;
     this.splice('subjectAreas.children', this.editedAreaIndex, 1, data);
     this.dialogOpened = false;
@@ -273,9 +273,9 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
   resetDialog(opened) {
     if (opened) {return;}
-    let elements = this.shadowRoot!.querySelectorAll('.validate-input');
+    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
 
-    Array.prototype.forEach.call(elements, element => {
+    Array.prototype.forEach.call(elements, (element) => {
       element.invalid = false;
       element.value = '';
     });

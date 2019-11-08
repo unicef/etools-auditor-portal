@@ -85,10 +85,16 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                   multiline
                   no-animation>
               <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                  <paper-icon-button icon="icons:create" class="edit-icon" hidden$="[[_hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab)]]"
-                                      on-tap="openEditDialog"></paper-icon-button>
-                  <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"
-                                      hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]"></paper-icon-button>
+                  <paper-icon-button
+                        icon="icons:create"
+                        class="edit-icon"
+                        hidden$="[[_hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab)]]"
+                        on-tap="openEditDialog"></paper-icon-button>
+                  <paper-icon-button
+                        icon="icons:delete"
+                        class="edit-icon"
+                        hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]"
+                        on-tap="openDeleteDialog"></paper-icon-button>
               </div>
           </list-element>
       </template>
@@ -119,17 +125,21 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
           <div class="row-h repeatable-item-container" without-line>
               <div class="repeatable-item-content">
 
-                  <template is="dom-if" if="[[canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
+                  <template is="dom-if" if="[[canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]"
+                                    restamp>
                       <div class="row-h group">
                           <div class="input-container input-container-l">
                               <!-- Description -->
                               <paper-textarea
-                                      class$="disabled-as-readonly fixed-width validate-input [[_setRequired('specific_procedures.description', basePermissionPath)]]"
+                                      class$="disabled-as-readonly fixed-width validate-input
+                                            [[_setRequired('specific_procedures.description', basePermissionPath)]]"
                                       value="{{editedItem.description}}"
                                       allowed-pattern="[\d\s]"
                                       label="[[getLabel('specific_procedures.description', basePermissionPath)]]"
-                                      placeholder="[[getPlaceholderText('specific_procedures.description', basePermissionPath)]]"
-                                      required$="[[_setRequired('specific_procedures.description', basePermissionPath)]]"
+                                      placeholder="[[getPlaceholderText('specific_procedures.description',
+                                                    basePermissionPath)]]"
+                                      required$="[[_setRequired('specific_procedures.description',
+                                                    basePermissionPath)]]"
                                       disabled$="[[requestInProcess]]"
                                       readonly$="[[requestInProcess]]"
                                       max-rows="4"
@@ -142,16 +152,19 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                       </div>
                   </template>
 
-                  <template is="dom-if" if="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
+                  <template is="dom-if"
+                                if="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
                       <div class="row-h group">
                           <div class="input-container input-container-l">
                               <!-- Finding -->
                               <paper-textarea
-                                      class$="disabled-as-readonly fixed-width validate-input [[_setRequired('specific_procedures.finding', basePermissionPath)]]"
+                                      class$="disabled-as-readonly fixed-width validate-input
+                                              [[_setRequired('specific_procedures.finding', basePermissionPath)]]"
                                       value="{{editedItem.finding}}"
                                       allowed-pattern="[\d\s]"
                                       label="[[getLabel('specific_procedures.finding', basePermissionPath)]]"
-                                      placeholder="[[getPlaceholderText('specific_procedures.finding', basePermissionPath)]]"
+                                      placeholder="[[getPlaceholderText('specific_procedures.finding',
+                                                    basePermissionPath)]]"
                                       required$="[[_setRequired('specific_procedures.finding', basePermissionPath)]]"
                                       disabled$="[[requestInProcess]]"
                                       readonly$="[[requestInProcess]]"
@@ -175,7 +188,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
       '_errorHandler(errorObject.specific_procedures)',
       '_checkNonField(errorObject.specific_procedures)',
       '_manageColumns(withoutFindingColumn, columns)'
-    ]
+    ];
   }
 
   @property({type: Object})
@@ -199,7 +212,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   columns = [{
     'size': 20,
     'name': 'finding',
-    'label': 'Procedure',
+    'label': 'Procedure'
   }, {
     'size': 40,
     'label': 'Description',
@@ -228,9 +241,11 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   readonlyTab: boolean = false;
 
   _checkNonField(error) {
-    if (!error || !this._canBeChanged(this.basePermissionPath) || this._hideEditIcon()) {return;}
+    if (!error || (!this._canBeChanged(this.basePermissionPath) && this._hideEditIcon(this.basePermissionPath, this.withoutFindingColumn, this.readonlyTab))) {
+      return;
+    }
 
-    let nonField = checkNonField(error);
+    const nonField = checkNonField(error);
     if (nonField || isString(error)) {
       fireEvent(this, 'toast', {text: `Specific Procedures: ${nonField || error}`});
     }

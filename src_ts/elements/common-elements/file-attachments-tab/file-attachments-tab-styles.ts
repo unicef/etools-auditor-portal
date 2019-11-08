@@ -15,7 +15,7 @@ export const fileAttachmentsTabStyles = html`
 
     #fileType {
       --paper-listbox: {
-        max-height: 180px;
+        max-height: 600px;
         -ms-overflow-style: auto;
       };
       margin-top: 2px;

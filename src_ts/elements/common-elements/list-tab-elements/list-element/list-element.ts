@@ -433,13 +433,14 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   _isOneOfType(item) {
     if (!item) {return false;}
 
-    let types = Array.prototype.slice.call(arguments, 1) || [];
+    const types = Array.prototype.slice.call(arguments, 1) || [];
 
-    return !!types.find(type => {
+    return !!types.find((type) => {
       return !!item[type];
     });
   }
 
+  // @ts-ignore
   _getValue(item, data?, bool?) {
     let value;
 
@@ -471,14 +472,14 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _refactorValue(type, value) {
-    let values = this.itemValues[type];
+    const values = this.itemValues[type];
     if (values) {return values[value];}
   }
 
   _refactorTime(value, format = 'DD MMM YYYY') {
     if (!value) {return;}
 
-    let date = new Date(value);
+    const date = new Date(value);
     if (date.toString() !== 'Invalid Date') {
       return moment.utc(date).format(format);
     }
@@ -490,12 +491,12 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _refactorPercents(value) {
-    let regexp = /[\d]+.[\d]{2}/;
+    const regexp = /[\d]+.[\d]{2}/;
     return regexp.test(value) ? `${value}%` : null;
   }
 
   _refactorFindingNumber() {
-    let value = this.itemIndex;
+    const value = this.itemIndex;
     if (!value && value !== 0) {return;}
     return `000${value + 1}`;
   }
@@ -503,9 +504,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   _getAdditionalValue(item) {
     if (!item.additional) {return;}
 
-    let additional = item.additional;
+    const additional = item.additional;
     let value = this._getValue(additional);
-    let type = additional.type;
+    const type = additional.type;
 
     if (type === 'date') {
       value = this._refactorTime(value);
@@ -521,7 +522,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   _getLink(pattern) {
     if (typeof pattern !== 'string') {return '#';}
 
-    let link = pattern
+    const link = pattern
       .replace('*ap_link*', this.data.url)
       .replace('*data_id*', this.data.id)
       .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
@@ -553,8 +554,8 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   setField(choices, field) {
     if (!choices || !field) {return;}
 
-    let data = {};
-    choices.forEach(choice => {
+    const data = {};
+    choices.forEach((choice) => {
       data[choice.value] = choice.display_name;
     });
 

@@ -17,6 +17,7 @@ import {getChoices} from '../../../../app-mixins/permission-controller';
 import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../app-mixins/error-handler';
 import {refactorErrorObject} from '../../../../app-mixins/error-handler';
+import '../../../../common-elements/insert-html/insert-html';
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -88,9 +89,15 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       </etools-content-panel>
 
       <template is="dom-repeat" items="{{questionnaire.children}}">
-        <risk-tab questionnaire="{{item}}" base-permission-path="{{basePermissionPath}}" class="validatable-tab risk-tab"
-          index="{{index}}" first-run="[[firstRun]]" completed="{{_checkCompleted(item)}}"
-          disabled="{{_checkDisabled(index, item)}}" edit-mode="[[editMode]]">
+        <risk-tab
+              questionnaire="{{item}}"
+              base-permission-path="{{basePermissionPath}}"
+              class="validatable-tab risk-tab"
+              index="{{index}}"
+              first-run="[[firstRun]]"
+              completed="{{_checkCompleted(item)}}"
+              disabled="{{_checkDisabled(index, item)}}"
+              edit-mode="[[editMode]]">
         </risk-tab>
       </template>
 
@@ -99,7 +106,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
         on-confirm-btn-clicked="_addItemFromDialog">
         <div class="row-h repeatable-item-container" without-line>
           <div class="form-title">
-            <div class="text" id="questionHeader">[[editedItem.header]]</div>
+            <div class="text" id="questionHeader">
+            <insert-html html="[[editedItem.header]]"></insert-html></div>
           </div>
 
           <div class="repeatable-item-content">
@@ -212,9 +220,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
-    let riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+    const riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
 
     this.addEventListener('edit-blueprint', this._openEditDialog as any);
@@ -252,7 +260,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     if (!item) {return false;}
     let completed = true;
 
-    item.blueprints.forEach(blueprint => {
+    item.blueprints.forEach((blueprint) => {
       if (!blueprint.risk || (!blueprint.risk.value && blueprint.risk.value !== 0)) {
         completed = false;
         return false;
@@ -260,7 +268,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     });
     if (!completed) {return false;}
 
-    item.children.forEach(child => {
+    item.children.forEach((child) => {
       if (!this._checkCompleted(child)) {
         completed = false;
         return false;
@@ -271,12 +279,12 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
   _checkDisabled(index) {
     if (!this.questionnaire.children || index === 0) {return false;}
-    let previous = this.questionnaire.children[index - 1];
+    const previous = this.questionnaire.children[index - 1];
     return !this._checkCompleted(previous);
   }
 
   _openEditDialog(event) {
-    let item = event.detail && event.detail.data;
+    const item = event.detail && event.detail.data;
     if (!item) {throw Error('Can not find user data');}
 
     this.tabId = event.detail.tabId;
@@ -289,7 +297,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   _setSelectedRiskRatingEntity(event) {
-    let selectedItem = event.detail.selectedItem;
+    const selectedItem = event.detail.selectedItem;
     if (!selectedItem) {
       return;
     }
@@ -327,8 +335,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   validate() {
-    let riskValid = this.riskAssessmentDropdown.validate(),
-      commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
+    const riskValid = this.riskAssessmentDropdown.validate();
+    const commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
 
     return riskValid && commentsValid;
   }
@@ -337,7 +345,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     if (!this.questionnaire || !this.questionnaire.children || !this.questionnaire.children.length) {return false;}
     let complited = true;
 
-    each(this.questionnaire.children, tab => {
+    each(this.questionnaire.children, (tab) => {
       if (!this._checkCompleted(tab)) {complited = false;}
     });
 
@@ -350,18 +358,18 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   getDataFromDialog() {
-    let blueprintRisk = {
+    const blueprintRisk = {
       value: this.riskAssessmentDropdown.selected,
       extra: this.editedItem.risk && this.editedItem.risk.extra || {}
     };
-    let data = {
+    const data = {
       id: this.editedItem.id,
       risk: blueprintRisk
     };
 
     let risk;
     if (this.categoryId) {
-      let child = {
+      const child = {
         id: +this.categoryId,
         blueprints: [data]
       };
@@ -392,7 +400,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   getRating(rating) {
-    let ratingString = this.riskRatingOptions[rating] || rating;
+    const ratingString = this.riskRatingOptions[rating] || rating;
     return ratingString ? `- ${rating}` : '';
   }
 
@@ -413,8 +421,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     }
     if (!errorObj || !errorObj.questionnaire) {return;}
 
-    let nonField = checkNonField(errorObj.questionnaire);
-    let data = refactorErrorObject(errorObj.questionnaire);
+    const nonField = checkNonField(errorObj.questionnaire);
+    const data = refactorErrorObject(errorObj.questionnaire);
     if (isString(data)) {
       fireEvent(this, 'toast', {text: `Qustionnaire: ${data}`});
     }
@@ -430,8 +438,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this._setRequests(count);
     return this.requests;
   }
-
-
 
 
 }

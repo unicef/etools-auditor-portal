@@ -1,5 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from "@polymer/decorators/lib/decorators";
+import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 
@@ -9,7 +9,7 @@ import {moduleStyles} from '../../../../styles-elements/module-styles';
 
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
 
-import {GenericObject} from "../../../../../types/global";
+import {GenericObject} from '../../../../../types/global';
 
 import isEqual from 'lodash-es/isEqual';
 
@@ -62,7 +62,7 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
     return [
       'updateStyles(basePermissionPath)',
       '_errorHandler(errorObject)'
-    ]
+    ];
   }
 
   @property({type: Object, notify: true})
@@ -81,7 +81,7 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
   };
 
   getInternalControlsData() {
-    let data = null;
+    let data: GenericObject | null = null;
     if (!isEqual(this.originalData, this.data)) {
       data = this.data;
     }

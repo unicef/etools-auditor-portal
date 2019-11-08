@@ -13,6 +13,7 @@ import '@polymer/paper-input/paper-textarea.js';
 import '../follow-up-actions/follow-up-actions';
 import '../follow-up-financial-findings/follow-up-financial-findings';
 import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
+// eslint-disable-next-line
 import '../../../../elements/pages/spot-checks-page-components/report-page-components/summary-findings-element/summary-findings-element';
 import '../../../../elements/pages/audits-page-components/report-page-components/financial-findings/financial-findings';
 import assign from 'lodash-es/assign';
@@ -83,10 +84,10 @@ class FollowUpMain extends PolymerElement {
   };
 
   getFollowUpData() {
-    let data = {},
-      //Audit Financial Findings
-      followUpFindings = this.shadowRoot!.querySelector('#followUpFF'),
-      followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
+    const data = {};
+    // Audit Financial Findings
+    const followUpFindings = this.shadowRoot!.querySelector('#followUpFF');
+    const followUpFindingsData = followUpFindings && (followUpFindings as FollowUpFinancialFindings).getFindingsData();
 
     if (followUpFindingsData) {
       assign(data, followUpFindingsData);
@@ -96,17 +97,11 @@ class FollowUpMain extends PolymerElement {
   }
 
   showFindings(type) {
-    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
-      type = type.value;
-    }
     return !!type && !~['ma', 'sa'].indexOf(type);
   }
 
   _showCard(type: any, validType: string) {
-    if (typeof type === 'object' && type && type.hasOwnProperty('value')) {
-      type = type.value;
-    }
-    return type && validType === type;
+    return !!type && validType === type;
   }
 
 }

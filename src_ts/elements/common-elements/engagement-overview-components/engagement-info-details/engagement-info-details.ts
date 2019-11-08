@@ -39,6 +39,7 @@ import '../../../data-elements/update-agreement-data';
 class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
+    // language=HTML
     return html`
       ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
@@ -173,7 +174,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                           disabled
                           readonly
                           selected-date-display-format="D MMM YYYY"
-                          hidden$="{{!_showPrefix('contract_start_date', basePermissionPath, data.agreement.contract_start_date, 'readonly')}}"
+                          hidden$="{{!_showPrefix('contract_start_date', basePermissionPath,
+                                    data.agreement.contract_start_date, 'readonly')}}"
                           icon="date-range">
                   </datepicker-lite>
               </div>
@@ -182,10 +184,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                   <!-- Contract Expiry Date -->
                   <datepicker-lite
                           id="contractEndDateInput"
-                          class$="disabled-as-readonly {{_setRequired('related_agreement.contract_end_date', basePermissionPath)}} validate-field"
+                          class$="disabled-as-readonly {{_setRequired('related_agreement.contract_end_date',
+                                                        basePermissionPath)}} validate-field"
                           value="{{data.agreement.contract_end_date}}"
                           label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
-                          placeholder="[[getPlaceholderText('agreement.contract_end_date', basePermissionPath, 'datepicker')]]"
+                          placeholder="[[getPlaceholderText('agreement.contract_end_date',
+                                                            basePermissionPath, 'datepicker')]]"
                           required="{{_setRequired('related_agreement.contract_end_date', basePermissionPath)}}"
                           disabled$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
                           invalid="{{_checkInvalid(errors.contract_end_date)}}"
@@ -206,52 +210,57 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               <div class="input-container" hidden$="[[_hideField('partner_contacted_at', basePermissionPath)]]">
                   <!-- Date Partner Was Contacted -->
                   <datepicker-lite
-                          id="contactedDateInput"
-                          class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}} validate-field"
-                          value="{{data.partner_contacted_at}}"
-                          label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
-                          placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]"
-                          required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
-                          disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
-                          invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
-                          error-message="{{errors.partner_contacted_at}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          selected-date-display-format="D MMM YYYY"
-                          max-date="[[maxDate]]">
+                      id="contactedDateInput"
+                      class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}}
+                                validate-field"
+                      value="{{data.partner_contacted_at}}"
+                      label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
+                      placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]"
+                      required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
+                      disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
+                      invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
+                      error-message="{{errors.partner_contacted_at}}"
+                      on-focus="_resetFieldError"
+                      on-tap="_resetFieldError"
+                      selected-date-display-format="D MMM YYYY"
+                      max-date="[[maxDate]]">
                   </datepicker-lite>
               </div>
 
               <div class="input-container">
-                  <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput, data.engagement_type)}}">
+                  <etools-info-tooltip hide-tooltip="{{_hideTooltip(basePermissionPath, showInput,
+                                                        data.engagement_type)}}">
                       <!-- Engagement Type -->
                       <etools-dropdown
-                              slot="field"
-                              id="engagementType"
-                              class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}} validate-field"
-                              selected="[[_getSelectedEngagementType(data.engagement_type)]]"
-                              label="[[getLabel('engagement_type', basePermissionPath)]]"
-                              placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
-                              options="[[engagementTypes]]"
-                              option-label="label"
-                              option-value="value"
-                              required="{{_setRequired('engagement_type', basePermissionPath)}}"
-                              disabled="[[isReadOnly('engagement_type', basePermissionPath)]]"
-                              readonly="[[isReadOnly('engagement_type', basePermissionPath)]]"
-                              invalid="{{_checkInvalid(errors.engagement_type)}}"
-                              error-message="{{errors.engagement_type}}"
-                              on-focus="_resetFieldError"
-                              on-tap="_resetFieldError"
-                              trigger-value-change-event
-                              on-etools-selected-item-changed="_setEngagementTypeObject"
-                              hide-search>
+                          slot="field"
+                          id="engagementType"
+                          class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}}
+                                  validate-field"
+                          selected="{{data.engagement_type}}"
+                          label="[[getLabel('engagement_type', basePermissionPath)]]"
+                          placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
+                          options="[[engagementTypes]]"
+                          option-label="label"
+                          option-value="value"
+                          required="{{_setRequired('engagement_type', basePermissionPath)}}"
+                          disabled="[[isReadOnly('engagement_type', basePermissionPath)]]"
+                          readonly="[[isReadOnly('engagement_type', basePermissionPath)]]"
+                          invalid="{{_checkInvalid(errors.engagement_type)}}"
+                          error-message="{{errors.engagement_type}}"
+                          on-focus="_resetFieldError"
+                          on-tap="_resetFieldError"
+                          trigger-value-change-event
+                          on-etools-selected-item-changed="_setEngagementTypeObject"
+                          hide-search>
                       </etools-dropdown>
                       <span slot="message">Attach FACE Form Requesting Funding, <br>
                               ICE Form, FACE Form Reporting,<br>
                               Statement of Expenditure</span>
                   </etools-info-tooltip>
 
-                  <paper-tooltip for="engagementType" offset="0">[[_getEngagementTypeLabel(data.engagement_type)]]</paper-tooltip>
+                  <paper-tooltip for="engagementType" offset="0">
+                    [[_getEngagementTypeLabel(data.engagement_type)]]
+                  </paper-tooltip>
               </div>
 
               <template is="dom-if" if="{{showInput}}" restamp>
@@ -259,12 +268,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                       <!-- Period Start Date -->
                         <datepicker-lite
                               id="periodStartDateInput"
-                              class$="disabled-as-readonly {{_isAdditionalFieldRequired('start_date', basePermissionPath, data.engagement_type)}} validate-field"
+                              class$="disabled-as-readonly {{_isAdditionalFieldRequired('start_date',
+                                      basePermissionPath, data.engagement_type)}} validate-field"
                               value="{{data.start_date}}"
                               label="[[getLabel('start_date', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
                               selected-date-display-format="D MMM YYYY"
-                              required="{{_isAdditionalFieldRequired('start_date', basePermissionPath, data.engagement_type)}}"
+                              required="{{_isAdditionalFieldRequired('start_date', basePermissionPath,
+                                        data.engagement_type)}}"
                               disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
                               invalid="{{_checkInvalid(errors.start_date)}}"
                               error-message="{{errors.start_date}}"
@@ -279,12 +290,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                       <!-- Period End Date -->
                       <datepicker-lite
                               id="periodEndDateInput"
-                              class$="disabled-as-readonly {{_isAdditionalFieldRequired('end_date', basePermissionPath, data.engagement_type)}} validate-field"
+                              class$="disabled-as-readonly {{_isAdditionalFieldRequired('end_date', basePermissionPath,
+                                        data.engagement_type)}} validate-field"
                               value="{{data.end_date}}"
                               label="[[getLabel('end_date', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
                               data-selector="periodEndDate"
-                              required="{{_isAdditionalFieldRequired('end_date', basePermissionPath, data.engagement_type)}}"
+                              required="{{_isAdditionalFieldRequired('end_date', basePermissionPath,
+                                            data.engagement_type)}}"
                               disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
                               invalid="{{_checkInvalid(errors.end_date)}}"
                               error-message="{{errors.end_date}}"
@@ -299,23 +312,26 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                   <div class="input-container" hidden$="[[_hideField('total_value', basePermissionPath)]]">
                       <!-- Total Value of Selected FACE Forms -->
                       <etools-currency-amount-input
-                              class$="disabled-as-readonly {{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}} validate-field"
-                              field="total_value"
-                              value="{{data.total_value}}"
-                              currency="$"
-                              label="[[getLabel('total_value', basePermissionPath)]]"
-                              placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
-                              required$="{{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}}"
-                              disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
-                              invalid="{{_checkInvalid(errors.total_value)}}"
-                              error-message="{{errors.total_value}}"
-                              on-focus="_resetFieldError"
-                              on-tap="_resetFieldError">
+                          class$="disabled-as-readonly validate-field
+                                {{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}}"
+                          field="total_value"
+                          value="{{data.total_value}}"
+                          currency="$"
+                          label="[[getLabel('total_value', basePermissionPath)]]"
+                          placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
+                          required$="{{_isAdditionalFieldRequired('total_value', basePermissionPath,
+                                        data.engagement_type)}}"
+                          disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
+                          invalid="{{_checkInvalid(errors.total_value)}}"
+                          error-message="{{errors.total_value}}"
+                          on-focus="_resetFieldError"
+                          on-tap="_resetFieldError">
                       </etools-currency-amount-input>
                   </div>
               </template>
 
               <template is="dom-if" if="{{showJoinAudit}}" restamp>
+                  <!-- Joint Audit -->
                   <div class="input-container join-audit">
                       <paper-checkbox
                               checked="{{data.joint_audit}}"
@@ -326,9 +342,11 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </template>
 
               <template is="dom-if" if="{{showAdditionalInput}}" restamp>
+                  <!-- Shared Audit with-->
                   <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
                   <etools-dropdown-multi
-                              class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with', basePermissionPath)]]"
+                              class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with',
+                                        basePermissionPath)]]"
                               label="[[getLabel('shared_ip_with', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
                               options="[[sharedIpWithOptions]]"
@@ -437,23 +455,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   connectedCallback() {
     super.connectedCallback();
-    (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+    (this.$.purchaseOrder as PaperInputElement).validate =
+      this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
   }
 
   _setEngagementTypeObject(e) {
-    this.set('data.engagement_type', e.detail.selectedItem);
-  }
-
-  _getSelectedEngagementType(engagementType) {
-    if (!engagementType) {
-      return;
-    }
-    if (typeof engagementType === 'string') {
-      return engagementType;
-    } else {// it's object hopefully
-      return engagementType ? engagementType.value : null;
-    }
+    this.set('data.engagement_type_details', e.detail.selectedItem);
   }
 
   _prepareData() {
@@ -461,7 +469,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.set('orderNumber', null);
 
     let poItem = this.get('data.po_item');
-    if (!poItem) {return;}
+    if (!poItem) {
+      return;
+    }
 
     poItem = {
       id: poItem.id,
@@ -470,30 +480,30 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.set('data.po_item', poItem);
   }
 
-  _setSharedIpWith(basePermissionPath: String) {
-    let sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
+  _setSharedIpWith(basePermissionPath: string) {
+    const sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
     return sharedIpWithOptions || [];
   }
 
   validate() {
-    let orderField = this.$.purchaseOrder as PaperInputElement,
-      orderValid = orderField && orderField.validate();
+    const orderField = this.$.purchaseOrder as PaperInputElement;
+    const orderValid = orderField && orderField.validate();
 
-    let elements = this.shadowRoot!.querySelectorAll('.validate-field');
+    const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     let valid = true;
     elements.forEach((element: any) => {
       if (element.required && !element.disabled && !element.validate()) {
-        let label = element.label || 'Field';
+        const label = element.label || 'Field';
         element.errorMessage = `${label} is required`;
         element.invalid = true;
         valid = false;
       }
     });
 
-    let periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as PaperInputElement,
-      periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as PaperInputElement,
-      startValue = periodStart ? Date.parse(periodStart.value!) : 0,
-      endValue = periodEnd ? Date.parse(periodEnd.value!) : 0;
+    const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as PaperInputElement;
+    const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as PaperInputElement;
+    const startValue = periodStart ? Date.parse(periodStart.value!) : 0;
+    const endValue = periodEnd ? Date.parse(periodEnd.value!) : 0;
 
     if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
       periodEnd.errorMessage = 'This date should be after Period Start Date';
@@ -509,21 +519,17 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     const el = this.shadowRoot!.querySelectorAll('.validate-field');
     el.forEach((e: any) => e.set('invalid', false));
 
-    let elements = this.shadowRoot!.querySelectorAll('.validate-field');
+    const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     elements.forEach((element: any) => {
       element.errorMessage = '';
       element.invalid = false;
     });
   }
 
-  _processValue(value: any) {
-    if (typeof value === 'string') {
-      return this.engagementTypes.filter((type: any) => {
-        return type.value === value;
-      })[0];
-    } else {
-      return value;
-    }
+  _processValue(value: string) {
+    return this.engagementTypes.filter((type: any) => {
+      return type.value === value;
+    })[0];
   }
 
   poKeydown(event: any) {
@@ -533,12 +539,16 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _requestAgreement(event: any) {
-    if (this.requestInProcess) {return;}
+    if (this.requestInProcess) {
+      return;
+    }
 
-    let input = event && event.target;
-    let value = input && input.value;
+    const input = event && event.target;
+    const value = input && input.value;
 
-    if ((+value || +value === 0) && value === this.orderNumber) {return;}
+    if ((+value || +value === 0) && value === this.orderNumber) {
+      return;
+    }
     this.resetAgreement();
 
     if (!value) {
@@ -569,12 +579,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _validatePurchaseOrder(orderInput: any) {
-    if (orderInput && (orderInput.readonly || orderInput.disabled)) {return true;}
+    if (orderInput && (orderInput.readonly || orderInput.disabled)) {
+      return true;
+    }
     if (this.requestInProcess) {
       this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
       return false;
     }
-    let value = orderInput && orderInput.value;
+    const value = orderInput && orderInput.value;
     if (!value && orderInput && orderInput.required) {
       this.set('errors.agreement', 'Purchase order is required');
       return false;
@@ -600,63 +612,68 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   getEngagementData() {
-    let data: any = {};
-    let agreementId = get(this, 'data.agreement.id'),
-      originalAgreementId = get(this, 'originalData.agreement.id');
+    const data: any = {};
+    const agreementId = get(this, 'data.agreement.id');
+    const originalAgreementId = get(this, 'originalData.agreement.id');
 
-    if (this.originalData.start_date !== this.data.start_date) {data.start_date = this.data.start_date;}
-    if (this.originalData.end_date !== this.data.end_date) {data.end_date = this.data.end_date;}
-    if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {data.partner_contacted_at = this.data.partner_contacted_at;}
-    if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) {data.agreement = this.data.agreement.id;}
-    if (this.originalData.total_value !== this.data.total_value) {data.total_value = this.data.total_value;}
-    if (this.originalData.engagement_type !== this.data.engagement_type.value && !this.isStaffSc) {
-      data.engagement_type = this.data.engagement_type.value;
+    if (this.originalData.start_date !== this.data.start_date) {
+      data.start_date = this.data.start_date;
     }
-    if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) {data.po_item = this.data.po_item.id;}
-    if (this.originalData.joint_audit !== this.data.joint_audit) {data.joint_audit = this.data.joint_audit;}
+    if (this.originalData.end_date !== this.data.end_date) {
+      data.end_date = this.data.end_date;
+    }
+    if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
+      data.partner_contacted_at = this.data.partner_contacted_at;
+    }
+
+    if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) {
+      data.agreement = this.data.agreement.id;
+    }
+
+    if (this.originalData.total_value !== this.data.total_value) {
+      data.total_value = this.data.total_value;
+    }
+
+    if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
+      data.engagement_type = this.data.engagement_type;
+    }
+
+    if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) {
+      data.po_item = this.data.po_item.id;
+    }
 
     let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
-    let sharedIpWith = this.sharedIpWith || [];
-    sharedIpWith = sharedIpWith.map((shared: any) => shared.value);
-    if (!isEqual(originalSharedIpWith.sort(), sharedIpWith.sort()) && sharedIpWith.length) {
+    let sharedIpWith = this.data.shared_ip_with || [];
+    if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
       data.shared_ip_with = sharedIpWith;
     }
 
     return data;
   }
 
-  _setShowInput(type: any) {
-    if (typeof type === 'string' && type !== 'ma') {
-      this.showInput = true;
-    } else if (typeof type === 'object' && type && type.value && type.value !== 'ma') {
-      this.showInput = true;
-    } else {
-      this.showInput = false;
-    }
+  _setShowInput(type: string) {
+    this.showInput = !!type && type !== 'ma';
   }
 
-  _setAdditionalInput(type: any) {
-    if (typeof type === 'string' && type !== 'sc') {
-      this.showAdditionalInput = true;
-    } else if (typeof type === 'object' && type && type.value && type.value !== 'sc') {
-      this.showAdditionalInput = true;
-    } else {
-      this.showAdditionalInput = false;
-    }
+  _setAdditionalInput(type: string) {
+    this.showAdditionalInput = !!type && type !== 'sc';
   }
 
-  _showJoinAudit(showInput: Boolean, showAdditionalInput: Boolean) {
+  _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
     return showAdditionalInput && showInput;
   }
 
   updatePoBasePath(id: any) {
-    let path = id ? `po_${id}` : '';
+    const path = id ? `po_${id}` : '';
     this.set('poPermissionPath', path);
   }
 
   _setExpiryMinDate(minDate: any) {
-    if (!minDate) {return false;}
-    let today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(), new Date(minDate).getDate());
+    if (!minDate) {
+      return false;
+    }
+    const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(),
+      new Date(minDate).getDate());
     return new Date(today.getDate() - 1);
   }
 
@@ -667,10 +684,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _setEngagementTypes(basePermissionPath: any) {
-    let types = getChoices(`${basePermissionPath}.engagement_type`);
-    if (!types) {return;}
+    const types = getChoices(`${basePermissionPath}.engagement_type`);
+    if (!types) {
+      return;
+    }
 
-    let links: {[key: string]: string} = {
+    const links: {[key: string]: string} = {
       'ma': 'micro-assessments',
       'audit': 'audits',
       'sc': 'spot-checks',
@@ -686,13 +705,15 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     });
   }
 
-  _getEngagementTypeLabel(type: any) {
-    let value = this._processValue(type) || {};
+  _getEngagementTypeLabel(type: string) {
+    const value = this._processValue(type) || {};
     return value.label || '';
   }
 
   _isAdditionalFieldRequired(field: any, basePath: any, type: any) {
-    if (this.isSpecialAudit(type)) {return '';}
+    if (this.isSpecialAudit(type)) {
+      return false;
+    }
     return this._setRequired(field, basePath);
   }
 
@@ -721,9 +742,11 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _hideField(fieldName: any, basePermissionPath: any) {
-    if (!fieldName || !basePermissionPath) {return false;}
-    let path = `${basePermissionPath}.${fieldName}`;
-    let collectionNotExists = !collectionExists(path, 'POST') &&
+    if (!fieldName || !basePermissionPath) {
+      return false;
+    }
+    const path = `${basePermissionPath}.${fieldName}`;
+    const collectionNotExists = !collectionExists(path, 'POST') &&
       !collectionExists(path, 'PUT') &&
       !collectionExists(path, 'GET');
 
@@ -739,6 +762,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
 }
+
 window.customElements.define('engagement-info-details', EngagementInfoDetails);
 
 export {EngagementInfoDetails as EngagementInfoDetailsEl};

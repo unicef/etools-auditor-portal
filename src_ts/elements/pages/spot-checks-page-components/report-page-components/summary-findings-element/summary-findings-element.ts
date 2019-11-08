@@ -1,4 +1,4 @@
-import {PolymerElement, html} from "@polymer/polymer/polymer-element";
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-textarea';
@@ -14,13 +14,13 @@ import '../../../../common-elements/list-tab-elements/list-element/list-element'
 
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from "../../../../styles-elements/module-styles";
+import {moduleStyles} from '../../../../styles-elements/module-styles';
 
 import DateMixin from '../../../../app-mixins/date-mixin';
 import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../../app-mixins/static-data-controller';
 import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
-import {GenericObject} from "../../../../../types/global";
+import {GenericObject} from '../../../../../types/global';
 
 import find from 'lodash-es/find';
 import each from 'lodash-es/each';
@@ -37,8 +37,7 @@ import cloneWith from 'lodash-es/cloneWith';
  * @appliesMixin TableElementsMixin
  * @appliesMixin DateMixin
  */
-class SummaryFindingsElement extends (CommonMethodsMixin
-  (TableElementsMixin(DateMixin(PolymerElement)))) {
+class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement)))) {
 
   static get template() {
     // language=HTML
@@ -93,11 +92,19 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                         no-animation>
                     <div slot="custom">
                         [[getCategoryDisplayName(item.category_of_observation, '--')]]
-                        <paper-tooltip offset="0">[[getCategoryDisplayName(item.category_of_observation)]]</paper-tooltip>
+                        <paper-tooltip offset="0">
+                            [[getCategoryDisplayName(item.category_of_observation)]]
+                        </paper-tooltip>
                     </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                        <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+                        <paper-icon-button 
+                                icon="icons:create" 
+                                class="edit-icon" 
+                                on-tap="openEditDialog"></paper-icon-button>
+                        <paper-icon-button 
+                                icon="icons:delete" 
+                                class="edit-icon" 
+                                on-tap="openDeleteDialog"></paper-icon-button>
                     </div>
                 </list-element>
             </template>
@@ -138,14 +145,17 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Category of Observation -->
-                            <etools-dropdown label="[[getLabel('findings.category_of_observation', basePermissionPath)]]"
-                                             placeholder="[[getPlaceholderText('findings.category_of_observation', basePermissionPath)]]"
+                            <etools-dropdown label="[[getLabel('findings.category_of_observation', 
+                                                    basePermissionPath)]]"
+                                             placeholder="[[getPlaceholderText('findings.category_of_observation', 
+                                                            basePermissionPath)]]"
                                              options="[[categoryOfObservation]]"
                                              option-label="display_name"
                                              option-value="value"
                                              selected="{{editedItem.category_of_observation}}"
                                              trigger-value-change-event
-                                             required$="[[_setRequired('findings.category_of_observation', basePermissionPath)]]"
+                                             required$="[[_setRequired('findings.category_of_observation', 
+                                                        basePermissionPath)]]"
                                              disabled$="{{requestInProcess}}"
                                              readonly$="{{requestInProcess}}"
                                              invalid="{{errors.category_of_observation}}"
@@ -154,7 +164,9 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                                              on-tap="_resetFieldError"
                                              hide-search>
                             </etools-dropdown>
-                            <paper-tooltip offset="0">[[getCategoryDisplayName(editedItem.category_of_observation)]]</paper-tooltip>
+                            <paper-tooltip offset="0">
+                                [[getCategoryDisplayName(editedItem.category_of_observation)]]
+                            </paper-tooltip>
                         </div>
                     </div>
 
@@ -162,7 +174,8 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea
-                                    class$="disabled-as-readonly fixed-width validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
+                                    class$="{{_setRequired('findings.recommendation', basePermissionPath)}} 
+                                            disabled-as-readonly fixed-width validate-input"
                                     value="{{editedItem.recommendation}}"
                                     allowed-pattern="[\\d\\s]"
                                     label="[[getLabel('findings.recommendation', basePermissionPath)]]"
@@ -184,12 +197,14 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                         <div class="input-container input-container-l">
                             <!-- Agreed Action by IP -->
                             <paper-textarea
-                                    class$="disabled-as-readonly fixed-width validate-input [[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]"
+                                    class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] 
+                                            disabled-as-readonly fixed-width validate-input"
                                     value="{{editedItem.agreed_action_by_ip}}"
                                     allowed-pattern="[\\d\\s]"
                                     label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
                                     always-float-label
-                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', basePermissionPath)]]"
+                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', 
+                                                basePermissionPath)]]"
                                     required$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]"
                                     disabled$="{{requestInProcess}}"
                                     readonly$="{{requestInProcess}}"
@@ -208,7 +223,8 @@ class SummaryFindingsElement extends (CommonMethodsMixin
                             <datepicker-lite
                                         id="deadlineActionSelector"
                                         selected-date-display-format="D MMM YYYY"
-                                        placeholder="[[getPlaceholderText('findings.deadline_of_action', basePermissionPath)]]"
+                                        placeholder="[[getPlaceholderText('findings.deadline_of_action', 
+                                                    basePermissionPath)]]"
                                         label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
                                         value="{{editedItem.deadline_of_action}}"
                                         error-message="{{errors.deadline_of_action}}"
@@ -241,7 +257,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
     {
       'size': 25,
       'name': 'finding',
-      'label': 'Finding Number',
+      'label': 'Finding Number'
     }, {
       'size': 50,
       'label': 'Subject Area',
@@ -288,14 +304,13 @@ class SummaryFindingsElement extends (CommonMethodsMixin
   deleteTitle: string = 'Are you sure that you want to delete this finding?';
 
 
-
   static get observers() {
     return [
       'resetDialog(dialogOpened)',
       'resetDialog(confirmDialogOpened)',
       '_setPriority(itemModel, priority)',
       '_complexErrorHandler(errorObject.findings)'
-    ]
+    ];
   }
 
   connectedCallback() {
@@ -314,7 +329,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
   }
 
   getCategoryDisplayName(value, emptyValue) {
-    let categoryOfObservation = find(this.categoryOfObservation, ['value', value]);
+    const categoryOfObservation = find(this.categoryOfObservation, ['value', value]);
     return categoryOfObservation ? categoryOfObservation.display_name : emptyValue || '';
   }
 
@@ -342,7 +357,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
     if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
       return this.getCurrentData();
     }
-    let data = [];
+    const data: any[] = [];
     each(this.dataItems, (item, index) => {
       if (item.priority !== this.priority.value) {
         return;
@@ -352,13 +367,14 @@ class SummaryFindingsElement extends (CommonMethodsMixin
       }
       let dataItem;
       if (isObject(item.category_of_observation)) {
-        let preparedItem = cloneDeep(item);
+        const preparedItem = cloneDeep(item);
         preparedItem.category_of_observation = item.category_of_observation.value;
         dataItem = preparedItem;
       } else {
         dataItem = item;
       }
-      let compareItems = (changedObj, originalObj) => {
+      const compareItems = (changedObj, originalObj) => {
+        // eslint-disable-next-line
         return !((changedObj.category_of_observation && changedObj.category_of_observation !== originalObj.category_of_observation) ||
           (changedObj.deadline_of_action && changedObj.deadline_of_action !== originalObj.deadline_of_action) ||
           (changedObj.recommendation && changedObj.recommendation !== originalObj.recommendation) ||
@@ -375,7 +391,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin
     if (!this.dialogOpened && !this.confirmDialogOpened) {
       return null;
     }
-    let data = cloneWith(this.editedItem, (item) => {
+    const data = cloneWith(this.editedItem, (item) => {
       if (item.category_of_observation && item.category_of_observation.value) {
         item.category_of_observation = item.category_of_observation.value;
       }

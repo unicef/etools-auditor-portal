@@ -1,30 +1,32 @@
 import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
 import {GenericObject} from '../../types/global';
+import '@unicef-polymer/etools-behaviors/etools-logging';
+import {logWarn} from '@unicef-polymer/etools-behaviors/etools-logging';
 
-let _permissionCollection: {
-  edited_ap_options?: {allowed_actions:[]},
-  new_engagement?: {POST:GenericObject, GET: GenericObject, allowed_actions:[]},
-  new_staff_sc?:{POST:GenericObject, GET:GenericObject, title:string, allowed_actions:[]},
-  [key:string]: any
+const _permissionCollection: {
+  edited_ap_options?: {allowed_actions: []};
+  new_engagement?: {POST: GenericObject; GET: GenericObject; allowed_actions: []};
+  new_staff_sc?: {POST: GenericObject; GET: GenericObject; title: string; allowed_actions: []};
+  [key: string]: any;
 } = {};
 
 export function addToCollection(collectionName, data, title?) {
-  //check arguments
+  // check arguments
   if (!collectionName || !data) {
-    console.warn('collectionName and data arguments must be provided!');
+    logWarn('collectionName and data arguments must be provided!');
     return false;
   }
   if (typeof collectionName !== 'string') {
-    console.warn('collectionName must be a string');
+    logWarn('collectionName must be a string');
     return false;
   }
   if (typeof data !== 'object' || typeof data.forEach === 'function') {
-    console.warn('data must be an object');
+    logWarn('data must be an object');
     return false;
   }
 
-  //check existance
+  // check existance
   if (_permissionCollection[collectionName]) {
     return false;
   }
@@ -40,11 +42,11 @@ export function addToCollection(collectionName, data, title?) {
 
 export function updateCollection(collectionName, data, title?) {
   if (!_permissionCollection[collectionName]) {
-    console.warn(`Collection ${collectionName} does not exist!`);
+    logWarn(`Collection ${collectionName} does not exist!`);
     return false;
   }
   if (typeof data !== 'object' || typeof data.forEach === 'function') {
-    console.warn('data must be an object');
+    logWarn('data must be an object');
     return false;
   }
 
@@ -57,15 +59,15 @@ export function updateCollection(collectionName, data, title?) {
 }
 
 function _manageActions(collectionName) {
-  let collection = _permissionCollection[collectionName];
+  const collection = _permissionCollection[collectionName];
   if (!collection) {
-    console.warn(`Collection ${collectionName} does not exist!`);
+    logWarn(`Collection ${collectionName} does not exist!`);
     return false;
   }
 
-  let allowed_actions = collection.allowed_FSM_transitions as any || [];
+  const allowed_actions = collection.allowed_FSM_transitions as any || [];
 
-  let actions: any[] = [];
+  const actions: any[] = [];
   if (isValidCollection(collection.PUT)) {
     actions.push(_createAction('save', allowed_actions[0]));
   }
@@ -108,7 +110,7 @@ export function getFieldAttribute(path, attribute, actionType?) {
 
 }
 
-export function readonlyPermission(path) {//isReadonly
+export function readonlyPermission(path) {// isReadonly
   return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
 }
 
@@ -139,11 +141,11 @@ export function getCollection(path, actionType?) {
   let value = _permissionCollection;
 
   while (path.length) {
-    let key = path.shift();
+    const key = path.shift();
     if (value[key]) {
       value = value[key];
     } else {
-      let action = actionType ? value[actionType] : isValidCollection(value.POST) ||
+      const action = actionType ? value[actionType] : isValidCollection(value.POST) ||
         isValidCollection(value.PUT) ||
         isValidCollection(value.GET);
 
@@ -160,8 +162,8 @@ export function getCollection(path, actionType?) {
 }
 
 export function isValidCollection(collection) {
-  let testedCollection = omit(collection, 'allowed_actions'),
-    actions = get(collection, 'allowed_actions', []);
+  const testedCollection = omit(collection, 'allowed_actions');
+  const actions = get(collection, 'allowed_actions', []);
   if (collection && (Object.keys(testedCollection).length || actions.length)) {
     return collection;
   } else {

@@ -116,7 +116,7 @@ class ShareDocuments extends
                     label="[[getLabel('file_type', basePermissionPath)]]"
                     placeholder="Select"
                     options="[[fileTypes]]"
-                    empty-value
+                    enable-none-option
                     dynamic-align>
             </etools-dropdown>
           </div>
@@ -233,7 +233,7 @@ class ShareDocuments extends
     };
 
     this.sendRequest(options)
-      .then(resp => {
+      .then((resp) => {
         this.set('attachmentsList', resp);
         this.set('originalList', resp);
       })
@@ -242,13 +242,13 @@ class ShareDocuments extends
   }
 
   _getFileTypesFromStatic() {
-    const fileTypes = getStaticData("staticDropdown").attachment_types
+    const fileTypes = getStaticData('staticDropdown').attachment_types
       .filter(val => !isEmpty(val))
       .map(
         typeStr => ({label: typeStr, value: typeStr})
       );
     const uniques = uniqBy(fileTypes, 'label');
-    return uniques
+    return uniques;
 
   }
 
@@ -262,7 +262,7 @@ class ShareDocuments extends
     if (isChecked) {
       this.push('selectedAttachments', {attachment: id});
     } else {
-      let cloned = clone(this.selectedAttachments);
+      const cloned = clone(this.selectedAttachments);
       remove(cloned, {attachment: id});
       this.set('selectedAttachments', cloned);
     }
@@ -309,7 +309,7 @@ class ShareDocuments extends
     }
     const file_type = selectedFileType.toLowerCase();
     const newFilteredList = this.originalList.filter(row => row.file_type.toLowerCase() === file_type);
-    this.set('attachmentsList', newFilteredList)
+    this.set('attachmentsList', newFilteredList);
   }
 
 

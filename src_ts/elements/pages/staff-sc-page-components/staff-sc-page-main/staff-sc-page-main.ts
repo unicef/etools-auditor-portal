@@ -21,6 +21,7 @@ import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../app-config/config';
+import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -156,9 +157,9 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.allowNew = actionAllowed('new_staff_sc', 'create');
     this.sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
-    }).then(resp => {
+    }).then((resp) => {
       this._auditFirmLoaded(resp);
-    }).catch(err => {
+    }).catch((err) => {
       throw new Error(err);
     });
   }
@@ -171,7 +172,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     if (view === this.lastView) {return;}
     if (view === 'list') {
-      let queries = this._configListParams(this.initiation++);
+      const queries = this._configListParams(this.initiation++);
       this._setEngagementsListQueries(queries);
       this._fireUpdateEngagementsFilters();
       this.view = 'list';
@@ -205,15 +206,15 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _configListParams(noNotify?) {
 
-    let queries = this.route.__queryParams || {};
-    let queriesUpdates: GenericObject = clone(queries);
+    const queries = this.route.__queryParams || {};
+    const queriesUpdates: GenericObject = clone(queries);
 
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
     if (!queries.page) {queriesUpdates.page = '1';}
 
-    let page = +queries.page;
+    const page = +queries.page;
     if (isNaN(page) || (this.lastParams &&
       (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
       queriesUpdates.page = '1';
@@ -233,7 +234,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
     if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {return;}
     if (this.routeData.view === 'list') {
-      let queries = this._configListParams();
+      const queries = this._configListParams();
       this._setEngagementsListQueries(queries);
     } else if (!isNaN(+this.routeData.view)) {
       clearQueries();
@@ -248,7 +249,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _auditFirmLoaded({results}) {
     if (!results.length) {
-      console.error('Error fetching audit firm.');
+      logError('Error fetching audit firm.');
     }
     else {
       this.auditFirm = results[0];

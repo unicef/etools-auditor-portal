@@ -1,4 +1,3 @@
-
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {setPassiveTouchGestures, setRootPath} from '@polymer/polymer/lib/utils/settings.js';
 
@@ -19,8 +18,8 @@ import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
 import '@unicef-polymer/etools-loading';
 
 import './../app-sidebar-menu/app-menu.js';
-import './../app-main-header/page-header.js'
-import './../app-footer/page-footer.js'
+import './../app-main-header/page-header.js';
+import './../app-footer/page-footer.js';
 
 import './../../styles-elements/app-theme.js';
 import '../../data-elements/static-data';
@@ -31,15 +30,16 @@ import '../../data-elements/static-data';
 setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
-import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin.js';
-import {fireEvent} from '../../utils/fire-custom-event.js';
+import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin';
+import {fireEvent} from '../../utils/fire-custom-event';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import {getUserData} from '../../app-mixins/user-controller';
-import {GenericObject} from '../../../types/global.js';
-import {getDomainByEnv} from '../../app-config/config.js';
+import {GenericObject} from '../../../types/global';
+import {getDomainByEnv} from '../../app-config/config';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from '../../app-config/config';
+import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 setRootPath(`/${BASE_PATH}/`);
 
@@ -70,7 +70,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                         fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" transition-duration="350"
-                    opened="[[_drawerOpened]]"
+                    on-click="onDrawerClick"
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
             selected-option="[[page]]"
@@ -159,7 +159,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.path)'
+      '_routePageChanged(route.path)',
+      '_viewChanged(routeData.view)'
     ];
   }
 
@@ -187,8 +188,13 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   @property({type: Object})
   routeData: GenericObject = {};
 
+  @property({type: Object})
+  queryParams!: GenericObject;
+
   public connectedCallback() {
     super.connectedCallback();
+
+    window.EtoolsEsmmFitIntoEl = this.$.appHeadLayout!.shadowRoot!.querySelector('#contentContainer');
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
@@ -208,19 +214,19 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _dialogOpening(event) {
-    let dialogOverlay = document.querySelector("iron-overlay-backdrop.opened");
+    const dialogOverlay = document.querySelector('iron-overlay-backdrop.opened');
     if (!dialogOverlay) {return;}
 
-    dialogOverlay.classList.remove("opened");
+    dialogOverlay.classList.remove('opened');
 
     const zIndex = (dialogOverlay as any).style.zIndex;
     event.target.$.drawerOverlay.style.zIndex = zIndex;
     event.target.$.appHeaderOverlay.style.zIndex = zIndex;
     event.target.$.pageheader.$.toolBarOverlay.style.zIndex = zIndex;
 
-    event.target.$.drawerOverlay.classList.add("opened");
-    event.target.$.appHeaderOverlay.classList.add("opened");
-    event.target.$.pageheader.$.toolBarOverlay.classList.add("opened");
+    event.target.$.drawerOverlay.classList.add('opened');
+    event.target.$.appHeaderOverlay.classList.add('opened');
+    event.target.$.pageheader.$.toolBarOverlay.classList.add('opened');
   }
   _dialogClosing(event) {
     // chrome
@@ -232,14 +238,14 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     event.target.$.appHeaderOverlay.style.zIndex = '';
     event.target.$.pageheader.$.toolBarOverlay.style.zIndex = '';
 
-    event.target.$.drawerOverlay.classList.remove("opened");
-    event.target.$.appHeaderOverlay.classList.remove("opened");
-    event.target.$.pageheader.$.toolBarOverlay.classList.remove("opened");
+    event.target.$.drawerOverlay.classList.remove('opened');
+    event.target.$.appHeaderOverlay.classList.remove('opened');
+    event.target.$.pageheader.$.toolBarOverlay.classList.remove('opened');
   }
 
   queueToast(e) {
-    let detail = e.detail;
-    let notificationList = this.shadowRoot!.querySelector('multi-notification-list');
+    const detail = e.detail;
+    const notificationList = this.shadowRoot!.querySelector('multi-notification-list');
     if (!notificationList) {return;}
 
     if (detail && detail.reset) {
@@ -254,6 +260,13 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return urlSpaceRegex.test(this.route.path);
   }
 
+  _viewChanged() {
+    if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
+      // clear url params(filters from previous page) on navigate between pages
+      this.set('queryParams', {});
+    }
+  }
+
   _routePageChanged() {
     if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
       return;
@@ -261,6 +274,19 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     this.page = this.routeData.page || 'engagements';
     if (this.scroll) {
       this.scroll(0, 0);
+    }
+
+    // Close a non-persistent drawer when the module & route are changed.
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (!appDrawer.persistent) {
+      appDrawer.close();
+    }
+  }
+
+  onDrawerClick(e) {
+    const appDrawer = this.$.drawer as AppDrawerElement;
+    if (e.target === appDrawer && appDrawer.opened) {
+      appDrawer.close();
     }
   }
 
@@ -285,6 +311,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       this._pageNotFound();
       return;
     } else {
+      // eslint-disable-next-line
       resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
     }
 
@@ -295,17 +322,20 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
       if (this.route.path === this.rootPath) {this._setDefaultLandingPage();}
     })
-      .catch((_err) => {console.error(_err); this._pageNotFound()});
+      .catch((_err) => {
+        logError(_err);
+        this._pageNotFound();
+      });
   }
 
   _checkSSCPage(user) {
-    let groups = get(user, 'groups', []);
+    const groups = get(user, 'groups', []);
     return some(groups, group => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User');
   }
 
   _pageNotFound(event?) {
     this.page = 'not-found';
-    let message = event && event.detail && event.detail.message ?
+    const message = event && event.detail && event.detail.message ?
       `${event.detail.message}` :
       'Oops you hit a 404!';
 
@@ -313,7 +343,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     fireEvent(this, 'global-loading', {type: 'initialisation'});
   }
 
-  _initialDataLoaded(e) {
+  _initialDataLoaded() {
     if (this.routeData) {
       this.user = getUserData();
       this.page = this.routeData.page || this._setDefaultLandingPage();
@@ -322,10 +352,10 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   handleLoading(event) {
     if (!event.detail || !event.detail.type) {
-      console.error('Bad details object', JSON.stringify(event.detail));
+      logError(JSON.stringify(event.detail), 'Bad details object');
       return;
     }
-    let loadingElement = this.shadowRoot!.querySelector('etools-loading#global-loading')! as any;
+    const loadingElement = this.shadowRoot!.querySelector('etools-loading#global-loading')! as any;
 
     if (event.detail.active && loadingElement.active) {
       this.globalLoadingQueue.push(event);
@@ -334,7 +364,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       loadingElement.active = true;
     } else {
       loadingElement.active = false;
-      this.globalLoadingQueue = this.globalLoadingQueue.filter((element) => {return element.detail.type !== event.detail.type;});
+      this.globalLoadingQueue = this.globalLoadingQueue.filter((element) => {
+        return element.detail.type !== event.detail.type;
+      });
       if (this.globalLoadingQueue.length) {
         this.handleLoading(this.globalLoadingQueue.shift());
       }
@@ -342,7 +374,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _setDefaultLandingPage() {// _configPath
-    let path = `${this.rootPath}engagements/list`;
+    const path = `${this.rootPath}engagements/list`;
     this.set('route.path', path);
     return 'engagements';
   }

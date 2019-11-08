@@ -1,6 +1,6 @@
-import {PolymerElement} from "@polymer/polymer/polymer-element";
-import {property} from "@polymer/decorators";
-import {fireEvent} from "../utils/fire-custom-event.js";
+import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators';
+import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 
@@ -26,15 +26,15 @@ class GetAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   _baseIdChanged(baseId) {
     if (!baseId || !this.endpointName) {return;}
-    let url = getEndpoint(this.endpointName, {id: baseId}).url;
+    const url = getEndpoint(this.endpointName, {id: baseId}).url;
 
     this.sendRequest({
       endpoint: {url}
-    }).then(resp => {
+    }).then((resp) => {
       this._handleResponse(resp);
-    }).catch(err => {
+    }).catch(() => {
       this._handleError();
     });
   }
 }
-window.customElements.define("get-attachments", GetAttachments);
+window.customElements.define('get-attachments', GetAttachments);

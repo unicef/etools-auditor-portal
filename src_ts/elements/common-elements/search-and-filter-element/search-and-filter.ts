@@ -83,16 +83,14 @@ class SearchAndFilter extends PolymerElement {
             </paper-button>
 
             <paper-listbox multi slot="dropdown-content" selected="0">
-              <template is="dom-repeat"
-                        items="[[availableFilters]]">
-                <paper-icon-item on-tap="addFilter">
-                  <iron-icon icon="check"
-                             item-icon
-                             hidden$="[[!_isSelected(item, availableFilters)]]"></iron-icon>
-                  [[item.name]]
-                  </paper-item>
+              <template is="dom-repeat" items="[[availableFilters]]">
+                <paper-icon-item on-tap="addFilter" selected$="[[_isSelected(item, availableFilters)]]">
+                  <iron-icon icon="check" slot="item-icon" hidden$="[[!_isSelected(item, availableFilters)]]"></iron-icon>
+                  <paper-item-body>[[item.name]]</paper-item-body>
+                </paper-icon-item>
               </template>
             </paper-listbox>
+
           </paper-menu-button>
 
         </div>
@@ -121,6 +119,9 @@ class SearchAndFilter extends PolymerElement {
   @property({type: String})
   previousSearchValue: string = '';
 
+  @property({type: Boolean})
+  filtersDataLoaded: boolean = false;
+
   private _searchKeyDownDebounce!: Debouncer;
   private _restoreFiltersDebounce!: Debouncer;
 
@@ -130,7 +131,7 @@ class SearchAndFilter extends PolymerElement {
     ];
   }
 
-  searchKeyDown(event, {value}) {
+  searchKeyDown(_event, {value}) {
     if ((!this.previousSearchValue && !value) || value === this.previousSearchValue) {
       return;
     }
@@ -140,7 +141,7 @@ class SearchAndFilter extends PolymerElement {
       timeOut.after(300),
       () => {
         if (this.searchString.length !== 1) {
-          let query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
+          const query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
           updateQueries({search: query, page: '1'});
         }
       });
@@ -152,37 +153,31 @@ class SearchAndFilter extends PolymerElement {
   }
 
   addFilter(e) {
-    let query = (typeof e === 'string') ? e : e.model.item.query;
-    let isSelected = this._isSelected(query);
+    const query = (typeof e === 'string') ? e : e.model.item.query;
+    const isSelected = this._isSelected(query);
 
     if (!isSelected) {
-      let newFilter = this.filters.find((filter) => {
+      const newFilter = this.filters.find((filter) => {
         return filter.query === query;
       });
-
       this._setFilterValue(newFilter);
       this.push('usedFilters', newFilter);
-
-      if (this.queryParams[query] === undefined) {
-        let queryObject = {};
-        queryObject[query] = true;
-        updateQueries(queryObject);
-      }
     } else {
       this.removeFilter(e);
     }
+    this.set('availableFilters', [...this.availableFilters]);
   }
 
   removeFilter(e) {
-    let query = (typeof e === 'string') ? e : e.model.item.query;
-    let indexToRemove = this.usedFilters.findIndex((filter) => {
+    const query = (typeof e === 'string') ? e : e.model.item.query;
+    const indexToRemove = this.usedFilters.findIndex((filter) => {
       return filter.query === query;
     });
     if (indexToRemove === -1) {
       return;
     }
 
-    let queryObject: GenericObject = {};
+    const queryObject: GenericObject = {};
     queryObject[query] = undefined;
 
     if (this.queryParams[query]) {
@@ -192,11 +187,15 @@ class SearchAndFilter extends PolymerElement {
     if (indexToRemove !== -1) {
       this.splice('usedFilters', indexToRemove, 1);
     }
-    updateQueries(queryObject);
+
+    if (this.queryParams[query] !== undefined) {
+      updateQueries(queryObject);
+    }
   }
 
   _reloadFilters() {
     this.set('usedFilters', []);
+    this.filtersDataLoaded = true;
     this._restoreFilters();
   }
 
@@ -204,20 +203,19 @@ class SearchAndFilter extends PolymerElement {
     this._restoreFiltersDebounce = Debouncer.debounce(this._restoreFiltersDebounce,
       timeOut.after(50),
       () => {
-        let queryParams = this.queryParams;
+        const queryParams = this.queryParams;
 
-        if (!queryParams) {
+        if (!queryParams || !this.filtersDataLoaded) {
           return;
         }
 
         this.filters.forEach((filter) => {
-          let usedFilter = this.usedFilters.find(used => used.query === filter.query);
+          const usedFilter = this.usedFilters.find(used => used.query === filter.query);
 
           if (!usedFilter && queryParams[filter.query] !== undefined) {
             this.addFilter(filter.query);
-          } else if (queryParams[filter.query] === undefined) {
-            this.removeFilter(filter.query);
           }
+
         });
 
         if (queryParams.search) {
@@ -244,7 +242,7 @@ class SearchAndFilter extends PolymerElement {
       return;
     }
 
-    let filterValue = this.get(`queryParams.${filter.query}`);
+    const filterValue = this.get(`queryParams.${filter.query}`);
 
     if (filterValue !== undefined) {
       filter.selectedValues = this._getFilterValue(filterValue, filter);
@@ -257,25 +255,15 @@ class SearchAndFilter extends PolymerElement {
     if (!filter || !filter.selection || filterValue === undefined) {
       return;
     }
-    let splitValues = filterValue.split(',');
-    let optionValue = filter.optionValue;
+    const splitValues = filterValue.split(',');
+    const optionValue = filter.optionValue;
 
-    const exists = filter.selection.find(
-      (selectionItem) => filterValue.indexOf(selectionItem[optionValue].toString()) !== -1);
-
-    if (!exists) {
-      return;
-    }
-
-    return filter.selection.filter(selectionItem => {
-      let filVal = selectionItem[optionValue].toString();
-      return splitValues.includes(filVal);
-    });
-
+    return filter.selection.filter((option: any) =>
+      splitValues.includes(String(option[optionValue]))).map((option: any) => option[optionValue]);
   }
 
   _getFilter(query) {
-    let filterIndex = this.filters.findIndex((filter) => {
+    const filterIndex = this.filters.findIndex((filter) => {
       return filter.query === query;
     });
 
@@ -291,12 +279,12 @@ class SearchAndFilter extends PolymerElement {
       return;
     }
 
-    let query = e.currentTarget.id;
-    let queryObject = {page: '1'};
+    const query = e.currentTarget.id;
+    const queryObject = {page: '1'};
 
     if (detail.selectedItems && query) {
-      let filter = this._getFilter(query);
-      let optionValue = filter.optionValue || 'value';
+      const filter = this._getFilter(query);
+      const optionValue = filter.optionValue || 'value';
       queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
     }
     updateQueries(queryObject);

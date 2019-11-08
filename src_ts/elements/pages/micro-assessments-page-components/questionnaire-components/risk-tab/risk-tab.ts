@@ -73,10 +73,19 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
             </list-element>
 
             <template is="dom-repeat" items="{{category.blueprints}}">
-              <list-element class="list-element" data="[[_prepareData(item)]]" base-permission-path="[[basePermissionPath]]"
-                headings="[[columns]]" details="[[details]]" has-collapse multiline no-animation>
+              <list-element 
+                    class="list-element" 
+                    data="[[_prepareData(item)]]" 
+                    base-permission-path="[[basePermissionPath]]"
+                    headings="[[columns]]" 
+                    details="[[details]]" 
+                    has-collapse multiline no-animation>
                 <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                  <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog" category-id$="{{category.id}}">
+                  <paper-icon-button 
+                        icon="create" 
+                        class="edit-icon" 
+                        on-tap="openEditDialog" 
+                        category-id$="{{category.id}}">
                   </paper-icon-button>
                 </div>
 
@@ -172,7 +181,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   basePermissionPath!: string;
 
   @property({type: Array})
-  riskOptions!: {value: string | number, display_name: string }[];
+  riskOptions!: {value: string | number; display_name: string }[];
 
   static get observers() {
     return [
@@ -183,7 +192,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    let riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
+    const riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
     this.set('riskOptions', riskOptions);
   }
 
@@ -206,11 +215,11 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _riskValueChanged(event) {
-    let blueprint = event && event.model.item;
+    const blueprint = event && event.model.item;
     if (!blueprint) {
       return;
     }
-    let changedRiskRValue = event.detail.selectedItem && event.detail.selectedItem.value;
+    const changedRiskRValue = event.detail.selectedItem && event.detail.selectedItem.value;
 
     if (!blueprint.risk) {
       blueprint.risk = {};
@@ -227,13 +236,15 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _getQuestionnaireDataToSave(changedRiskRValue, blueprintId, eventTarget) {
-    let questionnaireToSave: GenericObject = {
+    const questionnaireToSave: GenericObject = {
       id: this.questionnaire.id
-    }
+    };
 
     if (this.questionnaire.children.length) {
-      let childId = eventTarget && eventTarget.getAttribute('category-id');
-      if (!childId) {throw 'Can not find category id!';}
+      const childId = eventTarget && eventTarget.getAttribute('category-id');
+      if (!childId) {
+        throw new Error('Can not find category id!');
+      }
 
       questionnaireToSave.children = [{
         id: childId,
@@ -253,7 +264,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
   setPanelTitle(header, complited) {
     if (!complited) {return header;}
-    let label = this.riskRatingOptions && this.riskRatingOptions[this.questionnaire.risk_rating];
+    const label = this.riskRatingOptions && this.riskRatingOptions[this.questionnaire.risk_rating];
     if (!label) {return header;}
     return `${header} - ${label.toUpperCase()}`;
   }
@@ -263,16 +274,16 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   openEditDialog(event) {
-    let item = event && event.model && event.model.item;
+    const item = event && event.model && event.model.item;
 
-    if (!item) {throw Error('Can not find user data');}
+    if (!item) {throw new Error('Can not find user data');}
 
     let childId = null;
     if (this.questionnaire.children.length) {
       childId = event.target && event.target.getAttribute('category-id');
-      if (!childId) {throw 'Can not find category id!';}
+      if (!childId) {throw new Error('Can not find category id!');}
     }
-    let data = cloneDeep(item);
+    const data = cloneDeep(item);
     if (!data.risk) {data.risk = {};}
     if (this.isJSONObj(data.risk.extra)) {
       data.risk.extra = JSON.parse(data.risk.extra);
