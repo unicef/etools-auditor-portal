@@ -83,6 +83,7 @@ class FileAttachmentsTab extends
           request-data="{{requestData}}"
           endpoint-name="[[endpointName]]"
           request-in-process="{{requestInProcess}}"
+          edited-item="[[editedItem]]"
           errors="{{errors}}">
       </update-attachments>
 
@@ -488,8 +489,8 @@ class FileAttachmentsTab extends
 
   setReadOnly() {
     this.isTabReadonly = !this.basePermissionPath ||
-                          (!collectionExists(`${this.basePermissionPath}.PUT`) &&
-                          !collectionExists(`${this.basePermissionPath}.POST`));
+      (!collectionExists(`${this.basePermissionPath}.PUT`) &&
+        !collectionExists(`${this.basePermissionPath}.POST`));
     this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
@@ -533,7 +534,7 @@ class FileAttachmentsTab extends
   _attachmentUploadFinished(e) {
     this.requestInProcess = false;
     if (e.detail.success) {
-      const uploadResponse = JSON.parse(e .detail.success);
+      const uploadResponse = JSON.parse(e.detail.success);
       this.set('editedItem.attachment', uploadResponse.id);
       this.set('editedItem.filename', uploadResponse.filename);
 
