@@ -80,6 +80,7 @@ class SearchAndFilter extends PolymerElement {
                       value="{{item.selectedValue}}"
                       on-date-has-changed="_filterDateHasChanged"
                       fire-date-has-changed
+                      error-message=''
                       selected-date-display-format="D MMM YYYY">
                   </datepicker-lite>
               </template>
