@@ -20,9 +20,14 @@ import {timeOut} from '@polymer/polymer/lib/utils/async';
 
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
-
+declare const moment: any;
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 import {searchAndFilterStyles} from './search-and-filter-styles';
+
+export enum FilterTypes {
+  DropdownMulti,
+  Date,
+}
 
 /**
  * @customElement
@@ -52,19 +57,33 @@ class SearchAndFilter extends PolymerElement {
           <!-- FILTERS -->
           <template is="dom-repeat" items="[[usedFilters]]">
             <div class="layout horizontal">
-              <etools-dropdown-multi
-                  id="[[item.query]]"
-                  class="filter-dropdown"
-                  selected-values="{{item.selectedValues}}"
-                  label="[[item.label]]"
-                  placeholder$="&#8212;"
-                  options="[[item.selection]]"
-                  option-label="[[item.optionLabel]]"
-                  option-value="[[item.optionValue]]"
-                  trigger-value-change-event
-                  on-etools-selected-items-changed="_changeFilterValue"
-                  hide-search="[[item.hideSearch]]">
-              </etools-dropdown-multi>
+                <template is="dom-if" if="[[filterTypeIsDropdownMulti(item.type)]]">
+                  <etools-dropdown-multi
+                      id="[[item.query]]"
+                      class="filter-dropdown"
+                      selected-values="{{item.selectedValue}}"
+                      label="[[item.label]]"
+                      placeholder$="&#8212;"
+                      options="[[item.selection]]"
+                      option-label="[[item.optionLabel]]"
+                      option-value="[[item.optionValue]]"
+                      trigger-value-change-event
+                      on-etools-selected-items-changed="_filterDropdownMultiHasChanged"
+                      hide-search="[[item.hideSearch]]">
+                  </etools-dropdown-multi>
+                </template>
+                <template is="dom-if" if="[[filterTypeIsDate(item.type)]]">
+                  <datepicker-lite id="[[item.query]]"
+                      class="filter-date"
+                      label="[[item.label]]"
+                      placeholder="&#8212;"
+                      value="{{item.selectedValue}}"
+                      on-date-has-changed="_filterDateHasChanged"
+                      fire-date-has-changed
+                      error-message=''
+                      selected-date-display-format="D MMM YYYY">
+                  </datepicker-lite>
+              </template>
             </div>
           </template>
         </div>
@@ -160,7 +179,7 @@ class SearchAndFilter extends PolymerElement {
       const newFilter = this.filters.find((filter) => {
         return filter.query === query;
       });
-      this._setFilterValue(newFilter);
+      this._setFilterValueFromQueryParams(newFilter);
       this.push('usedFilters', newFilter);
     } else {
       this.removeFilter(e);
@@ -237,25 +256,35 @@ class SearchAndFilter extends PolymerElement {
     });
   }
 
-  _setFilterValue(filter) {
+  _setFilterValueFromQueryParams(filter) {
     if (!filter) {
       return;
     }
 
-    const filterValue = this.get(`queryParams.${filter.query}`);
+    const filterQueryParamValue = this.get(`queryParams.${filter.query}`);
+    filter.selectedValue = this._convertValueForFilter(filter, filterQueryParamValue);
+  }
 
-    if (filterValue !== undefined) {
-      filter.selectedValues = this._getFilterValue(filterValue, filter);
-    } else {
-      filter.selectedValues = undefined;
+  _convertValueForFilter(filter, valueToConvert) {
+    if (filter.type === FilterTypes.DropdownMulti) {
+      return this._convertValueForDropdownMulti(valueToConvert, filter);
+    } else if (filter.type === FilterTypes.Date) {
+      return this._convertValueForDate(valueToConvert);
     }
   }
 
-  _getFilterValue(filterValue, filter) {
-    if (!filter || !filter.selection || filterValue === undefined) {
+  _convertValueForDate(valueToConvert) {
+    if (valueToConvert) {
+      const date = moment(valueToConvert);
+      return date.isValid() ? date.format() : undefined;
+    }
+  }
+
+  _convertValueForDropdownMulti(valueToConvert, filter) {
+    if (!filter || !filter.selection || valueToConvert === undefined) {
       return;
     }
-    const splitValues = filterValue.split(',');
+    const splitValues = valueToConvert.split(',');
     const optionValue = filter.optionValue;
 
     return filter.selection.filter((option: any) =>
@@ -274,7 +303,7 @@ class SearchAndFilter extends PolymerElement {
     }
   }
 
-  _changeFilterValue(e, detail) {
+  _filterDropdownMultiHasChanged(e, detail) {
     if (!e || !e.currentTarget || !detail) {
       return;
     }
@@ -288,7 +317,27 @@ class SearchAndFilter extends PolymerElement {
       queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
     }
     updateQueries(queryObject);
+  }
 
+  _filterDateHasChanged(e, detail) {
+    if (!e || !e.currentTarget || !detail) {
+      return;
+    }
+
+    const query = e.currentTarget.id;
+    const queryObject = {page: '1'};
+    if (query) {
+      queryObject[query] = detail.date ? moment(detail.date).format('YYYY-MM-DD') : undefined;
+    }
+    updateQueries(queryObject);
+  }
+
+  filterTypeIsDropdownMulti(checkedTypeValue: FilterTypes) {
+    return checkedTypeValue === FilterTypes.DropdownMulti;
+  }
+
+  filterTypeIsDate(checkedTypeValue: FilterTypes) {
+    return checkedTypeValue === FilterTypes.Date;
   }
 
 }
