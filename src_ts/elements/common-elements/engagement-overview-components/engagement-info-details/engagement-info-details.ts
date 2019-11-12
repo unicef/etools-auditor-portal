@@ -18,7 +18,6 @@ import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 
-import isEqual from 'lodash-es/isEqual';
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
@@ -27,6 +26,7 @@ import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getChoices, collectionExists} from '../../../app-mixins/permission-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 
@@ -365,6 +365,30 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                   </etools-dropdown-multi>
                   </div>
               </template>
+
+              <!-- Notify when completed -->
+              <div class="input-container" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
+                <etools-dropdown-multi
+                            class$="validate-input disabled-as-readonly [[_setRequired('users_notified',
+                                      basePermissionPath)]]"
+                            label="[[getLabel('users_notified', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('users_notified', basePermissionPath)]]"
+                            options="[[usersNotifiedOptions]]"
+                            option-label="name"
+                            option-value="id"
+                            selected-values="{{usersNotifiedIDs}}"
+                            required$="{{_setRequired('users_notified', basePermissionPath)}}"
+                            disabled$="[[isReadOnly('users_notified', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('users_notified', basePermissionPath)]]"
+                            invalid="{{errors.users_notified}}"
+                            error-message="{{errors.users_notified}}"
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError"
+                            dynamic-align
+                            hide-search>
+                </etools-dropdown-multi>
+               </div>
+
           </div>
 
       </etools-content-panel>
@@ -441,6 +465,15 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Object})
   orderNumber!: GenericObject | null;
 
+  @property({type: Array})
+  users: GenericObject[] = [];
+
+  @property({type: Array})
+  usersNotifiedOptions: GenericObject[] = [];
+
+  @property({type: Array})
+  usersNotifiedIDs: any[] = [];
+
   static get observers() {
     return [
       '_errorHandler(errorObject)',
@@ -467,6 +500,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   _prepareData() {
     // reset orderNumber
     this.set('orderNumber', null);
+    this.setUsersNotifiedIDs();
 
     let poItem = this.get('data.po_item');
     if (!poItem) {
@@ -478,6 +512,22 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       number: `${poItem.number}`
     };
     this.set('data.po_item', poItem);
+  }
+
+  setUsersNotifiedIDs() {
+    debugger;
+    this.set('users', getStaticData('users') || []);
+    let usersNotifiedOptions = [...this.users];
+    let users_notified = this.get('data.users_notified') || [];
+    // dci must map saved data to user loaded format, clarify with Dom...
+    this.handleUsersNoLongerAssignedToCurrentCountry(usersNotifiedOptions, 'id', users_notified, 'pk');
+    this.set('usersNotifiedOptions', usersNotifiedOptions);
+    let usersNotifiedIDs = users_notified.map(item => item.pk);
+    this.set('usersNotifiedIDs', usersNotifiedIDs);
+  }
+
+  populateUsersNotifiedDropDown() {
+    this.usersNotifiedOptions = [...this.users];
   }
 
   _setSharedIpWith(basePermissionPath: string) {
@@ -640,6 +690,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
     if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) {
       data.po_item = this.data.po_item.id;
+    }
+
+    let originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(item => +item.pk);
+    if (this.usersNotifiedIDs.length != originalUsersNotifiedIDs.length ||
+      this.usersNotifiedIDs.filter(id => !originalUsersNotifiedIDs.includes(+id)).length > 0) {
+      data.users_notified = this.usersNotifiedIDs;
     }
 
     let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];

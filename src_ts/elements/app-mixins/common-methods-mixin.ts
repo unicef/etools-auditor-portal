@@ -194,6 +194,23 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       }
       return isObject(json);
     }
+
+    handleUsersNoLongerAssignedToCurrentCountry = (availableData: any[], availableDataKey: string, savedData: any[], savedDataKey: string) => {
+      savedData = savedData || [];
+      if (savedData.length > 0 && availableData && availableData.length > 0) {
+        let changed = false;
+        savedData.forEach((savedItem) => {
+          if (availableData.findIndex(item => item[availableDataKey] === savedItem[savedDataKey]) < 0) {
+            availableData.push(savedItem);
+            changed = true;
+          }
+        });
+        if (changed) {
+          availableData.sort((a, b) => (a.name < b.name) ? -1 : 1);
+        }
+      }
+    };
+
   }
 
   return CommonMethodsMixinClass;
