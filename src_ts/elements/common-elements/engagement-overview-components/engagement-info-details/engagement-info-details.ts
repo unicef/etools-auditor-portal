@@ -515,7 +515,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   setUsersNotifiedIDs() {
-    debugger;
     this.set('users', getStaticData('users') || []);
     let usersNotifiedOptions = [...this.users];
     let users_notified = this.get('data.users_notified') || [];
