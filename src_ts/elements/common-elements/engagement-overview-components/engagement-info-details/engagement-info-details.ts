@@ -383,9 +383,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                             invalid="{{errors.users_notified}}"
                             error-message="{{errors.users_notified}}"
                             on-focus="_resetFieldError"
-                            on-tap="_resetFieldError"
-                            dynamic-align
-                            hide-search>
+                            on-tap="_resetFieldError">
                 </etools-dropdown-multi>
                </div>
 
@@ -466,7 +464,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   orderNumber!: GenericObject | null;
 
   @property({type: Array})
-  users: GenericObject[] = [];
+  users!: GenericObject[];
 
   @property({type: Array})
   usersNotifiedOptions: GenericObject[] = [];
@@ -515,13 +513,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   setUsersNotifiedIDs() {
-    this.set('users', getStaticData('users') || []);
-    let usersNotifiedOptions = [...this.users];
-    let users_notified = this.get('data.users_notified') || [];
-    // dci must map saved data to user loaded format, clarify with Dom...
-    this.handleUsersNoLongerAssignedToCurrentCountry(usersNotifiedOptions, 'id', users_notified, 'pk');
-    this.set('usersNotifiedOptions', usersNotifiedOptions);
-    let usersNotifiedIDs = users_notified.map(item => item.pk);
+    if (!this.users) {
+      this.set('users', getStaticData('users') || []);
+    }
+    let availableUsers = [...this.users];
+    let notifiedUsers = this.get('data.users_notified') || [];
+    this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
+    this.set('usersNotifiedOptions', availableUsers);
+    let usersNotifiedIDs = notifiedUsers.map(user => user.id);
     this.set('usersNotifiedIDs', usersNotifiedIDs);
   }
 

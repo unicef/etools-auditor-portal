@@ -195,18 +195,18 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return isObject(json);
     }
 
-    handleUsersNoLongerAssignedToCurrentCountry = (availableData: any[], availableDataKey: string, savedData: any[], savedDataKey: string) => {
-      savedData = savedData || [];
-      if (savedData.length > 0 && availableData && availableData.length > 0) {
+    handleUsersNoLongerAssignedToCurrentCountry = (availableUsers: any[], savedUsers: any[]) => {
+      savedUsers = savedUsers || [];
+      if (savedUsers.length > 0 && availableUsers && availableUsers.length > 0) {
         let changed = false;
-        savedData.forEach((savedItem) => {
-          if (availableData.findIndex(item => item[availableDataKey] === savedItem[savedDataKey]) < 0) {
-            availableData.push(savedItem);
+        savedUsers.forEach((savedUser) => {
+          if (availableUsers.findIndex(user => user.id === savedUser.id) < 0) {
+            availableUsers.push(savedUser);
             changed = true;
           }
         });
         if (changed) {
-          availableData.sort((a, b) => (a.name < b.name) ? -1 : 1);
+          availableUsers.sort((a, b) => (a.name < b.name) ? -1 : 1);
         }
       }
     };
