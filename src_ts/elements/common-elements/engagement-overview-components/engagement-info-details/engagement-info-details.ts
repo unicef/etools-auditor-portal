@@ -26,6 +26,7 @@ import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getChoices, collectionExists} from '../../../app-mixins/permission-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
@@ -150,7 +151,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                           options="[[_getPoItems(data.agreement)]]"
                           option-label="number"
                           option-value="id"
-                          required$="{{_setRequired('po_item', basePermissionPath)}}"
+                          required$="[[_setRequired('po_item', basePermissionPath)]]"
                           disabled$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
                           readonly$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
                           invalid="{{_checkInvalid(errors.po_item)}}"
@@ -189,7 +190,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                           label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('agreement.contract_end_date',
                                                             basePermissionPath, 'datepicker')]]"
-                          required="{{_setRequired('related_agreement.contract_end_date', basePermissionPath)}}"
+                          required="[[_setRequired('related_agreement.contract_end_date', basePermissionPath)]]"
                           disabled$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
                           invalid="{{_checkInvalid(errors.contract_end_date)}}"
                           error-message="{{errors.contract_end_date}}"
@@ -215,7 +216,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                       value="{{data.partner_contacted_at}}"
                       label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
                       placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]"
-                      required="{{_setRequired('partner_contacted_at', basePermissionPath)}}"
+                      required="[[_setRequired('partner_contacted_at', basePermissionPath)]]"
                       disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
                       invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
                       error-message="{{errors.partner_contacted_at}}"
@@ -241,7 +242,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                           options="[[engagementTypes]]"
                           option-label="label"
                           option-value="value"
-                          required="{{_setRequired('engagement_type', basePermissionPath)}}"
+                          required="[[_setRequired('engagement_type', basePermissionPath)]]"
                           disabled="[[isReadOnly('engagement_type', basePermissionPath)]]"
                           readonly="[[isReadOnly('engagement_type', basePermissionPath)]]"
                           invalid="{{_checkInvalid(errors.engagement_type)}}"
@@ -273,8 +274,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                               label="[[getLabel('start_date', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
                               selected-date-display-format="D MMM YYYY"
-                              required="{{_isAdditionalFieldRequired('start_date', basePermissionPath,
-                                        data.engagement_type)}}"
+                              required="[[_isAdditionalFieldRequired('start_date', basePermissionPath,
+                                        data.engagement_type)]]"
                               disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
                               invalid="{{_checkInvalid(errors.start_date)}}"
                               error-message="{{errors.start_date}}"
@@ -295,8 +296,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                               label="[[getLabel('end_date', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
                               data-selector="periodEndDate"
-                              required="{{_isAdditionalFieldRequired('end_date', basePermissionPath,
-                                            data.engagement_type)}}"
+                              required="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
+                                            data.engagement_type)]]"
                               disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
                               invalid="{{_checkInvalid(errors.end_date)}}"
                               error-message="{{errors.end_date}}"
@@ -318,8 +319,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                           currency="$"
                           label="[[getLabel('total_value', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
-                          required$="{{_isAdditionalFieldRequired('total_value', basePermissionPath,
-                                        data.engagement_type)}}"
+                          required$="[[_isAdditionalFieldRequired('total_value', basePermissionPath,
+                                        data.engagement_type)]]"
                           disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
                           invalid="{{_checkInvalid(errors.total_value)}}"
                           error-message="{{errors.total_value}}"
@@ -352,7 +353,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                               option-label="display_name"
                               option-value="value"
                               selected-values="{{data.shared_ip_with}}"
-                              required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
+                              required$="[[_setRequired('shared_ip_with', basePermissionPath)]]"
                               disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
                               readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
                               invalid="{{errors.shared_ip_with}}"
@@ -366,54 +367,75 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </template>
 
               <template is="dom-if" if="{{showInput}}" restamp>
-              <!-- Sections -->
-              <div class="input-container" hidden$="[[_hideField('sections', basePermissionPath)]]">
-              <etools-dropdown-multi
-                          class$="validate-input disabled-as-readonly [[_setRequired('sections',
-                                    basePermissionPath)]]"
-                          label="[[getLabel('sections', basePermissionPath)]]"
-                          placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
-                          options="[[sections]]"
-                          option-label="name"
-                          option-value="id"
-                          selected-items="{{data.sections}}"
-                          required$="{{_setRequired('sections', basePermissionPath)}}"
-                          disabled$="[[isReadOnly('sections', basePermissionPath)]]"
-                          readonly$="[[isReadOnly('sections', basePermissionPath)]]"
-                          invalid="{{errors.sections}}"
-                          error-message="{{errors.sections}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          dynamic-align
-                          hide-search>
-              </etools-dropdown-multi>
-              </div>
+                  <!-- Sections -->
+                  <div class="input-container" hidden$="[[_hideField('sections', basePermissionPath)]]">
+                      <etools-dropdown-multi
+                              class$="validate-input disabled-as-readonly [[_setRequired('sections',
+                                        basePermissionPath)]]"
+                              label="[[getLabel('sections', basePermissionPath)]]"
+                              placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
+                              options="[[sections]]"
+                              option-label="name"
+                              option-value="id"
+                              selected-values="{{data.sections}}"
+                              required$="[[_setRequired('sections', basePermissionPath)]]"
+                              disabled$="[[isReadOnly('sections', basePermissionPath)]]"
+                              readonly$="[[isReadOnly('sections', basePermissionPath)]]"
+                              invalid="{{errors.sections}}"
+                              error-message="{{errors.sections}}"
+                              on-focus="_resetFieldError"
+                              on-tap="_resetFieldError"
+                              dynamic-align
+                              hide-search>
+                      </etools-dropdown-multi>
+                  </div>
           </template>
 
           <template is="dom-if" if="{{showInput}}" restamp>
-          <!-- Offices -->
-          <div class="input-container" hidden$="[[_hideField('offices', basePermissionPath)]]">
-          <etools-dropdown-multi
-                      class$="validate-input disabled-as-readonly [[_setRequired('offices',
-                                basePermissionPath)]]"
-                      label="[[getLabel('offices', basePermissionPath)]]"
-                      placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
-                      options="[[offices]]"
-                      option-label="name"
-                      option-value="id"
-                      selected-items="{{data.offices}}"
-                      required$="{{_setRequired('offices', basePermissionPath)}}"
-                      disabled$="[[isReadOnly('offices', basePermissionPath)]]"
-                      readonly$="[[isReadOnly('offices', basePermissionPath)]]"
-                      invalid="{{errors.offices}}"
-                      error-message="{{errors.offices}}"
-                      on-focus="_resetFieldError"
-                      on-tap="_resetFieldError"
-                      dynamic-align
-                      hide-search>
-          </etools-dropdown-multi>
-          </div>
-      </template>
+              <!-- Offices -->
+              <div class="input-container" hidden$="[[_hideField('offices', basePermissionPath)]]">
+                  <etools-dropdown-multi
+                              class$="validate-input disabled-as-readonly [[_setRequired('offices',
+                                        basePermissionPath)]]"
+                              label="[[getLabel('offices', basePermissionPath)]]"
+                              placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
+                              options="[[offices]]"
+                              option-label="name"
+                              option-value="id"
+                              selected-values="{{data.offices}}"
+                              required$="[[_setRequired('offices', basePermissionPath)]]"
+                              disabled$="[[isReadOnly('offices', basePermissionPath)]]"
+                              readonly$="[[isReadOnly('offices', basePermissionPath)]]"
+                              invalid="{{errors.offices}}"
+                              error-message="{{errors.offices}}"
+                              on-focus="_resetFieldError"
+                              on-tap="_resetFieldError"
+                              dynamic-align
+                              hide-search>
+                  </etools-dropdown-multi>
+              </div>
+          </template>
+
+              <!-- Notify when completed -->
+              <div class="input-container" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
+                  <etools-dropdown-multi
+                            class$="validate-input disabled-as-readonly [[_setRequired('users_notified',
+                                      basePermissionPath)]]"
+                            label="[[getLabel('users_notified', basePermissionPath)]]"
+                            placeholder="[[getPlaceholderText('users_notified', basePermissionPath)]]"
+                            options="[[usersNotifiedOptions]]"
+                            option-label="name"
+                            option-value="id"
+                            selected-values="{{usersNotifiedIDs}}"
+                            required$="[[_setRequired('users_notified', basePermissionPath)]]"
+                            disabled$="[[isReadOnly('users_notified', basePermissionPath)]]"
+                            readonly$="[[isReadOnly('users_notified', basePermissionPath)]]"
+                            invalid="{{errors.users_notified}}"
+                            error-message="{{errors.users_notified}}"
+                            on-focus="_resetFieldError"
+                            on-tap="_resetFieldError">
+                  </etools-dropdown-multi>
+               </div>
 
           </div>
 
@@ -492,10 +514,19 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   orderNumber!: GenericObject | null;
 
   @property({type: Array})
-  sections: GenericObject[] = [];
+  sections!: GenericObject[];
 
   @property({type: Array})
-  offices: GenericObject[] = [];
+  offices!: GenericObject[];
+
+  @property({type: Array})
+  users!: GenericObject[];
+
+  @property({type: Array})
+  usersNotifiedOptions: GenericObject[] = [];
+
+  @property({type: Array})
+  usersNotifiedIDs: any[] = [];
 
   static get observers() {
     return [
@@ -514,9 +545,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     (this.$.purchaseOrder as PaperInputElement).validate =
       this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
-
-    this.set('sections', getStaticData('sections') || []);
-    this.set('offices', getStaticData('offices') || []);
   }
 
   _setEngagementTypeObject(e) {
@@ -526,6 +554,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   _prepareData() {
     // reset orderNumber
     this.set('orderNumber', null);
+    this.populateDropdownsWithStaticDataAndSetSelectedValues();
 
     let poItem = this.get('data.po_item');
     if (!poItem) {
@@ -537,6 +566,32 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       number: `${poItem.number}`
     };
     this.set('data.po_item', poItem);
+  }
+
+  populateDropdownsWithStaticDataAndSetSelectedValues() {
+    if (!this.users) {
+      this.set('users', getStaticData('users') || []);
+    }
+    if (!this.sections) {
+      this.set('sections', getStaticData('sections') || []);
+    }
+    if (!this.offices) {
+      this.set('offices', getStaticData('offices') || []);
+    }
+    this.setUsersNotifiedIDs();
+  }
+
+  setUsersNotifiedIDs() {
+    let availableUsers = [...this.users];
+    let notifiedUsers = this.get('data.users_notified') || [];
+    this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
+    this.set('usersNotifiedOptions', availableUsers);
+    let usersNotifiedIDs = notifiedUsers.map(user => user.id);
+    this.set('usersNotifiedIDs', usersNotifiedIDs);
+  }
+
+  populateUsersNotifiedDropDown() {
+    this.usersNotifiedOptions = [...this.users];
   }
 
   _setSharedIpWith(basePermissionPath: string) {
@@ -701,7 +756,11 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.po_item = this.data.po_item.id;
     }
 
-    debugger;
+    let originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(item => +item.pk);
+    if (this.usersNotifiedIDs.length != originalUsersNotifiedIDs.length ||
+      this.usersNotifiedIDs.filter(id => !originalUsersNotifiedIDs.includes(+id)).length > 0) {
+      data.users_notified = this.usersNotifiedIDs;
+    }
 
     let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
     let sharedIpWith = this.data.shared_ip_with || [];
