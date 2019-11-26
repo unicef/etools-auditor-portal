@@ -367,21 +367,21 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
               <template is="dom-if" if="{{showInput}}" restamp>
               <!-- Sections -->
-              <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
+              <div class="input-container" hidden$="[[_hideField('sections', basePermissionPath)]]">
               <etools-dropdown-multi
-                          class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with',
+                          class$="validate-input disabled-as-readonly [[_setRequired('sections',
                                     basePermissionPath)]]"
                           label="[[getLabel('sections', basePermissionPath)]]"
                           placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
                           options="[[sections]]"
                           option-label="name"
                           option-value="id"
-                          selected-values="{{data.shared_ip_with}}"
-                          required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
-                          disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                          readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                          invalid="{{errors.shared_ip_with}}"
-                          error-message="{{errors.shared_ip_with}}"
+                          selected-items="{{data.sections}}"
+                          required$="{{_setRequired('sections', basePermissionPath)}}"
+                          disabled$="[[isReadOnly('sections', basePermissionPath)]]"
+                          readonly$="[[isReadOnly('sections', basePermissionPath)]]"
+                          invalid="{{errors.sections}}"
+                          error-message="{{errors.sections}}"
                           on-focus="_resetFieldError"
                           on-tap="_resetFieldError"
                           dynamic-align
@@ -392,21 +392,21 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
           <template is="dom-if" if="{{showInput}}" restamp>
           <!-- Offices -->
-          <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
+          <div class="input-container" hidden$="[[_hideField('offices', basePermissionPath)]]">
           <etools-dropdown-multi
-                      class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with',
+                      class$="validate-input disabled-as-readonly [[_setRequired('offices',
                                 basePermissionPath)]]"
                       label="[[getLabel('offices', basePermissionPath)]]"
                       placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
                       options="[[offices]]"
                       option-label="name"
                       option-value="id"
-                      selected-values="{{data.shared_ip_with}}"
-                      required$="{{_setRequired('shared_ip_with', basePermissionPath)}}"
-                      disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                      readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                      invalid="{{errors.shared_ip_with}}"
-                      error-message="{{errors.shared_ip_with}}"
+                      selected-items="{{data.offices}}"
+                      required$="{{_setRequired('offices', basePermissionPath)}}"
+                      disabled$="[[isReadOnly('offices', basePermissionPath)]]"
+                      readonly$="[[isReadOnly('offices', basePermissionPath)]]"
+                      invalid="{{errors.offices}}"
+                      error-message="{{errors.offices}}"
                       on-focus="_resetFieldError"
                       on-tap="_resetFieldError"
                       dynamic-align
@@ -701,10 +701,24 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.po_item = this.data.po_item.id;
     }
 
+    debugger;
+
     let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
     let sharedIpWith = this.data.shared_ip_with || [];
     if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
       data.shared_ip_with = sharedIpWith;
+    }
+
+    let originalOffices = this.get('originalData.offices') || [];
+    let offices = this.data.offices || [];
+    if (offices.length && offices.filter(x => !originalOffices.includes(x)).length > 0) {
+      data.offices = offices;
+    }
+
+    let originalSections = this.get('originalData.sections') || [];
+    let sections = this.data.sections || [];
+    if (sections.length && sections.filter(x => !originalSections.includes(x)).length > 0) {
+      data.sections = sections;
     }
 
     return data;
@@ -804,6 +818,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     if (!fieldName || !basePermissionPath) {
       return false;
     }
+
     const path = `${basePermissionPath}.${fieldName}`;
     const collectionNotExists = !collectionExists(path, 'POST') &&
       !collectionExists(path, 'PUT') &&
