@@ -768,15 +768,15 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.shared_ip_with = sharedIpWith;
     }
 
-    let originalOffices = this.get('originalData.offices') || [];
-    let offices = this.data.offices || [];
-    if (offices.length && offices.filter(x => !originalOffices.includes(x)).length > 0) {
+    let originalOffices = (this.get('originalData.offices') || []).map(id => +id);
+    let offices = (this.data.offices || []).map(id => +id);
+    if (offices.length && offices.filter(id => !originalOffices.includes(id)).length > 0) {
       data.offices = offices;
     }
 
-    let originalSections = this.get('originalData.sections') || [];
-    let sections = this.data.sections || [];
-    if (sections.length && sections.filter(x => !originalSections.includes(x)).length > 0) {
+    let originalSections = (this.get('originalData.sections') || []).map(id => +id);
+    let sections = (this.data.sections || []).map(id => +id);
+    if (sections.length && sections.filter(id => !originalSections.includes(id)).length > 0) {
       data.sections = sections;
     }
 
