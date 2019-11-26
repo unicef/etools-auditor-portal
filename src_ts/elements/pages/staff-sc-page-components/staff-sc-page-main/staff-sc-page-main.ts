@@ -22,6 +22,7 @@ import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../app-config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
 
 class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
 
@@ -91,6 +92,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
   @property({type: Array})
   filters = [
     {
+      type: FilterTypes.DropdownMulti,
       name: 'partner',
       label: 'Partner',
       query: 'partner__in',
@@ -99,6 +101,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
       selection: []
     },
     {
+      type: FilterTypes.DropdownMulti,
       name: 'status',
       label: 'Status',
       query: 'status__in',
@@ -108,6 +111,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
       selection: []
     },
     {
+      type: FilterTypes.DropdownMulti,
       name: 'unicef user',
       label: 'Unicef User',
       query: 'staff_members__user__in',
