@@ -123,10 +123,10 @@ class OtherRecommendations extends
                 show-spinner="{{requestInProcess}}"
                 disable-confirm-btn="{{requestInProcess}}"
                 on-confirm-btn-clicked="_addItemFromDialog">
-          <div class="row-h repeatable-item-container" without-line>
+          <div class="repeatable-item-container" without-line>
             <div class="repeatable-item-content">
 
-              <div class="row-h group">
+              <div class="group">
                   <div class="input-container input-container-l">
                       <!-- Description -->
                     <paper-textarea
