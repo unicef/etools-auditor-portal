@@ -29,7 +29,7 @@ import DateMixin from '../../../app-mixins/date-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-
+import {getStaticData} from '../../../app-mixins/static-data-controller';
 /**
  * @polymer
  * @customElement
@@ -366,9 +366,59 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                   </div>
               </template>
 
+              <template is="dom-if" if="{{showInput}}" restamp>
+                  <!-- Sections -->
+                  <div class="input-container" hidden$="[[_hideField('sections', basePermissionPath)]]">
+                      <etools-dropdown-multi
+                              class$="validate-input disabled-as-readonly [[_setRequired('sections',
+                                        basePermissionPath)]]"
+                              label="[[getLabel('sections', basePermissionPath)]]"
+                              placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
+                              options="[[sections]]"
+                              option-label="name"
+                              option-value="id"
+                              selected-values="{{data.sections}}"
+                              required$="[[_setRequired('sections', basePermissionPath)]]"
+                              disabled$="[[isReadOnly('sections', basePermissionPath)]]"
+                              readonly$="[[isReadOnly('sections', basePermissionPath)]]"
+                              invalid="{{errors.sections}}"
+                              error-message="{{errors.sections}}"
+                              on-focus="_resetFieldError"
+                              on-tap="_resetFieldError"
+                              dynamic-align
+                              hide-search>
+                      </etools-dropdown-multi>
+                  </div>
+          </template>
+
+          <template is="dom-if" if="{{showInput}}" restamp>
+              <!-- Offices -->
+              <div class="input-container" hidden$="[[_hideField('offices', basePermissionPath)]]">
+                  <etools-dropdown-multi
+                              class$="validate-input disabled-as-readonly [[_setRequired('offices',
+                                        basePermissionPath)]]"
+                              label="[[getLabel('offices', basePermissionPath)]]"
+                              placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
+                              options="[[offices]]"
+                              option-label="name"
+                              option-value="id"
+                              selected-values="{{data.offices}}"
+                              required$="[[_setRequired('offices', basePermissionPath)]]"
+                              disabled$="[[isReadOnly('offices', basePermissionPath)]]"
+                              readonly$="[[isReadOnly('offices', basePermissionPath)]]"
+                              invalid="{{errors.offices}}"
+                              error-message="{{errors.offices}}"
+                              on-focus="_resetFieldError"
+                              on-tap="_resetFieldError"
+                              dynamic-align
+                              hide-search>
+                  </etools-dropdown-multi>
+              </div>
+          </template>
+
               <!-- Notify when completed -->
               <div class="input-container" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
-                <etools-dropdown-multi
+                  <etools-dropdown-multi
                             class$="validate-input disabled-as-readonly [[_setRequired('users_notified',
                                       basePermissionPath)]]"
                             label="[[getLabel('users_notified', basePermissionPath)]]"
@@ -384,7 +434,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                             error-message="{{errors.users_notified}}"
                             on-focus="_resetFieldError"
                             on-tap="_resetFieldError">
-                </etools-dropdown-multi>
+                  </etools-dropdown-multi>
                </div>
 
           </div>
@@ -464,6 +514,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   orderNumber!: GenericObject | null;
 
   @property({type: Array})
+  sections!: GenericObject[];
+
+  @property({type: Array})
+  offices!: GenericObject[];
+
+  @property({type: Array})
   users!: GenericObject[];
 
   @property({type: Array})
@@ -498,7 +554,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   _prepareData() {
     // reset orderNumber
     this.set('orderNumber', null);
-    this.setUsersNotifiedIDs();
+    this.populateDropdownsWithStaticDataAndSetSelectedValues();
 
     let poItem = this.get('data.po_item');
     if (!poItem) {
@@ -512,10 +568,20 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.set('data.po_item', poItem);
   }
 
-  setUsersNotifiedIDs() {
+  populateDropdownsWithStaticDataAndSetSelectedValues() {
     if (!this.users) {
       this.set('users', getStaticData('users') || []);
     }
+    if (!this.sections) {
+      this.set('sections', getStaticData('sections') || []);
+    }
+    if (!this.offices) {
+      this.set('offices', getStaticData('offices') || []);
+    }
+    this.setUsersNotifiedIDs();
+  }
+
+  setUsersNotifiedIDs() {
     let availableUsers = [...this.users];
     let notifiedUsers = this.get('data.users_notified') || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
@@ -702,6 +768,18 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.shared_ip_with = sharedIpWith;
     }
 
+    let originalOffices = (this.get('originalData.offices') || []).map(id => +id);
+    let offices = (this.data.offices || []).map(id => +id);
+    if (offices.length && offices.filter(id => !originalOffices.includes(id)).length > 0) {
+      data.offices = offices;
+    }
+
+    let originalSections = (this.get('originalData.sections') || []).map(id => +id);
+    let sections = (this.data.sections || []).map(id => +id);
+    if (sections.length && sections.filter(id => !originalSections.includes(id)).length > 0) {
+      data.sections = sections;
+    }
+
     return data;
   }
 
@@ -799,6 +877,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     if (!fieldName || !basePermissionPath) {
       return false;
     }
+
     const path = `${basePermissionPath}.${fieldName}`;
     const collectionNotExists = !collectionExists(path, 'POST') &&
       !collectionExists(path, 'PUT') &&
