@@ -84,7 +84,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(3, engagementData.date_of_field_visit, 
+          <div class$="status-container [[_getStatusState(3, engagementData.date_of_field_visit,
                                         engagementData.date_of_draft_report_to_ip)]]">
             <div class="status-icon">
               <span class="icon-wrapper">
@@ -107,7 +107,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(4, engagementData.date_of_draft_report_to_ip, 
+          <div class$="status-container [[_getStatusState(4, engagementData.date_of_draft_report_to_ip,
                                             engagementData.date_of_comments_by_ip)]]">
             <div class="status-icon">
               <span class="icon-wrapper">
@@ -131,7 +131,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
           </div>
 
           <div
-            class$="status-container [[_getStatusState(5, engagementData.date_of_comments_by_ip, 
+            class$="status-container [[_getStatusState(5, engagementData.date_of_comments_by_ip,
                     engagementData.date_of_draft_report_to_unicef)]]">
             <div class="status-icon">
               <span class="icon-wrapper">
@@ -154,7 +154,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(6, engagementData.date_of_draft_report_to_unicef, 
+          <div class$="status-container [[_getStatusState(6, engagementData.date_of_draft_report_to_unicef,
                                                 engagementData.date_of_comments_by_unicef)]]">
             <div class="status-icon">
               <span class="icon-wrapper">
@@ -235,7 +235,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   setActions(permissionBase) {
-    const actions = permissionBase ? getActions(permissionBase) : [];
+    let actions = (permissionBase && this.engagementData.status !== 'final') ? getActions(permissionBase) : [];
     this.set('actions', actions);
   }
 
