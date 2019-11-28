@@ -79,6 +79,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
         }
         .row-h.float .input-container {
             margin-bottom: 8px;
+            max-height: 62px;
         }
 
       </style>
@@ -165,6 +166,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
               <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
                   <!-- PO Date -->
+                  
                   <datepicker-lite
                           id="contractStartDateInput"
                           class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
