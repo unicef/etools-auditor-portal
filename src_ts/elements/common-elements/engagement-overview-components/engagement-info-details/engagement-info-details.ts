@@ -166,7 +166,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
               <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
                   <!-- PO Date -->
-                  
                   <datepicker-lite
                           id="contractStartDateInput"
                           class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
