@@ -79,6 +79,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
         }
         .row-h.float .input-container {
             margin-bottom: 8px;
+            max-height: 62px;
         }
 
       </style>
