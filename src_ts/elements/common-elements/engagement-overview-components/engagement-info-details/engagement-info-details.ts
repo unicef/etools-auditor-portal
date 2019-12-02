@@ -757,7 +757,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.po_item = this.data.po_item.id;
     }
 
-    let originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(item => +item.pk);
+    let originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
     if (this.usersNotifiedIDs.length != originalUsersNotifiedIDs.length ||
       this.usersNotifiedIDs.filter(id => !originalUsersNotifiedIDs.includes(+id)).length > 0) {
       data.users_notified = this.usersNotifiedIDs;
@@ -771,13 +771,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
     let originalOffices = (this.get('originalData.offices') || []).map(id => +id);
     let offices = (this.data.offices || []).map(id => +id);
-    if (offices.length && offices.filter(id => !originalOffices.includes(id)).length > 0) {
+    if (offices.length != originalOffices.length || offices.filter(id => !originalOffices.includes(id)).length > 0) {
       data.offices = offices;
     }
 
     let originalSections = (this.get('originalData.sections') || []).map(id => +id);
     let sections = (this.data.sections || []).map(id => +id);
-    if (sections.length && sections.filter(id => !originalSections.includes(id)).length > 0) {
+    if (sections.length != originalSections.length || sections.filter(id => !originalSections.includes(id)).length > 0) {
       data.sections = sections;
     }
 
