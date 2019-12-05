@@ -2,7 +2,6 @@ import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
-import {actionAllowed} from '../../../app-mixins/permission-controller';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {buildQueryString} from '../../../app-mixins/query-params-controller';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
@@ -13,9 +12,8 @@ import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/search-and-filter-element/search-and-filter';
 import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
-import {SearchAndFilterEl} from '../../../common-elements/search-and-filter-element/search-and-filter';
+import {SearchAndFilterEl, FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
 import {BASE_PATH} from '../../../app-config/config';
-
 /**
  * @customElement
  * @polymer
@@ -130,6 +128,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   @property({type: Array})
   filters: GenericObject[] = [{
+    type: FilterTypes.DropdownMulti,
     name: 'audit firm',
     label: 'Audit Firm',
     query: 'agreement__auditor_firm__in',
@@ -137,6 +136,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'name',
     selection: []
   }, {
+    type: FilterTypes.DropdownMulti,
     name: 'engagement type',
     label: 'Engagement Type',
     query: 'engagement_type__in',
@@ -145,6 +145,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'display_name',
     selection: []
   }, {
+    type: FilterTypes.DropdownMulti,
     name: 'partner',
     label: 'Partner',
     query: 'partner__in',
@@ -152,6 +153,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'name',
     selection: []
   }, {
+    type: FilterTypes.DropdownMulti,
     name: 'status',
     label: 'Status',
     query: 'status__in',
@@ -160,6 +162,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionLabel: 'display_name',
     selection: []
   }, {
+    type: FilterTypes.DropdownMulti,
     name: 'joint audit',
     label: 'Joint Audit',
     query: 'joint_audit',
@@ -167,6 +170,20 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     optionValue: 'value',
     optionLabel: 'display_name',
     selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
+  },
+  {
+    type: FilterTypes.Date,
+    name: 'date IP was contacted before',
+    label: 'Date IP was contacted before',
+    query: 'partner_contacted_at__lte',
+    hideSearch: true
+  },
+  {
+    type: FilterTypes.Date,
+    name: 'date IP was contacted after',
+    label: 'Date IP was contacted after',
+    query: 'partner_contacted_at__gte',
+    hideSearch: true
   }];
 
   @property({type: Array})

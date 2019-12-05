@@ -303,7 +303,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     if (!this.$.partner || !(this.$.partner as EtoolsDropdownEl).required) {
       return true;
     }
-    if (!get(this, 'engagement.partner.id)') {
+    if (!get(this, 'engagement.partner.id)')) {
       this.set('errors.partner', 'Partner is required');
       (this.$.partner as EtoolsDropdownEl).invalid = true;
       return false;

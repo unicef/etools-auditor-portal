@@ -198,7 +198,10 @@ class NewEngagementView extends
     date_of_draft_report_to_unicef: null,
     date_of_comments_by_unicef: null,
     partner_contacted_at: null,
-    specific_procedures: []
+    specific_procedures: [],
+    users_notified: [],
+    offices: [],
+    sections: [],
   };
 
   @property({type: Array})
@@ -333,7 +336,10 @@ class NewEngagementView extends
         date_of_draft_report_to_unicef: null,
         date_of_comments_by_unicef: null,
         partner_contacted_at: null,
-        specific_procedures: []
+        specific_procedures: [],
+        users_notified: [],
+        offices: [],
+        sections: [],
       });
 
       (this.$.engagement_attachments as FileAttachmentsTabEl).resetData();
