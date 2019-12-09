@@ -557,16 +557,11 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.set('orderNumber', null);
     this.populateDropdownsWithStaticDataAndSetSelectedValues();
 
-    let poItem = this.get('data.po_item');
-    if (!poItem) {
-      return;
+    let poItemId = this.get('data.po_item.id');
+    if (poItemId) {
+      this.set('data.po_item', poItemId);
     }
 
-    poItem = {
-      id: poItem.id,
-      number: `${poItem.number}`
-    };
-    this.set('data.po_item', poItem);
   }
 
   populateDropdownsWithStaticDataAndSetSelectedValues() {
@@ -753,8 +748,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.engagement_type = this.data.engagement_type;
     }
 
-    if (this.data.po_item && (this.originalData.po_item !== +this.data.po_item.id)) {
-      data.po_item = this.data.po_item.id;
+    if (this.data.po_item && (!this.originalData.po_item || (this.originalData.po_item.id !== +this.data.po_item))) {
+      data.po_item = this.data.po_item;
     }
 
     let originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
