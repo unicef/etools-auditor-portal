@@ -29,7 +29,8 @@ import DateMixin from '../../../app-mixins/date-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
+import {getUserData} from '../../../../elements/app-mixins/user-controller';
+
 /**
  * @polymer
  * @customElement
@@ -375,10 +376,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                                         basePermissionPath)]]"
                               label="[[getLabel('sections', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
-                              options="[[sections]]"
+                              options="[[sectionOptions]]"
                               option-label="name"
                               option-value="id"
-                              selected-values="{{data.sections}}"
+                              selected-values="{{sectionIDs}}"
                               required$="[[_setRequired('sections', basePermissionPath)]]"
                               disabled$="[[isReadOnly('sections', basePermissionPath)]]"
                               readonly$="[[isReadOnly('sections', basePermissionPath)]]"
@@ -400,10 +401,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                                         basePermissionPath)]]"
                               label="[[getLabel('offices', basePermissionPath)]]"
                               placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
-                              options="[[offices]]"
+                              options="[[officeOptions]]"
                               option-label="name"
                               option-value="id"
-                              selected-values="{{data.offices}}"
+                              selected-values="{{officeIDs}}"
                               required$="[[_setRequired('offices', basePermissionPath)]]"
                               disabled$="[[isReadOnly('offices', basePermissionPath)]]"
                               readonly$="[[isReadOnly('offices', basePermissionPath)]]"
@@ -515,10 +516,16 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   orderNumber!: GenericObject | null;
 
   @property({type: Array})
-  sections!: GenericObject[];
+  sectionOptions!: GenericObject[];
 
   @property({type: Array})
-  offices!: GenericObject[];
+  sectionIDs: number[] = [];
+
+  @property({type: Array})
+  officeOptions!: GenericObject[];
+
+  @property({type: Array})
+  officeIDs: number[] = [];
 
   @property({type: Array})
   users!: GenericObject[];
@@ -555,34 +562,48 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   _prepareData() {
     // reset orderNumber
     this.set('orderNumber', null);
-    this.populateDropdownsWithStaticDataAndSetSelectedValues();
+
+    this.populateDropdownsAndSetSelectedValues();
 
     let poItemId = this.get('data.po_item.id');
     if (poItemId) {
       this.set('data.po_item', poItemId);
     }
-
   }
 
-  populateDropdownsWithStaticDataAndSetSelectedValues() {
+  checkIfUserIsAuditor() {
+    const userData = getUserData();
+    if (get(userData, 'groups.length')) {
+      return !!userData.groups.find(group => group.name === 'Auditor');
+    }
+    return false;
+  }
+
+  populateDropdownsAndSetSelectedValues() {
+    const userIsAuditor = this.checkIfUserIsAuditor();
+
+    const savedSections = this.get('data.sections') || [];
+    this.set('sectionOptions', (userIsAuditor ? savedSections : getStaticData('sections')) || []);
+    const sectionIDs = savedSections.map(section => section.id);
+    this.set('sectionIDs', sectionIDs);
+
+    const savedOffices = this.get('data.offices') || [];
+    this.set('officeOptions', (userIsAuditor ? savedOffices : getStaticData('offices')) || []);
+    const officeIDs = savedOffices.map(office => office.id);
+    this.set('officeIDs', officeIDs);
+
     if (!this.users) {
       this.set('users', getStaticData('users') || []);
-    }
-    if (!this.sections) {
-      this.set('sections', getStaticData('sections') || []);
-    }
-    if (!this.offices) {
-      this.set('offices', getStaticData('offices') || []);
     }
     this.setUsersNotifiedIDs();
   }
 
   setUsersNotifiedIDs() {
-    let availableUsers = [...this.users];
-    let notifiedUsers = this.get('data.users_notified') || [];
+    const availableUsers = [...this.users];
+    const notifiedUsers = this.get('data.users_notified') || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
     this.set('usersNotifiedOptions', availableUsers);
-    let usersNotifiedIDs = notifiedUsers.map(user => user.id);
+    const usersNotifiedIDs = notifiedUsers.map(user => user.id);
     this.set('usersNotifiedIDs', usersNotifiedIDs);
   }
 
@@ -752,31 +773,41 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.po_item = this.data.po_item;
     }
 
-    let originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
-    if (this.usersNotifiedIDs.length != originalUsersNotifiedIDs.length ||
-      this.usersNotifiedIDs.filter(id => !originalUsersNotifiedIDs.includes(+id)).length > 0) {
+    const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
+    if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
       data.users_notified = this.usersNotifiedIDs;
     }
 
-    let originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
-    let sharedIpWith = this.data.shared_ip_with || [];
+    const originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
+    const sharedIpWith = this.data.shared_ip_with || [];
     if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
       data.shared_ip_with = sharedIpWith;
     }
 
-    let originalOffices = (this.get('originalData.offices') || []).map(id => +id);
-    let offices = (this.data.offices || []).map(id => +id);
-    if (offices.length != originalOffices.length || offices.filter(id => !originalOffices.includes(id)).length > 0) {
-      data.offices = offices;
+    const originalOfficeIDs = (this.get('originalData.offices') || []).map(office => +office.id);
+    if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
+      data.offices = this.officeIDs;
     }
 
-    let originalSections = (this.get('originalData.sections') || []).map(id => +id);
-    let sections = (this.data.sections || []).map(id => +id);
-    if (sections.length != originalSections.length || sections.filter(id => !originalSections.includes(id)).length > 0) {
-      data.sections = sections;
+    const originalSectionIDs = (this.get('originalData.sections') || []).map(section => +section.id);
+    if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
+      data.sections = this.sectionIDs;
     }
 
     return data;
+  }
+
+  collectionChanged(originalCollection: any[], newCollection: any[]) {
+    return this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
+      this.collectionsAreDifferent(originalCollection, newCollection);
+  }
+
+  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
+    return originalCollection.length !== newCollection.length;
+  }
+
+  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
+    return newCollection.filter(id => !originalCollection.includes(+id)).length > 0;
   }
 
   _setShowInput(type: string) {
