@@ -774,8 +774,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
 
     const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
-    if (this.usersNotifiedIDs.length != originalUsersNotifiedIDs.length ||
-      this.usersNotifiedIDs.filter(id => !originalUsersNotifiedIDs.includes(+id)).length > 0) {
+    if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
       data.users_notified = this.usersNotifiedIDs;
     }
 
@@ -786,18 +785,29 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
 
     const originalOfficeIDs = (this.get('originalData.offices') || []).map(office => +office.id);
-    if (this.officeIDs.length != originalOfficeIDs.length ||
-      this.officeIDs.filter(id => !originalOfficeIDs.includes(+id)).length > 0) {
+    if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
       data.offices = this.officeIDs;
     }
 
     const originalSectionIDs = (this.get('originalData.sections') || []).map(section => +section.id);
-    if (this.sectionIDs.length != originalSectionIDs.length ||
-      this.sectionIDs.filter(id => !originalSectionIDs.includes(+id)).length > 0) {
+    if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
       data.sections = this.sectionIDs;
     }
 
     return data;
+  }
+
+  collectionChanged(originalCollection: any[], newCollection: any[]) {
+    return this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
+      this.collectionsAreDifferent(originalCollection, newCollection);
+  }
+
+  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
+    return originalCollection.length !== newCollection.length;
+  }
+
+  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
+    return newCollection.filter(id => !originalCollection.includes(+id)).length > 0;
   }
 
   _setShowInput(type: string) {
