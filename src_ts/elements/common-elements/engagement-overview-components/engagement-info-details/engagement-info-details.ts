@@ -536,9 +536,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Array})
   usersNotifiedIDs: any[] = [];
 
-  @property({type: Boolean})
-  userIsAuditor!: boolean;
-
   static get observers() {
     return [
       '_errorHandler(errorObject)',
@@ -566,7 +563,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     // reset orderNumber
     this.set('orderNumber', null);
 
-    this.checkIfUserIsAuditor();
     this.populateDropdownsAndSetSelectedValues();
 
     let poItemId = this.get('data.po_item.id');
@@ -576,24 +572,25 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   checkIfUserIsAuditor() {
-    if (this.userIsAuditor === undefined) {
-      const userData = getUserData();
-      if (get(userData, 'groups.length')) {
-        this.userIsAuditor = !!userData.groups.find(group => group.name === 'Auditor');
-      }
+    const userData = getUserData();
+    if (get(userData, 'groups.length')) {
+      return !!userData.groups.find(group => group.name === 'Auditor');
     }
+    return false;
   }
 
   populateDropdownsAndSetSelectedValues() {
+    const userIsAuditor = this.checkIfUserIsAuditor();
+
     if (!this.sectionOptions) {
       const savedSections = this.get('data.sections') || [];
-      this.set('sectionOptions', (this.userIsAuditor ? savedSections : getStaticData('sections')) || []);
+      this.set('sectionOptions', (userIsAuditor ? savedSections : getStaticData('sections')) || []);
       const sectionIDs = savedSections.map(section => section.id);
       this.set('sectionIDs', sectionIDs);
     }
     if (!this.officeOptions) {
       const savedOffices = this.get('data.offices') || [];
-      this.set('officeOptions', (this.userIsAuditor ? savedOffices : getStaticData('offices')) || []);
+      this.set('officeOptions', (userIsAuditor ? savedOffices : getStaticData('offices')) || []);
       const officeIDs = savedOffices.map(office => office.id);
       this.set('officeIDs', officeIDs);
     }
@@ -791,12 +788,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
 
     const originalOfficeIDs = (this.get('originalData.offices') || []).map(office => +office.id);
-    if (this.officeIDs.length != originalOfficeIDs.length || this.officeIDs.filter(id => !originalOfficeIDs.includes(+id)).length > 0) {
+    if (this.officeIDs.length != originalOfficeIDs.length ||
+      this.officeIDs.filter(id => !originalOfficeIDs.includes(+id)).length > 0) {
       data.offices = this.officeIDs;
     }
 
     const originalSectionIDs = (this.get('originalData.sections') || []).map(section => +section.id);
-    if (this.sectionIDs.length != originalSectionIDs.length || this.sectionIDs.filter(id => !originalSectionIDs.includes(+id)).length > 0) {
+    if (this.sectionIDs.length != originalSectionIDs.length ||
+      this.sectionIDs.filter(id => !originalSectionIDs.includes(+id)).length > 0) {
       data.sections = this.sectionIDs;
     }
 
