@@ -582,18 +582,16 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   populateDropdownsAndSetSelectedValues() {
     const userIsAuditor = this.checkIfUserIsAuditor();
 
-    if (!this.sectionOptions) {
-      const savedSections = this.get('data.sections') || [];
-      this.set('sectionOptions', (userIsAuditor ? savedSections : getStaticData('sections')) || []);
-      const sectionIDs = savedSections.map(section => section.id);
-      this.set('sectionIDs', sectionIDs);
-    }
-    if (!this.officeOptions) {
-      const savedOffices = this.get('data.offices') || [];
-      this.set('officeOptions', (userIsAuditor ? savedOffices : getStaticData('offices')) || []);
-      const officeIDs = savedOffices.map(office => office.id);
-      this.set('officeIDs', officeIDs);
-    }
+    const savedSections = this.get('data.sections') || [];
+    this.set('sectionOptions', (userIsAuditor ? savedSections : getStaticData('sections')) || []);
+    const sectionIDs = savedSections.map(section => section.id);
+    this.set('sectionIDs', sectionIDs);
+
+    const savedOffices = this.get('data.offices') || [];
+    this.set('officeOptions', (userIsAuditor ? savedOffices : getStaticData('offices')) || []);
+    const officeIDs = savedOffices.map(office => office.id);
+    this.set('officeIDs', officeIDs);
+
     if (!this.users) {
       this.set('users', getStaticData('users') || []);
     }
