@@ -571,24 +571,22 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
   }
 
-  checkIfUserIsAuditor() {
+  userIsFirmStaffAuditor() {
     const userData = getUserData();
-    if (get(userData, 'groups.length')) {
-      return !!userData.groups.find(group => group.name === 'Auditor');
-    }
-    return false;
+    return userData && !userData.is_unicef_user;
   }
 
   populateDropdownsAndSetSelectedValues() {
-    const userIsAuditor = this.checkIfUserIsAuditor();
+    // For firm staff auditors certain endpoints return 403
+    const userIsFirmStaffAuditor = this.userIsFirmStaffAuditor();
 
     const savedSections = this.get('data.sections') || [];
-    this.set('sectionOptions', (userIsAuditor ? savedSections : getStaticData('sections')) || []);
+    this.set('sectionOptions', (userIsFirmStaffAuditor ? savedSections : getStaticData('sections')) || []);
     const sectionIDs = savedSections.map(section => section.id);
     this.set('sectionIDs', sectionIDs);
 
     const savedOffices = this.get('data.offices') || [];
-    this.set('officeOptions', (userIsAuditor ? savedOffices : getStaticData('offices')) || []);
+    this.set('officeOptions', (userIsFirmStaffAuditor ? savedOffices : getStaticData('offices')) || []);
     const officeIDs = savedOffices.map(office => office.id);
     this.set('officeIDs', officeIDs);
 
