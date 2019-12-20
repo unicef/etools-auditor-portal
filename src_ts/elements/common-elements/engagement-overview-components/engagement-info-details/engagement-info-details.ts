@@ -571,16 +571,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
   }
 
-  checkIfUserIsAuditor() {
+  userIsAuditor() {
     const userData = getUserData();
-    if (get(userData, 'groups.length')) {
-      return !!userData.groups.find(group => group.name === 'Auditor');
-    }
-    return false;
+    return userData && !userData.is_unicef_user;
   }
 
   populateDropdownsAndSetSelectedValues() {
-    const userIsAuditor = this.checkIfUserIsAuditor();
+    const userIsAuditor = this.userIsAuditor();
 
     const savedSections = this.get('data.sections') || [];
     this.set('sectionOptions', (userIsAuditor ? savedSections : getStaticData('sections')) || []);
