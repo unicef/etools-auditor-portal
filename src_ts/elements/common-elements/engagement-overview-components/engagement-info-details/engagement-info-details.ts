@@ -73,7 +73,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             position: relative;
             width: 100%;
             flex-direction: row;
-            align-items: center;
+            align-items: baseline;
             justify-content: flex-start;
             flex-wrap: wrap;
             margin-bottom: 0;
