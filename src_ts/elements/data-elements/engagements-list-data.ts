@@ -32,6 +32,11 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     return ['getEngagementsList(requestQueries.*)'];
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('engagement-updated', this.getEngagementsList);
+  }
+
   _engagementsLoaded(detail) {
     if (!detail) {
       fireEvent(this, 'toast', {text: 'An error occured, try again.'});
