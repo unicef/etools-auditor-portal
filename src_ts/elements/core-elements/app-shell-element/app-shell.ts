@@ -40,6 +40,9 @@ import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from '../../app-config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {clone} from 'lodash-es';
+import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
+import {timeOut} from '@polymer/polymer/lib/utils/async';
 
 setRootPath(`/${BASE_PATH}/`);
 
@@ -55,10 +58,10 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return html`
       ${appDrawerStyles}
       <static-data></static-data>
-      <app-location route="{{route}}" query-params="{{queryParams}}" url-space-regex="^[[rootPath]]"></app-location>
+      <app-location route="{{appLocationRoute}}" url-space-regex="^[[rootPath]]"></app-location>
 
       <app-route
-              route="{{route}}"
+              route="[[route]]"
               pattern="[[rootPath]]:page"
               data="{{routeData}}"
               tail="{{subroute}}">
@@ -98,7 +101,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                       name="engagements"
                       id="engagements"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                      query-params="[[queryParams]]">
               </engagements-page-main>
 
               <staff-sc-page-main
@@ -106,42 +109,42 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                       name="staff-sc"
                       id="staff-sc"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                      query-params="[[queryParams]]">
               </staff-sc-page-main>
 
               <audits-page-main
                       name="audits"
                       id="audits"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                      query-params="[[queryParams]]">
               </audits-page-main>
 
               <special-audits-page-main
                       name="special-audits"
                       id="special-audits"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                      query-params="[[queryParams]]">
               </special-audits-page-main>
 
               <micro-assessments-page-main
                       name="micro-assessments"
                       id="micro-assessments"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                      query-params="[[queryParams]]">
               </micro-assessments-page-main>
 
               <spot-checks-page-main
                       name="spot-checks"
                       id="spot-checks"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                      query-params="[[queryParams]]">
               </spot-checks-page-main>
 
               <spot-checks-page-main
                       name="staff-spot-checks"
                       id="staff-spot-checks"
                       route="{{subroute}}"
-                      query-params="{{queryParams}}"
+                      query-params="[[queryParams]]"
                       is-staff-sc>
               </spot-checks-page-main>
 
@@ -159,10 +162,16 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.path)',
+      '_routePageChanged(route.page, route.__queryParams)',
       '_viewChanged(routeData.view)'
     ];
   }
+  @property({type: Object, observer: '_appLocationsRouteChanged'})
+  appLocationRoute!: {
+    prefix: string,
+    path: string,
+    __queryParams: any
+  };
 
   @property({type: String, observer: '_pageChanged'})
   page: string = '';
@@ -191,6 +200,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   @property({type: Object})
   queryParams!: GenericObject;
 
+  private _setRouteDebouncer!: Debouncer;
+
   public connectedCallback() {
     super.connectedCallback();
 
@@ -198,7 +209,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === `/${BASE_PATH}/`) {
+    if (this.route.path === `/${BASE_PATH}/`) {
       this._setDefaultLandingPage();
     }
 
@@ -261,17 +272,35 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _viewChanged() {
-    if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
-      // clear url params(filters from previous page) on navigate between pages
-      this.set('queryParams', {});
+    console.log('app-shell-_viewChanged');
+    // if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
+    //   // clear url params(filters from previous page) on navigate between pages
+    //   this.set('queryParams', {});
+    // }
+  }
+
+  _appLocationsRouteChanged() {
+    if (JSON.stringify(this.route) !== JSON.stringify(this.appLocationRoute)) {
+
+      this._setRouteDebouncer = Debouncer.debounce(this._setRouteDebouncer,
+        timeOut.after(10),
+        () => {
+          this.route = clone(this.appLocationRoute)
+        });
     }
   }
 
+
   _routePageChanged() {
-    if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
+    if (!this.routeData.page || !this.allowPageChange()) {
       return;
     }
-    this.page = this.routeData.page || 'engagements';
+    this.setProperties({
+      page: this.routeData.page || 'engagements',
+      queryParams: clone(this.route.__queryParams)
+    });
+    //this.page = this.routeData.page || 'engagements';
+    //this.queryParams = clone(this.routeData.__queryParams);
     if (this.scroll) {
       this.scroll(0, 0);
     }
@@ -316,7 +345,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
 
     import(resolvedPageUrl).then(() => {
-      if (!this.initLoadingComplete) {this.initLoadingComplete = true;}
 
       fireEvent(this, 'global-loading', {type: 'initialisation'});
 
