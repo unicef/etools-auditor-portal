@@ -8,7 +8,7 @@ import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
+import {updateQueries, getQueriesString, buildQueryString} from '../app-mixins/query-params-controller';
 import {GenericObject} from '../../types/global.js';
 
 class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
@@ -28,13 +28,11 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
   @property({type: String})
   endpointName: string = '';
 
+  @property({type: Boolean, observer: 'refreshDataChanged'})
+  refreshData!: boolean;
+
   static get observers() {
     return ['getEngagementsList(requestQueries.*)'];
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('engagement-updated', this.getEngagementsList);
   }
 
   _engagementsLoaded(detail) {
@@ -51,6 +49,13 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
   }
 
+  refreshDataChanged() {
+    if (this.refreshData) {
+      this.requestQueries.reload = true;
+      this.getEngagementsList();
+    }
+  }
+
   getEngagementsList() {
     const reloadRequired = this.reloadRequired() || this.requestQueries.reload;
     this.lastState = cloneDeep(this.requestQueries);
@@ -59,11 +64,17 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
       return;
     }
 
-    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true,
-      message: 'Loading of engagements list...'});
+    fireEvent(this, 'global-loading', {
+      type: 'engagements-list', active: true,
+      message: 'Loading of engagements list...'
+    });
 
     const endpoint = getEndpoint(this.endpointName);
-    endpoint.url += getQueriesString();
+    let queryString = getQueriesString();
+    if (!queryString && this.requestQueries) {
+      queryString = `?${buildQueryString(this.requestQueries)}`;
+    }
+    endpoint.url += queryString;
 
     if (this.requestQueries.reload) {
       endpoint.url += `&reload=${new Date().getTime()}`;

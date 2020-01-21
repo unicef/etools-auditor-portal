@@ -54,6 +54,7 @@ class EngagementsPageMain extends PolymerElement {
             query-params="{{queryParams}}"
             has-collapse
             request-queries="[[partnersListQueries]]"
+            refresh-data="[[refreshData]]"
             endpoint-name="{{endpointName}}"
             base-permission-path="new_engagement">
         </engagements-list-view>

@@ -43,6 +43,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       <engagements-list-data
           id="listData"
           engagements-list="{{engagementsList}}"
+          refresh-data="[[refreshData]]"
           list-length="{{listLength}}"
           request-queries="[[requestQueries]]"
           without-pagination="[[withoutPagination]]"
