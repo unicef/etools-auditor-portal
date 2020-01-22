@@ -16,7 +16,7 @@ export interface ValueAndDisplayName {
 }
 
 export interface AppRoute {
-  prefix: string; // The part of route.path consumed by parent app-route component
+  prefix: string; // The part of route.path consumed by the 'pattern' of parent app-route component
   path: string;
   __queryParams: GenericObject;
 }

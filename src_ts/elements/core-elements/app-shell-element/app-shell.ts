@@ -34,7 +34,7 @@ import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin';
 import {fireEvent} from '../../utils/fire-custom-event';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import {getUserData} from '../../app-mixins/user-controller';
-import {GenericObject} from '../../../types/global';
+import {GenericObject, AppRoute} from '../../../types/global';
 import {getDomainByEnv} from '../../app-config/config';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
@@ -167,11 +167,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     ];
   }
   @property({type: Object, observer: '_appLocationsRouteChanged'})
-  appLocationRoute!: {
-    prefix: string,
-    path: string,
-    __queryParams: any
-  };
+  appLocationRoute!: AppRoute;
 
   @property({type: String, observer: '_pageChanged'})
   page: string = '';
