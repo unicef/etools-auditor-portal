@@ -8,11 +8,12 @@ import assign from 'lodash-es/assign';
 import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
-import {Constructor, GenericObject} from '../../types/global';
+import {Constructor, GenericObject, AppRoute} from '../../types/global';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import {getUserData} from '../../elements/app-mixins/user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 import {whichPageTrows} from './error-handler';
+import {navigateToUrl} from '../utils/navigate-helper';
 
 let currentEngagement = {};
 /**
@@ -29,6 +30,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     @property({type: Object})
     routeData!: GenericObject;
+
+    @property({type: Object})
+    route!: AppRoute;
 
     @property({type: Array})
     tabsList!: any[];
@@ -131,7 +135,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     _tabChanged(tab) {
       if (tab && this.routeData && this.routeData.tab !== tab) {
-        this.set('routeData.tab', tab);
+        navigateToUrl(this.route.prefix + '/' + this.routeData.id + '/' + tab);
+        //this.set('routeData.tab', tab);
       }
     }
 

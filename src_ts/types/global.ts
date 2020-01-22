@@ -4,7 +4,7 @@
 * and whose constructor function accepts an arbitrary number of parameters of any type
 * On the type level, a class can be represented as a newable function
 */
-export type Constructor<T> = new(...args: any[]) => T;
+export type Constructor<T> = new (...args: any[]) => T;
 
 export interface GenericObject {
   [key: string]: any;
@@ -13,5 +13,11 @@ export interface GenericObject {
 export interface ValueAndDisplayName {
   value: string;
   display_name: string;
+}
+
+export interface AppRoute {
+  prefix: string; // The part of route.path consumed by parent app-route component
+  path: string;
+  __queryParams: GenericObject;
 }
 

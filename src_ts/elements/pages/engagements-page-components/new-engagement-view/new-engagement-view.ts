@@ -242,7 +242,7 @@ class NewEngagementView extends
   }
 
   _routeConfig() {
-    if (!this.route || !~this.route.prefix.indexOf('new')) {
+    if (!this.route || !~this.route.prefix.indexOf('new')) {// TODO why prefix?
       return;
     }
 
