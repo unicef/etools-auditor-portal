@@ -28,9 +28,6 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
   @property({type: String})
   endpointName: string = '';
 
-  @property({type: Boolean, observer: 'refreshDataChanged'})
-  refreshData!: boolean;
-
   static get observers() {
     return ['getEngagementsList(requestQueries.*)'];
   }
