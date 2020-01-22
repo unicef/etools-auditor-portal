@@ -43,6 +43,7 @@ import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 import {clone} from 'lodash-es';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
+import {navigateToUrl} from '../../utils/navigate-helper.js';
 
 setRootPath(`/${BASE_PATH}/`);
 
@@ -162,8 +163,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.page, route.__queryParams)',
-      '_viewChanged(routeData.view)'
+      '_routePageChanged(route.path, route.__queryParams)'
     ];
   }
   @property({type: Object, observer: '_appLocationsRouteChanged'})
@@ -202,6 +202,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   private _setRouteDebouncer!: Debouncer;
 
+  private test(e) {
+    console.log(e);
+  }
   public connectedCallback() {
     super.connectedCallback();
 
@@ -209,9 +212,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.route.path === `/${BASE_PATH}/`) {
-      this._setDefaultLandingPage();
-    }
+    // if (this.route.path === `/${BASE_PATH}/`) {
+    //   this._setDefaultLandingPage();
+    // }
 
     (this.$.drawer as AppDrawerElement).$.scrim.remove();
 
@@ -271,7 +274,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return urlSpaceRegex.test(this.route.path);
   }
 
-  _viewChanged() {
+  _viewChanged() {// TODO - this doesn't seem to be needed
     console.log('app-shell-_viewChanged');
     // if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
     //   // clear url params(filters from previous page) on navigate between pages
@@ -280,8 +283,14 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _appLocationsRouteChanged() {
-    if (JSON.stringify(this.route) !== JSON.stringify(this.appLocationRoute)) {
+    if (this.appLocationRoute.path === this.rootPath) {
+      this._setDefaultLandingPage();
+      return;
+    }
 
+    if (JSON.stringify(this.route) !== JSON.stringify(this.appLocationRoute)) {
+      // App-locations triggers route changes twice, once for path , once for queryParams
+      // This debouncer should make sure route is set only after both path and queryParams are set
       this._setRouteDebouncer = Debouncer.debounce(this._setRouteDebouncer,
         timeOut.after(10),
         () => {
@@ -345,10 +354,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
 
     import(resolvedPageUrl).then(() => {
-
       fireEvent(this, 'global-loading', {type: 'initialisation'});
-
-      if (this.route.path === this.rootPath) {this._setDefaultLandingPage();}
     })
       .catch((_err) => {
         logError(_err);
@@ -403,7 +409,11 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   _setDefaultLandingPage() {// _configPath
     const path = `${this.rootPath}engagements/list`;
-    this.set('route.path', path);
+    if (this.appLocationRoute.path === path) {
+      return 'engagements';
+    }
+
+    navigateToUrl(path);
     return 'engagements';
   }
 
