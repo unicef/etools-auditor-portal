@@ -158,7 +158,7 @@ class EngagementsPageMain extends PolymerElement {
 
   _configListParams(noNotify: boolean = false) {
     const queries = parseQueries() || {};
-    const queriesUpdates: GenericObject = {};
+    const queriesUpdates = clone(queries);
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
