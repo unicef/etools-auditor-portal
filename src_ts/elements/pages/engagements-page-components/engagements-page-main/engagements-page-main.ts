@@ -12,7 +12,7 @@ import isUndefined from 'lodash-es/isUndefined';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
-import {clearQueries, updateQueries} from '../../../app-mixins/query-params-controller';
+import {clearQueries, updateQueries, parseQueries} from '../../../app-mixins/query-params-controller';
 import '../engagements-list-view/engagements-list-view';
 import '../new-engagement-view/new-engagement-view';
 import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
@@ -54,7 +54,6 @@ class EngagementsPageMain extends PolymerElement {
             query-params="{{queryParams}}"
             has-collapse
             request-queries="[[partnersListQueries]]"
-            refresh-data="[[refreshData]]"
             endpoint-name="{{endpointName}}"
             base-permission-path="new_engagement">
         </engagements-list-view>
@@ -106,6 +105,9 @@ class EngagementsPageMain extends PolymerElement {
   @property({type: Boolean})
   allowNew: boolean = false;
 
+  @property({type: Boolean})
+  initiation: boolean = false;
+
   static get observers() {
     return [
       '_routeConfig(routeData.view)'
@@ -123,6 +125,9 @@ class EngagementsPageMain extends PolymerElement {
     }
 
     if (view === 'list') {
+      const queries = this._configListParams(this.initiation);
+      this.initiation = true;
+      this._setEngagementsListQueries(queries);
       this._fireUpdateEngagementsFilters();
       this.view = 'list';
     } else if (view === 'new' && actionAllowed('new_engagement', 'create')) {
@@ -152,9 +157,8 @@ class EngagementsPageMain extends PolymerElement {
   }
 
   _configListParams(noNotify: boolean = false) {
-    const queries = this.route.__queryParams || {};
-    const queriesUpdates: GenericObject = clone(queries);
-
+    const queries = parseQueries() || {};
+    const queriesUpdates: GenericObject = {};
 
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}

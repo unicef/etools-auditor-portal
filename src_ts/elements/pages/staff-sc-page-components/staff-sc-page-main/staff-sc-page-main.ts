@@ -52,7 +52,6 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
                     query-params="{{queryParams}}"
                     has-collapse
                     request-queries="[[partnersListQueries]]"
-                    refresh-data="[[refreshData]]"
                     base-permission-path="new_engagement"
                     filters="[[filters]]"
                     add-btn-text="Add New Staff Spot Checks"

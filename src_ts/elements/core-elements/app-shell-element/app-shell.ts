@@ -98,7 +98,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                       name="engagements"
                       id="engagements"
                       route="{{subroute}}"
-                      refresh-data="[[refreshEngagementData]]"
                       query-params="{{queryParams}}">
               </engagements-page-main>
 
@@ -107,7 +106,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                       name="staff-sc"
                       id="staff-sc"
                       route="{{subroute}}"
-                      refresh-data="[[refreshStaffSpotData]]"
                       query-params="{{queryParams}}">
               </staff-sc-page-main>
 
@@ -193,12 +191,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   @property({type: Object})
   queryParams!: GenericObject;
 
-  @property({type: Boolean})
-  refreshEngagementData!: boolean;
-
-  @property({type: Boolean})
-  refreshStaffSpotData!: boolean;
-
   public connectedCallback() {
     super.connectedCallback();
 
@@ -219,16 +211,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     this.addEventListener('iron-overlay-opened', this._dialogOpening);
     this.addEventListener('iron-overlay-closed', this._dialogClosing);
-    this.addEventListener('engagement-updated', this.engagementUpdated);
-  }
-
-  engagementUpdated(ev: any) {
-    const refreshDataflag = ev.detail.data.engagement_type === 'sc' ? 'refreshStaffSpotData' : 'refreshEngagementData';
-    this.set(refreshDataflag, true);
-    // reset flag for refresh data on list pages, ready to propagate record updates
-    setTimeout(() => {
-      this.set(refreshDataflag, false);
-    }, 100);
   }
 
   _dialogOpening(event) {
