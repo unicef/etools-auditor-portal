@@ -43,29 +43,29 @@ export function buildQueryString(queryObj) {
   }).join('&');
 }
 
-export function updateQueries(newQueries, path?, noNotify?) {
+export function updateUrlQueryString(newQueries, path?, noNotify?) {
   if (!isObject(newQueries)) {
     return false;
   }
-  const keys = Object.keys(newQueries);
+  const newKeys = Object.keys(newQueries);
 
-  if (!keys.length) {
+  if (!newKeys.length) {
     return false;
   }
 
   path = path && isString(path) ? path : getPath();
 
-  const queries = parseQueries();
+  const currentQueryParams = parseQueries();
 
-  keys.forEach((key) => {
+  newKeys.forEach((key) => {
     if (newQueries[key] === undefined || newQueries[key] === false || newQueries[key] === '') {
-      delete queries[key];
+      delete currentQueryParams[key];
     } else {
-      queries[key] = newQueries[key];
+      currentQueryParams[key] = newQueries[key];
     }
   });
 
-  const queryString = buildQueryString(queries);
+  const queryString = buildQueryString(currentQueryParams);
 
   window.history.replaceState({}, '', `${path}?${queryString}`);
   if (!noNotify) {

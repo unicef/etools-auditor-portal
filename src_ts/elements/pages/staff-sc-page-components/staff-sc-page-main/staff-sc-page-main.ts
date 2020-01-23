@@ -6,7 +6,7 @@ import {sharedStyles} from '../../../styles-elements/shared-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import '../../engagements-page-components/engagements-list-view/engagements-list-view';
 import '../../engagements-page-components/new-engagement-view/new-engagement-view';
-import {clearQueries, updateQueries} from '../../../app-mixins/query-params-controller';
+import {clearQueries, updateUrlQueryString} from '../../../app-mixins/query-params-controller';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {property} from '@polymer/decorators';
@@ -228,7 +228,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
       this.lastParams = clone(queries);
     }
 
-    updateQueries(queriesUpdates, null, noNotify);
+    updateUrlQueryString(queriesUpdates, null, noNotify);
     return queriesUpdates;
   }
 

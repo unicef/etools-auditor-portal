@@ -12,7 +12,7 @@ import '@polymer/paper-item/paper-icon-item';
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
-import {updateQueries} from '../../app-mixins/query-params-controller';
+import {updateUrlQueryString} from '../../app-mixins/query-params-controller';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
@@ -161,7 +161,7 @@ class SearchAndFilter extends PolymerElement {
       () => {
         if (this.searchString.length !== 1) {
           const query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
-          updateQueries({search: query, page: '1'});
+          updateUrlQueryString({search: query, page: '1'});
         }
       });
   }
@@ -208,7 +208,7 @@ class SearchAndFilter extends PolymerElement {
     }
 
     if (this.queryParams[query] !== undefined) {
-      updateQueries(queryObject);
+      updateUrlQueryString(queryObject);
     }
   }
 
@@ -316,7 +316,7 @@ class SearchAndFilter extends PolymerElement {
       const optionValue = filter.optionValue || 'value';
       queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
     }
-    updateQueries(queryObject);
+    updateUrlQueryString(queryObject);
   }
 
   _filterDateHasChanged(e, detail) {
@@ -329,7 +329,7 @@ class SearchAndFilter extends PolymerElement {
     if (query) {
       queryObject[query] = detail.date ? moment(detail.date).format('YYYY-MM-DD') : undefined;
     }
-    updateQueries(queryObject);
+    updateUrlQueryString(queryObject);
   }
 
   filterTypeIsDropdownMulti(checkedTypeValue: FilterTypes) {

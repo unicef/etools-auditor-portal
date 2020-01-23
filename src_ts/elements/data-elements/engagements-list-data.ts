@@ -8,7 +8,7 @@ import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
-import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
+import {updateUrlQueryString, getQueriesString} from '../app-mixins/query-params-controller';
 import {GenericObject} from '../../types/global.js';
 
 class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
@@ -41,7 +41,7 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     // @ts-ignore
     this._setEngagementsList(detail.results);
     this.listLength = detail.count;
-    updateQueries({reload: false});
+    updateUrlQueryString({reload: false});
     fireEvent(this, 'update-export-links');
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
   }
@@ -54,8 +54,10 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
       return;
     }
 
-    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true,
-      message: 'Loading of engagements list...'});
+    fireEvent(this, 'global-loading', {
+      type: 'engagements-list', active: true,
+      message: 'Loading of engagements list...'
+    });
 
     const endpoint = getEndpoint(this.endpointName);
     endpoint.url += getQueriesString();
@@ -105,11 +107,11 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     // wrong page in queries
     if (status === 404 && this.requestQueries.page !== '1') {
-      updateQueries({page: '1'});
+      updateUrlQueryString({page: '1'});
       return;
     }
 
-    updateQueries({reload: false});
+    updateUrlQueryString({reload: false});
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
     fireEvent(this, 'toast', {text: 'Page not found.'});
   }

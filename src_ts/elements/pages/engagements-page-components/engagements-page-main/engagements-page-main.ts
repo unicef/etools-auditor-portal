@@ -12,7 +12,7 @@ import isUndefined from 'lodash-es/isUndefined';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
-import {clearQueries, updateQueries} from '../../../app-mixins/query-params-controller';
+import {clearQueries, updateUrlQueryString} from '../../../app-mixins/query-params-controller';
 import '../engagements-list-view/engagements-list-view';
 import '../new-engagement-view/new-engagement-view';
 import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
@@ -169,7 +169,7 @@ class EngagementsPageMain extends PolymerElement {
       this.lastParams = clone(queries);
     }
 
-    updateQueries(queriesUpdates, null, noNotify);
+    updateUrlQueryString(queriesUpdates, null, noNotify);
     return queriesUpdates;
   }
 
