@@ -29,7 +29,7 @@ import DateMixin from '../../../app-mixins/date-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-import {getUserData} from '../../../../elements/app-mixins/user-controller';
+import {getUserData} from '../../../app-mixins/user-controller';
 
 /**
  * @polymer
@@ -39,48 +39,58 @@ import {getUserData} from '../../../../elements/app-mixins/user-controller';
  */
 class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
-  static get template() {
-    // language=HTML
-    return html`
+    static get template() {
+        // language=HTML
+        return html`
       ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
         .po-loading {
-            position: absolute;
-            top: 25px;
-            left: auto;
-            background-color: #fff;
+          position: absolute;
+          top: 25px;
+          left: auto;
+          background-color: #fff;
         }
+        
         .etools-loading:not([active]) {
-            display: none !important;
+          display: none !important;
         }
-            etools-info-tooltip span[slot="message"] {
-            white-space: nowrap;
-            line-height: 15px;
+        
+        etools-info-tooltip span[slot="message"] {
+          white-space: nowrap;
+          line-height: 15px;
         }
+        
         etools-info-tooltip {
-            --etools-tooltip-trigger-icon-margin-left: -2px;
-            --etools-tooltip-trigger-icon-margin-top: 12px;
-            --etools-tooltip-trigger-icon-color: var(--gray-50);
-            --etools-tooltip-trigger-icon-cursor: pointer;
+          --etools-tooltip-trigger-icon-margin-left: -2px;
+          --etools-tooltip-trigger-icon-margin-top: 12px;
+          --etools-tooltip-trigger-icon-color: var(--gray-50);
+          --etools-tooltip-trigger-icon-cursor: pointer;
         }
+        
         .join-audit {
-            padding-left: 12px;
-            margin-top: 24px;
-            box-sizing: border-box;
+          padding-left: 12px;
+          margin-top: 24px;
+          box-sizing: border-box;
         }
+        
         .row-h.float {
-            display: flex;
-            position: relative;
-            width: 100%;
-            flex-direction: row;
-            align-items: baseline;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 0;
+          display: flex;
+          position: relative;
+          width: 100%;
+          flex-direction: row;
+          align-items: baseline;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          margin-bottom: 0;
         }
+        
         .row-h.float .input-container {
-            margin-bottom: 8px;
-            max-height: 62px;
+          margin-bottom: 8px;
+          max-height: 62px;
+        }
+        
+        etools-dropdown, etools-dropdown-multi {
+          align-items: baseline;
         }
 
       </style>
@@ -443,481 +453,481 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
       </etools-content-panel>
       `;
-  }
-
-  @property({type: String, observer: '_basePathChanged'})
-  basePermissionPath!: string;
-
-  @property({type: Array, computed: '_setEngagementTypes(basePermissionPath)'})
-  engagementTypes: GenericObject[] = [
-    {
-      label: 'Micro Assessment',
-      link: 'micro-assessments',
-      value: 'ma'
-    }, {
-      label: 'Audit',
-      link: 'audits',
-      value: 'audit'
-    }, {
-      label: 'Spot Check',
-      link: 'spot-checks',
-      value: 'sc'
-    }, {
-      label: 'Special Audit',
-      link: 'special-audits',
-      value: 'sa'
-    }];
-
-  @property({type: Object, notify: true})
-  data!: any;
-
-  @property({type: Object})
-  originalData: any = {};
-
-  @property({type: Object})
-  errors = {};
-
-  @property({type: String})
-  engagementType = '';
-
-  @property({type: Date})
-  maxDate = new Date();
-
-  @property({type: String})
-  contractExpiryDate = null;
-
-  @property({type: Object})
-  tabTexts = {
-    name: 'Engagement Overview',
-    fields: [
-      'agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value'
-    ]
-  };
-
-  @property({type: Array, computed: '_setSharedIpWith(basePermissionPath)'})
-  sharedIpWithOptions: [] = [];
-
-  @property({type: Array})
-  sharedIpWith: any[] = [];
-
-  @property({type: Boolean, computed: '_showJoinAudit(showInput, showAdditionalInput)'})
-  showJoinAudit = false;
-
-  @property({type: Boolean})
-  isStaffSc = false;
-
-  @property({type: Boolean})
-  showAdditionalInput!: boolean;
-
-  @property({type: Boolean})
-  showInput!: boolean;
-
-  @property({type: Object})
-  orderNumber!: GenericObject | null;
-
-  @property({type: Array})
-  sectionOptions!: GenericObject[];
-
-  @property({type: Array})
-  sectionIDs: number[] = [];
-
-  @property({type: Array})
-  officeOptions!: GenericObject[];
-
-  @property({type: Array})
-  officeIDs: number[] = [];
-
-  @property({type: Array})
-  users!: GenericObject[];
-
-  @property({type: Array})
-  usersNotifiedOptions: GenericObject[] = [];
-
-  @property({type: Array})
-  usersNotifiedIDs: any[] = [];
-
-  static get observers() {
-    return [
-      '_errorHandler(errorObject)',
-      '_setShowInput(data.engagement_type)',
-      '_setAdditionalInput(data.engagement_type)',
-      'updateStyles(poPermissionPath, poUpdating)',
-      'updateStyles(data.engagement_type)',
-      'updatePoBasePath(data.agreement.id)',
-      '_prepareData(data)'
-    ];
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    (this.$.purchaseOrder as PaperInputElement).validate =
-      this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
-    this.addEventListener('agreement-loaded', this._agreementLoaded);
-  }
-
-  _setEngagementTypeObject(e) {
-    this.set('data.engagement_type_details', e.detail.selectedItem);
-  }
-
-  _prepareData() {
-    // reset orderNumber
-    this.set('orderNumber', null);
-
-    this.populateDropdownsAndSetSelectedValues();
-
-    let poItemId = this.get('data.po_item.id');
-    if (poItemId) {
-      this.set('data.po_item', poItemId);
-    }
-  }
-
-  userIsFirmStaffAuditor() {
-    const userData = getUserData();
-    return userData && !userData.is_unicef_user;
-  }
-
-  populateDropdownsAndSetSelectedValues() {
-    // For firm staff auditors certain endpoints return 403
-    const userIsFirmStaffAuditor = this.userIsFirmStaffAuditor();
-
-    const savedSections = this.get('data.sections') || [];
-    this.set('sectionOptions', (userIsFirmStaffAuditor ? savedSections : getStaticData('sections')) || []);
-    const sectionIDs = savedSections.map(section => section.id);
-    this.set('sectionIDs', sectionIDs);
-
-    const savedOffices = this.get('data.offices') || [];
-    this.set('officeOptions', (userIsFirmStaffAuditor ? savedOffices : getStaticData('offices')) || []);
-    const officeIDs = savedOffices.map(office => office.id);
-    this.set('officeIDs', officeIDs);
-
-    if (!this.users) {
-      this.set('users', getStaticData('users') || []);
-    }
-    this.setUsersNotifiedIDs();
-  }
-
-  setUsersNotifiedIDs() {
-    const availableUsers = [...this.users];
-    const notifiedUsers = this.get('data.users_notified') || [];
-    this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
-    this.set('usersNotifiedOptions', availableUsers);
-    const usersNotifiedIDs = notifiedUsers.map(user => user.id);
-    this.set('usersNotifiedIDs', usersNotifiedIDs);
-  }
-
-  populateUsersNotifiedDropDown() {
-    this.usersNotifiedOptions = [...this.users];
-  }
-
-  _setSharedIpWith(basePermissionPath: string) {
-    const sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
-    return sharedIpWithOptions || [];
-  }
-
-  validate() {
-    const orderField = this.$.purchaseOrder as PaperInputElement;
-    const orderValid = orderField && orderField.validate();
-
-    const elements = this.shadowRoot!.querySelectorAll('.validate-field');
-    let valid = true;
-    elements.forEach((element: any) => {
-      if (element.required && !element.disabled && !element.validate()) {
-        const label = element.label || 'Field';
-        element.errorMessage = `${label} is required`;
-        element.invalid = true;
-        valid = false;
-      }
-    });
-
-    const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as PaperInputElement;
-    const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as PaperInputElement;
-    const startValue = periodStart ? Date.parse(periodStart.value!) : 0;
-    const endValue = periodEnd ? Date.parse(periodEnd.value!) : 0;
-
-    if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
-      periodEnd.errorMessage = 'This date should be after Period Start Date';
-      periodEnd.invalid = true;
-      valid = false;
     }
 
-    return orderValid && valid;
-  }
+    @property({type: String, observer: '_basePathChanged'})
+    basePermissionPath!: string;
 
-  resetValidationErrors() {
-    this.set('errors.agreement', false);
-    const el = this.shadowRoot!.querySelectorAll('.validate-field');
-    el.forEach((e: any) => e.set('invalid', false));
+    @property({type: Array, computed: '_setEngagementTypes(basePermissionPath)'})
+    engagementTypes: GenericObject[] = [
+        {
+            label: 'Micro Assessment',
+            link: 'micro-assessments',
+            value: 'ma'
+        }, {
+            label: 'Audit',
+            link: 'audits',
+            value: 'audit'
+        }, {
+            label: 'Spot Check',
+            link: 'spot-checks',
+            value: 'sc'
+        }, {
+            label: 'Special Audit',
+            link: 'special-audits',
+            value: 'sa'
+        }];
 
-    const elements = this.shadowRoot!.querySelectorAll('.validate-field');
-    elements.forEach((element: any) => {
-      element.errorMessage = '';
-      element.invalid = false;
-    });
-  }
+    @property({type: Object, notify: true})
+    data!: any;
 
-  _processValue(value: string) {
-    return this.engagementTypes.filter((type: any) => {
-      return type.value === value;
-    })[0];
-  }
+    @property({type: Object})
+    originalData: any = {};
 
-  poKeydown(event: any) {
-    if (event.keyCode === 13) {
-      this._requestAgreement(event);
-    }
-  }
+    @property({type: Object})
+    errors = {};
 
-  _requestAgreement(event: any) {
-    if (this.requestInProcess) {
-      return;
-    }
+    @property({type: String})
+    engagementType = '';
 
-    const input = event && event.target;
-    const value = input && input.value;
+    @property({type: Date})
+    maxDate = new Date();
 
-    if ((+value || +value === 0) && value === this.orderNumber) {
-      return;
-    }
-    this.resetAgreement();
+    @property({type: String})
+    contractExpiryDate = null;
 
-    if (!value) {
-      this.set('orderNumber', null);
-      return;
-    }
-
-    if (!this._validatePOLength(value)) {
-      this.set('errors.agreement', 'Purchase order number must be 10 digits');
-      this.set('orderNumber', null);
-      return;
-    }
-
-    this.requestInProcess = true;
-    this.set('orderNumber', value);
-    return true;
-  }
-
-  _agreementLoaded() {
-    this.requestInProcess = false;
-    (this.$.purchaseOrder as PaperInputElement).validate();
-  }
-
-  resetAgreement() {
-    this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
-    this.set('contractExpiryDate', null);
-    this.set('orderNumber', null);
-  }
-
-  _validatePurchaseOrder(orderInput: any) {
-    if (orderInput && (orderInput.readonly || orderInput.disabled)) {
-      return true;
-    }
-    if (this.requestInProcess) {
-      this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
-      return false;
-    }
-    const value = orderInput && orderInput.value;
-    if (!value && orderInput && orderInput.required) {
-      this.set('errors.agreement', 'Purchase order is required');
-      return false;
-    }
-    if (!this._validatePOLength(value)) {
-      this.set('errors.agreement', 'Purchase order number must be 10 digits');
-      return false;
-    }
-    if (!this.data || !this.data.agreement || !this.data.agreement.id) {
-      this.set('errors.agreement', 'Purchase order not found');
-      return false;
-    }
-    this.set('errors.agreement', false);
-    return true;
-  }
-
-  _validatePOLength(po: any) {
-    return !po || `${po}`.length === 10;
-  }
-
-  resetType() {
-    (this.$.engagementType as EtoolsDropdownEl).set('selected', '');
-  }
-
-  getEngagementData() {
-    const data: any = {};
-    const agreementId = get(this, 'data.agreement.id');
-    const originalAgreementId = get(this, 'originalData.agreement.id');
-
-    if (this.originalData.start_date !== this.data.start_date) {
-      data.start_date = this.data.start_date;
-    }
-    if (this.originalData.end_date !== this.data.end_date) {
-      data.end_date = this.data.end_date;
-    }
-    if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
-      data.partner_contacted_at = this.data.partner_contacted_at;
-    }
-
-    if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) {
-      data.agreement = this.data.agreement.id;
-    }
-
-    if (this.originalData.total_value !== this.data.total_value) {
-      data.total_value = this.data.total_value;
-    }
-
-    if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
-      data.engagement_type = this.data.engagement_type;
-    }
-
-    if (this.data.po_item && (!this.originalData.po_item || (this.originalData.po_item.id !== +this.data.po_item))) {
-      data.po_item = this.data.po_item;
-    }
-
-    const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
-    if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
-      data.users_notified = this.usersNotifiedIDs;
-    }
-
-    const originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
-    const sharedIpWith = this.data.shared_ip_with || [];
-    if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
-      data.shared_ip_with = sharedIpWith;
-    }
-
-    const originalOfficeIDs = (this.get('originalData.offices') || []).map(office => +office.id);
-    if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
-      data.offices = this.officeIDs;
-    }
-
-    const originalSectionIDs = (this.get('originalData.sections') || []).map(section => +section.id);
-    if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
-      data.sections = this.sectionIDs;
-    }
-
-    return data;
-  }
-
-  collectionChanged(originalCollection: any[], newCollection: any[]) {
-    return this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
-      this.collectionsAreDifferent(originalCollection, newCollection);
-  }
-
-  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
-    return originalCollection.length !== newCollection.length;
-  }
-
-  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
-    return newCollection.filter(id => !originalCollection.includes(+id)).length > 0;
-  }
-
-  _setShowInput(type: string) {
-    this.showInput = !!type && type !== 'ma';
-  }
-
-  _setAdditionalInput(type: string) {
-    this.showAdditionalInput = !!type && type !== 'sc';
-  }
-
-  _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
-    return showAdditionalInput && showInput;
-  }
-
-  updatePoBasePath(id: any) {
-    const path = id ? `po_${id}` : '';
-    this.set('poPermissionPath', path);
-  }
-
-  _setExpiryMinDate(minDate: any) {
-    if (!minDate) {
-      return false;
-    }
-    const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(),
-      new Date(minDate).getDate());
-    return new Date(today.getDate() - 1);
-  }
-
-  _hideTooltip(basePermissionPath: any, showInput: any, type: any) {
-    return this.isReadOnly('engagement_type', basePermissionPath) ||
-      this.isSpecialAudit(type) ||
-      !showInput;
-  }
-
-  _setEngagementTypes(basePermissionPath: any) {
-    const types = getChoices(`${basePermissionPath}.engagement_type`);
-    if (!types) {
-      return;
-    }
-
-    const links: {[key: string]: string} = {
-      'ma': 'micro-assessments',
-      'audit': 'audits',
-      'sc': 'spot-checks',
-      'sa': 'special-audits'
+    @property({type: Object})
+    tabTexts = {
+        name: 'Engagement Overview',
+        fields: [
+            'agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value'
+        ]
     };
 
-    return types.map((typeObject: any) => {
-      return {
-        value: typeObject.value,
-        label: typeObject.display_name,
-        link: links[typeObject.value as string]
-      };
-    });
-  }
+    @property({type: Array, computed: '_setSharedIpWith(basePermissionPath)'})
+    sharedIpWithOptions: [] = [];
 
-  _getEngagementTypeLabel(type: string) {
-    const value = this._processValue(type) || {};
-    return value.label || '';
-  }
+    @property({type: Array})
+    sharedIpWith: any[] = [];
 
-  _isAdditionalFieldRequired(field: any, basePath: any, type: any) {
-    if (this.isSpecialAudit(type)) {
-      return false;
+    @property({type: Boolean, computed: '_showJoinAudit(showInput, showAdditionalInput)'})
+    showJoinAudit = false;
+
+    @property({type: Boolean})
+    isStaffSc = false;
+
+    @property({type: Boolean})
+    showAdditionalInput!: boolean;
+
+    @property({type: Boolean})
+    showInput!: boolean;
+
+    @property({type: Object})
+    orderNumber!: GenericObject | null;
+
+    @property({type: Array})
+    sectionOptions!: GenericObject[];
+
+    @property({type: Array})
+    sectionIDs: number[] = [];
+
+    @property({type: Array})
+    officeOptions!: GenericObject[];
+
+    @property({type: Array})
+    officeIDs: number[] = [];
+
+    @property({type: Array})
+    users!: GenericObject[];
+
+    @property({type: Array})
+    usersNotifiedOptions: GenericObject[] = [];
+
+    @property({type: Array})
+    usersNotifiedIDs: any[] = [];
+
+    static get observers() {
+        return [
+            '_errorHandler(errorObject)',
+            '_setShowInput(data.engagement_type)',
+            '_setAdditionalInput(data.engagement_type)',
+            'updateStyles(poPermissionPath, poUpdating)',
+            'updateStyles(data.engagement_type)',
+            'updatePoBasePath(data.agreement.id)',
+            '_prepareData(data)'
+        ];
     }
-    return this._setRequired(field, basePath);
-  }
 
-  _getPoItems(agreement: any) {
-    let poItems = [];
+    connectedCallback() {
+        super.connectedCallback();
+        (this.$.purchaseOrder as PaperInputElement).validate =
+            this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+        this.addEventListener('agreement-loaded', this._agreementLoaded);
+    }
 
-    if (agreement && Array.isArray(agreement.items)) {
-      agreement.items = agreement.items.filter((item: any) => item);
+    _setEngagementTypeObject(e) {
+        this.set('data.engagement_type_details', e.detail.selectedItem);
+    }
 
-      poItems = agreement.items.map((item: any) => {
-        return {
-          id: item.id,
-          number: `${item.number}`
+    _prepareData() {
+        // reset orderNumber
+        this.set('orderNumber', null);
+
+        this.populateDropdownsAndSetSelectedValues();
+
+        let poItemId = this.get('data.po_item.id');
+        if (poItemId) {
+            this.set('data.po_item', poItemId);
+        }
+    }
+
+    userIsFirmStaffAuditor() {
+        const userData = getUserData();
+        return userData && !userData.is_unicef_user;
+    }
+
+    populateDropdownsAndSetSelectedValues() {
+        // For firm staff auditors certain endpoints return 403
+        const userIsFirmStaffAuditor = this.userIsFirmStaffAuditor();
+
+        const savedSections = this.get('data.sections') || [];
+        this.set('sectionOptions', (userIsFirmStaffAuditor ? savedSections : getStaticData('sections')) || []);
+        const sectionIDs = savedSections.map(section => section.id);
+        this.set('sectionIDs', sectionIDs);
+
+        const savedOffices = this.get('data.offices') || [];
+        this.set('officeOptions', (userIsFirmStaffAuditor ? savedOffices : getStaticData('offices')) || []);
+        const officeIDs = savedOffices.map(office => office.id);
+        this.set('officeIDs', officeIDs);
+
+        if (!this.users) {
+            this.set('users', getStaticData('users') || []);
+        }
+        this.setUsersNotifiedIDs();
+    }
+
+    setUsersNotifiedIDs() {
+        const availableUsers = [...this.users];
+        const notifiedUsers = this.get('data.users_notified') || [];
+        this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
+        this.set('usersNotifiedOptions', availableUsers);
+        const usersNotifiedIDs = notifiedUsers.map(user => user.id);
+        this.set('usersNotifiedIDs', usersNotifiedIDs);
+    }
+
+    populateUsersNotifiedDropDown() {
+        this.usersNotifiedOptions = [...this.users];
+    }
+
+    _setSharedIpWith(basePermissionPath: string) {
+        const sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
+        return sharedIpWithOptions || [];
+    }
+
+    validate() {
+        const orderField = this.$.purchaseOrder as PaperInputElement;
+        const orderValid = orderField && orderField.validate();
+
+        const elements = this.shadowRoot!.querySelectorAll('.validate-field');
+        let valid = true;
+        elements.forEach((element: any) => {
+            if (element.required && !element.disabled && !element.validate()) {
+                const label = element.label || 'Field';
+                element.errorMessage = `${label} is required`;
+                element.invalid = true;
+                valid = false;
+            }
+        });
+
+        const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as PaperInputElement;
+        const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as PaperInputElement;
+        const startValue = periodStart ? Date.parse(periodStart.value!) : 0;
+        const endValue = periodEnd ? Date.parse(periodEnd.value!) : 0;
+
+        if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
+            periodEnd.errorMessage = 'This date should be after Period Start Date';
+            periodEnd.invalid = true;
+            valid = false;
+        }
+
+        return orderValid && valid;
+    }
+
+    resetValidationErrors() {
+        this.set('errors.agreement', false);
+        const el = this.shadowRoot!.querySelectorAll('.validate-field');
+        el.forEach((e: any) => e.set('invalid', false));
+
+        const elements = this.shadowRoot!.querySelectorAll('.validate-field');
+        elements.forEach((element: any) => {
+            element.errorMessage = '';
+            element.invalid = false;
+        });
+    }
+
+    _processValue(value: string) {
+        return this.engagementTypes.filter((type: any) => {
+            return type.value === value;
+        })[0];
+    }
+
+    poKeydown(event: any) {
+        if (event.keyCode === 13) {
+            this._requestAgreement(event);
+        }
+    }
+
+    _requestAgreement(event: any) {
+        if (this.requestInProcess) {
+            return;
+        }
+
+        const input = event && event.target;
+        const value = input && input.value;
+
+        if ((+value || +value === 0) && value === this.orderNumber) {
+            return;
+        }
+        this.resetAgreement();
+
+        if (!value) {
+            this.set('orderNumber', null);
+            return;
+        }
+
+        if (!this._validatePOLength(value)) {
+            this.set('errors.agreement', 'Purchase order number must be 10 digits');
+            this.set('orderNumber', null);
+            return;
+        }
+
+        this.requestInProcess = true;
+        this.set('orderNumber', value);
+        return true;
+    }
+
+    _agreementLoaded() {
+        this.requestInProcess = false;
+        (this.$.purchaseOrder as PaperInputElement).validate();
+    }
+
+    resetAgreement() {
+        this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
+        this.set('contractExpiryDate', null);
+        this.set('orderNumber', null);
+    }
+
+    _validatePurchaseOrder(orderInput: any) {
+        if (orderInput && (orderInput.readonly || orderInput.disabled)) {
+            return true;
+        }
+        if (this.requestInProcess) {
+            this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
+            return false;
+        }
+        const value = orderInput && orderInput.value;
+        if (!value && orderInput && orderInput.required) {
+            this.set('errors.agreement', 'Purchase order is required');
+            return false;
+        }
+        if (!this._validatePOLength(value)) {
+            this.set('errors.agreement', 'Purchase order number must be 10 digits');
+            return false;
+        }
+        if (!this.data || !this.data.agreement || !this.data.agreement.id) {
+            this.set('errors.agreement', 'Purchase order not found');
+            return false;
+        }
+        this.set('errors.agreement', false);
+        return true;
+    }
+
+    _validatePOLength(po: any) {
+        return !po || `${po}`.length === 10;
+    }
+
+    resetType() {
+        (this.$.engagementType as EtoolsDropdownEl).set('selected', '');
+    }
+
+    getEngagementData() {
+        const data: any = {};
+        const agreementId = get(this, 'data.agreement.id');
+        const originalAgreementId = get(this, 'originalData.agreement.id');
+
+        if (this.originalData.start_date !== this.data.start_date) {
+            data.start_date = this.data.start_date;
+        }
+        if (this.originalData.end_date !== this.data.end_date) {
+            data.end_date = this.data.end_date;
+        }
+        if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
+            data.partner_contacted_at = this.data.partner_contacted_at;
+        }
+
+        if (!originalAgreementId && agreementId || originalAgreementId !== agreementId) {
+            data.agreement = this.data.agreement.id;
+        }
+
+        if (this.originalData.total_value !== this.data.total_value) {
+            data.total_value = this.data.total_value;
+        }
+
+        if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
+            data.engagement_type = this.data.engagement_type;
+        }
+
+        if (this.data.po_item && (!this.originalData.po_item || (this.originalData.po_item.id !== +this.data.po_item))) {
+            data.po_item = this.data.po_item;
+        }
+
+        const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map(user => +user.id);
+        if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
+            data.users_notified = this.usersNotifiedIDs;
+        }
+
+        const originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
+        const sharedIpWith = this.data.shared_ip_with || [];
+        if (sharedIpWith.length && sharedIpWith.filter(x => !originalSharedIpWith.includes(x)).length > 0) {
+            data.shared_ip_with = sharedIpWith;
+        }
+
+        const originalOfficeIDs = (this.get('originalData.offices') || []).map(office => +office.id);
+        if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
+            data.offices = this.officeIDs;
+        }
+
+        const originalSectionIDs = (this.get('originalData.sections') || []).map(section => +section.id);
+        if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
+            data.sections = this.sectionIDs;
+        }
+
+        return data;
+    }
+
+    collectionChanged(originalCollection: any[], newCollection: any[]) {
+        return this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
+            this.collectionsAreDifferent(originalCollection, newCollection);
+    }
+
+    collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
+        return originalCollection.length !== newCollection.length;
+    }
+
+    collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
+        return newCollection.filter(id => !originalCollection.includes(+id)).length > 0;
+    }
+
+    _setShowInput(type: string) {
+        this.showInput = !!type && type !== 'ma';
+    }
+
+    _setAdditionalInput(type: string) {
+        this.showAdditionalInput = !!type && type !== 'sc';
+    }
+
+    _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
+        return showAdditionalInput && showInput;
+    }
+
+    updatePoBasePath(id: any) {
+        const path = id ? `po_${id}` : '';
+        this.set('poPermissionPath', path);
+    }
+
+    _setExpiryMinDate(minDate: any) {
+        if (!minDate) {
+            return false;
+        }
+        const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(),
+            new Date(minDate).getDate());
+        return new Date(today.getDate() - 1);
+    }
+
+    _hideTooltip(basePermissionPath: any, showInput: any, type: any) {
+        return this.isReadOnly('engagement_type', basePermissionPath) ||
+            this.isSpecialAudit(type) ||
+            !showInput;
+    }
+
+    _setEngagementTypes(basePermissionPath: any) {
+        const types = getChoices(`${basePermissionPath}.engagement_type`);
+        if (!types) {
+            return;
+        }
+
+        const links: { [key: string]: string } = {
+            'ma': 'micro-assessments',
+            'audit': 'audits',
+            'sc': 'spot-checks',
+            'sa': 'special-audits'
         };
-      });
+
+        return types.map((typeObject: any) => {
+            return {
+                value: typeObject.value,
+                label: typeObject.display_name,
+                link: links[typeObject.value as string]
+            };
+        });
     }
 
-    return poItems;
-  }
-
-  _isDataAgreementReadonly(field: any, basePermissionPath: any, agreement: any) {
-    if (!agreement) {
-      return false;
-    }
-    return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
-  }
-
-  _hideField(fieldName: any, basePermissionPath: any) {
-    if (!fieldName || !basePermissionPath) {
-      return false;
+    _getEngagementTypeLabel(type: string) {
+        const value = this._processValue(type) || {};
+        return value.label || '';
     }
 
-    const path = `${basePermissionPath}.${fieldName}`;
-    const collectionNotExists = !collectionExists(path, 'POST') &&
-      !collectionExists(path, 'PUT') &&
-      !collectionExists(path, 'GET');
+    _isAdditionalFieldRequired(field: any, basePath: any, type: any) {
+        if (this.isSpecialAudit(type)) {
+            return false;
+        }
+        return this._setRequired(field, basePath);
+    }
 
-    return collectionNotExists;
-  }
+    _getPoItems(agreement: any) {
+        let poItems = [];
 
-  _hideForSc(isStaffSc: any) {
-    return isStaffSc;
-  }
+        if (agreement && Array.isArray(agreement.items)) {
+            agreement.items = agreement.items.filter((item: any) => item);
 
-  _checkInvalid(value) {
-    return !!value;
-  }
+            poItems = agreement.items.map((item: any) => {
+                return {
+                    id: item.id,
+                    number: `${item.number}`
+                };
+            });
+        }
+
+        return poItems;
+    }
+
+    _isDataAgreementReadonly(field: any, basePermissionPath: any, agreement: any) {
+        if (!agreement) {
+            return false;
+        }
+        return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
+    }
+
+    _hideField(fieldName: any, basePermissionPath: any) {
+        if (!fieldName || !basePermissionPath) {
+            return false;
+        }
+
+        const path = `${basePermissionPath}.${fieldName}`;
+        const collectionNotExists = !collectionExists(path, 'POST') &&
+            !collectionExists(path, 'PUT') &&
+            !collectionExists(path, 'GET');
+
+        return collectionNotExists;
+    }
+
+    _hideForSc(isStaffSc: any) {
+        return isStaffSc;
+    }
+
+    _checkInvalid(value) {
+        return !!value;
+    }
 
 }
 
