@@ -136,7 +136,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     _tabChanged(tab) {
       if (tab && this.routeData && this.routeData.tab !== tab) {
         navigateToUrl(this.route.prefix + '/' + this.routeData.id + '/' + tab);
-        //this.set('routeData.tab', tab);
       }
     }
 

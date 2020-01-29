@@ -116,36 +116,31 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
               <audits-page-main
                       name="audits"
                       id="audits"
-                      route="{{subroute}}"
-                      query-params="[[queryParams]]">
+                      route="{{subroute}}">
               </audits-page-main>
 
               <special-audits-page-main
                       name="special-audits"
                       id="special-audits"
-                      route="{{subroute}}"
-                      query-params="[[queryParams]]">
+                      route="{{subroute}}">
               </special-audits-page-main>
 
               <micro-assessments-page-main
                       name="micro-assessments"
                       id="micro-assessments"
-                      route="{{subroute}}"
-                      query-params="[[queryParams]]">
+                      route="{{subroute}}">
               </micro-assessments-page-main>
 
               <spot-checks-page-main
                       name="spot-checks"
                       id="spot-checks"
-                      route="{{subroute}}"
-                      query-params="[[queryParams]]">
+                      route="{{subroute}}">
               </spot-checks-page-main>
 
               <spot-checks-page-main
                       name="staff-spot-checks"
                       id="staff-spot-checks"
                       route="{{subroute}}"
-                      query-params="[[queryParams]]"
                       is-staff-sc>
               </spot-checks-page-main>
 
@@ -163,7 +158,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   static get observers() {
     return [
-      '_routePageChanged(route.path, route.__queryParams)'
+      '_routePageChanged(route)'
     ];
   }
   @property({type: Object, observer: '_appLocationsRouteChanged'})
@@ -297,6 +292,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
 
   _routePageChanged() {
+    console.log('routePageChanged');
     if (!this.routeData.page || !this.allowPageChange()) {
       return;
     }

@@ -65,7 +65,6 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
                         name="new"
                         id="creationPage"
                         page="{{routeData.view}}"
-                        query-params="{{queryParams}}"
                         route="{{subroute}}"
                         request-queries="{{partnersListQueries}}"
                         base-permission-path="new_staff_sc"

@@ -178,9 +178,6 @@ class NewEngagementView extends
   }
 
   @property({type: Object})
-  route!: GenericObject;
-
-  @property({type: Object})
   routeData!: GenericObject;
 
   @property({type: Object})
@@ -206,9 +203,6 @@ class NewEngagementView extends
 
   @property({type: Array})
   tabsList: string[] = ['overview', 'attachments'];
-
-  @property({type: Object, notify: true})
-  queryParams: GenericObject = {};
 
   @property({type: String})
   pageTitle: string = '';
@@ -242,7 +236,7 @@ class NewEngagementView extends
   }
 
   _routeConfig() {
-    if (!this.route || !~this.route.prefix.indexOf('new')) {// TODO why prefix?
+    if (!this.route || !~this.route.prefix.indexOf('new')) {// TODO why route.prefix??
       return;
     }
 
