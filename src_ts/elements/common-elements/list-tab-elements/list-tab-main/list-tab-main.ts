@@ -13,6 +13,10 @@ import {ListTabMainStyles} from './list-tab-main-styles';
 import '../list-header/list-header';
 import '../list-element/list-element';
 import '../list-pagination/list-pagination';
+import clone from 'lodash-es/clone';
+import {getPath, buildQueryString} from '../../../app-mixins/query-params-controller';
+import {navigateToUrl} from '../../../utils/navigate-helper';
+import {objectsAreTheSame} from '../../../utils/utils';
 
 
 /**
@@ -101,8 +105,8 @@ class ListTabMain extends PolymerElement {
       <template is="dom-if" if="[[!withoutPagination]]" restamp>
           <list-pagination
                   id="list-pagination"
-                  page-size="{{queryParams.page_size}}"
-                  page-number="{{queryParams.page}}"
+                  page-size="{{localQueryParams.page_size}}"
+                  page-number="{{localQueryParams.page}}"
                   datalength="[[listLength]]"
                   page-marker="[[pageMarker]]"
                   showing-results="{{showingResults}}">
@@ -113,17 +117,21 @@ class ListTabMain extends PolymerElement {
   }
   static get observers() {
     return [
-      '_orderChanged(orderBy, headings)'
+      '_orderChanged(orderBy, headings)',
+      '_paginationChanged(localQueryParams.*)'
     ];
   }
 
   @property({type: String})
   basePermissionPath: string = '';
 
-  @property({type: Object, notify: true, observer: '_paramsChanged'})
+  @property({type: Object, observer: '_paramsChanged'})
   queryParams!: GenericObject;
 
-  @property({type: String, computed: '_computeResultsToShow(listLength, queryParams.page_size)'})
+  @property({type: Object})
+  localQueryParams!: GenericObject;
+
+  @property({type: String, computed: '_computeResultsToShow(listLength, localQueryParams.page_size)'})
   showingResults!: string;
 
   @property({type: String})
@@ -176,17 +184,24 @@ class ListTabMain extends PolymerElement {
       }
     });
 
-    if (this.queryParams && this.queryParams.ordering !== this.orderBy) {
-      this.set('queryParams.ordering', this.orderBy);
+    if (this.localQueryParams && this.localQueryParams.ordering !== this.orderBy) {
+      this.set('localQueryParams.ordering', this.orderBy);
+    }
+  }
+  _paginationChanged() {
+    if (!objectsAreTheSame(this.queryParams, this.localQueryParams)) {
+      console.log('pagination changed')
+      navigateToUrl(getPath() + '?' + buildQueryString(this.localQueryParams));
     }
   }
 
   _paramsChanged(newParams) {
+    this.localQueryParams = clone(newParams);
     if (this.orderBy !== newParams.ordering) {this.orderBy = newParams.ordering;}
   }
 
   _computeResultsToShow(lengthAmount, size) {
-    const page = (this.queryParams.page || 1) - 1;
+    const page = (this.localQueryParams.page || 1) - 1;
     size = +size || 10;
 
     let last = size * page + size;

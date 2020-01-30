@@ -74,7 +74,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
           list-length="[[listLength]]"
           headings="[[listHeadings]]"
           has-collapse="[[hasCollapse]]"
-          query-params="{{queryParams}}"
+          query-params="[[queryParams]]"
           no-additional
           base-permission-path="[[basePermissionPath]]">
       </list-tab-main>

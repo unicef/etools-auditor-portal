@@ -27,7 +27,7 @@ export function getQueriesString() {
   return _getLocationProperty('search');
 }
 
-function getPath() {
+export function getPath() {
   let path = _getLocationProperty('pathname');
   if (~path.indexOf(`/${BASE_PATH}`)) {
     path = path.replace(`/${BASE_PATH}`, '');
