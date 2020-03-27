@@ -140,5 +140,9 @@ export const searchAndFilterStyles = html`
       cursor: pointer;
     }
 
+    .dropdown-style {
+      --esmm-dropdown-menu-position: absolute;
+    }
+
   </style>
 `;

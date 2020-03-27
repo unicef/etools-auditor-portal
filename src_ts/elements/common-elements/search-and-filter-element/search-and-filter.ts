@@ -56,7 +56,7 @@ class SearchAndFilter extends PolymerElement {
 
           <!-- FILTERS -->
           <template is="dom-repeat" items="[[usedFilters]]">
-            <div class="layout horizontal">
+            <div class="layout horizontal dropdown-style">
                 <template is="dom-if" if="[[filterTypeIsDropdownMulti(item.type)]]">
                   <etools-dropdown-multi
                       id="[[item.query]]"
