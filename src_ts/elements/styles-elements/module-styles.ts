@@ -95,6 +95,7 @@ export const moduleStyles = html`
     }
 
     etools-dropdown, etools-dropdown-multi {
+      --dropdown-height: 250px;
       padding: 0 12px;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
