@@ -92,10 +92,5 @@ export const fileAttachmentsTabStyles = html`
       --iron-icon-height: 20px;
       --iron-icon-fill-color: var(--gray-50);
     }
-
-    .dropdown-style {
-            --esmm-dropdown-menu-position: fixed;
-          }
-
   </style>
 `;
