@@ -29,7 +29,7 @@ import DateMixin from '../../../app-mixins/date-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-import {getUserData} from '../../../../elements/app-mixins/user-controller';
+import {getUserData} from '../../../app-mixins/user-controller';
 
 /**
  * @polymer
@@ -45,42 +45,52 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
         .po-loading {
-            position: absolute;
-            top: 25px;
-            left: auto;
-            background-color: #fff;
+          position: absolute;
+          top: 25px;
+          left: auto;
+          background-color: #fff;
         }
+        
         .etools-loading:not([active]) {
-            display: none !important;
+          display: none !important;
         }
-            etools-info-tooltip span[slot="message"] {
-            white-space: nowrap;
-            line-height: 15px;
+        
+        etools-info-tooltip span[slot="message"] {
+          white-space: nowrap;
+          line-height: 15px;
         }
+        
         etools-info-tooltip {
-            --etools-tooltip-trigger-icon-margin-left: -2px;
-            --etools-tooltip-trigger-icon-margin-top: 12px;
-            --etools-tooltip-trigger-icon-color: var(--gray-50);
-            --etools-tooltip-trigger-icon-cursor: pointer;
+          --etools-tooltip-trigger-icon-margin-left: -2px;
+          --etools-tooltip-trigger-icon-margin-top: 12px;
+          --etools-tooltip-trigger-icon-color: var(--gray-50);
+          --etools-tooltip-trigger-icon-cursor: pointer;
         }
+        
         .join-audit {
-            padding-left: 12px;
-            margin-top: 24px;
-            box-sizing: border-box;
+          padding-left: 12px;
+          margin-top: 24px;
+          box-sizing: border-box;
         }
+        
         .row-h.float {
-            display: flex;
-            position: relative;
-            width: 100%;
-            flex-direction: row;
-            align-items: baseline;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 0;
+          display: flex;
+          position: relative;
+          width: 100%;
+          flex-direction: row;
+          align-items: baseline;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          margin-bottom: 0;
         }
+        
         .row-h.float .input-container {
-            margin-bottom: 8px;
-            max-height: 62px;
+          margin-bottom: 8px;
+          max-height: 62px;
+        }
+        
+        etools-dropdown, etools-dropdown-multi {
+          align-items: baseline;
         }
 
       </style>
@@ -551,7 +561,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   connectedCallback() {
     super.connectedCallback();
     (this.$.purchaseOrder as PaperInputElement).validate =
-      this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+        this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
   }
 
@@ -797,7 +807,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   collectionChanged(originalCollection: any[], newCollection: any[]) {
     return this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
-      this.collectionsAreDifferent(originalCollection, newCollection);
+        this.collectionsAreDifferent(originalCollection, newCollection);
   }
 
   collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
@@ -830,14 +840,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return false;
     }
     const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(),
-      new Date(minDate).getDate());
+        new Date(minDate).getDate());
     return new Date(today.getDate() - 1);
   }
 
   _hideTooltip(basePermissionPath: any, showInput: any, type: any) {
     return this.isReadOnly('engagement_type', basePermissionPath) ||
-      this.isSpecialAudit(type) ||
-      !showInput;
+        this.isSpecialAudit(type) ||
+        !showInput;
   }
 
   _setEngagementTypes(basePermissionPath: any) {
@@ -846,7 +856,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return;
     }
 
-    const links: {[key: string]: string} = {
+    const links: { [key: string]: string } = {
       'ma': 'micro-assessments',
       'audit': 'audits',
       'sc': 'spot-checks',
@@ -905,8 +915,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
     const path = `${basePermissionPath}.${fieldName}`;
     const collectionNotExists = !collectionExists(path, 'POST') &&
-      !collectionExists(path, 'PUT') &&
-      !collectionExists(path, 'GET');
+        !collectionExists(path, 'PUT') &&
+        !collectionExists(path, 'GET');
 
     return collectionNotExists;
   }

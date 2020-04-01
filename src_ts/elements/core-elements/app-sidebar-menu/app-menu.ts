@@ -9,7 +9,7 @@ import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '../../utils/fire-custom-event';
 import {property} from '@polymer/decorators';
-import {apIcons} from '../../styles-elements/ap-icons';
+import {apIcons, famIcon} from '../../styles-elements/ap-icons';
 
 /**
  * @polymer
@@ -24,6 +24,7 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
     return html`
       ${navMenuStyles}
       ${apIcons}
+      ${famIcon}
 
       <div class="menu-header">
         <span id="app-name">
@@ -34,7 +35,7 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
 
         <span class="ripple-wrapper main">
           <iron-icon id="menu-header-top-icon"
-                    icon="assignment-ind"
+                    icon="fam-main-icon:fam-icon"
                     on-tap="_toggleSmallMenu"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
