@@ -433,9 +433,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               </div>
           </template>
 
-
               <!-- Notify when completed -->
-              <div class="input-container asd" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
+              <div class="input-container" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
                   <etools-dropdown-multi
                             class$="validate-input disabled-as-readonly [[_setRequired('users_notified',
                                       basePermissionPath)]]"
