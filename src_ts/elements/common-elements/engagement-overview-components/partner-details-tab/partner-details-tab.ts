@@ -49,7 +49,9 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
           .partner-loading:not([active]) {
               display: none !important;
           }
-
+          etools-dropdown, etools-dropdown-multi {
+            --esmm-dropdown-menu-position: absolute;
+          }
       </style>
 
       <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
@@ -406,7 +408,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     const partnerId = this.get('engagement.partner.id');
     const partnerType = this.get('engagement.partner.partner_type');
     let originalActivePd = this.get('originalData.active_pd') || [];
-    let activePdIds = (this.activePdIds || []).map(id => +id);
+    const activePdIds = (this.activePdIds || []).map(id => +id);
 
     originalActivePd = originalActivePd.map(pd => +pd.id);
 
