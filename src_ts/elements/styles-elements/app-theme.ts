@@ -31,14 +31,14 @@ documentContainer.innerHTML = `
           --light-theme-background-color: var(--paper-grey-50);
           --light-theme-content-color: #FFFFFF;
           --dark-theme-background-color: #233944;
-      
+
           --nonprod-header-color: #a94442;
           --nonprod-text-warn-color: #e6e600;
           --header-bg-color: var(--dark-theme-background-color);
           --partnership-management-color: var(--primary-background-color);
           --work-planning-color: var(--paper-light-green-500);
           --field-monitering-color: var(--paper-green-500);
-      
+
           --title-toolbar-secondary-text-color : #C7CED2;
           --subtitle-background-color: #eeeeee;
           --toolbar-height: 60px;
@@ -48,11 +48,11 @@ documentContainer.innerHTML = `
             width: 100%;
             margin: 0;
           }
-          
-          --esmm-dropdown-menu-position: fixed;
-          
+
+           --esmm-dropdown-menu-position: fixed;
+
         }
-      
+
     </style>
 </custom-style>
 `;
