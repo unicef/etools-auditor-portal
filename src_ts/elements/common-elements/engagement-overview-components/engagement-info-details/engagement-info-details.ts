@@ -50,29 +50,29 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           left: auto;
           background-color: #fff;
         }
-        
+
         .etools-loading:not([active]) {
           display: none !important;
         }
-        
+
         etools-info-tooltip span[slot="message"] {
           white-space: nowrap;
           line-height: 15px;
         }
-        
+
         etools-info-tooltip {
           --etools-tooltip-trigger-icon-margin-left: -2px;
           --etools-tooltip-trigger-icon-margin-top: 12px;
           --etools-tooltip-trigger-icon-color: var(--gray-50);
           --etools-tooltip-trigger-icon-cursor: pointer;
         }
-        
+
         .join-audit {
           padding-left: 12px;
           margin-top: 24px;
           box-sizing: border-box;
         }
-        
+
         .row-h.float {
           display: flex;
           position: relative;
@@ -83,14 +83,20 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           flex-wrap: wrap;
           margin-bottom: 0;
         }
-        
+
         .row-h.float .input-container {
           margin-bottom: 8px;
-          max-height: 62px;
         }
-        
+
         etools-dropdown, etools-dropdown-multi {
           align-items: baseline;
+          --esmm-dropdown-menu-position: absolute;
+        }
+
+        etools-dropdown-multi {
+          --paper-listbox: {
+            max-height: 250px;
+          }
         }
 
       </style>
@@ -575,7 +581,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
     this.populateDropdownsAndSetSelectedValues();
 
-    let poItemId = this.get('data.po_item.id');
+    const poItemId = this.get('data.po_item.id');
     if (poItemId) {
       this.set('data.po_item', poItemId);
     }
@@ -840,7 +846,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return false;
     }
     const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(),
-        new Date(minDate).getDate());
+      new Date(minDate).getDate());
     return new Date(today.getDate() - 1);
   }
 
