@@ -21,9 +21,12 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return html`
       ${tabInputsStyles} ${moduleStyles} ${RiskTabStyles}
       <style>
-      list-element{
-        --list-item-overflow: visible;
-      }
+        list-element{
+          --list-item-overflow: visible;
+        }
+        etools-dropdown#riskOptions {
+          --esmm-dropdown-menu-position: absolute !important;
+        }
       </style>
       <div class="tab-container">
         <etools-content-panel list completed$="[[completed]]" show-expand-btn
@@ -45,7 +48,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
               <div slot="custom">
                 <template is="dom-if" if="{{editMode}}">
-                  <etools-dropdown
+                  <etools-dropdown id="riskOptions"
                     class="disabled-as-readonly required validate-input"
                     selected="[[item.risk.value]]"
                     placeholder="&#8212;"
@@ -73,18 +76,18 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
             </list-element>
 
             <template is="dom-repeat" items="{{category.blueprints}}">
-              <list-element 
-                    class="list-element" 
-                    data="[[_prepareData(item)]]" 
+              <list-element
+                    class="list-element"
+                    data="[[_prepareData(item)]]"
                     base-permission-path="[[basePermissionPath]]"
-                    headings="[[columns]]" 
-                    details="[[details]]" 
+                    headings="[[columns]]"
+                    details="[[details]]"
                     has-collapse multiline no-animation>
                 <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                  <paper-icon-button 
-                        icon="create" 
-                        class="edit-icon" 
-                        on-tap="openEditDialog" 
+                  <paper-icon-button
+                        icon="create"
+                        class="edit-icon"
+                        on-tap="openEditDialog"
                         category-id$="{{category.id}}">
                   </paper-icon-button>
                 </div>
@@ -181,7 +184,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   basePermissionPath!: string;
 
   @property({type: Array})
-  riskOptions!: {value: string | number; display_name: string }[];
+  riskOptions!: {value: string | number; display_name: string}[];
 
   static get observers() {
     return [
