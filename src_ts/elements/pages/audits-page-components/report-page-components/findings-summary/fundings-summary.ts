@@ -43,7 +43,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     // language=HTML
     return html`
       ${moduleStyles} ${tabLayoutStyles} ${tabInputsStyles}
-      <style include="module-styles tab-layout-styles tab-inputs-styles">
+      <style>
         etools-content-panel {
           --ecp-content: {
             padding: 0;
