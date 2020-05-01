@@ -24,7 +24,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
         list-element{
           --list-item-overflow: visible;
         }
-        etools-dropdown#riskOptions {
+        etools-dropdown {
           --esmm-dropdown-menu-position: absolute !important;
         }
       </style>
@@ -48,7 +48,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
               <div slot="custom">
                 <template is="dom-if" if="{{editMode}}">
-                  <etools-dropdown id="riskOptions"
+                  <etools-dropdown id="riskOptions1"
                     class="disabled-as-readonly required validate-input"
                     selected="[[item.risk.value]]"
                     placeholder="&#8212;"
@@ -94,7 +94,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
                 <div slot="custom">
                   <template is="dom-if" if="{{editMode}}">
-                    <etools-dropdown
+                    <etools-dropdown id="riskOptions2"
                       class="disabled-as-readonly required validate-input"
                       selected="[[item.risk.value]]"
                       placeholder="&#8212;"
