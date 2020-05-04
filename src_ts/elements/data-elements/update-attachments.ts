@@ -71,18 +71,18 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
     * the edited attachment giving it the id of the newly uploaded file
     */
   _handleExitingFileWasChanged(attachmentData: any, url: string) {
-    //DELETE currently edited attachment object
+    // DELETE currently edited attachment object
     this.sendRequest({method: 'DELETE', endpoint: {url}})
       .then(() => {
-        //POST to create new attachment object
+        // POST to create new attachment object
         url = url.replace(`${attachmentData.id}/`, '');
         delete attachmentData.id;
         attachmentData.file_type = this.editedItem.file_type;
-        let options = {
+        const options = {
           method: 'POST',
           endpoint: {url},
           body: attachmentData
-        }
+        };
         this.method = 'POST';
         this.sendRequest(options)
           .then((resp) => {
@@ -124,7 +124,7 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleError(error) {
-    let {status, response} = (error || {}) as any;
+    let response = (error || {}) as any;
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);

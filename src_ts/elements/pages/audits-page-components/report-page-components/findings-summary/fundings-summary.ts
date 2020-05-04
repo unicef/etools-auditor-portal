@@ -155,7 +155,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   <!-- Audited expenditure (Local) -->
                   <etools-currency-amount-input
                       id="audited-expenditure-local"
-                      class$="validate-input disabled-as-readonly [[_setRequired('audited_expenditure_local', basePermissionPath)]]"
+                      class$="validate-input disabled-as-readonly
+                        [[_setRequired('audited_expenditure_local', basePermissionPath)]]"
                       value="{{editedItem.audited_expenditure_local}}"
                       currency="[[data.currency_of_report]]"
                       label$="[[getLocalLabel('audited_expenditure_local', basePermissionPath)]]"
@@ -175,7 +176,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <!-- Financial findings (Local) -->
                 <etools-currency-amount-input
                     id="financial-findings-local"
-                    class$="validate-input disabled-as-readonly [[_setRequired('financial_findings_local', basePermissionPath)]]"
+                    class$="validate-input disabled-as-readonly
+                      [[_setRequired('financial_findings_local', basePermissionPath)]]"
                     value="{{editedItem.financial_findings_local}}"
                     currency="[[data.currency_of_report]]"
                     label$="[[getLocalLabel('financial_findings_local', basePermissionPath)]]"
@@ -349,7 +351,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     'name': 'currency',
     'label': 'Financial Findings ',
     'path': 'financial_findings_local',
-    'align': 'right',
+    'align': 'right'
   },
   {
     'size': 12,
@@ -389,8 +391,11 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   colSizesWithoutLocal: GenericObject = {
     'audited_expenditure': 20,
     'financial_findings': 15,
-    'display_name': 20,
+    'display_name': 20
   };
+
+  @property({type: Object})
+  originalData!: GenericObject;
 
   static get observers() {
     return [
@@ -411,7 +416,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   setColumnsAndHeaders() {
-    // if local currency it's not used, local columns will not be displayed and the size of some displayed columns will be increased
+    // if local currency it's not used, local columns will not be displayed
+    // and the size of some displayed columns will be increased
     let columns = cloneDeep(this.defaultColumns);
     if (!this.showLocalCurrency) {
       columns = columns.filter((col: GenericObject) => {
@@ -423,15 +429,15 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     }
 
     this.columns = columns;
-    let headerColumns = cloneDeep(columns),
-      group = headerColumns.slice(-3),
-      groupColumn = {
-        'group': true,
-        'label': 'No. of Key Control Weaknesses',
-        'align': 'center',
-        'size': '180px',
-        'columns': group
-      };
+    const headerColumns = cloneDeep(columns);
+    const group = headerColumns.slice(-3);
+    const groupColumn = {
+      'group': true,
+      'label': 'No. of Key Control Weaknesses',
+      'align': 'center',
+      'size': '180px',
+      'columns': group
+    };
     // for local currency columns need to avoid list-header logic of setting labels and set htmlLabel property for this
     if (this.showLocalCurrency) {
       headerColumns.filter(h => h.path === 'financial_findings_local' || h.path === 'audited_expenditure_local')
@@ -456,8 +462,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     }
 
     let itemModelKeys = keys(this.itemModel) || [];
-    let originalData;
-    let data;
+    let data: any;
 
     itemModelKeys = itemModelKeys.filter((key) => {
       return key !== 'partner' && key !== 'opinion';
@@ -468,7 +473,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     } else {
       data = pick(this.originalData && this.originalData[0], itemModelKeys);
     }
-    originalData = pick(this.originalData && this.originalData[0], itemModelKeys);
+    const originalData = pick(this.originalData && this.originalData[0], itemModelKeys);
 
 
     if (!isEqual(data, originalData)) {
@@ -483,7 +488,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
   _setAuditOpinion(auditOpinionValue, auditOpinions) {
     if (auditOpinions && auditOpinions.length > 0) {
-      const auditOpinion = auditOpinions.find(function (auditOpinion) {
+      const auditOpinion = auditOpinions.find(function(auditOpinion) {
         return auditOpinion.value === auditOpinionValue;
       }) || {};
       this.data.opinion = auditOpinion;
