@@ -384,7 +384,7 @@ class FileAttachmentsTab extends
   @property({type: Boolean})
   isReportTab: boolean = false;
 
-  @property({type: Boolean, computed: '_shouldHideShare(_isUnicefUser)'})
+  @property({type: Boolean, computed: '_shouldHideShare(_isUnicefUser, baseId)'})
   _hideShare: boolean = false;
 
   @property({type: Boolean, computed: '_checkIsUnicefUser(dataBasePath)'})
@@ -838,7 +838,7 @@ class FileAttachmentsTab extends
   }
 
   // @ts-ignore
-  _shouldHideShare(isUnicefUser) {
+  _shouldHideShare(isUnicefUser, baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 
