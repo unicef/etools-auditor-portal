@@ -213,7 +213,6 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _reloadFilters() {
-    this.set('usedFilters', []);
     this.filtersDataLoaded = true;
     this._restoreFilters();
   }

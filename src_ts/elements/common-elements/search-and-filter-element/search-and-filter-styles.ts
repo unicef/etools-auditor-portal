@@ -118,6 +118,8 @@ export const searchAndFilterStyles = html`
         padding-bottom: 8px;
         -ms-overflow-style: auto;
       };
+
+      --esmm-dropdown-menu-position: absolute;
     }
 
     .filter-date {
@@ -139,6 +141,5 @@ export const searchAndFilterStyles = html`
       text-align: center;
       cursor: pointer;
     }
-
   </style>
 `;
