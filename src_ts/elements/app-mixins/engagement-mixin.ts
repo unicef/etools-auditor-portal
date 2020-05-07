@@ -54,6 +54,30 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: String})
     tab!: string;
 
+    @property({type: Array})
+    route!: any[];
+
+    @property({type: Array})
+    reportFileTypes!: any[];
+
+    @property({type: Array})
+    engagementFileTypes!: any[];
+
+    @property({type: String})
+    isStaffSc!: string;
+
+    @property({type: Boolean})
+    forceOptionsUpdate!: boolean;
+
+    @property({type: Boolean})
+    quietAdding!: boolean;
+
+    @property({type: Object})
+    updatedEngagement!: GenericObject;
+
+    @property({type: Object})
+    engagement: GenericObject = {};
+
     connectedCallback() {
       super.connectedCallback();
 
@@ -141,8 +165,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       } else {
         this.permissionBase = `engagement_${id}`;
       }
-      this.reportFileTypes = getChoices(`${this.permissionBase}.report_attachments.file_type`);
-      this.engagementFileTypes = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
+      (this.reportFileTypes as any) = getChoices(`${this.permissionBase}.report_attachments.file_type`);
+      (this.engagementFileTypes as any) = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
     }
 
     _openCancelDialog() {
@@ -200,7 +224,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const quietAdding = event && event.detail && event.detail.quietAdding;
       const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
 
-      return this._prepareData()
+      return this._prepareData(null, null)
         .then((data) => {
           this.quietAdding = quietAdding;
           this.forceOptionsUpdate = forceOptionsUpdate;
