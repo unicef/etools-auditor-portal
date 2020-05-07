@@ -75,18 +75,6 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: String})
     basePermissionPath!: string;
 
-    @property({type: Object})
-    addDialogTexts!: GenericObject;
-
-    @property({type: Object})
-    editDialogTexts!: GenericObject;
-
-    @property({type: Boolean})
-    customValidation!: boolean;
-
-    @property({type: String})
-    mainProperty!: string;
-
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
@@ -178,7 +166,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     openEditDialog(event = {}) {
-      let index = (event as GenericObject).itemIndex;// TODO is event.itemIndex ever valid?
+      let index = event.itemIndex;// TODO is event.itemIndex ever valid?
       if (isNaN(index) || !~index) {
         index = this._getIndex(event);
       }
