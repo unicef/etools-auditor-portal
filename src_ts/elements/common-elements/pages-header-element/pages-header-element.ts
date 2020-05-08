@@ -13,6 +13,7 @@ import {fireEvent} from '../../utils/fire-custom-event';
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import pagesHeaderElementStyles from './pages-header-element-styles';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 
 /**
  * @polymer
@@ -29,10 +30,10 @@ class PagesHeaderElement extends PolymerElement {
 
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" hidden$="[[!exportLinks.length]]">
-              <paper-menu-button 
-                    id="dropdown" 
-                    hidden$="[[!_isDropDown(exportLinks)]]" 
-                    on-tap="_toggleOpened" 
+              <paper-menu-button
+                    id="dropdown"
+                    hidden$="[[!_isDropDown(exportLinks)]]"
+                    on-tap="_toggleOpened"
                     horizontal-align="right">
                 <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
                   <iron-icon icon="file-download"></iron-icon>
@@ -143,7 +144,7 @@ class PagesHeaderElement extends PolymerElement {
   }
 
   _toggleOpened() {
-    this.$.dropdownMenu.select(null);
+    (this.$.dropdownMenu as EtoolsDropdownEl).set('selected', null);
   }
 
 }

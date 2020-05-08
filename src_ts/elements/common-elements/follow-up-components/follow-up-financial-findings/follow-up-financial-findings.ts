@@ -16,6 +16,8 @@ import {getChoices} from '../../../app-mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
+import {property} from '@polymer/decorators';
+import {GenericObject} from '../../../../types/global';
 
 /**
  * @polymer
@@ -245,6 +247,13 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
 
       `;
   }
+
+  @property({type: Object})
+  engagement: GenericObject = {};
+
+  @property({type: Object})
+  originalData!: GenericObject;
+
   static get observers() {
     return [
       'setAuditOpinionChoices(basePermissionPath, engagement)',

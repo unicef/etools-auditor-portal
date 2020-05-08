@@ -264,8 +264,8 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
   @property({type: String})
   pageType: string = '';
 
-  @property({type: Boolean})
-  isStaffSc: boolean = false;
+  @property({type: String})
+  isStaffSc!: string;
 
 
   static get observers() {
@@ -282,7 +282,8 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
     super.connectedCallback();
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    this.addEventListener('main-action-activated', this._mainActionActivated);
+    // @lajos not found
+    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _setType(isStaffSc) {
