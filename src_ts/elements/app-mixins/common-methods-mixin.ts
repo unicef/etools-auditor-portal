@@ -28,13 +28,13 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     errors!: any[];
 
     @property({type: Boolean})
-    dialogOpened: boolean = false;
+    dialogOpened = false;
 
     @property({type: String})
     errorBaseText!: string;
 
     @property({type: Boolean})
-    confirmDialogOpened: boolean = false;
+    confirmDialogOpened = false;
 
     _resetFieldError(event) {
       if (!event || !event.target) {
