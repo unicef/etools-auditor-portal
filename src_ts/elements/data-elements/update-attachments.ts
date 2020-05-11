@@ -124,7 +124,7 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleError(error) {
-    let response = (error || {}) as any;
+    let {status, response} = (error || {}) as any;
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);
