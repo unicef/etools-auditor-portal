@@ -57,6 +57,9 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   riskOptions!: GenericObject;
 
+  @property({type: Array})
+  areaData!: any[];
+
   static get observers() {
     return [
       '_setAreaData(area, riskOptions)'
