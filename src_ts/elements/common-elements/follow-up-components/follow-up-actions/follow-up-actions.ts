@@ -172,14 +172,14 @@ class FollowUpActions extends
                         </paper-checkbox>
                     </div>
                     <div slot="hover" class="edit-icon-slot">
-                        <paper-icon-button 
-                            icon="icons:content-copy" 
-                            class="edit-icon" 
+                        <paper-icon-button
+                            icon="icons:content-copy"
+                            class="edit-icon"
                             on-tap="_openCopyDialog"></paper-icon-button>
-                        <paper-icon-button 
-                            icon="icons:create" 
-                            class="edit-icon" 
-                            on-tap="_openEditDialog" 
+                        <paper-icon-button
+                            icon="icons:create"
+                            class="edit-icon"
+                            on-tap="_openEditDialog"
                             hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
                     </div>
                 </list-element>
@@ -220,7 +220,7 @@ class FollowUpActions extends
                         <div class="input-container input-container-ms">
                             <!-- Partner -->
                             <etools-dropdown
-                                    class$="[[_setRequired('partner', editedApBase)]] 
+                                    class$="[[_setRequired('partner', editedApBase)]]
                                               disabled-as-readonly validate-input fua-person"
                                     selected="{{selectedPartnerId}}"
                                     label="[[getLabel('partner', editedApBase)]]"
@@ -331,7 +331,7 @@ class FollowUpActions extends
                             <!-- Sections -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('section', editedApBase)]] 
+                                    class$="[[_setRequired('section', editedApBase)]]
                                             disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.section.id}}"
                                     label="[[getLabel('section', editedApBase)]]"
@@ -355,7 +355,7 @@ class FollowUpActions extends
                             <!-- Offices -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('office', editedApBase)]] 
+                                    class$="[[_setRequired('office', editedApBase)]]
                                             disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.office.id}}"
                                     label="[[getLabel('office', editedApBase)]]"
@@ -377,7 +377,7 @@ class FollowUpActions extends
                             <!-- Due Date -->
                             <datepicker-lite
                                     id="deadlineAction"
-                                    class$="[[_setRequired('due_date', editedApBase)]] 
+                                    class$="[[_setRequired('due_date', editedApBase)]]
                                             disabled-as-readonly validate-input"
                                     value="{{editedItem.due_date}}"
                                     label="[[getLabel('due_date', editedApBase)]]"
@@ -550,6 +550,12 @@ class FollowUpActions extends
   @property({type: Number})
   engagementId!: number;
 
+  @property({type: Number})
+  partnerId!: number;
+
+  @property({type: Number})
+  selectedPartnerId!: number;
+
   public connectedCallback() {
     super.connectedCallback();
 
@@ -577,8 +583,8 @@ class FollowUpActions extends
   }
   _requestPartner(partner) {
     const id = partner && +partner.id || null;
-    this.partnerId = id;
-    this.selectedPartnerId = id;
+    this.partnerId = id!;
+    this.selectedPartnerId = id!;
   }
 
   _resetDialog(dialogOpened) {
@@ -769,6 +775,7 @@ class FollowUpActions extends
       this.dialogTitle = get(this, 'viewDialogTexts.title');
       this.confirmBtnText = '';
       this.cancelBtnText = 'Cancel';
+      // @lajos: function does not exists here, but openAddDialog() exists in /table-elements-mixin.ts
       this._openDialog(itemIndex);
     }
   }

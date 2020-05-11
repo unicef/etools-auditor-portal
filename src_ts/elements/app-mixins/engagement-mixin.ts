@@ -54,8 +54,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: String})
     tab!: string;
 
-    @property({type: Array})
-    route!: any[];
+    @property({type: Object})
+    route!: GenericObject;
 
     @property({type: Array})
     reportFileTypes!: any[];
@@ -77,6 +77,12 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     @property({type: Object})
     engagement: GenericObject = {};
+
+    @property({type: Boolean})
+    customBasicValidation!: boolean;
+
+    @property({type: Boolean})
+    customDataPrepare!: boolean;
 
     connectedCallback() {
       super.connectedCallback();
@@ -133,6 +139,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       this.tab = tab;
+      // @lajos: nor the property nor the function do not exist in this class....
       if (this.infoLoaded) {
         this.infoLoaded();
       }
@@ -197,6 +204,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
           this._saveProgress(event);
           break;
         case 'create':
+          // @lajos: function doe not exists on this class, only in new-engagement-view.ts
           this._saveNewEngagement();
           break;
         case 'submit':
@@ -217,6 +225,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!this._validateBasicInfo()) {
         return;
       }
+      // @lajos: function does not exists in this class...
       if (this.customBasicValidation && !this.customBasicValidation()) {
         return;
       }
@@ -233,6 +242,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _submitReport() {
+      // @lajos: function does not exists in this class...
       if (!this._validateEngagement()) {
         return;
       }
@@ -244,6 +254,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _finalizeReport() {
+      // @lajos: function does not exists in this class...
       if (!this._validateEngagement()) {
         return;
       }
@@ -324,6 +335,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         data.engagement_type = this.engagement.engagement_type;
       }
 
+      // @lajos: fucntion does nto exist
       if (this.customDataPrepare) {
         data = this.customDataPrepare(data);
       }

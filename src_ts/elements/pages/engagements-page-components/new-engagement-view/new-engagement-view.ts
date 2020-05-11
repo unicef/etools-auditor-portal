@@ -177,8 +177,11 @@ class NewEngagementView extends
     `;
   }
 
+  @property({type: Array})
+  route!: any[];
+
   @property({type: Object})
-  route!: GenericObject;
+  newEngagementData!: GenericObject;
 
   @property({type: Object})
   routeData!: GenericObject;
