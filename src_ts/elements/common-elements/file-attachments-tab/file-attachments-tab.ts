@@ -373,7 +373,7 @@ class FileAttachmentsTab extends
   linkedAttachments: any[] = [];
 
   @property({type: Array})
-  fileTypes: {value: string, display_name: string}[] = [];
+  fileTypes: {value: string; display_name: string}[] = [];
 
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this attachment?';
@@ -407,6 +407,9 @@ class FileAttachmentsTab extends
 
   @property({type: Boolean})
   hideAddAttachments: boolean = true;
+
+  @property({type: Boolean})
+  deleteLinkOpened: boolean = false;
 
   static get observers() {
     return [
@@ -572,7 +575,8 @@ class FileAttachmentsTab extends
       return;
     }
     if (!this.baseId) {
-      this._processDelayedRequest();
+      // function does not exists
+      // this._processDelayedRequest();
       return;
     }
     this.requestInProcess = true;
