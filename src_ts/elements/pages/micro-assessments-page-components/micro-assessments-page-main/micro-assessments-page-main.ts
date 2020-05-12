@@ -65,13 +65,13 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
         </pages-header-element>
 
         <div class="tab-selector">
-          <paper-tabs 
-                attr-for-selected="name" 
-                noink 
-                bottom-item 
-                role="tablist" 
-                tabindex="0" 
-                selected="{{tab}}" 
+          <paper-tabs
+                attr-for-selected="name"
+                noink
+                bottom-item
+                role="tablist"
+                tabindex="0"
+                selected="{{tab}}"
                 id="pageTabs">
             <paper-tab name="overview">
               <span class="tab-content">Engagement Overview</span>
@@ -193,12 +193,12 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
             <div class="repeatable-item-content">
               <div class="row-h group">
                 <div class="input-container input-container-l">
-                  <paper-textarea 
-                        id="cancellationReasonInput" 
-                        class="required" 
+                  <paper-textarea
+                        id="cancellationReasonInput"
+                        class="required"
                         label="Cancellation Reason"
-                        placeholder="Enter reason of cancellation" 
-                        required max-rows="4" 
+                        placeholder="Enter reason of cancellation"
+                        required max-rows="4"
                         error-message="This field is required."
                         on-focus="_resetFieldError">
                   </paper-textarea>
