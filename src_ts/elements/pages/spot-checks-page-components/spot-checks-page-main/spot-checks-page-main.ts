@@ -264,8 +264,8 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
   @property({type: String})
   pageType: string = '';
 
-  @property({type: String})
-  isStaffSc!: string;
+  @property({type: Boolean})
+  isStaffSc!: boolean;
 
 
   static get observers() {
@@ -304,7 +304,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
     return true;
   }
 
-  customDataPrepare(data) {
+  _customDataPrepare(data) {
     data = data || {};
     // Rport data
     const reportPage = this.getElement('#report');
@@ -326,7 +326,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
     return data;
   }
 
-  customBasicValidation() {
+  _customBasicValidation() {
     const reportTab = this.getElement('#report');
     if (!reportTab) {return true;}
     const reportValid = reportTab.validate('forSave');

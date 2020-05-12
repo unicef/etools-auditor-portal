@@ -63,8 +63,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: Array})
     engagementFileTypes!: any[];
 
-    @property({type: String})
-    isStaffSc!: string;
+    @property({type: Boolean})
+    isStaffSc!: boolean;
 
     @property({type: Boolean})
     forceOptionsUpdate!: boolean;
@@ -226,13 +226,14 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
       // @lajos: function does not exists in this class...
-      if (this.customBasicValidation && !this.customBasicValidation()) {
+      if (this.customBasicValidation && !this._customBasicValidation()) {
         return;
       }
 
       const quietAdding = event && event.detail && event.detail.quietAdding;
       const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
-
+      // @lajos needs to be tested, function requires 2 booleans, submit and finalize, needs to be tested on save
+      // if it requires submit
       return this._prepareData(null, null)
         .then((data) => {
           this.quietAdding = quietAdding;
@@ -337,7 +338,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       // @lajos: fucntion does nto exist
       if (this.customDataPrepare) {
-        data = this.customDataPrepare(data);
+        data = this._customDataPrepare(data);
       }
 
       // leave for compatibility with other code

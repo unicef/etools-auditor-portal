@@ -226,7 +226,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!this.validate()) {
         return;
       }
-      if (this.customValidation && !this.customValidation()) {
+      if (this.customValidation && !this._customValidation()) {
         return;
       }
 

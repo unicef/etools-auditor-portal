@@ -292,7 +292,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     return true;
   }
 
-  customDataPrepare(data) {
+  _customDataPrepare(data) {
     data = data || {};
 
     // FollowUp data
@@ -329,7 +329,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     return data;
   }
 
-  customBasicValidation() {
+  _customBasicValidation() {
     const reportTab = this.getElement('#report');
     if (!reportTab) {
       return true;

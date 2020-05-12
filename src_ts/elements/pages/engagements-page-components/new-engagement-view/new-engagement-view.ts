@@ -177,8 +177,8 @@ class NewEngagementView extends
     `;
   }
 
-  @property({type: Array})
-  route!: any[];
+  @property({type: Object})
+  route!: GenericObject;
 
   @property({type: Object})
   newEngagementData!: GenericObject;
@@ -204,7 +204,7 @@ class NewEngagementView extends
     specific_procedures: [],
     users_notified: [],
     offices: [],
-    sections: [],
+    sections: []
   };
 
   @property({type: Array})
@@ -263,13 +263,15 @@ class NewEngagementView extends
       return;
     }
 
-    this._prepareData()
+    // @lajos needs to be tested, function requires 2 booleans, submit and finalize, needs to be tested on submit
+    // if it requires submit
+    this._prepareData(false, false)
       .then((data) => {
         this.newEngagementData = data;
       });
   }
 
-  customDataPrepare(data) {
+  _customDataPrepare(data) {
     if (!this.isSpecialAudit(this.engagement.engagement_type)) {
       return data;
     }
