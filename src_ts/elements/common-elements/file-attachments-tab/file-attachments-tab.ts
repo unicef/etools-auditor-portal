@@ -726,7 +726,7 @@ class FileAttachmentsTab extends
 
   getFilesErrors(errors) {
     if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
-      const filesErrors = [];
+      const filesErrors: {fileName: string; error: any}[] = [];
 
       errors.forEach((error, index) => {
         let fileName = this.dataItems[index].filename;
