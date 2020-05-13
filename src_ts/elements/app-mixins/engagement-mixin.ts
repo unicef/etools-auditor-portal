@@ -25,7 +25,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends baseClass {
 
     @property({type: Number})
-    engagementId!: number;
+    engagementId!: number | null;
 
     @property({type: Object})
     routeData!: GenericObject;
