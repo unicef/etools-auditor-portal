@@ -89,7 +89,7 @@ function _createAction(action, existedAction) {
   };
 }
 
-export function getFieldAttribute(path, attribute, actionType?) {
+export function getFieldAttribute(path: string, attribute: string, actionType?: string) {
   if (!path || !attribute) {
     throw new Error('path and attribute arguments must be provided');
   }
@@ -130,18 +130,18 @@ export function collectionExists(path, actionType?) {
   return !!getCollection(path, actionType);
 }
 
-export function getChoices(path) {
+export function getChoices(path: string) {
   return getFieldAttribute(path, 'choices', 'GET') ||
     getFieldAttribute(path, 'choices', 'POST');
 }
 
-export function getCollection(path, actionType?) {
-  path = path.split('.');
+export function getCollection(path: string, actionType?: string): any {
+  const pathArr = path.split('.');
 
   let value = _permissionCollection;
 
-  while (path.length) {
-    const key = path.shift();
+  while (pathArr.length) {
+    const key = pathArr.shift()!;
     if (value[key]) {
       value = value[key];
     } else {
@@ -150,7 +150,7 @@ export function getCollection(path, actionType?) {
         isValidCollection(value.GET);
 
       value = action || value.child || value.children;
-      path.unshift(key);
+      pathArr.unshift(key);
     }
 
     if (!value) {
