@@ -13,7 +13,7 @@ import {fireEvent} from '../../utils/fire-custom-event';
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import pagesHeaderElementStyles from './pages-header-element-styles';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
+import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
 
 /**
  * @polymer
@@ -144,7 +144,7 @@ class PagesHeaderElement extends PolymerElement {
   }
 
   _toggleOpened() {
-    (this.$.dropdownMenu as EtoolsDropdownEl).set('selected', null);
+    (this.$.dropdownMenu as PaperListboxElement).set('selected', null);
   }
 
 }

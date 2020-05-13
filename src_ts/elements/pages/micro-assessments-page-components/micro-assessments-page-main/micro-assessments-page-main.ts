@@ -258,7 +258,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     return true;
   }
 
-  _customDataPrepare(data) {
+  customDataPrepare(data) {
     data = data || {};
     const questionnaireTab = this.getElement('#questionnaire');
     const questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
@@ -287,7 +287,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     return data;
   }
 
-  _customBasicValidation() {
+  customBasicValidation() {
     const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
     if (!hasReport) {
       return true;

@@ -271,7 +271,7 @@ class NewEngagementView extends
       });
   }
 
-  _customDataPrepare(data) {
+  customDataPrepare(data) {
     if (!this.isSpecialAudit(this.engagement.engagement_type)) {
       return data;
     }

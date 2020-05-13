@@ -551,10 +551,10 @@ class FollowUpActions extends
   engagementId!: number;
 
   @property({type: Number})
-  partnerId!: number;
+  partnerId!: number | null;
 
   @property({type: Number})
-  selectedPartnerId!: number;
+  selectedPartnerId!: number | null;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -583,8 +583,8 @@ class FollowUpActions extends
   }
   _requestPartner(partner) {
     const id = partner && +partner.id || null;
-    this.partnerId = id!;
-    this.selectedPartnerId = id!;
+    this.partnerId = id;
+    this.selectedPartnerId = id;
   }
 
   _resetDialog(dialogOpened) {

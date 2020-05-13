@@ -552,9 +552,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Array})
   usersNotifiedIDs: any[] = [];
 
-  @property({type: Boolean})
-  requestInProcess!: boolean;
-
   static get observers() {
     return [
       '_errorHandler(errorObject)',

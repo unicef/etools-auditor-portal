@@ -298,7 +298,7 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
     return true;
   }
 
-  _customDataPrepare(data) {
+  customDataPrepare(data) {
     data = data || {};
 
     // FollowUp data
@@ -324,7 +324,7 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
     return data;
   }
 
-  _customBasicValidation() {
+  customBasicValidation() {
     const reportTab = this.getElement('#report');
     if (!reportTab) {return true;}
 

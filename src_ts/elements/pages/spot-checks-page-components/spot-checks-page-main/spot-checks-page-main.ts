@@ -304,7 +304,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
     return true;
   }
 
-  _customDataPrepare(data) {
+  customDataPrepare(data) {
     data = data || {};
     // Rport data
     const reportPage = this.getElement('#report');
@@ -326,7 +326,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
     return data;
   }
 
-  _customBasicValidation() {
+  customBasicValidation() {
     const reportTab = this.getElement('#report');
     if (!reportTab) {return true;}
     const reportValid = reportTab.validate('forSave');
