@@ -81,9 +81,6 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     editDialogTexts!: GenericObject;
 
-    @property({type: Boolean})
-    customValidation!: boolean;
-
     @property({type: String})
     mainProperty!: string;
 
@@ -229,7 +226,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!this.validate()) {
         return;
       }
-      if (this.customValidation && !this._customValidation()) {
+      if (this.customValidation && !this.customValidation()) {
         return;
       }
 
