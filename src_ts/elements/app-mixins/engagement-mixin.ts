@@ -78,12 +78,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: Object})
     engagement: GenericObject = {};
 
-    @property({type: Boolean})
-    customBasicValidation!: boolean;
-
-    @property({type: Boolean})
-    customDataPrepare!: boolean;
-
     connectedCallback() {
       super.connectedCallback();
 
@@ -139,7 +133,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       this.tab = tab;
-      // @lajos: nor the property nor the function do not exist in this class....
       if (this.infoLoaded) {
         this.infoLoaded();
       }
@@ -226,7 +219,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
       // @lajos: function does not exists in this class...
-      if (this.customBasicValidation && !this._customBasicValidation()) {
+      if (this.customBasicValidation && !this.customBasicValidation()) {
         return;
       }
 
@@ -255,7 +248,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _finalizeReport() {
-      // @lajos: function does not exists in this class...
       if (!this._validateEngagement()) {
         return;
       }
@@ -336,9 +328,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         data.engagement_type = this.engagement.engagement_type;
       }
 
-      // @lajos: fucntion does nto exist
       if (this.customDataPrepare) {
-        data = this._customDataPrepare(data);
+        data = this.customDataPrepare(data);
       }
 
       // leave for compatibility with other code
@@ -477,8 +468,27 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
     }
 
-  }
+    customDataPrepare(data) {
+      return data;
+    }
 
+    infoLoaded() {
+
+    }
+
+
+    _saveNewEngagement() {
+
+    }
+
+    customBasicValidation() {
+      return true;
+    }
+
+    _validateEngagement() {
+      return true;
+    }
+  }
   return EngagementMixinClass;
 
 }

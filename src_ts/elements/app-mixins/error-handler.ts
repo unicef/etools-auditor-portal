@@ -47,7 +47,7 @@ export function refactorErrorObject(errorData) {
 export function whichPageTrows(errorObj) {
   let overviewError; let attachmentError; let reportError; let questionnaireError;
 
-  each(errorObj, (value, key) => {
+  each(errorObj, (_value, key) => {
     if (~OverviewProperties.indexOf(key)) {
       overviewError = 'overview';
     }

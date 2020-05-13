@@ -772,7 +772,7 @@ class EngagementStaffMembersTab extends
     }
   }
 
-  _showAddButton(basePath, agreement, loading) {
+  _showAddButton(_basePath, agreement, loading) {
     const orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
 
     return !!orgId && !loading && this._canBeChanged();

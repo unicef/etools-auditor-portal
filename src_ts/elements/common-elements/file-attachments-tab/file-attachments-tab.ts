@@ -718,7 +718,7 @@ class FileAttachmentsTab extends
     if (!this.dialogOpened) {
       const filesErrors = this.getFilesErrors(refactoredData);
 
-      filesErrors.forEach((fileError) => {
+      filesErrors.forEach((fileError: any) => {
         fireEvent(this, 'toast', {text: `${fileError.fileName}: ${fileError.error}`});
       });
     }
@@ -838,7 +838,7 @@ class FileAttachmentsTab extends
   }
 
   // @ts-ignore
-  _shouldHideShare(isUnicefUser, baseId) {
+  _shouldHideShare(isUnicefUser, _baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 

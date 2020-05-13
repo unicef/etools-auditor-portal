@@ -270,7 +270,7 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
     const fields = ['additional_supporting_documentation_provided', 'amount_refunded',
       'justification_provided_and_accepted', 'write_off_required', 'explanation_for_additional_information'];
 
-    return pickBy(this.engagement, (value, key) => {
+    return pickBy(this.engagement, (_value, key) => {
       return ~fields.indexOf(key) && (this.originalData[key] !== this.engagement[key]);
     });
   }
