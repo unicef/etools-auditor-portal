@@ -76,7 +76,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     updatedEngagement!: GenericObject;
 
     @property({type: Object})
-    engagement: GenericObject = {};
+    engagement!: GenericObject;
 
     connectedCallback() {
       super.connectedCallback();
@@ -133,7 +133,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       this.tab = tab;
+      // @ts-ignore Defined in derived class when needed
       if (this.infoLoaded) {
+        // @ts-ignore Defined in derived class when needed
         this.infoLoaded();
       }
     }
@@ -197,7 +199,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
           this._saveProgress(event);
           break;
         case 'create':
-          // @lajos: function doe not exists on this class, only in new-engagement-view.ts
+          // @ts-ignore Defined in derived class when needed
           this._saveNewEngagement();
           break;
         case 'submit':
@@ -218,7 +220,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!this._validateBasicInfo()) {
         return;
       }
-      // @lajos: function does not exists in this class...
+      // @ts-ignore Defined in derived class when needed
       if (this.customBasicValidation && !this.customBasicValidation()) {
         return;
       }
@@ -236,7 +238,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _submitReport() {
-      // @lajos: function does not exists in this class...
+      // @ts-ignore Defined in derived class when needed
       if (!this._validateEngagement()) {
         return;
       }
@@ -248,6 +250,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _finalizeReport() {
+      // @ts-ignore Defined in derived class when needed
       if (!this._validateEngagement()) {
         return;
       }
@@ -328,7 +331,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         data.engagement_type = this.engagement.engagement_type;
       }
 
+      // @ts-ignore Defined in derived class when needed
       if (this.customDataPrepare) {
+        // @ts-ignore Defined in derived class when needed
         data = this.customDataPrepare(data);
       }
 
@@ -466,27 +471,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         const tab = this.tab ? 'tab' : 'routeData.tab';
         this.set(tab, page);
       }
-    }
-
-    customDataPrepare(data) {
-      return data;
-    }
-
-    infoLoaded() {
-
-    }
-
-
-    _saveNewEngagement() {
-
-    }
-
-    customBasicValidation() {
-      return true;
-    }
-
-    _validateEngagement() {
-      return true;
     }
   }
   return EngagementMixinClass;
