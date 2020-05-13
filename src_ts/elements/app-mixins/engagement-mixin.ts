@@ -14,7 +14,7 @@ import {getUserData} from '../../elements/app-mixins/user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 import {whichPageTrows} from './error-handler';
 
-let currentEngagement = {};
+let currentEngagement: {details?: GenericObject; type?: string} = {};
 /**
  * @polymer
  * @mixinFunction
