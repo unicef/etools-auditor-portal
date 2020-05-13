@@ -124,7 +124,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                     readonly$="[[requestInProcess]]"
                     invalid="{{errors.audited_expenditure}}"
                     error-message="{{errors.audited_expenditure}}"
-                    on-blur="_customValidation"
+                    on-blur="customValidation"
                     on-focus="_resetFieldError"
                     on-tap="_resetFieldError">
                 </etools-currency-amount-input>
@@ -145,7 +145,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                     readonly$="[[requestInProcess]]"
                     invalid="{{errors.financial_findings}}"
                     error-message="{{errors.financial_findings}}"
-                    on-blur="_customValidation"
+                    on-blur="customValidation"
                     on-focus="_resetFieldError"
                     on-tap="_resetFieldError">
                 </etools-currency-amount-input>
@@ -166,7 +166,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                       readonly$="[[requestInProcess]]"
                       invalid="{{errors.audited_expenditure_local}}"
                       error-message="{{errors.audited_expenditure_local}}"
-                      on-blur="_customValidation"
+                      on-blur="customValidation"
                       on-focus="_resetFieldError"
                       on-tap="_resetFieldError">
                   </etools-currency-amount-input>
@@ -187,7 +187,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                     readonly$="[[requestInProcess]]"
                     invalid="{{errors.financial_findings_local}}"
                     error-message="{{errors.financial_findings_local}}"
-                    on-blur="_customValidation"
+                    on-blur="customValidation"
                     on-focus="_resetFieldError"
                     on-tap="_resetFieldError">
                 </etools-currency-amount-input>
@@ -478,7 +478,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
     if (!isEqual(data, originalData)) {
       // return only changed values
-      return transform(data, function (result, value, key) {
+      return transform(data, function(result, value, key) {
         if (value !== originalData[key]) {
           result[key] = value;
         }
@@ -523,7 +523,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     }
   }
 
-  _customValidation() {
+  customValidation() {
     const ffElement = this.$['financial-findings'];
     const ffNumber = ffElement && toNumber(ffElement.value);
     const aeElement = this.$['audited-expenditure'];
