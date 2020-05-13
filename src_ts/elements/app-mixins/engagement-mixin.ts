@@ -227,9 +227,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       const quietAdding = event && event.detail && event.detail.quietAdding;
       const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
-      // @lajos needs to be tested, function requires 2 booleans, submit and finalize, needs to be tested on save
-      // if it requires submit
-      return this._prepareData(null, null)
+      return this._prepareData()
         .then((data) => {
           this.quietAdding = quietAdding;
           this.forceOptionsUpdate = forceOptionsUpdate;
@@ -311,7 +309,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       return currentEngagement;
     }
 
-    _prepareData(submit, finalize) {
+    _prepareData(submit?: boolean, finalize?: boolean) {
       if (!this.engagement) {
         return Promise.reject('You need engagement object');
       }
