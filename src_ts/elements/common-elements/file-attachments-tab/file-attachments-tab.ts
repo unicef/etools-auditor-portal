@@ -415,7 +415,7 @@ class FileAttachmentsTab extends
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
       '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'filesTabErrorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)'
     ];
   }
@@ -451,8 +451,8 @@ class FileAttachmentsTab extends
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
       endpoint: getEndpoint('auditLinks', {
-        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
-        id: engagement.id
+        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType!],
+        id: engagement!.id
       })
     });
   }
@@ -465,7 +465,7 @@ class FileAttachmentsTab extends
         this.set('linkedAttachments', uniqBy(res, 'attachment'));
         this.set('requestInProcess', false);
       })
-      .catch(this._errorHandler.bind(this));
+      .catch(this.filesTabErrorHandler.bind(this));
   }
 
   _setBasePath(dataBase, pathPostfix) {
@@ -696,7 +696,7 @@ class FileAttachmentsTab extends
     this.openAddDialog();
   }
 
-  _errorHandler(errorData) {
+  filesTabErrorHandler(errorData) {
     const mainProperty = this.errorProperty;
     this.requestInProcess = false;
     if (!errorData || !errorData[mainProperty]) {
@@ -718,7 +718,7 @@ class FileAttachmentsTab extends
     if (!this.dialogOpened) {
       const filesErrors = this.getFilesErrors(refactoredData);
 
-      filesErrors.forEach((fileError) => {
+      filesErrors.forEach((fileError: any) => {
         fireEvent(this, 'toast', {text: `${fileError.fileName}: ${fileError.error}`});
       });
     }
@@ -726,7 +726,7 @@ class FileAttachmentsTab extends
 
   getFilesErrors(errors) {
     if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
-      const filesErrors = [];
+      const filesErrors: {fileName: string; error: any}[] = [];
 
       errors.forEach((error, index) => {
         let fileName = this.dataItems[index].filename;
@@ -834,11 +834,11 @@ class FileAttachmentsTab extends
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
-      .catch(err => this._errorHandler(err));
+      .catch(err => this.filesTabErrorHandler(err));
   }
 
   // @ts-ignore
-  _shouldHideShare(isUnicefUser, baseId) {
+  _shouldHideShare(isUnicefUser, _baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 

@@ -97,13 +97,13 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
                         </paper-tooltip>
                     </div>
                     <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                        <paper-icon-button 
-                                icon="icons:create" 
-                                class="edit-icon" 
+                        <paper-icon-button
+                                icon="icons:create"
+                                class="edit-icon"
                                 on-tap="openEditDialog"></paper-icon-button>
-                        <paper-icon-button 
-                                icon="icons:delete" 
-                                class="edit-icon" 
+                        <paper-icon-button
+                                icon="icons:delete"
+                                class="edit-icon"
                                 on-tap="openDeleteDialog"></paper-icon-button>
                     </div>
                 </list-element>
@@ -145,16 +145,16 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
                     <div class="row-h group">
                         <div class="input-container input-container-l">
                             <!-- Category of Observation -->
-                            <etools-dropdown label="[[getLabel('findings.category_of_observation', 
+                            <etools-dropdown label="[[getLabel('findings.category_of_observation',
                                                     basePermissionPath)]]"
-                                             placeholder="[[getPlaceholderText('findings.category_of_observation', 
+                                             placeholder="[[getPlaceholderText('findings.category_of_observation',
                                                             basePermissionPath)]]"
                                              options="[[categoryOfObservation]]"
                                              option-label="display_name"
                                              option-value="value"
                                              selected="{{editedItem.category_of_observation}}"
                                              trigger-value-change-event
-                                             required$="[[_setRequired('findings.category_of_observation', 
+                                             required$="[[_setRequired('findings.category_of_observation',
                                                         basePermissionPath)]]"
                                              disabled$="{{requestInProcess}}"
                                              readonly$="{{requestInProcess}}"
@@ -174,7 +174,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
                         <div class="input-container input-container-l">
                             <!-- Recommendation -->
                             <paper-textarea
-                                    class$="{{_setRequired('findings.recommendation', basePermissionPath)}} 
+                                    class$="{{_setRequired('findings.recommendation', basePermissionPath)}}
                                             disabled-as-readonly fixed-width validate-input"
                                     value="{{editedItem.recommendation}}"
                                     allowed-pattern="[\\d\\s]"
@@ -197,13 +197,13 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
                         <div class="input-container input-container-l">
                             <!-- Agreed Action by IP -->
                             <paper-textarea
-                                    class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] 
+                                    class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]
                                             disabled-as-readonly fixed-width validate-input"
                                     value="{{editedItem.agreed_action_by_ip}}"
                                     allowed-pattern="[\\d\\s]"
                                     label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
                                     always-float-label
-                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip', 
+                                    placeholder="[[getPlaceholderText('findings.agreed_action_by_ip',
                                                 basePermissionPath)]]"
                                     required$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]"
                                     disabled$="{{requestInProcess}}"
@@ -223,7 +223,7 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
                             <datepicker-lite
                                         id="deadlineActionSelector"
                                         selected-date-display-format="D MMM YYYY"
-                                        placeholder="[[getPlaceholderText('findings.deadline_of_action', 
+                                        placeholder="[[getPlaceholderText('findings.deadline_of_action',
                                                     basePermissionPath)]]"
                                         label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
                                         value="{{editedItem.deadline_of_action}}"
@@ -303,6 +303,8 @@ class SummaryFindingsElement extends (CommonMethodsMixin(TableElementsMixin(Date
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this finding?';
 
+  @property({type: Object})
+  originalData!: GenericObject;
 
   static get observers() {
     return [

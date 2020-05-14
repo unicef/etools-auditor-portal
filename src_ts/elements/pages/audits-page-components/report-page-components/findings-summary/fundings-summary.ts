@@ -30,6 +30,7 @@ import toNumber from 'lodash-es/toNumber';
 import values from 'lodash-es/values';
 import {fireEvent} from '../../../../utils/fire-custom-event';
 import {refactorErrorObject} from '../../../../app-mixins/error-handler';
+import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 
 /**
  * @customElement
@@ -400,7 +401,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   static get observers() {
     return [
       'resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'fundingsSummaryErrHandler(errorObject)',
       '_setDataItems(data)',
       '_setAuditOpinion(data.audit_opinion, auditOpinions)',
       'updateStyles(basePermissionPath, requestInProcess)',
@@ -478,7 +479,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
 
     if (!isEqual(data, originalData)) {
       // return only changed values
-      return transform(data, function (result, value, key) {
+      return transform(data, function(result, value, key) {
         if (value !== originalData[key]) {
           result[key] = value;
         }
@@ -503,7 +504,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     this.set('editedItem.percent_of_audited_expenditure', val);
   }
 
-  _errorHandler(errorData) {
+  fundingsSummaryErrHandler(errorData) {
     this.requestInProcess = false;
     if (!errorData) {
       return;
@@ -524,16 +525,17 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   customValidation() {
-    const ffElement = this.$['financial-findings'];
+    const ffElement = this.$['financial-findings'] as unknown as EtoolsCurrencyAmountInput;
     const ffNumber = ffElement && toNumber(ffElement.value);
-    const aeElement = this.$['audited-expenditure'];
+    const aeElement = this.$['audited-expenditure'] as unknown as EtoolsCurrencyAmountInput;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
     if (aeNumber < ffNumber) {
-      ffElement.invalid = 'Cannot exceed Audited Expenditure';
+      ffElement.invalid = true;
+      ffElement.errorMessage = 'Cannot exceed Audited Expenditure';
       return false;
     } else {
-      ffElement.invalid = '';
+      ffElement.invalid = false;
       return true;
     }
   }
@@ -547,7 +549,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   setShowLocalCurrency() {
-    this.showLocalCurrency = this.data.currency_of_report !== undefined && this.data.currency_of_report !== '' && this.data.currency_of_report !== 'USD';
+    this.showLocalCurrency = this.data.currency_of_report !== undefined &&
+      this.data.currency_of_report !== '' && this.data.currency_of_report !== 'USD';
   }
 
   getLocalLabel(path, base) {

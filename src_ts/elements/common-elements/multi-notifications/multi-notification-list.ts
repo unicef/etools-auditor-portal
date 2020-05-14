@@ -67,7 +67,7 @@ class MultiNotificationList extends PolymerElement {
     this.removeEventListener('reset-notifications', this._resetNotifications as any);
   }
 
-  _onNotificationShift(e, id) {
+  _onNotificationShift(_e, id) {
     const index = this.notifications.findIndex((notification) => {
       return notification.id === id;
     });

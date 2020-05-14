@@ -177,7 +177,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   _toastQueue = [];
 
   @property({type: Array})
-  globalLoadingQueue = [];
+  globalLoadingQueue: any[] = [];
 
   @property({type: Object})
   user = {};
@@ -190,6 +190,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   @property({type: Object})
   queryParams!: GenericObject;
+
+  @property({type: Boolean})
+  initLoadingComplete!: boolean;
 
   public connectedCallback() {
     super.connectedCallback();

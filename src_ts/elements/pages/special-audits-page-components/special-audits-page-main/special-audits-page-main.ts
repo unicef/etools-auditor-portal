@@ -274,14 +274,16 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
     super.connectedCallback();
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    this.addEventListener('main-action-activated', this._mainActionActivated);
+    // @Lajos not found
+    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
-    this.removeEventListener('main-action-activated', this._mainActionActivated);
+    // @Lajos not found
+    // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
