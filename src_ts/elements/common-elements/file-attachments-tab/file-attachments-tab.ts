@@ -373,7 +373,7 @@ class FileAttachmentsTab extends
   linkedAttachments: any[] = [];
 
   @property({type: Array})
-  fileTypes: {value: string, display_name: string}[] = [];
+  fileTypes: {value: string; display_name: string}[] = [];
 
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this attachment?';
@@ -408,11 +408,14 @@ class FileAttachmentsTab extends
   @property({type: Boolean})
   hideAddAttachments: boolean = true;
 
+  @property({type: Boolean})
+  deleteLinkOpened: boolean = false;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
       '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'filesTabErrorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)'
     ];
   }
@@ -448,8 +451,8 @@ class FileAttachmentsTab extends
     this.set('engagement', engagement);
     this.set('auditLinksOptions', {
       endpoint: getEndpoint('auditLinks', {
-        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
-        id: engagement.id
+        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType!],
+        id: engagement!.id
       })
     });
   }
@@ -462,7 +465,7 @@ class FileAttachmentsTab extends
         this.set('linkedAttachments', uniqBy(res, 'attachment'));
         this.set('requestInProcess', false);
       })
-      .catch(this._errorHandler.bind(this));
+      .catch(this.filesTabErrorHandler.bind(this));
   }
 
   _setBasePath(dataBase, pathPostfix) {
@@ -572,7 +575,8 @@ class FileAttachmentsTab extends
       return;
     }
     if (!this.baseId) {
-      this._processDelayedRequest();
+      // function does not exists
+      // this._processDelayedRequest();
       return;
     }
     this.requestInProcess = true;
@@ -692,7 +696,7 @@ class FileAttachmentsTab extends
     this.openAddDialog();
   }
 
-  _errorHandler(errorData) {
+  filesTabErrorHandler(errorData) {
     const mainProperty = this.errorProperty;
     this.requestInProcess = false;
     if (!errorData || !errorData[mainProperty]) {
@@ -714,7 +718,7 @@ class FileAttachmentsTab extends
     if (!this.dialogOpened) {
       const filesErrors = this.getFilesErrors(refactoredData);
 
-      filesErrors.forEach((fileError) => {
+      filesErrors.forEach((fileError: any) => {
         fireEvent(this, 'toast', {text: `${fileError.fileName}: ${fileError.error}`});
       });
     }
@@ -722,7 +726,7 @@ class FileAttachmentsTab extends
 
   getFilesErrors(errors) {
     if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
-      const filesErrors = [];
+      const filesErrors: {fileName: string; error: any}[] = [];
 
       errors.forEach((error, index) => {
         let fileName = this.dataItems[index].filename;
@@ -830,11 +834,11 @@ class FileAttachmentsTab extends
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
-      .catch(err => this._errorHandler(err));
+      .catch(err => this.filesTabErrorHandler(err));
   }
 
   // @ts-ignore
-  _shouldHideShare(isUnicefUser, baseId) {
+  _shouldHideShare(isUnicefUser, _baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 

@@ -105,7 +105,7 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
         endpoint: {url: getEndpoint('partnerInfo', {id: partnerId}).url}
       }).then((resp) => {
         this._handleResponse(resp);
-      }).catch((err) => {
+      }).catch(() => {
         this._handleError();
       });
     }

@@ -40,8 +40,8 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: {url}
     }).then((resp) => {
       this._handleResponse(resp);
-    }).catch((err) => {
-      this._handleError(err);
+    }).catch(() => {
+      this._handleError();
     });
 
   }

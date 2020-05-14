@@ -71,8 +71,8 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   originalData: GenericObject = {};
 
-  @property({type: Object})
-  errors: GenericObject = {};
+  @property({type: Array})
+  errors!: any[];
 
   @property({type: Object})
   tabTexts: GenericObject = {
