@@ -263,8 +263,6 @@ class NewEngagementView extends
       return;
     }
 
-    // @lajos needs to be tested, function requires 2 booleans, submit and finalize, needs to be tested on submit
-    // if it requires submit
     this._prepareData(false, false)
       .then((data) => {
         this.newEngagementData = data;

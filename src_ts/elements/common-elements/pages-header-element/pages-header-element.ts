@@ -144,7 +144,8 @@ class PagesHeaderElement extends PolymerElement {
   }
 
   _toggleOpened() {
-    (this.$.dropdownMenu as PaperListboxElement).set('selected', null);
+    // @ts-ignore
+    (this.$.dropdownMenu as PaperListboxElement).select(null);
   }
 
 }

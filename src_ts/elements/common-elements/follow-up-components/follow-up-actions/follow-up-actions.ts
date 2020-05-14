@@ -45,7 +45,8 @@ import {
   updateCollection,
   getChoices,
   readonlyPermission,
-  actionAllowed} from '../../../app-mixins/permission-controller';
+  actionAllowed
+} from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
 
 /**
@@ -775,7 +776,7 @@ class FollowUpActions extends
       this.dialogTitle = get(this, 'viewDialogTexts.title');
       this.confirmBtnText = '';
       this.cancelBtnText = 'Cancel';
-      // @lajos: function does not exists here, but openAddDialog() exists in /table-elements-mixin.ts
+      // @ts-ignore Defined in tableElementsMixin, not visible because of EtoolsAjaxRequestMixin
       this._openDialog(itemIndex);
     }
   }
