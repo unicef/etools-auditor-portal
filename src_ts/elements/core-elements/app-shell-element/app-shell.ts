@@ -160,7 +160,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   static get observers() {
     return [
       '_routePageChanged(route.path)',
-      '_viewChanged(routeData.view)'
+      '_viewChanged(routeData.page)'
     ];
   }
 
