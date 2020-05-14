@@ -415,7 +415,7 @@ class FileAttachmentsTab extends
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
       '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'filesTabErrorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)'
     ];
   }
@@ -465,7 +465,7 @@ class FileAttachmentsTab extends
         this.set('linkedAttachments', uniqBy(res, 'attachment'));
         this.set('requestInProcess', false);
       })
-      .catch(this._errorHandler.bind(this));
+      .catch(this.filesTabErrorHandler.bind(this));
   }
 
   _setBasePath(dataBase, pathPostfix) {
@@ -696,7 +696,7 @@ class FileAttachmentsTab extends
     this.openAddDialog();
   }
 
-  _errorHandler(errorData) {
+  filesTabErrorHandler(errorData) {
     const mainProperty = this.errorProperty;
     this.requestInProcess = false;
     if (!errorData || !errorData[mainProperty]) {
@@ -834,7 +834,7 @@ class FileAttachmentsTab extends
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
-      .catch(err => this._errorHandler(err));
+      .catch(err => this.filesTabErrorHandler(err));
   }
 
   // @ts-ignore

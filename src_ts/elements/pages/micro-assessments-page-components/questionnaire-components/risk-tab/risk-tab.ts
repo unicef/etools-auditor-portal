@@ -55,7 +55,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                     options="[[riskOptions]]"
                     option-label="display_name"
                     option-value="value"
-                    on-focus="_resetFieldError"
+                    on-focus="_resetFieldError_riskTab"
                     trigger-value-change-event
                     on-etools-selected-item-changed="_riskValueChanged"
                     dynamic-align hide-search allow-outside-scroll>
@@ -102,7 +102,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                       option-label="display_name"
                       option-value="value"
                       category-id$="{{category.id}}"
-                      on-focus="_resetFieldError"
+                      on-focus="_resetFieldError_riskTab"
                       trigger-value-change-event
                       on-etools-selected-item-changed="_riskValueChanged"
                       dynamic-align hide-search allow-outside-scroll>
@@ -261,7 +261,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return questionnaireToSave;
   }
 
-  _resetFieldError() {
+  _resetFieldError_riskTab() {
     this.set('errors.partner', false);
   }
 

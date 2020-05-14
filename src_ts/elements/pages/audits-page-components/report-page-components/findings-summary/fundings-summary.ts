@@ -401,7 +401,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   static get observers() {
     return [
       'resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'fundingsSummaryErrHandler(errorObject)',
       '_setDataItems(data)',
       '_setAuditOpinion(data.audit_opinion, auditOpinions)',
       'updateStyles(basePermissionPath, requestInProcess)',
@@ -504,7 +504,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     this.set('editedItem.percent_of_audited_expenditure', val);
   }
 
-  _errorHandler(errorData) {
+  fundingsSummaryErrHandler(errorData) {
     this.requestInProcess = false;
     if (!errorData) {
       return;
