@@ -15,9 +15,9 @@ class ActionButtons extends PolymerElement {
   static get template() {
     return html`
     ${moduleStyles} ${ActionButtonsStyles}
-    <paper-button 
-            class$="main-action status-tab-button {{withActionsMenu(actions.length)}}" 
-            raised 
+    <paper-button
+            class$="main-action status-tab-button {{withActionsMenu(actions.length)}}"
+            raised
             on-tap="_btnClicked">
       <span class="main-action text">[[_setButtonText(actions.0)]]</span>
       <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
@@ -42,7 +42,7 @@ class ActionButtons extends PolymerElement {
   }
 
   @property({type: Array})
-  actions = [];
+  actions: any[] = [];
 
   @property({type: Object})
   icons = {

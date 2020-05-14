@@ -448,7 +448,8 @@ class EngagementStaffMembersTab extends
           </div>
       </etools-dialog>
 
-      `;}
+      `;
+  }
 
 
   static get observers() {
@@ -542,8 +543,10 @@ class EngagementStaffMembersTab extends
   @property({type: Boolean})
   listLoading: boolean = false;
 
-  @property({type: String, computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' +
-                                      'dataItems.length)'})
+  @property({
+    type: String, computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' +
+      'dataItems.length)'
+  })
   showingResults!: string;
 
   @property({type: Number})
@@ -622,8 +625,10 @@ class EngagementStaffMembersTab extends
       each(this.columns, (_value, index) => {
         this.set(`columns.${index}.size`, 18);
       });
-      this.unshift('columns', {'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess',
-        'checkbox': true});
+      this.unshift('columns', {
+        'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess',
+        'checkbox': true
+      });
     } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
       this.shift('columns');
       each(this.columns, (_value, index) => {
@@ -939,7 +944,7 @@ class EngagementStaffMembersTab extends
 
   getTabData() {
     if (!this._canBeChanged()) {return null;}
-    const staffs = [];
+    const staffs: any[] = [];
     each(this.engagementStaffs, (value) => {
       staffs.push(value);
     });
