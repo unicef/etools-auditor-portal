@@ -265,7 +265,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
   pageType: string = '';
 
   @property({type: Boolean})
-  isStaffSc!: boolean;
+  isStaffSc: boolean = false;
 
 
   static get observers() {
