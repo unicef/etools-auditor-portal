@@ -14,7 +14,7 @@ import {getUserData} from '../../elements/app-mixins/user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 import {whichPageTrows} from './error-handler';
 
-let currentEngagement = {};
+let currentEngagement: {details?: GenericObject; type?: string} = {};
 /**
  * @polymer
  * @mixinFunction
@@ -25,7 +25,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends baseClass {
 
     @property({type: Number})
-    engagementId!: number;
+    engagementId!: number | null;
 
     @property({type: Object})
     routeData!: GenericObject;
@@ -53,6 +53,30 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     @property({type: String})
     tab!: string;
+
+    @property({type: Object})
+    route!: GenericObject;
+
+    @property({type: Array})
+    reportFileTypes!: any[];
+
+    @property({type: Array})
+    engagementFileTypes!: any[];
+
+    @property({type: Boolean})
+    isStaffSc!: boolean;
+
+    @property({type: Boolean})
+    forceOptionsUpdate!: boolean;
+
+    @property({type: Boolean})
+    quietAdding!: boolean;
+
+    @property({type: Object})
+    updatedEngagement!: GenericObject;
+
+    @property({type: Object})
+    engagement!: GenericObject;
 
     connectedCallback() {
       super.connectedCallback();
@@ -109,7 +133,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       this.tab = tab;
+      // @ts-ignore Defined in derived class when needed
       if (this.infoLoaded) {
+        // @ts-ignore Defined in derived class when needed
         this.infoLoaded();
       }
     }
@@ -141,8 +167,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       } else {
         this.permissionBase = `engagement_${id}`;
       }
-      this.reportFileTypes = getChoices(`${this.permissionBase}.report_attachments.file_type`);
-      this.engagementFileTypes = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
+      (this.reportFileTypes as any) = getChoices(`${this.permissionBase}.report_attachments.file_type`);
+      (this.engagementFileTypes as any) = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
     }
 
     _openCancelDialog() {
@@ -173,6 +199,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
           this._saveProgress(event);
           break;
         case 'create':
+          // @ts-ignore Defined in derived class when needed
           this._saveNewEngagement();
           break;
         case 'submit':
@@ -193,13 +220,13 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!this._validateBasicInfo()) {
         return;
       }
+      // @ts-ignore Defined in derived class when needed
       if (this.customBasicValidation && !this.customBasicValidation()) {
         return;
       }
 
       const quietAdding = event && event.detail && event.detail.quietAdding;
       const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
-
       return this._prepareData()
         .then((data) => {
           this.quietAdding = quietAdding;
@@ -209,6 +236,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _submitReport() {
+      // @ts-ignore Defined in derived class when needed
       if (!this._validateEngagement()) {
         return;
       }
@@ -220,6 +248,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _finalizeReport() {
+      // @ts-ignore Defined in derived class when needed
       if (!this._validateEngagement()) {
         return;
       }
@@ -280,7 +309,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       return currentEngagement;
     }
 
-    _prepareData(submit, finalize) {
+    _prepareData(submit?: boolean, finalize?: boolean) {
       if (!this.engagement) {
         return Promise.reject('You need engagement object');
       }
@@ -300,7 +329,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         data.engagement_type = this.engagement.engagement_type;
       }
 
+      // @ts-ignore Defined in derived class when needed
       if (this.customDataPrepare) {
+        // @ts-ignore Defined in derived class when needed
         data = this.customDataPrepare(data);
       }
 
@@ -439,9 +470,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         this.set(tab, page);
       }
     }
-
   }
-
   return EngagementMixinClass;
 
 }

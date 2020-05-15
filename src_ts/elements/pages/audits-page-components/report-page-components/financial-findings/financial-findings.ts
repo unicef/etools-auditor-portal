@@ -98,13 +98,13 @@ class FinancialFindings extends
               </paper-tooltip>
             </div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button 
-                    icon="icons:create" 
-                    class="edit-icon" 
+              <paper-icon-button
+                    icon="icons:create"
+                    class="edit-icon"
                     on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button 
-                    icon="icons:delete" 
-                    class="edit-icon" 
+              <paper-icon-button
+                    icon="icons:delete"
+                    class="edit-icon"
                     on-tap="openDeleteDialog"></paper-icon-button>
             </div>
           </list-element>
@@ -146,7 +146,7 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Title -->
                 <etools-dropdown id="titleOptionsDropDown"
-                    class$="[[_setRequired('financial_finding_set.title', basePermissionPath)]] 
+                    class$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]
                             disabled-as-readonly validate-input"
                     label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
                     placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
@@ -171,7 +171,7 @@ class FinancialFindings extends
               <div class="input-container input-container-ms">
                 <!-- Amount (local) -->
                 <etools-currency-amount-input
-                    class$="{{_setRequired('financial_finding_set.local_amount', basePermissionPath)}} 
+                    class$="{{_setRequired('financial_finding_set.local_amount', basePermissionPath)}}
                             disabled-as-readonly validate-input"
                     value="{{editedItem.local_amount}}"
                     currency=""
@@ -190,7 +190,7 @@ class FinancialFindings extends
               <div class="input-container input-container-ms">
                 <!-- Amount USD -->
                 <etools-currency-amount-input
-                    class$="{{_setRequired('financial_finding_set.amount', basePermissionPath)}} 
+                    class$="{{_setRequired('financial_finding_set.amount', basePermissionPath)}}
                             disabled-as-readonly validate-input"
                     value="{{editedItem.amount}}"
                     currency="$"
@@ -211,7 +211,7 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Description -->
                 <paper-textarea
-                    class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]] 
+                    class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]
                             disabled-as-readonly fixed-width validate-input"
                     value="{{editedItem.description}}"
                     allowed-pattern="[\\d\\s]"
@@ -233,7 +233,7 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
                 <paper-textarea
-                    class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]] 
+                    class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]
                             disabled-as-readonly fixed-width validate-input"
                     value="{{editedItem.recommendation}}"
                     allowed-pattern="[\\d\\s]"
@@ -255,7 +255,7 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- IP comments -->
                 <paper-textarea
-                    class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]] 
+                    class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]
                             disabled-as-readonly fixed-width validate-input"
                     value="{{editedItem.ip_comments}}"
                     allowed-pattern="[\\d\\s]"
@@ -280,7 +280,7 @@ class FinancialFindings extends
   }
 
   @property({type: Array, notify: true})
-  dataItems: GenericObject = {};
+  dataItems!: any[];
 
   @property({type: String})
   mainProperty: string = 'financial_finding_set';

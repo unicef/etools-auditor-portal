@@ -24,8 +24,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     tabTexts!: GenericObject;
 
-    @property({type: Array})
-    errors!: any[];
+    @property({type: Object})
+    errors!: GenericObject;
 
     @property({type: Boolean})
     dialogOpened = false;
@@ -73,7 +73,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _errorHandler(errorData) {
-      if (!errorData) {
+      if (!errorData || !Object.keys(errorData).length) {
         return false;
       }
       if (this.requestInProcess) {

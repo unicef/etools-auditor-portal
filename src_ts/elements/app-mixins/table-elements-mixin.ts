@@ -75,6 +75,18 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: String})
     basePermissionPath!: string;
 
+    @property({type: Object})
+    addDialogTexts!: GenericObject;
+
+    @property({type: Object})
+    editDialogTexts!: GenericObject;
+
+    @property({type: String})
+    mainProperty!: string;
+
+    @property({type: Boolean})
+    deleteDialog!: boolean;
+
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
@@ -166,7 +178,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     openEditDialog(event = {}) {
-      let index = event.itemIndex;// TODO is event.itemIndex ever valid?
+      let index = (event as GenericObject).itemIndex;// TODO is event.itemIndex ever valid?
       if (isNaN(index) || !~index) {
         index = this._getIndex(event);
       }
@@ -214,6 +226,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!this.validate()) {
         return;
       }
+      // @ts-ignore Defined in derived class when needed
       if (this.customValidation && !this.customValidation()) {
         return;
       }

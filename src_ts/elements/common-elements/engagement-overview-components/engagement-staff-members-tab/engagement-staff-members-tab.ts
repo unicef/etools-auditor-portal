@@ -224,8 +224,8 @@ class EngagementStaffMembersTab extends
       </check-user-existence>
       <!--end requests-->
 
-      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength, 
-                            dataItems.length, searchQuery)]])" 
+      <etools-content-panel panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength,
+                            dataItems.length, searchQuery)]])"
                             list>
           <div slot="panel-btns">
               <div class="add-button-container">
@@ -436,9 +436,9 @@ class EngagementStaffMembersTab extends
                       <div class="staff-check-box notify-box input-container input-container-l">
                           <paper-checkbox
                                   checked="{{editedItem.hasAccess}}"
-                                  disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, 
+                                  disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
                                             saveWithButton)}}"
-                                  readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs, 
+                                  readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
                                             saveWithButton)}}">
                               Has Access
                           </paper-checkbox>
@@ -448,7 +448,8 @@ class EngagementStaffMembersTab extends
           </div>
       </etools-dialog>
 
-      `;}
+      `;
+  }
 
 
   static get observers() {
@@ -470,7 +471,7 @@ class EngagementStaffMembersTab extends
   mainProperty: string = 'staff_members';
 
   @property({type: Array, observer: '_dataItemsChanged'})
-  dataItems: [] = [];
+  dataItems: any[] = [];
 
   @property({type: Object})
   itemModel: GenericObject = {
@@ -542,8 +543,10 @@ class EngagementStaffMembersTab extends
   @property({type: Boolean})
   listLoading: boolean = false;
 
-  @property({type: String, computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' +
-                                      'dataItems.length)'})
+  @property({
+    type: String, computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' +
+      'dataItems.length)'
+  })
   showingResults!: string;
 
   @property({type: Number})
@@ -619,14 +622,16 @@ class EngagementStaffMembersTab extends
     if (!basePermissionPath) {return;}
     const editObj = this.columns && this.columns[0];
     if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
-      each(this.columns, (value, index) => {
+      each(this.columns, (_value, index) => {
         this.set(`columns.${index}.size`, 18);
       });
-      this.unshift('columns', {'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess',
-        'checkbox': true});
+      this.unshift('columns', {
+        'size': 10, 'label': 'Has Access', 'name': 'hasAccess', 'property': 'hasAccess',
+        'checkbox': true
+      });
     } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
       this.shift('columns');
-      each(this.columns, (value, index) => {
+      each(this.columns, (_value, index) => {
         this.set(`columns.${index}.size`, 20);
       });
     }
@@ -772,7 +777,7 @@ class EngagementStaffMembersTab extends
     }
   }
 
-  _showAddButton(basePath, agreement, loading) {
+  _showAddButton(_basePath, agreement, loading) {
     const orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
 
     return !!orgId && !loading && this._canBeChanged();
@@ -939,7 +944,7 @@ class EngagementStaffMembersTab extends
 
   getTabData() {
     if (!this._canBeChanged()) {return null;}
-    const staffs = [];
+    const staffs: any[] = [];
     each(this.engagementStaffs, (value) => {
       staffs.push(value);
     });

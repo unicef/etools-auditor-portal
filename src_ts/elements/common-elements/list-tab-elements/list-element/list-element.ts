@@ -374,7 +374,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   hover!: boolean;
 
   @property({type: Array})
-  headings!: [];
+  headings!: any[];
 
   public connectedCallback() {
     super.connectedCallback();
@@ -430,10 +430,10 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     (this.shadowRoot!.querySelector('#details') as IronCollapseElement).toggle();
   }
 
-  _isOneOfType(item) {
+  _isOneOfType(item, ...theRestOfArgs) {
     if (!item) {return false;}
 
-    const types = Array.prototype.slice.call(arguments, 1) || [];
+    const types = theRestOfArgs || [];
 
     return !!types.find((type) => {
       return !!item[type];
