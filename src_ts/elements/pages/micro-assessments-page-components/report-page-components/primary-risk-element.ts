@@ -181,9 +181,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       }]
     };
     this.set('errors', errors);
-    if (!valid) {
-      showErrorAsToastMsg(`${this.tabTexts.name}: Please correct errors`, this);
-    }
+    if (!valid) {fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});}
 
     return valid;
   }
