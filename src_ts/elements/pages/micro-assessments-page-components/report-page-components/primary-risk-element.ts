@@ -8,6 +8,7 @@ import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getChoices, isRequired} from '../../../app-mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
+import {fireEvent} from '../../../utils/fire-custom-event';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import find from 'lodash-es/find';
@@ -15,7 +16,6 @@ import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import isEmpty from 'lodash-es/isEmpty';
-import {showErrorAsToastMsg} from '@unicef-polymer/etools-ajax/ajax-error-parser';
 
 class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -159,7 +159,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   validate(forSave) {
     if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
       this.set('errors', {children: [{blueprints: [{risk: {value: 'Field is required'}}]}]});
-      showErrorAsToastMsg(`${this.tabTexts.name}: Please correct errors`, this);
+      fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       return false;
     }
     if (!this.basePermissionPath || forSave) {return true;}
