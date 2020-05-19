@@ -3,11 +3,11 @@ import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import get from 'lodash-es/get';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {updateCollection} from '../app-mixins/permission-controller';
 import {GenericObject} from '../../types/global';
 
-class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
+class UpdateEngagement extends PolymerElement {
 
   @property({type: Object, observer: '_engagementChanged'})
   updatedEngagementData!: GenericObject;
@@ -139,7 +139,7 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
     const optionsEndpoint = getEndpoint('engagementInfo',
       {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type});
 
-    this.sendRequest({
+    sendRequest({
       method: 'OPTIONS',
       endpoint: optionsEndpoint
     })
@@ -147,7 +147,7 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
       .catch(this._handleOptionsError.bind(this));
 
     const attachmentsEndpoint = getEndpoint('attachments', {id: this.updatedEngagementData.id});
-    this.sendRequest({
+    sendRequest({
       method: 'OPTIONS',
       endpoint: attachmentsEndpoint
     })
@@ -156,7 +156,7 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     const reportAttachmentsEndpoint = getEndpoint('reportAttachments',
       {id: this.updatedEngagementData.id});
-    this.sendRequest({
+    sendRequest({
       method: 'OPTIONS',
       endpoint: reportAttachmentsEndpoint
     })
@@ -165,7 +165,7 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     const apBaseUrl = getEndpoint('engagementInfo',
       {id: this.updatedEngagementData.id, type: 'engagements'}).url;
-    this.sendRequest({
+    sendRequest({
       method: 'OPTIONS',
       endpoint: {
         url: `${apBaseUrl}action-points/`
@@ -317,7 +317,7 @@ class UpdateEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _performUpdate() {
-    this.sendRequest(this.requestOptions)
+    sendRequest(this.requestOptions)
       .then(this._handleResponse.bind(this))
       .catch(this._handleError.bind(this));
   }

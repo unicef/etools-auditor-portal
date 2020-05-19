@@ -8,7 +8,7 @@ import '../../engagements-page-components/engagements-list-view/engagements-list
 import '../../engagements-page-components/new-engagement-view/new-engagement-view';
 import {clearQueries, updateQueries} from '../../../app-mixins/query-params-controller';
 import {actionAllowed} from '../../../app-mixins/permission-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {property} from '@polymer/decorators';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
 
@@ -24,7 +24,7 @@ import {BASE_PATH} from '../../../app-config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 import {FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
 
-class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
+class StaffScPageMain extends PolymerElement {
 
   static get template() {
     return html`
@@ -159,7 +159,7 @@ class StaffScPageMain extends EtoolsAjaxRequestMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
     this.allowNew = actionAllowed('new_staff_sc', 'create');
-    this.sendRequest({
+    sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     }).then((resp) => {
       this._auditFirmLoaded(resp);

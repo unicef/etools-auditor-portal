@@ -2,9 +2,9 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class AddNewEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
+class AddNewEngagement extends PolymerElement {
 
   @property({type: Object})
   newEngagementData!: {};
@@ -65,7 +65,7 @@ class AddNewEngagement extends EtoolsAjaxRequestMixin(PolymerElement) {
       body: postData,
       endpoint: getEndpoint(endpointName)
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(this._handleResponse.bind(this))
       .catch(this._handleError.bind(this));
   }

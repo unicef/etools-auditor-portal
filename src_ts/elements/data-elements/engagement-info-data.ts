@@ -5,7 +5,7 @@ import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import {addToCollection, collectionExists} from '../app-mixins/permission-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import LastCreatedMixin from '../../elements/app-mixins/last-created-mixin';
 import EngagementMixin from '../../elements/app-mixins/engagement-mixin';
 import {GenericObject} from '../../types/global';
@@ -15,11 +15,9 @@ import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
  * @polymer
  * @customElement
  * @appliesMixin LastCreatedMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  * @appliesMixin EngagementMixin
  */
-class EngagementInfoData extends LastCreatedMixin(
-  EtoolsAjaxRequestMixin(EngagementMixin(PolymerElement))) {
+class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement)) {
 
   // ts-@ignore
   @property({type: Number, notify: true, observer: '_idChanged'})
@@ -125,7 +123,7 @@ class EngagementInfoData extends LastCreatedMixin(
       method: 'OPTIONS',
       endpoint
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(resp => this._handleDataOptionsResponse(resp, params))
       .catch(error => this._handleOptionsError(error, params));
   }
@@ -184,7 +182,7 @@ class EngagementInfoData extends LastCreatedMixin(
     const options = {
       endpoint: getEndpoint('engagementInfo', {id, type: this.engagementType})
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(this._handleDataResponse.bind(this))
       .catch(this._handleError.bind(this));
   }
@@ -194,7 +192,7 @@ class EngagementInfoData extends LastCreatedMixin(
       method: 'OPTIONS',
       endpoint: getEndpoint('engagementInfo', {id, type: this.engagementType})
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(this._handleOptionsResponse.bind(this))
       .catch(this._handleOptionsResponse.bind(this));
   }

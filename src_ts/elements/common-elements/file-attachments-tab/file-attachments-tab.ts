@@ -29,7 +29,7 @@ import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 
@@ -50,7 +50,6 @@ import {checkNonField, refactorErrorObject} from '../../app-mixins/error-handler
 /**
  * @customElement
  * @polymer
- * @appliesMixin EtoolsAjaxRequestMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EngagementMixin
@@ -60,9 +59,7 @@ class FileAttachmentsTab extends
   CommonMethodsMixin(
     TableElementsMixin(
       EngagementMixin(
-        DateMixin(
-          EtoolsAjaxRequestMixin(
-            PolymerElement))))) {
+        DateMixin(PolymerElement)))) {
 
   static get template() {
     // language=HTML
@@ -460,7 +457,7 @@ class FileAttachmentsTab extends
   _getLinkedAttachments() {
     this.set('requestInProcess', true);
     const options = Object.assign(this.auditLinksOptions, {method: 'GET'});
-    this.sendRequest(options)
+    sendRequest(options)
       .then((res) => {
         this.set('linkedAttachments', uniqBy(res, 'attachment'));
         this.set('requestInProcess', false);
@@ -780,7 +777,7 @@ class FileAttachmentsTab extends
       method: 'POST'
     });
     this.set('requestInProcess', true);
-    this.sendRequest(options)
+    sendRequest(options)
       .then(() => {
         fireEvent(this, 'toast', {
           text: 'Documents shared successfully.'
@@ -830,7 +827,7 @@ class FileAttachmentsTab extends
     this.deleteLinkOpened = false;
     const id = event.currentTarget.getAttribute('link-id');
 
-    this.sendRequest({
+    sendRequest({
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))

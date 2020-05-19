@@ -3,10 +3,10 @@ import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import findIndex from 'lodash-es/findIndex';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {GenericObject} from '../../types/global';
 
-class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
+class UpdateAttachments extends PolymerElement {
 
   @property({type: String, observer: '_requestDataChanged'})
   requestData!: string;
@@ -57,7 +57,7 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (method === 'PATCH' && !!(attachmentData.attachment)) {// file was changed
       this._handleExitingFileWasChanged(attachmentData, url);
     } else {
-      this.sendRequest(options)
+      sendRequest(options)
         .then((resp) => {
           this._handleResponse(resp);
         }).catch((error) => {
@@ -72,7 +72,7 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
     */
   _handleExitingFileWasChanged(attachmentData: any, url: string) {
     // DELETE currently edited attachment object
-    this.sendRequest({method: 'DELETE', endpoint: {url}})
+    sendRequest({method: 'DELETE', endpoint: {url}})
       .then(() => {
         // POST to create new attachment object
         url = url.replace(`${attachmentData.id}/`, '');
@@ -84,7 +84,7 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
           body: attachmentData
         };
         this.method = 'POST';
-        this.sendRequest(options)
+        sendRequest(options)
           .then((resp) => {
             this._handleChangedFileResponse(resp);
           }).catch((error) => {

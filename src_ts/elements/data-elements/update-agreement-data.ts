@@ -1,10 +1,10 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {GenericObject} from '../../types/global';
 
-class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
+class UpdateAgreementData extends PolymerElement {
 
   @property({type: String, observer: '_dateChanged'})
   newDate!: string;
@@ -24,7 +24,7 @@ class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     this.poUpdating = true;
     const url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
-    this.sendRequest({
+    sendRequest({
       method: 'PATCH',
       endpoint: {url},
       body: {contract_end_date: date}
