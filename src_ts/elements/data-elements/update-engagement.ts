@@ -3,7 +3,7 @@ import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import get from 'lodash-es/get';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {updateCollection} from '../app-mixins/permission-controller';
 import {GenericObject} from '../../types/global';
 
@@ -31,7 +31,7 @@ class UpdateEngagement extends PolymerElement {
   forceOptionsUpdate!: boolean;
 
   @property({type: Object})
-  requestOptions!: GenericObject;
+  requestOptions!: EtoolsRequestConfig;
 
   @property({type: Object})
   postData!: GenericObject;

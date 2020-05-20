@@ -29,7 +29,7 @@ import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 
@@ -364,7 +364,7 @@ class FileAttachmentsTab extends
   shareParams: GenericObject = {};
 
   @property({type: Object})
-  auditLinksOptions: GenericObject = {};
+  auditLinksOptions: EtoolsRequestConfig = {endpoint: {url: ''}};
 
   @property({type: Array, notify: true})
   linkedAttachments: any[] = [];
