@@ -537,7 +537,7 @@ class FileAttachmentsTab extends
   _attachmentUploadFinished(e) {
     this.requestInProcess = false;
     if (e.detail.success) {
-      const uploadResponse = JSON.parse(e.detail.success);
+      const uploadResponse = e.detail.success;
       this.set('editedItem.attachment', uploadResponse.id);
       this.set('editedItem.filename', uploadResponse.filename);
 
