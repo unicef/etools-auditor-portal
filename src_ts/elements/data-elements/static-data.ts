@@ -1,7 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import famEndpoints from '../app-config/endpoints';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {addToCollection, getChoices, isValidCollection} from '../app-mixins/permission-controller';
 import {setStaticData, updateStaticData} from '../app-mixins/static-data-controller';
 import get from 'lodash-es/get';
@@ -9,9 +8,10 @@ import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
 import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
+import {sendRequest} from "@unicef-polymer/etools-ajax/etools-ajax-request";
 
 
-class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
+class StaticData extends PolymerElement {
 
   public static get template() {
     return html`
@@ -61,7 +61,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   getPartners() {
     const partnersEndpoint = getEndpoint('partnerOrganisations');
-    this.sendRequest({
+    sendRequest({
       endpoint: partnersEndpoint
     })
       .then(resp => this._partnersLoaded(resp))
@@ -70,7 +70,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   getUsers() {
     const usersEndpoint = famEndpoints.users;
-    this.sendRequest({
+    sendRequest({
       endpoint: usersEndpoint
     })
       .then(resp => this._handleUsersResponse(resp))
@@ -79,7 +79,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   getStaffUsers() {
     const staffUsersEndpoint = famEndpoints.staffMembersUsers;
-    this.sendRequest({
+    sendRequest({
       endpoint: staffUsersEndpoint
     })
       .then(resp => this._handleStaffUsersResponse(resp))
@@ -88,7 +88,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   getOffices() {
     const officesEndpoint = famEndpoints.offices;
-    this.sendRequest({
+    sendRequest({
       endpoint: officesEndpoint
     })
       .then(resp => this._apDataResponse(resp, 'offices'))
@@ -97,7 +97,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
   getSections() {
     const sectionsEndpoint = famEndpoints.sectionsCovered;
-    this.sendRequest({
+    sendRequest({
       endpoint: sectionsEndpoint
     })
       .then(resp => this._apDataResponse(resp, 'sections'))
@@ -110,7 +110,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: famEndpoints.static
     };
 
-    this.sendRequest(reqOpts).then(resp => setStaticData('staticDropdown', resp));
+    sendRequest(reqOpts).then(resp => setStaticData('staticDropdown', resp));
   }
 
   makeOptionsCalls() {
@@ -125,7 +125,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       csrf: true,
       method: 'OPTIONS'
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(resp => this._handleNewEngagementResponse(resp))
       .catch(err => this._handleNewEngagementResponse(err));
   }
@@ -136,7 +136,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       csrf: true,
       method: 'OPTIONS'
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(resp => this._handleStaffSCOptionsResponse(resp))
       .catch(err => this._handleStaffSCOptionsResponse(err));
   }
@@ -147,7 +147,7 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
       csrf: true,
       method: 'OPTIONS'
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(resp => this._atmOptionsResponse(resp))
       .catch(err => this._atmOptionsResponse(err));
   }
@@ -185,13 +185,13 @@ class StaticData extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     const filterAuditorsEndpoint = getEndpoint('filterAuditors');
     filterAuditorsEndpoint.url += `?reload=${time}`;
-    this.sendRequest({endpoint: filterAuditorsEndpoint})
+    sendRequest({endpoint: filterAuditorsEndpoint})
       .then(resp => this._filterAuditorsLoaded(resp))
       .catch(err => this._filterAuditorsLoaded(err));
 
     const filterPartnersEndpoint = getEndpoint('filterPartners');
     filterPartnersEndpoint.url += `?reload=${time}`;
-    this.sendRequest({endpoint: filterPartnersEndpoint})
+    sendRequest({endpoint: filterPartnersEndpoint})
       .then(resp => this._filterPartnersLoaded(resp))
       .catch(err => this._filterPartnersLoaded(err));
   }

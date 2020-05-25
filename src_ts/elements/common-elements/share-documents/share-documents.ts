@@ -19,21 +19,18 @@ import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import {getEndpoint} from '../../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../app-mixins/static-data-controller';
 import {fireEvent} from '../../utils/fire-custom-event';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  */
-class ShareDocuments extends
-  EtoolsAjaxRequestMixin(
-    TableElementsMixin(CommonMethodsMixin(PolymerElement))) {
+class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
 
   static get template() {
     return html`
@@ -232,7 +229,7 @@ class ShareDocuments extends
       }
     };
 
-    this.sendRequest(options)
+    sendRequest(options)
       .then((resp) => {
         this.set('attachmentsList', resp);
         this.set('originalList', resp);
