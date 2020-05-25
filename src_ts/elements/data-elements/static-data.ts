@@ -8,7 +8,7 @@ import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
 import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
-import {sendRequest} from "@unicef-polymer/etools-ajax/etools-ajax-request";
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 
 class StaticData extends PolymerElement {
