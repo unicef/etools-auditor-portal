@@ -35,7 +35,6 @@ import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
@@ -48,6 +47,7 @@ import {
   actionAllowed
 } from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @polymer
@@ -55,12 +55,8 @@ import {checkNonField} from '../../../app-mixins/error-handler';
  * @appliesMixin DateMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  */
-class FollowUpActions extends
-  EtoolsAjaxRequestMixin(
-    CommonMethodsMixin(TableElementsMixin(
-      DateMixin(PolymerElement)))) {
+class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
 
   static get template() {
     return html`
@@ -730,7 +726,7 @@ class FollowUpActions extends
         url
       }
     };
-    this.sendRequest(requestOptions)
+    sendRequest(requestOptions)
       .then(this._handleOptionResponse.bind(this))
       .catch(this._handleOptionResponse.bind(this));
   }

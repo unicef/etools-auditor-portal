@@ -2,9 +2,9 @@ import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
+class GetActionPoints extends PolymerElement {
 
   @property({type: Number, notify: true, observer: '_engagementIdChanged'})
   engagementId!: number;
@@ -36,7 +36,7 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
       }
     };
 
-    this.sendRequest(requestOptions)
+    sendRequest(requestOptions)
       .then(resp => this._handleResponse(resp))
       .catch((() => this._handleError()));
   }
