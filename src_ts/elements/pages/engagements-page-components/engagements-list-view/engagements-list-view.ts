@@ -47,7 +47,8 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
           request-queries="[[requestQueries]]"
           without-pagination="[[withoutPagination]]"
           on-update-export-links="_setExportLinks"
-          endpoint-name="[[endpointName]]">
+          endpoint-name="[[endpointName]]"
+          reload-data={{reloadData}}>
       </engagements-list-data>
 
       <pages-header-element
@@ -200,6 +201,9 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   @property({type: Boolean})
   isStaffSc: boolean = false;
+
+  @property({type: Boolean, notify: true})
+  reloadData: boolean = false;
 
   @property({type: Array})
   exportLinks: any[] = [];

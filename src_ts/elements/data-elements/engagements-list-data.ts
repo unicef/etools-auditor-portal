@@ -28,10 +28,22 @@ class EngagementListData extends PolymerElement {
   @property({type: String})
   endpointName: string = '';
 
+  @property({type: Boolean, notify: true, observer: '_reloadDataChanged'})
+  reloadData: boolean = false;
+
   static get observers() {
     return ['getEngagementsList(requestQueries.*)'];
   }
 
+  _reloadDataChanged() {
+    if (this.reloadData) {
+      // force reload data for engagement list
+      this.getEngagementsList(true);
+      setTimeout(() => {
+        this.reloadData = false;
+      }, 200);
+    }
+  }
   _engagementsLoaded(detail) {
     if (!detail) {
       fireEvent(this, 'toast', {text: 'An error occured, try again.'});
@@ -46,16 +58,19 @@ class EngagementListData extends PolymerElement {
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
   }
 
-  getEngagementsList() {
-    const reloadRequired = this.reloadRequired() || this.requestQueries.reload;
+  getEngagementsList(forceReload = false) {
+    const reloadRequired = forceReload || this.reloadRequired() || this.requestQueries.reload;
     this.lastState = cloneDeep(this.requestQueries);
+
     if (!reloadRequired || !this.endpointName) {
       // not reload the page
       return;
     }
 
-    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true,
-      message: 'Loading of engagements list...'});
+    fireEvent(this, 'global-loading', {
+      type: 'engagements-list', active: true,
+      message: 'Loading of engagements list...'
+    });
 
     const endpoint = getEndpoint(this.endpointName);
     endpoint.url += getQueriesString();
