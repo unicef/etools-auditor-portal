@@ -179,7 +179,8 @@ class SearchAndFilter extends PolymerElement {
       const newFilter = this.filters.find((filter) => {
         return filter.query === query;
       });
-      this._setFilterValueFromQueryParams(newFilter);
+      // on change page do not use the filter
+      // // this._setFilterValueFromQueryParams(newFilter);
       this.push('usedFilters', newFilter);
     } else {
       this.removeFilter(e);
