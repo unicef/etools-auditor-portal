@@ -446,12 +446,12 @@ class FileAttachmentsTab extends
     }
     const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
-    this.set('auditLinksOptions', {
-      endpoint: getEndpoint('auditLinks', {
+    this.set('auditLinksOptions',
+      getEndpoint('auditLinks', {
         type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType!],
         id: engagement!.id
       })
-    });
+    );
   }
 
   _getLinkedAttachments() {
