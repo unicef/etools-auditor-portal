@@ -97,7 +97,7 @@ class UpdateEngagement extends PolymerElement {
     this.basePermissionPath = `engagement_${this.engagement.id}`;
 
     fireEvent(this, 'engagement-updated', {success: true, data});
-    fireEvent(this, 'global-loading', {type: 'update-engagement'});
+    fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     fireEvent(this, 'global-loading', {type: 'update-permissions'});
 
     let action;
@@ -126,13 +126,13 @@ class UpdateEngagement extends PolymerElement {
     }
 
     if (~this.actionUrl.indexOf('submit')) {
-      fireEvent(this, 'global-loading', {type: 'submit-engagement'});
+      fireEvent(this, 'global-loading', {type: 'submit-engagement', saved: true});
     } else if (~this.actionUrl.indexOf('finalize')) {
-      fireEvent(this, 'global-loading', {type: 'finalize-engagement'});
+      fireEvent(this, 'global-loading', {type: 'finalize-engagement', saved: true});
     } else if (~this.actionUrl.indexOf('cancel')) {
       fireEvent(this, 'global-loading', {type: 'cancel-engagement'});
     } else {
-      fireEvent(this, 'global-loading', {type: 'update-engagement'});
+      fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     }
     this.actionUrl = '';
 

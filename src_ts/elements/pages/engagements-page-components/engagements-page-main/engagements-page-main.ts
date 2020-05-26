@@ -55,7 +55,8 @@ class EngagementsPageMain extends PolymerElement {
             has-collapse
             request-queries="[[partnersListQueries]]"
             endpoint-name="{{endpointName}}"
-            base-permission-path="new_engagement">
+            base-permission-path="new_engagement"
+            reload-data={{reloadListData}}>
         </engagements-list-view>
 
         <template is="dom-if" if="[[allowNew]]" restamp>
@@ -105,6 +106,12 @@ class EngagementsPageMain extends PolymerElement {
   @property({type: Boolean})
   allowNew: boolean = false;
 
+  @property({type: Boolean})
+  hasEngagementUpdated: boolean = false;
+
+  @property({type: Boolean, notify: true})
+  reloadListData: boolean = false;
+
   static get observers() {
     return [
       '_routeConfig(routeData.view)'
@@ -114,7 +121,24 @@ class EngagementsPageMain extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
     this.allowNew = actionAllowed('new_engagement', 'create');
+    this._engagementStatusUpdated = this._engagementStatusUpdated.bind(this);
+    document.addEventListener('global-loading', this._engagementStatusUpdated as any);
   }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('', this._engagementStatusUpdated as any);
+  }
+
+  _engagementStatusUpdated(e: CustomEvent) {
+    if (e.detail && e.detail.saved && e.detail.type) {
+      const type = e.detail.type;
+      if (type === 'update-engagement' || type === 'finalize-engagement' || type === 'submit-engagement') {
+        this.hasEngagementUpdated = true;
+      }
+    }
+  }
+
   _routeConfig(view) {
     if (!this.route || !~this.route.prefix.indexOf('/engagements')) {
       this.resetLastView();
@@ -154,7 +178,6 @@ class EngagementsPageMain extends PolymerElement {
     const queries = this.route.__queryParams || {};
     const queriesUpdates: GenericObject = clone(queries);
 
-
     if (!queries.page_size) {queriesUpdates.page_size = '10';}
     if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
     if (!queries.page) {queriesUpdates.page = '1';}
@@ -179,6 +202,11 @@ class EngagementsPageMain extends PolymerElement {
     if (this.routeData.view === 'list') {
       const queries = this._configListParams();
       this._setEngagementsListQueries(queries);
+      if (this.hasEngagementUpdated) {
+        // force reload data for engagement list because we have an engagement changed
+        this.reloadListData = true;
+        this.hasEngagementUpdated = false;
+      }
     } else if (!isNaN(+this.routeData.view)) {
       clearQueries();
     }
