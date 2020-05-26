@@ -187,7 +187,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
           </div>
         </div>
 
-        <etools-dialog no-padding keep-dialog-open size="md" opened="{{dialogOpened}}"
+        <etools-dialog id="cancelEngagement" no-padding keep-dialog-open size="md" opened="{{dialogOpened}}"
           dialog-title="Cancellation of Engagement" ok-btn-text="Continue" on-confirm-btn-clicked="_cancelEngagement">
           <div class="row-h repeatable-item-container" without-line>
             <div class="repeatable-item-content">

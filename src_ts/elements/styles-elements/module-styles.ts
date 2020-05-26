@@ -70,6 +70,13 @@ export const moduleStyles = html`
       };
     }
 
+    etools-dialog {
+      --etools-dialog-scrollable: {
+        --etools-dialog-content_-_max-height: 50vh!important;
+        overflow: auto;
+      };
+    }
+
     /* PAPER-TOGGLE-BUTTON */
     paper-toggle-button {
       --paper-toggle-button-checked-button-color: var(--module-primary);

@@ -212,7 +212,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
           </div>
         </div>
 
-        <etools-dialog no-padding keep-dialog-open size="md"
+        <etools-dialog id="cancelEngagement" no-padding keep-dialog-open size="md"
                        opened="{{dialogOpened}}"
                        dialog-title="Cancellation of Engagement"
                        ok-btn-text="Continue"
