@@ -227,6 +227,8 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   _engagementsFiltersUpdated() {
     const filtersElement = this.$.filters as SearchAndFilterEl;
+    // remove cached filters
+    filtersElement.removeAllFilters();
     this.setFiltersSelections();
 
     if (filtersElement) {

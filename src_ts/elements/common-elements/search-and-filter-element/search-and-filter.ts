@@ -174,13 +174,12 @@ class SearchAndFilter extends PolymerElement {
   addFilter(e) {
     const query = (typeof e === 'string') ? e : e.model.item.query;
     const isSelected = this._isSelected(query);
-
     if (!isSelected) {
       const newFilter = this.filters.find((filter) => {
         return filter.query === query;
       });
       // on change page do not use the filter
-      // // this._setFilterValueFromQueryParams(newFilter);
+      this._setFilterValueFromQueryParams(newFilter);
       this.push('usedFilters', newFilter);
     } else {
       this.removeFilter(e);
@@ -223,12 +222,12 @@ class SearchAndFilter extends PolymerElement {
       timeOut.after(50),
       () => {
         const queryParams = this.queryParams;
-
         if (!queryParams || !this.filtersDataLoaded) {
           return;
         }
 
         this.filters.forEach((filter) => {
+
           const usedFilter = this.usedFilters.find(used => used.query === filter.query);
 
           if (!usedFilter && queryParams[filter.query] !== undefined) {
@@ -339,6 +338,13 @@ class SearchAndFilter extends PolymerElement {
   filterTypeIsDate(checkedTypeValue: FilterTypes) {
     return checkedTypeValue === FilterTypes.Date;
   }
+
+  removeAllFilters() {
+    this.filters.forEach((filter) => {
+      this.removeFilter(filter.query);
+    });
+  }
+
 
 }
 
