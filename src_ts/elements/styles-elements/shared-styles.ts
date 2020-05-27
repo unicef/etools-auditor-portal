@@ -74,13 +74,6 @@ export const sharedStyles = html`
       padding: 16px 24px;
     }
 
-    #cancelEngagement {
-      --etools-dialog-scrollable: {
-        --etools-dialog-content_-_max-height: 30vh!important;
-        overflow: auto;
-      };
-    }
-
     /* responsive css rules */
     @media (min-width: 850px) {
 

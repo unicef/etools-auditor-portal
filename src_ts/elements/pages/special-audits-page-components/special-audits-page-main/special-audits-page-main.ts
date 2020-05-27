@@ -220,7 +220,7 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
           </div>
         </div>
 
-        <etools-dialog id="cancelEngagement" no-padding keep-dialog-open size="md"
+        <etools-dialog class="max-height-30" no-padding keep-dialog-open size="md"
                        opened="{{dialogOpened}}"
                        dialog-title="Cancellation of Engagement"
                        ok-btn-text="Continue"

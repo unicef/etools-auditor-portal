@@ -49,13 +49,6 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               padding: 0;
             };
           }
-          
-          #specificProcedure {
-            --etools-dialog-scrollable: {
-              --etools-dialog-content_-_max-height: 30vh!important;
-              overflow: auto;
-            };
-          }
 
       </style>
 
@@ -122,7 +115,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                       ok-btn-text="Delete">
           [[deleteTitle]]
       </etools-dialog>
-      <etools-dialog id="specificProcedure" no-padding keep-dialog-open size="md"
+      <etools-dialog class="max-height-30" no-padding keep-dialog-open size="md"
               opened="{{dialogOpened}}"
               dialog-title="[[dialogTitle]]"
               ok-btn-text="[[confirmBtnText]]"

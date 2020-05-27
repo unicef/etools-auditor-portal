@@ -219,7 +219,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
                 </div>
             </div>
 
-            <etools-dialog id="cancelEngagement"
+            <etools-dialog class="max-height-30"
                            size="md"
                            opened="{{dialogOpened}}"
                            dialog-title="Cancellation of Engagement"
