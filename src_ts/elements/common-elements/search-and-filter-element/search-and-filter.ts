@@ -228,9 +228,7 @@ class SearchAndFilter extends PolymerElement {
         }
 
         this.filters.forEach((filter) => {
-
           const usedFilter = this.usedFilters.find(used => used.query === filter.query);
-
           if (!usedFilter && queryParams[filter.query] !== undefined) {
             this.addFilter(filter.query);
           }
