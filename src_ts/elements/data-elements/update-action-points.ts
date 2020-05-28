@@ -3,9 +3,9 @@ import {property} from '@polymer/decorators';
 import findIndex from 'lodash-es/findIndex';
 import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
+class UpdateActionPoints extends PolymerElement {
 
   @property({type: String, observer: '_dataChanged'})
   requestData!: string;
@@ -46,7 +46,7 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
       body
     };
 
-    this.sendRequest(requestOptions)
+    sendRequest(requestOptions)
       .then(resp => this._handleResponse(resp))
       .catch(err => this._handleError(err));
   }

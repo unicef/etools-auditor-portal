@@ -2,9 +2,9 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class GetAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
+class GetAttachments extends PolymerElement {
 
   @property({type: Number, notify: true, observer: '_baseIdChanged'})
   baseId!: number;
@@ -28,7 +28,7 @@ class GetAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (!baseId || !this.endpointName) {return;}
     const url = getEndpoint(this.endpointName, {id: baseId}).url;
 
-    this.sendRequest({
+    sendRequest({
       endpoint: {url}
     }).then((resp) => {
       this._handleResponse(resp);

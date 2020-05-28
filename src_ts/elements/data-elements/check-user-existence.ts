@@ -4,9 +4,9 @@ import get from 'lodash-es/get';
 import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
+class CheckUserExistence extends PolymerElement {
 
   @property({type: String, notify: true, observer: '_emailChanged'})
   email: string | null = null;
@@ -36,7 +36,7 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
       id: this.organisationId
     }).url;
 
-    this.sendRequest({
+    sendRequest({
       endpoint: {url}
     }).then((resp) => {
       this._handleResponse(resp);

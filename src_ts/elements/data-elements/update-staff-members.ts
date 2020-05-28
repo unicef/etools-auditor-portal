@@ -3,10 +3,10 @@ import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {GenericObject} from '../../types/global.js';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
+class UpdateStaffMembers extends PolymerElement {
 
   @property({type: Object, notify: true, observer: '_dataChanged'})
   staffData!: GenericObject;
@@ -35,7 +35,7 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
       },
       body: data.data
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(resp => this._handleResponse(resp))
       .catch(err => this._handleError(err));
   }

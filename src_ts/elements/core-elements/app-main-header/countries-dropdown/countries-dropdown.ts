@@ -5,21 +5,20 @@ import '@polymer/paper-menu-button';
 import {property} from '@polymer/decorators';
 import {DomRepeat} from '@polymer/polymer/lib/elements/dom-repeat.js';
 import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin.js';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import famEndpoints from '../../../app-config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {PaperMenuButton} from '@polymer/paper-menu-button';
 import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../app-config/config';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin EtoolsPageRefreshMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  */
-class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(PolymerElement)) {
+class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
 
   public static get template() {
     return html`
@@ -114,7 +113,7 @@ class CountriesDropdown extends EtoolsAjaxRequestMixin(EtoolsPageRefreshMixin(Po
       body: {country: countryId},
       endpoint: famEndpoints.changeCountry
     };
-    this.sendRequest(options)
+    sendRequest(options)
       .then(this._handleResponse.bind(this))
       .catch(this._handleError.bind(this));
   }
