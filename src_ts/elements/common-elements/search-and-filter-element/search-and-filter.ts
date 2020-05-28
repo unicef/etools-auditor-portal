@@ -213,6 +213,7 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _reloadFilters() {
+    this.set('usedFilters', []);
     this.filtersDataLoaded = true;
     this._restoreFilters();
   }
@@ -338,14 +339,6 @@ class SearchAndFilter extends PolymerElement {
   filterTypeIsDate(checkedTypeValue: FilterTypes) {
     return checkedTypeValue === FilterTypes.Date;
   }
-
-  removeAllFilters() {
-    this.filters.forEach((filter) => {
-      this.removeFilter(filter.query);
-    });
-  }
-
-
 }
 
 window.customElements.define('search-and-filter', SearchAndFilter);

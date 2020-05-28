@@ -41,7 +41,7 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     // @ts-ignore
     this._setEngagementsList(detail.results);
     this.listLength = detail.count;
-    updateQueries({reload: false});
+    updateQueries({reload: true});
     fireEvent(this, 'update-export-links');
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
   }
