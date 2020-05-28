@@ -115,6 +115,7 @@ export const tabInputsStyles = html`
         color: var(--gray-20) !important;
       };
       --iron-autogrow-textarea: {
+        overflow: hidden;
         padding: 0;
       };
     }
