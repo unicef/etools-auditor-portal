@@ -11,6 +11,7 @@ import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
@@ -36,7 +37,7 @@ class KeyInternalControlsWeaknesses extends
 
   static get template() {
     return html`
-    ${tabInputsStyles} ${moduleStyles}
+    ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
       <style>
         :host {
           position: relative;
@@ -140,6 +141,7 @@ class KeyInternalControlsWeaknesses extends
               ok-btn-text="Delete">
           [[dialogTexts.dialogTitle]]
       </etools-dialog>
+      
       <etools-dialog no-padding keep-dialog-open size="md"
               opened="{{dialogOpened}}"
               dialog-title="[[dialogTexts.dialogTitle]]"
