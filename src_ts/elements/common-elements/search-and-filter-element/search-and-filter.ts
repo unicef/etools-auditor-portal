@@ -213,8 +213,15 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _reloadFilters() {
+    // show only filters that have selected valeus
+    this.filters.forEach((filter) => {
+      if (!this.queryParams[filter.query]) {
+        this.removeFilter(filter.query);
+      }
+    });
     this.filtersDataLoaded = true;
     this._restoreFilters();
+
   }
 
   _restoreFilters() {
