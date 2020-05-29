@@ -73,7 +73,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                     on-click="onDrawerClick"
                     swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
           <app-menu root-path="[[rootPath]]"
-            selected-option="[[page]]"
+            selected-page="[[page]]"
             small-menu$="[[smallMenu]]"
             show-ssc-page="[[_checkSSCPage(user)]]"></app-menu>
             <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
