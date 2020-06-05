@@ -116,7 +116,7 @@ class OtherRecommendations extends
                 ok-btn-text="Delete">
             [[deleteTitle]]
         </etools-dialog>
-        <etools-dialog class="max-height-30" no-padding keep-dialog-open size="md"
+        <etools-dialog no-padding keep-dialog-open size="md"
                 opened="{{dialogOpened}}"
                 dialog-title="[[dialogTitle]]"
                 ok-btn-text="[[confirmBtnText]]"

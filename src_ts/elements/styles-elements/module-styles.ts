@@ -77,13 +77,6 @@ export const moduleStyles = html`
       };
     }
 
-    etools-dialog.max-height-30 {
-      --etools-dialog-scrollable: {
-        --etools-dialog-content_-_max-height: 30vh!important;
-        overflow: auto;
-      };
-    }
-
     /* PAPER-TOGGLE-BUTTON */
     paper-toggle-button {
       --paper-toggle-button-checked-button-color: var(--module-primary);

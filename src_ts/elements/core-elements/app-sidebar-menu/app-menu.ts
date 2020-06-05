@@ -120,6 +120,9 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
   }
 
 
+  @property({type: String, observer: '_pageChanged'})
+  selectedPage!: string;
+
   @property({type: String})
   selectedOption!: string;
 
@@ -148,6 +151,20 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
   private _toggleSmallMenu(e: Event): void {
     e.stopImmediatePropagation();
     fireEvent(this, 'toggle-small-menu');
+  }
+
+  _pageChanged() {
+    this.selectedOption = this._getSelectedMenu(this.selectedPage);
+  }
+
+  _getSelectedMenu(page: string) {
+    if (page.indexOf('staff-sc') !== -1 ||
+        page.indexOf('spot-checks') !== -1 ||
+        page.indexOf('staff-spot-checks') !== -1) {
+      return 'staff-sc';
+    } else {
+      return 'engagements';
+    }
   }
 }
 
