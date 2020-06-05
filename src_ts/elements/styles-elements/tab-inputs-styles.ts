@@ -120,6 +120,17 @@ export const tabInputsStyles = html`
       };
     }
 
+    etools-dialog paper-textarea {
+      --paper-input-container-input: {
+        display: block;
+      }
+      --iron-autogrow-textarea: {
+        overflow: auto;
+        padding: 0;
+        max-height: 96px;
+      };
+    }
+
     etools-dropdown,
     etools-dropdown-multi,
     paper-input,
