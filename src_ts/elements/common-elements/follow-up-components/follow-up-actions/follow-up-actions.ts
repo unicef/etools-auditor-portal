@@ -35,7 +35,6 @@ import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
@@ -45,8 +44,10 @@ import {
   updateCollection,
   getChoices,
   readonlyPermission,
-  actionAllowed} from '../../../app-mixins/permission-controller';
+  actionAllowed
+} from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @polymer
@@ -54,12 +55,8 @@ import {checkNonField} from '../../../app-mixins/error-handler';
  * @appliesMixin DateMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  */
-class FollowUpActions extends
-  EtoolsAjaxRequestMixin(
-    CommonMethodsMixin(TableElementsMixin(
-      DateMixin(PolymerElement)))) {
+class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
 
   static get template() {
     return html`
@@ -172,14 +169,14 @@ class FollowUpActions extends
                         </paper-checkbox>
                     </div>
                     <div slot="hover" class="edit-icon-slot">
-                        <paper-icon-button 
-                            icon="icons:content-copy" 
-                            class="edit-icon" 
+                        <paper-icon-button
+                            icon="icons:content-copy"
+                            class="edit-icon"
                             on-tap="_openCopyDialog"></paper-icon-button>
-                        <paper-icon-button 
-                            icon="icons:create" 
-                            class="edit-icon" 
-                            on-tap="_openEditDialog" 
+                        <paper-icon-button
+                            icon="icons:create"
+                            class="edit-icon"
+                            on-tap="_openEditDialog"
                             hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
                     </div>
                 </list-element>
@@ -220,7 +217,7 @@ class FollowUpActions extends
                         <div class="input-container input-container-ms">
                             <!-- Partner -->
                             <etools-dropdown
-                                    class$="[[_setRequired('partner', editedApBase)]] 
+                                    class$="[[_setRequired('partner', editedApBase)]]
                                               disabled-as-readonly validate-input fua-person"
                                     selected="{{selectedPartnerId}}"
                                     label="[[getLabel('partner', editedApBase)]]"
@@ -331,7 +328,7 @@ class FollowUpActions extends
                             <!-- Sections -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('section', editedApBase)]] 
+                                    class$="[[_setRequired('section', editedApBase)]]
                                             disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.section.id}}"
                                     label="[[getLabel('section', editedApBase)]]"
@@ -355,7 +352,7 @@ class FollowUpActions extends
                             <!-- Offices -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('office', editedApBase)]] 
+                                    class$="[[_setRequired('office', editedApBase)]]
                                             disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.office.id}}"
                                     label="[[getLabel('office', editedApBase)]]"
@@ -377,7 +374,7 @@ class FollowUpActions extends
                             <!-- Due Date -->
                             <datepicker-lite
                                     id="deadlineAction"
-                                    class$="[[_setRequired('due_date', editedApBase)]] 
+                                    class$="[[_setRequired('due_date', editedApBase)]]
                                             disabled-as-readonly validate-input"
                                     value="{{editedItem.due_date}}"
                                     label="[[getLabel('due_date', editedApBase)]]"
@@ -549,6 +546,12 @@ class FollowUpActions extends
 
   @property({type: Number})
   engagementId!: number;
+
+  @property({type: Number})
+  partnerId!: number | null;
+
+  @property({type: Number})
+  selectedPartnerId!: number | null;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -723,7 +726,7 @@ class FollowUpActions extends
         url
       }
     };
-    this.sendRequest(requestOptions)
+    sendRequest(requestOptions)
       .then(this._handleOptionResponse.bind(this))
       .catch(this._handleOptionResponse.bind(this));
   }
@@ -769,6 +772,7 @@ class FollowUpActions extends
       this.dialogTitle = get(this, 'viewDialogTexts.title');
       this.confirmBtnText = '';
       this.cancelBtnText = 'Cancel';
+      // @ts-ignore Defined in tableElementsMixin, not visible because of EtoolsAjaxRequestMixin
       this._openDialog(itemIndex);
     }
   }

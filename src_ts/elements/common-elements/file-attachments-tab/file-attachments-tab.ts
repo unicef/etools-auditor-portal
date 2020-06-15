@@ -29,7 +29,6 @@ import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 
@@ -46,11 +45,11 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocumentsEl} from '../share-documents/share-documents';
 import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
 import {checkNonField, refactorErrorObject} from '../../app-mixins/error-handler';
+import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @customElement
  * @polymer
- * @appliesMixin EtoolsAjaxRequestMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EngagementMixin
@@ -60,9 +59,7 @@ class FileAttachmentsTab extends
   CommonMethodsMixin(
     TableElementsMixin(
       EngagementMixin(
-        DateMixin(
-          EtoolsAjaxRequestMixin(
-            PolymerElement))))) {
+        DateMixin(PolymerElement)))) {
 
   static get template() {
     // language=HTML
@@ -367,13 +364,13 @@ class FileAttachmentsTab extends
   shareParams: GenericObject = {};
 
   @property({type: Object})
-  auditLinksOptions: GenericObject = {};
+  auditLinksOptions: EtoolsRequestEndpoint = {url: ''};
 
   @property({type: Array, notify: true})
   linkedAttachments: any[] = [];
 
   @property({type: Array})
-  fileTypes: {value: string, display_name: string}[] = [];
+  fileTypes: {value: string; display_name: string}[] = [];
 
   @property({type: String})
   deleteTitle: string = 'Are you sure that you want to delete this attachment?';
@@ -408,11 +405,14 @@ class FileAttachmentsTab extends
   @property({type: Boolean})
   hideAddAttachments: boolean = true;
 
+  @property({type: Boolean})
+  deleteLinkOpened: boolean = false;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
       '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'filesTabErrorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)'
     ];
   }
@@ -446,23 +446,23 @@ class FileAttachmentsTab extends
     }
     const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
-    this.set('auditLinksOptions', {
-      endpoint: getEndpoint('auditLinks', {
-        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
-        id: engagement.id
+    this.set('auditLinksOptions',
+      getEndpoint('auditLinks', {
+        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType!],
+        id: engagement!.id
       })
-    });
+    );
   }
 
   _getLinkedAttachments() {
     this.set('requestInProcess', true);
-    const options = Object.assign(this.auditLinksOptions, {method: 'GET'});
-    this.sendRequest(options)
+    const options = Object.assign({endpoint: this.auditLinksOptions}, {method: 'GET'});
+    sendRequest(options)
       .then((res) => {
         this.set('linkedAttachments', uniqBy(res, 'attachment'));
         this.set('requestInProcess', false);
       })
-      .catch(this._errorHandler.bind(this));
+      .catch(this.filesTabErrorHandler.bind(this));
   }
 
   _setBasePath(dataBase, pathPostfix) {
@@ -534,7 +534,7 @@ class FileAttachmentsTab extends
   _attachmentUploadFinished(e) {
     this.requestInProcess = false;
     if (e.detail.success) {
-      const uploadResponse = JSON.parse(e.detail.success);
+      const uploadResponse = e.detail.success;
       this.set('editedItem.attachment', uploadResponse.id);
       this.set('editedItem.filename', uploadResponse.filename);
 
@@ -572,7 +572,8 @@ class FileAttachmentsTab extends
       return;
     }
     if (!this.baseId) {
-      this._processDelayedRequest();
+      // function does not exists
+      // this._processDelayedRequest();
       return;
     }
     this.requestInProcess = true;
@@ -692,7 +693,7 @@ class FileAttachmentsTab extends
     this.openAddDialog();
   }
 
-  _errorHandler(errorData) {
+  filesTabErrorHandler(errorData) {
     const mainProperty = this.errorProperty;
     this.requestInProcess = false;
     if (!errorData || !errorData[mainProperty]) {
@@ -714,7 +715,7 @@ class FileAttachmentsTab extends
     if (!this.dialogOpened) {
       const filesErrors = this.getFilesErrors(refactoredData);
 
-      filesErrors.forEach((fileError) => {
+      filesErrors.forEach((fileError: any) => {
         fireEvent(this, 'toast', {text: `${fileError.fileName}: ${fileError.error}`});
       });
     }
@@ -722,7 +723,7 @@ class FileAttachmentsTab extends
 
   getFilesErrors(errors) {
     if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
-      const filesErrors = [];
+      const filesErrors: {fileName: string; error: any}[] = [];
 
       errors.forEach((error, index) => {
         let fileName = this.dataItems[index].filename;
@@ -770,13 +771,13 @@ class FileAttachmentsTab extends
 
   _SendShareRequest() {
     const {attachments} = this.shareParams;
-    const options = Object.assign(this.auditLinksOptions, {
+    const options = Object.assign({endpoint: this.auditLinksOptions}, {
       csrf: true,
       body: {attachments},
       method: 'POST'
     });
     this.set('requestInProcess', true);
-    this.sendRequest(options)
+    sendRequest(options)
       .then(() => {
         fireEvent(this, 'toast', {
           text: 'Documents shared successfully.'
@@ -826,15 +827,15 @@ class FileAttachmentsTab extends
     this.deleteLinkOpened = false;
     const id = event.currentTarget.getAttribute('link-id');
 
-    this.sendRequest({
+    sendRequest({
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
     }).then(this._getLinkedAttachments.bind(this))
-      .catch(err => this._errorHandler(err));
+      .catch(err => this.filesTabErrorHandler(err));
   }
 
   // @ts-ignore
-  _shouldHideShare(isUnicefUser, baseId) {
+  _shouldHideShare(isUnicefUser, _baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 

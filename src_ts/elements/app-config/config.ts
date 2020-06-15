@@ -1,7 +1,11 @@
 import Dexie from 'dexie';
 
 declare global {
-  interface Window {EtoolsFamApp: any; EtoolsRequestCacheDb: any}
+  interface Window {
+    EtoolsFamApp: any;
+    EtoolsRequestCacheDb: any;
+    EtoolsEsmmFitIntoEl: HTMLElement | null;
+  }
 }
 
 window.EtoolsFamApp = window.EtoolsFamApp || {};

@@ -181,6 +181,9 @@ class NewEngagementView extends
   route!: GenericObject;
 
   @property({type: Object})
+  newEngagementData!: GenericObject;
+
+  @property({type: Object})
   routeData!: GenericObject;
 
   @property({type: Object})
@@ -201,7 +204,7 @@ class NewEngagementView extends
     specific_procedures: [],
     users_notified: [],
     offices: [],
-    sections: [],
+    sections: []
   };
 
   @property({type: Array})
@@ -260,7 +263,7 @@ class NewEngagementView extends
       return;
     }
 
-    this._prepareData()
+    this._prepareData(false, false)
       .then((data) => {
         this.newEngagementData = data;
       });

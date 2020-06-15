@@ -82,7 +82,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   @property({type: Object})
-  primaryArea = {risk: {extra: {}, value: {}}};
+  primaryArea: any = {risk: {extra: {}, value: {}}};
 
   @property({type: String})
   errorBaseText = 'Overall Risk Assessment: ';
@@ -107,6 +107,9 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
   @property({type: Boolean})
   isDisabled: boolean = true;
+
+  @property({type: Boolean})
+  dialogOpened!: boolean;
 
   static get observers() {
     return [

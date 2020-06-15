@@ -115,7 +115,19 @@ export const tabInputsStyles = html`
         color: var(--gray-20) !important;
       };
       --iron-autogrow-textarea: {
+        overflow: hidden;
         padding: 0;
+      };
+    }
+
+    etools-dialog paper-textarea {
+      --paper-input-container-input: {
+        display: block;
+      }
+      --iron-autogrow-textarea: {
+        overflow: auto;
+        padding: 0;
+        max-height: 96px;
       };
     }
 

@@ -91,7 +91,7 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
                             value="{{data.total_amount_of_ineligible_expenditure}}"
                             currency="$"
                             label="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure', 
+                            placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure',
                                           basePermissionPath)]]"
                             required$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                             disabled$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
@@ -117,8 +117,8 @@ class OverviewElement extends (CommonMethodsMixin(DateMixin(PolymerElement))) {
   @property({type: String, observer: '_basePathChanged'})
   basePermissionPath: string = '';
 
-  @property({type: Object})
-  errors: GenericObject = {};
+  @property({type: Array})
+  errors!: any[];
 
   @property({type: Boolean})
   datepickerModal: boolean = false;

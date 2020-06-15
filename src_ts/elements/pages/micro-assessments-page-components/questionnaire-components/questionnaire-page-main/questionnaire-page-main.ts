@@ -82,6 +82,11 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
             max-height: 140px;
           };
         }
+        etools-dropdown, etools-dropdown-multi {
+          --esmm-dropdown-menu-position: absolute;
+        }
+        --esmm-dropdown-menu-position: absolute;
+
       </style>
 
       <etools-content-panel class="totals" panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
@@ -435,7 +440,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     if (!number || isNaN(+number)) {return this.requests;}
     let count = number > 0 ? this.requests + 1 : this.requests - 1;
     if (count < 0) {count = 0;}
-    this._setRequests(count);
+    // bellow function does not exists
+    // this._setRequests(count);
     return this.requests;
   }
 

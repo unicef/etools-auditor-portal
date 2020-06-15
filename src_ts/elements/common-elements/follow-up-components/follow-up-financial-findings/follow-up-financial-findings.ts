@@ -16,6 +16,8 @@ import {getChoices} from '../../../app-mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
+import {property} from '@polymer/decorators';
+import {GenericObject} from '../../../../types/global';
 
 /**
  * @polymer
@@ -245,6 +247,13 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
 
       `;
   }
+
+  @property({type: Object})
+  engagement: GenericObject = {};
+
+  @property({type: Object})
+  originalData!: GenericObject;
+
   static get observers() {
     return [
       'setAuditOpinionChoices(basePermissionPath, engagement)',
@@ -261,7 +270,7 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
     const fields = ['additional_supporting_documentation_provided', 'amount_refunded',
       'justification_provided_and_accepted', 'write_off_required', 'explanation_for_additional_information'];
 
-    return pickBy(this.engagement, (value, key) => {
+    return pickBy(this.engagement, (_value, key) => {
       return ~fields.indexOf(key) && (this.originalData[key] !== this.engagement[key]);
     });
   }

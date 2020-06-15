@@ -1,4 +1,5 @@
 import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
 import clone from 'lodash-es/clone';
 import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
@@ -6,7 +7,7 @@ import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import {setStaticData, getStaticData} from './static-data-controller';
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 import {fireEvent} from '../utils/fire-custom-event';
 import {refactorErrorObject, checkNonField} from './error-handler';
 
@@ -16,6 +17,24 @@ import {refactorErrorObject, checkNonField} from './error-handler';
  */
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class CommonMethodsMixinClass extends baseClass {
+
+    @property({type: Boolean})
+    requestInProcess!: boolean;
+
+    @property({type: Object})
+    tabTexts!: GenericObject;
+
+    @property({type: Object})
+    errors!: GenericObject;
+
+    @property({type: Boolean})
+    dialogOpened = false;
+
+    @property({type: String})
+    errorBaseText!: string;
+
+    @property({type: Boolean})
+    confirmDialogOpened = false;
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -54,7 +73,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _errorHandler(errorData) {
-      if (!errorData) {
+      if (!errorData || !Object.keys(errorData).length) {
         return false;
       }
       if (this.requestInProcess) {

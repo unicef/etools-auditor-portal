@@ -219,8 +219,7 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
                 </div>
             </div>
 
-            <etools-dialog id="spotCheckCancelation"
-                           size="md"
+            <etools-dialog size="md"
                            opened="{{dialogOpened}}"
                            dialog-title="Cancellation of Engagement"
                            keep-dialog-open
@@ -282,7 +281,8 @@ class SpotChecksPageMain extends (CommonMethodsMixin(EngagementMixin(PolymerElem
     super.connectedCallback();
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    this.addEventListener('main-action-activated', this._mainActionActivated);
+    // @lajos not found
+    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _setType(isStaffSc) {
