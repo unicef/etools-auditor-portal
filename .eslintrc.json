@@ -2,7 +2,6 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
-    "plugin:lit/recommended",
     "prettier/@typescript-eslint", // Uses eslint-config-prettier to disable ESLint rules
     // from @typescript-eslint/eslint-plugin that would conflict with prettier
     "plugin:prettier/recommended" // Enables eslint-plugin-prettier and eslint-config-prettier.
@@ -19,7 +18,7 @@
     "node": true,
     "es6": true
   },
-  "plugins": ["@typescript-eslint", "lit", "prettier"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
     "prettier/prettier": "error",
     "linebreak-style": "off",

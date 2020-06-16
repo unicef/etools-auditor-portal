@@ -72,7 +72,6 @@
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-html": "^6.0.0",
-    "eslint-plugin-lit": "^1.2.0",
     "eslint-plugin-prettier": "^3.1.3",
     "browser-capabilities": "^1.1.3"
   },
@@ -95,7 +94,7 @@
     "format:eslint": "eslint --ext .ts,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format:prettier": "prettier \"**/*.ts\" --write --ignore-path .gitignore",
-    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint": "polymer lint && npm run lint:eslint && npm run lint:prettier",
     "format": "npm run format:eslint && npm run format:prettier"
   },
   "husky": {
