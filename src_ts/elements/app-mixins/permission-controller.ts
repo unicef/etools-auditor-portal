@@ -65,7 +65,7 @@ function _manageActions(collectionName) {
     return false;
   }
 
-  const allowed_actions = collection.allowed_FSM_transitions as any || [];
+  const allowed_actions = (collection.allowed_FSM_transitions as any) || [];
 
   const actions: any[] = [];
   if (isValidCollection(collection.PUT)) {
@@ -107,16 +107,15 @@ export function getFieldAttribute(path: string, attribute: string, actionType?: 
   }
 
   return value === undefined ? null : value;
-
 }
 
-export function readonlyPermission(path) {// isReadonly
+export function readonlyPermission(path) {
+  // isReadonly
   return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
 }
 
 export function isRequired(path) {
-  return getFieldAttribute(path, 'required', 'POST') ||
-    getFieldAttribute(path, 'required', 'PUT');
+  return getFieldAttribute(path, 'required', 'POST') || getFieldAttribute(path, 'required', 'PUT');
 }
 
 export function collectionExists(path, actionType?) {
@@ -131,8 +130,7 @@ export function collectionExists(path, actionType?) {
 }
 
 export function getChoices(path: string) {
-  return getFieldAttribute(path, 'choices', 'GET') ||
-    getFieldAttribute(path, 'choices', 'POST');
+  return getFieldAttribute(path, 'choices', 'GET') || getFieldAttribute(path, 'choices', 'POST');
 }
 
 export function getCollection(path: string, actionType?: string): any {
@@ -145,9 +143,9 @@ export function getCollection(path: string, actionType?: string): any {
     if (value[key]) {
       value = value[key];
     } else {
-      const action = actionType ? value[actionType] : isValidCollection(value.POST) ||
-        isValidCollection(value.PUT) ||
-        isValidCollection(value.GET);
+      const action = actionType
+        ? value[actionType]
+        : isValidCollection(value.POST) || isValidCollection(value.PUT) || isValidCollection(value.GET);
 
       value = action || value.child || value.children;
       pathArr.unshift(key);
@@ -189,7 +187,7 @@ export function actionAllowed(collection, action) {
     return false;
   }
   if (typeof actions[0] !== 'string') {
-    actions = actions.map(action => action.code);
+    actions = actions.map((action) => action.code);
   }
 
   return !!~actions.indexOf(action);
@@ -216,5 +214,5 @@ export function getActions(collection) {
   }
   collection = _permissionCollection[collection];
 
-  return collection && collection.allowed_actions || null;
+  return (collection && collection.allowed_actions) || null;
 }

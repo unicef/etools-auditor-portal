@@ -7,7 +7,6 @@ import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class UpdateAttachments extends PolymerElement {
-
   @property({type: String, observer: '_requestDataChanged'})
   requestData!: string;
 
@@ -54,22 +53,24 @@ class UpdateAttachments extends PolymerElement {
       body: attachmentData
     };
 
-    if (method === 'PATCH' && !!(attachmentData.attachment)) {// file was changed
+    if (method === 'PATCH' && !!attachmentData.attachment) {
+      // file was changed
       this._handleExitingFileWasChanged(attachmentData, url);
     } else {
       sendRequest(options)
         .then((resp) => {
           this._handleResponse(resp);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           this._handleError(error);
         });
     }
   }
 
   /**
-    * Handle weird behavior on bk, where when you edit and attachment it just duplicates
-    * the edited attachment giving it the id of the newly uploaded file
-    */
+   * Handle weird behavior on bk, where when you edit and attachment it just duplicates
+   * the edited attachment giving it the id of the newly uploaded file
+   */
   _handleExitingFileWasChanged(attachmentData: any, url: string) {
     // DELETE currently edited attachment object
     sendRequest({method: 'DELETE', endpoint: {url}})
@@ -87,14 +88,14 @@ class UpdateAttachments extends PolymerElement {
         sendRequest(options)
           .then((resp) => {
             this._handleChangedFileResponse(resp);
-          }).catch((error) => {
+          })
+          .catch((error) => {
             this._handleError(error);
           });
       })
       .catch((error) => {
         this._handleError(error);
       });
-
   }
 
   _handleResponse(detail) {
@@ -128,8 +129,7 @@ class UpdateAttachments extends PolymerElement {
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);
-      }
-      catch (e) {
+      } catch (e) {
         response = {};
       }
     }

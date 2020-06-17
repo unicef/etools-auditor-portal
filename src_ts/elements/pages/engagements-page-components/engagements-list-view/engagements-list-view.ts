@@ -19,7 +19,6 @@ import {BASE_PATH} from '../../../app-config/config';
  * @polymer
  */
 class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
-
   static get template() {
     // language=HTML
     return html`
@@ -41,181 +40,197 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       </style>
 
       <engagements-list-data
-          id="listData"
-          engagements-list="{{engagementsList}}"
-          list-length="{{listLength}}"
-          request-queries="[[requestQueries]]"
-          without-pagination="[[withoutPagination]]"
-          on-update-export-links="_setExportLinks"
-          endpoint-name="[[endpointName]]"
-          reload-data={{reloadData}}>
+        id="listData"
+        engagements-list="{{engagementsList}}"
+        list-length="{{listLength}}"
+        request-queries="[[requestQueries]]"
+        without-pagination="[[withoutPagination]]"
+        on-update-export-links="_setExportLinks"
+        endpoint-name="[[endpointName]]"
+        reload-data="{{reloadData}}"
+      >
       </engagements-list-data>
 
       <pages-header-element
-          show-export-button
-          hide-print-button
-          export-links="[[exportLinks]]"
-          link="{{newBtnLink}}"
-          hide-add-button="[[_hideAddButton()]]"
-          btn-text="{{addBtnText}}"
-          page-title="Engagements">
+        show-export-button
+        hide-print-button
+        export-links="[[exportLinks]]"
+        link="{{newBtnLink}}"
+        hide-add-button="[[_hideAddButton()]]"
+        btn-text="{{addBtnText}}"
+        page-title="Engagements"
+      >
       </pages-header-element>
 
       <search-and-filter
-          id="filters"
-          search-label="Search partner or auditor"
-          filters="[[filters]]"
-          query-params="{{queryParams}}"
-          search-params="[[searchParams]]">
+        id="filters"
+        search-label="Search partner or auditor"
+        filters="[[filters]]"
+        query-params="{{queryParams}}"
+        search-params="[[searchParams]]"
+      >
       </search-and-filter>
 
       <list-tab-main
-          header-title="results to show"
-          data="[[engagementsList]]"
-          list-length="[[listLength]]"
-          headings="[[listHeadings]]"
-          has-collapse="[[hasCollapse]]"
-          query-params="{{queryParams}}"
-          no-additional
-          base-permission-path="[[basePermissionPath]]">
+        header-title="results to show"
+        data="[[engagementsList]]"
+        list-length="[[listLength]]"
+        headings="[[listHeadings]]"
+        has-collapse="[[hasCollapse]]"
+        query-params="{{queryParams}}"
+        no-additional
+        base-permission-path="[[basePermissionPath]]"
+      >
       </list-tab-main>
     `;
   }
 
   @property({type: String})
-  basePermissionPath: string = '';
+  basePermissionPath = '';
 
   @property({type: Object, notify: true})
   queryParams!: GenericObject;
 
   @property({type: Array})
-  listHeadings: GenericObject[] = [{
-    'size': 15,
-    'label': 'Unique ID #',
-    'name': 'unique_id',
-    'link': '*engagement_type*/*data_id*/overview',
-    'ordered': false,
-    'path': 'unique_id'
-  }, {
-    'size': 20,
-    'label': 'Audit Firm',
-    'labelPath': 'agreement.audit_firm',
-    'name': 'agreement__auditor_firm__name',
-    'ordered': false,
-    'path': 'agreement.auditor_firm.name'
-  }, {
-    'size': 20,
-    'label': 'Partner Name',
-    'name': 'partner__name',
-    'ordered': false,
-    'path': 'partner.name'
-  }, {
-    'size': 15,
-    'label': 'Engagement Type',
-    'labelPath': 'engagement_type',
-    'name': 'engagement_type',
-    'ordered': false
-  }, {
-    'size': 30,
-    'label': 'Status',
-    'labelPath': 'status',
-    'name': 'status',
-    'ordered': false,
-    'additional': {
-      'type': 'date',
-      'path': 'status_date'
+  listHeadings: GenericObject[] = [
+    {
+      size: 15,
+      label: 'Unique ID #',
+      name: 'unique_id',
+      link: '*engagement_type*/*data_id*/overview',
+      ordered: false,
+      path: 'unique_id'
+    },
+    {
+      size: 20,
+      label: 'Audit Firm',
+      labelPath: 'agreement.audit_firm',
+      name: 'agreement__auditor_firm__name',
+      ordered: false,
+      path: 'agreement.auditor_firm.name'
+    },
+    {
+      size: 20,
+      label: 'Partner Name',
+      name: 'partner__name',
+      ordered: false,
+      path: 'partner.name'
+    },
+    {
+      size: 15,
+      label: 'Engagement Type',
+      labelPath: 'engagement_type',
+      name: 'engagement_type',
+      ordered: false
+    },
+    {
+      size: 30,
+      label: 'Status',
+      labelPath: 'status',
+      name: 'status',
+      ordered: false,
+      additional: {
+        type: 'date',
+        path: 'status_date'
+      }
     }
-  }];
+  ];
 
   @property({type: Array})
-  filters: GenericObject[] = [{
-    type: FilterTypes.DropdownMulti,
-    name: 'audit firm',
-    label: 'Audit Firm',
-    query: 'agreement__auditor_firm__in',
-    optionValue: 'id',
-    optionLabel: 'name',
-    selection: []
-  }, {
-    type: FilterTypes.DropdownMulti,
-    name: 'engagement type',
-    label: 'Engagement Type',
-    query: 'engagement_type__in',
-    hideSearch: true,
-    optionValue: 'value',
-    optionLabel: 'display_name',
-    selection: []
-  }, {
-    type: FilterTypes.DropdownMulti,
-    name: 'partner',
-    label: 'Partner',
-    query: 'partner__in',
-    optionValue: 'id',
-    optionLabel: 'name',
-    selection: []
-  }, {
-    type: FilterTypes.DropdownMulti,
-    name: 'status',
-    label: 'Status',
-    query: 'status__in',
-    hideSearch: true,
-    optionValue: 'value',
-    optionLabel: 'display_name',
-    selection: []
-  }, {
-    type: FilterTypes.DropdownMulti,
-    name: 'joint audit',
-    label: 'Joint Audit',
-    query: 'joint_audit',
-    hideSearch: true,
-    optionValue: 'value',
-    optionLabel: 'display_name',
-    selection: [{display_name: 'Yes', value: 'true'}, {display_name: 'No', value: 'false'}]
-  },
-  {
-    type: FilterTypes.Date,
-    name: 'date IP was contacted before',
-    label: 'Date IP was contacted before',
-    query: 'partner_contacted_at__lte',
-    hideSearch: true
-  },
-  {
-    type: FilterTypes.Date,
-    name: 'date IP was contacted after',
-    label: 'Date IP was contacted after',
-    query: 'partner_contacted_at__gte',
-    hideSearch: true
-  }];
+  filters: GenericObject[] = [
+    {
+      type: FilterTypes.DropdownMulti,
+      name: 'audit firm',
+      label: 'Audit Firm',
+      query: 'agreement__auditor_firm__in',
+      optionValue: 'id',
+      optionLabel: 'name',
+      selection: []
+    },
+    {
+      type: FilterTypes.DropdownMulti,
+      name: 'engagement type',
+      label: 'Engagement Type',
+      query: 'engagement_type__in',
+      hideSearch: true,
+      optionValue: 'value',
+      optionLabel: 'display_name',
+      selection: []
+    },
+    {
+      type: FilterTypes.DropdownMulti,
+      name: 'partner',
+      label: 'Partner',
+      query: 'partner__in',
+      optionValue: 'id',
+      optionLabel: 'name',
+      selection: []
+    },
+    {
+      type: FilterTypes.DropdownMulti,
+      name: 'status',
+      label: 'Status',
+      query: 'status__in',
+      hideSearch: true,
+      optionValue: 'value',
+      optionLabel: 'display_name',
+      selection: []
+    },
+    {
+      type: FilterTypes.DropdownMulti,
+      name: 'joint audit',
+      label: 'Joint Audit',
+      query: 'joint_audit',
+      hideSearch: true,
+      optionValue: 'value',
+      optionLabel: 'display_name',
+      selection: [
+        {display_name: 'Yes', value: 'true'},
+        {display_name: 'No', value: 'false'}
+      ]
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'date IP was contacted before',
+      label: 'Date IP was contacted before',
+      query: 'partner_contacted_at__lte',
+      hideSearch: true
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'date IP was contacted after',
+      label: 'Date IP was contacted after',
+      query: 'partner_contacted_at__gte',
+      hideSearch: true
+    }
+  ];
 
   @property({type: Array})
   engagementsList: any[] = [];
 
   @property({type: String})
-  newBtnLink: string = `/${BASE_PATH}/engagements/new/overview`;
+  newBtnLink = `/${BASE_PATH}/engagements/new/overview`;
 
   @property({type: Boolean})
-  hasCollapse: boolean = false;
+  hasCollapse = false;
 
   @property({type: String})
-  addBtnText: string = 'Add New Engagement';
+  addBtnText = 'Add New Engagement';
 
   @property({type: Boolean})
-  isStaffSc: boolean = false;
+  isStaffSc = false;
 
   @property({type: Boolean, notify: true})
-  reloadData: boolean = false;
+  reloadData = false;
 
   @property({type: Array})
   exportLinks: any[] = [];
 
   @property({type: String})
-  endpointName: string = '';
+  endpointName = '';
 
   static get observers() {
-    return [
-      '_changeLinkTemplate(isStaffSc, listHeadings)',
-      '_setExportLinks(endpointName)'
-    ];
+    return ['_changeLinkTemplate(isStaffSc, listHeadings)', '_setExportLinks(endpointName)'];
   }
 
   connectedCallback() {
@@ -278,10 +293,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
   _setExportLinks() {
     const endpoint = getEndpoint(this.endpointName);
     const queryString = buildQueryString(this.queryParams);
-    const exportLinks = endpoint ? [{
-      name: 'Export Engagements',
-      url: `${endpoint.url}csv/?${queryString}`
-    }] : [];
+    const exportLinks = endpoint ? [{name: 'Export Engagements', url: `${endpoint.url}csv/?${queryString}`}] : [];
     this.set('exportLinks', exportLinks);
   }
 
@@ -295,7 +307,6 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       this.set('listHeadings.0.link', '*engagement_type*/*data_id*/overview');
     }
   }
-
 }
 
 window.customElements.define('engagements-list-view', EngagementsListView);

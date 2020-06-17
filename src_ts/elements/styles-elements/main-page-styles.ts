@@ -11,7 +11,7 @@ export const mainPageStyles = html`
 
       --paper-tab-content-unselected: {
         color: var(--gray-light);
-      };
+      }
       --ecp-header-bg: var(--module-primary);
     }
 
@@ -54,7 +54,6 @@ export const mainPageStyles = html`
       padding: 0 13px;
     }
 
-
     #pageContent {
       position: relative;
       width: 100%;
@@ -78,27 +77,25 @@ export const mainPageStyles = html`
       color: var(--gray-28);
       font-size: 14px;
       font-weight: 600;
-
     }
-
 
     etools-content-panel.cancellation-tab {
       margin-bottom: 20px;
 
       --epc-header: {
-          padding: 2px;
-      };
+        padding: 2px;
+      }
       --ecp-header-bg: var(--module-primary);
       --ecp-header-height: 51px;
 
       --ecp-content: {
-          padding-left: 100px;
+        padding-left: 100px;
       }
 
       --ecp-header-btns-wrapper: {
-          opacity: 1;
-      };
-     }
+        opacity: 1;
+      }
+    }
 
     etools-content-panel.cancellation-tab .cancellation-title {
       font-weight: 500;
@@ -116,7 +113,7 @@ export const mainPageStyles = html`
       padding-left: 80px;
     }
 
-    div[slot="panel-btns"].bookmark {
+    div[slot='panel-btns'].bookmark {
       position: absolute;
       top: 2px;
       right: auto;
@@ -129,7 +126,7 @@ export const mainPageStyles = html`
       transform: scale(0.9, 1.5);
     }
 
-    div[slot="panel-btns"].bookmark iron-icon {
+    div[slot='panel-btns'].bookmark iron-icon {
       width: 70px !important;
       height: 70px !important;
     }
@@ -138,7 +135,7 @@ export const mainPageStyles = html`
       margin-right: 10px;
       --paper-tab-content: {
         width: auto;
-      };
+      }
     }
   </style>
 `;

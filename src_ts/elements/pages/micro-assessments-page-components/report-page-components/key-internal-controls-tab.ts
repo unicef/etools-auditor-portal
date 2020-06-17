@@ -18,19 +18,17 @@ import pick from 'lodash-es/pick';
 import {GenericObject} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 
-
 class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   static get template() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
-      ${KeyInternalControlsTabStyles}
+      ${tabInputsStyles} ${moduleStyles} ${KeyInternalControlsTabStyles}
       <style>
         etools-dropdown#riskAssessmentInput {
           --paper-listbox: {
             max-height: 140px;
-          };
+          }
         }
-        .input-container{
+        .input-container {
           padding-top: 2px;
         }
       </style>
@@ -38,26 +36,36 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
         <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
         <template is="dom-repeat" items="[[subjectAreas.children]]">
-          <subject-area-element class="area-element"
+          <subject-area-element
+            class="area-element"
             base-permission-path="{{basePermissionPath}}"
             area="{{item}}"
             details="[[details]]"
             edit-mode="[[canBeChanged]]"
-            headings="[[columns]]">
+            headings="[[columns]]"
+          >
           </subject-area-element>
         </template>
       </etools-content-panel>
 
-      <etools-dialog no-padding keep-dialog-open size="md" opened="{{dialogOpened}}"
-        dialog-title="Edit Subject Area - {{editedArea.blueprints.0.header}}" ok-btn-text="Save"
-        show-spinner="{{requestInProcess}}" disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_saveEditedArea">
+      <etools-dialog
+        no-padding
+        keep-dialog-open
+        size="md"
+        opened="{{dialogOpened}}"
+        dialog-title="Edit Subject Area - {{editedArea.blueprints.0.header}}"
+        ok-btn-text="Save"
+        show-spinner="{{requestInProcess}}"
+        disable-confirm-btn="{{requestInProcess}}"
+        on-confirm-btn-clicked="_saveEditedArea"
+      >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
             <div class="row-h group">
               <div class="input-container input-container-ms">
                 <!-- Risk Assessment -->
-                <etools-dropdown id="riskAssessmentInput"
+                <etools-dropdown
+                  id="riskAssessmentInput"
                   class="disabled-as-readonly validate-input required"
                   selected="{{editedArea.blueprints.0.risk.value.value}}"
                   label="Risk Assessment"
@@ -65,13 +73,15 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                   options="[[riskOptions]]"
                   option-label="display_name"
                   option-value="value"
-                  required disabled="{{requestInProcess}}"
+                  required
+                  disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   invalid="{{errors.children.0.blueprints.0.risk.value}}"
                   error-message="{{errors.children.0.blueprints.0.risk.value}}"
                   on-focus="_resetFieldError"
                   on-tap="_resetFieldError"
-                  hide-search>
+                  hide-search
+                >
                 </etools-dropdown>
               </div>
             </div>
@@ -79,17 +89,21 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <!-- Brief Justification -->
-                <paper-textarea id="briefJustification"
+                <paper-textarea
+                  id="briefJustification"
                   class="disabled-as-readonly validate-input required"
                   value="{{editedArea.blueprints.0.risk.extra.comments}}"
                   label="Brief Justification for Rating (main internal control gaps)"
                   placeholder="Enter Brief Justification"
-                  required disabled="{{requestInProcess}}" readonly$="{{requestInProcess}}"
+                  required
+                  disabled="{{requestInProcess}}"
+                  readonly$="{{requestInProcess}}"
                   max-rows="4"
                   error-message="{{errors.children.0.blueprints.0.risk.extra}}"
                   invalid="{{errors.children.0.blueprints.0.risk.extra}}"
                   on-focus="_resetFieldError"
-                  on-tap="_resetFieldError">
+                  on-tap="_resetFieldError"
+                >
                 </paper-textarea>
               </div>
             </div>
@@ -102,28 +116,31 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Array})
   columns = [
     {
-      'size': 70,
-      'label': 'Subject area',
-      'path': 'header'
-    }, {
-      'size': 30,
-      'label': 'Risk Assessment',
-      'path': 'risk.value.display_name'
+      size: 70,
+      label: 'Subject area',
+      path: 'header'
+    },
+    {
+      size: 30,
+      label: 'Risk Assessment',
+      path: 'risk.value.display_name'
     }
   ];
 
   @property({type: Array})
-  details = [{
-    'label': 'Brief Justification for Rating (main internal control gaps)',
-    'path': 'risk.extra.comments',
-    'size': 100
-  }];
+  details = [
+    {
+      label: 'Brief Justification for Rating (main internal control gaps)',
+      path: 'risk.extra.comments',
+      size: 100
+    }
+  ];
 
   @property({type: Boolean, notify: true})
   dialogOpened!: boolean;
 
   @property({type: String})
-  errorBaseText: string = 'Test Subject Areas: ';
+  errorBaseText = 'Test Subject Areas: ';
 
   @property({type: String})
   basePermissionPath!: string;
@@ -147,7 +164,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   originalEditedObj!: GenericObject;
 
   @property({type: Boolean})
-  canBeChanged: boolean = false;
+  canBeChanged = false;
 
   static get observers() {
     return [
@@ -172,30 +189,38 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   getRiskData() {
-    if (this.dialogOpened && !this.saveWithButton) {return this.getCurrentData();}
+    if (this.dialogOpened && !this.saveWithButton) {
+      return this.getCurrentData();
+    }
     const elements = this.shadowRoot!.querySelectorAll('.area-element');
     const riskData: any[] = [];
 
     Array.prototype.forEach.call(elements, (element) => {
       const data = element.getRiskData();
-      if (data) {riskData.push(data);}
+      if (data) {
+        riskData.push(data);
+      }
     });
 
     return riskData.length ? riskData : null;
   }
 
   getCurrentData() {
-    if (!this.dialogOpened) {return null;}
+    if (!this.dialogOpened) {
+      return null;
+    }
     const blueprint = pick(this.editedArea.blueprints[0], ['id', 'risk']);
     blueprint.risk = {
       value: blueprint.risk.value.value,
       extra: {comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''}
     };
 
-    return [{
-      id: this.editedArea.id,
-      blueprints: [blueprint]
-    }];
+    return [
+      {
+        id: this.editedArea.id,
+        blueprints: [blueprint]
+      }
+    ];
   }
 
   validateEditFields() {
@@ -203,15 +228,18 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     const extraValid = (this.$.briefJustification as EtoolsDropdownEl).validate();
 
     const errors = {
-      children: [{
-        blueprints: [{
-          risk: {
-            value: !valueValid ? 'Please, select Risk Assessment' : false,
-            extra: !extraValid ? 'Please, enter Brief Justification' : false
-          }
-
-        }]
-      }]
+      children: [
+        {
+          blueprints: [
+            {
+              risk: {
+                value: !valueValid ? 'Please, select Risk Assessment' : false,
+                extra: !extraValid ? 'Please, enter Brief Justification' : false
+              }
+            }
+          ]
+        }
+      ]
     };
     this.set('errors', errors);
 
@@ -219,15 +247,21 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validate(forSave) {
-    if (!this.basePermissionPath || forSave) {return true;}
+    if (!this.basePermissionPath || forSave) {
+      return true;
+    }
     const required = isRequired(`${this.basePermissionPath}.test_subject_areas`);
-    if (!required) {return true;}
+    if (!required) {
+      return true;
+    }
 
     const elements = this.shadowRoot!.querySelectorAll('.area-element');
     let valid = true;
 
     Array.prototype.forEach.call(elements, (element) => {
-      if (!element.validate()) {valid = false;}
+      if (!element.validate()) {
+        valid = false;
+      }
     });
 
     return valid;
@@ -251,7 +285,9 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _saveEditedArea() {
-    if (!this.validateEditFields()) {return;}
+    if (!this.validateEditFields()) {
+      return;
+    }
 
     if (isEqual(this.originalEditedObj, this.editedArea)) {
       this.dialogOpened = false;
@@ -272,16 +308,15 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   resetDialog(opened) {
-    if (opened) {return;}
+    if (opened) {
+      return;
+    }
     const elements = this.shadowRoot!.querySelectorAll('.validate-input');
 
     Array.prototype.forEach.call(elements, (element) => {
       element.invalid = false;
       element.value = '';
     });
-
   }
-
-
 }
 window.customElements.define('key-internal-controls-tab', KeyInternalControlsTab);

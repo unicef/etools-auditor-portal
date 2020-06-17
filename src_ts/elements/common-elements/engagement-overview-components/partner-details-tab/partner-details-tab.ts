@@ -28,163 +28,163 @@ import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
 import {moduleStyles} from '../../../styles-elements/module-styles';
 import '../../../data-elements/get-partner-data';
 
-
 /**
  * @polymer
  * @customElement
  * @appliesMixin CommonMethodsMixin
  */
 class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
-
   static get template() {
     return html`
       ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
-        <style>
-          .partner-loading {
-              position: absolute;
-              top: 28px;
-              left: auto;
-              background-color: #fff;
-          }
-          .partner-loading:not([active]) {
-              display: none !important;
-          }
-          etools-dropdown, etools-dropdown-multi {
-            --esmm-dropdown-menu-position: absolute;
-          }
+      <style>
+        .partner-loading {
+          position: absolute;
+          top: 28px;
+          left: auto;
+          background-color: #fff;
+        }
+        .partner-loading:not([active]) {
+          display: none !important;
+        }
+        etools-dropdown,
+        etools-dropdown-multi {
+          --esmm-dropdown-menu-position: absolute;
+        }
       </style>
 
       <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
-          <div class="row-h group">
-              <div class="input-container">
-                  <!-- Partner -->
-                  <template is="dom-if" if="[[isReadOnly('partner', basePermissionPath)]]">
-                    <paper-input
-                            value="{{partner.name}}"
-                            disabled
-                            readonly>
-                    </paper-input>
-                  </template>
-                  <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
-                    <etools-dropdown
-                            id="partner"
-                            class$="[[_setRequired('partner', basePermissionPath)]]
+        <div class="row-h group">
+          <div class="input-container">
+            <!-- Partner -->
+            <template is="dom-if" if="[[isReadOnly('partner', basePermissionPath)]]">
+              <paper-input value="{{partner.name}}" disabled readonly> </paper-input>
+            </template>
+            <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
+              <etools-dropdown
+                id="partner"
+                class$="[[_setRequired('partner', basePermissionPath)]]
                                     [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                            selected="{{engagement.partner.id}}"
-                            label="[[getLabel('partner', basePermissionPath)]]"
-                            placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
-                            options="[[partners]]"
-                            option-label="name"
-                            option-value="id"
-                            required$="{{_setRequired('partner', basePermissionPath)}}"
-                            invalid="{{errors.partner}}"
-                            error-message="{{errors.partner}}"
-                            on-focus="_resetFieldError"
-                            on-tap="_resetFieldError"
-                            trigger-value-change-event
-                            on-etools-selected-item-changed="_requestPartner"
-                            dynamic-align>
-                    </etools-dropdown>
-                  </template>
-                  <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading">
-                  </etools-loading>
-                  <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
+                selected="{{engagement.partner.id}}"
+                label="[[getLabel('partner', basePermissionPath)]]"
+                placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
+                options="[[partners]]"
+                option-label="name"
+                option-value="id"
+                required$="{{_setRequired('partner', basePermissionPath)}}"
+                invalid="{{errors.partner}}"
+                error-message="{{errors.partner}}"
+                on-focus="_resetFieldError"
+                on-tap="_resetFieldError"
+                trigger-value-change-event
+                on-etools-selected-item-changed="_requestPartner"
+                dynamic-align
+              >
+              </etools-dropdown>
+            </template>
+            <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading">
+            </etools-loading>
+            <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
+          </div>
+          <div class="input-container input-container-m">
+            <!-- Partner Address -->
+            <paper-input
+              class$="without-border [[_setReadonlyFieldClass(partner)]]"
+              value="[[_setPartnerAddress(partner)]]"
+              label="Partner Address"
+              placeholder="[[getReadonlyPlaceholder(partner)]]"
+              disabled
+              readonly
+            >
+            </paper-input>
+            <paper-tooltip offset="0">[[_setPartnerAddress(partner)]]</paper-tooltip>
+          </div>
+        </div>
 
-              </div>
-              <div class="input-container input-container-m">
-                  <!-- Partner Address -->
-                  <paper-input
-                          class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                          value="[[_setPartnerAddress(partner)]]"
-                          label="Partner Address"
-                          placeholder="[[getReadonlyPlaceholder(partner)]]"
-                          disabled
-                          readonly>
-                  </paper-input>
-                  <paper-tooltip offset="0">[[_setPartnerAddress(partner)]]</paper-tooltip>
-              </div>
+        <div class="row-h group">
+          <div class="input-container">
+            <!-- Partner Phone Number -->
+            <paper-input
+              class$="without-border [[_setReadonlyFieldClass(partner)]]"
+              value="{{partner.phone_number}}"
+              label="[[getLabel('partner.phone_number', basePermissionPath)]]"
+              placeholder="[[getReadonlyPlaceholder(partner)]]"
+              disabled
+              readonly
+            >
+            </paper-input>
+            <paper-tooltip offset="0">[[partner.phone_number]]</paper-tooltip>
           </div>
 
-          <div class="row-h group">
-              <div class="input-container">
-                  <!-- Partner Phone Number -->
-                  <paper-input
-                          class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                          value="{{partner.phone_number}}"
-                          label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-                          placeholder="[[getReadonlyPlaceholder(partner)]]"
-                          disabled
-                          readonly>
-                  </paper-input>
-                  <paper-tooltip offset="0">[[partner.phone_number]]</paper-tooltip>
-              </div>
+          <div class="input-container">
+            <!-- Partner E-mail Address -->
+            <paper-input
+              class$="without-border [[_setReadonlyFieldClass(partner)]]"
+              value="{{partner.email}}"
+              label="[[getLabel('partner.email', basePermissionPath)]]"
+              placeholder="[[getReadonlyPlaceholder(partner)]]"
+              disabled
+              readonly
+            >
+            </paper-input>
+            <paper-tooltip offset="0">[[partner.email]]</paper-tooltip>
+          </div>
 
-              <div class="input-container">
-                  <!-- Partner E-mail Address -->
-                  <paper-input
-                          class$="without-border [[_setReadonlyFieldClass(partner)]]"
-                          value="{{partner.email}}"
-                          label="[[getLabel('partner.email', basePermissionPath)]]"
-                          placeholder="[[getReadonlyPlaceholder(partner)]]"
-                          disabled
-                          readonly>
-                  </paper-input>
-                  <paper-tooltip offset="0">[[partner.email]]</paper-tooltip>
-              </div>
-
-              <div class="input-container">
-                  <!-- Partner  Officers-->
-                  <etools-dropdown
-                          id="authorizedOfficer"
-                          class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]]
+          <div class="input-container">
+            <!-- Partner  Officers-->
+            <etools-dropdown
+              id="authorizedOfficer"
+              class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]]
                                 [[_setPlaceholderColor(partner)]]"
-                          selected="{{authorizedOfficer.id}}"
-                          label="[[getLabel('authorized_officers', basePermissionPath)]]"
-                          placeholder="[[getReadonlyPlaceholder(partner)]]"
-                          options="[[partner.partnerOfficers]]"
-                          option-label="fullName"
-                          option-value="id"
-                          required="{{_setRequired('authorized_officers', basePermissionPath)}}"
-                          invalid="{{_checkInvalid(errors.authorized_officers)}}"
-                          disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-                          readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-                          error-message="{{errors.authorized_officers}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          dynamic-align>
-                  </etools-dropdown>
-                  <paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>
-              </div>
+              selected="{{authorizedOfficer.id}}"
+              label="[[getLabel('authorized_officers', basePermissionPath)]]"
+              placeholder="[[getReadonlyPlaceholder(partner)]]"
+              options="[[partner.partnerOfficers]]"
+              option-label="fullName"
+              option-value="id"
+              required="{{_setRequired('authorized_officers', basePermissionPath)}}"
+              invalid="{{_checkInvalid(errors.authorized_officers)}}"
+              disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+              readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+              error-message="{{errors.authorized_officers}}"
+              on-focus="_resetFieldError"
+              on-tap="_resetFieldError"
+              dynamic-align
+            >
+            </etools-dropdown>
+            <paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>
           </div>
+        </div>
 
-          <template is="dom-if" if="[[_showActivePd(partner.partner_type, specialPartnerTypes)]]">
-              <div class="row-h group">
-                  <div class="input-container input-container-l">
-                      <!-- Active PD -->
-                      <etools-dropdown-multi
-                              id="activePd"
-                              class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
-                              selected-values="{{activePdIds}}"
-                              label="[[getLabel('active_pd', basePermissionPath)]]"
-                              placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
-                              options="[[partner.interventions]]"
-                              option-label="number"
-                              option-value="id"
-                              disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                              readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                              invalid="{{errors.active_pd}}"
-                              error-message="{{errors.active_pd}}"
-                              on-focus="_resetFieldError"
-                              on-tap="_resetFieldError"
-                              dynamic-align>
-                      </etools-dropdown-multi>
-                  </div>
-              </div>
-          </template>
+        <template is="dom-if" if="[[_showActivePd(partner.partner_type, specialPartnerTypes)]]">
+          <div class="row-h group">
+            <div class="input-container input-container-l">
+              <!-- Active PD -->
+              <etools-dropdown-multi
+                id="activePd"
+                class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
+                selected-values="{{activePdIds}}"
+                label="[[getLabel('active_pd', basePermissionPath)]]"
+                placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
+                options="[[partner.interventions]]"
+                option-label="number"
+                option-value="id"
+                disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
+                invalid="{{errors.active_pd}}"
+                error-message="{{errors.active_pd}}"
+                on-focus="_resetFieldError"
+                on-tap="_resetFieldError"
+                dynamic-align
+              >
+              </etools-dropdown-multi>
+            </div>
+          </div>
+        </template>
       </etools-content-panel>
-  `;
+    `;
   }
   static get observers() {
     return [
@@ -206,7 +206,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   specialPartnerTypes = ['Bilateral / Multilateral', 'Government'];
 
   @property({type: Boolean})
-  requestInProcess: boolean = false;
+  requestInProcess = false;
 
   @property({type: Object})
   errors: GenericObject = {};
@@ -214,9 +214,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Partner Details',
-    fields: [
-      'authorized_officers', 'active_pd', 'partner'
-    ]
+    fields: ['authorized_officers', 'active_pd', 'partner']
   };
 
   @property({type: Object})
@@ -275,9 +273,12 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       this.set('partner.partnerOfficers', [engagementOfficer]);
       this.authorizedOfficer = engagementOfficer;
     } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-      const officerIndex = !!(engagementOfficer && ~findIndex(partner.partnerOfficers, (officer: any) => {
-        return officer.id === engagementOfficer.id;
-      }));
+      const officerIndex = !!(
+        engagementOfficer &&
+        ~findIndex(partner.partnerOfficers, (officer: any) => {
+          return officer.id === engagementOfficer.id;
+        })
+      );
 
       this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
     }
@@ -287,7 +288,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     return this.validatePartner() && this.validateActivePd();
   }
 
-  validateActivePd() { // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
+  validateActivePd() {
+    // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
     const activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
     const partnerType = this.get('engagement.partner.partner_type');
     const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
@@ -331,7 +333,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _showActivePd(partnerType, types) {
-    return typeof partnerType === 'string' && types.every(type => !~partnerType.indexOf(type));
+    return typeof partnerType === 'string' && types.every((type) => !~partnerType.indexOf(type));
   }
 
   _setActivePd(engagement, partnerInterv) {
@@ -359,13 +361,18 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     }
 
     const activePd = this.get('engagement.active_pd') || [];
-    this.set('activePdIds', activePd.map(pd => pd.id));
+    this.set(
+      'activePdIds',
+      activePd.map((pd) => pd.id)
+    );
     this.validateActivePd();
     return true;
   }
 
   _requestPartner(event, id) {
-    if (this.requestInProcess) {return;}
+    if (this.requestInProcess) {
+      return;
+    }
 
     this.set('partner', {});
     this.set('activePdIds', null);
@@ -373,7 +380,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
     const selectedPartner = event && event.detail && event.detail.selectedItem;
 
-    const partnerId = (selectedPartner && selectedPartner.id || +id);
+    const partnerId = (selectedPartner && selectedPartner.id) || +id;
     if (!partnerId) {
       return;
     }
@@ -401,16 +408,18 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   getPartnerData() {
-    if (!this.validate()) {return null;}
+    if (!this.validate()) {
+      return null;
+    }
 
     const data = {} as any;
     const originalPartnerId = this.get('originalData.partner.id');
     const partnerId = this.get('engagement.partner.id');
     const partnerType = this.get('engagement.partner.partner_type');
     let originalActivePd = this.get('originalData.active_pd') || [];
-    const activePdIds = (this.activePdIds || []).map(id => +id);
+    const activePdIds = (this.activePdIds || []).map((id) => +id);
 
-    originalActivePd = originalActivePd.map(pd => +pd.id);
+    originalActivePd = originalActivePd.map((pd) => +pd.id);
 
     if (originalPartnerId !== partnerId) {
       data.partner = partnerId;
@@ -428,8 +437,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   getAuthorizedOfficer() {
-    if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer ||
-      !this.authorizedOfficer.id) {
+    if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
       return null;
     }
     const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
@@ -441,34 +449,38 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   activePdPlaceholder(basePermissionPath, partner) {
-    if (!partner || !partner.id) {return '-';}
-    return readonlyPermission(`${basePermissionPath}.active_pd`) ? 'Empty Field' :
-      'Select Relevant PD(s) or SSFA(s)';
+    if (!partner || !partner.id) {
+      return '-';
+    }
+    return readonlyPermission(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
     // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
   }
 
   _setPlaceholderColor(partner) {
-    return (!partner || !partner.id) ? 'no-data-fetched' : '';
+    return !partner || !partner.id ? 'no-data-fetched' : '';
   }
 
   isOfficersReadonly(basePermissionPath, requestInProcess, partner) {
-    return this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
-      !partner || !partner.partnerOfficers || !partner.partnerOfficers.length ||
-      partner.partnerOfficers.length < 2;
+    return (
+      this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
+      !partner ||
+      !partner.partnerOfficers ||
+      !partner.partnerOfficers.length ||
+      partner.partnerOfficers.length < 2
+    );
   }
 
   _setPartnerAddress(partner) {
-    if (!partner) {return '';}
+    if (!partner) {
+      return '';
+    }
 
-    return [partner.address, partner.postal_code, partner.city, partner.country]
-      .filter(info => !!info)
-      .join(', ');
+    return [partner.address, partner.postal_code, partner.city, partner.country].filter((info) => !!info).join(', ');
   }
 
   _checkInvalid(value) {
     return !!value;
   }
-
 }
 window.customElements.define('partner-details-tab', PartnerDetailsTab);
 

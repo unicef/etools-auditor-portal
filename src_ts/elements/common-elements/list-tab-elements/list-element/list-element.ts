@@ -25,24 +25,23 @@ import {getChoices} from '../../../app-mixins/permission-controller';
  * @appliesMixin LocalizationMixin
  */
 class ListElement extends LocalizationMixin(PolymerElement) {
-
   static get template() {
     return html`
-    ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
-    <style>
-      *[hidden] {
+      ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
+      <style>
+        *[hidden] {
           display: none !important;
-      }
-      :host {
+        }
+        :host {
           display: block;
           border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
-      }
-      :host .question-title {
+        }
+        :host .question-title {
           font-weight: 500;
           font-size: 14px !important;
           letter-spacing: 0.5px;
-      }
-      :host .partner-data {
+        }
+        :host .partner-data {
           display: table-cell;
           vertical-align: middle;
           width: 100%;
@@ -50,8 +49,8 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           white-space: nowrap;
           font-size: 0;
           overflow: inherit;
-      }
-      :host .partner-data .col-data {
+        }
+        :host .partner-data .col-data {
           display: inline-block;
           overflow: hidden;
           font-size: 13px;
@@ -60,47 +59,47 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           padding-left: 1px;
           box-sizing: border-box;
           vertical-align: var(--multiline-align, middle);
-      }
-      :host .partner-data .col-data.caps {
+        }
+        :host .partner-data .col-data.caps {
           text-transform: capitalize;
-      }
-      :host .partner-data .col-data:not(.truncate) {
+        }
+        :host .partner-data .col-data:not(.truncate) {
           padding-right: 0;
           overflow: visible;
-      }
-      :host .partner-data .col-data .truncate {
+        }
+        :host .partner-data .col-data .truncate {
           white-space: nowrap;
-      }
-      :host .partner-data .col-data .additional {
+        }
+        :host .partner-data .col-data .additional {
           color: var(--dark-secondary-text-color);
           font-size: 11px;
-      }
-      :host .partner-data .col-data.right {
+        }
+        :host .partner-data .col-data.right {
           text-align: right;
-      }
-      :host .partner-data .col-data.center {
+        }
+        :host .partner-data .col-data.center {
           text-align: center;
-      }
-      :host .partner-data a.col-data {
+        }
+        :host .partner-data a.col-data {
           color: var(--module-primary);
           font-weight: 500;
           cursor: pointer;
-      }
-      :host .partner-data a.col-data[href="#"] {
+        }
+        :host .partner-data a.col-data[href='#'] {
           cursor: default;
           font-weight: 400;
           color: initial;
           pointer-events: none;
-      }
-      :host .partner-data a.col-data iron-icon {
+        }
+        :host .partner-data a.col-data iron-icon {
           display: none;
           width: 16px;
           color: var(--module-primary);
-      }
-      :host .partner-data a.col-data.with-icon iron-icon {
+        }
+        :host .partner-data a.col-data.with-icon iron-icon {
           display: inline-flex;
-      }
-      :host .partner-data .hover-icons-block {
+        }
+        :host .partner-data .hover-icons-block {
           position: absolute;
           top: 0;
           right: 14px;
@@ -108,16 +107,16 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           line-height: 48px;
           opacity: 0;
           background-color: var(--hover-block-bg-color, #eee);
-      }
-      :host .partner-data:hover .hover-icons-block {
+        }
+        :host .partner-data:hover .hover-icons-block {
           opacity: 1;
-      }
-      :host .partners-data-details {
+        }
+        :host .partners-data-details {
           position: relative;
           display: block;
           width: 100%;
-      }
-      :host .partners-data-details .row-details-content {
+        }
+        :host .partners-data-details .row-details-content {
           float: left;
           box-sizing: border-box;
           padding-right: 0;
@@ -125,22 +124,22 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           vertical-align: top;
           overflow: hidden;
           text-overflow: ellipsis;
-      }
-      :host .partners-data-details .row-details-content .rdc-title {
+        }
+        :host .partners-data-details .row-details-content .rdc-title {
           display: inline-block;
           width: 100%;
           color: rgba(0, 0, 0, 0.54);
           font-weight: 500;
           font-size: 13px;
           margin-bottom: 10px;
-      }
-      :host .partners-data-details .row-details-content .data {
+        }
+        :host .partners-data-details .row-details-content .data {
           font-size: 13px;
-      }
-      :host([hover]) div[list-item] {
+        }
+        :host([hover]) div[list-item] {
           background-color: #eee;
-      }
-      div[list-item] {
+        }
+        div[list-item] {
           position: relative;
           display: table;
           table-layout: fixed;
@@ -154,27 +153,27 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           box-sizing: border-box;
           white-space: nowrap;
           text-overflow: ellipsis;
-      }
-      :host div[list-item] {
-        overflow: var(--list-item-overflow, hidden);
-      }
-      :host([no-additional]) div[list-item] {
+        }
+        :host div[list-item] {
+          overflow: var(--list-item-overflow, hidden);
+        }
+        :host([no-additional]) div[list-item] {
           padding: 0 16px 0 24px !important;
-      }
-      :host([multiline]) .partner-data .col-data {
+        }
+        :host([multiline]) .partner-data .col-data {
           padding-top: 5px;
           padding-bottom: 5px;
-      }
-      :host([multiline]) .partner-data .col-data .truncate {
+        }
+        :host([multiline]) .partner-data .col-data .truncate {
           white-space: normal;
-      }
-      :host([multiline]) paper-tooltip {
+        }
+        :host([multiline]) paper-tooltip {
           display: none;
-      }
-      :host([no-hover]) div[list-item]:hover {
+        }
+        :host([no-hover]) div[list-item]:hover {
           background-color: initial;
-      }
-      #iconWrapper {
+        }
+        #iconWrapper {
           position: absolute;
           top: 50%;
           margin-top: -24px;
@@ -182,169 +181,151 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           margin-left: -72px;
           line-height: 48px;
           cursor: pointer;
-      }
-      iron-icon {
+        }
+        iron-icon {
           color: var(--dark-icon-color, rgba(0, 0, 0, 0.54));
-      }
-      #collapse-wrapper {
+        }
+        #collapse-wrapper {
           padding: 14px 24px 4px 24px;
           background-color: #eee;
           border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
-      }
+        }
+      </style>
 
-  </style>
-
-    <div list-item id="wrapper">
-      <template is="dom-if" if="[[showCollapse]]">
+      <div list-item id="wrapper">
+        <template is="dom-if" if="[[showCollapse]]">
           <div id="iconWrapper">
-              <iron-icon
-                      id="more"
-                      icon="expand-more"
-                      hidden$="[[detailsOpened]]"
-                      on-tap="_toggleRowDetails">
-              </iron-icon>
+            <iron-icon id="more" icon="expand-more" hidden$="[[detailsOpened]]" on-tap="_toggleRowDetails"> </iron-icon>
 
-              <iron-icon
-                      id="less"
-                      icon="expand-less"
-                      hidden$="[[!detailsOpened]]"
-                      on-tap="_toggleRowDetails">
-              </iron-icon>
+            <iron-icon id="less" icon="expand-less" hidden$="[[!detailsOpened]]" on-tap="_toggleRowDetails">
+            </iron-icon>
           </div>
-      </template>
+        </template>
 
-      <div class="partner-data" style$="padding-right: [[paddingRight]];">
+        <div class="partner-data" style$="padding-right: [[paddingRight]];">
           <template is="dom-repeat" items="[[headings]]">
-              <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
-                  <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
-                      href$="[[_getLink(item.link, data)]]" target="[[item.target]]">
-                      <span class="truncate">
-                          <template is="dom-if" if="[[_getValue(item, data)]]">
-                              [[_getValue(item, data)]] <iron-icon icon="icons:launch"></iron-icon>
-                              <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
-                          </template>
+            <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
+              <a
+                class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
+                href$="[[_getLink(item.link, data)]]"
+                target="[[item.target]]"
+              >
+                <span class="truncate">
+                  <template is="dom-if" if="[[_getValue(item)]]">
+                    [[_getValue(item)]] <iron-icon icon="icons:launch"></iron-icon>
+                    <paper-tooltip offset="0">[[_getValue(item)]]</paper-tooltip>
+                  </template>
 
-                          <template is="dom-if" if="[[!_getValue(item, data)]]">
-                              <span class="">–</span>
-                          </template>
-                      </span>
-                  </a>
-              </template>
+                  <template is="dom-if" if="[[!_getValue(item)]]">
+                    <span class="">–</span>
+                  </template>
+                </span>
+              </a>
+            </template>
 
-              <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
-                  <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                      <span class="truncate">
-                          <template is="dom-if" if="[[_getValue(item, data)]]">
-                              [[_getValue(item, data)]]
-                              <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
-                          </template>
+            <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
+              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+                <span class="truncate">
+                  <template is="dom-if" if="[[_getValue(item)]]">
+                    [[_getValue(item)]]
+                    <paper-tooltip offset="0">[[_getValue(item)]]</paper-tooltip>
+                  </template>
 
-                          <template is="dom-if" if="[[!_getValue(item, data)]]">
-                              <span class="">–</span>
-                          </template>
+                  <template is="dom-if" if="[[!_getValue(item)]]">
+                    <span class="">–</span>
+                  </template>
 
-                          <template is="dom-if" if="[[item.additional]]">
-                              <span class="additional">([[_getAdditionalValue(item, data)]])</span>
-                          </template>
-                      </span>
-                  </span>
-              </template>
-
-              <template is="dom-if" if="[[_isOneOfType(item, 'html')]]">
-                  <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                      <span class="truncate">
-                          <insert-html html="[[_getValue(item, data)]]"></insert-html>
-                      </span>
-                  </span>
-              </template>
-
-              <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
-                  <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                      <template is="dom-if" if="{{_emtyObj(data)}}">
-                            <slot name="checkbox">
-                              <paper-checkbox
-                                      checked="{{_getValue(item, data, 'bool')}}"
-                                      label="">
-                              </paper-checkbox>
-                          </slot>
-                      </template>
-
-                      <template is="dom-if" if="{{!_emtyObj(data)}}">
-                          <span class="">–</span>
-                      </template>
-                  </span>
-              </template>
-
-              <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
-                  <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                      <template is="dom-if" if="{{_emtyObj(data)}}">
-                          <slot name="icon">
-
-                          </slot>
-                      </template>
-
-                      <template is="dom-if" if="{{!_emtyObj(data)}}">
-                          <span class="">–</span>
-                      </template>
-                  </span>
-              </template>
-
-              <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
-                  <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                      <template is="dom-if" if="{{_hasProperty(data, item.property, item.doNotHide)}}" restamp>
-                          <slot name="custom">
-
-                          </slot>
-                      </template>
-
-                      <template is="dom-if" if="{{!_hasProperty(data, item.property, item.doNotHide)}}">
-                          <span class="">–</span>
-                      </template>
-                  </span>
-              </template>
-
-              <span class="hover-icons-block">
-                  <slot name="hover"></slot>
+                  <template is="dom-if" if="[[item.additional]]">
+                    <span class="additional">([[_getAdditionalValue(item)]])</span>
+                  </template>
+                </span>
               </span>
+            </template>
+
+            <template is="dom-if" if="[[_isOneOfType(item, 'html')]]">
+              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+                <span class="truncate">
+                  <insert-html html="[[_getValue(item)]]"></insert-html>
+                </span>
+              </span>
+            </template>
+
+            <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
+              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+                <template is="dom-if" if="{{_emtyObj(data)}}">
+                  <slot name="checkbox">
+                    <paper-checkbox checked="{{_getValue(item, 'bool')}}" label=""> </paper-checkbox>
+                  </slot>
+                </template>
+
+                <template is="dom-if" if="{{!_emtyObj(data)}}">
+                  <span class="">–</span>
+                </template>
+              </span>
+            </template>
+
+            <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
+              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+                <template is="dom-if" if="{{_emtyObj(data)}}">
+                  <slot name="icon"> </slot>
+                </template>
+
+                <template is="dom-if" if="{{!_emtyObj(data)}}">
+                  <span class="">–</span>
+                </template>
+              </span>
+            </template>
+
+            <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
+              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+                <template is="dom-if" if="{{_hasProperty(data, item.property, item.doNotHide)}}" restamp>
+                  <slot name="custom"> </slot>
+                </template>
+
+                <template is="dom-if" if="{{!_hasProperty(data, item.property, item.doNotHide)}}">
+                  <span class="">–</span>
+                </template>
+              </span>
+            </template>
+
+            <span class="hover-icons-block">
+              <slot name="hover"></slot>
+            </span>
           </template>
+        </div>
       </div>
-    </div>
 
-    <template is="dom-if" if="[[showCollapse]]">
-      <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
+      <template is="dom-if" if="[[showCollapse]]">
+        <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
           <slot name="custom-details">
-          <div id="collapse-wrapper">
+            <div id="collapse-wrapper">
               <div class="partners-data-details group">
+                <template is="dom-repeat" items="[[details]]">
+                  <div class$="row-details-content w[[item.size]]">
+                    <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
-                      <template is="dom-repeat" items="[[details]]">
-                          <div class$="row-details-content w[[item.size]]">
-                              <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
+                    <template is="dom-if" if="[[_getValue(item)]]">
+                      [[_getValue(item)]]
+                    </template>
 
-                              <template is="dom-if" if="[[_getValue(item, data)]]">
-                                  [[_getValue(item, data)]]
-                              </template>
-
-                              <template is="dom-if" if="[[!_getValue(item, data)]]">
-                                  <span class="">–</span>
-                              </template>
-                          </div>
-                      </template>
-
+                    <template is="dom-if" if="[[!_getValue(item)]]">
+                      <span class="">–</span>
+                    </template>
+                  </div>
+                </template>
               </div>
-          </div>
+            </div>
           </slot>
-      </iron-collapse>
-    </template>
-  `;
+        </iron-collapse>
+      </template>
+    `;
   }
   static get observers() {
-    return [
-      '_setRightPadding(headings.*)'
-    ];
+    return ['_setRightPadding(headings.*)'];
   }
 
   @property({type: String, observer: '_setItemValues'})
-  basePermissionPath: string = '';
+  basePermissionPath = '';
 
   @property({type: Object})
   itemValues: GenericObject = {};
@@ -353,7 +334,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   details: any[] = [];
 
   @property({type: Boolean})
-  hasCollapse: boolean = false;
+  hasCollapse = false;
 
   @property({type: Boolean, computed: '_computeShowCollapse(details, hasCollapse)'})
   showCollapse: any[] = [];
@@ -365,10 +346,10 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   itemIndex!: number;
 
   @property({type: Boolean})
-  multiline: boolean = false;
+  multiline = false;
 
   @property({type: Boolean})
-  noHover: boolean = false;
+  noHover = false;
 
   @property({type: Boolean, reflectToAttribute: true})
   hover!: boolean;
@@ -408,7 +389,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _setRightPadding() {
-    if (!this.headings) {return;}
+    if (!this.headings) {
+      return;
+    }
     let rightPadding = 0;
     let padding;
 
@@ -431,7 +414,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _isOneOfType(item, ...theRestOfArgs) {
-    if (!item) {return false;}
+    if (!item) {
+      return false;
+    }
 
     const types = theRestOfArgs || [];
 
@@ -440,8 +425,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     });
   }
 
-  // @ts-ignore
-  _getValue(item, data?, bool?) {
+  _getValue(item, bool?) {
     let value;
 
     if (!item.path) {
@@ -473,11 +457,15 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
   _refactorValue(type, value) {
     const values = this.itemValues[type];
-    if (values) {return values[value];}
+    if (values) {
+      return values[value];
+    }
   }
 
   _refactorTime(value, format = 'DD MMM YYYY') {
-    if (!value) {return;}
+    if (!value) {
+      return;
+    }
 
     const date = new Date(value);
     if (date.toString() !== 'Invalid Date') {
@@ -486,7 +474,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _refactorCurrency(value) {
-    if ((!value || isNaN(+value)) && value !== 0) {return;}
+    if ((!value || isNaN(+value)) && value !== 0) {
+      return;
+    }
     return (+value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
   }
 
@@ -497,12 +487,16 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
   _refactorFindingNumber() {
     const value = this.itemIndex;
-    if (!value && value !== 0) {return;}
+    if (!value && value !== 0) {
+      return;
+    }
     return `000${value + 1}`;
   }
 
   _getAdditionalValue(item) {
-    if (!item.additional) {return;}
+    if (!item.additional) {
+      return;
+    }
 
     const additional = item.additional;
     let value = this._getValue(additional);
@@ -516,11 +510,15 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _getStatus(synced) {
-    if (synced) {return 'Synced from VISION';}
+    if (synced) {
+      return 'Synced from VISION';
+    }
   }
 
   _getLink(pattern) {
-    if (typeof pattern !== 'string') {return '#';}
+    if (typeof pattern !== 'string') {
+      return '#';
+    }
 
     const link = pattern
       .replace('*ap_link*', this.data.url)
@@ -535,12 +533,16 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _hasProperty(data, property, doNotHide) {
-    return data && (doNotHide || property && this.get('data.' + property));
+    return data && (doNotHide || (property && this.get('data.' + property)));
   }
 
   _setItemValues(base) {
-    if (!base) {return;}
-    if (!this.get('itemValues')) {this.set('itemValues', {});}
+    if (!base) {
+      return;
+    }
+    if (!this.get('itemValues')) {
+      this.set('itemValues', {});
+    }
     this.setField(getChoices(`${base}.engagement_type`), 'engagement_type');
     this.setField(getChoices(`${base}.status`), 'status');
     this.set('itemValues.link_type', {
@@ -552,7 +554,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   setField(choices, field) {
-    if (!choices || !field) {return;}
+    if (!choices || !field) {
+      return;
+    }
 
     const data = {};
     choices.forEach((choice) => {
@@ -561,6 +565,5 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
     this.set(`itemValues.${field}`, data);
   }
-
 }
 window.customElements.define('list-element', ListElement);

@@ -6,9 +6,7 @@ import {BASE_PATH} from '../../elements/app-config/config';
 
 export function parseQueries(): GenericObject {
   const queriesOvj: GenericObject = {};
-  const queries = getQueriesString()
-    .slice(1)
-    .split('&');
+  const queries = getQueriesString().slice(1).split('&');
 
   if (queries[0] === '') return {};
   queries.forEach((query) => {
@@ -20,7 +18,7 @@ export function parseQueries(): GenericObject {
 }
 
 function _getLocationProperty(property) {
-  return window && window.location && window.location[property] || '';
+  return (window && window.location && window.location[property]) || '';
 }
 
 export function getQueriesString() {
@@ -36,11 +34,12 @@ function getPath() {
 }
 
 export function buildQueryString(queryObj) {
-  return keys(queryObj).map((key) => {
-    const value = typeof queryObj[key] === 'boolean' ? '' :
-      queryObj[key] ? `=${queryObj[key]}` : '';
-    return `${key}${value}`;
-  }).join('&');
+  return keys(queryObj)
+    .map((key) => {
+      const value = typeof queryObj[key] === 'boolean' ? '' : queryObj[key] ? `=${queryObj[key]}` : '';
+      return `${key}${value}`;
+    })
+    .join('&');
 }
 
 export function updateQueries(newQueries, path?, noNotify?) {

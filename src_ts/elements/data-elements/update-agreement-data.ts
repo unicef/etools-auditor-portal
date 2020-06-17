@@ -5,7 +5,6 @@ import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class UpdateAgreementData extends PolymerElement {
-
   @property({type: String, observer: '_dateChanged'})
   newDate!: string;
 
@@ -13,14 +12,16 @@ class UpdateAgreementData extends PolymerElement {
   agreement!: GenericObject;
 
   @property({type: Boolean, notify: true})
-  poUpdating: boolean = false;
+  poUpdating = false;
 
   @property({type: Object, notify: true})
-  errors!: {};
+  errors!: GenericObject;
 
   _dateChanged(date) {
     date = date || null;
-    if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {return;}
+    if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {
+      return;
+    }
 
     this.poUpdating = true;
     const url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
@@ -28,11 +29,13 @@ class UpdateAgreementData extends PolymerElement {
       method: 'PATCH',
       endpoint: {url},
       body: {contract_end_date: date}
-    }).then((resp) => {
-      this._handleResponse(resp);
-    }).catch((err) => {
-      this._handleError(err);
-    });
+    })
+      .then((resp) => {
+        this._handleResponse(resp);
+      })
+      .catch((err) => {
+        this._handleError(err);
+      });
   }
 
   _handleResponse(detail) {

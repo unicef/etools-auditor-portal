@@ -10,7 +10,7 @@ export const searchAndFilterStyles = html`
         background-color: white;
         margin: 0 24px;
         width: calc(100% - 48px);
-      };
+      }
     }
 
     .second-header {
@@ -23,7 +23,7 @@ export const searchAndFilterStyles = html`
       --paper-input-container: {
         width: 240px;
         margin-left: 26px;
-      };
+      }
       --paper-input-container-color: var(--gray-light);
     }
 
@@ -72,18 +72,18 @@ export const searchAndFilterStyles = html`
       --paper-item-selected-weight: normal;
       --paper-item: {
         cursor: pointer;
-      };
+      }
       --paper-item-focused-before: {
         background: none;
         opacity: 0;
-      };
+      }
       --paper-item-focused-after: {
         background: none;
         opacity: 0;
       }
       --paper-item-focused: {
         background-color: rgb(198, 198, 198);
-      };
+      }
       white-space: nowrap;
       text-transform: capitalize;
     }
@@ -107,7 +107,6 @@ export const searchAndFilterStyles = html`
       margin: 0;
     }
 
-
     .filter-dropdown {
       margin-left: 20px;
       min-width: 200px;
@@ -117,7 +116,7 @@ export const searchAndFilterStyles = html`
         margin-top: 0;
         padding-bottom: 8px;
         -ms-overflow-style: auto;
-      };
+      }
 
       --esmm-dropdown-menu-position: absolute;
     }
