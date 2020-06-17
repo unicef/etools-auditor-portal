@@ -94,7 +94,7 @@
     "format:eslint": "eslint --ext .ts,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format:prettier": "prettier \"**/*.ts\" --write --ignore-path .gitignore",
-    "lint": "polymer lint && npm run lint:eslint && npm run lint:prettier",
+    "lint": "polymer lint && npm run lint:eslint",
     "format": "npm run format:eslint && npm run format:prettier"
   },
   "husky": {
@@ -104,8 +104,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint --fix",
-      "prettier --write"
+      "eslint --fix"
     ]
   }
 }
