@@ -19,7 +19,6 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
  * @appliesMixin EtoolsPageRefreshMixin
  */
 class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
-
   public static get template() {
     return html`
       ${HeaderStyles}
@@ -60,9 +59,7 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
   country!: GenericObject;
 
   public static get observers() {
-    return [
-      '_setCountryIndex(countries, countryId)'
-    ];
+    return ['_setCountryIndex(countries, countryId)'];
   }
 
   connectedCallback() {
@@ -70,11 +67,12 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
 
     this.addEventListener('paper-dropdown-close', this._toggleOpened);
     this.addEventListener('paper-dropdown-open', this._toggleOpened);
-
   }
 
   _setCountryIndex(countries, countryId) {
-    if (!(countries instanceof Array)) {return;}
+    if (!(countries instanceof Array)) {
+      return;
+    }
 
     this.countryIndex = countries.findIndex((country) => {
       return country.id === countryId;
@@ -87,7 +85,6 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
     } else {
       this.removeAttribute('opened');
     }
-
   }
 
   _countrySelected(e) {
@@ -101,8 +98,11 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
     if (Number(parseFloat(id)) !== id) {
       throw new Error('Can not find country id!');
     }
-    fireEvent(this, 'global-loading',
-      {type: 'change-country', active: true, message: 'Please wait while country is changing...'});
+    fireEvent(this, 'global-loading', {
+      type: 'change-country',
+      active: true,
+      message: 'Please wait while country is changing...'
+    });
 
     this._sendChangeCountryRequest(id);
   }
@@ -113,9 +113,7 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
       body: {country: countryId},
       endpoint: famEndpoints.changeCountry
     };
-    sendRequest(options)
-      .then(this._handleResponse.bind(this))
-      .catch(this._handleError.bind(this));
+    sendRequest(options).then(this._handleResponse.bind(this)).catch(this._handleError.bind(this));
   }
 
   _handleError() {

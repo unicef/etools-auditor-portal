@@ -3,14 +3,14 @@ import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {GenericObject} from '../../types/global';
 
 class GetAgreementData extends PolymerElement {
-
   @property({type: Number, notify: true, observer: '_orderNumberChanged'})
   orderNumber!: number;
 
   @property({type: Object, notify: true})
-  agreement!: {};
+  agreement!: GenericObject;
 
   _handleResponse(data) {
     this.agreement = data;
@@ -27,11 +27,13 @@ class GetAgreementData extends PolymerElement {
     }
     sendRequest({
       endpoint: {url: getEndpoint('agreementData', {id: orderNumber}).url}
-    }).then((resp) => {
-      this._handleResponse(resp);
-    }).catch(() => {
-      this._handleError();
-    });
+    })
+      .then((resp) => {
+        this._handleResponse(resp);
+      })
+      .catch(() => {
+        this._handleError();
+      });
   }
 }
 window.customElements.define('get-agreement-data', GetAgreementData);

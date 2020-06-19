@@ -33,14 +33,14 @@ export const sharedStyles = html`
         font-size: 14px;
         font-weight: 500;
         text-transform: uppercase;
-      };
+      }
     }
 
     paper-tabs > * {
       --paper-tab-ink: var(--accent-color);
       --paper-tab-content-unselected: {
         color: var(--light-secondary-text-color);
-      };
+      }
     }
 
     .tab-link {
@@ -76,7 +76,6 @@ export const sharedStyles = html`
 
     /* responsive css rules */
     @media (min-width: 850px) {
-
     }
   </style>
 `;

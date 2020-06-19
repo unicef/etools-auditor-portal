@@ -7,7 +7,6 @@ import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class UpdateStaffMembers extends PolymerElement {
-
   @property({type: Object, notify: true, observer: '_dataChanged'})
   staffData!: GenericObject;
 
@@ -18,9 +17,15 @@ class UpdateStaffMembers extends PolymerElement {
   lastRequestData!: GenericObject;
 
   _dataChanged(data) {
-    if (!data) {return;}
-    if (!this.organisationId) {throw new Error('Organisation id is not provided!');}
-    if (!data.method || !data.data) {throw new Error('Method or data are missing!');}
+    if (!data) {
+      return;
+    }
+    if (!this.organisationId) {
+      throw new Error('Organisation id is not provided!');
+    }
+    if (!data.method || !data.data) {
+      throw new Error('Method or data are missing!');
+    }
 
     this.lastRequestData = cloneDeep(data);
 
@@ -36,8 +41,8 @@ class UpdateStaffMembers extends PolymerElement {
       body: data.data
     };
     sendRequest(options)
-      .then(resp => this._handleResponse(resp))
-      .catch(err => this._handleError(err));
+      .then((resp) => this._handleResponse(resp))
+      .catch((err) => this._handleError(err));
   }
 
   _handleResponse(detail) {
@@ -61,6 +66,5 @@ class UpdateStaffMembers extends PolymerElement {
 
     fireEvent(this, 'staff-updated', {error: true, errorData: response, status: status});
   }
-
 }
 window.customElements.define('update-staff-members', UpdateStaffMembers);

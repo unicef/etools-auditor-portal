@@ -14,7 +14,6 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '../../utils/fire-custom-event';
 
-
 /**
  * page header element
  * @polymer
@@ -22,7 +21,6 @@ import {fireEvent} from '../../utils/fire-custom-event';
  * @appliesMixin GestureEventListeners
  */
 class PageHeader extends GestureEventListeners(PolymerElement) {
-
   public static get template() {
     // main template
     // language=HTML
@@ -38,7 +36,8 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
           color: var(--header-color);
         }
 
-        support-btn, paper-icon-button#refresh {
+        support-btn,
+        paper-icon-button#refresh {
           color: var(--light-secondary-text-color);
         }
 
@@ -87,17 +86,19 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
 
         <div class="titlebar content-align">
           <etools-app-selector id="selector" user="[[user]]"></etools-app-selector>
-          <img id="app-logo" src$="[[rootPath]]/../assets/images/etools_logo.svg">
+          <img id="app-logo" src$="[[rootPath]]/../assets/images/etools_logo.svg" />
 
           <template is="dom-if" if="[[environment]]">
-            <div class="envWarning"> - [[environment]] TESTING ENVIRONMENT</div>
+            <div class="envWarning">- [[environment]] TESTING ENVIRONMENT</div>
           </template>
         </div>
 
         <div class="content-align">
-          <countries-dropdown id="countries"
-                              countries="[[user.countries_available]]"
-                              country-id="[[user.country.id]]"></countries-dropdown>
+          <countries-dropdown
+            id="countries"
+            countries="[[user.countries_available]]"
+            country-id="[[user.country.id]]"
+          ></countries-dropdown>
 
           <support-btn></support-btn>
 
@@ -108,7 +109,6 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
       </app-toolbar>
     `;
   }
-
 
   @property({type: Object})
   user!: GenericObject;
@@ -122,7 +122,7 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
   public menuBtnClicked() {
-     fireEvent(this, 'drawer');
+    fireEvent(this, 'drawer');
   }
 
   public _setBgColor() {
@@ -143,14 +143,12 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
   }
 
   protected refreshBtnclicked() {
-    this._clearDexieDb().then(() =>
-    fireEvent(this, 'toast', {text: `Cached data was cleared`}));
+    this._clearDexieDb().then(() => fireEvent(this, 'toast', {text: `Cached data was cleared`}));
   }
 
   protected _clearLocalStorage() {
     localStorage.clear();
   }
-
 }
 
 window.customElements.define('page-header', PageHeader);

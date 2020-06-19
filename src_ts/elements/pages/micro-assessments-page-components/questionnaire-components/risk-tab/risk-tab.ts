@@ -21,7 +21,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return html`
       ${tabInputsStyles} ${moduleStyles} ${RiskTabStyles}
       <style>
-        list-element{
+        list-element {
           --list-item-overflow: visible;
         }
         etools-dropdown {
@@ -29,26 +29,34 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
         }
       </style>
       <div class="tab-container">
-        <etools-content-panel list completed$="[[completed]]" show-expand-btn
-          panel-title="{{setPanelTitle(questionnaire.header, completed)}}" open="{{opened}}">
-
+        <etools-content-panel
+          list
+          completed$="[[completed]]"
+          show-expand-btn
+          panel-title="{{setPanelTitle(questionnaire.header, completed)}}"
+          open="{{opened}}"
+        >
           <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
           <template is="dom-repeat" items="{{questionnaire.blueprints}}">
-            <list-element class="list-element"
+            <list-element
+              class="list-element"
               data="[[_prepareData(item)]]"
               base-permission-path="[[basePermissionPath]]"
               headings="[[columns]]"
               details="[[details]]"
-              has-collapse multiline no-animation>
+              has-collapse
+              multiline
+              no-animation
+            >
               <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog">
-                </paper-icon-button>
+                <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"> </paper-icon-button>
               </div>
 
               <div slot="custom">
                 <template is="dom-if" if="{{editMode}}">
-                  <etools-dropdown id="riskOptions1"
+                  <etools-dropdown
+                    id="riskOptions1"
                     class="disabled-as-readonly required validate-input"
                     selected="[[item.risk.value]]"
                     placeholder="&#8212;"
@@ -58,7 +66,10 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                     on-focus="_resetFieldError_riskTab"
                     trigger-value-change-event
                     on-etools-selected-item-changed="_riskValueChanged"
-                    dynamic-align hide-search allow-outside-scroll>
+                    dynamic-align
+                    hide-search
+                    allow-outside-scroll
+                  >
                   </etools-dropdown>
                   <paper-tooltip offset="0">[[item.risk.value]]</paper-tooltip>
                 </template>
@@ -71,30 +82,41 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
           </template>
 
           <template is="dom-repeat" items="{{questionnaire.children}}" as="category">
-            <list-element class="list-element" data="[[category]]" headings="[[categoryHeader]]" no-animation multiline
-              no-hover>
+            <list-element
+              class="list-element"
+              data="[[category]]"
+              headings="[[categoryHeader]]"
+              no-animation
+              multiline
+              no-hover
+            >
             </list-element>
 
             <template is="dom-repeat" items="{{category.blueprints}}">
               <list-element
-                    class="list-element"
-                    data="[[_prepareData(item)]]"
-                    base-permission-path="[[basePermissionPath]]"
-                    headings="[[columns]]"
-                    details="[[details]]"
-                    has-collapse multiline no-animation>
+                class="list-element"
+                data="[[_prepareData(item)]]"
+                base-permission-path="[[basePermissionPath]]"
+                headings="[[columns]]"
+                details="[[details]]"
+                has-collapse
+                multiline
+                no-animation
+              >
                 <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
                   <paper-icon-button
-                        icon="create"
-                        class="edit-icon"
-                        on-tap="openEditDialog"
-                        category-id$="{{category.id}}">
+                    icon="create"
+                    class="edit-icon"
+                    on-tap="openEditDialog"
+                    category-id$="{{category.id}}"
+                  >
                   </paper-icon-button>
                 </div>
 
                 <div slot="custom">
                   <template is="dom-if" if="{{editMode}}">
-                    <etools-dropdown id="riskOptions2"
+                    <etools-dropdown
+                      id="riskOptions2"
                       class="disabled-as-readonly required validate-input"
                       selected="[[item.risk.value]]"
                       placeholder="&#8212;"
@@ -105,7 +127,10 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                       on-focus="_resetFieldError_riskTab"
                       trigger-value-change-event
                       on-etools-selected-item-changed="_riskValueChanged"
-                      dynamic-align hide-search allow-outside-scroll>
+                      dynamic-align
+                      hide-search
+                      allow-outside-scroll
+                    >
                     </etools-dropdown>
                     <paper-tooltip offset="0">[[item.risk.value]]</paper-tooltip>
                   </template>
@@ -123,62 +148,67 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   @property({type: Object, notify: true})
-  questionnaire: GenericObject = {}
+  questionnaire: GenericObject = {};
 
   @property({type: Number})
   index!: number;
 
   @property({type: Boolean})
-  opened: boolean = false;
+  opened = false;
 
   @property({type: Boolean, reflectToAttribute: true})
-  completed: boolean = false;
+  completed = false;
 
   @property({type: Boolean})
   disabled!: boolean;
 
   @property({type: Object})
   riskRatingOptions = {
-    'na': 'N/A',
-    'low': 'Low',
-    'medium': 'Medium',
-    'significant': 'Significant',
-    'high': 'High',
-    'moderate': 'Moderate'
+    na: 'N/A',
+    low: 'Low',
+    medium: 'Medium',
+    significant: 'Significant',
+    high: 'High',
+    moderate: 'Moderate'
   };
 
   @property({type: Array})
   columns = [
     {
-      'size': 100,
-      'class': 'pr-45',
-      'label': 'Question',
-      'name': 'header',
-      'html': true
-    }, {
-      'size': '160px',
-      'label': 'Risk Assessment',
-      'name': 'value',
-      'property': 'risk.value',
-      'custom': true,
-      'doNotHide': true
+      size: 100,
+      class: 'pr-45',
+      label: 'Question',
+      name: 'header',
+      html: true
+    },
+    {
+      size: '160px',
+      label: 'Risk Assessment',
+      name: 'value',
+      property: 'risk.value',
+      custom: true,
+      doNotHide: true
     }
   ];
 
   @property({type: Array})
-  details = [{
-    'label': 'Comments',
-    'path': 'risk.extra.comments',
-    'size': 100
-  }];
+  details = [
+    {
+      label: 'Comments',
+      path: 'risk.extra.comments',
+      size: 100
+    }
+  ];
 
   @property({type: Array})
-  categoryHeader = [{
-    'path': 'header',
-    'size': 100,
-    'html': true,
-    'class': 'question-title'
-  }];
+  categoryHeader = [
+    {
+      path: 'header',
+      size: 100,
+      html: true,
+      class: 'question-title'
+    }
+  ];
 
   @property({type: String})
   basePermissionPath!: string;
@@ -187,11 +217,8 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   riskOptions!: {value: string | number; display_name: string}[];
 
   static get observers() {
-    return [
-      '_setOpen(disabled, completed, firstRun, questionnaire)'
-    ];
+    return ['_setOpen(disabled, completed, firstRun, questionnaire)'];
   }
-
 
   connectedCallback() {
     super.connectedCallback();
@@ -200,7 +227,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   showResults(completed, open) {
-    if (!completed) {return false;}
+    if (!completed) {
+      return false;
+    }
     return !open;
   }
 
@@ -213,7 +242,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _setOpen(disabled, completed, firstRun) {
-    if (!firstRun) {return;}
+    if (!firstRun) {
+      return;
+    }
     this.set('opened', !completed && !disabled);
   }
 
@@ -249,11 +280,12 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
         throw new Error('Can not find category id!');
       }
 
-      questionnaireToSave.children = [{
-        id: childId,
-        blueprints: [{risk: {value: changedRiskRValue}, id: blueprintId}]
-      }];
-
+      questionnaireToSave.children = [
+        {
+          id: childId,
+          blueprints: [{risk: {value: changedRiskRValue}, id: blueprintId}]
+        }
+      ];
     } else {
       questionnaireToSave.blueprints = [{risk: {value: changedRiskRValue}, id: blueprintId}];
     }
@@ -266,9 +298,13 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   setPanelTitle(header, complited) {
-    if (!complited) {return header;}
+    if (!complited) {
+      return header;
+    }
     const label = this.riskRatingOptions && this.riskRatingOptions[this.questionnaire.risk_rating];
-    if (!label) {return header;}
+    if (!label) {
+      return header;
+    }
     return `${header} - ${label.toUpperCase()}`;
   }
 
@@ -279,15 +315,21 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   openEditDialog(event) {
     const item = event && event.model && event.model.item;
 
-    if (!item) {throw new Error('Can not find user data');}
+    if (!item) {
+      throw new Error('Can not find user data');
+    }
 
     let childId = null;
     if (this.questionnaire.children.length) {
       childId = event.target && event.target.getAttribute('category-id');
-      if (!childId) {throw new Error('Can not find category id!');}
+      if (!childId) {
+        throw new Error('Can not find category id!');
+      }
     }
     const data = cloneDeep(item);
-    if (!data.risk) {data.risk = {};}
+    if (!data.risk) {
+      data.risk = {};
+    }
     if (this.isJSONObj(data.risk.extra)) {
       data.risk.extra = JSON.parse(data.risk.extra);
     } else {
@@ -297,7 +339,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _setRiskValue(value, options) {
-    if (!options) {return;}
+    if (!options) {
+      return;
+    }
     if (isNumber(value)) {
       return options[value];
     }
@@ -305,15 +349,17 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _getStringValue(value, options, defaultValue) {
-    if (!options || !isNumber(value)) {return defaultValue;}
-    return options[value] && options[value].display_name || defaultValue;
+    if (!options || !isNumber(value)) {
+      return defaultValue;
+    }
+    return (options[value] && options[value].display_name) || defaultValue;
   }
 
   _prepareData(data) {
-    if (data && data.risk && this.isJSONObj(data.risk.extra)) {data.risk.extra = JSON.parse(data.risk.extra);}
+    if (data && data.risk && this.isJSONObj(data.risk.extra)) {
+      data.risk.extra = JSON.parse(data.risk.extra);
+    }
     return data;
   }
-
-
 }
 window.customElements.define('risk-tab', RiskTab);

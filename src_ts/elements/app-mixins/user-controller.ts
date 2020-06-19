@@ -1,10 +1,11 @@
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
+import {GenericObject} from '../../types/global';
 
 let _user: any = null;
 
-let _groups: object[] | string[] = [];
+let _groups: GenericObject[] | string[] = [];
 
 export function setUserData(user: any) {
   if (_user) {
@@ -35,6 +36,4 @@ function _setGroups(user) {
       return group.name;
     });
   }
-
 }
-

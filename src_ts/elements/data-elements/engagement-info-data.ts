@@ -18,7 +18,6 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
  * @appliesMixin EngagementMixin
  */
 class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement)) {
-
   // ts-@ignore
   @property({type: Number, notify: true, observer: '_idChanged'})
   engagementId: number | null = null;
@@ -27,7 +26,7 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
   engagementType!: string;
 
   @property({type: Object, notify: true, observer: '_setToResponse'})
-  engagementInfo!: {};
+  engagementInfo!: GenericObject;
 
   @property({type: Number})
   lastId!: number;
@@ -84,13 +83,19 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
   }
 
   _finishRequests(data) {
-    if (!this.requestsCompleted.data ||
+    if (
+      !this.requestsCompleted.data ||
       !this.requestsCompleted.apOptions ||
       !this.requestsCompleted.options ||
       !this.requestsCompleted.attachments ||
-      !this.requestsCompleted.reportAttachments) {return;}
+      !this.requestsCompleted.reportAttachments
+    ) {
+      return;
+    }
 
-    if (data) {this.engagementInfo = data;}
+    if (data) {
+      this.engagementInfo = data;
+    }
 
     fireEvent(this, 'global-loading', {type: 'engagement-info'});
     fireEvent(this, 'engagement-info-loaded');
@@ -124,12 +129,14 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
       endpoint
     };
     sendRequest(options)
-      .then(resp => this._handleDataOptionsResponse(resp, params))
-      .catch(error => this._handleOptionsError(error, params));
+      .then((resp) => this._handleDataOptionsResponse(resp, params))
+      .catch((error) => this._handleOptionsError(error, params));
   }
 
   _idChanged(id) {
-    if (!id || isNaN(id) || !this.engagementType) {return;}
+    if (!id || isNaN(id) || !this.engagementType) {
+      return;
+    }
 
     if (+id === this.lastId) {
       this.lastError ? this._handleError() : this._finishRequests(this.responseData || {});
@@ -143,21 +150,29 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
     fireEvent(this, 'global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
 
     const apBaseUrl = getEndpoint('engagementInfo', {id: id, type: 'engagements'}).url;
-    this._makeOptionsRequest({
-      postfix: 'ap',
-      requestName: 'apOptions'
-    }, {url: `${apBaseUrl}action-points/`});
+    this._makeOptionsRequest(
+      {
+        postfix: 'ap',
+        requestName: 'apOptions'
+      },
+      {url: `${apBaseUrl}action-points/`}
+    );
 
-    this._makeOptionsRequest({
-      postfix: 'attachments',
-      requestName: 'attachments'
-    }, getEndpoint('attachments', {id: id}));
+    this._makeOptionsRequest(
+      {
+        postfix: 'attachments',
+        requestName: 'attachments'
+      },
+      getEndpoint('attachments', {id: id})
+    );
 
-    this._makeOptionsRequest({
-      postfix: 'report_attachments',
-      requestName: 'reportAttachments'
-    }, getEndpoint('reportAttachments', {id: id}));
-
+    this._makeOptionsRequest(
+      {
+        postfix: 'report_attachments',
+        requestName: 'reportAttachments'
+      },
+      getEndpoint('reportAttachments', {id: id})
+    );
 
     const lastCreated = this.getLastEngagementData(id);
     // load engagement info if it was just created
@@ -182,9 +197,7 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
     const options = {
       endpoint: getEndpoint('engagementInfo', {id, type: this.engagementType})
     };
-    sendRequest(options)
-      .then(this._handleDataResponse.bind(this))
-      .catch(this._handleError.bind(this));
+    sendRequest(options).then(this._handleDataResponse.bind(this)).catch(this._handleError.bind(this));
   }
 
   _requestOptions(id) {
@@ -192,9 +205,7 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
       method: 'OPTIONS',
       endpoint: getEndpoint('engagementInfo', {id, type: this.engagementType})
     };
-    sendRequest(options)
-      .then(this._handleOptionsResponse.bind(this))
-      .catch(this._handleOptionsResponse.bind(this));
+    sendRequest(options).then(this._handleOptionsResponse.bind(this)).catch(this._handleOptionsResponse.bind(this));
   }
 }
 window.customElements.define('engagement-info-data', EngagementInfoData);

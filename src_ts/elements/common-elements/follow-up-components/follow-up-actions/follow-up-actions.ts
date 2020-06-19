@@ -57,7 +57,6 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
  * @appliesMixin CommonMethodsMixin
  */
 class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
-
   static get template() {
     return html`
       ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
@@ -442,57 +441,70 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   };
 
   @property({type: Array})
-  modelFields: string[] = ['assigned_to', 'category', 'description', 'section', 'office', 'due_date',
-    'high_priority', 'intervention'];
+  modelFields: string[] = [
+    'assigned_to',
+    'category',
+    'description',
+    'section',
+    'office',
+    'due_date',
+    'high_priority',
+    'intervention'
+  ];
 
   @property({type: Array})
   columns: GenericObject[] = [
     {
-      'size': 18,
-      'label': 'Reference Number #',
-      'name': 'reference_number',
-      'link': '*ap_link*',
-      'ordered': 'desc',
-      'path': 'reference_number',
-      'target': '_blank',
-      'class': 'with-icon',
-      'orderBy': 'id'
-    }, {
-      'size': 32,
-      'label': 'Action Point Category',
-      'labelPath': 'category',
-      'path': 'ap_category.display_name',
-      'name': 'category'
-    }, {
-      'size': 20,
-      'label': 'Assignee (Section / Office)',
-      'htmlLabel': 'Assignee<br/>(Section / Office)',
-      'path': 'computed_field',
-      'html': true,
-      'class': 'no-order'
-    }, {
-      'size': 10,
-      'label': 'Status',
-      'labelPath': 'status',
-      'align': 'center',
-      'property': 'status',
-      'path': 'status',
-      'class': 'caps',
-      'name': 'status'
-    }, {
-      'size': 10,
-      'label': 'Due Date',
-      'labelPath': 'due_date',
-      'path': 'due_date',
-      'name': 'date',
-      'align': 'center'
-    }, {
-      'size': 10,
-      'label': 'Priority',
-      'labelPath': 'high_priority',
-      'path': 'priority',
-      'align': 'center',
-      'name': 'high_priority'
+      size: 18,
+      label: 'Reference Number #',
+      name: 'reference_number',
+      link: '*ap_link*',
+      ordered: 'desc',
+      path: 'reference_number',
+      target: '_blank',
+      class: 'with-icon',
+      orderBy: 'id'
+    },
+    {
+      size: 32,
+      label: 'Action Point Category',
+      labelPath: 'category',
+      path: 'ap_category.display_name',
+      name: 'category'
+    },
+    {
+      size: 20,
+      label: 'Assignee (Section / Office)',
+      htmlLabel: 'Assignee<br/>(Section / Office)',
+      path: 'computed_field',
+      html: true,
+      class: 'no-order'
+    },
+    {
+      size: 10,
+      label: 'Status',
+      labelPath: 'status',
+      align: 'center',
+      property: 'status',
+      path: 'status',
+      class: 'caps',
+      name: 'status'
+    },
+    {
+      size: 10,
+      label: 'Due Date',
+      labelPath: 'due_date',
+      path: 'due_date',
+      name: 'date',
+      align: 'center'
+    },
+    {
+      size: 10,
+      label: 'Priority',
+      labelPath: 'high_priority',
+      path: 'priority',
+      align: 'center',
+      name: 'high_priority'
     }
   ];
 
@@ -518,10 +530,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   offices: GenericObject[] = [];
 
   @property({type: String})
-  orderBy: string = '-reference_number';
+  orderBy = '-reference_number';
 
   @property({type: Boolean, computed: '_checkNotTouched(copyDialog, editedItem.*)'})
-  notTouched: boolean = false;
+  notTouched = false;
 
   @property({type: Object})
   requestData!: GenericObject;
@@ -579,7 +591,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     return actionAllowed(editedApBase, 'complete');
   }
   _requestPartner(partner) {
-    const id = partner && +partner.id || null;
+    const id = (partner && +partner.id) || null;
     this.partnerId = id;
     this.selectedPartnerId = id;
   }
@@ -594,7 +606,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
 
   _orderChanged(newOrder, columns) {
-    if (!newOrder || !(columns instanceof Array)) {return false;}
+    if (!newOrder || !(columns instanceof Array)) {
+      return false;
+    }
 
     let direction = 'asc';
     let name = newOrder;
@@ -614,18 +628,18 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       }
     });
 
-    const sorted = sortBy(this.dataItems, item => item[orderBy]);
+    const sorted = sortBy(this.dataItems, (item) => item[orderBy]);
     this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
   }
 
   _addComputedField() {
     this.itemsToDisplay = this.dataItems.map((item: any) => {
-      item.priority = item.high_priority && 'High' || ' ';
+      item.priority = (item.high_priority && 'High') || ' ';
       const assignedTo = get(item, 'assigned_to.name', '--');
       const section = get(item, 'section.name', '--');
       const office = get(item, 'office.name', '--');
       item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
-      item.ap_category = find(this.categories, category => category.value === item.category);
+      item.ap_category = find(this.categories, (category) => category.value === item.category);
       return item;
     });
   }
@@ -637,7 +651,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
 
   _checkNonField(error) {
-    if (!error) {return;}
+    if (!error) {
+      return;
+    }
 
     const nonField = checkNonField(error);
     if (nonField) {
@@ -664,9 +680,13 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       }
     });
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
-      if (data[field] && data[field].id) {data[field] = data[field].id;}
+      if (data[field] && data[field].id) {
+        data[field] = data[field].id;
+      }
     });
-    if (this.editedItem.id && !isEmpty(data)) {data.id = this.editedItem.id;}
+    if (this.editedItem.id && !isEmpty(data)) {
+      data.id = this.editedItem.id;
+    }
 
     return isEmpty(data) ? null : data;
   }
@@ -687,7 +707,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
 
   _requestCompleted(event) {
-    if (!event || !event.detail) {return;}
+    if (!event || !event.detail) {
+      return;
+    }
     const detail = event.detail;
     this.requestInProcess = false;
     if (detail && detail.success) {
@@ -706,8 +728,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
   _openEditDialog(event) {
     this.editedApBase = '';
-    fireEvent(this, 'global-loading',
-      {type: 'get-ap-options', active: true, message: 'Loading data...'});
+    fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
     const index = this._getIndex(event);
     this._selectedAPIndex = index;
@@ -746,7 +767,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
 
   _checkNotTouched(copyDialog) {
-    if (!copyDialog || isEmpty(this.originalEditedObj)) {return false;}
+    if (!copyDialog || isEmpty(this.originalEditedObj)) {
+      return false;
+    }
     return every(this.originalEditedObj, (value, key) => {
       const isObj = isObject(value);
       if (isObj) {

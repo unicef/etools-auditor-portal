@@ -5,7 +5,6 @@ import {getEndpoint} from '../app-config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class GetActionPoints extends PolymerElement {
-
   @property({type: Number, notify: true, observer: '_engagementIdChanged'})
   engagementId!: number;
 
@@ -13,7 +12,7 @@ class GetActionPoints extends PolymerElement {
   actionPoints!: [];
 
   _handleResponse(data) {
-    this.actionPoints = data.length && data || [];
+    this.actionPoints = (data.length && data) || [];
     fireEvent(this, 'ap-loaded', {success: true});
   }
 
@@ -22,7 +21,9 @@ class GetActionPoints extends PolymerElement {
   }
 
   _engagementIdChanged(engagementId) {
-    if (!engagementId) {return;}
+    if (!engagementId) {
+      return;
+    }
     const apBaseUrl = getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
     const url = `${apBaseUrl}action-points/?page_size=all`;
 
@@ -37,8 +38,8 @@ class GetActionPoints extends PolymerElement {
     };
 
     sendRequest(requestOptions)
-      .then(resp => this._handleResponse(resp))
-      .catch((() => this._handleError()));
+      .then((resp) => this._handleResponse(resp))
+      .catch(() => this._handleError());
   }
 }
 window.customElements.define('get-action-points', GetActionPoints);

@@ -29,151 +29,154 @@ import {getStaticData} from '../../../app-mixins/static-data-controller';
  * @appliesMixin CommonMethodsMixin
  */
 class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
-
   static get template() {
     return html`
       ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
-      <style>
-      </style>
+      <style></style>
 
       <etools-content-panel class="content-section clearfx" panel-title="Engagement Status">
-          <div class="row-h group">
-              <div class="input-container">
-                  <!-- Date of Field Visit -->
-                  <datepicker-lite
-                          id="dateVisitInput"
-                          class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]]
+        <div class="row-h group">
+          <div class="input-container">
+            <!-- Date of Field Visit -->
+            <datepicker-lite
+              id="dateVisitInput"
+              class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]]
                                     validate-date"
-                          value="{{data.date_of_field_visit}}"
-                          label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
-                          placeholder="&#8212;"
-                          required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_field_visit', 'true', falseValue, basePermissionPath)]]"
-                          invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
-                          error-message="{{errors.date_of_field_visit}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          selected-date-display-format="D MMM YYYY"
-                          date="[[prepareDate(data.date_of_field_visit)]]">
-                  </datepicker-lite>
-              </div>
+              value="{{data.date_of_field_visit}}"
+              label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
+              placeholder="&#8212;"
+              required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
+              disabled$="[[_isReadOnly('date_of_field_visit', 'true', falseValue, basePermissionPath)]]"
+              invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
+              error-message="{{errors.date_of_field_visit}}"
+              on-focus="_resetFieldError"
+              on-tap="_resetFieldError"
+              selected-date-display-format="D MMM YYYY"
+              date="[[prepareDate(data.date_of_field_visit)]]"
+            >
+            </datepicker-lite>
+          </div>
 
-              <div class="input-container">
-                  <!-- Draft Report Issued to IP -->
-                  <datepicker-lite
-                          id="draftReportToIpInput"
-                          class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] 
+          <div class="input-container">
+            <!-- Draft Report Issued to IP -->
+            <datepicker-lite
+              id="draftReportToIpInput"
+              class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] 
                                     disabled-as-readonly validate-date"
-                          value="{{data.date_of_draft_report_to_ip}}"
-                          label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
-                          placeholder="&#8212;"
-                          required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip,
+              value="{{data.date_of_draft_report_to_ip}}"
+              label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
+              placeholder="&#8212;"
+              required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
+              disabled$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip,
                                     basePermissionPath)]]"
-                          invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
-                          error-message="{{errors.date_of_draft_report_to_ip}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          selected-date-display-format="D MMM YYYY"
-                          max-date="[[maxDate]]">
-                  </datepicker-lite>
-              </div>
+              invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
+              error-message="{{errors.date_of_draft_report_to_ip}}"
+              on-focus="_resetFieldError"
+              on-tap="_resetFieldError"
+              selected-date-display-format="D MMM YYYY"
+              max-date="[[maxDate]]"
+            >
+            </datepicker-lite>
+          </div>
 
-              <div class="input-container">
-                  <!-- Comments Received by IP -->
-                  <datepicker-lite
-                          id="commentsReceivedByIpInput"
-                          class$="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]
+          <div class="input-container">
+            <!-- Comments Received by IP -->
+            <datepicker-lite
+              id="commentsReceivedByIpInput"
+              class$="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
-                          value="{{data.date_of_comments_by_ip}}"
-                          label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
-                          placeholder="&#8212;"
-                          required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, 
+              value="{{data.date_of_comments_by_ip}}"
+              label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
+              placeholder="&#8212;"
+              required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
+              disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, 
                                         data.date_of_draft_report_to_unicef, basePermissionPath)]]"
-                          invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
-                          error-message="{{errors.date_of_comments_by_ip}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          selected-date-display-format="D MMM YYYY"
-                          min-date="[[minDate(data.date_of_draft_report_to_ip)]]"
-                          max-date="[[maxDate]]">
-                  </datepicker-lite>
-              </div>
+              invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
+              error-message="{{errors.date_of_comments_by_ip}}"
+              on-focus="_resetFieldError"
+              on-tap="_resetFieldError"
+              selected-date-display-format="D MMM YYYY"
+              min-date="[[minDate(data.date_of_draft_report_to_ip)]]"
+              max-date="[[maxDate]]"
+            >
+            </datepicker-lite>
           </div>
+        </div>
 
-          <div class="row-h group">
-              <div class="input-container">
-                  <!-- Draft Report Issued to UNICEF -->
-                  <datepicker-lite
-                          id="draftReportUnicefInput"
-                          class$="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]
+        <div class="row-h group">
+          <div class="input-container">
+            <!-- Draft Report Issued to UNICEF -->
+            <datepicker-lite
+              id="draftReportUnicefInput"
+              class$="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
-                          value="{{data.date_of_draft_report_to_unicef}}"
-                          label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
-                          placeholder="&#8212;"
-                          required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, 
+              value="{{data.date_of_draft_report_to_unicef}}"
+              label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
+              placeholder="&#8212;"
+              required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
+              disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, 
                                     data.date_of_comments_by_unicef, basePermissionPath)]]"
-                          invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
-                          error-message="{{errors.date_of_draft_report_to_unicef}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          selected-date-display-format="D MMM YYYY"
-                          min-date="[[minDate(data.date_of_comments_by_ip)]]"
-                          max-date="[[maxDate]]">
-                  </datepicker-lite>
-              </div>
-
-              <div class="input-container">
-                  <!-- Comments Received by UNICEF -->
-                  <datepicker-lite
-                          id="commentsReceivedUnicefInput"
-                          class$="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]
-                                    disabled-as-readonly validate-date"
-                          value="{{data.date_of_comments_by_unicef}}"
-                          label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
-                          placeholder="&#8212;"
-                          required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
-                          disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef,
-                                        '', basePermissionPath)]]"
-                          invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
-                          error-message="{{errors.date_of_comments_by_unicef}}"
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError"
-                          selected-date-display-format="D MMM YYYY"
-                          min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
-                          max-date="[[maxDate]]">
-                  </datepicker-lite>
-              </div>
-
-              <template is="dom-if" if="[[showCurrency(basePermissionPath)]]">               
-                <div class="input-container">
-                        <!-- Currency of Report -->
-                        <etools-dropdown
-                                    id="currency_of_report"
-                                    class$="validate-input disabled-as-readonly [[_setRequired('currency_of_report', basePermissionPath)]]"
-                                    selected="{{data.currency_of_report}}"
-                                    options="[[currencies]]"
-                                    option-label="label"
-                                    option-value="value"
-                                    label="[[getLabel('currency_of_report', basePermissionPath)]]"
-                                    placeholder="[[getPlaceholderText('currency_of_report', basePermissionPath, 'dropdown')]]"
-                                    required$="{{_setRequired('currency_of_report', basePermissionPath)}}"
-                                    disabled$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
-                                    readonly$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
-                                    invalid="{{_checkInvalid(errors.currency_of_report)}}"
-                                    error-message="{{errors.currency_of_report}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError"
-                                    dynamic-align>
-                        </etools-dropdown>
-                </div>
-            </template>
+              invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
+              error-message="{{errors.date_of_draft_report_to_unicef}}"
+              on-focus="_resetFieldError"
+              on-tap="_resetFieldError"
+              selected-date-display-format="D MMM YYYY"
+              min-date="[[minDate(data.date_of_comments_by_ip)]]"
+              max-date="[[maxDate]]"
+            >
+            </datepicker-lite>
           </div>
-      </etools-content-panel>
 
-  `;
+          <div class="input-container">
+            <!-- Comments Received by UNICEF -->
+            <datepicker-lite
+              id="commentsReceivedUnicefInput"
+              class$="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]
+                                    disabled-as-readonly validate-date"
+              value="{{data.date_of_comments_by_unicef}}"
+              label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
+              placeholder="&#8212;"
+              required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
+              disabled$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef,
+                                        '', basePermissionPath)]]"
+              invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
+              error-message="{{errors.date_of_comments_by_unicef}}"
+              on-focus="_resetFieldError"
+              on-tap="_resetFieldError"
+              selected-date-display-format="D MMM YYYY"
+              min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
+              max-date="[[maxDate]]"
+            >
+            </datepicker-lite>
+          </div>
+
+          <template is="dom-if" if="[[showCurrency(basePermissionPath)]]">
+            <div class="input-container">
+              <!-- Currency of Report -->
+              <etools-dropdown
+                id="currency_of_report"
+                class$="validate-input disabled-as-readonly [[_setRequired('currency_of_report', basePermissionPath)]]"
+                selected="{{data.currency_of_report}}"
+                options="[[currencies]]"
+                option-label="label"
+                option-value="value"
+                label="[[getLabel('currency_of_report', basePermissionPath)]]"
+                placeholder="[[getPlaceholderText('currency_of_report', basePermissionPath, 'dropdown')]]"
+                required$="{{_setRequired('currency_of_report', basePermissionPath)}}"
+                disabled$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
+                readonly$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
+                invalid="{{_checkInvalid(errors.currency_of_report)}}"
+                error-message="{{errors.currency_of_report}}"
+                on-focus="_resetFieldError"
+                on-tap="_resetFieldError"
+                dynamic-align
+              >
+              </etools-dropdown>
+            </div>
+          </template>
+        </div>
+      </etools-content-panel>
+    `;
   }
   static get observers() {
     return [
@@ -200,7 +203,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   maxDate = new Date();
 
   @property({type: Boolean, readOnly: true})
-  falseValue: boolean = false;
+  falseValue = false;
 
   @property({type: Array})
   currencies!: [];
@@ -209,7 +212,10 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   tabTexts: GenericObject = {
     name: 'Engagement Status',
     fields: [
-      'date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip', 'date_of_draft_report_to_unicef',
+      'date_of_field_visit',
+      'date_of_draft_report_to_ip',
+      'date_of_comments_by_ip',
+      'date_of_draft_report_to_unicef',
       'date_of_comments_by_unicef'
     ]
   };
@@ -247,19 +253,39 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   }
 
   checkDateValues() {
-    if (!this.data) {return;}
-    if (!this.data.date_of_field_visit) {this.data.date_of_field_visit = null;}
-    if (!this.data.date_of_draft_report_to_ip) {this.data.date_of_draft_report_to_ip = null;}
-    if (!this.data.date_of_comments_by_ip) {this.data.date_of_comments_by_ip = null;}
-    if (!this.data.date_of_draft_report_to_unicef) {this.data.date_of_draft_report_to_unicef = null;}
-    if (!this.data.date_of_comments_by_unicef) {this.data.date_of_comments_by_unicef = null;}
+    if (!this.data) {
+      return;
+    }
+    if (!this.data.date_of_field_visit) {
+      this.data.date_of_field_visit = null;
+    }
+    if (!this.data.date_of_draft_report_to_ip) {
+      this.data.date_of_draft_report_to_ip = null;
+    }
+    if (!this.data.date_of_comments_by_ip) {
+      this.data.date_of_comments_by_ip = null;
+    }
+    if (!this.data.date_of_draft_report_to_unicef) {
+      this.data.date_of_draft_report_to_unicef = null;
+    }
+    if (!this.data.date_of_comments_by_unicef) {
+      this.data.date_of_comments_by_unicef = null;
+    }
   }
 
   getAssignVisitData() {
-    let data = pickBy(this.data, (value, key) => {
-      let properties = ['date_of_field_visit', 'date_of_draft_report_to_ip', 'date_of_comments_by_ip',
-        'date_of_draft_report_to_unicef', 'date_of_comments_by_unicef', 'currency_of_report'];
-      if (!~properties.indexOf(key)) {return false;}
+    const data = pickBy(this.data, (value, key) => {
+      const properties = [
+        'date_of_field_visit',
+        'date_of_draft_report_to_ip',
+        'date_of_comments_by_ip',
+        'date_of_draft_report_to_unicef',
+        'date_of_comments_by_unicef',
+        'currency_of_report'
+      ];
+      if (!~properties.indexOf(key)) {
+        return false;
+      }
 
       return !this.originalData || this.originalData[key] !== value;
     });
@@ -288,7 +314,6 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
   _checkInvalid(value) {
     return !!value;
   }
-
 }
 window.customElements.define('assign-engagement', AssignEngagement);
 
