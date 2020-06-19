@@ -30,13 +30,18 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
         }
       </style>
 
-      <list-element id="listElement" class="list-element"
-        data="{{areaData}}" base-permission-path="[[basePermissionPath]]"
-        headings="[[headings]]" details="[[details]]"
-        has-collapse no-animation>
+      <list-element
+        id="listElement"
+        class="list-element"
+        data="{{areaData}}"
+        base-permission-path="[[basePermissionPath]]"
+        headings="[[headings]]"
+        details="[[details]]"
+        has-collapse
+        no-animation
+      >
         <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-          <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog">
-          </paper-icon-button>
+          <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"> </paper-icon-button>
         </div>
       </list-element>
     `;
@@ -61,9 +66,7 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   areaData!: any[];
 
   static get observers() {
-    return [
-      '_setAreaData(area, riskOptions)'
-    ];
+    return ['_setAreaData(area, riskOptions)'];
   }
 
   connectedCallback() {
@@ -74,7 +77,9 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   _setAreaData(data, riskOptions) {
-    if (!data || !riskOptions) {return;}
+    if (!data || !riskOptions) {
+      return;
+    }
     if (!data.changed) {
       this.originalData = cloneDeep(data);
     }
@@ -97,9 +102,15 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   getRiskData() {
-    if (!this.area.blueprints[0].risk || !this.area.blueprints[0].risk.value) {return null;}
-    if (this.area.blueprints[0].risk.value.value === this.originalData.blueprints[0].risk.value &&
-      isEqual(this.area.blueprints[0].risk.extra, this.originalData.blueprints[0].risk.extra)) {return null;}
+    if (!this.area.blueprints[0].risk || !this.area.blueprints[0].risk.value) {
+      return null;
+    }
+    if (
+      this.area.blueprints[0].risk.value.value === this.originalData.blueprints[0].risk.value &&
+      isEqual(this.area.blueprints[0].risk.extra, this.originalData.blueprints[0].risk.extra)
+    ) {
+      return null;
+    }
 
     const risk = {
       extra: this.area.blueprints[0].risk.extra,

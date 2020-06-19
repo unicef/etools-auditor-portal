@@ -9,8 +9,8 @@ declare const moment: any;
 function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class DateMixinClass extends baseClass {
     /**
-         * Format date string to any format supported by momentjs
-         */
+     * Format date string to any format supported by momentjs
+     */
     prettyDate(dateString, format) {
       if (!format) {
         format = 'D MMM YYYY';
@@ -26,8 +26,8 @@ function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     /**
-         * Prepare date from string
-         */
+     * Prepare date from string
+     */
     prepareDate(dateString) {
       if (typeof dateString === 'string' && dateString !== '') {
         let date = new Date(dateString);

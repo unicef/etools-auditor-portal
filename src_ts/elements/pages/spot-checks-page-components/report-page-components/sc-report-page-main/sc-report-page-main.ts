@@ -14,7 +14,6 @@ import {SummaryFindingsElement} from '../summary-findings-element/summary-findin
 import {InternalControlsElement} from '../internal-controls/internal-controls';
 import {OverviewElement} from '../overview-element/overview-element';
 
-
 /**
  * @polymer
  */
@@ -22,50 +21,53 @@ class ScReportPageMain extends PolymerElement {
   static get template() {
     // language=HTML
     return html`
-
       <assign-engagement
-              id="assignEngagement"
-              data="{{engagement}}"
-              audit-type="Spot Check"
-              error-object="{{errorObject}}"
-              original-data="[[originalData]]"
-              base-permission-path="{{permissionBase}}">
+        id="assignEngagement"
+        data="{{engagement}}"
+        audit-type="Spot Check"
+        error-object="{{errorObject}}"
+        original-data="[[originalData]]"
+        base-permission-path="{{permissionBase}}"
+      >
       </assign-engagement>
 
       <overview-element
-              id="overviewEngagement"
-              data="{{engagement}}"
-              original-data="[[originalData]]"
-              error-object="{{errorObject}}"
-              base-permission-path="{{permissionBase}}">
+        id="overviewEngagement"
+        data="{{engagement}}"
+        original-data="[[originalData]]"
+        error-object="{{errorObject}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </overview-element>
 
       <summary-findings-element
-              id="findingsHighPriority"
-              data-items="{{engagement.findings}}"
-              error-object="{{errorObject}}"
-              original-data="[[originalData.findings]]"
-              priority="{{priorities.high}}"
-              base-permission-path="{{permissionBase}}">
+        id="findingsHighPriority"
+        data-items="{{engagement.findings}}"
+        error-object="{{errorObject}}"
+        original-data="[[originalData.findings]]"
+        priority="{{priorities.high}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </summary-findings-element>
 
       <summary-findings-element
-              id="findingsLowPriority"
-              data-items="{{engagement.findings}}"
-              error-object="{{errorObject}}"
-              original-data="[[originalData.findings]]"
-              priority="{{priorities.low}}"
-              base-permission-path="{{permissionBase}}">
+        id="findingsLowPriority"
+        data-items="{{engagement.findings}}"
+        error-object="{{errorObject}}"
+        original-data="[[originalData.findings]]"
+        priority="{{priorities.low}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </summary-findings-element>
 
       <internal-controls
-              id="internalControls"
-              error-object="{{errorObject}}"
-              data="{{engagement.internal_controls}}"
-              original-data="[[originalData.internal_controls]]"
-              base-permission-path="{{permissionBase}}">
+        id="internalControls"
+        error-object="{{errorObject}}"
+        data="{{engagement.internal_controls}}"
+        original-data="[[originalData.internal_controls]]"
+        base-permission-path="{{permissionBase}}"
+      >
       </internal-controls>
-
     `;
   }
 
@@ -85,8 +87,9 @@ class ScReportPageMain extends PolymerElement {
   engagement: GenericObject = {};
 
   validate(forSave) {
-    const assignTabValid =
-          (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagementEl).validate(forSave);
+    const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagementEl).validate(
+      forSave
+    );
 
     return assignTabValid;
   }

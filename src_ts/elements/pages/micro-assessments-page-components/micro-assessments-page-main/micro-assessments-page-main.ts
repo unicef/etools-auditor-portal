@@ -34,45 +34,49 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     return html`
       <style>
         .repeatable-item-container {
-            margin-bottom: 0 !important;
+          margin-bottom: 0 !important;
         }
       </style>
       ${sharedStyles}${moduleStyles}${mainPageStyles}${tabInputsStyles}
-      <app-route
-        route="{{route}}"
-        pattern="/:id/:tab"
-        data="{{routeData}}">
-      </app-route>
+      <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
 
       <engagement-info-data
-            engagement-id="{{engagementId}}"
-            engagement-type="micro-assessments"
-            engagement-info="{{engagement}}">
+        engagement-id="{{engagementId}}"
+        engagement-type="micro-assessments"
+        engagement-info="{{engagement}}"
+      >
       </engagement-info-data>
 
       <update-engagement
-            updated-engagement-data="{{updatedEngagement}}"
-            quiet-adding="{{quietAdding}}"
-            force-options-update="{{forceOptionsUpdate}}"
-            engagement="{{engagement}}"
-            error-object="{{errorObject}}"
-            base-permission-path="{{permissionBase}}">
+        updated-engagement-data="{{updatedEngagement}}"
+        quiet-adding="{{quietAdding}}"
+        force-options-update="{{forceOptionsUpdate}}"
+        engagement="{{engagement}}"
+        error-object="{{errorObject}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </update-engagement>
 
       <template is="dom-if" if="[[engagement.id]]" restamp>
-        <pages-header-element show-export-button hide-print-button export-links="[[_setExportLinks(engagement)]]"
-          engagement="[[engagement]]" page-title="[[engagement.partner.name]] - Micro Assessment">
+        <pages-header-element
+          show-export-button
+          hide-print-button
+          export-links="[[_setExportLinks(engagement)]]"
+          engagement="[[engagement]]"
+          page-title="[[engagement.partner.name]] - Micro Assessment"
+        >
         </pages-header-element>
 
         <div class="tab-selector">
           <paper-tabs
-                attr-for-selected="name"
-                noink
-                bottom-item
-                role="tablist"
-                tabindex="0"
-                selected="{{tab}}"
-                id="pageTabs">
+            attr-for-selected="name"
+            noink
+            bottom-item
+            role="tablist"
+            tabindex="0"
+            selected="{{tab}}"
+            id="pageTabs"
+          >
             <paper-tab name="overview">
               <span class="tab-content">Engagement Overview</span>
             </paper-tab>
@@ -110,71 +114,95 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                   </etools-content-panel>
                 </template>
 
-                <engagement-info-details id="engagementDetails"
-                  data="{{engagement}}" original-data="[[originalData]]"
+                <engagement-info-details
+                  id="engagementDetails"
+                  data="{{engagement}}"
+                  original-data="[[originalData]]"
                   error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}">
+                  base-permission-path="{{permissionBase}}"
+                >
                 </engagement-info-details>
 
-                <partner-details-tab original-data="[[originalData]]"
-                  id="partnerDetails" engagement="{{engagement}}"
+                <partner-details-tab
+                  original-data="[[originalData]]"
+                  id="partnerDetails"
+                  engagement="{{engagement}}"
                   error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}">
+                  base-permission-path="{{permissionBase}}"
+                >
                 </partner-details-tab>
 
-
-                <engagement-staff-members-tab id="staffMembers"
+                <engagement-staff-members-tab
+                  id="staffMembers"
                   engagement="{{engagement}}"
                   base-permission-path="{{permissionBase}}"
-                  error-object="{{errorObject}}">
+                  error-object="{{errorObject}}"
+                >
                 </engagement-staff-members-tab>
               </div>
 
               <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
                 <div name="report">
-                  <ma-report-page-main id="report" original-data="[[originalData]]"
+                  <ma-report-page-main
+                    id="report"
+                    original-data="[[originalData]]"
                     engagement="{{engagement}}"
                     error-object="{{errorObject}}"
-                    permission-base="{{permissionBase}}">
+                    permission-base="{{permissionBase}}"
+                  >
                   </ma-report-page-main>
                 </div>
               </template>
 
               <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
                 <div name="questionnaire">
-                  <questionnaire-page-main id="questionnaire" data="[[engagement.questionnaire]]"
+                  <questionnaire-page-main
+                    id="questionnaire"
+                    data="[[engagement.questionnaire]]"
                     risk-assessment="[[engagement.overall_risk_assessment.blueprints.0.risk.value_display]]"
-                    error-object="{{errorObject}}" base-permission-path="{{permissionBase}}">
+                    error-object="{{errorObject}}"
+                    base-permission-path="{{permissionBase}}"
+                  >
                   </questionnaire-page-main>
                 </div>
               </template>
 
               <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
                 <div name="follow-up">
-                  <follow-up-main id="follow-up" original-data="[[originalData]]" error-object="{{errorObject}}"
-                    engagement="{{engagement}}" permission-base="{{permissionBase}}">
+                  <follow-up-main
+                    id="follow-up"
+                    original-data="[[originalData]]"
+                    error-object="{{errorObject}}"
+                    engagement="{{engagement}}"
+                    permission-base="{{permissionBase}}"
+                  >
                   </follow-up-main>
                 </div>
               </template>
 
               <div name="attachments">
-                <file-attachments-tab id="engagement_attachments"
+                <file-attachments-tab
+                  id="engagement_attachments"
                   data-base-path="[[permissionBase]]"
                   path-postfix="attachments"
                   base-id="[[engagement.id]]"
                   error-object="{{errorObject}}"
                   error-property="engagement_attachments"
-                  endpoint-name="attachments">
+                  endpoint-name="attachments"
+                >
                 </file-attachments-tab>
 
                 <template is="dom-if" if="[[hasReportAccess(permissionBase, engagement)]]" restamp>
-                  <file-attachments-tab id="report_attachments"
-                    is-report-tab="true" data-base-path="[[permissionBase]]"
+                  <file-attachments-tab
+                    id="report_attachments"
+                    is-report-tab="true"
+                    data-base-path="[[permissionBase]]"
                     path-postfix="report_attachments"
                     base-id="[[engagement.id]]"
                     error-object="{{errorObject}}"
                     error-property="report_attachments"
-                    endpoint-name="reportAttachments">
+                    endpoint-name="reportAttachments"
+                  >
                   </file-attachments-tab>
                 </template>
               </div>
@@ -187,20 +215,29 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
           </div>
         </div>
 
-        <etools-dialog no-padding keep-dialog-open size="md" opened="{{dialogOpened}}"
-          dialog-title="Cancellation of Engagement" ok-btn-text="Continue" on-confirm-btn-clicked="_cancelEngagement">
+        <etools-dialog
+          no-padding
+          keep-dialog-open
+          size="md"
+          opened="{{dialogOpened}}"
+          dialog-title="Cancellation of Engagement"
+          ok-btn-text="Continue"
+          on-confirm-btn-clicked="_cancelEngagement"
+        >
           <div class="row-h repeatable-item-container" without-line>
             <div class="repeatable-item-content">
               <div class="row-h group">
                 <div class="input-container input-container-l">
                   <paper-textarea
-                        id="cancellationReasonInput"
-                        class="required"
-                        label="Cancellation Reason"
-                        placeholder="Enter reason of cancellation"
-                        required max-rows="4"
-                        error-message="This field is required."
-                        on-focus="_resetFieldError">
+                    id="cancellationReasonInput"
+                    class="required"
+                    label="Cancellation Reason"
+                    placeholder="Enter reason of cancellation"
+                    required
+                    max-rows="4"
+                    error-message="This field is required."
+                    on-focus="_resetFieldError"
+                  >
                   </paper-textarea>
                 </div>
               </div>
@@ -245,7 +282,9 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     const questionnaireValid = this.getElement('#questionnaire').validateComplited();
     const reportValid = this.getElement('#report').validate();
 
-    if (!basicInfoValid) {return false;}
+    if (!basicInfoValid) {
+      return false;
+    }
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -271,17 +310,23 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     const reportTab = hasReport ? this.getElement('#report') : null;
 
     const subjectAreas = reportTab && reportTab.getInternalControlsData();
-    if (subjectAreas) {data.test_subject_areas = subjectAreas;}
+    if (subjectAreas) {
+      data.test_subject_areas = subjectAreas;
+    }
 
     const overallRisk = reportTab && reportTab.getPrimaryRiskData();
-    if (overallRisk) {data.overall_risk_assessment = overallRisk;}
+    if (overallRisk) {
+      data.overall_risk_assessment = overallRisk;
+    }
 
     const findingsData = reportTab && reportTab.getFindingsData();
-    if (findingsData && findingsData.length) {data.findings = findingsData;}
+    if (findingsData && findingsData.length) {
+      data.findings = findingsData;
+    }
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');
-    const followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+    const followUpData = (followUpPage && followUpPage.getFollowUpData()) || {};
     assign(data, followUpData);
 
     return data;

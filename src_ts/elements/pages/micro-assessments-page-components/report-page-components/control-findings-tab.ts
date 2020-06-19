@@ -25,7 +25,7 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
           display: block;
         }
 
-        .repeatable-item-container.row-h  {
+        .repeatable-item-container.row-h {
           width: 100%;
           min-width: 0 !important;
           margin-bottom: 0 !important;
@@ -45,15 +45,14 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
         etools-content-panel {
           --ecp-content: {
             padding: 0;
-          };
+          }
         }
       </style>
 
       <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
         <div slot="panel-btns">
           <div hidden$="[[!canBeChanged]]">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box">
-            </paper-icon-button>
+            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -61,9 +60,15 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
         <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
         <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-
-          <list-element class="list-element" data="[[item]]" base-permission-path="[[basePermissionPath]]"
-            headings="[[columns]]" details="[[details]]" has-collapse no-animation>
+          <list-element
+            class="list-element"
+            data="[[item]]"
+            base-permission-path="[[basePermissionPath]]"
+            headings="[[columns]]"
+            details="[[details]]"
+            has-collapse
+            no-animation
+          >
             <div slot="hover" class="edit-icon-slot" hidden$="[[!canBeChanged]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
               <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
@@ -72,24 +77,39 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
         </template>
 
         <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation>
-          </list-element>
+          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
         </template>
       </etools-content-panel>
-      <etools-dialog theme="confirmation" size="md" keep-dialog-open opened="{{confirmDialogOpened}}"
-        on-confirm-btn-clicked="removeItem" ok-btn-text="Delete">
+      <etools-dialog
+        theme="confirmation"
+        size="md"
+        keep-dialog-open
+        opened="{{confirmDialogOpened}}"
+        on-confirm-btn-clicked="removeItem"
+        ok-btn-text="Delete"
+      >
         [[deleteTitle]]
       </etools-dialog>
 
-      <etools-dialog no-padding keep-dialog-open size="md" opened="{{dialogOpened}}" delete-dialog="[[deleteDialog]]"
-        dialog-title="[[dialogTitle]]" ok-btn-text="[[confirmBtnText]]" show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}" on-confirm-btn-clicked="_addItemFromDialog">
+      <etools-dialog
+        no-padding
+        keep-dialog-open
+        size="md"
+        opened="{{dialogOpened}}"
+        delete-dialog="[[deleteDialog]]"
+        dialog-title="[[dialogTitle]]"
+        ok-btn-text="[[confirmBtnText]]"
+        show-spinner="{{requestInProcess}}"
+        disable-confirm-btn="{{requestInProcess}}"
+        on-confirm-btn-clicked="_addItemFromDialog"
+      >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <!-- Finding -->
-                <paper-input class$="validate-input {{_setRequired('findings.finding', basePermissionPath)}}"
+                <paper-input
+                  class$="validate-input {{_setRequired('findings.finding', basePermissionPath)}}"
                   value="{{editedItem.finding}}"
                   label="[[getLabel('findings.finding', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
@@ -100,7 +120,8 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
                   invalid="{{errors.0.finding}}"
                   error-message="{{errors.0.finding}}"
                   on-focus="_resetFieldError"
-                  on-tap="_resetFieldError">
+                  on-tap="_resetFieldError"
+                >
                 </paper-input>
               </div>
             </div>
@@ -108,16 +129,21 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
-                <paper-textarea class$="validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
-                  value="{{editedItem.recommendation}}" allowed-pattern="[\d\s]"
+                <paper-textarea
+                  class$="validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
+                  value="{{editedItem.recommendation}}"
+                  allowed-pattern="[ds]"
                   label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
                   required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
-                  max-rows="4" invalid="{{errors.0.recommendation}}"
+                  max-rows="4"
+                  invalid="{{errors.0.recommendation}}"
                   error-message="{{errors.0.recommendation}}"
-                  on-focus="_resetFieldError" on-tap="_resetFieldError">
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                >
                 </paper-textarea>
               </div>
             </div>
@@ -142,20 +168,22 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   @property({type: Array})
   columns = [
     {
-      'size': 100,
-      'label': 'Description of Finding',
-      'labelPath': 'findings.finding',
-      'path': 'finding'
+      size: 100,
+      label: 'Description of Finding',
+      labelPath: 'findings.finding',
+      path: 'finding'
     }
   ];
 
   @property({type: Array})
-  details = [{
-    'label': 'Recommendation and IP Management Response',
-    'labelPath': 'findings.recommendation',
-    'path': 'recommendation',
-    'size': 100
-  }];
+  details = [
+    {
+      label: 'Recommendation and IP Management Response',
+      labelPath: 'findings.recommendation',
+      path: 'recommendation',
+      size: 100
+    }
+  ];
 
   @property({type: Object})
   addDialogTexts = {
@@ -171,10 +199,10 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
   @property({type: String})
-  basePermissionPath: string = '';
+  basePermissionPath = '';
 
   @property({type: Boolean})
-  canBeChanged: boolean = false;
+  canBeChanged = false;
 
   static get observers() {
     return [
@@ -186,7 +214,9 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   }
 
   _checkNonField(error) {
-    if (!error) {return;}
+    if (!error) {
+      return;
+    }
 
     const nonField = checkNonField(error);
     if (nonField) {
@@ -197,6 +227,5 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   dataItemsChanged() {
     this.canBeChanged = this._canBeChanged(this.basePermissionPath);
   }
-
 }
 window.customElements.define('control-findings-tab', ControlFindingsTab);

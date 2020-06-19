@@ -64,7 +64,7 @@ export const RiskTabStyles = html`
     .tab-container .risk-result-container .result-element .value.medium {
       color: var(--module-warning);
     }
-    .tab-container .risk-result-container .result-element .value.significant, 
+    .tab-container .risk-result-container .result-element .value.significant,
     :host .tab-container .risk-result-container .result-element .value.high {
       color: var(--module-error);
     }
@@ -88,8 +88,7 @@ export const RiskTabStyles = html`
 
       --ecp-content: {
         padding: 0;
-      };
+      }
     }
-
   </style>
 `;

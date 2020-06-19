@@ -4,7 +4,6 @@ import './multi-notification-item';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
 
-
 /**
  * @polymer
  * @customElement
@@ -12,19 +11,19 @@ import {GenericObject} from '../../../types/global';
 class MultiNotificationList extends PolymerElement {
   static get template() {
     return html`
-        <style>
-            :host {
-                display: block;
-                position: fixed;
-                left: 0;
-                bottom: 0;
-                z-index: 105;
-            }
-        </style>
+      <style>
+        :host {
+          display: block;
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          z-index: 105;
+        }
+      </style>
 
-        <template is="dom-repeat" items="[[notifications]]">
-            <multi-notification-item id="[[item.id]]" opened text="{{item.text}}"></multi-notification-item>
-        </template>
+      <template is="dom-repeat" items="[[notifications]]">
+        <multi-notification-item id="[[item.id]]" opened text="{{item.text}}"></multi-notification-item>
+      </template>
     `;
   }
 
@@ -35,10 +34,10 @@ class MultiNotificationList extends PolymerElement {
   notificationsQueue: GenericObject[] = [];
 
   @property({type: Number})
-  limit: number = 3;
+  limit = 3;
 
   @property({type: Number})
-  count: number = 1;
+  count = 1;
 
   connectedCallback() {
     super.connectedCallback();
@@ -97,11 +96,9 @@ class MultiNotificationList extends PolymerElement {
 
   _resetNotifications() {
     ['notifications', 'notificationsQueue'].forEach((arrayName) => {
-      const result = this[arrayName].filter(toast => toast.fixed);
+      const result = this[arrayName].filter((toast) => toast.fixed);
       this.set(arrayName, result);
     });
   }
-
 }
 window.customElements.define('multi-notification-list', MultiNotificationList);
-

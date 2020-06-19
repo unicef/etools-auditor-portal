@@ -14,7 +14,6 @@ import {refactorErrorObject} from './error-handler';
  */
 function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class TableElementsMixinClass extends baseClass {
-
     @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
     dataItems: any[] = [];
 
@@ -32,27 +31,27 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
      * or on click on Save btn in status component (when true)
      */
     @property({type: Boolean})
-    saveWithButton: boolean = false;
+    saveWithButton = false;
 
     @property({type: Object})
     errors: GenericObject = {};
 
     // TODO: polymer 3 migration - check if this observer is needed
     @property({type: Boolean, observer: 'updateStyles'})
-    canBeRemoved: boolean = false;
+    canBeRemoved = false;
 
     // TODO: polymer 3 migration - check if this observer is needed
     @property({type: Boolean, observer: 'updateStyles'})
-    requestInProcess: boolean = false;
+    requestInProcess = false;
 
     @property({type: Boolean})
-    confirmDialogOpened: boolean = false;
+    confirmDialogOpened = false;
 
     @property({type: Boolean})
-    addDialog: boolean = false;
+    addDialog = false;
 
     @property({type: Boolean})
-    dialogOpened: boolean = false;
+    dialogOpened = false;
 
     @property({type: Number})
     editedIndex!: number;
@@ -178,7 +177,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     openEditDialog(event = {}) {
-      let index = (event as GenericObject).itemIndex;// TODO is event.itemIndex ever valid?
+      let index = (event as GenericObject).itemIndex; // TODO is event.itemIndex ever valid?
       if (isNaN(index) || !~index) {
         index = this._getIndex(event);
       }

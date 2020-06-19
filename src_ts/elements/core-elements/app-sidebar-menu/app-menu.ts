@@ -17,26 +17,21 @@ import {apIcons, famIcon} from '../../styles-elements/ap-icons';
  * @appliesMixin GestureEventListeners
  */
 class AppMenu extends GestureEventListeners(PolymerElement) {
-
   public static get template() {
     // main template
     // language=HTML
     return html`
-      ${navMenuStyles}
-      ${apIcons}
-      ${famIcon}
+      ${navMenuStyles} ${apIcons} ${famIcon}
 
       <div class="menu-header">
         <span id="app-name">
-          FINANCIAL  <br>
-          ASSURANCE  <br>
+          FINANCIAL <br />
+          ASSURANCE <br />
           MODULE
         </span>
 
         <span class="ripple-wrapper main">
-          <iron-icon id="menu-header-top-icon"
-                    icon="fam-main-icon:fam-icon"
-                    on-tap="_toggleSmallMenu"></iron-icon>
+          <iron-icon id="menu-header-top-icon" icon="fam-main-icon:fam-icon" on-tap="_toggleSmallMenu"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
 
@@ -45,18 +40,13 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
         </paper-tooltip>
 
         <span class="ripple-wrapper">
-          <iron-icon id="minimize-menu"
-                    icon="chevron-left"
-                    on-tap="_toggleSmallMenu"></iron-icon>
+          <iron-icon id="minimize-menu" icon="chevron-left" on-tap="_toggleSmallMenu"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
       </div>
 
       <div class="nav-menu">
-        <iron-selector selected="[[selectedOption]]"
-                       attr-for-selected="menu-name"
-                       role="navigation">
-
+        <iron-selector selected="[[selectedOption]]" attr-for-selected="menu-name" role="navigation">
           <a class="nav-menu-item" menu-name="engagements" href$="[[rootPath]]engagements/list?reload=true">
             <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
             <paper-tooltip for="iconEngagements" position="right">
@@ -79,16 +69,14 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           <span>eTools Community Channels</span>
         </div>
 
-        <a class="nav-menu-item lighter-item no-transform"
-           href="[[etoolsNowLink]]"
-           target="_blank">
+        <a class="nav-menu-item lighter-item no-transform" href="[[etoolsNowLink]]" target="_blank">
           <iron-icon id="power-bi-icon" icon="ap-icons:power-bi"></iron-icon>
           <paper-tooltip for="power-bi-icon" position="right">
             Implementation Intelligence
           </paper-tooltip>
           <div class="name">Implementation Intelligence</div>
         </a>
-        
+
         <a class="nav-menu-item lighter-item" href="http://etools.zendesk.com" target="_blank">
           <iron-icon id="knoledge-icon" icon="maps:local-library"></iron-icon>
           <paper-tooltip for="knoledge-icon" position="right">
@@ -97,9 +85,11 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           <div class="name">Knowledge base</div>
         </a>
 
-        <a class="nav-menu-item lighter-item"
-           href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"
-           target="_blank">
+        <a
+          class="nav-menu-item lighter-item"
+          href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"
+          target="_blank"
+        >
           <iron-icon id="discussion-icon" icon="icons:question-answer"></iron-icon>
           <paper-tooltip for="discussion-icon" position="right">
             Discussion
@@ -114,11 +104,9 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           </paper-tooltip>
           <div class="name">Information</div>
         </a>
-
       </div>
     `;
   }
-
 
   @property({type: String, observer: '_pageChanged'})
   selectedPage!: string;
@@ -133,12 +121,11 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
   smallMenu!: boolean;
 
   @property({type: Boolean})
-  showSscPage: boolean = false;
+  showSscPage = false;
 
   @property({type: String})
-  etoolsNowLink: string = 'https://app.powerbi.com/groups/me/apps/' +
-    '2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/' +
-    '5e60ab16-cce5-4c21-8620-de0c4c6415de/ReportSectionfe8562e6ef8c4eddcb52?chromeless=1';
+  // eslint-disable-next-line max-len
+  etoolsNowLink = `https://app.powerbi.com/groups/me/apps/2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/5e60ab16-cce5-4c21-8620-de0c4c6415de/ReportSectionfe8562e6ef8c4eddcb52?chromeless=1`;
 
   // @ts-ignore
   private _menuSizeChange(newVal: boolean, oldVal: boolean): void {
@@ -158,9 +145,11 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
   }
 
   _getSelectedMenu(page: string) {
-    if (page.indexOf('staff-sc') !== -1 ||
-        page.indexOf('spot-checks') !== -1 ||
-        page.indexOf('staff-spot-checks') !== -1) {
+    if (
+      page.indexOf('staff-sc') !== -1 ||
+      page.indexOf('spot-checks') !== -1 ||
+      page.indexOf('staff-spot-checks') !== -1
+    ) {
       return 'staff-sc';
     } else {
       return 'engagements';

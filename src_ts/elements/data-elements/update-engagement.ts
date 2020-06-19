@@ -8,7 +8,6 @@ import {GenericObject} from '../../types/global';
 import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class UpdateEngagement extends PolymerElement {
-
   @property({type: Object, observer: '_engagementChanged'})
   updatedEngagementData!: GenericObject;
 
@@ -37,7 +36,7 @@ class UpdateEngagement extends PolymerElement {
   postData!: GenericObject;
 
   @property({type: String, notify: true})
-  actionUrl: string = '';
+  actionUrl = '';
 
   @property({type: Object})
   lastData!: GenericObject;
@@ -81,10 +80,14 @@ class UpdateEngagement extends PolymerElement {
   }
 
   finishOptionsResponse(data) {
-    if (!this.optionRequests.options ||
+    if (
+      !this.optionRequests.options ||
       !this.optionRequests.apOptions ||
       !this.optionRequests.attachments ||
-      !this.optionRequests.reportAttachments) {return;}
+      !this.optionRequests.reportAttachments
+    ) {
+      return;
+    }
 
     this.finishResponse(data);
   }
@@ -112,8 +115,7 @@ class UpdateEngagement extends PolymerElement {
     }
 
     if (!this.quietAdding) {
-      fireEvent(this, 'toast',
-        {text: `Engagement ${action !== 'saved' ? '' : 'data '}has been ${action}!`});
+      fireEvent(this, 'toast', {text: `Engagement ${action !== 'saved' ? '' : 'data '}has been ${action}!`});
     } else {
       this.quietAdding = false;
     }
@@ -121,8 +123,7 @@ class UpdateEngagement extends PolymerElement {
 
   _finishPostResponse() {
     if (!this.quietAdding) {
-      fireEvent(this, 'global-loading',
-        {type: 'update-permissions', active: true, message: 'Updating data...'});
+      fireEvent(this, 'global-loading', {type: 'update-permissions', active: true, message: 'Updating data...'});
     }
 
     if (~this.actionUrl.indexOf('submit')) {
@@ -136,8 +137,10 @@ class UpdateEngagement extends PolymerElement {
     }
     this.actionUrl = '';
 
-    const optionsEndpoint = getEndpoint('engagementInfo',
-      {id: this.updatedEngagementData.id, type: this.updatedEngagementData.engagement_type});
+    const optionsEndpoint = getEndpoint('engagementInfo', {
+      id: this.updatedEngagementData.id,
+      type: this.updatedEngagementData.engagement_type
+    });
 
     sendRequest({
       method: 'OPTIONS',
@@ -154,8 +157,7 @@ class UpdateEngagement extends PolymerElement {
       .then(this._handleDataOptionsResponse('attachments', 'attachments'))
       .catch(this._handleDataOptionsResponse('attachments', 'attachments'));
 
-    const reportAttachmentsEndpoint = getEndpoint('reportAttachments',
-      {id: this.updatedEngagementData.id});
+    const reportAttachmentsEndpoint = getEndpoint('reportAttachments', {id: this.updatedEngagementData.id});
     sendRequest({
       method: 'OPTIONS',
       endpoint: reportAttachmentsEndpoint
@@ -163,8 +165,7 @@ class UpdateEngagement extends PolymerElement {
       .then(this._handleDataOptionsResponse('report_attachments', 'reportAttachments'))
       .catch(this._handleDataOptionsResponse('report_attachments', 'reportAttachments'));
 
-    const apBaseUrl = getEndpoint('engagementInfo',
-      {id: this.updatedEngagementData.id, type: 'engagements'}).url;
+    const apBaseUrl = getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
     sendRequest({
       method: 'OPTIONS',
       endpoint: {
@@ -197,7 +198,6 @@ class UpdateEngagement extends PolymerElement {
       }
     }
 
-
     if (status === 400) {
       this.set('errorObject', response);
     } else if (status === 413) {
@@ -221,14 +221,16 @@ class UpdateEngagement extends PolymerElement {
     fireEvent(this, 'toast', {text: 'Can not update permissions data. Please reload the page!'});
   }
 
-  _engagementChanged(engagementInfo) {// what kind of person would write a method like this?
+  _engagementChanged(engagementInfo) {
+    // what kind of person would write a method like this?
     // return if no data changed
-    if (!engagementInfo) {return;}
+    if (!engagementInfo) {
+      return;
+    }
 
     if (engagementInfo.submit && !this.actionUrl) {
       // Prepare submit request. Save submit url, update engagement data at first
-      const url = getEndpoint('engagementInfo',
-        {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
+      const url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
       this.actionUrl = url + engagementInfo.submit;
       // this.requestOptions.method = 'PATCH';
       this.set('requestOptions', {
@@ -243,8 +245,7 @@ class UpdateEngagement extends PolymerElement {
       // Finish data updating, run submitting if submit url has been saved
       fireEvent(this, 'engagement-updated', {success: true, data: engagementInfo});
 
-      fireEvent(this, 'global-loading',
-        {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
+      fireEvent(this, 'global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
       // this.requestOptions.method = 'POST';
       this.set('requestOptions', {
@@ -256,13 +257,16 @@ class UpdateEngagement extends PolymerElement {
       });
 
       this._performUpdate();
-
     } else if (engagementInfo.finalize) {
       // Run finalizing
-      fireEvent(this, 'global-loading',
-        {type: 'finalize-engagement', active: true, message: 'Finalizing engagement...'});
-      const url = getEndpoint('engagementInfo',
-        {type: engagementInfo.engagement_type, id: engagementInfo.id}).url + engagementInfo.finalize;
+      fireEvent(this, 'global-loading', {
+        type: 'finalize-engagement',
+        active: true,
+        message: 'Finalizing engagement...'
+      });
+      const url =
+        getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url +
+        engagementInfo.finalize;
       // this.requestOptions.method = 'POST';
       // this.url = url;
 
@@ -278,10 +282,10 @@ class UpdateEngagement extends PolymerElement {
       this._performUpdate();
     } else if (engagementInfo.cancel) {
       // Run finalizing
-      fireEvent(this, 'global-loading',
-        {type: 'cancel-engagement', active: true, message: 'Canceling engagement...'});
-      const url = getEndpoint('engagementInfo',
-        {type: engagementInfo.engagement_type, id: engagementInfo.id}).url + engagementInfo.cancel;
+      fireEvent(this, 'global-loading', {type: 'cancel-engagement', active: true, message: 'Canceling engagement...'});
+      const url =
+        getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url +
+        engagementInfo.cancel;
       this.actionUrl = url;
       this.postData = engagementInfo.data;
       this.set('requestOptions', {
@@ -294,8 +298,7 @@ class UpdateEngagement extends PolymerElement {
       this._performUpdate();
     } else {
       // Simple engagement data updating
-      const url = getEndpoint('engagementInfo',
-        {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
+      const url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
       this.actionUrl = '';
       this.set('requestOptions', {
         method: 'PATCH',
@@ -310,17 +313,17 @@ class UpdateEngagement extends PolymerElement {
 
   _saveEngagement() {
     if (!this.quietAdding) {
-      fireEvent(this, 'global-loading',
-        {type: 'update-engagement', active: true, message: 'Updating engagement data...'});
+      fireEvent(this, 'global-loading', {
+        type: 'update-engagement',
+        active: true,
+        message: 'Updating engagement data...'
+      });
     }
     this._performUpdate();
   }
 
   _performUpdate() {
-    sendRequest(this.requestOptions)
-      .then(this._handleResponse.bind(this))
-      .catch(this._handleError.bind(this));
+    sendRequest(this.requestOptions).then(this._handleResponse.bind(this)).catch(this._handleError.bind(this));
   }
-
 }
 window.customElements.define('update-engagement', UpdateEngagement);

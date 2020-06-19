@@ -25,69 +25,61 @@ import {FilterTypes} from '../../../common-elements/search-and-filter-element/se
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class StaffScPageMain extends PolymerElement {
-
   static get template() {
     return html`
       <style>
         :host {
-            position: relative;
-            display: block;
+          position: relative;
+          display: block;
         }
       </style>
       ${pageLayoutStyles} ${sharedStyles} ${moduleStyles}
-      <app-route
-        route="{{route}}"
-        pattern="/:view"
-        data="{{routeData}}"
-        tail="{{subroute}}">
-      </app-route>
-      <iron-pages
-                id="categoryPages"
-                selected="{{view}}"
-                attr-for-selected="name"
-                role="main">
-            <engagements-list-view
-                    name="list"
-                    id="listPage"
-                    query-params="{{queryParams}}"
-                    has-collapse
-                    request-queries="[[partnersListQueries]]"
-                    base-permission-path="new_engagement"
-                    filters="[[filters]]"
-                    add-btn-text="Add New Staff Spot Checks"
-                    new-btn-link={{newBtnLink}}
-                    endpoint-name="{{endpointName}}"
-                    is-staff-sc>
-            </engagements-list-view>
+      <app-route route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"> </app-route>
+      <iron-pages id="categoryPages" selected="{{view}}" attr-for-selected="name" role="main">
+        <engagements-list-view
+          name="list"
+          id="listPage"
+          query-params="{{queryParams}}"
+          has-collapse
+          request-queries="[[partnersListQueries]]"
+          base-permission-path="new_engagement"
+          filters="[[filters]]"
+          add-btn-text="Add New Staff Spot Checks"
+          new-btn-link="{{newBtnLink}}"
+          endpoint-name="{{endpointName}}"
+          is-staff-sc
+        >
+        </engagements-list-view>
 
-            <template is="dom-if" if="[[allowNew]]" restamp>
-                <new-engagement-view
-                        name="new"
-                        id="creationPage"
-                        page="{{routeData.view}}"
-                        query-params="{{queryParams}}"
-                        route="{{subroute}}"
-                        request-queries="{{partnersListQueries}}"
-                        base-permission-path="new_staff_sc"
-                        partner="{{partnerDetails}}"
-                        audit-firm="[[auditFirm]]"
-                        page-title="Add New Staff Spot Check"
-                        endpoint-name="{{endpointName}}"
-                        is-staff-sc>
-                </new-engagement-view>
-            </template>
-        </iron-pages>
+        <template is="dom-if" if="[[allowNew]]" restamp>
+          <new-engagement-view
+            name="new"
+            id="creationPage"
+            page="{{routeData.view}}"
+            query-params="{{queryParams}}"
+            route="{{subroute}}"
+            request-queries="{{partnersListQueries}}"
+            base-permission-path="new_staff_sc"
+            partner="{{partnerDetails}}"
+            audit-firm="[[auditFirm]]"
+            page-title="Add New Staff Spot Check"
+            endpoint-name="{{endpointName}}"
+            is-staff-sc
+          >
+          </new-engagement-view>
+        </template>
+      </iron-pages>
     `;
   }
 
   @property({type: Object, notify: true, observer: '_queryParamsChanged'})
-  queryParams!: object;
+  queryParams!: GenericObject;
 
   @property({type: Number})
-  initiation: number = 0;
+  initiation = 0;
 
   @property({type: String})
-  newBtnLink: string = `/${BASE_PATH}/staff-sc/new/overview`;
+  newBtnLink = `/${BASE_PATH}/staff-sc/new/overview`;
 
   @property({type: Array})
   filters = [
@@ -146,12 +138,10 @@ class StaffScPageMain extends PolymerElement {
   auditFirm: GenericObject = {};
 
   @property({type: Boolean})
-  allowNew: boolean = false;
+  allowNew = false;
 
   static get observers() {
-    return [
-      '_routeConfig(routeData.view, selectedPage)'
-    ];
+    return ['_routeConfig(routeData.view, selectedPage)'];
   }
 
   private _updateEngagementsFiltersDebouncer!: Debouncer;
@@ -161,11 +151,13 @@ class StaffScPageMain extends PolymerElement {
     this.allowNew = actionAllowed('new_staff_sc', 'create');
     sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
-    }).then((resp) => {
-      this._auditFirmLoaded(resp);
-    }).catch((err) => {
-      throw new Error(err);
-    });
+    })
+      .then((resp) => {
+        this._auditFirmLoaded(resp);
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
   }
 
   _routeConfig(view, selectedPage) {
@@ -174,7 +166,9 @@ class StaffScPageMain extends PolymerElement {
       return;
     }
 
-    if (view === this.lastView) {return;}
+    if (view === this.lastView) {
+      return;
+    }
     if (view === 'list') {
       const queries = this._configListParams(this.initiation++);
       this._setEngagementsListQueries(queries);
@@ -197,30 +191,41 @@ class StaffScPageMain extends PolymerElement {
   }
 
   resetLastView() {
-    if (this.lastView) {this.lastView = null;}
+    if (this.lastView) {
+      this.lastView = null;
+    }
   }
 
   _fireUpdateEngagementsFilters() {
-    this._updateEngagementsFiltersDebouncer = Debouncer.debounce(this._updateEngagementsFiltersDebouncer,
+    this._updateEngagementsFiltersDebouncer = Debouncer.debounce(
+      this._updateEngagementsFiltersDebouncer,
       timeOut.after(100),
       () => {
         document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-      });
+      }
+    );
   }
 
   _configListParams(noNotify?) {
-
     const queries = this.route.__queryParams || {};
     const queriesUpdates: GenericObject = clone(queries);
 
-
-    if (!queries.page_size) {queriesUpdates.page_size = '10';}
-    if (!queries.ordering) {queriesUpdates.ordering = 'unique_id';}
-    if (!queries.page) {queriesUpdates.page = '1';}
+    if (!queries.page_size) {
+      queriesUpdates.page_size = '10';
+    }
+    if (!queries.ordering) {
+      queriesUpdates.ordering = 'unique_id';
+    }
+    if (!queries.page) {
+      queriesUpdates.page = '1';
+    }
 
     const page = +queries.page;
-    if (isNaN(page) || (this.lastParams &&
-      (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))) {
+    if (
+      isNaN(page) ||
+      (this.lastParams &&
+        (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))
+    ) {
       queriesUpdates.page = '1';
     }
 
@@ -236,7 +241,9 @@ class StaffScPageMain extends PolymerElement {
     if (!this.route) {
       return;
     }
-    if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {return;}
+    if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {
+      return;
+    }
     if (this.routeData.view === 'list') {
       const queries = this._configListParams();
       this._setEngagementsListQueries(queries);
@@ -254,13 +261,10 @@ class StaffScPageMain extends PolymerElement {
   _auditFirmLoaded({results}) {
     if (!results.length) {
       logError('Error fetching audit firm.');
-    }
-    else {
+    } else {
       this.auditFirm = results[0];
     }
   }
-
 }
-
 
 window.customElements.define('staff-sc-page-main', StaffScPageMain);

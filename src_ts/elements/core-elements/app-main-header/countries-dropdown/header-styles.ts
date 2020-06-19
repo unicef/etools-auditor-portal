@@ -7,11 +7,13 @@ export const HeaderStyles = html`
       @apply --layout-horizontal;
     }
 
-    .arrow-up { display: none; }
+    .arrow-up {
+      display: none;
+    }
 
     paper-menu-button {
-        padding: 0;
-        font-size: 16px;
+      padding: 0;
+      font-size: 16px;
     }
 
     paper-button {
@@ -68,9 +70,8 @@ export const HeaderStyles = html`
       min-width: 140px;
     }
 
-
     :host([opened]) .arrow-up {
-        display: inherit;
+      display: inherit;
     }
 
     :host([opened]) .arrow-down {
@@ -86,13 +87,13 @@ export const HeaderStyles = html`
       background-color: var(--primary-background-color);
     }
 
-    :host([opened]) paper-button .dropdown-text{
+    :host([opened]) paper-button .dropdown-text {
       color: var(--dark-primary-text-color);
     }
 
-    :host([opened]) paper-button .arrow-down, :host([opened]) paper-button .arrow-up{
-    color: var(--dark-icon-color);
+    :host([opened]) paper-button .arrow-down,
+    :host([opened]) paper-button .arrow-up {
+      color: var(--dark-icon-color);
     }
-
-</style>
+  </style>
 `;

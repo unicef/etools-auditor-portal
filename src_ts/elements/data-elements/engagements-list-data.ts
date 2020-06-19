@@ -12,7 +12,6 @@ import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class EngagementListData extends PolymerElement {
-
   @property({type: Array, readOnly: true, notify: true})
   engagementsList!: [];
 
@@ -26,10 +25,10 @@ class EngagementListData extends PolymerElement {
   listLength!: number;
 
   @property({type: String})
-  endpointName: string = '';
+  endpointName = '';
 
   @property({type: Boolean, notify: true, observer: '_reloadDataChanged'})
-  reloadData: boolean = false;
+  reloadData = false;
 
   static get observers() {
     return ['getEngagementsList(requestQueries.*)'];
@@ -68,7 +67,8 @@ class EngagementListData extends PolymerElement {
     }
 
     fireEvent(this, 'global-loading', {
-      type: 'engagements-list', active: true,
+      type: 'engagements-list',
+      active: true,
       message: 'Loading of engagements list...'
     });
 
@@ -82,18 +82,27 @@ class EngagementListData extends PolymerElement {
     endpoint.url = endpoint.url.replace(/[&?]{1}/, '?');
     sendRequest({
       endpoint: endpoint
-    }).then((resp) => {
-      this._engagementsLoaded(resp);
-    }).catch((err) => {
-      this._responseError(err);
-    });
+    })
+      .then((resp) => {
+        this._engagementsLoaded(resp);
+      })
+      .catch((err) => {
+        this._responseError(err);
+      });
   }
 
   reloadRequired() {
     const lastKeys = keys(this.lastState);
     const requestQueriesKeys = keys(this.requestQueries);
-    const filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit',
-      'staff_members__user', 'sc'];
+    const filtersKeys = [
+      'agreement__auditor_firm',
+      'partner',
+      'engagement_type',
+      'status',
+      'joint_audit',
+      'staff_members__user',
+      'sc'
+    ];
     let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
     queriesKeys = uniq(queriesKeys);

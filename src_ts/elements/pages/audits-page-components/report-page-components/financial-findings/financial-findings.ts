@@ -31,9 +31,7 @@ import {checkNonField} from '../../../../app-mixins/error-handler';
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  */
-class FinancialFindings extends
-  CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-
+class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
   static get template() {
     // language=HTML
     return html`
@@ -51,117 +49,106 @@ class FinancialFindings extends
         etools-content-panel {
           --ecp-content: {
             padding: 0;
-          };
+          }
         }
         etools-dropdown#titleOptionsDropDown {
           --paper-listbox: {
             max-height: 340px;
-          };
+          }
         }
       </style>
 
       <etools-content-panel
-          class="content-section clearfix"
-          panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]" list>
+        class="content-section clearfix"
+        panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]"
+        list
+      >
         <div slot="panel-btns">
           <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
-            <paper-icon-button
-                class="panel-button"
-                on-tap="openAddDialog"
-                icon="add-box">
-            </paper-icon-button>
+            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header
-            id="list-header"
-            no-ordered
-            data="[[columns]]"
-            base-permission-path="[[basePermissionPath]]">
+        <list-header id="list-header" no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]">
         </list-header>
 
         <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
           <list-element
-              class="list-element"
-              data="[[item]]"
-              base-permission-path="[[basePermissionPath]]"
-              item-index="[[index]]"
-              headings="[[columns]]"
-              details="[[details]]"
-              has-collapse
-              no-animation>
+            class="list-element"
+            data="[[item]]"
+            base-permission-path="[[basePermissionPath]]"
+            item-index="[[index]]"
+            headings="[[columns]]"
+            details="[[details]]"
+            has-collapse
+            no-animation
+          >
             <div slot="custom">
               [[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
-              <paper-tooltip offset="0">[[getDisplayName('financial_finding_set.title', basePermissionPath,
-                item.title)]]
+              <paper-tooltip offset="0"
+                >[[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
               </paper-tooltip>
             </div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button
-                    icon="icons:create"
-                    class="edit-icon"
-                    on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button
-                    icon="icons:delete"
-                    class="edit-icon"
-                    on-tap="openDeleteDialog"></paper-icon-button>
+              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
             </div>
           </list-element>
         </template>
 
         <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element
-              class="list-element"
-              data="[[emptyObj]]"
-              headings="[[columns]]"
-              no-animation>
-          </list-element>
+          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
         </template>
       </etools-content-panel>
 
-      <etools-dialog theme="confirmation"
-                     size="md"
-                     keep-dialog-open
-                     opened="{{confirmDialogOpened}}"
-                     on-confirm-btn-clicked="removeItem"
-                     ok-btn-text="Delete">
+      <etools-dialog
+        theme="confirmation"
+        size="md"
+        keep-dialog-open
+        opened="{{confirmDialogOpened}}"
+        on-confirm-btn-clicked="removeItem"
+        ok-btn-text="Delete"
+      >
         [[deleteTitle]]
       </etools-dialog>
 
-      <etools-dialog id="financial-findings"
-                     no-padding
-                     size="md"
-                     opened="{{dialogOpened}}"
-                     keep-dialog-open
-                     dialog-title="[[dialogTitle]]"
-                     ok-btn-text="Add"
-                     show-spinner="{{requestInProcess}}"
-                     disable-confirm-btn="{{requestInProcess}}"
-                     on-confirm-btn-clicked="_addItemFromDialog">
-
+      <etools-dialog
+        id="financial-findings"
+        no-padding
+        size="md"
+        opened="{{dialogOpened}}"
+        keep-dialog-open
+        dialog-title="[[dialogTitle]]"
+        ok-btn-text="Add"
+        show-spinner="{{requestInProcess}}"
+        disable-confirm-btn="{{requestInProcess}}"
+        on-confirm-btn-clicked="_addItemFromDialog"
+      >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <!-- Title -->
-                <etools-dropdown id="titleOptionsDropDown"
-                    class$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]
+                <etools-dropdown
+                  id="titleOptionsDropDown"
+                  class$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]
                             disabled-as-readonly validate-input"
-                    label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
-                    options="[[titleOptions]]"
-                    option-label="display_name"
-                    option-value="value"
-                    selected="{{editedItem.title}}"
-                    required$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
-                    invalid="{{errors.title}}"
-                    error-message="{{errors.title}}"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
-                    hide-search>
+                  label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
+                  placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
+                  options="[[titleOptions]]"
+                  option-label="display_name"
+                  option-value="value"
+                  selected="{{editedItem.title}}"
+                  required$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]"
+                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
+                  invalid="{{errors.title}}"
+                  error-message="{{errors.title}}"
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                  hide-search
+                >
                 </etools-dropdown>
                 <paper-tooltip offset="0">[[title.display_name]]</paper-tooltip>
               </div>
@@ -171,38 +158,40 @@ class FinancialFindings extends
               <div class="input-container input-container-ms">
                 <!-- Amount (local) -->
                 <etools-currency-amount-input
-                    class$="{{_setRequired('financial_finding_set.local_amount', basePermissionPath)}}
+                  class$="{{_setRequired('financial_finding_set.local_amount', basePermissionPath)}}
                             disabled-as-readonly validate-input"
-                    value="{{editedItem.local_amount}}"
-                    currency=""
-                    label="[[getLabel('financial_finding_set.local_amount', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('financial_finding_set.local_amount', basePermissionPath)]]"
-                    required$="[[_setRequired('financial_finding_set.local_amount', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
-                    invalid$="[[errors.local_amount]]"
-                    error-message="{{errors.local_amount}}"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError">
+                  value="{{editedItem.local_amount}}"
+                  currency=""
+                  label="[[getLabel('financial_finding_set.local_amount', basePermissionPath)]]"
+                  placeholder="[[getPlaceholderText('financial_finding_set.local_amount', basePermissionPath)]]"
+                  required$="[[_setRequired('financial_finding_set.local_amount', basePermissionPath)]]"
+                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
+                  invalid$="[[errors.local_amount]]"
+                  error-message="{{errors.local_amount}}"
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                >
                 </etools-currency-amount-input>
               </div>
 
               <div class="input-container input-container-ms">
                 <!-- Amount USD -->
                 <etools-currency-amount-input
-                    class$="{{_setRequired('financial_finding_set.amount', basePermissionPath)}}
+                  class$="{{_setRequired('financial_finding_set.amount', basePermissionPath)}}
                             disabled-as-readonly validate-input"
-                    value="{{editedItem.amount}}"
-                    currency="$"
-                    label="[[getLabel('financial_finding_set.amount', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('financial_finding_set.amount', basePermissionPath)]]"
-                    required$="[[_setRequired('financial_finding_set.amount', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
-                    invalid$="[[errors.amount]]"
-                    error-message$="[[errors.amount]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError">
+                  value="{{editedItem.amount}}"
+                  currency="$"
+                  label="[[getLabel('financial_finding_set.amount', basePermissionPath)]]"
+                  placeholder="[[getPlaceholderText('financial_finding_set.amount', basePermissionPath)]]"
+                  required$="[[_setRequired('financial_finding_set.amount', basePermissionPath)]]"
+                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
+                  invalid$="[[errors.amount]]"
+                  error-message$="[[errors.amount]]"
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                >
                 </etools-currency-amount-input>
               </div>
             </div>
@@ -211,20 +200,21 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Description -->
                 <paper-textarea
-                    class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]
+                  class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]
                             disabled-as-readonly fixed-width validate-input"
-                    value="{{editedItem.description}}"
-                    allowed-pattern="[\\d\\s]"
-                    label="[[getLabel('financial_finding_set.description', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('financial_finding_set.description', basePermissionPath)]]"
-                    required$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
-                    max-rows="4"
-                    invalid$="[[errors.description]]"
-                    error-message$="[[errors.description]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError">
+                  value="{{editedItem.description}}"
+                  allowed-pattern="[\\d\\s]"
+                  label="[[getLabel('financial_finding_set.description', basePermissionPath)]]"
+                  placeholder="[[getPlaceholderText('financial_finding_set.description', basePermissionPath)]]"
+                  required$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]"
+                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
+                  max-rows="4"
+                  invalid$="[[errors.description]]"
+                  error-message$="[[errors.description]]"
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                >
                 </paper-textarea>
               </div>
             </div>
@@ -233,20 +223,21 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
                 <paper-textarea
-                    class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]
+                  class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]
                             disabled-as-readonly fixed-width validate-input"
-                    value="{{editedItem.recommendation}}"
-                    allowed-pattern="[\\d\\s]"
-                    label="[[getLabel('financial_finding_set.recommendation', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('financial_finding_set.recommendation', basePermissionPath)]]"
-                    required$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
-                    max-rows="4"
-                    invalid$="[[errors.recommendation]]"
-                    error-message$="[[errors.recommendation]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError">
+                  value="{{editedItem.recommendation}}"
+                  allowed-pattern="[\\d\\s]"
+                  label="[[getLabel('financial_finding_set.recommendation', basePermissionPath)]]"
+                  placeholder="[[getPlaceholderText('financial_finding_set.recommendation', basePermissionPath)]]"
+                  required$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]"
+                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
+                  max-rows="4"
+                  invalid$="[[errors.recommendation]]"
+                  error-message$="[[errors.recommendation]]"
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                >
                 </paper-textarea>
               </div>
             </div>
@@ -255,26 +246,26 @@ class FinancialFindings extends
               <div class="input-container input-container-l">
                 <!-- IP comments -->
                 <paper-textarea
-                    class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]
+                  class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]
                             disabled-as-readonly fixed-width validate-input"
-                    value="{{editedItem.ip_comments}}"
-                    allowed-pattern="[\\d\\s]"
-                    label="[[getLabel('financial_finding_set.ip_comments', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('financial_finding_set.ip_comments', basePermissionPath)]]"
-                    required$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
-                    max-rows="4"
-                    invalid$="[[errors.ip_comments]]"
-                    error-message$="[[errors.ip_comments]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError">
+                  value="{{editedItem.ip_comments}}"
+                  allowed-pattern="[\\d\\s]"
+                  label="[[getLabel('financial_finding_set.ip_comments', basePermissionPath)]]"
+                  placeholder="[[getPlaceholderText('financial_finding_set.ip_comments', basePermissionPath)]]"
+                  required$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]"
+                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
+                  max-rows="4"
+                  invalid$="[[errors.ip_comments]]"
+                  error-message$="[[errors.ip_comments]]"
+                  on-focus="_resetFieldError"
+                  on-tap="_resetFieldError"
+                >
                 </paper-textarea>
               </div>
             </div>
           </div>
         </div>
-
       </etools-dialog>
     `;
   }
@@ -283,7 +274,7 @@ class FinancialFindings extends
   dataItems!: any[];
 
   @property({type: String})
-  mainProperty: string = 'financial_finding_set';
+  mainProperty = 'financial_finding_set';
 
   @property({type: Object})
   itemModel: GenericObject = {
@@ -296,50 +287,59 @@ class FinancialFindings extends
   };
 
   @property({type: Array})
-  columns: GenericObject[] = [{
-    'size': 20,
-    'name': 'finding',
-    'label': 'Finding Number'
-  }, {
-    'size': 40,
-    'label': 'Title (Category)',
-    'labelPath': 'financial_finding_set.title',
-    'property': 'title',
-    'custom': true,
-    'doNotHide': false
-  }, {
-    'size': 20,
-    'name': 'currency',
-    'label': 'Amount (local)',
-    'labelPath': 'financial_finding_set.local_amount',
-    'path': 'local_amount',
-    'align': 'right'
-  }, {
-    'size': 20,
-    'name': 'currency',
-    'label': 'Amount USD',
-    'labelPath': 'financial_finding_set.amount',
-    'path': 'amount',
-    'align': 'right'
-  }];
+  columns: GenericObject[] = [
+    {
+      size: 20,
+      name: 'finding',
+      label: 'Finding Number'
+    },
+    {
+      size: 40,
+      label: 'Title (Category)',
+      labelPath: 'financial_finding_set.title',
+      property: 'title',
+      custom: true,
+      doNotHide: false
+    },
+    {
+      size: 20,
+      name: 'currency',
+      label: 'Amount (local)',
+      labelPath: 'financial_finding_set.local_amount',
+      path: 'local_amount',
+      align: 'right'
+    },
+    {
+      size: 20,
+      name: 'currency',
+      label: 'Amount USD',
+      labelPath: 'financial_finding_set.amount',
+      path: 'amount',
+      align: 'right'
+    }
+  ];
 
   @property({type: Array})
-  details: GenericObject[] = [{
-    'size': 100,
-    'label': 'Description',
-    'labelPath': 'financial_finding_set.description',
-    'path': 'description'
-  }, {
-    'size': 100,
-    'label': 'Recommendation',
-    'labelPath': 'financial_finding_set.recommendation',
-    'path': 'recommendation'
-  }, {
-    'size': 100,
-    'label': 'IP comments',
-    'labelPath': 'financial_finding_set.ip_comments',
-    'path': 'ip_comments'
-  }];
+  details: GenericObject[] = [
+    {
+      size: 100,
+      label: 'Description',
+      labelPath: 'financial_finding_set.description',
+      path: 'description'
+    },
+    {
+      size: 100,
+      label: 'Recommendation',
+      labelPath: 'financial_finding_set.recommendation',
+      path: 'recommendation'
+    },
+    {
+      size: 100,
+      label: 'IP comments',
+      labelPath: 'financial_finding_set.ip_comments',
+      path: 'ip_comments'
+    }
+  ];
 
   @property({type: Object})
   addDialogTexts: GenericObject = {
@@ -352,11 +352,10 @@ class FinancialFindings extends
   };
 
   @property({type: String})
-  deleteTitle: string = 'Are you sure that you want to delete this finding?';
+  deleteTitle = 'Are you sure that you want to delete this finding?';
 
   @property({type: Array})
   titleOptions: any[] = [];
-
 
   static get observers() {
     return [
@@ -370,9 +369,7 @@ class FinancialFindings extends
 
   setChoices(basePath) {
     const unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
-    const titleOptions = sortBy(
-      unsortedOptions,
-      ['display_name']);
+    const titleOptions = sortBy(unsortedOptions, ['display_name']);
     this.set('titleOptions', titleOptions || []);
   }
 
@@ -386,8 +383,6 @@ class FinancialFindings extends
       fireEvent(this, 'toast', {text: `Financial Findings: ${nonField}`});
     }
   }
-
-
 }
 
 window.customElements.define('financial-findings', FinancialFindings);

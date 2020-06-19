@@ -10,9 +10,7 @@ declare const moment: any;
 import '../insert-html/insert-html';
 import './action-buttons';
 
-
 class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
-
   static get template() {
     return html`
       ${StatusTabElementStyles} ${moduleStyles}
@@ -213,18 +211,34 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   statusStates = {};
 
   @property({type: Boolean})
-  cancelled: boolean = false;
+  cancelled = false;
 
   @property({type: String})
   permissionBase!: string;
 
-  private statuses = ['partner_contacted', 'field_visit', 'draft_issued_to_unicef',
-    'comments_received_by_partner', 'draft_issued_to_partner',
-    'comments_received_by_unicef', 'report_submitted', 'final', 'cancelled'];
+  private statuses = [
+    'partner_contacted',
+    'field_visit',
+    'draft_issued_to_unicef',
+    'comments_received_by_partner',
+    'draft_issued_to_partner',
+    'comments_received_by_unicef',
+    'report_submitted',
+    'final',
+    'cancelled'
+  ];
 
-  private statusFields = [null, null, 'date_of_field_visit', 'date_of_draft_report_to_ip',
-    'date_of_comments_by_ip', 'date_of_draft_report_to_unicef',
-    'date_of_comments_by_unicef', 'date_of_report_submit', 'date_of_report_submit'];
+  private statusFields = [
+    null,
+    null,
+    'date_of_field_visit',
+    'date_of_draft_report_to_ip',
+    'date_of_comments_by_ip',
+    'date_of_draft_report_to_unicef',
+    'date_of_comments_by_unicef',
+    'date_of_report_submit',
+    'date_of_report_submit'
+  ];
 
   static get observers() {
     return [
@@ -235,7 +249,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   setActions(permissionBase) {
-    let actions = (permissionBase && this.engagementData.status !== 'final') ? getActions(permissionBase) : [];
+    const actions = permissionBase && this.engagementData.status !== 'final' ? getActions(permissionBase) : [];
     this.set('actions', actions);
   }
 
@@ -259,26 +273,36 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   _getStatusText(displayName) {
-    if (typeof displayName !== 'string') {return '';}
+    if (typeof displayName !== 'string') {
+      return '';
+    }
 
     const breakLength = 15;
     displayName = displayName.trim();
 
-    if (displayName.length < breakLength) {return displayName;}
+    if (displayName.length < breakLength) {
+      return displayName;
+    }
 
     const nextWordIndex = displayName.indexOf(' ', breakLength);
-    if (nextWordIndex === -1) {return displayName;}
+    if (nextWordIndex === -1) {
+      return displayName;
+    }
 
     return displayName.slice(0, nextWordIndex) + '<br>' + displayName.slice(nextWordIndex + 1);
   }
 
   _getStatusClass(displayName) {
-    if (typeof displayName !== 'string') {return '';}
-    return (displayName.indexOf('<br>') !== -1) ? 'multi-line' : '';
+    if (typeof displayName !== 'string') {
+      return '';
+    }
+    return displayName.indexOf('<br>') !== -1 ? 'multi-line' : '';
   }
 
   _getStatusState(statusNumber) {
-    if (!this.engagementData || this.engagementData.status === undefined) {return;}
+    if (!this.engagementData || this.engagementData.status === undefined) {
+      return;
+    }
 
     if (isNaN(statusNumber)) {
       statusNumber = this._getStatusNumber(statusNumber);
@@ -304,8 +328,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   _classByDate(statusNumber: number) {
-    // @ts-ignore
-    if (this.engagementData[this.statusFields[statusNumber]]) {
+    if (this.engagementData[String(this.statusFields[statusNumber])]) {
       return 'completed';
     } else {
       return 'pending';
@@ -316,13 +339,14 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
     return this.statuses.indexOf(status) + 1;
   }
 
-  _refactorStatusNumber(number: number, status) {
-    // @ts-ignore
-    return (status === 'cancelled' && !this.engagementData[this.statusFields[+number]]) ? +number + 1 : number;
+  _refactorStatusNumber(number: number, status: string) {
+    return status === 'cancelled' && !this.engagementData[String(this.statusFields[+number])] ? +number + 1 : number;
   }
 
   _getFormattedDate(field) {
-    if (!this.engagementData || !this.engagementData[field]) {return;}
+    if (!this.engagementData || !this.engagementData[field]) {
+      return;
+    }
     const date = new Date(this.engagementData[field]);
     const format = 'on DD MMMM, YYYY';
 
@@ -341,8 +365,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
 
     let number;
     each(this.statusFields.slice(2), (field, index) => {
-      // @ts-ignore
-      if (!this.engagementData[field]) {
+      if (!this.engagementData[String(field)]) {
         number = index;
         return false;
       }
@@ -354,14 +377,17 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
       const statuses = this.shadowRoot!.querySelectorAll('.divider:not(.cancelled)');
       const lastComplited = statuses && statuses[number];
 
-      if (!lastComplited) {throw new Error('Can not find last complited status element!');}
-      if (!this.$.statusList || !this.$.cancelledStatus) {throw new Error('Can not find elements!');}
+      if (!lastComplited) {
+        throw new Error('Can not find last complited status element!');
+      }
+      if (!this.$.statusList || !this.$.cancelledStatus) {
+        throw new Error('Can not find elements!');
+      }
       this.$.statusList.insertBefore(this.$.cancelledStatus, lastComplited);
     }
 
     this.cancelled = true;
   }
-
 }
 
 window.customElements.define('status-tab-element', StatusTabElement);

@@ -23,7 +23,6 @@ let currentEngagement: {details?: GenericObject; type?: string} = {};
 
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends baseClass {
-
     @property({type: Number})
     engagementId!: number | null;
 
@@ -34,7 +33,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     tabsList!: any[];
 
     @property({type: String})
-    engagementPrefix: string = '';
+    engagementPrefix = '';
 
     @property({type: Object})
     originalData!: GenericObject;
@@ -49,7 +48,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     errorObject: GenericObject = {};
 
     @property({type: Boolean, observer: 'resetInputDialog'})
-    dialogOpened: boolean = false;
+    dialogOpened = false;
 
     @property({type: String})
     tab!: string;
@@ -115,8 +114,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
       const tab = route.path.split('/')[2];
-      if ((tab === 'report') && !this._showReportTabs(permissionBase, engagement) ||
-        (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
+      if (
+        (tab === 'report' && !this._showReportTabs(permissionBase, engagement)) ||
+        (tab === 'follow-up' && !this._showFollowUpTabs(permissionBase))
+      ) {
         const id = route.path.split('/')[1];
         this.set('route.path', `/${id}/overview`);
       }
@@ -227,12 +228,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       const quietAdding = event && event.detail && event.detail.quietAdding;
       const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
-      return this._prepareData()
-        .then((data) => {
-          this.quietAdding = quietAdding;
-          this.forceOptionsUpdate = forceOptionsUpdate;
-          this.updatedEngagement = data;
-        });
+      return this._prepareData().then((data) => {
+        this.quietAdding = quietAdding;
+        this.forceOptionsUpdate = forceOptionsUpdate;
+        this.updatedEngagement = data;
+      });
     }
 
     _submitReport() {
@@ -241,10 +241,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      return this._prepareData(true, false)
-        .then((data) => {
-          this.updatedEngagement = data;
-        });
+      return this._prepareData(true, false).then((data) => {
+        this.updatedEngagement = data;
+      });
     }
 
     _finalizeReport() {
@@ -253,10 +252,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
 
-      return this._prepareData(false, true)
-        .then((data) => {
-          this.updatedEngagement = data;
-        });
+      return this._prepareData(false, true).then((data) => {
+        this.updatedEngagement = data;
+      });
     }
 
     _cancelEngagement() {
@@ -283,7 +281,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       this.dialogOpened = false;
       if (this.tab === 'report') {
         this.tab = 'overview';
-
       }
     }
 
@@ -311,7 +308,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     _prepareData(submit?: boolean, finalize?: boolean) {
       if (!this.engagement) {
-        return Promise.reject('You need engagement object');
+        return Promise.reject(new Error('You need engagement object'));
       }
 
       // Check basic info
@@ -336,14 +333,13 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       // leave for compatibility with other code
-      return Promise.all([])
-        .then(() => ({
-          engagement_type: type,
-          id: engagementId,
-          data: data,
-          submit: submit ? 'submit/' : null,
-          finalize: finalize ? 'finalize/' : null
-        }));
+      return Promise.all([]).then(() => ({
+        engagement_type: type,
+        id: engagementId,
+        data: data,
+        submit: submit ? 'submit/' : null,
+        finalize: finalize ? 'finalize/' : null
+      }));
     }
 
     _setExportLinks(engagement) {
@@ -354,13 +350,16 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/';
       const csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
-      return [{
-        name: 'Export PDF',
-        url: pdfLink
-      }, {
-        name: 'Export CSV',
-        url: csvLink
-      }];
+      return [
+        {
+          name: 'Export PDF',
+          url: pdfLink
+        },
+        {
+          name: 'Export CSV',
+          url: csvLink
+        }
+      ];
     }
 
     _validateBasicInfo(property?) {
@@ -368,7 +367,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
       if (!detailsValid || !partnerDetailsValid) {
-        const openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
+        const openTab = partnerDetailsValid && detailsValid ? 'attachments' : 'overview';
         this.set(property || 'tab', openTab);
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
@@ -439,9 +438,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     hasReportAccess(permissionBase, engagement) {
-      return actionAllowed(permissionBase, 'submit') ||
+      return (
+        actionAllowed(permissionBase, 'submit') ||
         engagement.status === 'report_submitted' ||
-        engagement.status === 'final';
+        engagement.status === 'final'
+      );
     }
 
     _showQuestionnaire(permissionBase, engagement) {
@@ -472,7 +473,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
   }
   return EngagementMixinClass;
-
 }
 
 export default EngagementMixin;

@@ -26,7 +26,7 @@ import {searchAndFilterStyles} from './search-and-filter-styles';
 
 export enum FilterTypes {
   DropdownMulti,
-  Date,
+  Date
 }
 
 /**
@@ -34,7 +34,6 @@ export enum FilterTypes {
  * @polymer
  */
 class SearchAndFilter extends PolymerElement {
-
   static get template() {
     // language=HTML
     return html`
@@ -44,12 +43,12 @@ class SearchAndFilter extends PolymerElement {
         <div class="flex horizontal layout wrap">
           <div class="layout horizontal search-input-container">
             <paper-input
-                type="search"
-                value="{{searchString}}"
-                label="[[searchLabel]]"
-                on-value-changed="searchKeyDown"
-                inline>
-
+              type="search"
+              value="{{searchString}}"
+              label="[[searchLabel]]"
+              on-value-changed="searchKeyDown"
+              inline
+            >
               <iron-icon icon="search" slot="prefix"></iron-icon>
             </paper-input>
           </div>
@@ -57,32 +56,35 @@ class SearchAndFilter extends PolymerElement {
           <!-- FILTERS -->
           <template is="dom-repeat" items="[[usedFilters]]">
             <div class="layout horizontal">
-                <template is="dom-if" if="[[filterTypeIsDropdownMulti(item.type)]]">
-                  <etools-dropdown-multi
-                      id="[[item.query]]"
-                      class="filter-dropdown"
-                      selected-values="{{item.selectedValue}}"
-                      label="[[item.label]]"
-                      placeholder$="&#8212;"
-                      options="[[item.selection]]"
-                      option-label="[[item.optionLabel]]"
-                      option-value="[[item.optionValue]]"
-                      trigger-value-change-event
-                      on-etools-selected-items-changed="_filterDropdownMultiHasChanged"
-                      hide-search="[[item.hideSearch]]">
-                  </etools-dropdown-multi>
-                </template>
-                <template is="dom-if" if="[[filterTypeIsDate(item.type)]]">
-                  <datepicker-lite id="[[item.query]]"
-                      class="filter-date"
-                      label="[[item.label]]"
-                      placeholder="&#8212;"
-                      value="{{item.selectedValue}}"
-                      on-date-has-changed="_filterDateHasChanged"
-                      fire-date-has-changed
-                      error-message=''
-                      selected-date-display-format="D MMM YYYY">
-                  </datepicker-lite>
+              <template is="dom-if" if="[[filterTypeIsDropdownMulti(item.type)]]">
+                <etools-dropdown-multi
+                  id="[[item.query]]"
+                  class="filter-dropdown"
+                  selected-values="{{item.selectedValue}}"
+                  label="[[item.label]]"
+                  placeholder$="&#8212;"
+                  options="[[item.selection]]"
+                  option-label="[[item.optionLabel]]"
+                  option-value="[[item.optionValue]]"
+                  trigger-value-change-event
+                  on-etools-selected-items-changed="_filterDropdownMultiHasChanged"
+                  hide-search="[[item.hideSearch]]"
+                >
+                </etools-dropdown-multi>
+              </template>
+              <template is="dom-if" if="[[filterTypeIsDate(item.type)]]">
+                <datepicker-lite
+                  id="[[item.query]]"
+                  class="filter-date"
+                  label="[[item.label]]"
+                  placeholder="&#8212;"
+                  value="{{item.selectedValue}}"
+                  on-date-has-changed="_filterDateHasChanged"
+                  fire-date-has-changed
+                  error-message=""
+                  selected-date-display-format="D MMM YYYY"
+                >
+                </datepicker-lite>
               </template>
             </div>
           </template>
@@ -90,28 +92,26 @@ class SearchAndFilter extends PolymerElement {
 
         <!-- ADD FILTERS -->
         <div id="add-filter-container">
-          <paper-menu-button horizontal-align="right"
-                             ignore-select
-                             no-overlap>
+          <paper-menu-button horizontal-align="right" ignore-select no-overlap>
             <paper-button slot="dropdown-trigger">
-              <iron-icon icon="filter-list"
-                         class="filter-list-icon"></iron-icon>
+              <iron-icon icon="filter-list" class="filter-list-icon"></iron-icon>
 
               <span class="add-filter-text">ADD FILTER</span>
-
             </paper-button>
 
             <paper-listbox multi slot="dropdown-content" selected="0">
               <template is="dom-repeat" items="[[availableFilters]]">
                 <paper-icon-item on-tap="addFilter" selected$="[[_isSelected(item, availableFilters)]]">
-                  <iron-icon icon="check" slot="item-icon" hidden$="[[!_isSelected(item, availableFilters)]]"></iron-icon>
+                  <iron-icon
+                    icon="check"
+                    slot="item-icon"
+                    hidden$="[[!_isSelected(item, availableFilters)]]"
+                  ></iron-icon>
                   <paper-item-body>[[item.name]]</paper-item-body>
                 </paper-icon-item>
               </template>
             </paper-listbox>
-
           </paper-menu-button>
-
         </div>
       </paper-card>
     `;
@@ -121,10 +121,10 @@ class SearchAndFilter extends PolymerElement {
   filters: any[] = [];
 
   @property({type: String})
-  searchLabel: string = '';
+  searchLabel = '';
 
   @property({type: String})
-  searchString: string = '';
+  searchString = '';
 
   @property({type: Array})
   usedFilters: any[] = [];
@@ -136,18 +136,16 @@ class SearchAndFilter extends PolymerElement {
   queryParams: GenericObject = {};
 
   @property({type: String})
-  previousSearchValue: string = '';
+  previousSearchValue = '';
 
   @property({type: Boolean})
-  filtersDataLoaded: boolean = false;
+  filtersDataLoaded = false;
 
   private _searchKeyDownDebounce!: Debouncer;
   private _restoreFiltersDebounce!: Debouncer;
 
   static get observers() {
-    return [
-      '_restoreFilters(queryParams.*)'
-    ];
+    return ['_restoreFilters(queryParams.*)'];
   }
 
   searchKeyDown(_event, {value}) {
@@ -156,23 +154,21 @@ class SearchAndFilter extends PolymerElement {
     }
     this.previousSearchValue = value;
 
-    this._searchKeyDownDebounce = Debouncer.debounce(this._searchKeyDownDebounce,
-      timeOut.after(300),
-      () => {
-        if (this.searchString.length !== 1) {
-          const query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
-          updateQueries({search: query, page: '1'});
-        }
-      });
+    this._searchKeyDownDebounce = Debouncer.debounce(this._searchKeyDownDebounce, timeOut.after(300), () => {
+      if (this.searchString.length !== 1) {
+        const query = this.searchString ? encodeURIComponent(this.searchString) : undefined;
+        updateQueries({search: query, page: '1'});
+      }
+    });
   }
 
   _isSelected(filter) {
     const query = typeof filter === 'string' ? filter : filter.query;
-    return this.usedFilters.findIndex(usedFilter => usedFilter.query === query) !== -1;
+    return this.usedFilters.findIndex((usedFilter) => usedFilter.query === query) !== -1;
   }
 
   addFilter(e) {
-    const query = (typeof e === 'string') ? e : e.model.item.query;
+    const query = typeof e === 'string' ? e : e.model.item.query;
     const isSelected = this._isSelected(query);
 
     if (!isSelected) {
@@ -188,7 +184,7 @@ class SearchAndFilter extends PolymerElement {
   }
 
   removeFilter(e) {
-    const query = (typeof e === 'string') ? e : e.model.item.query;
+    const query = typeof e === 'string' ? e : e.model.item.query;
     const indexToRemove = this.usedFilters.findIndex((filter) => {
       return filter.query === query;
     });
@@ -218,31 +214,28 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _restoreFilters() {
-    this._restoreFiltersDebounce = Debouncer.debounce(this._restoreFiltersDebounce,
-      timeOut.after(50),
-      () => {
-        const queryParams = this.queryParams;
+    this._restoreFiltersDebounce = Debouncer.debounce(this._restoreFiltersDebounce, timeOut.after(50), () => {
+      const queryParams = this.queryParams;
 
-        if (!queryParams || !this.filtersDataLoaded) {
-          return;
+      if (!queryParams || !this.filtersDataLoaded) {
+        return;
+      }
+
+      this.filters.forEach((filter) => {
+        const usedFilter = this.usedFilters.find((used) => used.query === filter.query);
+
+        if (!usedFilter && queryParams[filter.query] !== undefined) {
+          this.addFilter(filter.query);
         }
-
-        this.filters.forEach((filter) => {
-          const usedFilter = this.usedFilters.find(used => used.query === filter.query);
-
-          if (!usedFilter && queryParams[filter.query] !== undefined) {
-            this.addFilter(filter.query);
-          }
-
-        });
-
-        if (queryParams.search) {
-          this.set('searchString', queryParams.search);
-        } else {
-          this.set('searchString', '');
-        }
-        this.set('availableFilters', clone(this.filters));
       });
+
+      if (queryParams.search) {
+        this.set('searchString', queryParams.search);
+      } else {
+        this.set('searchString', '');
+      }
+      this.set('availableFilters', clone(this.filters));
+    });
   }
 
   _getFilterIndex(query) {
@@ -286,8 +279,9 @@ class SearchAndFilter extends PolymerElement {
     const splitValues = valueToConvert.split(',');
     const optionValue = filter.optionValue;
 
-    return filter.selection.filter((option: any) =>
-      splitValues.includes(String(option[optionValue]))).map((option: any) => option[optionValue]);
+    return filter.selection
+      .filter((option: any) => splitValues.includes(String(option[optionValue])))
+      .map((option: any) => option[optionValue]);
   }
 
   _getFilter(query) {
@@ -313,7 +307,7 @@ class SearchAndFilter extends PolymerElement {
     if (detail.selectedItems && query) {
       const filter = this._getFilter(query);
       const optionValue = filter.optionValue || 'value';
-      queryObject[query] = detail.selectedItems.map(val => val[optionValue]).join(',');
+      queryObject[query] = detail.selectedItems.map((val) => val[optionValue]).join(',');
     }
     updateQueries(queryObject);
   }
@@ -338,7 +332,6 @@ class SearchAndFilter extends PolymerElement {
   filterTypeIsDate(checkedTypeValue: FilterTypes) {
     return checkedTypeValue === FilterTypes.Date;
   }
-
 }
 
 window.customElements.define('search-and-filter', SearchAndFilter);
