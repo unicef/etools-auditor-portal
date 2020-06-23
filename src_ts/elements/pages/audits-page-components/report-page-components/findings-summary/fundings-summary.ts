@@ -321,6 +321,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   @property({type: Object})
   data: GenericObject = {};
 
+  @property({type: Array})
+  dataItems: GenericObject[] = [];
+
   @property({type: Boolean})
   showLocalCurrency = false;
 
@@ -470,7 +473,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     if (this.data.percent_of_audited_expenditure) {
       this.set('data.percent_of_audited_expenditure', this.data.percent_of_audited_expenditure.toFixed(2));
     }
-    this.set('dataItems', [this.data]);
+    if (this.dataItems.length) {
+      this.splice('dataItems', 0, this.dataItems.length);
+    }
+    setTimeout(() => {
+      this.set('dataItems', [this.data]);
+    }, 300);
     this.set('itemModel.audit_opinion', this.data.audit_opinion);
     this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
   }

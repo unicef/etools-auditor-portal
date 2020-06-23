@@ -153,7 +153,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskRatingInput"
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.value',
                                                 basePermissionPath)}} disabled-as-readonly validate-input"
                   selected="{{editedBlueprint.risks.0.value}}"
                   label="Risk rating"
@@ -161,7 +161,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                   options="[[riskOptions]]"
                   option-label="display_name"
                   option-value="value"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.value',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
@@ -177,12 +177,12 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <paper-textarea
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}} disabled-as-readonly validate-input"
                   value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
                   label="Key control observation"
                   placeholder="Enter Observation"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
                   readonly="{{requestInProcess}}"
@@ -198,12 +198,12 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <paper-textarea
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}} disabled-as-readonly validate-input"
                   value="{{editedBlueprint.risks.0.extra.recommendation}}"
                   label="Recommendation"
                   placeholder="Enter Recommendation"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
                   readonly="{{requestInProcess}}"
@@ -219,12 +219,12 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
             <div class="row-h group">
               <div class="input-container input-container-l">
                 <paper-textarea
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}} validate-input disabled-as-readonly"
                   value="{{editedBlueprint.risks.0.extra.ip_response}}"
                   label="IP Response"
                   placeholder="Enter Response"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
                   readonly="{{requestInProcess}}"
@@ -326,6 +326,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
       'resetDialog(confirmDialogOpened)',
       'updateStyles(requestInProcess, dialogOpened)',
       '_dataChanged(subjectAreas)',
+      '_subjectAreasChanged(subjectAreas)',
       '_complexErrorHandler(errorObject.key_internal_weakness)'
     ];
   }
@@ -353,6 +354,17 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
   _removeListeners() {
     this.removeEventListener('kicw-risk-edit', this.openEditDialog as any);
     this.removeEventListener('kicw-risk-delete', this.openDeleteDialog as any);
+  }
+
+  _subjectAreasChanged() {
+    // need to properly set blueprints in order to re-trigger dom-repeat
+    if (this.subjectAreas && this.subjectAreas.blueprints && this.subjectAreas.blueprints.length) {
+      const blueprints = Array.from(this.subjectAreas.blueprints);
+      this.splice('subjectAreas.blueprints', 0, this.subjectAreas.blueprints.length);
+      setTimeout(() => {
+        this.set('subjectAreas.blueprints', blueprints);
+      }, 300);
+    }
   }
 
   _getRisValueData(risk) {
