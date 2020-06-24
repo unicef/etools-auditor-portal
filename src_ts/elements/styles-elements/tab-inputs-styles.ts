@@ -109,6 +109,7 @@ export const tabInputsStyles = html`
     paper-textarea {
       --paper-input-container-input: {
         white-space: normal;
+        display: block !important;
       }
       --paper-input-container-focus-color: var(--module-primary);
       --iron-autogrow-textarea-placeholder: {
