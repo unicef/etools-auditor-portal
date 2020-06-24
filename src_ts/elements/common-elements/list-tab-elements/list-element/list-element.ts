@@ -424,8 +424,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     });
   }
 
-  // @ts-ignore
-  _getValue(item: GenericObject, data?: GenericObject, bool?: any) {
+  _getValue(item: GenericObject, _data?: GenericObject, bool?: any) {
     let value;
 
     if (!item.path) {
