@@ -201,7 +201,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
             </iron-icon>
           </div>
         </template>
-
         <div class="partner-data" style$="padding-right: [[paddingRight]];">
           <template is="dom-repeat" items="[[headings]]">
             <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
@@ -211,12 +210,12 @@ class ListElement extends LocalizationMixin(PolymerElement) {
                 target="[[item.target]]"
               >
                 <span class="truncate">
-                  <template is="dom-if" if="[[_getValue(item)]]">
-                    [[_getValue(item)]] <iron-icon icon="icons:launch"></iron-icon>
-                    <paper-tooltip offset="0">[[_getValue(item)]]</paper-tooltip>
+                  <template is="dom-if" if="[[_getValue(item, data)]]">
+                    [[_getValue(item, data)]] <iron-icon icon="icons:launch"></iron-icon>
+                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                   </template>
 
-                  <template is="dom-if" if="[[!_getValue(item)]]">
+                  <template is="dom-if" if="[[!_getValue(item, data)]]">
                     <span class="">–</span>
                   </template>
                 </span>
@@ -226,17 +225,17 @@ class ListElement extends LocalizationMixin(PolymerElement) {
             <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <span class="truncate">
-                  <template is="dom-if" if="[[_getValue(item)]]">
-                    [[_getValue(item)]]
-                    <paper-tooltip offset="0">[[_getValue(item)]]</paper-tooltip>
+                  <template is="dom-if" if="[[_getValue(item, data)]]">
+                    [[_getValue(item, data)]]
+                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                   </template>
 
-                  <template is="dom-if" if="[[!_getValue(item)]]">
+                  <template is="dom-if" if="[[!_getValue(item, data)]]">
                     <span class="">–</span>
                   </template>
 
                   <template is="dom-if" if="[[item.additional]]">
-                    <span class="additional">([[_getAdditionalValue(item)]])</span>
+                    <span class="additional">([[_getAdditionalValue(item, data)]])</span>
                   </template>
                 </span>
               </span>
@@ -245,7 +244,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
             <template is="dom-if" if="[[_isOneOfType(item, 'html')]]">
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <span class="truncate">
-                  <insert-html html="[[_getValue(item)]]"></insert-html>
+                  <insert-html html="[[_getValue(item, data)]]"></insert-html>
                 </span>
               </span>
             </template>
@@ -254,7 +253,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <template is="dom-if" if="{{_emtyObj(data)}}">
                   <slot name="checkbox">
-                    <paper-checkbox checked="{{_getValue(item, 'bool')}}" label=""> </paper-checkbox>
+                    <paper-checkbox checked="{{_getValue(item, data, 'bool')}}" label=""> </paper-checkbox>
                   </slot>
                 </template>
 
@@ -304,11 +303,11 @@ class ListElement extends LocalizationMixin(PolymerElement) {
                   <div class$="row-details-content w[[item.size]]">
                     <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
-                    <template is="dom-if" if="[[_getValue(item)]]">
-                      [[_getValue(item)]]
+                    <template is="dom-if" if="[[_getValue(item, data)]]">
+                      [[_getValue(item, data)]]
                     </template>
 
-                    <template is="dom-if" if="[[!_getValue(item)]]">
+                    <template is="dom-if" if="[[!_getValue(item, data)]]">
                       <span class="">–</span>
                     </template>
                   </div>
@@ -405,7 +404,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     (this as any).paddingRight = `${rightPadding}px`;
   }
 
-  _computeShowCollapse(details, hasCollapse) {
+  _computeShowCollapse(details: any[], hasCollapse: boolean) {
     return details.length > 0 && hasCollapse;
   }
 
@@ -413,7 +412,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     (this.shadowRoot!.querySelector('#details') as IronCollapseElement).toggle();
   }
 
-  _isOneOfType(item, ...theRestOfArgs) {
+  _isOneOfType(item: GenericObject, ...theRestOfArgs) {
     if (!item) {
       return false;
     }
@@ -425,7 +424,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     });
   }
 
-  _getValue(item, bool?) {
+  _getValue(item: GenericObject, _data?: GenericObject, bool?: any) {
     let value;
 
     if (!item.path) {
@@ -493,7 +492,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     return `000${value + 1}`;
   }
 
-  _getAdditionalValue(item) {
+  _getAdditionalValue(item: GenericObject) {
     if (!item.additional) {
       return;
     }
