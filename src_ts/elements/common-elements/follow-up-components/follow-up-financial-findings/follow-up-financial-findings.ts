@@ -248,8 +248,6 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               placeholder="[[getPlaceholderText('explanation_for_additional_information',
                                             basePermissionPath)]]"
               required="{{_setRequired('explanation_for_additional_information', basePermissionPath)}}"
-              disabled="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
-              readonly$="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
               invalid="{{errors.explanation_for_additional_information}}"
               error-message="{{errors.explanation_for_additional_information}}"
               on-focus="_resetFieldError"

@@ -249,7 +249,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   setActions(permissionBase) {
-    const actions = permissionBase && this.engagementData.status !== 'final' ? getActions(permissionBase) : [];
+    const actions = permissionBase ? getActions(permissionBase) : [];
     this.set('actions', actions);
   }
 
