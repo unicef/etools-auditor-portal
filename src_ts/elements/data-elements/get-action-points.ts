@@ -2,10 +2,9 @@ import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class GetActionPoints extends PolymerElement {
   @property({type: Number, notify: true, observer: '_engagementIdChanged'})
   engagementId!: number;
 
@@ -13,7 +12,7 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   actionPoints!: [];
 
   _handleResponse(data) {
-    this.actionPoints = data.length && data || [];
+    this.actionPoints = (data.length && data) || [];
     fireEvent(this, 'ap-loaded', {success: true});
   }
 
@@ -22,7 +21,9 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _engagementIdChanged(engagementId) {
-    if (!engagementId) {return;}
+    if (!engagementId) {
+      return;
+    }
     const apBaseUrl = getEndpoint('engagementInfo', {id: engagementId, type: 'engagements'}).url;
     const url = `${apBaseUrl}action-points/?page_size=all`;
 
@@ -36,9 +37,9 @@ class GetActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
       }
     };
 
-    this.sendRequest(requestOptions)
-      .then(resp => this._handleResponse(resp))
-      .catch((() => this._handleError()));
+    sendRequest(requestOptions)
+      .then((resp) => this._handleResponse(resp))
+      .catch(() => this._handleError());
   }
 }
 window.customElements.define('get-action-points', GetActionPoints);

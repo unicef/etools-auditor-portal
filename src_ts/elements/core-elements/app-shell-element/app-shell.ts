@@ -24,7 +24,6 @@ import './../app-footer/page-footer.js';
 import './../../styles-elements/app-theme.js';
 import '../../data-elements/static-data';
 
-
 // Gesture events like tap and track generated from touch will not be
 // preventable, allowing for better scrolling performance.
 setPassiveTouchGestures(true);
@@ -48,7 +47,6 @@ setRootPath(`/${BASE_PATH}/`);
  * @polymer
  */
 class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
-
   public static get template() {
     // main template
     // language=HTML
@@ -57,26 +55,33 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       <static-data></static-data>
       <app-location route="{{route}}" query-params="{{queryParams}}" url-space-regex="^[[rootPath]]"></app-location>
 
-      <app-route
-              route="{{route}}"
-              pattern="[[rootPath]]:page"
-              data="{{routeData}}"
-              tail="{{subroute}}">
-      </app-route>
+      <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"> </app-route>
 
       <etools-loading id="global-loading" absolute></etools-loading>
 
-      <app-drawer-layout id="layout" responsive-width="1200px"
-                        fullbleed narrow="{{narrow}}" small-menu$="[[smallMenu]]">
+      <app-drawer-layout
+        id="layout"
+        responsive-width="1200px"
+        fullbleed
+        narrow="{{narrow}}"
+        small-menu$="[[smallMenu]]"
+      >
         <!-- Drawer content -->
-        <app-drawer id="drawer" slot="drawer" transition-duration="350"
-                    on-click="onDrawerClick"
-                    swipe-open="[[narrow]]" small-menu$="[[smallMenu]]">
-          <app-menu root-path="[[rootPath]]"
-            selected-option="[[page]]"
+        <app-drawer
+          id="drawer"
+          slot="drawer"
+          transition-duration="350"
+          on-click="onDrawerClick"
+          swipe-open="[[narrow]]"
+          small-menu$="[[smallMenu]]"
+        >
+          <app-menu
+            root-path="[[rootPath]]"
+            selected-page="[[page]]"
             small-menu$="[[smallMenu]]"
-            show-ssc-page="[[_checkSSCPage(user)]]"></app-menu>
-            <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
+            show-ssc-page="[[_checkSSCPage(user)]]"
+          ></app-menu>
+          <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
 
         <!-- Main content -->
@@ -88,87 +93,84 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
           <main role="main" class="main-content">
             <iron-pages
-                id="pages"
-                selected="[[page]]"
-                attr-for-selected="name"
-                fallback-selection="not-found"
-                role="main">
-
+              id="pages"
+              selected="[[page]]"
+              attr-for-selected="name"
+              fallback-selection="not-found"
+              role="main"
+            >
               <engagements-page-main
-                      name="engagements"
-                      id="engagements"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                name="engagements"
+                id="engagements"
+                route="{{subroute}}"
+                query-params="{{queryParams}}"
+              >
               </engagements-page-main>
 
               <staff-sc-page-main
-                      selected-page="[[page]]"
-                      name="staff-sc"
-                      id="staff-sc"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                selected-page="[[page]]"
+                name="staff-sc"
+                id="staff-sc"
+                route="{{subroute}}"
+                query-params="{{queryParams}}"
+              >
               </staff-sc-page-main>
 
-              <audits-page-main
-                      name="audits"
-                      id="audits"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}">
+              <audits-page-main name="audits" id="audits" route="{{subroute}}" query-params="{{queryParams}}">
               </audits-page-main>
 
               <special-audits-page-main
-                      name="special-audits"
-                      id="special-audits"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                name="special-audits"
+                id="special-audits"
+                route="{{subroute}}"
+                query-params="{{queryParams}}"
+              >
               </special-audits-page-main>
 
               <micro-assessments-page-main
-                      name="micro-assessments"
-                      id="micro-assessments"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                name="micro-assessments"
+                id="micro-assessments"
+                route="{{subroute}}"
+                query-params="{{queryParams}}"
+              >
               </micro-assessments-page-main>
 
               <spot-checks-page-main
-                      name="spot-checks"
-                      id="spot-checks"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}">
+                name="spot-checks"
+                id="spot-checks"
+                route="{{subroute}}"
+                query-params="{{queryParams}}"
+              >
               </spot-checks-page-main>
 
               <spot-checks-page-main
-                      name="staff-spot-checks"
-                      id="staff-spot-checks"
-                      route="{{subroute}}"
-                      query-params="{{queryParams}}"
-                      is-staff-sc>
+                name="staff-spot-checks"
+                id="staff-spot-checks"
+                route="{{subroute}}"
+                query-params="{{queryParams}}"
+                is-staff-sc
+              >
               </spot-checks-page-main>
 
               <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
             </iron-pages>
-
           </main>
           <page-footer></page-footer>
         </app-header-layout>
       </app-drawer-layout>
       <multi-notification-list></multi-notification-list>
-
     `;
   }
 
   static get observers() {
-    return [
-      '_routePageChanged(route.path)',
-      '_viewChanged(routeData.view)'
-    ];
+    return ['_routePageChanged(route.path)', '_viewChanged(routeData.page)'];
   }
 
   @property({type: String, observer: '_pageChanged'})
-  page: string = '';
+  page = '';
 
   @property({type: Boolean, reflectToAttribute: true})
-  narrow: boolean = false;
+  narrow = false;
 
   @property({type: Object})
   _toast: PolymerElement | null = null;
@@ -177,7 +179,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   _toastQueue = [];
 
   @property({type: Array})
-  globalLoadingQueue = [];
+  globalLoadingQueue: any[] = [];
 
   @property({type: Object})
   user = {};
@@ -190,6 +192,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   @property({type: Object})
   queryParams!: GenericObject;
+
+  @property({type: Boolean})
+  initLoadingComplete!: boolean;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -215,7 +220,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   _dialogOpening(event) {
     const dialogOverlay = document.querySelector('iron-overlay-backdrop.opened');
-    if (!dialogOverlay) {return;}
+    if (!dialogOverlay) {
+      return;
+    }
 
     dialogOverlay.classList.remove('opened');
 
@@ -230,9 +237,13 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
   _dialogClosing(event) {
     // chrome
-    if (event.path && event.path[0] && event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {return;}
+    if (event.path && event.path[0] && event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
+      return;
+    }
     // edge
-    if (event.__target && event.__target.is && event.__target.is.toLowerCase().indexOf('dropdown') > -1) {return;}
+    if (event.__target && event.__target.is && event.__target.is.toLowerCase().indexOf('dropdown') > -1) {
+      return;
+    }
 
     event.target.$.drawerOverlay.style.zIndex = '';
     event.target.$.appHeaderOverlay.style.zIndex = '';
@@ -246,7 +257,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   queueToast(e) {
     const detail = e.detail;
     const notificationList = this.shadowRoot!.querySelector('multi-notification-list');
-    if (!notificationList) {return;}
+    if (!notificationList) {
+      return;
+    }
 
     if (detail && detail.reset) {
       fireEvent(notificationList, 'reset-notifications');
@@ -261,7 +274,12 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _viewChanged() {
-    if (this.page && this.routeData.page && this.page !== this.routeData.page && Object.keys(this.queryParams).length > 0) {
+    if (
+      this.page &&
+      this.routeData.page &&
+      this.page !== this.routeData.page &&
+      Object.keys(this.queryParams).length > 0
+    ) {
       // clear url params(filters from previous page) on navigate between pages
       this.set('queryParams', {});
     }
@@ -315,13 +333,18 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
     }
 
-    import(resolvedPageUrl).then(() => {
-      if (!this.initLoadingComplete) {this.initLoadingComplete = true;}
+    import(resolvedPageUrl)
+      .then(() => {
+        if (!this.initLoadingComplete) {
+          this.initLoadingComplete = true;
+        }
 
-      fireEvent(this, 'global-loading', {type: 'initialisation'});
+        fireEvent(this, 'global-loading', {type: 'initialisation'});
 
-      if (this.route.path === this.rootPath) {this._setDefaultLandingPage();}
-    })
+        if (this.route.path === this.rootPath) {
+          this._setDefaultLandingPage();
+        }
+      })
       .catch((_err) => {
         logError(_err);
         this._pageNotFound();
@@ -330,14 +353,12 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   _checkSSCPage(user) {
     const groups = get(user, 'groups', []);
-    return some(groups, group => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User');
+    return some(groups, (group) => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User');
   }
 
   _pageNotFound(event?) {
     this.page = 'not-found';
-    const message = event && event.detail && event.detail.message ?
-      `${event.detail.message}` :
-      'Oops you hit a 404!';
+    const message = event && event.detail && event.detail.message ? `${event.detail.message}` : 'Oops you hit a 404!';
 
     fireEvent(this, 'toast', {text: message});
     fireEvent(this, 'global-loading', {type: 'initialisation'});
@@ -373,12 +394,12 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
   }
 
-  _setDefaultLandingPage() {// _configPath
+  _setDefaultLandingPage() {
+    // _configPath
     const path = `${this.rootPath}engagements/list`;
     this.set('route.path', path);
     return 'engagements';
   }
-
 }
 
 window.customElements.define('app-shell', AppShell);

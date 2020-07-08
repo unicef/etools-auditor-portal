@@ -1,11 +1,10 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {GenericObject} from '../../types/global';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class UpdateAgreementData extends PolymerElement {
   @property({type: String, observer: '_dateChanged'})
   newDate!: string;
 
@@ -13,26 +12,30 @@ class UpdateAgreementData extends EtoolsAjaxRequestMixin(PolymerElement) {
   agreement!: GenericObject;
 
   @property({type: Boolean, notify: true})
-  poUpdating: boolean = false;
+  poUpdating = false;
 
   @property({type: Object, notify: true})
-  errors!: {};
+  errors!: GenericObject;
 
   _dateChanged(date) {
     date = date || null;
-    if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {return;}
+    if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {
+      return;
+    }
 
     this.poUpdating = true;
     const url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
-    this.sendRequest({
+    sendRequest({
       method: 'PATCH',
       endpoint: {url},
       body: {contract_end_date: date}
-    }).then((resp) => {
-      this._handleResponse(resp);
-    }).catch((err) => {
-      this._handleError(err);
-    });
+    })
+      .then((resp) => {
+        this._handleResponse(resp);
+      })
+      .catch((err) => {
+        this._handleError(err);
+      });
   }
 
   _handleResponse(detail) {

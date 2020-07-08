@@ -1,6 +1,7 @@
 import {property} from '@polymer/decorators';
 import {Constructor} from '../../../../types/global';
 import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer';
 
 /**
  * App menu functionality mixin
@@ -9,9 +10,8 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
  */
 export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class AppMenuClass extends baseClass {
-
     @property({type: Boolean})
-    smallMenu: boolean = false;
+    smallMenu = false;
 
     public connectedCallback() {
       super.connectedCallback();
@@ -95,12 +95,9 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
     }
 
     _toggleDrawer(): void {
-      // @ts-ignore
-      this.$.drawer.toggle();
+      (this.$.drawer as AppDrawerElement).toggle();
     }
   }
 
   return AppMenuClass;
-
 }
-

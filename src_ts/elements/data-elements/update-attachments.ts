@@ -3,11 +3,10 @@ import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import findIndex from 'lodash-es/findIndex';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {GenericObject} from '../../types/global';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class UpdateAttachments extends PolymerElement {
   @property({type: String, observer: '_requestDataChanged'})
   requestData!: string;
 
@@ -54,47 +53,49 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
       body: attachmentData
     };
 
-    if (method === 'PATCH' && !!(attachmentData.attachment)) {// file was changed
+    if (method === 'PATCH' && !!attachmentData.attachment) {
+      // file was changed
       this._handleExitingFileWasChanged(attachmentData, url);
     } else {
-      this.sendRequest(options)
+      sendRequest(options)
         .then((resp) => {
           this._handleResponse(resp);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           this._handleError(error);
         });
     }
   }
 
   /**
-    * Handle weird behavior on bk, where when you edit and attachment it just duplicates
-    * the edited attachment giving it the id of the newly uploaded file
-    */
+   * Handle weird behavior on bk, where when you edit and attachment it just duplicates
+   * the edited attachment giving it the id of the newly uploaded file
+   */
   _handleExitingFileWasChanged(attachmentData: any, url: string) {
-    //DELETE currently edited attachment object
-    this.sendRequest({method: 'DELETE', endpoint: {url}})
+    // DELETE currently edited attachment object
+    sendRequest({method: 'DELETE', endpoint: {url}})
       .then(() => {
-        //POST to create new attachment object
+        // POST to create new attachment object
         url = url.replace(`${attachmentData.id}/`, '');
         delete attachmentData.id;
         attachmentData.file_type = this.editedItem.file_type;
-        let options = {
+        const options = {
           method: 'POST',
           endpoint: {url},
           body: attachmentData
-        }
+        };
         this.method = 'POST';
-        this.sendRequest(options)
+        sendRequest(options)
           .then((resp) => {
             this._handleChangedFileResponse(resp);
-          }).catch((error) => {
+          })
+          .catch((error) => {
             this._handleError(error);
           });
       })
       .catch((error) => {
         this._handleError(error);
       });
-
   }
 
   _handleResponse(detail) {
@@ -124,7 +125,7 @@ class UpdateAttachments extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleError(error) {
-    let {status, response} = (error || {}) as any;
+    let {response} = (error || {}) as any;
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);

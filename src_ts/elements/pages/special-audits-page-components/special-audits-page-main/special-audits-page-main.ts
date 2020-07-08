@@ -30,65 +30,63 @@ import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
-
+import {GenericObject} from '../../../../types/global';
 
 /**
  * @polymer
  * @mixinFunction
  * @appliesMixin EngagementMixin
  */
-class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
-
+class SpecialAuditsPageMain extends EngagementMixin(PolymerElement) {
   static get template() {
     // language=HTML
     return html`
-        ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
+      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
       <style>
-
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
-
       </style>
 
-      <app-route
-              route="{{route}}"
-              pattern="/:id/:tab"
-              data="{{routeData}}">
-      </app-route>
+      <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
 
       <engagement-info-data
-              engagement-id="{{engagementId}}"
-              engagement-type="special-audits"
-              engagement-info="{{engagement}}">
+        engagement-id="{{engagementId}}"
+        engagement-type="special-audits"
+        engagement-info="{{engagement}}"
+      >
       </engagement-info-data>
 
       <update-engagement
-              updated-engagement-data="{{updatedEngagement}}"
-              quiet-adding="{{quietAdding}}"
-              force-options-update="{{forceOptionsUpdate}}"
-              engagement="{{engagement}}"
-              error-object="{{errorObject}}"
-              base-permission-path="{{permissionBase}}">
+        updated-engagement-data="{{updatedEngagement}}"
+        quiet-adding="{{quietAdding}}"
+        force-options-update="{{forceOptionsUpdate}}"
+        engagement="{{engagement}}"
+        error-object="{{errorObject}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </update-engagement>
 
       <template is="dom-if" if="{{engagement.id}}" restamp>
         <pages-header-element
-                show-export-button
-                hide-print-button
-                export-links="[[_setExportLinks(engagement)]]"
-                engagement="[[engagement]]"
-                page-title="[[engagement.partner.name]] - Audit">
+          show-export-button
+          hide-print-button
+          export-links="[[_setExportLinks(engagement)]]"
+          engagement="[[engagement]]"
+          page-title="[[engagement.partner.name]] - Audit"
+        >
         </pages-header-element>
 
         <div class="tab-selector">
           <paper-tabs
-                  attr-for-selected="name"
-                  noink bottom-item
-                  role="tablist"
-                  tabindex="0"
-                  selected="{{tab}}"
-                  id="pageTabs">
+            attr-for-selected="name"
+            noink
+            bottom-item
+            role="tablist"
+            tabindex="0"
+            selected="{{tab}}"
+            id="pageTabs"
+          >
             <paper-tab name="overview">
               <span class="tab-content">Engagement Overview</span>
             </paper-tab>
@@ -111,10 +109,7 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
 
         <div class="view-container">
           <div id="pageContent">
-            <iron-pages
-                    id="info-tabs"
-                    selected="{{tab}}"
-                    attr-for-selected="name">
+            <iron-pages id="info-tabs" selected="{{tab}}" attr-for-selected="name">
               <div name="overview">
                 <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
                   <etools-content-panel class="cancellation-tab" panel-title="">
@@ -128,47 +123,52 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
                 </template>
 
                 <engagement-info-details
-                        id="engagementDetails"
-                        data="{{engagement}}"
-                        original-data="[[originalData]]"
-                        error-object="{{errorObject}}"
-                        base-permission-path="{{permissionBase}}">
+                  id="engagementDetails"
+                  data="{{engagement}}"
+                  original-data="[[originalData]]"
+                  error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}"
+                >
                 </engagement-info-details>
 
                 <partner-details-tab
-                        id="partnerDetails"
-                        original-data="[[originalData]]"
-                        engagement="{{engagement}}"
-                        error-object="{{errorObject}}"
-                        base-permission-path="{{permissionBase}}">
+                  id="partnerDetails"
+                  original-data="[[originalData]]"
+                  engagement="{{engagement}}"
+                  error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}"
+                >
                 </partner-details-tab>
 
                 <specific-procedure
-                        id="specificProcedures"
-                        class="mb-15"
-                        without-finding-column
-                        error-object="{{errorObject}}"
-                        data-items="{{engagement.specific_procedures}}"
-                        base-permission-path="{{permissionBase}}"
-                        readonly-tab>
+                  id="specificProcedures"
+                  class="mb-15"
+                  without-finding-column
+                  error-object="{{errorObject}}"
+                  data-items="{{engagement.specific_procedures}}"
+                  base-permission-path="{{permissionBase}}"
+                  readonly-tab
+                >
                 </specific-procedure>
 
                 <engagement-staff-members-tab
-                        id="staffMembers"
-                        engagement="{{engagement}}"
-                        error-object="{{errorObject}}"
-                        base-permission-path="{{permissionBase}}">
+                  id="staffMembers"
+                  engagement="{{engagement}}"
+                  error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}"
+                >
                 </engagement-staff-members-tab>
               </div>
 
               <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                 <div name="report">
                   <sa-report-page-main
-                          id="report"
-                          original-data="[[originalData]]"
-                          error-object="{{errorObject}}"
-                          engagement="{{engagement}}"
-                          permission-base="{{permissionBase}}">
+                    id="report"
+                    original-data="[[originalData]]"
+                    error-object="{{errorObject}}"
+                    engagement="{{engagement}}"
+                    permission-base="{{permissionBase}}"
+                  >
                   </sa-report-page-main>
                 </div>
               </template>
@@ -176,36 +176,39 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
               <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
                 <div name="follow-up">
                   <follow-up-main
-                          id="follow-up"
-                          original-data="[[originalData]]"
-                          error-object="{{errorObject}}"
-                          engagement="{{engagement}}"
-                          permission-base="{{permissionBase}}">
+                    id="follow-up"
+                    original-data="[[originalData]]"
+                    error-object="{{errorObject}}"
+                    engagement="{{engagement}}"
+                    permission-base="{{permissionBase}}"
+                  >
                   </follow-up-main>
                 </div>
               </template>
 
               <div name="attachments">
                 <file-attachments-tab
-                        id="engagement_attachments"
-                        data-base-path="[[permissionBase]]"
-                        path-postfix="attachments"
-                        base-id="[[engagement.id]]"
-                        error-object="{{errorObject}}"
-                        error-property="engagement_attachments"
-                        endpoint-name="attachments">
+                  id="engagement_attachments"
+                  data-base-path="[[permissionBase]]"
+                  path-postfix="attachments"
+                  base-id="[[engagement.id]]"
+                  error-object="{{errorObject}}"
+                  error-property="engagement_attachments"
+                  endpoint-name="attachments"
+                >
                 </file-attachments-tab>
 
                 <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
                   <file-attachments-tab
-                          id="report_attachments"
-                          is-report-tab="true"
-                          data-base-path="[[permissionBase]]"
-                          path-postfix="report_attachments"
-                          base-id="[[engagement.id]]"
-                          error-object="{{errorObject}}"
-                          error-property="report_attachments"
-                          endpoint-name="reportAttachments">
+                    id="report_attachments"
+                    is-report-tab="true"
+                    data-base-path="[[permissionBase]]"
+                    path-postfix="report_attachments"
+                    base-id="[[engagement.id]]"
+                    error-object="{{errorObject}}"
+                    error-property="report_attachments"
+                    endpoint-name="reportAttachments"
+                  >
                   </file-attachments-tab>
                 </template>
               </div>
@@ -213,32 +216,35 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
           </div>
 
           <div id="sidebar">
-            <status-tab-element
-                    engagement-data="[[engagement]]"
-                    permission-base="[[permissionBase]]">
+            <status-tab-element engagement-data="[[engagement]]" permission-base="[[permissionBase]]">
             </status-tab-element>
           </div>
         </div>
 
-        <etools-dialog no-padding keep-dialog-open size="md"
-                       opened="{{dialogOpened}}"
-                       dialog-title="Cancellation of Engagement"
-                       ok-btn-text="Continue"
-                       on-confirm-btn-clicked="_cancelEngagement">
+        <etools-dialog
+          no-padding
+          keep-dialog-open
+          size="md"
+          opened="{{dialogOpened}}"
+          dialog-title="Cancellation of Engagement"
+          ok-btn-text="Continue"
+          on-confirm-btn-clicked="_cancelEngagement"
+        >
           <div class="row-h repeatable-item-container" without-line>
             <div class="repeatable-item-content">
               <div class="row-h group">
                 <div class="input-container input-container-l">
                   <paper-textarea
-                          id="cancellationReasonInput"
-                          class="required"
-                          label="Cancellation Reason"
-                          placeholder="Enter reason of cancellation"
-                          required
-                          max-rows="4"
-                          error-message="This field is required."
-                          on-focus="_resetFieldError"
-                          on-tap="_resetFieldError">
+                    id="cancellationReasonInput"
+                    class="required"
+                    label="Cancellation Reason"
+                    placeholder="Enter reason of cancellation"
+                    required
+                    max-rows="4"
+                    error-message="This field is required."
+                    on-focus="_resetFieldError"
+                    on-tap="_resetFieldError"
+                  >
                   </paper-textarea>
                 </div>
               </div>
@@ -246,20 +252,17 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
           </div>
         </etools-dialog>
       </template>
-
-
     `;
   }
 
   @property({type: Object})
-  engagement!: {};
+  engagement!: GenericObject;
 
   @property({type: Array})
   tabsList: string[] = ['overview', 'report', 'attachments', 'follow-up'];
 
   @property({type: String})
-  engagementPrefix: string = '/special-audits';
-
+  engagementPrefix = '/special-audits';
 
   static get observers() {
     return [
@@ -274,21 +277,25 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
     super.connectedCallback();
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    this.addEventListener('main-action-activated', this._mainActionActivated);
+    // @Lajos not found
+    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
-    this.removeEventListener('main-action-activated', this._mainActionActivated);
+    // @Lajos not found
+    // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
     const basicInfoValid = this._validateBasicInfo();
     const reportValid = this.getElement('#report').validate();
 
-    if (!basicInfoValid) {return false;}
+    if (!basicInfoValid) {
+      return false;
+    }
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -301,12 +308,14 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');
-    const followUpData = followUpPage && followUpPage.getFollowUpData() || {};
+    const followUpData = (followUpPage && followUpPage.getFollowUpData()) || {};
     assign(data, followUpData);
 
     // Report Data
     const reportPage = this.getElement('#report');
-    if (!reportPage) {return data;}
+    if (!reportPage) {
+      return data;
+    }
 
     const specificProceduresData = reportPage.getSpecificProceduresData();
     const otherRecommendationsData = reportPage.getOtherRecommendationsData();
@@ -324,7 +333,9 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
 
   customBasicValidation() {
     const reportTab = this.getElement('#report');
-    if (!reportTab) {return true;}
+    if (!reportTab) {
+      return true;
+    }
 
     const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
@@ -333,7 +344,6 @@ class SpecialAuditsPageMain extends (EngagementMixin(PolymerElement)) {
     }
     return true;
   }
-
 }
 
 window.customElements.define('special-audits-page-main', SpecialAuditsPageMain);

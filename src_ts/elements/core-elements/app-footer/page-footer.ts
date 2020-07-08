@@ -7,7 +7,6 @@ import '@polymer/iron-flex-layout/iron-flex-layout.js';
  * @customElement
  */
 class PageFooter extends PolymerElement {
-
   public static get template() {
     // main template
     // language=HTML
@@ -53,13 +52,12 @@ class PageFooter extends PolymerElement {
             display: none;
           }
         }
-
       </style>
       <footer>
         <div id="footer-content">
-        <span id="unicef-logo">
-          <img src$="[[rootPath]]assets/images/UNICEF_logo.png" alt="UNICEF logo">
-        </span>
+          <span id="unicef-logo">
+            <img src$="[[rootPath]]assets/images/UNICEF_logo.png" alt="UNICEF logo" />
+          </span>
           <!-- TODO: modify span to a with proper href values after footer pages are ready -->
           <!--   <span class="footer-link">Contact</span>
             <span class="footer-link">Disclaimers</span>
@@ -68,7 +66,6 @@ class PageFooter extends PolymerElement {
       </footer>
     `;
   }
-
 }
 
 window.customElements.define('page-footer', PageFooter);

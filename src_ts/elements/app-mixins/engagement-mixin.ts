@@ -14,7 +14,7 @@ import {getUserData} from '../../elements/app-mixins/user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 import {whichPageTrows} from './error-handler';
 
-let currentEngagement = {};
+let currentEngagement: {details?: GenericObject; type?: string} = {};
 /**
  * @polymer
  * @mixinFunction
@@ -23,9 +23,8 @@ let currentEngagement = {};
 
 function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class EngagementMixinClass extends baseClass {
-
     @property({type: Number})
-    engagementId!: number;
+    engagementId!: number | null;
 
     @property({type: Object})
     routeData!: GenericObject;
@@ -34,7 +33,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     tabsList!: any[];
 
     @property({type: String})
-    engagementPrefix: string = '';
+    engagementPrefix = '';
 
     @property({type: Object})
     originalData!: GenericObject;
@@ -49,10 +48,34 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     errorObject: GenericObject = {};
 
     @property({type: Boolean, observer: 'resetInputDialog'})
-    dialogOpened: boolean = false;
+    dialogOpened = false;
 
     @property({type: String})
     tab!: string;
+
+    @property({type: Object})
+    route!: GenericObject;
+
+    @property({type: Array})
+    reportFileTypes!: any[];
+
+    @property({type: Array})
+    engagementFileTypes!: any[];
+
+    @property({type: Boolean})
+    isStaffSc!: boolean;
+
+    @property({type: Boolean})
+    forceOptionsUpdate!: boolean;
+
+    @property({type: Boolean})
+    quietAdding!: boolean;
+
+    @property({type: Object})
+    updatedEngagement!: GenericObject;
+
+    @property({type: Object})
+    engagement!: GenericObject;
 
     connectedCallback() {
       super.connectedCallback();
@@ -91,8 +114,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         return;
       }
       const tab = route.path.split('/')[2];
-      if ((tab === 'report') && !this._showReportTabs(permissionBase, engagement) ||
-        (tab === 'follow-up') && !this._showFollowUpTabs(permissionBase)) {
+      if (
+        (tab === 'report' && !this._showReportTabs(permissionBase, engagement)) ||
+        (tab === 'follow-up' && !this._showFollowUpTabs(permissionBase))
+      ) {
         const id = route.path.split('/')[1];
         this.set('route.path', `/${id}/overview`);
       }
@@ -109,7 +134,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       this.tab = tab;
+      // @ts-ignore Defined in derived class when needed
       if (this.infoLoaded) {
+        // @ts-ignore Defined in derived class when needed
         this.infoLoaded();
       }
     }
@@ -141,8 +168,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       } else {
         this.permissionBase = `engagement_${id}`;
       }
-      this.reportFileTypes = getChoices(`${this.permissionBase}.report_attachments.file_type`);
-      this.engagementFileTypes = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
+      (this.reportFileTypes as any) = getChoices(`${this.permissionBase}.report_attachments.file_type`);
+      (this.engagementFileTypes as any) = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
     }
 
     _openCancelDialog() {
@@ -173,6 +200,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
           this._saveProgress(event);
           break;
         case 'create':
+          // @ts-ignore Defined in derived class when needed
           this._saveNewEngagement();
           break;
         case 'submit':
@@ -193,41 +221,40 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (!this._validateBasicInfo()) {
         return;
       }
+      // @ts-ignore Defined in derived class when needed
       if (this.customBasicValidation && !this.customBasicValidation()) {
         return;
       }
 
       const quietAdding = event && event.detail && event.detail.quietAdding;
       const forceOptionsUpdate = event && event.detail && event.detail.forceOptionsUpdate;
-
-      return this._prepareData()
-        .then((data) => {
-          this.quietAdding = quietAdding;
-          this.forceOptionsUpdate = forceOptionsUpdate;
-          this.updatedEngagement = data;
-        });
+      return this._prepareData().then((data) => {
+        this.quietAdding = quietAdding;
+        this.forceOptionsUpdate = forceOptionsUpdate;
+        this.updatedEngagement = data;
+      });
     }
 
     _submitReport() {
+      // @ts-ignore Defined in derived class when needed
       if (!this._validateEngagement()) {
         return;
       }
 
-      return this._prepareData(true, false)
-        .then((data) => {
-          this.updatedEngagement = data;
-        });
+      return this._prepareData(true, false).then((data) => {
+        this.updatedEngagement = data;
+      });
     }
 
     _finalizeReport() {
+      // @ts-ignore Defined in derived class when needed
       if (!this._validateEngagement()) {
         return;
       }
 
-      return this._prepareData(false, true)
-        .then((data) => {
-          this.updatedEngagement = data;
-        });
+      return this._prepareData(false, true).then((data) => {
+        this.updatedEngagement = data;
+      });
     }
 
     _cancelEngagement() {
@@ -254,7 +281,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       this.dialogOpened = false;
       if (this.tab === 'report') {
         this.tab = 'overview';
-
       }
     }
 
@@ -280,9 +306,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       return currentEngagement;
     }
 
-    _prepareData(submit, finalize) {
+    _prepareData(submit?: boolean, finalize?: boolean) {
       if (!this.engagement) {
-        return Promise.reject('You need engagement object');
+        return Promise.reject(new Error('You need engagement object'));
       }
 
       // Check basic info
@@ -300,19 +326,20 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         data.engagement_type = this.engagement.engagement_type;
       }
 
+      // @ts-ignore Defined in derived class when needed
       if (this.customDataPrepare) {
+        // @ts-ignore Defined in derived class when needed
         data = this.customDataPrepare(data);
       }
 
       // leave for compatibility with other code
-      return Promise.all([])
-        .then(() => ({
-          engagement_type: type,
-          id: engagementId,
-          data: data,
-          submit: submit ? 'submit/' : null,
-          finalize: finalize ? 'finalize/' : null
-        }));
+      return Promise.all([]).then(() => ({
+        engagement_type: type,
+        id: engagementId,
+        data: data,
+        submit: submit ? 'submit/' : null,
+        finalize: finalize ? 'finalize/' : null
+      }));
     }
 
     _setExportLinks(engagement) {
@@ -323,13 +350,16 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const pdfLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'pdf/';
       const csvLink = getEndpoint('engagementInfo', {id: engagement.id, type: type}).url + 'csv/';
 
-      return [{
-        name: 'Export PDF',
-        url: pdfLink
-      }, {
-        name: 'Export CSV',
-        url: csvLink
-      }];
+      return [
+        {
+          name: 'Export PDF',
+          url: pdfLink
+        },
+        {
+          name: 'Export CSV',
+          url: csvLink
+        }
+      ];
     }
 
     _validateBasicInfo(property?) {
@@ -337,7 +367,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const partnerDetailsValid = this.getElement('#partnerDetails').validate();
 
       if (!detailsValid || !partnerDetailsValid) {
-        const openTab = (partnerDetailsValid && detailsValid) ? 'attachments' : 'overview';
+        const openTab = partnerDetailsValid && detailsValid ? 'attachments' : 'overview';
         this.set(property || 'tab', openTab);
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
@@ -408,9 +438,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     hasReportAccess(permissionBase, engagement) {
-      return actionAllowed(permissionBase, 'submit') ||
+      return (
+        actionAllowed(permissionBase, 'submit') ||
         engagement.status === 'report_submitted' ||
-        engagement.status === 'final';
+        engagement.status === 'final'
+      );
     }
 
     _showQuestionnaire(permissionBase, engagement) {
@@ -439,11 +471,8 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         this.set(tab, page);
       }
     }
-
   }
-
   return EngagementMixinClass;
-
 }
 
 export default EngagementMixin;

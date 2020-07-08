@@ -35,7 +35,6 @@ import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
 import {getEndpoint} from '../../../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../../app-mixins/static-data-controller';
 import DateMixin from '../../../app-mixins/date-mixin';
@@ -45,8 +44,10 @@ import {
   updateCollection,
   getChoices,
   readonlyPermission,
-  actionAllowed} from '../../../app-mixins/permission-controller';
+  actionAllowed
+} from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @polymer
@@ -54,13 +55,8 @@ import {checkNonField} from '../../../app-mixins/error-handler';
  * @appliesMixin DateMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  */
-class FollowUpActions extends
-  EtoolsAjaxRequestMixin(
-    CommonMethodsMixin(TableElementsMixin(
-      DateMixin(PolymerElement)))) {
-
+class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
   static get template() {
     return html`
       ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
@@ -172,14 +168,14 @@ class FollowUpActions extends
                         </paper-checkbox>
                     </div>
                     <div slot="hover" class="edit-icon-slot">
-                        <paper-icon-button 
-                            icon="icons:content-copy" 
-                            class="edit-icon" 
+                        <paper-icon-button
+                            icon="icons:content-copy"
+                            class="edit-icon"
                             on-tap="_openCopyDialog"></paper-icon-button>
-                        <paper-icon-button 
-                            icon="icons:create" 
-                            class="edit-icon" 
-                            on-tap="_openEditDialog" 
+                        <paper-icon-button
+                            icon="icons:create"
+                            class="edit-icon"
+                            on-tap="_openEditDialog"
                             hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
                     </div>
                 </list-element>
@@ -220,7 +216,7 @@ class FollowUpActions extends
                         <div class="input-container input-container-ms">
                             <!-- Partner -->
                             <etools-dropdown
-                                    class$="[[_setRequired('partner', editedApBase)]] 
+                                    class$="[[_setRequired('partner', editedApBase)]]
                                               disabled-as-readonly validate-input fua-person"
                                     selected="{{selectedPartnerId}}"
                                     label="[[getLabel('partner', editedApBase)]]"
@@ -331,7 +327,7 @@ class FollowUpActions extends
                             <!-- Sections -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('section', editedApBase)]] 
+                                    class$="[[_setRequired('section', editedApBase)]]
                                             disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.section.id}}"
                                     label="[[getLabel('section', editedApBase)]]"
@@ -355,7 +351,7 @@ class FollowUpActions extends
                             <!-- Offices -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('office', editedApBase)]] 
+                                    class$="[[_setRequired('office', editedApBase)]]
                                             disabled-as-readonly validate-input fua-person"
                                     selected="{{editedItem.office.id}}"
                                     label="[[getLabel('office', editedApBase)]]"
@@ -377,7 +373,7 @@ class FollowUpActions extends
                             <!-- Due Date -->
                             <datepicker-lite
                                     id="deadlineAction"
-                                    class$="[[_setRequired('due_date', editedApBase)]] 
+                                    class$="[[_setRequired('due_date', editedApBase)]]
                                             disabled-as-readonly validate-input"
                                     value="{{editedItem.due_date}}"
                                     label="[[getLabel('due_date', editedApBase)]]"
@@ -445,57 +441,70 @@ class FollowUpActions extends
   };
 
   @property({type: Array})
-  modelFields: string[] = ['assigned_to', 'category', 'description', 'section', 'office', 'due_date',
-    'high_priority', 'intervention'];
+  modelFields: string[] = [
+    'assigned_to',
+    'category',
+    'description',
+    'section',
+    'office',
+    'due_date',
+    'high_priority',
+    'intervention'
+  ];
 
   @property({type: Array})
   columns: GenericObject[] = [
     {
-      'size': 18,
-      'label': 'Reference Number #',
-      'name': 'reference_number',
-      'link': '*ap_link*',
-      'ordered': 'desc',
-      'path': 'reference_number',
-      'target': '_blank',
-      'class': 'with-icon',
-      'orderBy': 'id'
-    }, {
-      'size': 32,
-      'label': 'Action Point Category',
-      'labelPath': 'category',
-      'path': 'ap_category.display_name',
-      'name': 'category'
-    }, {
-      'size': 20,
-      'label': 'Assignee (Section / Office)',
-      'htmlLabel': 'Assignee<br/>(Section / Office)',
-      'path': 'computed_field',
-      'html': true,
-      'class': 'no-order'
-    }, {
-      'size': 10,
-      'label': 'Status',
-      'labelPath': 'status',
-      'align': 'center',
-      'property': 'status',
-      'path': 'status',
-      'class': 'caps',
-      'name': 'status'
-    }, {
-      'size': 10,
-      'label': 'Due Date',
-      'labelPath': 'due_date',
-      'path': 'due_date',
-      'name': 'date',
-      'align': 'center'
-    }, {
-      'size': 10,
-      'label': 'Priority',
-      'labelPath': 'high_priority',
-      'path': 'priority',
-      'align': 'center',
-      'name': 'high_priority'
+      size: 18,
+      label: 'Reference Number #',
+      name: 'reference_number',
+      link: '*ap_link*',
+      ordered: 'desc',
+      path: 'reference_number',
+      target: '_blank',
+      class: 'with-icon',
+      orderBy: 'id'
+    },
+    {
+      size: 32,
+      label: 'Action Point Category',
+      labelPath: 'category',
+      path: 'ap_category.display_name',
+      name: 'category'
+    },
+    {
+      size: 20,
+      label: 'Assignee (Section / Office)',
+      htmlLabel: 'Assignee<br/>(Section / Office)',
+      path: 'computed_field',
+      html: true,
+      class: 'no-order'
+    },
+    {
+      size: 10,
+      label: 'Status',
+      labelPath: 'status',
+      align: 'center',
+      property: 'status',
+      path: 'status',
+      class: 'caps',
+      name: 'status'
+    },
+    {
+      size: 10,
+      label: 'Due Date',
+      labelPath: 'due_date',
+      path: 'due_date',
+      name: 'date',
+      align: 'center'
+    },
+    {
+      size: 10,
+      label: 'Priority',
+      labelPath: 'high_priority',
+      path: 'priority',
+      align: 'center',
+      name: 'high_priority'
     }
   ];
 
@@ -521,10 +530,10 @@ class FollowUpActions extends
   offices: GenericObject[] = [];
 
   @property({type: String})
-  orderBy: string = '-reference_number';
+  orderBy = '-reference_number';
 
   @property({type: Boolean, computed: '_checkNotTouched(copyDialog, editedItem.*)'})
-  notTouched: boolean = false;
+  notTouched = false;
 
   @property({type: Object})
   requestData!: GenericObject;
@@ -549,6 +558,12 @@ class FollowUpActions extends
 
   @property({type: Number})
   engagementId!: number;
+
+  @property({type: Number})
+  partnerId!: number | null;
+
+  @property({type: Number})
+  selectedPartnerId!: number | null;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -576,7 +591,7 @@ class FollowUpActions extends
     return actionAllowed(editedApBase, 'complete');
   }
   _requestPartner(partner) {
-    const id = partner && +partner.id || null;
+    const id = (partner && +partner.id) || null;
     this.partnerId = id;
     this.selectedPartnerId = id;
   }
@@ -591,7 +606,9 @@ class FollowUpActions extends
   }
 
   _orderChanged(newOrder, columns) {
-    if (!newOrder || !(columns instanceof Array)) {return false;}
+    if (!newOrder || !(columns instanceof Array)) {
+      return false;
+    }
 
     let direction = 'asc';
     let name = newOrder;
@@ -611,18 +628,18 @@ class FollowUpActions extends
       }
     });
 
-    const sorted = sortBy(this.dataItems, item => item[orderBy]);
+    const sorted = sortBy(this.dataItems, (item) => item[orderBy]);
     this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
   }
 
   _addComputedField() {
     this.itemsToDisplay = this.dataItems.map((item: any) => {
-      item.priority = item.high_priority && 'High' || ' ';
+      item.priority = (item.high_priority && 'High') || ' ';
       const assignedTo = get(item, 'assigned_to.name', '--');
       const section = get(item, 'section.name', '--');
       const office = get(item, 'office.name', '--');
       item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
-      item.ap_category = find(this.categories, category => category.value === item.category);
+      item.ap_category = find(this.categories, (category) => category.value === item.category);
       return item;
     });
   }
@@ -634,7 +651,9 @@ class FollowUpActions extends
   }
 
   _checkNonField(error) {
-    if (!error) {return;}
+    if (!error) {
+      return;
+    }
 
     const nonField = checkNonField(error);
     if (nonField) {
@@ -661,9 +680,13 @@ class FollowUpActions extends
       }
     });
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
-      if (data[field] && data[field].id) {data[field] = data[field].id;}
+      if (data[field] && data[field].id) {
+        data[field] = data[field].id;
+      }
     });
-    if (this.editedItem.id && !isEmpty(data)) {data.id = this.editedItem.id;}
+    if (this.editedItem.id && !isEmpty(data)) {
+      data.id = this.editedItem.id;
+    }
 
     return isEmpty(data) ? null : data;
   }
@@ -684,7 +707,9 @@ class FollowUpActions extends
   }
 
   _requestCompleted(event) {
-    if (!event || !event.detail) {return;}
+    if (!event || !event.detail) {
+      return;
+    }
     const detail = event.detail;
     this.requestInProcess = false;
     if (detail && detail.success) {
@@ -703,8 +728,7 @@ class FollowUpActions extends
 
   _openEditDialog(event) {
     this.editedApBase = '';
-    fireEvent(this, 'global-loading',
-      {type: 'get-ap-options', active: true, message: 'Loading data...'});
+    fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
     const index = this._getIndex(event);
     this._selectedAPIndex = index;
@@ -723,7 +747,7 @@ class FollowUpActions extends
         url
       }
     };
-    this.sendRequest(requestOptions)
+    sendRequest(requestOptions)
       .then(this._handleOptionResponse.bind(this))
       .catch(this._handleOptionResponse.bind(this));
   }
@@ -743,7 +767,9 @@ class FollowUpActions extends
   }
 
   _checkNotTouched(copyDialog) {
-    if (!copyDialog || isEmpty(this.originalEditedObj)) {return false;}
+    if (!copyDialog || isEmpty(this.originalEditedObj)) {
+      return false;
+    }
     return every(this.originalEditedObj, (value, key) => {
       const isObj = isObject(value);
       if (isObj) {
@@ -769,6 +795,7 @@ class FollowUpActions extends
       this.dialogTitle = get(this, 'viewDialogTexts.title');
       this.confirmBtnText = '';
       this.cancelBtnText = 'Cancel';
+      // @ts-ignore Defined in tableElementsMixin, not visible because of EtoolsAjaxRequestMixin
       this._openDialog(itemIndex);
     }
   }

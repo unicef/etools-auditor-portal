@@ -19,22 +19,18 @@ import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import {getEndpoint} from '../../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
 import {getStaticData} from '../../app-mixins/static-data-controller';
 import {fireEvent} from '../../utils/fire-custom-event';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
- * @appliesMixin EtoolsAjaxRequestMixin
  */
-class ShareDocuments extends
-  EtoolsAjaxRequestMixin(
-    TableElementsMixin(CommonMethodsMixin(PolymerElement))) {
-
+class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
   static get template() {
     return html`
 
@@ -173,7 +169,7 @@ class ShareDocuments extends
   partnerName!: string;
 
   @property({type: String, observer: '_filterByFileType'})
-  selectedFiletype: string = '';
+  selectedFiletype = '';
 
   @property({type: Array})
   selectedAttachments: GenericObject[] = [];
@@ -184,28 +180,28 @@ class ShareDocuments extends
   @property({type: Array})
   headingColumns: GenericObject[] = [
     {
-      'size': 18,
-      'label': 'Agreement Ref',
-      'name': 'ref',
-      'ordered': 'asc'
+      size: 18,
+      label: 'Agreement Ref',
+      name: 'ref',
+      ordered: 'asc'
     },
     {
-      'size': 30,
-      'label': 'Document Type',
-      'noOrder': true,
-      'class': 'no-order'
+      size: 30,
+      label: 'Document Type',
+      noOrder: true,
+      class: 'no-order'
     },
     {
-      'size': 28,
-      'label': 'Document',
-      'noOrder': true,
-      'class': 'no-order'
+      size: 28,
+      label: 'Document',
+      noOrder: true,
+      class: 'no-order'
     },
     {
-      'size': 20,
-      'label': 'Date Uploaded',
-      'noOrder': true,
-      'class': 'no-order right'
+      size: 20,
+      label: 'Date Uploaded',
+      noOrder: true,
+      class: 'no-order right'
     }
   ];
 
@@ -219,7 +215,9 @@ class ShareDocuments extends
   originalList!: GenericObject;
 
   _handlePartnerChanged(partnerName) {
-    if (!partnerName) {return;}
+    if (!partnerName) {
+      return;
+    }
     this._getPartnerAttachments(partnerName);
   }
 
@@ -232,24 +230,20 @@ class ShareDocuments extends
       }
     };
 
-    this.sendRequest(options)
+    sendRequest(options)
       .then((resp) => {
         this.set('attachmentsList', resp);
         this.set('originalList', resp);
       })
-      .catch(err => fireEvent(this, 'toast', {text: `Error fetching documents for ${partner}: ${err}`}));
-
+      .catch((err) => fireEvent(this, 'toast', {text: `Error fetching documents for ${partner}: ${err}`}));
   }
 
   _getFileTypesFromStatic() {
-    const fileTypes = getStaticData('staticDropdown').attachment_types
-      .filter(val => !isEmpty(val))
-      .map(
-        typeStr => ({label: typeStr, value: typeStr})
-      );
+    const fileTypes = getStaticData('staticDropdown')
+      .attachment_types.filter((val) => !isEmpty(val))
+      .map((typeStr) => ({label: typeStr, value: typeStr}));
     const uniques = uniqBy(fileTypes, 'label');
     return uniques;
-
   }
 
   _getReferenceNumber(refNumber) {
@@ -301,18 +295,18 @@ class ShareDocuments extends
   }
 
   _filterByFileType(selectedFileType) {
-    if (selectedFileType === '') {return;}
+    if (selectedFileType === '') {
+      return;
+    }
     if (selectedFileType === null) {
       // resets list when doc-type filter is cleared
       this.set('attachmentsList', this.originalList);
       return;
     }
     const file_type = selectedFileType.toLowerCase();
-    const newFilteredList = this.originalList.filter(row => row.file_type.toLowerCase() === file_type);
+    const newFilteredList = this.originalList.filter((row) => row.file_type.toLowerCase() === file_type);
     this.set('attachmentsList', newFilteredList);
   }
-
-
 }
 window.customElements.define('share-documents', ShareDocuments);
 export {ShareDocuments as ShareDocumentsEl};

@@ -14,43 +14,40 @@ import EtoolsDialog from '@unicef-polymer/etools-dialog';
 class ActionButtons extends PolymerElement {
   static get template() {
     return html`
-    ${moduleStyles} ${ActionButtonsStyles}
-    <paper-button 
-            class$="main-action status-tab-button {{withActionsMenu(actions.length)}}" 
-            raised 
-            on-tap="_btnClicked">
-      <span class="main-action text">[[_setButtonText(actions.0)]]</span>
-      <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
-
-        <paper-menu-button class="option-button" dynamic-align opened="{{statusBtnMenuOpened}}">
-          <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
-          <div slot="dropdown-content">
-            <template class="other-btns-template" is="dom-repeat" items="[[actions]]" filter="_filterActions">
-              <div class="other-options" on-click="closeMenu" action-code$="[[_setActionCode(item)]]">
-                <iron-icon icon="[[_setIcon(item, icons)]]" class="option-icon"></iron-icon>
-                <span>{{_setButtonText(item)}}</span>
-              </div>
-            </template>
-
-          </div>
-        </paper-menu-button>
-
-      </template>
-
-    </paper-button>
+      ${moduleStyles} ${ActionButtonsStyles}
+      <paper-button
+        class$="main-action status-tab-button {{withActionsMenu(actions.length)}}"
+        raised
+        on-tap="_btnClicked"
+      >
+        <span class="main-action text">[[_setButtonText(actions.0)]]</span>
+        <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
+          <paper-menu-button class="option-button" dynamic-align opened="{{statusBtnMenuOpened}}">
+            <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
+            <div slot="dropdown-content">
+              <template class="other-btns-template" is="dom-repeat" items="[[actions]]" filter="_filterActions">
+                <div class="other-options" on-click="closeMenu" action-code$="[[_setActionCode(item)]]">
+                  <iron-icon icon="[[_setIcon(item, icons)]]" class="option-icon"></iron-icon>
+                  <span>{{_setButtonText(item)}}</span>
+                </div>
+              </template>
+            </div>
+          </paper-menu-button>
+        </template>
+      </paper-button>
     `;
   }
 
   @property({type: Array})
-  actions = [];
+  actions: any[] = [];
 
   @property({type: Object})
   icons = {
-    'cancel': 'cancel',
-    'save': 'save',
-    'submit': 'assignment-turned-in',
-    'finalize': 'assignment-turned-in',
-    'create': 'assignment-turned-in'
+    cancel: 'cancel',
+    save: 'save',
+    submit: 'assignment-turned-in',
+    finalize: 'assignment-turned-in',
+    create: 'assignment-turned-in'
   };
 
   @property({type: Boolean})
@@ -90,23 +87,30 @@ class ActionButtons extends PolymerElement {
   }
 
   _setButtonText(item) {
-    if (!item) {return '';}
+    if (!item) {
+      return '';
+    }
     const text = item.display_name || item.replace('_', ' ');
 
-    if (!text) {throw new Error('Can not get button text!');}
+    if (!text) {
+      throw new Error('Can not get button text!');
+    }
 
     return text.toUpperCase();
   }
 
   _btnClicked(event) {
-    if (!event || !event.target) {return;}
-    const target = event.target.classList.contains('other-options') ?
-      event.target : event.target.parentElement || event.target;
+    if (!event || !event.target) {
+      return;
+    }
+    const target = event.target.classList.contains('other-options')
+      ? event.target
+      : event.target.parentElement || event.target;
     const isMainAction = event.target.classList.contains('main-action');
 
-    const action = isMainAction ?
-      (this.actions[0].code || this.actions[0]) :
-      target && target.getAttribute('action-code');
+    const action = isMainAction
+      ? this.actions[0].code || this.actions[0]
+      : target && target.getAttribute('action-code');
 
     if (action) {
       if (action === 'submit') {
@@ -145,14 +149,15 @@ class ActionButtons extends PolymerElement {
   }
 
   _setIcon(item, icons) {
-    if (!icons || !item) {return '';}
-    return icons[(item.code || item)] || '';
+    if (!icons || !item) {
+      return '';
+    }
+    return icons[item.code || item] || '';
   }
 
   _setActionCode(item) {
     return item && (item.code || item);
   }
-
 }
 
 window.customElements.define('action-buttons', ActionButtons);

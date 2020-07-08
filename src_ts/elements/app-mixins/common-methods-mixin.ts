@@ -1,4 +1,5 @@
 import {PolymerElement} from '@polymer/polymer';
+import {property} from '@polymer/decorators';
 import clone from 'lodash-es/clone';
 import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
@@ -6,7 +7,7 @@ import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import {setStaticData, getStaticData} from './static-data-controller';
-import {Constructor} from '../../types/global';
+import {Constructor, GenericObject} from '../../types/global';
 import {fireEvent} from '../utils/fire-custom-event';
 import {refactorErrorObject, checkNonField} from './error-handler';
 
@@ -16,6 +17,23 @@ import {refactorErrorObject, checkNonField} from './error-handler';
  */
 function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class CommonMethodsMixinClass extends baseClass {
+    @property({type: Boolean})
+    requestInProcess!: boolean;
+
+    @property({type: Object})
+    tabTexts!: GenericObject;
+
+    @property({type: Object})
+    errors!: GenericObject;
+
+    @property({type: Boolean})
+    dialogOpened = false;
+
+    @property({type: String})
+    errorBaseText!: string;
+
+    @property({type: Boolean})
+    confirmDialogOpened = false;
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -54,14 +72,14 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _errorHandler(errorData) {
-      if (!errorData) {
+      if (!errorData || !Object.keys(errorData).length) {
         return false;
       }
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
       this.set('errors', clone(refactorErrorObject(errorData)));
-      if (this.tabTexts && this.tabTexts.fields.some(field => !!this.errors[field])) {
+      if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }
     }
@@ -105,8 +123,9 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!base) {
         return '';
       }
-      return getFieldAttribute(`${base}.${path}`, 'label', 'POST') ||
-        getFieldAttribute(`${base}.${path}`, 'label', 'GET');
+      return (
+        getFieldAttribute(`${base}.${path}`, 'label', 'POST') || getFieldAttribute(`${base}.${path}`, 'label', 'GET')
+      );
     }
 
     getDisplayName(path, base, value) {
@@ -122,7 +141,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       const choice = choices.find((choice) => {
         return choice && choice.value === value;
       });
-      return (choice && choice.display_name) ? choice.display_name : '';
+      return choice && choice.display_name ? choice.display_name : '';
     }
 
     getMaxLength(path, base) {
@@ -200,21 +219,19 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (savedUsers.length > 0 && availableUsers && availableUsers.length > 0) {
         let changed = false;
         savedUsers.forEach((savedUser) => {
-          if (availableUsers.findIndex(user => user.id === savedUser.id) < 0) {
+          if (availableUsers.findIndex((user) => user.id === savedUser.id) < 0) {
             availableUsers.push(savedUser);
             changed = true;
           }
         });
         if (changed) {
-          availableUsers.sort((a, b) => (a.name < b.name) ? -1 : 1);
+          availableUsers.sort((a, b) => (a.name < b.name ? -1 : 1));
         }
       }
     };
-
   }
 
   return CommonMethodsMixinClass;
-
 }
 
 export default CommonMethodsMixin;

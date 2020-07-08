@@ -7,12 +7,11 @@ import pull from 'lodash-es/pull';
 import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
 import {GenericObject} from '../../types/global.js';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class EngagementListData extends PolymerElement {
   @property({type: Array, readOnly: true, notify: true})
   engagementsList!: [];
 
@@ -26,12 +25,24 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
   listLength!: number;
 
   @property({type: String})
-  endpointName: string = '';
+  endpointName = '';
+
+  @property({type: Boolean, notify: true, observer: '_reloadDataChanged'})
+  reloadData = false;
 
   static get observers() {
     return ['getEngagementsList(requestQueries.*)'];
   }
 
+  _reloadDataChanged() {
+    if (this.reloadData) {
+      // force reload data for engagement list
+      this.getEngagementsList(true);
+      setTimeout(() => {
+        this.reloadData = false;
+      }, 200);
+    }
+  }
   _engagementsLoaded(detail) {
     if (!detail) {
       fireEvent(this, 'toast', {text: 'An error occured, try again.'});
@@ -46,16 +57,20 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
   }
 
-  getEngagementsList() {
-    const reloadRequired = this.reloadRequired() || this.requestQueries.reload;
+  getEngagementsList(forceReload = false) {
+    const reloadRequired = forceReload || this.reloadRequired() || this.requestQueries.reload;
     this.lastState = cloneDeep(this.requestQueries);
+
     if (!reloadRequired || !this.endpointName) {
       // not reload the page
       return;
     }
 
-    fireEvent(this, 'global-loading', {type: 'engagements-list', active: true,
-      message: 'Loading of engagements list...'});
+    fireEvent(this, 'global-loading', {
+      type: 'engagements-list',
+      active: true,
+      message: 'Loading of engagements list...'
+    });
 
     const endpoint = getEndpoint(this.endpointName);
     endpoint.url += getQueriesString();
@@ -65,20 +80,29 @@ class EngagementListData extends EtoolsAjaxRequestMixin(PolymerElement) {
     }
 
     endpoint.url = endpoint.url.replace(/[&?]{1}/, '?');
-    this.sendRequest({
+    sendRequest({
       endpoint: endpoint
-    }).then((resp) => {
-      this._engagementsLoaded(resp);
-    }).catch((err) => {
-      this._responseError(err);
-    });
+    })
+      .then((resp) => {
+        this._engagementsLoaded(resp);
+      })
+      .catch((err) => {
+        this._responseError(err);
+      });
   }
 
   reloadRequired() {
     const lastKeys = keys(this.lastState);
     const requestQueriesKeys = keys(this.requestQueries);
-    const filtersKeys = ['agreement__auditor_firm', 'partner', 'engagement_type', 'status', 'joint_audit',
-      'staff_members__user', 'sc'];
+    const filtersKeys = [
+      'agreement__auditor_firm',
+      'partner',
+      'engagement_type',
+      'status',
+      'joint_audit',
+      'staff_members__user',
+      'sc'
+    ];
     let queriesKeys = lastKeys.concat(requestQueriesKeys);
 
     queriesKeys = uniq(queriesKeys);

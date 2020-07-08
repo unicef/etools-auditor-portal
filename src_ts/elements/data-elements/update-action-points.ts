@@ -3,10 +3,10 @@ import {property} from '@polymer/decorators';
 import findIndex from 'lodash-es/findIndex';
 import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {GenericObject} from '../../types/global.js';
 
-class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class UpdateActionPoints extends PolymerElement {
   @property({type: String, observer: '_dataChanged'})
   requestData!: string;
 
@@ -17,7 +17,7 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
   requestInProcess!: boolean;
 
   @property({type: Object, notify: true})
-  errors!: {};
+  errors!: GenericObject;
 
   @property({type: Number})
   engagementId!: number;
@@ -31,8 +31,12 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
     const apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url;
     let url = `${apBaseUrl}action-points/`;
 
-    if (apData.id) {url += `${apData.id}/`;}
-    if (complete) {url += 'complete/';}
+    if (apData.id) {
+      url += `${apData.id}/`;
+    }
+    if (complete) {
+      url += 'complete/';
+    }
 
     this._sendUpdateRequest(url, apData, method);
   }
@@ -46,9 +50,9 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
       body
     };
 
-    this.sendRequest(requestOptions)
-      .then(resp => this._handleResponse(resp))
-      .catch(err => this._handleError(err));
+    sendRequest(requestOptions)
+      .then((resp) => this._handleResponse(resp))
+      .catch((err) => this._handleError(err));
   }
 
   _handleResponse(detail) {
@@ -77,6 +81,5 @@ class UpdateActionPoints extends EtoolsAjaxRequestMixin(PolymerElement) {
     this.set('errors', response);
     fireEvent(this, 'ap-request-completed');
   }
-
 }
 window.customElements.define('update-action-points', UpdateActionPoints);

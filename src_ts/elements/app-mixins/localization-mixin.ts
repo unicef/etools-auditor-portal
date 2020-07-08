@@ -8,19 +8,21 @@ import {Constructor} from '../../types/global';
  */
 function LocalizationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class LocalizationMixinClass extends (baseClass as Constructor<PolymerElement>) {
-
     getHeadingLabel(base, item) {
-      if (!item) {return '';}
-      if (!base) {return item.label || '';}
+      if (!item) {
+        return '';
+      }
+      if (!base) {
+        return item.label || '';
+      }
 
       const labelPath = item.labelPath || item.path;
       const label = getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
 
-      return (label && typeof label === 'string') ? label : (item.label || '');
+      return label && typeof label === 'string' ? label : item.label || '';
     }
   }
   return LocalizationMixinClass;
-
 }
 
 export default LocalizationMixin;

@@ -1,22 +1,19 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {collectionExists, addToCollection} from '../app-mixins/permission-controller';
 import {getUserData} from '../app-mixins/user-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
-
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @customElement
  * @polymer
- * @appliesMixin EtoolsAjaxRequestMixin
  */
 
-class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class GetStaffMembersList extends PolymerElement {
   @property({type: Number, notify: true})
   organisationId!: number;
 
@@ -24,10 +21,10 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   queries!: GenericObject;
 
   @property({type: Object, notify: true})
-  dataItems!: {};
+  dataItems!: GenericObject;
 
   @property({type: Boolean, notify: true})
-  listLoading: boolean = false;
+  listLoading = false;
 
   @property({type: Number, notify: true, observer: '_partnerIdChanged'})
   partnerId!: number | null;
@@ -39,7 +36,7 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   requestsCompleted: GenericObject = {};
 
   @property({type: String, notify: true})
-  staffsBase: string = '';
+  staffsBase = '';
 
   @property({type: Object})
   responseData!: GenericObject;
@@ -48,16 +45,16 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   url!: string | null;
 
   @property({type: String})
-  pageType: string = '';
+  pageType = '';
 
   static get observers() {
-    return [
-      '_startRequest(organisationId, queries)'
-    ];
+    return ['_startRequest(organisationId, queries)'];
   }
 
   _startRequest(organisationId, listQueries) {
-    if (!organisationId || !listQueries) {return;}
+    if (!organisationId || !listQueries) {
+      return;
+    }
 
     this.listLoading = true;
     const queriesString = this._prepareQueries(listQueries);
@@ -70,9 +67,7 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: {url: this.url}
     };
 
-    this.sendRequest(options)
-      .then(this._handleDataResponse.bind(this))
-      .catch(this._handleError.bind(this));
+    sendRequest(options).then(this._handleDataResponse.bind(this)).catch(this._handleError.bind(this));
 
     if (collectionExists(`staff_members_${organisationId}`)) {
       this.requestsCompleted.options = true;
@@ -87,9 +82,7 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
       endpoint: getEndpoint('staffMembers', {id: organisationId}),
       params
     };
-    this.sendRequest(options)
-      .then(this._handleOptionsResponse.bind(this))
-      .catch(this._handleOptionsResponse.bind(this));
+    sendRequest(options).then(this._handleOptionsResponse.bind(this)).catch(this._handleOptionsResponse.bind(this));
   }
 
   _prepareQueries(listQueries) {
@@ -98,10 +91,11 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
       if (key !== 'search' || !!value) {
         queries.push(`${key}=${value}`);
       }
-
     });
     const profile = getUserData() as any;
-    const countryFilter = this.pageType.includes('staff') ? `user__profile__countries_available__name=${profile.country.name}` : '';
+    const countryFilter = this.pageType.includes('staff')
+      ? `user__profile__countries_available__name=${profile.country.name}`
+      : '';
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
   }
 
@@ -124,7 +118,9 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleResponse(data) {
-    if (!this.requestsCompleted.data || !this.requestsCompleted.options) {return;}
+    if (!this.requestsCompleted.data || !this.requestsCompleted.options) {
+      return;
+    }
 
     this.dataItems = data.results;
     if (this.queries && !this.queries.search) {
@@ -136,8 +132,12 @@ class GetStaffMembersList extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _handleError(error) {
-    const responseData = error && error.request && error.request.detail &&
-      error.request.detail.request && error.request.detail.request.xhr;
+    const responseData =
+      error &&
+      error.request &&
+      error.request.detail &&
+      error.request.detail.request &&
+      error.request.detail.request.xhr;
     logError(responseData);
     this.listLoading = false;
     this.url = null;

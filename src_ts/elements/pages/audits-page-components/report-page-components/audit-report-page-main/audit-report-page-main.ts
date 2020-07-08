@@ -19,7 +19,6 @@ import {KeyInternalControlsWeaknessesEl} from '../key-internal-controls-weakness
  * @polymer
  */
 class AuditReportPageMain extends PolymerElement {
-
   static get template() {
     // language=HTML
     return html`
@@ -30,45 +29,50 @@ class AuditReportPageMain extends PolymerElement {
       </style>
 
       <assign-engagement
-          id="assignEngagement"
-          original-data="[[originalData]]"
-          class="mb-24"
-          error-object="{{errorObject}}"
-          data="{{engagement}}"
-          audit-type="Audit"
-          base-permission-path="{{permissionBase}}">
+        id="assignEngagement"
+        original-data="[[originalData]]"
+        class="mb-24"
+        error-object="{{errorObject}}"
+        data="{{engagement}}"
+        audit-type="Audit"
+        base-permission-path="{{permissionBase}}"
+      >
       </assign-engagement>
 
       <findings-summary
-          id="findingsSummary"
-          class="mb-24"
-          data="{{engagement}}"
-          error-object="{{errorObject}}"
-          base-permission-path="{{permissionBase}}">
+        id="findingsSummary"
+        class="mb-24"
+        data="{{engagement}}"
+        error-object="{{errorObject}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </findings-summary>
 
       <financial-findings
-          id="financialFindings"
-          class="mb-24"
-          error-object="{{errorObject}}"
-          data-items="{{engagement.financial_finding_set}}"
-          base-permission-path="{{permissionBase}}">
+        id="financialFindings"
+        class="mb-24"
+        error-object="{{errorObject}}"
+        data-items="{{engagement.financial_finding_set}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </financial-findings>
 
       <assessment-of-controls
-          id="assessmentOfControls"
-          class="mb-24"
-          data-items="{{engagement.key_internal_controls}}"
-          error-object="{{errorObject}}"
-          base-permission-path="{{permissionBase}}">
+        id="assessmentOfControls"
+        class="mb-24"
+        data-items="{{engagement.key_internal_controls}}"
+        error-object="{{errorObject}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </assessment-of-controls>
 
       <key-internal-controls-weaknesses
-          id="keyInternalControlsWeaknesses"
-          class="mb-24"
-          error-object="{{errorObject}}"
-          subject-areas="[[engagement.key_internal_weakness]]"
-          base-permission-path="{{permissionBase}}">
+        id="keyInternalControlsWeaknesses"
+        class="mb-24"
+        error-object="{{errorObject}}"
+        subject-areas="[[engagement.key_internal_weakness]]"
+        base-permission-path="{{permissionBase}}"
+      >
       </key-internal-controls-weaknesses>
     `;
   }
@@ -108,7 +112,6 @@ class AuditReportPageMain extends PolymerElement {
   getKeyInternalWeaknessData() {
     return (this.$.keyInternalControlsWeaknesses as KeyInternalControlsWeaknessesEl).getKeyInternalWeaknessData();
   }
-
 }
 
 window.customElements.define('audit-report-page-main', AuditReportPageMain);

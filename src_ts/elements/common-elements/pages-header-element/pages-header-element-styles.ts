@@ -32,7 +32,7 @@ const pagesHeaderElementStyles = html`
     paper-menu-button {
       padding: 0;
     }
-    
+
     .header-wrapper {
       /*box-shadow: inset 0 -1px rgba(0,0,0,0.26);*/
       background-color: white;
@@ -97,7 +97,6 @@ const pagesHeaderElementStyles = html`
       height: 100%;
       z-index: 10;
     }
-
   </style>
 `;
 

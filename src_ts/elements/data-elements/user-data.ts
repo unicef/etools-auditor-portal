@@ -3,25 +3,26 @@ import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
 import {fireEvent} from '../utils/fire-custom-event';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {setUserData} from '../app-mixins/user-controller';
 import {resetOldUserData} from '../app-config/config';
 import famEndpoints from '../app-config/endpoints.js';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UserData extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class UserData extends PolymerElement {
   public connectedCallback() {
     super.connectedCallback();
 
-    this.sendRequest({
+    sendRequest({
       endpoint: famEndpoints.userProfile
-    }).then((resp) => {
-      this._handleResponse(resp);
-    }).catch((err) => {
-      logError(err);
-      this._handleError(err);
-    });
+    })
+      .then((resp) => {
+        this._handleResponse(resp);
+      })
+      .catch((err) => {
+        logError(err);
+        this._handleError(err);
+      });
   }
 
   _handleResponse(user) {
@@ -46,9 +47,8 @@ class UserData extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (err.status === 403) {
       window.location.href = window.location.origin + '/';
     } else {
-      logError('Can\'t load user data');
+      logError("Can't load user data");
     }
   }
-
 }
 window.customElements.define('user-data', UserData);

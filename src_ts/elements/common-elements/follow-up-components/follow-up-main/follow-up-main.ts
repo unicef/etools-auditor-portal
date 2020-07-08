@@ -28,47 +28,51 @@ class FollowUpMain extends PolymerElement {
     return html`
       <style>
         :host {
-            position: relative;
-            display: block;
+          position: relative;
+          display: block;
         }
       </style>
       <follow-up-actions
-            engagement-id="[[engagement.id]]"
-            partner-data="[[engagement.partner]]"
-            base-engagement-path="{{permissionBase}}">
+        engagement-id="[[engagement.id]]"
+        partner-data="[[engagement.partner]]"
+        base-engagement-path="{{permissionBase}}"
+      >
       </follow-up-actions>
 
       <template is="dom-if" if="[[showFindings(engagement.engagement_type)]]" restamp>
-            <follow-up-financial-findings
-                  id="followUpFF"
-                  engagement="[[engagement]]"
-                  original-data="[[originalData]]"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}">
-            </follow-up-financial-findings>
+        <follow-up-financial-findings
+          id="followUpFF"
+          engagement="[[engagement]]"
+          original-data="[[originalData]]"
+          error-object="{{errorObject}}"
+          base-permission-path="{{permissionBase}}"
+        >
+        </follow-up-financial-findings>
       </template>
 
       <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'sc')}}" restamp>
-          <summary-findings-element
-                id="followUpFindingsHighPriority"
-                data-items="{{engagement.findings}}"
-                error-object="{{errorObject}}"
-                original-data="[[originalData.findings]]"
-                priority="{{priorities.high}}"
-                base-permission-path="{{permissionBase}}">
-          </summary-findings-element>
+        <summary-findings-element
+          id="followUpFindingsHighPriority"
+          data-items="{{engagement.findings}}"
+          error-object="{{errorObject}}"
+          original-data="[[originalData.findings]]"
+          priority="{{priorities.high}}"
+          base-permission-path="{{permissionBase}}"
+        >
+        </summary-findings-element>
       </template>
 
       <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'audit')}}" restamp>
         <financial-findings
-            id="financialFindings"
-            class="mb-24"
-            error-object="{{errorObject}}"
-            data-items="{{engagement.financial_finding_set}}"
-            base-permission-path="{{permissionBase}}">
+          id="financialFindings"
+          class="mb-24"
+          error-object="{{errorObject}}"
+          data-items="{{engagement.financial_finding_set}}"
+          base-permission-path="{{permissionBase}}"
+        >
         </financial-findings>
       </template>
-      `;
+    `;
   }
 
   @property({type: Object})
@@ -103,6 +107,5 @@ class FollowUpMain extends PolymerElement {
   _showCard(type: any, validType: string) {
     return !!type && validType === type;
   }
-
 }
 window.customElements.define('follow-up-main', FollowUpMain);

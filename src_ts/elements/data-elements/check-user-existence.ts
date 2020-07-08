@@ -4,10 +4,10 @@ import get from 'lodash-es/get';
 import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {GenericObject} from '../../types/global';
 
-class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class CheckUserExistence extends PolymerElement {
   @property({type: String, notify: true, observer: '_emailChanged'})
   email: string | null = null;
 
@@ -21,14 +21,18 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
   unicefUsersAllowed!: boolean;
 
   @property({type: Object, notify: true})
-  editedItem!: {};
+  editedItem!: GenericObject;
 
   @property({type: Number})
   organisationId!: number;
 
   _emailChanged(email) {
-    if (!email) {return;}
-    if (isNaN(+this.organisationId)) {return;}
+    if (!email) {
+      return;
+    }
+    if (isNaN(+this.organisationId)) {
+      return;
+    }
 
     this.emailChecking = true;
     const url = getEndpoint('userExistence', {
@@ -36,14 +40,15 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
       id: this.organisationId
     }).url;
 
-    this.sendRequest({
+    sendRequest({
       endpoint: {url}
-    }).then((resp) => {
-      this._handleResponse(resp);
-    }).catch((err) => {
-      this._handleError(err);
-    });
-
+    })
+      .then((resp) => {
+        this._handleResponse(resp);
+      })
+      .catch(() => {
+        this._handleError();
+      });
   }
 
   _isUnicefUser(email) {
@@ -98,12 +103,11 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
         this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
       }
     } else if (this.unicefUsersAllowed) {
-      const errorMsg = this._isUnicefUser(this.email) ?
-        `We could not find this user at this time, please try again later or contact support if the issue persists` :
-        'Only UNICEF users can be added to a Staff Spot Check';
+      const errorMsg = this._isUnicefUser(this.email)
+        ? `We could not find this user at this time, please try again later or contact support if the issue persists`
+        : 'Only UNICEF users can be added to a Staff Spot Check';
       this._setError(errorMsg);
       this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
-
     } else if (this._isUnicefUser(this.email)) {
       this._setError('UNICEF users can not be added to this engagement type.');
       this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
@@ -120,9 +124,15 @@ class CheckUserExistence extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _setError(error) {
-    if (!this.errors) {this.set('errors', {});}
-    if (!this.errors.user) {this.set('errors.user', {});}
-    if (!this.errors.user.email) {this.set('errors.user.email', error);}
+    if (!this.errors) {
+      this.set('errors', {});
+    }
+    if (!this.errors.user) {
+      this.set('errors.user', {});
+    }
+    if (!this.errors.user.email) {
+      this.set('errors.user.email', error);
+    }
   }
 }
 window.customElements.define('check-user-existence', CheckUserExistence);

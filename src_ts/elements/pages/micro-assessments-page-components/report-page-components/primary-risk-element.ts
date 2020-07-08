@@ -30,7 +30,6 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
           --ecp-header-height: 51px;
           --ecp-header-bg: var(--module-warning);
         }
-
       </style>
 
       <etools-content-panel panel-title="{{riskData.header}}" class="overal-risks">
@@ -39,7 +38,8 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
             <div class="input-container">
               <!-- Risk Assessment -->
 
-              <etools-dropdown id="riskAssessmentInput"
+              <etools-dropdown
+                id="riskAssessmentInput"
                 class="validate-input disabled-as-readonly required"
                 selected="{{primaryArea.risk.value.value}}"
                 label="Risk Assessment"
@@ -54,7 +54,8 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
                 error-message="{{errors.children.0.blueprints.0.risk.value}}"
                 on-focus="_resetFieldError"
                 on-tap="_resetFieldError"
-                hide-search>
+                hide-search
+              >
               </etools-dropdown>
             </div>
           </div>
@@ -62,17 +63,20 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
           <div class="row-h group">
             <div class="input-container input-container-l">
               <!-- Brief Justification -->
-              <paper-textarea id="briefJustification"
+              <paper-textarea
+                id="briefJustification"
                 class="disabled-as-readonly validate-input required"
                 value="{{primaryArea.risk.extra.comments}}"
                 label="Brief Justification for Rating (main internal control gaps)"
                 placeholder="Enter Brief Justification"
-                required disabled="[[isDisabled]]"
+                required
+                disabled="[[isDisabled]]"
                 max-rows="4"
                 invalid="{{errors.children.0.blueprints.0.risk.extra}}"
                 error-message="{{errors.children.0.blueprints.0.risk.extra}}"
                 on-focus="_resetFieldError"
-                on-tap="_resetFieldError">
+                on-tap="_resetFieldError"
+              >
               </paper-textarea>
             </div>
           </div>
@@ -82,7 +86,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   @property({type: Object})
-  primaryArea = {risk: {extra: {}, value: {}}};
+  primaryArea: any = {risk: {extra: {}, value: {}}};
 
   @property({type: String})
   errorBaseText = 'Overall Risk Assessment: ';
@@ -106,7 +110,10 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   originalData!: GenericObject;
 
   @property({type: Boolean})
-  isDisabled: boolean = true;
+  isDisabled = true;
+
+  @property({type: Boolean})
+  dialogOpened!: boolean;
 
   static get observers() {
     return [
@@ -141,8 +148,10 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       extra = JSON.parse(extra);
     }
 
-    this.set('primaryArea.risk.value', find(this.riskOptions,
-      (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value));
+    this.set(
+      'primaryArea.risk.value',
+      find(this.riskOptions, (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value)
+    );
     this.set('primaryArea.risk.extra', extra);
   }
 
@@ -159,26 +168,36 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       return false;
     }
-    if (!this.basePermissionPath || forSave) {return true;}
+    if (!this.basePermissionPath || forSave) {
+      return true;
+    }
     const required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
-    if (!required) {return true;}
+    if (!required) {
+      return true;
+    }
 
     const riskValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate();
     const commentsValid = (this.$.briefJustification as PaperTextareaElement).validate();
     const valid = riskValid && commentsValid;
 
     const errors = {
-      children: [{
-        blueprints: [{
-          risk: {
-            value: !riskValid ? 'Field is required' : false,
-            extra: !commentsValid ? 'Field is required' : false
-          }
-        }]
-      }]
+      children: [
+        {
+          blueprints: [
+            {
+              risk: {
+                value: !riskValid ? 'Field is required' : false,
+                extra: !commentsValid ? 'Field is required' : false
+              }
+            }
+          ]
+        }
+      ]
     };
     this.set('errors', errors);
-    if (!valid) {fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});}
+    if (!valid) {
+      fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
+    }
 
     return valid;
   }
@@ -188,16 +207,20 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return null;
     }
 
-    const extra = this.isJSONObj(this.primaryArea.risk.extra) ?
-      JSON.parse(this.primaryArea.risk.extra) :
-      this.primaryArea.risk.extra;
+    const extra = this.isJSONObj(this.primaryArea.risk.extra)
+      ? JSON.parse(this.primaryArea.risk.extra)
+      : this.primaryArea.risk.extra;
 
     let originalExtra = get(this, 'originalData.blueprints[0].risk.extra');
-    if (this.isJSONObj(originalExtra)) {originalExtra = JSON.parse(originalExtra);}
+    if (this.isJSONObj(originalExtra)) {
+      originalExtra = JSON.parse(originalExtra);
+    }
 
-    if (this.originalData.blueprints[0].risk &&
+    if (
+      this.originalData.blueprints[0].risk &&
       this.primaryArea.risk.value.value === this.originalData.blueprints[0].risk.value &&
-      isEqual(extra, originalExtra)) {
+      isEqual(extra, originalExtra)
+    ) {
       return null;
     }
 
@@ -218,9 +241,10 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   errorHandler(errorData) {
-    if (this.dialogOpened) {return;}
+    if (this.dialogOpened) {
+      return;
+    }
     this._errorHandler(errorData);
   }
-
 }
 window.customElements.define('primary-risk-element', PrimaryRiskElement);

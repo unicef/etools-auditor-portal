@@ -13,13 +13,13 @@ import {fireEvent} from '../../utils/fire-custom-event';
 import {sharedStyles} from '../../styles-elements/shared-styles';
 import {moduleStyles} from '../../styles-elements/module-styles';
 import pagesHeaderElementStyles from './pages-header-element-styles';
+import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
 
 /**
  * @polymer
  * @customElement
  */
 class PagesHeaderElement extends PolymerElement {
-
   static get template() {
     return html`
       ${sharedStyles} ${moduleStyles} ${pagesHeaderElementStyles}
@@ -29,11 +29,12 @@ class PagesHeaderElement extends PolymerElement {
 
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" hidden$="[[!exportLinks.length]]">
-              <paper-menu-button 
-                    id="dropdown" 
-                    hidden$="[[!_isDropDown(exportLinks)]]" 
-                    on-tap="_toggleOpened" 
-                    horizontal-align="right">
+              <paper-menu-button
+                id="dropdown"
+                hidden$="[[!_isDropDown(exportLinks)]]"
+                on-tap="_toggleOpened"
+                horizontal-align="right"
+              >
                 <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
                   <iron-icon icon="file-download"></iron-icon>
                   Export
@@ -52,19 +53,12 @@ class PagesHeaderElement extends PolymerElement {
               </paper-button>
             </div>
 
-            <paper-button
-                hidden$="[[hidePrintButton]]"
-                class="grey-buttons"
-                on-click="print">
+            <paper-button hidden$="[[hidePrintButton]]" class="grey-buttons" on-click="print">
               <iron-icon icon="print"></iron-icon>
               Print
             </paper-button>
 
-            <paper-button
-                class="add-btn"
-                raised
-                hidden$="[[hideAddButton]]"
-                on-tap="addNewTap">
+            <paper-button class="add-btn" raised hidden$="[[hideAddButton]]" on-tap="addNewTap">
               <template is="dom-if" if="{{_showLink(link)}}">
                 <a href="{{link}}" class="btn-link"></a>
               </template>
@@ -82,29 +76,28 @@ class PagesHeaderElement extends PolymerElement {
   }
 
   @property({type: String})
-  title: string = '';
+  title = '';
 
   @property({type: Object})
   engagement: GenericObject = {};
 
   @property({type: Boolean})
-  hideAddButton: boolean = true;
+  hideAddButton = true;
 
   @property({type: Boolean})
-  hidePrintButton: boolean = false;
+  hidePrintButton = false;
 
   @property({type: Object})
   data: GenericObject = {};
 
   @property({type: String})
-  csvEndpoint: string = '';
+  csvEndpoint = '';
 
   @property({type: String})
-  link: string = '';
+  link = '';
 
   @property({type: Array})
   exportLinks: GenericObject[] = [];
-
 
   connectedCallback() {
     super.connectedCallback();
@@ -133,19 +126,17 @@ class PagesHeaderElement extends PolymerElement {
     if (this.exportLinks.length < 1) {
       throw new Error('Can not find export link!');
     }
-    const url = (e && e.model && e.model.item) ? e.model.item.url : this.exportLinks[0].url;
+    const url = e && e.model && e.model.item ? e.model.item.url : this.exportLinks[0].url;
     window.open(url, '_blank');
   }
 
   _isDropDown(exportLinks) {
-    return exportLinks && (exportLinks.length > 1 ||
-      (exportLinks[0] && exportLinks[0].useDropdown));
+    return exportLinks && (exportLinks.length > 1 || (exportLinks[0] && exportLinks[0].useDropdown));
   }
 
   _toggleOpened() {
-    this.$.dropdownMenu.select(null);
+    (this.$.dropdownMenu as PaperListboxElement).select(-1);
   }
-
 }
 
 window.customElements.define('pages-header-element', PagesHeaderElement);

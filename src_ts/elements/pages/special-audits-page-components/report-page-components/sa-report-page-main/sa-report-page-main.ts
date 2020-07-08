@@ -10,7 +10,7 @@ import '../../../../../elements/pages/special-audits-page-components/report-page
 // eslint-disable-next-line
 import {OtherRecommendationsEl} from '../../../../../elements/pages/special-audits-page-components/report-page-components/other-recommendations/other-recommendations';
 
-class SaReportPageMain extends (PolymerElement) {
+class SaReportPageMain extends PolymerElement {
   static get template() {
     // language=HTML
     return html`
@@ -21,37 +21,40 @@ class SaReportPageMain extends (PolymerElement) {
       </style>
 
       <assign-engagement
-              id="assignEngagement"
-              original-data="[[originalData]]"
-              class="mb-24"
-              error-object="{{errorObject}}"
-              data="{{engagement}}"
-              audit-type="Special Audit"
-              base-permission-path="{{permissionBase}}">
+        id="assignEngagement"
+        original-data="[[originalData]]"
+        class="mb-24"
+        error-object="{{errorObject}}"
+        data="{{engagement}}"
+        audit-type="Special Audit"
+        base-permission-path="{{permissionBase}}"
+      >
       </assign-engagement>
 
       <specific-procedure
-              id="specificProcedures"
-              class="mb-24"
-              error-object="{{errorObject}}"
-              data-items="{{engagement.specific_procedures}}"
-              base-permission-path="{{permissionBase}}">
+        id="specificProcedures"
+        class="mb-24"
+        error-object="{{errorObject}}"
+        data-items="{{engagement.specific_procedures}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </specific-procedure>
 
       <other-recommendations
-              id="otherRecommendations"
-              class="mb-24"
-              error-object="{{errorObject}}"
-              data-items="{{engagement.other_recommendations}}"
-              base-permission-path="{{permissionBase}}">
+        id="otherRecommendations"
+        class="mb-24"
+        error-object="{{errorObject}}"
+        data-items="{{engagement.other_recommendations}}"
+        base-permission-path="{{permissionBase}}"
+      >
       </other-recommendations>
-
     `;
   }
 
   validate(forSave) {
-    const assignTabValid =
-          (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(forSave);
+    const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(
+      forSave
+    );
 
     return assignTabValid;
   }
@@ -67,7 +70,6 @@ class SaReportPageMain extends (PolymerElement) {
   getOtherRecommendationsData() {
     return (this.$.otherRecommendations as OtherRecommendationsEl).getTabData();
   }
-
 }
 
 window.customElements.define('sa-report-page-main', SaReportPageMain);

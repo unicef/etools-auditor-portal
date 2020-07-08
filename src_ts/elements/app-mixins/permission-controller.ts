@@ -65,7 +65,7 @@ function _manageActions(collectionName) {
     return false;
   }
 
-  const allowed_actions = collection.allowed_FSM_transitions as any || [];
+  const allowed_actions = (collection.allowed_FSM_transitions as any) || [];
 
   const actions: any[] = [];
   if (isValidCollection(collection.PUT)) {
@@ -89,7 +89,7 @@ function _createAction(action, existedAction) {
   };
 }
 
-export function getFieldAttribute(path, attribute, actionType?) {
+export function getFieldAttribute(path: string, attribute: string, actionType?: string) {
   if (!path || !attribute) {
     throw new Error('path and attribute arguments must be provided');
   }
@@ -107,16 +107,15 @@ export function getFieldAttribute(path, attribute, actionType?) {
   }
 
   return value === undefined ? null : value;
-
 }
 
-export function readonlyPermission(path) {// isReadonly
+export function readonlyPermission(path) {
+  // isReadonly
   return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
 }
 
 export function isRequired(path) {
-  return getFieldAttribute(path, 'required', 'POST') ||
-    getFieldAttribute(path, 'required', 'PUT');
+  return getFieldAttribute(path, 'required', 'POST') || getFieldAttribute(path, 'required', 'PUT');
 }
 
 export function collectionExists(path, actionType?) {
@@ -130,27 +129,26 @@ export function collectionExists(path, actionType?) {
   return !!getCollection(path, actionType);
 }
 
-export function getChoices(path) {
-  return getFieldAttribute(path, 'choices', 'GET') ||
-    getFieldAttribute(path, 'choices', 'POST');
+export function getChoices(path: string) {
+  return getFieldAttribute(path, 'choices', 'GET') || getFieldAttribute(path, 'choices', 'POST');
 }
 
-export function getCollection(path, actionType?) {
-  path = path.split('.');
+export function getCollection(path: string, actionType?: string): any {
+  const pathArr = path.split('.');
 
   let value = _permissionCollection;
 
-  while (path.length) {
-    const key = path.shift();
+  while (pathArr.length) {
+    const key = pathArr.shift()!;
     if (value[key]) {
       value = value[key];
     } else {
-      const action = actionType ? value[actionType] : isValidCollection(value.POST) ||
-        isValidCollection(value.PUT) ||
-        isValidCollection(value.GET);
+      const action = actionType
+        ? value[actionType]
+        : isValidCollection(value.POST) || isValidCollection(value.PUT) || isValidCollection(value.GET);
 
       value = action || value.child || value.children;
-      path.unshift(key);
+      pathArr.unshift(key);
     }
 
     if (!value) {
@@ -189,23 +187,23 @@ export function actionAllowed(collection, action) {
     return false;
   }
   if (typeof actions[0] !== 'string') {
-    actions = actions.map(action => action.code);
+    actions = actions.map((action) => action.code);
   }
 
   return !!~actions.indexOf(action);
 }
 
-function noActionsAllowed(collection) {
-  if (!collection) {
-    return true;
-  }
-  if (typeof collection !== 'string') {
-    throw new Error('Collection argument must be a string');
-  }
-  collection = _permissionCollection[collection];
+// function noActionsAllowed(collection) {
+//   if (!collection) {
+//     return true;
+//   }
+//   if (typeof collection !== 'string') {
+//     throw new Error('Collection argument must be a string');
+//   }
+//   collection = _permissionCollection[collection];
 
-  return !(collection && collection.allowed_actions && collection.allowed_actions.length);
-}
+//   return !(collection && collection.allowed_actions && collection.allowed_actions.length);
+// }
 
 export function getActions(collection) {
   if (!collection) {
@@ -216,5 +214,5 @@ export function getActions(collection) {
   }
   collection = _permissionCollection[collection];
 
-  return collection && collection.allowed_actions || null;
+  return (collection && collection.allowed_actions) || null;
 }

@@ -11,6 +11,7 @@ import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
 import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
@@ -25,18 +26,15 @@ import isObject from 'lodash-es/isObject';
 import isEqual from 'lodash-es/isEqual';
 import isNil from 'lodash-es/isNil';
 
-
 /**
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
  */
-class KeyInternalControlsWeaknesses extends
-  CommonMethodsMixin(PolymerElement) {
-
+class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
   static get template() {
     return html`
-    ${tabInputsStyles} ${moduleStyles}
+      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
       <style>
         :host {
           position: relative;
@@ -83,160 +81,165 @@ class KeyInternalControlsWeaknesses extends
         etools-content-panel {
           --ecp-content: {
             padding: 0;
-          };
+          }
         }
       </style>
 
-      <etools-content-panel class="content-section clearfix"
-        panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]" list>
-          <div class="header-content">
-              <div class="static-text">
-                  We have reviewed the implementation of applicable key internal 
-                  controls and noted the following weaknesses:
-              </div>
+      <etools-content-panel
+        class="content-section clearfix"
+        panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]"
+        list
+      >
+        <div class="header-content">
+          <div class="static-text">
+            We have reviewed the implementation of applicable key internal controls and noted the following weaknesses:
           </div>
-          <list-header
-                  no-ordered
-                  data="[[columns]]"
-                  base-permission-path="[[basePermissionPath]]">
-          </list-header>
+        </div>
+        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"> </list-header>
 
-          <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
-              <list-element
-                      class="list-element"
-                      data="[[item]]"
-                      headings="[[columns]]"
-                      details="[[details]]"
-                      has-collapse
-                      no-animation>
-                  <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                      <paper-icon-button 
-                            icon="icons:add-box" 
-                            class="edit-icon" 
-                            on-tap="openEditDialog"></paper-icon-button>
-                  </div>
-                  <div class="collapse-container" slot="custom-details">
-                      <kicw-risk risks-data="[[item.risks]]"
-                                  blueprint-id="[[item.id]]"
-                                  is-editable="[[_canBeChanged(basePermissionPath)]]"></kicw-risk>
-                  </div>
-              </list-element>
-          </template>
+        <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
+          <list-element
+            class="list-element"
+            data="[[item]]"
+            headings="[[columns]]"
+            details="[[details]]"
+            has-collapse
+            no-animation
+          >
+            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
+              <paper-icon-button icon="icons:add-box" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
+            </div>
+            <div class="collapse-container" slot="custom-details">
+              <kicw-risk
+                risks-data="[[item.risks]]"
+                blueprint-id="[[item.id]]"
+                is-editable="[[_canBeChanged(basePermissionPath)]]"
+              ></kicw-risk>
+            </div>
+          </list-element>
+        </template>
 
-          <template is="dom-if" if="[[!subjectAreas.blueprints.length]]">
-              <list-element
-                      class="list-element"
-                      data="[[emptyObj]]"
-                      headings="[[columns]]"
-                      no-animation>
-              </list-element>
-          </template>
+        <template is="dom-if" if="[[!subjectAreas.blueprints.length]]">
+          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
+        </template>
       </etools-content-panel>
-      <etools-dialog theme="confirmation" size="md"
-              keep-dialog-open
-              opened="{{confirmDialogOpened}}"
-              on-confirm-btn-clicked="_deleteArea"
-              disable-confirm-btn="{{requestInProcess}}"
-              ok-btn-text="Delete">
-          [[dialogTexts.dialogTitle]]
+      <etools-dialog
+        theme="confirmation"
+        size="md"
+        keep-dialog-open
+        opened="{{confirmDialogOpened}}"
+        on-confirm-btn-clicked="_deleteArea"
+        disable-confirm-btn="{{requestInProcess}}"
+        ok-btn-text="Delete"
+      >
+        [[dialogTexts.dialogTitle]]
       </etools-dialog>
-      <etools-dialog no-padding keep-dialog-open size="md"
-              opened="{{dialogOpened}}"
-              dialog-title="[[dialogTexts.dialogTitle]]"
-              ok-btn-text="[[dialogTexts.confirmBtn]]"
-              show-spinner="{{requestInProcess}}"
-              disable-confirm-btn="{{requestInProcess}}"
-              on-confirm-btn-clicked="_saveEditedArea">
-              <div class="row-h repeatable-item-container" without-line>
-                  <div class="repeatable-item-content">
-                      <div class="row-h group">
-                          <div class="input-container input-container-l">
-                              <!-- Risk Assessment -->
-                              <etools-dropdown
-                                      id="riskRatingInput"
-                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
-                                                basePermissionPath)}} disabled-as-readonly validate-input"
-                                      selected="{{editedBlueprint.risks.0.value}}"
-                                      label="Risk rating"
-                                      placeholder="Select Risk rating"
-                                      options="[[riskOptions]]"
-                                      option-label="display_name"
-                                      option-value="value"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
-                                                basePermissionPath)}}"
-                                      disabled="{{requestInProcess}}"
-                                      readonly$="{{requestInProcess}}"
-                                      invalid="{{errors.blueprints.0.risks.value}}"
-                                      error-message="{{errors.blueprints.0.risks.value}}"
-                                      on-focus="_resetFieldError"
-                                      hide-search>
-                              </etools-dropdown>
-                          </div>
-                      </div>
 
-                      <div class="row-h group">
-                          <div class="input-container input-container-l">
-                              <paper-textarea
-                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+      <etools-dialog
+        no-padding
+        keep-dialog-open
+        size="md"
+        opened="{{dialogOpened}}"
+        dialog-title="[[dialogTexts.dialogTitle]]"
+        ok-btn-text="[[dialogTexts.confirmBtn]]"
+        show-spinner="{{requestInProcess}}"
+        disable-confirm-btn="{{requestInProcess}}"
+        on-confirm-btn-clicked="_saveEditedArea"
+      >
+        <div class="row-h repeatable-item-container" without-line>
+          <div class="repeatable-item-content">
+            <div class="row-h group">
+              <div class="input-container input-container-l">
+                <!-- Risk Assessment -->
+                <etools-dropdown
+                  id="riskRatingInput"
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
                                                 basePermissionPath)}} disabled-as-readonly validate-input"
-                                      value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
-                                      label="Key control observation"
-                                      placeholder="Enter Observation"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                  selected="{{editedBlueprint.risks.0.value}}"
+                  label="Risk rating"
+                  placeholder="Select Risk rating"
+                  options="[[riskOptions]]"
+                  option-label="display_name"
+                  option-value="value"
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.value', 
                                                 basePermissionPath)}}"
-                                      disabled="{{requestInProcess}}"
-                                      readonly="{{requestInProcess}}"
-                                      max-rows="4"
-                                      invalid="{{errors.blueprints.0.risks.extra}}"
-                                      error-message="{{errors.blueprints.0.risks.extra}}"
-                                      on-focus="_resetFieldError">
-                              </paper-textarea>
-                          </div>
-                      </div>
-
-                      <div class="row-h group">
-                          <div class="input-container input-container-l">
-                              <paper-textarea
-                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
-                                                basePermissionPath)}} disabled-as-readonly validate-input"
-                                      value="{{editedBlueprint.risks.0.extra.recommendation}}"
-                                      label="Recommendation"
-                                      placeholder="Enter Recommendation"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
-                                                basePermissionPath)}}"
-                                      disabled="{{requestInProcess}}"
-                                      readonly="{{requestInProcess}}"
-                                      max-rows="4"
-                                      invalid="{{errors.blueprints.0.risks.extra}}"
-                                      error-message="{{errors.blueprints.0.risks.extra}}"
-                                      on-focus="_resetFieldError">
-                              </paper-textarea>
-                          </div>
-                      </div>
-
-                      <div class="row-h group">
-                          <div class="input-container input-container-l">
-                              <paper-textarea
-                                      class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
-                                                basePermissionPath)}} validate-input disabled-as-readonly"
-                                      value="{{editedBlueprint.risks.0.extra.ip_response}}"
-                                      label="IP Response"
-                                      placeholder="Enter Response"
-                                      required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
-                                                basePermissionPath)}}"
-                                      disabled="{{requestInProcess}}"
-                                      readonly="{{requestInProcess}}"
-                                      max-rows="4"
-                                      invalid="{{errors.blueprints.0.risks.extra}}"
-                                      error-message="{{errors.blueprints.0.risks.extra}}"
-                                      on-focus="_resetFieldError">
-                              </paper-textarea>
-                          </div>
-                      </div>
-                  </div>
+                  disabled="{{requestInProcess}}"
+                  readonly$="{{requestInProcess}}"
+                  invalid="{{errors.blueprints.0.risks.value}}"
+                  error-message="{{errors.blueprints.0.risks.value}}"
+                  on-focus="_resetFieldError"
+                  hide-search
+                >
+                </etools-dropdown>
               </div>
+            </div>
+
+            <div class="row-h group">
+              <div class="input-container input-container-l">
+                <paper-textarea
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}} disabled-as-readonly validate-input"
+                  value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
+                  label="Key control observation"
+                  placeholder="Enter Observation"
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}}"
+                  disabled="{{requestInProcess}}"
+                  readonly="{{requestInProcess}}"
+                  max-rows="4"
+                  invalid="{{errors.blueprints.0.risks.extra}}"
+                  error-message="{{errors.blueprints.0.risks.extra}}"
+                  on-focus="_resetFieldError"
+                >
+                </paper-textarea>
+              </div>
+            </div>
+
+            <div class="row-h group">
+              <div class="input-container input-container-l">
+                <paper-textarea
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}} disabled-as-readonly validate-input"
+                  value="{{editedBlueprint.risks.0.extra.recommendation}}"
+                  label="Recommendation"
+                  placeholder="Enter Recommendation"
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}}"
+                  disabled="{{requestInProcess}}"
+                  readonly="{{requestInProcess}}"
+                  max-rows="4"
+                  invalid="{{errors.blueprints.0.risks.extra}}"
+                  error-message="{{errors.blueprints.0.risks.extra}}"
+                  on-focus="_resetFieldError"
+                >
+                </paper-textarea>
+              </div>
+            </div>
+
+            <div class="row-h group">
+              <div class="input-container input-container-l">
+                <paper-textarea
+                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}} validate-input disabled-as-readonly"
+                  value="{{editedBlueprint.risks.0.extra.ip_response}}"
+                  label="IP Response"
+                  placeholder="Enter Response"
+                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra', 
+                                                basePermissionPath)}}"
+                  disabled="{{requestInProcess}}"
+                  readonly="{{requestInProcess}}"
+                  max-rows="4"
+                  invalid="{{errors.blueprints.0.risks.extra}}"
+                  error-message="{{errors.blueprints.0.risks.extra}}"
+                  on-focus="_resetFieldError"
+                >
+                </paper-textarea>
+              </div>
+            </div>
+          </div>
+        </div>
       </etools-dialog>
-      `;
+    `;
   }
 
   @property({type: Object})
@@ -244,28 +247,33 @@ class KeyInternalControlsWeaknesses extends
 
   @property({type: Object})
   dataModel: GenericObject = {
-    risks: [{
-      value: {},
-      extra: {}
-    }]
+    risks: [
+      {
+        value: {},
+        extra: {}
+      }
+    ]
   };
 
   @property({type: Array})
-  columns: GenericObject[] = [{
-    'size': 70,
-    'label': 'Subject area',
-    'path': 'header'
-  }, {
-    'size': 30,
-    'label': 'Risks Count',
-    'path': 'risks.length'
-  }];
+  columns: GenericObject[] = [
+    {
+      size: 70,
+      label: 'Subject area',
+      path: 'header'
+    },
+    {
+      size: 30,
+      label: 'Risks Count',
+      path: 'risks.length'
+    }
+  ];
 
   @property({type: Array})
   details: any[] = [true];
 
   @property({type: String})
-  errorBaseText: string = 'Key Internal Controls Weaknesses: ';
+  errorBaseText = 'Key Internal Controls Weaknesses: ';
 
   @property({type: Object})
   dialogTexts: GenericObject = {
@@ -353,8 +361,10 @@ class KeyInternalControlsWeaknesses extends
       return;
     }
 
-    const option = this.riskOptions.find(option => option.value === risk.value);
-    if (option) {return option.value;}
+    const option = this.riskOptions.find((option) => option.value === risk.value);
+    if (option) {
+      return option.value;
+    }
     return -1;
   }
 
@@ -363,7 +373,9 @@ class KeyInternalControlsWeaknesses extends
   }
 
   openEditDialog(event) {
-    if (!event || !event.detail) {return;}
+    if (!event || !event.detail) {
+      return;
+    }
     const data = event.detail;
     if (data.blueprint) {
       const blueprint = data.blueprint;
@@ -390,7 +402,9 @@ class KeyInternalControlsWeaknesses extends
   }
 
   openDeleteDialog(event) {
-    if (!event || !event.detail) {return;}
+    if (!event || !event.detail) {
+      return;
+    }
     const data = event.detail;
     this.dialogTexts = this.deleteDialogTexts;
     this.set('editedBlueprint', data.blueprint);
@@ -398,7 +412,9 @@ class KeyInternalControlsWeaknesses extends
   }
 
   _saveEditedArea() {
-    if (!this.validate()) {return;}
+    if (!this.validate()) {
+      return;
+    }
 
     if (isEqual(this.originalData, this.editedBlueprint)) {
       this.dialogOpened = false;
@@ -419,7 +435,9 @@ class KeyInternalControlsWeaknesses extends
   }
 
   getKeyInternalWeaknessData() {
-    if ((!this.dialogOpened && !this.confirmDialogOpened)) {return null;}
+    if (!this.dialogOpened && !this.confirmDialogOpened) {
+      return null;
+    }
     const blueprint = cloneDeep(this.editedBlueprint);
 
     if (blueprint.risks[0] && isObject(blueprint.risks[0].value)) {
@@ -440,7 +458,6 @@ class KeyInternalControlsWeaknesses extends
       element.invalid = false;
       element.value = '';
     });
-
   }
 
   validate() {

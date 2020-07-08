@@ -4,19 +4,19 @@ import {html} from '@polymer/polymer/polymer-element';
 export const moduleStyles = html`
   <style>
     :host {
-      --gray-06: rgba(0, 0, 0, .06);
-      --gray-08: rgba(0, 0, 0, .08);
-      --gray-lighter: rgba(0, 0, 0, .12);
-      --gray-20: rgba(0, 0, 0, .20);
-      --gray-28: rgba(0, 0, 0, .28);
-      --gray-light: rgba(0, 0, 0, .38);
-      --gray-50: rgba(0, 0, 0, .50);
-      --gray-mid: rgba(0, 0, 0, .54);
-      --gray-mid-dark: rgba(0, 0, 0, .70);
-      --gray-dark: rgba(0, 0, 0, .87);
+      --gray-06: rgba(0, 0, 0, 0.06);
+      --gray-08: rgba(0, 0, 0, 0.08);
+      --gray-lighter: rgba(0, 0, 0, 0.12);
+      --gray-20: rgba(0, 0, 0, 0.2);
+      --gray-28: rgba(0, 0, 0, 0.28);
+      --gray-light: rgba(0, 0, 0, 0.38);
+      --gray-50: rgba(0, 0, 0, 0.5);
+      --gray-mid: rgba(0, 0, 0, 0.54);
+      --gray-mid-dark: rgba(0, 0, 0, 0.7);
+      --gray-dark: rgba(0, 0, 0, 0.87);
       --gray-darkest: #000000;
 
-      --gray-border: rgba(0, 0, 0, .15);
+      --gray-border: rgba(0, 0, 0, 0.15);
 
       /*--module-primary: #00AEEF;*/
       --module-primary: #0099ff;
@@ -27,19 +27,19 @@ export const moduleStyles = html`
       --module-sec-lightgreen: #72c300;
       --module-sec-gray: #233944;
 
-      --module-error: #EA4022;
-      --module-error-2: #f1B8AE;
-      --module-warning: #FF9044;
-      --module-warning-2: #FFC8a2;
+      --module-error: #ea4022;
+      --module-error-2: #f1b8ae;
+      --module-warning: #ff9044;
+      --module-warning-2: #ffc8a2;
       --module-success: #72c300;
       --module-success-2: #bef078;
-      --module-info: #CEBC06;
-      --module-info-2: #FFF176;
+      --module-info: #cebc06;
+      --module-info-2: #fff176;
 
-      --module-planned: rgba(250, 237, 119, .6);
-      --module-approved: rgba(141, 198, 63, .45);
-      --module-submitted: rgba(206, 188, 6, .6);
-      --module-sent: rgba(30, 134, 191, .45);
+      --module-planned: rgba(250, 237, 119, 0.6);
+      --module-approved: rgba(141, 198, 63, 0.45);
+      --module-submitted: rgba(206, 188, 6, 0.6);
+      --module-sent: rgba(30, 134, 191, 0.45);
       --module-completed: rgba(141, 198, 63, 1);
       --paper-button_-_color: #fff;
     }
@@ -64,18 +64,25 @@ export const moduleStyles = html`
         font-size: 14px;
         font-weight: 500;
         width: 140px;
-      };
+      }
       --paper-tab-content-unselected: {
         color: var(--gray-mid);
-      };
+      }
+    }
+
+    etools-dialog {
+      --etools-dialog-scrollable: {
+        --etools-dialog-content_-_max-height: 50vh !important;
+        overflow: auto;
+      }
     }
 
     /* PAPER-TOGGLE-BUTTON */
     paper-toggle-button {
       --paper-toggle-button-checked-button-color: var(--module-primary);
-      --paper-toggle-button-checked-bar-color: rgba(0, 174, 239, .5);
+      --paper-toggle-button-checked-bar-color: rgba(0, 174, 239, 0.5);
       --paper-toggle-button-unchecked-button-color: rgba(241, 241, 241, 1);
-      --paper-toggle-button-unchecked-bar-color: rgba(31, 31, 31, .26);
+      --paper-toggle-button-unchecked-bar-color: rgba(31, 31, 31, 0.26);
     }
 
     /* CHECKBOX */
@@ -85,7 +92,7 @@ export const moduleStyles = html`
       --paper-checkbox-label: {
         color: var(--gray-dark);
         font-size: 16px;
-      };
+      }
       --paper-checkbox-margin: 0;
     }
 
@@ -94,7 +101,8 @@ export const moduleStyles = html`
       --paper-radio-button-checked-color: var(--module-primary);
     }
 
-    etools-dropdown, etools-dropdown-multi {
+    etools-dropdown,
+    etools-dropdown-multi {
       padding: 0 12px;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
@@ -119,30 +127,30 @@ export const moduleStyles = html`
         left: 13px;
         width: 45px;
         height: 45px;
-      };
+      }
 
       --ecp-header-title: {
         font-weight: 500;
         line-height: 43px;
         padding: 0 30px;
-      };
+      }
 
       --ecp-header-btns-wrapper: {
         opacity: 1;
-      };
+      }
     }
 
-    div[slot="panel-btns"] {
+    div[slot='panel-btns'] {
       position: absolute;
       top: 4px;
       right: 16px;
     }
 
-    div[slot="panel-btns"] .panel-button {
+    div[slot='panel-btns'] .panel-button {
       opacity: 0.7;
     }
 
-    div[slot="panel-btns"] .panel-button:hover {
+    div[slot='panel-btns'] .panel-button:hover {
       opacity: 0.87;
     }
 

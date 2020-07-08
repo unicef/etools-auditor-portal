@@ -41,9 +41,7 @@ import {navigateToUrl} from '../../../utils/navigate-helper';
  * @appliesMixin EngagementMixin
  * @appliesMixin LastCreatedMixin
  */
-class NewEngagementView extends
-  EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement))) {
-
+class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement))) {
   static get template() {
     // language=HTML
     return html`
@@ -54,8 +52,8 @@ class NewEngagementView extends
           display: block;
 
           --paper-tab-content-unselected: {
-            color: var(--gray-light)
-          };
+            color: var(--gray-light);
+          }
 
           --ecp-header-bg: var(--module-primary);
         }
@@ -89,27 +87,27 @@ class NewEngagementView extends
         }
       </style>
 
-      <app-route
-          route="{{route}}"
-          pattern="/:tab"
-          data="{{routeData}}">
-      </app-route>
+      <app-route route="{{route}}" pattern="/:tab" data="{{routeData}}"> </app-route>
 
       <add-new-engagement
-          endpoint-name="[[endpointName]]"
-          new-engagement-data="{{newEngagementData}}"
-          error-object="{{errorObject}}">
+        endpoint-name="[[endpointName]]"
+        new-engagement-data="{{newEngagementData}}"
+        error-object="{{errorObject}}"
+      >
       </add-new-engagement>
 
-      <pages-header-element
-          hide-print-button
-          page-title="[[pageTitle]]"
-          engagement="[[engagement]]">
+      <pages-header-element hide-print-button page-title="[[pageTitle]]" engagement="[[engagement]]">
       </pages-header-element>
 
       <div class="tab-selector">
-        <paper-tabs attr-for-selected="name" noink="" bottom-item="" role="tablist" tabindex="0"
-                    selected="{{routeData.tab}}">
+        <paper-tabs
+          attr-for-selected="name"
+          noink=""
+          bottom-item=""
+          role="tablist"
+          tabindex="0"
+          selected="{{routeData.tab}}"
+        >
           <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
           <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
         </paper-tabs>
@@ -117,54 +115,56 @@ class NewEngagementView extends
 
       <div class="view-container">
         <div id="pageContent">
-          <iron-pages
-              id="info-tabs"
-              selected="{{routeData.tab}}"
-              attr-for-selected="name">
+          <iron-pages id="info-tabs" selected="{{routeData.tab}}" attr-for-selected="name">
             <div name="overview">
               <engagement-info-details
-                  error-object="{{errorObject}}"
-                  data="{{engagement}}"
-                  id="engagementDetails"
-                  base-permission-path="[[basePermissionPath]]"
-                  is-staff-sc="[[isStaffSc]]">
+                error-object="{{errorObject}}"
+                data="{{engagement}}"
+                id="engagementDetails"
+                base-permission-path="[[basePermissionPath]]"
+                is-staff-sc="[[isStaffSc]]"
+              >
               </engagement-info-details>
 
               <partner-details-tab
-                  id="partnerDetails"
-                  error-object="{{errorObject}}"
-                  engagement="{{engagement}}"
-                  base-permission-path="[[basePermissionPath]]">
+                id="partnerDetails"
+                error-object="{{errorObject}}"
+                engagement="{{engagement}}"
+                base-permission-path="[[basePermissionPath]]"
+              >
               </partner-details-tab>
 
               <template is="dom-if" if="[[isSpecialAudit(engagement.engagement_type)]]" restamp>
                 <specific-procedure
-                    id="specificProcedures"
-                    class="mb-15"
-                    without-finding-column
-                    error-object="{{errorObject}}"
-                    save-with-button
-                    data-items="{{engagement.specific_procedures}}"
-                    base-permission-path="[[basePermissionPath]]">
+                  id="specificProcedures"
+                  class="mb-15"
+                  without-finding-column
+                  error-object="{{errorObject}}"
+                  save-with-button
+                  data-items="{{engagement.specific_procedures}}"
+                  base-permission-path="[[basePermissionPath]]"
+                >
                 </specific-procedure>
               </template>
 
               <engagement-staff-members-tab
-                  id="staffMembers"
-                  error-object="{{errorObject}}"
-                  save-with-button
-                  engagement="[[engagement]]"
-                  base-permission-path="[[basePermissionPath]]">
+                id="staffMembers"
+                error-object="{{errorObject}}"
+                save-with-button
+                engagement="[[engagement]]"
+                base-permission-path="[[basePermissionPath]]"
+              >
               </engagement-staff-members-tab>
             </div>
 
             <div name="attachments">
               <file-attachments-tab
-                  id="engagement_attachments"
-                  base-id="[[engagement.id]]"
-                  data-base-path="[[basePermissionPath]]"
-                  error-property="engagement_attachments"
-                  path-postfix="attachments">
+                id="engagement_attachments"
+                base-id="[[engagement.id]]"
+                data-base-path="[[basePermissionPath]]"
+                error-property="engagement_attachments"
+                path-postfix="attachments"
+              >
               </file-attachments-tab>
             </div>
           </iron-pages>
@@ -179,6 +179,9 @@ class NewEngagementView extends
 
   @property({type: Object})
   route!: GenericObject;
+
+  @property({type: Object})
+  newEngagementData!: GenericObject;
 
   @property({type: Object})
   routeData!: GenericObject;
@@ -201,7 +204,7 @@ class NewEngagementView extends
     specific_procedures: [],
     users_notified: [],
     offices: [],
-    sections: [],
+    sections: []
   };
 
   @property({type: Array})
@@ -211,10 +214,10 @@ class NewEngagementView extends
   queryParams: GenericObject = {};
 
   @property({type: String})
-  pageTitle: string = '';
+  pageTitle = '';
 
   @property({type: Boolean})
-  isStaffSc: boolean = false;
+  isStaffSc = false;
 
   @property({type: Object})
   auditFirm: GenericObject = {};
@@ -222,11 +225,8 @@ class NewEngagementView extends
   @property({type: String})
   basePermissionPath!: string;
 
-
   static get observers() {
-    return [
-      '_pageChanged(page, isStaffSc, auditFirm)'
-    ];
+    return ['_pageChanged(page, isStaffSc, auditFirm)'];
   }
 
   connectedCallback() {
@@ -260,10 +260,9 @@ class NewEngagementView extends
       return;
     }
 
-    this._prepareData()
-      .then((data) => {
-        this.newEngagementData = data;
-      });
+    this._prepareData(false, false).then((data) => {
+      this.newEngagementData = data;
+    });
   }
 
   customDataPrepare(data) {
@@ -303,7 +302,7 @@ class NewEngagementView extends
       link = 'staff-spot-checks';
     }
 
-    let path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
+    const path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
     navigateToUrl(path);
 
     // reset data
@@ -339,7 +338,7 @@ class NewEngagementView extends
         specific_procedures: [],
         users_notified: [],
         offices: [],
-        sections: [],
+        sections: []
       });
 
       (this.$.engagement_attachments as FileAttachmentsTabEl).resetData();
@@ -356,7 +355,6 @@ class NewEngagementView extends
       this.set('engagement.engagement_type_details', {value: 'sc', label: 'Spot Check'});
     }
   }
-
 }
 
 window.customElements.define('new-engagement-view', NewEngagementView);

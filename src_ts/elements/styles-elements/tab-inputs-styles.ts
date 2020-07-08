@@ -15,7 +15,7 @@ export const tabInputsStyles = html`
       visibility: hidden;
       display: block;
       font-size: 0;
-      content: " ";
+      content: ' ';
       clear: both;
       height: 0;
     }
@@ -94,29 +94,42 @@ export const tabInputsStyles = html`
         overflow: hidden;
         text-overflow: ellipsis;
         padding-right: 3px;
-      };
+      }
 
       --paper-input-prefix: {
         margin-right: 10px;
         color: var(--gray-mid);
-      };
+      }
 
       --paper-input-error: {
         overflow: hidden;
-      };
+      }
     }
 
     paper-textarea {
       --paper-input-container-input: {
         white-space: normal;
-      };
+        display: block !important;
+      }
       --paper-input-container-focus-color: var(--module-primary);
       --iron-autogrow-textarea-placeholder: {
         color: var(--gray-20) !important;
-      };
+      }
       --iron-autogrow-textarea: {
+        overflow: hidden;
         padding: 0;
-      };
+      }
+    }
+
+    etools-dialog paper-textarea {
+      --paper-input-container-input: {
+        display: block;
+      }
+      --iron-autogrow-textarea: {
+        overflow: auto;
+        padding: 0;
+        max-height: 96px;
+      }
     }
 
     etools-dropdown,
@@ -131,10 +144,10 @@ export const tabInputsStyles = html`
       --paper-input-container-focus-color: var(--module-primary);
       --paper-input-container-input: {
         color: var(--gray-dark);
-      };
+      }
       --paper-input-container-label: {
         color: var(--gray-50);
-      };
+      }
       --paper-input-container-label-floating: {
         color: var(--gray-50);
       }
@@ -143,10 +156,10 @@ export const tabInputsStyles = html`
       --paper-input-container-disabled: {
         color: var(--gray-light);
         opacity: 1;
-      };
+      }
       --paper-input-char-counter: {
         color: var(--gray-light);
-      };
+      }
 
       --etools-currency-container-label-floating: {
         -webkit-transform: none;
@@ -157,7 +170,7 @@ export const tabInputsStyles = html`
         top: -21px;
         width: 100%;
         font-size: 12px;
-      };
+      }
     }
 
     etools-dropdown.no-data-fetched,
@@ -168,8 +181,8 @@ export const tabInputsStyles = html`
 
     etools-currency-amount-input {
       --etools-currency-container-label: {
-        color: var(--gray-50)
-      };
+        color: var(--gray-50);
+      }
       --paper-input-container-color: var(--gray-20);
       --paper-input-container-focus-color: var(--module-primary);
     }
@@ -178,31 +191,31 @@ export const tabInputsStyles = html`
     paper-input[disabled].without-border {
       --paper-input-container-label: {
         color: var(--gray-50) !important;
-      };
+      }
       --paper-input-container: {
         opacity: 1 !important;
-      };
+      }
       --paper-input-container-underline: {
         border-bottom: none !important;
         display: none !important;
-      };
+      }
       --paper-input-container-underline-focus: {
         display: none;
-      };
+      }
       --paper-input-container-underline-disabled: {
         display: none;
-      };
+      }
     }
 
     :host > * {
       --required-star-style: {
-        background: url("./assets/images/required.svg") no-repeat 98% 14%/7px;
+        background: url('./assets/images/required.svg') no-repeat 98% 14%/7px;
         width: auto !important;
         max-width: 133%;
         right: auto;
         padding-right: 15px;
         color: var(--gray-50);
-      };
+      }
     }
 
     paper-input[required]:not([disabled]),
@@ -217,7 +230,7 @@ export const tabInputsStyles = html`
     paper-textarea[required]:not([disabled]) {
       --paper-input-container-label: {
         @apply --required-star-style;
-      };
+      }
       --paper-input-container-label-floating: {
         @apply --required-star-style;
       }
@@ -226,25 +239,25 @@ export const tabInputsStyles = html`
     paper-input.bold {
       --paper-input-container-input: {
         font-weight: 500;
-      };
+      }
 
       --paper-input-container-underline-focus: {
         display: none !important;
-      };
+      }
 
       --paper-input-container-underline-disabled: {
         display: none !important;
-      };
+      }
 
       --paper-input-container-underline: {
         display: none !important;
-      };
+      }
     }
 
     paper-input.deleted {
       --paper-input-container-input: {
         color: #b0b0b0;
-      };
+      }
     }
 
     #bottom-actions {
@@ -392,20 +405,20 @@ export const tabInputsStyles = html`
       --ecp-content: {
         padding: 0;
         padding-left: 0;
-      };
+      }
     }
 
     etools-content-panel:not([list]) {
       --ecp-content: {
         padding: 8px 12px;
         padding-left: 12px;
-      };
+      }
     }
 
     etools-currency-amount-input {
       --etools-currency-container-input: {
         line-height: 0;
-      };
+      }
     }
 
     paper-input[disabled],
@@ -414,37 +427,34 @@ export const tabInputsStyles = html`
     etools-currency-amount-input[disabled],
     datepicker-lite[disabled] {
       --paper-input: {
-          color: var(--gray-50);
-        }
-        --paper-input-container-underline: {
-          color: var(--gray-20);
+        color: var(--gray-50);
+      }
+      --paper-input-container-underline: {
+        color: var(--gray-20);
       }
     }
-    datepicker-lite[disabled]
-    {
+    datepicker-lite[disabled] {
       --paper-input-prefix: {
-          color: var(--gray-50);
-        }
+        color: var(--gray-50);
+      }
     }
 
-    datepicker-lite{
+    datepicker-lite {
       --paper-input: {
-          color: var(--gray-50);
-        }
+        color: var(--gray-50);
+      }
       --paper-input-prefix: {
-          color: var(--gray-50);
-        }
+        color: var(--gray-50);
+      }
       --paper-input-container-underline: {
-          border-bottom: solid 1px var(--gray-20);
-        }
-      --paper-input-container-label:{
+        border-bottom: solid 1px var(--gray-20);
+      }
+      --paper-input-container-label: {
         width: 133%;
       }
-      --paper-input-container:{
+      --paper-input-container: {
         width: 100%;
       }
     }
-
-
   </style>
 `;

@@ -61,7 +61,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
         .result-element .value .medium {
           color: var(--module-warning);
         }
-        .result-element .value .significant, .result-element .value .high {
+        .result-element .value .significant,
+        .result-element .value .high {
           color: var(--module-error);
         }
         .result-element .risk-rating .value {
@@ -74,40 +75,58 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
           margin-bottom: 0 !important;
           min-width: 0 !important;
         }
-        div[list-item]{
-           overflow: visible !important;
+        div[list-item] {
+          overflow: visible !important;
         }
         etools-dropdown#riskAssessmentDropdown {
           --paper-listbox: {
             max-height: 140px;
-          };
+          }
         }
+        etools-dropdown,
+        etools-dropdown-multi {
+          --esmm-dropdown-menu-position: absolute;
+        }
+        --esmm-dropdown-menu-position: absolute;
       </style>
 
-      <etools-content-panel class="totals" panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
-        open="{{overalRiskOpen}}">
+      <etools-content-panel
+        class="totals"
+        panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
+        open="{{overalRiskOpen}}"
+      >
       </etools-content-panel>
 
       <template is="dom-repeat" items="{{questionnaire.children}}">
         <risk-tab
-              questionnaire="{{item}}"
-              base-permission-path="{{basePermissionPath}}"
-              class="validatable-tab risk-tab"
-              index="{{index}}"
-              first-run="[[firstRun]]"
-              completed="{{_checkCompleted(item)}}"
-              disabled="{{_checkDisabled(index, item)}}"
-              edit-mode="[[editMode]]">
+          questionnaire="{{item}}"
+          base-permission-path="{{basePermissionPath}}"
+          class="validatable-tab risk-tab"
+          index="{{index}}"
+          first-run="[[firstRun]]"
+          completed="{{_checkCompleted(item)}}"
+          disabled="{{_checkDisabled(index, item)}}"
+          edit-mode="[[editMode]]"
+        >
         </risk-tab>
       </template>
 
-      <etools-dialog no-padding keep-dialog-open size="md" opened="{{dialogOpened}}" dialog-title="Edit Question"
-        ok-btn-text="Save" show-spinner="{{requestInProcess}}" disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog">
+      <etools-dialog
+        no-padding
+        keep-dialog-open
+        size="md"
+        opened="{{dialogOpened}}"
+        dialog-title="Edit Question"
+        ok-btn-text="Save"
+        show-spinner="{{requestInProcess}}"
+        disable-confirm-btn="{{requestInProcess}}"
+        on-confirm-btn-clicked="_addItemFromDialog"
+      >
         <div class="row-h repeatable-item-container" without-line>
           <div class="form-title">
             <div class="text" id="questionHeader">
-            <insert-html html="[[editedItem.header]]"></insert-html></div>
+              <insert-html html="[[editedItem.header]]"></insert-html>
+            </div>
           </div>
 
           <div class="repeatable-item-content">
@@ -115,9 +134,11 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
               <div class="input-container  input-container-ms">
                 <!-- Risk Assessment -->
 
-                <etools-dropdown id="riskAssessmentDropdown" class="disabled-as-readonly
+                <etools-dropdown
+                  id="riskAssessmentDropdown"
+                  class="disabled-as-readonly
                   required validate-input"
-                  selected=[[editedItem.risk.value]]
+                  selected="[[editedItem.risk.value]]"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
                   options="[[riskOptions]]"
@@ -126,11 +147,13 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                   disabled="[[requestInProcess]]"
                   readonly="[[requestInProcess]]"
                   invalid="{{riskAssessmentInvalid}}"
-                  error-message="This field is required" on-focus="_resetFieldError"
+                  error-message="This field is required"
+                  on-focus="_resetFieldError"
                   required
                   trigger-value-change-event
                   on-etools-selected-item-changed="_setSelectedRiskRatingEntity"
-                  hide-search>
+                  hide-search
+                >
                 </etools-dropdown>
               </div>
             </div>
@@ -138,14 +161,17 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
             <div class="row-h group">
               <div class="input-container input-container-l comment-container">
                 <!-- Comments -->
-                <paper-textarea id="riskAssessmentComments"
+                <paper-textarea
+                  id="riskAssessmentComments"
                   class="disabled-as-readonly validate-input"
                   value="{{editedItem.risk.extra.comments}}"
-                  label="Comments" placeholder="Enter Comments"
+                  label="Comments"
+                  placeholder="Enter Comments"
                   disabled$="[[requestInProcess]]"
                   max-rows="4"
                   error-message="This field is required"
-                  on-focus="_resetFieldError">
+                  on-focus="_resetFieldError"
+                >
                 </paper-textarea>
               </div>
             </div>
@@ -156,38 +182,38 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   @property({type: Object, observer: 'dataChanged'})
-  data!: object;
+  data!: GenericObject;
 
   @property({type: Object})
   questionnaire: {children?: []} = {};
 
   @property({type: Object})
   riskRatingOptions = {
-    'na': 'N/A',
-    'low': 'Low',
-    'medium': 'Medium',
-    'significant': 'Significant',
-    'high': 'High',
-    'moderate': 'Moderate'
+    na: 'N/A',
+    low: 'Low',
+    medium: 'Medium',
+    significant: 'Significant',
+    high: 'High',
+    moderate: 'Moderate'
   };
 
   @property({type: Boolean})
-  firstRun: boolean = true;
+  firstRun = true;
 
   @property({type: Object, observer: 'savingError'})
-  errorObject!: object;
+  errorObject!: GenericObject;
 
   @property({type: Boolean})
-  overalRiskOpen: boolean = false;
+  overalRiskOpen = false;
 
   @property({type: Array})
   changedData: GenericObject[] = [];
 
   @property({type: Number, readOnly: true})
-  requests: number = 0;
+  requests = 0;
 
   @property({type: String})
-  riskAssessment: string = '';
+  riskAssessment = '';
 
   @property({type: String})
   basePermissionPath!: string; // engagement_[id]
@@ -196,16 +222,16 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   editedItem!: GenericObject;
 
   @property({type: Boolean})
-  dialogOpened: boolean = false;
+  dialogOpened = false;
 
   @property({type: Boolean})
-  requestInProcess: boolean = false;
+  requestInProcess = false;
 
   @query('#riskAssessmentDropdown')
   riskAssessmentDropdown!: EtoolsDropdownEl;
 
   @property({type: Boolean})
-  editMode: boolean = false;
+  editMode = false;
 
   private tabId!: string;
   private categoryId!: string;
@@ -213,10 +239,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   private originalRiskValue!: string;
 
   static get observers() {
-    return [
-      'updateStyles(requestInProcess)',
-      'resetDialog(dialogOpened)'
-    ];
+    return ['updateStyles(requestInProcess)', 'resetDialog(dialogOpened)'];
   }
 
   connectedCallback() {
@@ -227,7 +250,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
     this.addEventListener('edit-blueprint', this._openEditDialog as any);
     this.addEventListener('risk-value-changed', this._riskValueChanged as any);
-
   }
 
   disconnectedCallback() {
@@ -240,7 +262,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   dataChanged(data) {
     this.editMode = !this.isReadOnly('questionnaire', this.basePermissionPath);
 
-    if (!data) {return;}
+    if (!data) {
+      return;
+    }
     if (!isEmpty(this.questionnaire) && this.firstRun) {
       this.firstRun = false;
     }
@@ -257,7 +281,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   _checkCompleted(item) {
-    if (!item) {return false;}
+    if (!item) {
+      return false;
+    }
     let completed = true;
 
     item.blueprints.forEach((blueprint) => {
@@ -266,7 +292,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
         return false;
       }
     });
-    if (!completed) {return false;}
+    if (!completed) {
+      return false;
+    }
 
     item.children.forEach((child) => {
       if (!this._checkCompleted(child)) {
@@ -278,14 +306,18 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   _checkDisabled(index) {
-    if (!this.questionnaire.children || index === 0) {return false;}
+    if (!this.questionnaire.children || index === 0) {
+      return false;
+    }
     const previous = this.questionnaire.children[index - 1];
     return !this._checkCompleted(previous);
   }
 
   _openEditDialog(event) {
     const item = event.detail && event.detail.data;
-    if (!item) {throw Error('Can not find user data');}
+    if (!item) {
+      throw Error('Can not find user data');
+    }
 
     this.tabId = event.detail.tabId;
     this.categoryId = event.detail.childId;
@@ -318,17 +350,19 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   _addItemFromDialog() {
-    if (!this.dialogOpened || !this.validate()) {return;}
+    if (!this.dialogOpened || !this.validate()) {
+      return;
+    }
 
-    if (this.originalComments === this.editedItem.risk.extra.comments &&
+    if (
+      this.originalComments === this.editedItem.risk.extra.comments &&
       this.riskAssessmentDropdown.selected &&
-      this.originalRiskValue === this.editedItem.risk.value) {
-
+      this.originalRiskValue === this.editedItem.risk.value
+    ) {
       this.dialogOpened = false;
       this.resetDialog();
       return;
     }
-
 
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
@@ -342,25 +376,31 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   validateComplited() {
-    if (!this.questionnaire || !this.questionnaire.children || !this.questionnaire.children.length) {return false;}
+    if (!this.questionnaire || !this.questionnaire.children || !this.questionnaire.children.length) {
+      return false;
+    }
     let complited = true;
 
     each(this.questionnaire.children, (tab) => {
-      if (!this._checkCompleted(tab)) {complited = false;}
+      if (!this._checkCompleted(tab)) {
+        complited = false;
+      }
     });
 
     return complited;
   }
 
   getQuestionnaireData() {
-    if (this.dialogOpened) {return this.getDataFromDialog() || null;}
-    return this.changedData && this.changedData.shift() || null;
+    if (this.dialogOpened) {
+      return this.getDataFromDialog() || null;
+    }
+    return (this.changedData && this.changedData.shift()) || null;
   }
 
   getDataFromDialog() {
     const blueprintRisk = {
       value: this.riskAssessmentDropdown.selected,
-      extra: this.editedItem.risk && this.editedItem.risk.extra || {}
+      extra: (this.editedItem.risk && this.editedItem.risk.extra) || {}
     };
     const data = {
       id: this.editedItem.id,
@@ -405,7 +445,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   resetDialog(opened?) {
-    if (opened) {return;}
+    if (opened) {
+      return;
+    }
 
     this.riskAssessmentDropdown.invalid = false;
     this.riskAssessmentDropdown.selected = null;
@@ -419,7 +461,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
       this.requestInProcess = false;
       fireEvent(this, 'toast', {text: 'Can not save data'});
     }
-    if (!errorObj || !errorObj.questionnaire) {return;}
+    if (!errorObj || !errorObj.questionnaire) {
+      return;
+    }
 
     const nonField = checkNonField(errorObj.questionnaire);
     const data = refactorErrorObject(errorObj.questionnaire);
@@ -432,14 +476,17 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   }
 
   requestsCount(number?) {
-    if (!number || isNaN(+number)) {return this.requests;}
+    if (!number || isNaN(+number)) {
+      return this.requests;
+    }
     let count = number > 0 ? this.requests + 1 : this.requests - 1;
-    if (count < 0) {count = 0;}
-    this._setRequests(count);
+    if (count < 0) {
+      count = 0;
+    }
+    // bellow function does not exists
+    // this._setRequests(count);
     return this.requests;
   }
-
-
 }
 
 window.customElements.define('questionnaire-page-main', QuestionnairePageMain);

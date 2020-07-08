@@ -6,12 +6,11 @@ import {property} from '@polymer/decorators/lib/decorators';
  * @polymer
  */
 class InsertHtml extends PolymerElement {
-
   static get template() {
     return html``;
   }
   @property({type: String, observer: '_htmlChanged'})
-  html: string = '';
+  html = '';
 
   _htmlChanged(html) {
     this.shadowRoot!.innerHTML = html || '--';

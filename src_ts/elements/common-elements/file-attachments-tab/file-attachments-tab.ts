@@ -29,7 +29,6 @@ import {getUserData} from '../../../elements/app-mixins/user-controller';
 import EngagementMixin from '../../app-mixins/engagement-mixin';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 
@@ -46,24 +45,17 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocumentsEl} from '../share-documents/share-documents';
 import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
 import {checkNonField, refactorErrorObject} from '../../app-mixins/error-handler';
+import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
  * @customElement
  * @polymer
- * @appliesMixin EtoolsAjaxRequestMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin DateMixin
  */
-class FileAttachmentsTab extends
-  CommonMethodsMixin(
-    TableElementsMixin(
-      EngagementMixin(
-        DateMixin(
-          EtoolsAjaxRequestMixin(
-            PolymerElement))))) {
-
+class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(EngagementMixin(DateMixin(PolymerElement)))) {
   static get template() {
     // language=HTML
     return html`
@@ -73,46 +65,41 @@ class FileAttachmentsTab extends
         }
       </style>
       ${sharedStyles} ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles} ${fileAttachmentsTabStyles}
-      <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}"
-                       endpoint-name="[[endpointName]]">
+      <get-attachments base-id="[[baseId]]" attachments="{{dataItems}}" endpoint-name="[[endpointName]]">
       </get-attachments>
 
       <update-attachments
-          base-id="[[baseId]]"
-          attachments="{{dataItems}}"
-          request-data="{{requestData}}"
-          endpoint-name="[[endpointName]]"
-          request-in-process="{{requestInProcess}}"
-          edited-item="[[editedItem]]"
-          errors="{{errors}}">
+        base-id="[[baseId]]"
+        attachments="{{dataItems}}"
+        request-data="{{requestData}}"
+        endpoint-name="[[endpointName]]"
+        request-in-process="{{requestInProcess}}"
+        edited-item="[[editedItem]]"
+        errors="{{errors}}"
+      >
       </update-attachments>
 
       <etools-content-panel class="content-section clearfix" panel-title="[[tabTitle]]" list>
         <div slot="panel-btns">
           <div class="layout horizontal">
             <div hidden$="[[_hideShare]]">
-              <paper-icon-button class="panel-button"
-                                 on-tap="_openShareDialog"
-                                 icon="open-in-browser">
+              <paper-icon-button class="panel-button" on-tap="_openShareDialog" icon="open-in-browser">
               </paper-icon-button>
               <paper-tooltip offset="0">Share Documents</paper-tooltip>
             </div>
             <div hidden$="[[hideAddAttachments]]">
-              <paper-icon-button class="panel-button"
-                                 on-tap="_openAddDialog"
-                                 icon="add-box">
-              </paper-icon-button>
+              <paper-icon-button class="panel-button" on-tap="_openAddDialog" icon="add-box"> </paper-icon-button>
               <paper-tooltip offset="0">Add</paper-tooltip>
             </div>
           </div>
-
         </div>
         <list-header
-            id="list-header"
-            no-additional
-            no-ordered
-            data="[[headings]]"
-            base-permission-path="[[basePermissionPath]]">
+          id="list-header"
+          no-additional
+          no-ordered
+          data="[[headings]]"
+          base-permission-path="[[basePermissionPath]]"
+        >
         </list-header>
 
         <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
@@ -121,23 +108,17 @@ class FileAttachmentsTab extends
               <span class$="[[_getClassFor('date')]]">[[prettyDate(item.created)]]</span>
               <span class$="[[_getClassFor('documentType')]]">[[_getAttachmentType(item)]]</span>
               <div class$="[[_getClassFor('document')]]">
-                <iron-icon icon="icons:attachment"
-                           class="download-icon">
-                </iron-icon>
-                <a href$="[[item.attachment]]"
-                   class="truncate"
-                   target="_blank">[[getFileNameFromURL(item.attachment)]]
+                <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                <a href$="[[item.attachment]]" class="truncate" target="_blank"
+                  >[[getFileNameFromURL(item.attachment)]]
                 </a>
                 <paper-tooltip offset="0">[[getFileNameFromURL(item.attachment)]]</paper-tooltip>
-
               </div>
               <span class="delete-icon" hidden$="[[isTabReadonly]]">
-                                        <paper-icon-button icon="icons:create" class="edit-icon"
-                                                           on-tap="openEditDialog"></paper-icon-button>
+                <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
 
-                                        <paper-icon-button icon="icons:delete" class="edit-icon"
-                                                           on-tap="openDeleteDialog"></paper-icon-button>
-                                    </span>
+                <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
+              </span>
               <span>FAM</span>
             </div>
           </simple-list-item>
@@ -150,20 +131,14 @@ class FileAttachmentsTab extends
                 <span class$="[[_getClassFor('date')]]">[[prettyDate(linkedAttachment.created)]]</span>
                 <span class$="[[_getClassFor('documentType')]]">[[linkedAttachment.file_type]]</span>
                 <div class$="[[_getClassFor('document')]]">
-                  <iron-icon icon="icons:attachment" class="download-icon">
-                  </iron-icon>
-                  <a href$="[[linkedAttachment.url]]"
-                     class="truncate"
-                     target="_blank">[[linkedAttachment.filename]]
+                  <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                  <a href$="[[linkedAttachment.url]]" class="truncate" target="_blank"
+                    >[[linkedAttachment.filename]]
                   </a>
                   <paper-tooltip offset="0">[[linkedAttachment.filename]]</paper-tooltip>
-
                 </div>
-                <a on-click="_openDeleteLinkDialog"
-                   class="delete-icon">
-                  <iron-icon
-                      hidden$="[[isTabReadonly]]"
-                      icon="icons:cancel"></iron-icon>
+                <a on-click="_openDeleteLinkDialog" class="delete-icon">
+                  <iron-icon hidden$="[[isTabReadonly]]" icon="icons:cancel"></iron-icon>
 
                   <paper-tooltip offset="0">Remove</paper-tooltip>
                 </a>
@@ -174,107 +149,117 @@ class FileAttachmentsTab extends
         </template>
 
         <template is="dom-if" if="[[_showEmptyRow(dataItems.length, linkedAttachments.length)]]">
-          <list-element
-              class="list-element"
-              no-additional
-              data="[[emptyObj]]"
-              headings="[[headings]]">
-          </list-element>
+          <list-element class="list-element" no-additional data="[[emptyObj]]" headings="[[headings]]"> </list-element>
         </template>
         <div class="row" hidden$="[[!_isNewEngagement(baseId)]]">
           You can add attachments after you create the engagement.
         </div>
-
       </etools-content-panel>
 
-      <etools-dialog theme="confirmation" size="md"
-                     opened="{{confirmDialogOpened}}"
-                     on-close="_deleteAttachment"
-                     ok-btn-text="Delete">
+      <etools-dialog
+        theme="confirmation"
+        size="md"
+        opened="{{confirmDialogOpened}}"
+        on-close="_deleteAttachment"
+        ok-btn-text="Delete"
+      >
         Are you sure you want to delete this attachment?
       </etools-dialog>
 
-      <etools-dialog id="attachDoc" no-padding keep-dialog-open size="md"
-                     opened="{{dialogOpened}}"
-                     dialog-title="[[dialogTitle]]"
-                     ok-btn-text="[[confirmBtnText]]"
-                     show-spinner="{{requestInProcess}}"
-                     disable-confirm-btn="{{requestInProcess}}"
-                     on-confirm-btn-clicked="_saveAttachment">
-
+      <etools-dialog
+        id="attachDoc"
+        no-padding
+        keep-dialog-open
+        size="md"
+        opened="{{dialogOpened}}"
+        dialog-title="[[dialogTitle]]"
+        ok-btn-text="[[confirmBtnText]]"
+        show-spinner="{{requestInProcess}}"
+        disable-confirm-btn="{{requestInProcess}}"
+        on-confirm-btn-clicked="_saveAttachment"
+      >
         <div class="repeatable-item-container" without-line>
           <div class="repeatable-item-content row-h">
             <template is="dom-if" if="[[showFileTypes(basePermissionPath)]]">
               <div class="row-h group">
                 <div class="input-container input-container-ms">
                   <etools-dropdown
-                      id="fileType"
-                      class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
-                      selected="{{editedItem.file_type}}"
-                      label="[[getLabel('file_type', basePermissionPath)]]"
-                      placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
-                      options="[[fileTypes]]"
-                      option-label="display_name"
-                      option-value="value"
-                      required$="[[_setRequired('file_type', basePermissionPath)]]"
-                      disabled$="[[requestInProcess]]"
-                      readonly$="[[requestInProcess]]"
-                      invalid="{{errors.file_type}}"
-                      error-message="{{errors.file_type}}"
-                      on-focus="_resetFieldError"
-                      on-tap="_resetFieldError"
-                      hide-search disable-on-focus-handling>
+                    id="fileType"
+                    class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
+                    selected="{{editedItem.file_type}}"
+                    label="[[getLabel('file_type', basePermissionPath)]]"
+                    placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
+                    options="[[fileTypes]]"
+                    option-label="display_name"
+                    option-value="value"
+                    required$="[[_setRequired('file_type', basePermissionPath)]]"
+                    disabled$="[[requestInProcess]]"
+                    readonly$="[[requestInProcess]]"
+                    invalid="{{errors.file_type}}"
+                    error-message="{{errors.file_type}}"
+                    on-focus="_resetFieldError"
+                    on-tap="_resetFieldError"
+                    hide-search
+                    disable-on-focus-handling
+                  >
                   </etools-dropdown>
                 </div>
               </div>
             </template>
 
             <div class="row-h group padd-top">
-                <etools-upload
-                  label="[[uploadLabel]]"
-                  file-url="[[editedItem.attachment]]"
-                  upload-endpoint="[[uploadEndpoint]]"
-                  on-upload-started="_onUploadStarted"
-                  on-upload-finished="_attachmentUploadFinished"
-                  invalid="[[errors.file]]"
-                  error-message="[[errors.file]]"
-                  show-delete-btn="[[showDeleteBtn]]"
-                  current-attachment-id="[[editedItem.id]]"
-                  required>
-                  <!-- Here editedItem.id is the same as the uploaded attachment id -->
-                </etools-upload>
+              <etools-upload
+                label="[[uploadLabel]]"
+                file-url="[[editedItem.attachment]]"
+                upload-endpoint="[[uploadEndpoint]]"
+                on-upload-started="_onUploadStarted"
+                on-upload-finished="_attachmentUploadFinished"
+                invalid="[[errors.file]]"
+                error-message="[[errors.file]]"
+                show-delete-btn="[[showDeleteBtn]]"
+                current-attachment-id="[[editedItem.id]]"
+                required
+              >
+                <!-- Here editedItem.id is the same as the uploaded attachment id -->
+              </etools-upload>
             </div>
           </div>
         </div>
       </etools-dialog>
 
-      <etools-dialog id="deleteLinks"
-                     theme="confirmation" size="md"
-                     link-id$="[[linkToDeleteId]]"
-                     opened="{{deleteLinkOpened}}"
-                     on-close="_removeLink"
-                     ok-btn-text="Delete"
-                     cancel-btn-text="Cancel">
+      <etools-dialog
+        id="deleteLinks"
+        theme="confirmation"
+        size="md"
+        link-id$="[[linkToDeleteId]]"
+        opened="{{deleteLinkOpened}}"
+        on-close="_removeLink"
+        ok-btn-text="Delete"
+        cancel-btn-text="Cancel"
+      >
         Are you sure you want to delete the shared document?
       </etools-dialog>
 
-
       <template is="dom-if" if="[[_isUnicefUser]]">
-        <etools-dialog no-padding keep-dialog-open size="lg"
-                       opened="{{shareDialogOpened}}"
-                       dialog-title="Share Documents"
-                       id="share-documents"
-                       ok-btn-text="Share"
-                       on-confirm-btn-clicked="_SendShareRequest"
-                       show-spinner="{{requestInProcess}}"
-                       disable-confirm-btn="{{requestInProcess}}">
+        <etools-dialog
+          no-padding
+          keep-dialog-open
+          size="lg"
+          opened="{{shareDialogOpened}}"
+          dialog-title="Share Documents"
+          id="share-documents"
+          ok-btn-text="Share"
+          on-confirm-btn-clicked="_SendShareRequest"
+          show-spinner="{{requestInProcess}}"
+          disable-confirm-btn="{{requestInProcess}}"
+        >
           <share-documents
-              id="shareDocuments"
-              data-base-path="[[dataBasePath]]"
-              base-permission-path="[[basePermissionPath]]"
-              partner-name="[[engagement.partner.name]]"
-              share-params="{{shareParams}}"
-              confirm-disabled="{{confirmDisabled}}"
+            id="shareDocuments"
+            data-base-path="[[dataBasePath]]"
+            base-permission-path="[[basePermissionPath]]"
+            partner-name="[[engagement.partner.name]]"
+            share-params="{{shareParams}}"
+            confirm-disabled="{{confirmDisabled}}"
           >
           </share-documents>
         </etools-dialog>
@@ -283,59 +268,63 @@ class FileAttachmentsTab extends
   }
 
   @property({type: String})
-  basePermissionPath: string = '';
+  basePermissionPath = '';
 
   @property({type: String}) // ex. engagement_57
-  dataBasePath: string = '';
+  dataBasePath = '';
 
   @property({type: String})
-  pathPostfix: string = '';
+  pathPostfix = '';
 
   @property({type: Number})
-  baseId: number = 0;
+  baseId = 0;
 
   @property({type: Object})
   itemModel: GenericObject = {
     attachment: null,
     file_type: null,
     id: null
-
   };
 
   @property({type: Array, notify: true})
-  headings: GenericObject[] = [{
-    'size': 18,
-    'name': 'date',
-    'label': 'Date Uploaded!',
-    'labelPath': `created`,
-    'path': 'created'
-  }, {
-    'size': 30,
-    'name': 'documentType',
-    'label': 'Document Type!',
-    'labelPath': `file_type`,
-    'path': 'display_name'
-  }, {
-    'size': 30,
-    'name': 'document',
-    'label': 'File Attachment!',
-    'labelPath': `file`,
-    'property': 'filename',
-    'custom': true,
-    'doNotHide': false
-  }, {
-    'size': 12,
-    'label': 'Source',
-    'labelPath': 'tpm_activities.date',
-    'path': 'source'
-  }];
+  headings: GenericObject[] = [
+    {
+      size: 18,
+      name: 'date',
+      label: 'Date Uploaded!',
+      labelPath: `created`,
+      path: 'created'
+    },
+    {
+      size: 30,
+      name: 'documentType',
+      label: 'Document Type!',
+      labelPath: `file_type`,
+      path: 'display_name'
+    },
+    {
+      size: 30,
+      name: 'document',
+      label: 'File Attachment!',
+      labelPath: `file`,
+      property: 'filename',
+      custom: true,
+      doNotHide: false
+    },
+    {
+      size: 12,
+      label: 'Source',
+      labelPath: 'tpm_activities.date',
+      path: 'source'
+    }
+  ];
 
   @property({type: Object})
   ENGAGEMENT_TYPE_ENDPOINT_MAP: GenericObject = {
     'micro-assessments': 'micro-assessment',
     'spot-checks': 'spot-check',
     'staff-spot-checks': 'spot-check',
-    'audits': 'audit',
+    audits: 'audit',
     'special-audits': 'special-audit'
   };
 
@@ -358,37 +347,37 @@ class FileAttachmentsTab extends
   };
 
   @property({type: String})
-  uploadLabel: string = 'Upload File';
+  uploadLabel = 'Upload File';
 
   @property({type: Boolean})
-  shareDialogOpened: boolean = false;
+  shareDialogOpened = false;
 
   @property({type: Object})
   shareParams: GenericObject = {};
 
   @property({type: Object})
-  auditLinksOptions: GenericObject = {};
+  auditLinksOptions: EtoolsRequestEndpoint = {url: ''};
 
   @property({type: Array, notify: true})
   linkedAttachments: any[] = [];
 
   @property({type: Array})
-  fileTypes: {value: string, display_name: string}[] = [];
+  fileTypes: {value: string; display_name: string}[] = [];
 
   @property({type: String})
-  deleteTitle: string = 'Are you sure that you want to delete this attachment?';
+  deleteTitle = 'Are you sure that you want to delete this attachment?';
 
   @property({type: String})
-  errorProperty: string = '';
+  errorProperty = '';
 
   @property({type: Boolean})
-  isReportTab: boolean = false;
+  isReportTab = false;
 
   @property({type: Boolean, computed: '_shouldHideShare(_isUnicefUser, baseId)'})
-  _hideShare: boolean = false;
+  _hideShare = false;
 
   @property({type: Boolean, computed: '_checkIsUnicefUser(dataBasePath)'})
-  _isUnicefUser: boolean = false;
+  _isUnicefUser = false;
 
   @property({type: String, reflectToAttribute: true})
   endpointName!: string;
@@ -400,19 +389,22 @@ class FileAttachmentsTab extends
   uploadEndpoint: string = famEndpoints.attachmentsUpload.url;
 
   @property({type: Boolean})
-  showDeleteBtn: boolean = false;
+  showDeleteBtn = false;
 
   @property({type: Boolean})
-  isTabReadonly: boolean = true;
+  isTabReadonly = true;
 
   @property({type: Boolean})
-  hideAddAttachments: boolean = true;
+  hideAddAttachments = true;
+
+  @property({type: Boolean})
+  deleteLinkOpened = false;
 
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
       '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
+      'filesTabErrorHandler(errorObject)',
       'updateStyles(requestInProcess, editedItem, basePermissionPath)'
     ];
   }
@@ -433,7 +425,6 @@ class FileAttachmentsTab extends
     return Boolean(user.groups.find(({name}) => name === 'UNICEF User'));
   }
 
-
   _hanldeLinksForEngagement() {
     this._setLinksEndpoint();
     this._getLinkedAttachments();
@@ -446,23 +437,24 @@ class FileAttachmentsTab extends
     }
     const {details: engagement, type: engagementType} = currEngagement;
     this.set('engagement', engagement);
-    this.set('auditLinksOptions', {
-      endpoint: getEndpoint('auditLinks', {
-        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType],
-        id: engagement.id
+    this.set(
+      'auditLinksOptions',
+      getEndpoint('auditLinks', {
+        type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType!],
+        id: engagement!.id
       })
-    });
+    );
   }
 
   _getLinkedAttachments() {
     this.set('requestInProcess', true);
-    const options = Object.assign(this.auditLinksOptions, {method: 'GET'});
-    this.sendRequest(options)
+    const options = Object.assign({endpoint: this.auditLinksOptions}, {method: 'GET'});
+    sendRequest(options)
       .then((res) => {
         this.set('linkedAttachments', uniqBy(res, 'attachment'));
         this.set('requestInProcess', false);
       })
-      .catch(this._errorHandler.bind(this));
+      .catch(this.filesTabErrorHandler.bind(this));
   }
 
   _setBasePath(dataBase, pathPostfix) {
@@ -478,7 +470,8 @@ class FileAttachmentsTab extends
   }
 
   _handleLinksInDetailsView(dataBase) {
-    if (!dataBase) { // null check
+    if (!dataBase) {
+      // null check
       dataBase = '';
     }
     const isEngagementDetailsView = !dataBase.includes('new');
@@ -488,9 +481,9 @@ class FileAttachmentsTab extends
   }
 
   setReadOnly() {
-    this.isTabReadonly = !this.basePermissionPath ||
-      (!collectionExists(`${this.basePermissionPath}.PUT`) &&
-        !collectionExists(`${this.basePermissionPath}.POST`));
+    this.isTabReadonly =
+      !this.basePermissionPath ||
+      (!collectionExists(`${this.basePermissionPath}.PUT`) && !collectionExists(`${this.basePermissionPath}.POST`));
     this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
@@ -513,7 +506,7 @@ class FileAttachmentsTab extends
       return;
     }
 
-    const type = this.fileTypes.find(type => parseInt(type.value, 10) === parseInt(fileType, 10));
+    const type = this.fileTypes.find((type) => parseInt(type.value, 10) === parseInt(fileType, 10));
     return type || null;
   }
 
@@ -534,10 +527,9 @@ class FileAttachmentsTab extends
   _attachmentUploadFinished(e) {
     this.requestInProcess = false;
     if (e.detail.success) {
-      const uploadResponse = JSON.parse(e.detail.success);
+      const uploadResponse = e.detail.success;
       this.set('editedItem.attachment', uploadResponse.id);
       this.set('editedItem.filename', uploadResponse.filename);
-
     }
   }
 
@@ -545,8 +537,10 @@ class FileAttachmentsTab extends
     if (!url) {
       return '';
     }
-    // @ts-ignore
-    return url.split('?').shift().split('/').pop();
+    const urlSplit = url.split('?');
+    if (urlSplit.length) {
+      return urlSplit.shift()!.split('/').pop();
+    }
   }
 
   _saveAttachment() {
@@ -572,7 +566,8 @@ class FileAttachmentsTab extends
       return;
     }
     if (!this.baseId) {
-      this._processDelayedRequest();
+      // function does not exists
+      // this._processDelayedRequest();
       return;
     }
     this.requestInProcess = true;
@@ -603,7 +598,7 @@ class FileAttachmentsTab extends
   }
 
   _getFileData(fileData?) {
-    if (!this.dialogOpened && (!fileData && !this.editedItem)) {
+    if (!this.dialogOpened && !fileData && !this.editedItem) {
       return {};
     }
     const {id, attachment, file_type} = fileData || this.editedItem;
@@ -618,7 +613,7 @@ class FileAttachmentsTab extends
   }
 
   _getAttachmentType(attachment) {
-    return this.fileTypes.find(f => f.value === attachment.file_type)!.display_name;
+    return this.fileTypes.find((f) => f.value === attachment.file_type)!.display_name;
   }
 
   _requestCompleted(event, detail) {
@@ -692,7 +687,7 @@ class FileAttachmentsTab extends
     this.openAddDialog();
   }
 
-  _errorHandler(errorData) {
+  filesTabErrorHandler(errorData) {
     const mainProperty = this.errorProperty;
     this.requestInProcess = false;
     if (!errorData || !errorData[mainProperty]) {
@@ -714,7 +709,7 @@ class FileAttachmentsTab extends
     if (!this.dialogOpened) {
       const filesErrors = this.getFilesErrors(refactoredData);
 
-      filesErrors.forEach((fileError) => {
+      filesErrors.forEach((fileError: any) => {
         fireEvent(this, 'toast', {text: `${fileError.fileName}: ${fileError.error}`});
       });
     }
@@ -722,7 +717,7 @@ class FileAttachmentsTab extends
 
   getFilesErrors(errors) {
     if (this.dataItems instanceof Array && errors instanceof Array && errors.length === this.dataItems.length) {
-      const filesErrors = [];
+      const filesErrors: {fileName: string; error: any}[] = [];
 
       errors.forEach((error, index) => {
         let fileName = this.dataItems[index].filename;
@@ -755,7 +750,7 @@ class FileAttachmentsTab extends
   }
 
   getFiles() {
-    return this.dataItems.map(file => this._getFileData(file));
+    return this.dataItems.map((file) => this._getFileData(file));
   }
 
   resetData() {
@@ -770,13 +765,16 @@ class FileAttachmentsTab extends
 
   _SendShareRequest() {
     const {attachments} = this.shareParams;
-    const options = Object.assign(this.auditLinksOptions, {
-      csrf: true,
-      body: {attachments},
-      method: 'POST'
-    });
+    const options = Object.assign(
+      {endpoint: this.auditLinksOptions},
+      {
+        csrf: true,
+        body: {attachments},
+        method: 'POST'
+      }
+    );
     this.set('requestInProcess', true);
-    this.sendRequest(options)
+    sendRequest(options)
       .then(() => {
         fireEvent(this, 'toast', {
           text: 'Documents shared successfully.'
@@ -787,7 +785,6 @@ class FileAttachmentsTab extends
         this._getLinkedAttachments(); // refresh the list
       })
       .catch(this._handleShareError.bind(this));
-
   }
 
   _handleShareError(err) {
@@ -796,8 +793,7 @@ class FileAttachmentsTab extends
     if (nonField) {
       message = `Nonfield error: ${nonField}`;
     } else {
-      message = err.response && err.response.detail ? `Error: ${err.response.detail}`
-        : 'Error sharing documents.';
+      message = err.response && err.response.detail ? `Error: ${err.response.detail}` : 'Error sharing documents.';
     }
     fireEvent(this, 'toast', {
       text: message
@@ -809,7 +805,7 @@ class FileAttachmentsTab extends
   }
 
   _getClassFor(field) {
-    return `w${this.headings.find(heading => heading.name === field)!.size}`;
+    return `w${this.headings.find((heading) => heading.name === field)!.size}`;
   }
 
   _openDeleteLinkDialog(e) {
@@ -826,15 +822,16 @@ class FileAttachmentsTab extends
     this.deleteLinkOpened = false;
     const id = event.currentTarget.getAttribute('link-id');
 
-    this.sendRequest({
+    sendRequest({
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
-    }).then(this._getLinkedAttachments.bind(this))
-      .catch(err => this._errorHandler(err));
+    })
+      .then(this._getLinkedAttachments.bind(this))
+      .catch((err) => this.filesTabErrorHandler(err));
   }
 
   // @ts-ignore
-  _shouldHideShare(isUnicefUser, baseId) {
+  _shouldHideShare(isUnicefUser, _baseId) {
     return this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 
@@ -845,7 +842,6 @@ class FileAttachmentsTab extends
   _showEmptyRow(length1, length2) {
     return !length1 && !length2 && !this._isNewEngagement();
   }
-
 }
 
 window.customElements.define('file-attachments-tab', FileAttachmentsTab);

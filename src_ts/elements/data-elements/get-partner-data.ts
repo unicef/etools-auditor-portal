@@ -3,13 +3,12 @@ import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import clone from 'lodash-es/clone';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {getStaticData, setStaticData} from '../app-mixins/static-data-controller';
 import {GenericObject} from '../../types/global';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class GetPartnerData extends PolymerElement {
   @property({type: Number, notify: true, observer: '_partnerIdChanged'})
   partnerId!: number | null;
 
@@ -36,13 +35,15 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
       this.lastData.partnerOfficers = officers;
       this.finishRequest();
     } else {
-      this.sendRequest({
+      sendRequest({
         endpoint: {url: getEndpoint('authorizedOfficers', {id: detail.id}).url}
-      }).then((resp) => {
-        this._handleOfficersResponse(resp);
-      }).catch(() => {
-        this._handleOfficersError();
-      });
+      })
+        .then((resp) => {
+          this._handleOfficersResponse(resp);
+        })
+        .catch(() => {
+          this._handleOfficersError();
+        });
     }
   }
 
@@ -86,7 +87,9 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
   }
 
   _partnerIdChanged(partnerId) {
-    if (!partnerId) {return;}
+    if (!partnerId) {
+      return;
+    }
     if (partnerId === this.lastNumber) {
       this.partnerId = null;
       const detail = clone(this.lastData);
@@ -101,13 +104,15 @@ class GetPartnerData extends EtoolsAjaxRequestMixin(PolymerElement) {
     if (partner) {
       this._handleResponse(partner);
     } else {
-      this.sendRequest({
+      sendRequest({
         endpoint: {url: getEndpoint('partnerInfo', {id: partnerId}).url}
-      }).then((resp) => {
-        this._handleResponse(resp);
-      }).catch((err) => {
-        this._handleError();
-      });
+      })
+        .then((resp) => {
+          this._handleResponse(resp);
+        })
+        .catch(() => {
+          this._handleError();
+        });
     }
 
     this.partnerId = null;

@@ -3,11 +3,10 @@ import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../app-config/endpoints-controller';
-import EtoolsAjaxRequestMixin from '@unicef-polymer/etools-ajax/etools-ajax-request-mixin';
 import {GenericObject} from '../../types/global.js';
+import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
-
+class UpdateStaffMembers extends PolymerElement {
   @property({type: Object, notify: true, observer: '_dataChanged'})
   staffData!: GenericObject;
 
@@ -18,9 +17,15 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
   lastRequestData!: GenericObject;
 
   _dataChanged(data) {
-    if (!data) {return;}
-    if (!this.organisationId) {throw new Error('Organisation id is not provided!');}
-    if (!data.method || !data.data) {throw new Error('Method or data are missing!');}
+    if (!data) {
+      return;
+    }
+    if (!this.organisationId) {
+      throw new Error('Organisation id is not provided!');
+    }
+    if (!data.method || !data.data) {
+      throw new Error('Method or data are missing!');
+    }
 
     this.lastRequestData = cloneDeep(data);
 
@@ -35,9 +40,9 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
       },
       body: data.data
     };
-    this.sendRequest(options)
-      .then(resp => this._handleResponse(resp))
-      .catch(err => this._handleError(err));
+    sendRequest(options)
+      .then((resp) => this._handleResponse(resp))
+      .catch((err) => this._handleError(err));
   }
 
   _handleResponse(detail) {
@@ -61,6 +66,5 @@ class UpdateStaffMembers extends EtoolsAjaxRequestMixin(PolymerElement) {
 
     fireEvent(this, 'staff-updated', {error: true, errorData: response, status: status});
   }
-
 }
 window.customElements.define('update-staff-members', UpdateStaffMembers);
