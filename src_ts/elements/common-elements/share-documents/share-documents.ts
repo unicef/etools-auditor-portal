@@ -225,8 +225,7 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
     const options = {
       endpoint: getEndpoint('globalAttachments'),
       params: {
-        partner: partner,
-        source: 'Partnership Management Portal'
+        partner: partner
       }
     };
 
