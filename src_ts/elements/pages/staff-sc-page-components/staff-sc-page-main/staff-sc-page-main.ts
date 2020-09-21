@@ -110,6 +110,20 @@ class StaffScPageMain extends PolymerElement {
       optionValue: 'id',
       optionLabel: 'full_name',
       selection: []
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'date IP was contacted before',
+      label: 'Date IP was contacted before',
+      query: 'partner_contacted_at__lte',
+      hideSearch: true
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'date IP was contacted after',
+      label: 'Date IP was contacted after',
+      query: 'partner_contacted_at__gte',
+      hideSearch: true
     }
   ];
 
