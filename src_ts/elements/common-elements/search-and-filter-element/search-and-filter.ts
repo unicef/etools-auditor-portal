@@ -226,6 +226,8 @@ class SearchAndFilter extends PolymerElement {
 
         if (!usedFilter && queryParams[filter.query] !== undefined) {
           this.addFilter(filter.query);
+        } else if (usedFilter && queryParams[filter.query] === undefined) {
+          this.removeFilter(filter.query);
         }
       });
 
