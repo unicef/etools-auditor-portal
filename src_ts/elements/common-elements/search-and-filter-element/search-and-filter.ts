@@ -136,6 +136,9 @@ class SearchAndFilter extends PolymerElement {
   queryParams: GenericObject = {};
 
   @property({type: String})
+  baseRoute!: string;
+
+  @property({type: String})
   previousSearchValue = '';
 
   @property({type: Boolean})
@@ -145,7 +148,7 @@ class SearchAndFilter extends PolymerElement {
   private _restoreFiltersDebounce!: Debouncer;
 
   static get observers() {
-    return ['_restoreFilters(queryParams.*)'];
+    return ['_restoreFilters(queryParams.*)', '_clearFilters(baseRoute)'];
   }
 
   searchKeyDown(_event, {value}) {
@@ -208,6 +211,10 @@ class SearchAndFilter extends PolymerElement {
     }
   }
 
+  _clearFilters(): void {
+    this.filters.forEach((filter) => this.removeFilter(filter.query));
+  }
+
   _reloadFilters() {
     this.filtersDataLoaded = true;
     this._restoreFilters();
@@ -224,8 +231,11 @@ class SearchAndFilter extends PolymerElement {
       this.filters.forEach((filter) => {
         const usedFilter = this.usedFilters.find((used) => used.query === filter.query);
 
+        const hasValue = Boolean(usedFilter && usedFilter.length);
         if (!usedFilter && queryParams[filter.query] !== undefined) {
           this.addFilter(filter.query);
+        } else if (usedFilter && hasValue && queryParams[filter.query] === undefined) {
+          this.removeFilter(filter.query);
         }
       });
 
