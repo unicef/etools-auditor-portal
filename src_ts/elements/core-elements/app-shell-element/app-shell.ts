@@ -103,6 +103,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                 name="engagements"
                 id="engagements"
                 route="{{subroute}}"
+                base-route="[[page]]"
                 query-params="{{queryParams}}"
               >
               </engagements-page-main>
@@ -112,6 +113,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
                 name="staff-sc"
                 id="staff-sc"
                 route="{{subroute}}"
+                base-route="[[page]]"
                 query-params="{{queryParams}}"
               >
               </staff-sc-page-main>
