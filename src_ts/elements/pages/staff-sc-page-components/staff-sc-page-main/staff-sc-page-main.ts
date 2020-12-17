@@ -40,6 +40,7 @@ class StaffScPageMain extends PolymerElement {
           name="list"
           id="listPage"
           query-params="{{queryParams}}"
+          base-route="[[baseRoute]]"
           has-collapse
           request-queries="[[partnersListQueries]]"
           base-permission-path="new_engagement"
@@ -74,6 +75,9 @@ class StaffScPageMain extends PolymerElement {
 
   @property({type: Object, notify: true, observer: '_queryParamsChanged'})
   queryParams!: GenericObject;
+
+  @property({type: String})
+  baseRoute!: string;
 
   @property({type: Number})
   initiation = 0;

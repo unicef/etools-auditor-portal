@@ -42,6 +42,7 @@ class EngagementsPageMain extends PolymerElement {
           name="list"
           id="listPage"
           query-params="{{queryParams}}"
+          base-route="[[baseRoute]]"
           has-collapse
           request-queries="[[partnersListQueries]]"
           endpoint-name="{{endpointName}}"
@@ -77,6 +78,9 @@ class EngagementsPageMain extends PolymerElement {
 
   @property({type: Object, notify: true, observer: '_queryParamsChanged'})
   queryParams!: GenericObject;
+
+  @property({type: String})
+  baseRoute!: string;
 
   @property({type: String})
   endpointName = 'engagementsList';
