@@ -67,6 +67,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
         search-label="Search partner or auditor"
         filters="[[filters]]"
         query-params="{{queryParams}}"
+        base-route="[[baseRoute]]"
         search-params="[[searchParams]]"
       >
       </search-and-filter>
@@ -90,6 +91,9 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
 
   @property({type: Object, notify: true})
   queryParams!: GenericObject;
+
+  @property({type: String})
+  baseRoute!: string;
 
   @property({type: Array})
   listHeadings: GenericObject[] = [
