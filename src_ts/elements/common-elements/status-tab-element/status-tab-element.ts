@@ -6,7 +6,7 @@ import each from 'lodash-es/each';
 import {getActions} from '../../app-mixins/permission-controller';
 import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
-declare const moment: any;
+declare const dayjs: any;
 import '../insert-html/insert-html';
 import './action-buttons';
 
@@ -350,7 +350,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
     const date = new Date(this.engagementData[field]);
     const format = 'on DD MMMM, YYYY';
 
-    return moment.utc(date).format(format);
+    return dayjs.utc(date).format(format);
   }
 
   _showActionButtons(actions) {
