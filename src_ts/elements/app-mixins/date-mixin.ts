@@ -1,7 +1,7 @@
 import {Constructor} from '../../types/global';
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 
-declare const moment: any;
+declare const dayjs: any;
 /**
  * @polymer
  * @mixinFunction
@@ -9,7 +9,7 @@ declare const moment: any;
 function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
   class DateMixinClass extends baseClass {
     /**
-     * Format date string to any format supported by momentjs
+     * Format date string to any format supported by dayjs
      */
     prettyDate(dateString, format) {
       if (!format) {
@@ -18,8 +18,8 @@ function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (typeof dateString === 'string' && dateString !== '') {
         const date = new Date(dateString);
         if (date.toString() !== 'Invalid Date') {
-          // using moment.utc() ensures that the date will not be changed no matter timezone the user has set
-          return moment.utc(date).format(format);
+          // using dayjs.utc() ensures that the date will not be changed no matter timezone the user has set
+          return dayjs.utc(date).format(format);
         }
       }
       return '';

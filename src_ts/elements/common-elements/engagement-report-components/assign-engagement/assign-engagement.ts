@@ -9,7 +9,7 @@ import each from 'lodash-es/each';
 import pickBy from 'lodash-es/pickBy';
 import {property} from '@polymer/decorators';
 import '@polymer/polymer/lib/elements/dom-if';
-declare const moment: any;
+declare const dayjs: any;
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
@@ -61,7 +61,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
             <!-- Draft Report Issued to IP -->
             <datepicker-lite
               id="draftReportToIpInput"
-              class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] 
+              class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
               value="{{data.date_of_draft_report_to_ip}}"
               label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
@@ -89,7 +89,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
-              disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip, 
+              disabled$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip,
                                         data.date_of_draft_report_to_unicef, basePermissionPath)]]"
               invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
               error-message="{{errors.date_of_comments_by_ip}}"
@@ -114,7 +114,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
-              disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip, 
+              disabled$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip,
                                     data.date_of_comments_by_unicef, basePermissionPath)]]"
               invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
               error-message="{{errors.date_of_draft_report_to_unicef}}"
@@ -295,7 +295,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   minDate(strDate) {
     if (strDate) {
-      let date = new Date(moment(strDate).format());
+      let date = new Date(dayjs(strDate).format());
       date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       // @ts-ignore
       return new Date(date - 1);
