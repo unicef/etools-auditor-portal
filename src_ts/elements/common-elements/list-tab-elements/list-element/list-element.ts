@@ -8,7 +8,7 @@ import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/polymer/lib/elements/dom-repeat';
 import {IronCollapseElement} from '@polymer/iron-collapse/iron-collapse.js';
-declare const moment: any;
+declare const dayjs: any;
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 
@@ -468,7 +468,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
     const date = new Date(value);
     if (date.toString() !== 'Invalid Date') {
-      return moment.utc(date).format(format);
+      return dayjs.utc(date).format(format);
     }
   }
 
