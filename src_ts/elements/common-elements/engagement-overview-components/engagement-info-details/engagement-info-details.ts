@@ -202,7 +202,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               id="contractEndDateInput"
               class$="disabled-as-readonly {{_setRequired('related_agreement.contract_end_date',
                                                         basePermissionPath)}} validate-field"
-              value="{{data.agreement.contract_end_date}}"
+              value="[[data.agreement.contract_end_date]]"
               label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('agreement.contract_end_date',
                                                             basePermissionPath, 'datepicker')]]"
