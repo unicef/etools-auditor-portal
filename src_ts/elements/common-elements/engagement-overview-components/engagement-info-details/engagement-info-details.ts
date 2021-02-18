@@ -30,6 +30,7 @@ import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import {getUserData} from '../../../app-mixins/user-controller';
+declare const dayjs: any;
 
 /**
  * @polymer
@@ -104,7 +105,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
       <update-agreement-data
         agreement="{{data.agreement}}"
-        new-date="{{contractExpiryDate}}"
+        new-date="[[contractExpiryDate]]"
         po-updating="{{poUpdating}}"
         errors="{{errors}}"
       >
@@ -182,7 +183,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <datepicker-lite
               id="contractStartDateInput"
               class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
-              value="{{data.agreement.contract_start_date}}"
+              value="[[data.agreement.contract_start_date]]"
               label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
               disabled
@@ -211,6 +212,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               error-message="{{errors.contract_end_date}}"
               on-focus="_resetFieldError"
               on-tap="_resetFieldError"
+              on-date-has-changed="_contractEndDateHasChanged"
+              fire-date-has-changed
               selected-date-display-format="D MMM YYYY"
               min-date="{{_setExpiryMinDate(data.agreement.contract_start_date)}}"
             >
@@ -509,7 +512,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   maxDate = new Date();
 
   @property({type: String})
-  contractExpiryDate = null;
+  contractExpiryDate!: string;
 
   @property({type: Object})
   tabTexts = {
@@ -725,7 +728,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   resetAgreement() {
     this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
-    this.set('contractExpiryDate', null);
+    this.set('contractExpiryDate', undefined);
     this.set('orderNumber', null);
   }
 
@@ -838,6 +841,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   _setAdditionalInput(type: string) {
     this.showAdditionalInput = !!type && type !== 'sc';
+  }
+
+  _contractEndDateHasChanged(event: CustomEvent) {
+    if(!this.get('data.agreement.id')) {
+      return;
+    }
+    const selectedDate = event.detail.date;
+    this.set('contractExpiryDate', selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null);
   }
 
   _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
