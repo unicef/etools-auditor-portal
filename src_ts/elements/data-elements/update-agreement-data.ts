@@ -18,8 +18,7 @@ class UpdateAgreementData extends PolymerElement {
   errors!: GenericObject;
 
   _dateChanged(date) {
-    date = date || null;
-    if (!this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {
+    if (typeof(date) === 'undefined' || !this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {
       return;
     }
 
@@ -40,7 +39,7 @@ class UpdateAgreementData extends PolymerElement {
 
   _handleResponse(detail) {
     this.poUpdating = false;
-    this.agreement = detail;
+    this.agreement = Object.assign({}, detail);
   }
 
   _handleError(error) {
