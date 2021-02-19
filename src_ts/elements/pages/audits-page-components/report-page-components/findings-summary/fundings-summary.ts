@@ -44,10 +44,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     return html`
       ${moduleStyles} ${tabLayoutStyles} ${tabInputsStyles}
       <style>
-        etools-content-panel {
-          --ecp-content: {
-            padding: 0;
-          }
+        etools-content-panel::part(ecp-content) {
+          padding: 0;
         }
         etools-dropdown#auditOpinionDropDown {
           --paper-listbox: {

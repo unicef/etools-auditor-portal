@@ -42,10 +42,8 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
           height: 100%;
         }
 
-        etools-content-panel {
-          --ecp-content: {
-            padding: 0;
-          }
+        etools-content-panel::part(ecp-content) {
+          padding: 0;
         }
       </style>
 
