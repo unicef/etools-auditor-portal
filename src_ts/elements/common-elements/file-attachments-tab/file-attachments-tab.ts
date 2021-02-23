@@ -174,7 +174,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
         opened="{{dialogOpened}}"
         dialog-title="[[dialogTitle]]"
         ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
+        show-spinner="[[_showDialogSpinner(requestInProcess, uploadInProgress)]]"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_saveAttachment"
       >
@@ -250,7 +250,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
           id="share-documents"
           ok-btn-text="Share"
           on-confirm-btn-clicked="_SendShareRequest"
-          show-spinner="{{requestInProcess}}"
+          show-spinner="[[_showDialogSpinner(requestInProcess, uploadInProgress)]]"
           disable-confirm-btn="{{requestInProcess}}"
         >
           <share-documents
@@ -400,6 +400,9 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
   @property({type: Boolean})
   deleteLinkOpened = false;
 
+  @property({type: Boolean})
+  uploadInProgress = false;
+
   static get observers() {
     return [
       '_setBasePath(dataBasePath, pathPostfix)',
@@ -418,6 +421,14 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('attachments-request-completed', this._requestCompleted as any);
+  }
+
+  _showDialogSpinner(requestInProcess: boolean, uploadInProgress: boolean) {
+    // When the upload is in progress do not show the dialog spinner
+    if (uploadInProgress) {
+      return false;
+    }
+    return requestInProcess;
   }
 
   _checkIsUnicefUser() {
@@ -521,11 +532,17 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
   }
 
   _onUploadStarted() {
-    this.requestInProcess = true;
+    this.setProperties({
+      requestInProcess: true,
+      uploadInProgress: true
+    });
   }
 
   _attachmentUploadFinished(e) {
-    this.requestInProcess = false;
+    this.setProperties({
+      requestInProcess: false,
+      uploadInProgress: false
+    });
     if (e.detail.success) {
       const uploadResponse = e.detail.success;
       this.set('editedItem.attachment', uploadResponse.id);
