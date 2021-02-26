@@ -138,6 +138,8 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               label$="[[getLabel('amount_refunded', basePermissionPath)]]"
               placeholder$="[[getPlaceholderText('amount_refunded', basePermissionPath)]]"
               required$="[[_setRequired('amount_refunded', basePermissionPath)]]"
+              disabled$="[[isReadOnly('amount_refunded', basePermissionPath)]]"
+              readonly$="[[isReadOnly('amount_refunded', basePermissionPath)]]"
               invalid$="{{errors.amount_refunded}}"
               error-message="{{errors.amount_refunded}}"
               on-focus="_resetFieldError"
@@ -160,6 +162,10 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
                                             basePermissionPath)]]"
               required$="[[_setRequired('additional_supporting_documentation_provided',
                                         basePermissionPath)]]"
+              disabled$="[[isReadOnly('additional_supporting_documentation_provided',
+                                        basePermissionPath)]]"
+              readonly$="[[isReadOnly('additional_supporting_documentation_provided',
+                                        basePermissionPath)]]"
               invalid$="{{errors.additional_supporting_documentation_provided}}"
               error-message="{{errors.additional_supporting_documentation_provided}}"
               on-focus="_resetFieldError"
@@ -179,6 +185,8 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               placeholder$="[[getPlaceholderText('justification_provided_and_accepted',
                                             basePermissionPath)]]"
               required$="[[_setRequired('justification_provided_and_accepted', basePermissionPath)]]"
+              disabled$="[[isReadOnly('justification_provided_and_accepted', basePermissionPath)]]"
+              readonly$="[[isReadOnly('justification_provided_and_accepted', basePermissionPath)]]"
               invalid$="{{errors.justification_provided_and_accepted}}"
               error-message="{{errors.justification_provided_and_accepted}}"
               on-focus="_resetFieldError"
@@ -197,6 +205,8 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               label$="[[getLabel('write_off_required', basePermissionPath)]]"
               placeholder$="[[getPlaceholderText('write_off_required', basePermissionPath)]]"
               required$="[[_setRequired('write_off_required', basePermissionPath)]]"
+              disabled$="[[isReadOnly('write_off_required', basePermissionPath)]]"
+              readonly$="[[isReadOnly('write_off_required', basePermissionPath)]]"
               invalid$="{{errors.write_off_required}}"
               error-message="{{errors.write_off_required}}"
               on-focus="_resetFieldError"
@@ -238,6 +248,8 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               placeholder="[[getPlaceholderText('explanation_for_additional_information',
                                             basePermissionPath)]]"
               required="{{_setRequired('explanation_for_additional_information', basePermissionPath)}}"
+              disabled="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
+              readonly$="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
               invalid="{{errors.explanation_for_additional_information}}"
               error-message="{{errors.explanation_for_additional_information}}"
               on-focus="_resetFieldError"
