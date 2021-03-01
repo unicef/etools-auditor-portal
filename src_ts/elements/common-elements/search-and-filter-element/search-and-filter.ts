@@ -98,7 +98,9 @@ class SearchAndFilter extends PolymerElement {
 
               <span class="add-filter-text">ADD FILTER</span>
             </paper-button>
-
+            <div slot="dropdown-content" class="clear-all-filters">
+              <paper-button on-tap="_clearFilters" class="secondary-btn">CLEAR ALL</paper-button>
+            </div>
             <paper-listbox multi slot="dropdown-content" selected="0">
               <template is="dom-repeat" items="[[availableFilters]]">
                 <paper-icon-item on-tap="addFilter" selected$="[[_isSelected(item, availableFilters)]]">
