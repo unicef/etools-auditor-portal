@@ -23,6 +23,7 @@ import isEmpty from 'lodash-es/isEmpty';
 declare const dayjs: any;
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 import {searchAndFilterStyles} from './search-and-filter-styles';
+import {PaperMenuButton} from '@polymer/paper-menu-button/paper-menu-button';
 
 export enum FilterTypes {
   DropdownMulti,
@@ -214,6 +215,7 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _clearFilters(): void {
+    (this.shadowRoot?.querySelector('paper-menu-button') as PaperMenuButton).close();
     this.filters.forEach((filter) => this.removeFilter(filter.query));
   }
 

@@ -113,7 +113,6 @@ export const searchAndFilterStyles = html`
     .filter-dropdown {
       margin-left: 20px;
       min-width: 200px;
-      max-width: 350px;
 
       --paper-listbox: {
         margin-top: 0;
