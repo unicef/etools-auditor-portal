@@ -38,11 +38,8 @@ export const KeyInternalControlsTabStyles = html`
       margin-bottom: 0 !important;
       border-bottom: 1px solid var(--gray-border);
     }
-
-    etools-content-panel {
-      --ecp-content: {
-        padding: 0;
-      }
+    etools-content-panel::part(ecp-content) {
+      padding: 0;
     }
   </style>
 `;

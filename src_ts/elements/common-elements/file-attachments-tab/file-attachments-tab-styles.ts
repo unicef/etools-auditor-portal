@@ -51,10 +51,8 @@ export const fileAttachmentsTabStyles = html`
       }
     }
 
-    etools-content-panel {
-      --ecp-content: {
-        padding: 0;
-      }
+    etools-content-panel::part(ecp-content) {
+      padding: 0;
     }
 
     .download-icon {

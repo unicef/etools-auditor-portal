@@ -74,21 +74,20 @@ export const RiskTabStyles = html`
     .tab-container .risk-result-container .result-element.result-element {
       border-bottom: solid 1px #e8e8e8;
     }
-
     etools-searchable-multiselection-menu {
       white-space: normal;
       margin-left: -11px;
       margin-top: -16px;
     }
-
     etools-content-panel {
       position: relative;
-      --ecp-header-height: 51px;
-      --ecp-header-bg: var(--module-primary);
-
-      --ecp-content: {
-        padding: 0;
-      }
+    }
+    etools-content-panel::part(ecp-header) {
+      height: 51px;
+      background-color: var(--module-primary);
+    }
+    etools-content-panel::part(ecp-content) {
+      padding: 0;
     }
   </style>
 `;

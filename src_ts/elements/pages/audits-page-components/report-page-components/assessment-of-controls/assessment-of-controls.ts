@@ -42,10 +42,8 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
           padding: 5px 86px 0 23px !important;
         }
 
-        etools-content-panel {
-          --ecp-content: {
-            padding: 0;
-          }
+        etools-content-panel::part(ecp-content) {
+          padding: 0;
         }
       </style>
 
@@ -144,13 +142,13 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
               <div class="input-container input-container-l">
                 <!-- Audit Observation -->
                 <paper-textarea
-                  class$="[[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]] 
+                  class$="[[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]]
                                         validate-input disabled-as-readonly"
                   value="{{editedItem.audit_observation}}"
                   label="[[getLabel('key_internal_controls.audit_observation', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('key_internal_controls.audit_observation',
                                                 basePermissionPath)]]"
-                  required$="[[_setRequired('key_internal_controls.audit_observation', 
+                  required$="[[_setRequired('key_internal_controls.audit_observation',
                                             basePermissionPath)]]"
                   disabled$="[[requestInProcess]]"
                   readonly$="[[requestInProcess]]"
@@ -167,11 +165,11 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
               <div class="input-container input-container-l">
                 <!-- IP Response -->
                 <paper-textarea
-                  class$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]] 
+                  class$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]
                                           validate-input disabled-as-readonly"
                   value="{{editedItem.ip_response}}"
                   label="[[getLabel('key_internal_controls.ip_response', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('key_internal_controls.ip_response', 
+                  placeholder="[[getPlaceholderText('key_internal_controls.ip_response',
                                                 basePermissionPath)]]"
                   required$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]"
                   disabled$="[[requestInProcess]]"
