@@ -20,7 +20,7 @@ import {timeOut} from '@polymer/polymer/lib/utils/async';
 
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
-declare const moment: any;
+declare const dayjs: any;
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 import {searchAndFilterStyles} from './search-and-filter-styles';
 
@@ -277,7 +277,7 @@ class SearchAndFilter extends PolymerElement {
 
   _convertValueForDate(valueToConvert) {
     if (valueToConvert) {
-      const date = moment(valueToConvert);
+      const date = dayjs(valueToConvert);
       return date.isValid() ? date.format() : undefined;
     }
   }
@@ -330,7 +330,7 @@ class SearchAndFilter extends PolymerElement {
     const query = e.currentTarget.id;
     const queryObject = {page: '1'};
     if (query) {
-      queryObject[query] = detail.date ? moment(detail.date).format('YYYY-MM-DD') : undefined;
+      queryObject[query] = detail.date ? dayjs(detail.date).format('YYYY-MM-DD') : undefined;
     }
     updateQueries(queryObject);
   }

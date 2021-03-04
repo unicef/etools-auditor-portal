@@ -39,6 +39,10 @@ import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from '../../app-config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+declare const dayjs: any;
+declare const dayjs_plugin_utc: any;
+
+dayjs.extend(dayjs_plugin_utc);
 
 setRootPath(`/${BASE_PATH}/`);
 
