@@ -23,6 +23,7 @@ import isEmpty from 'lodash-es/isEmpty';
 declare const dayjs: any;
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
 import {searchAndFilterStyles} from './search-and-filter-styles';
+import {PaperMenuButton} from '@polymer/paper-menu-button/paper-menu-button';
 
 export enum FilterTypes {
   DropdownMulti,
@@ -98,7 +99,9 @@ class SearchAndFilter extends PolymerElement {
 
               <span class="add-filter-text">ADD FILTER</span>
             </paper-button>
-
+            <div slot="dropdown-content" class="clear-all-filters">
+              <paper-button on-tap="_clearFilters" class="secondary-btn">CLEAR ALL</paper-button>
+            </div>
             <paper-listbox multi slot="dropdown-content" selected="0">
               <template is="dom-repeat" items="[[availableFilters]]">
                 <paper-icon-item on-tap="addFilter" selected$="[[_isSelected(item, availableFilters)]]">
@@ -212,6 +215,7 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _clearFilters(): void {
+    (this.shadowRoot?.querySelector('paper-menu-button') as PaperMenuButton).close();
     this.filters.forEach((filter) => this.removeFilter(filter.query));
   }
 

@@ -51,11 +51,14 @@ export const searchAndFilterStyles = html`
       margin-right: 8px;
     }
 
-    .second-header #add-filter-container {
+    #add-filter-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-self: stretch;
+      padding: 0 0 0 8px;
+      margin: 8px 0 8px 24px;
       border-left: 2px solid var(--gray-lighter);
-      margin-left: 16px;
-      margin-right: 16px;
-      padding-left: 10px;
     }
 
     .second-header #add-filter-container .add-filter-text {
@@ -110,7 +113,6 @@ export const searchAndFilterStyles = html`
     .filter-dropdown {
       margin-left: 20px;
       min-width: 200px;
-      max-width: 350px;
 
       --paper-listbox: {
         margin-top: 0;
@@ -139,6 +141,17 @@ export const searchAndFilterStyles = html`
       font-size: 14px;
       text-align: center;
       cursor: pointer;
+    }
+
+    .clear-all-filters {
+      min-height: 48px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: var(--primary-color);
+      padding-right: 16px;
+      padding-left: 10px;
+      border-bottom: 1px solid var(--dark-divider-color, #9d9d9d);
     }
   </style>
 `;
