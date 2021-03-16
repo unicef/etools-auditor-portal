@@ -70,11 +70,9 @@ export const moduleStyles = html`
       }
     }
 
-    etools-dialog {
-      --etools-dialog-scrollable: {
-        --etools-dialog-content_-_max-height: 50vh !important;
-        overflow: auto;
-      }
+    etools-dialog::part(ed-scrollable) {
+      max-height: 50vh !important;
+      overflow: auto;
     }
 
     /* PAPER-TOGGLE-BUTTON */
@@ -117,33 +115,27 @@ export const moduleStyles = html`
       -moz-box-sizing: border-box;
       box-sizing: border-box;
     }
-
     etools-content-panel {
       position: relative;
-
-      --ecp-expand-btn: {
-        position: absolute;
-        top: 3px;
-        left: 13px;
-        width: 45px;
-        height: 45px;
-      }
-
-      --ecp-header-title: {
-        font-weight: 500;
-        line-height: 43px;
-        padding: 0 30px;
-      }
-
-      --ecp-header-btns-wrapper: {
-        opacity: 1;
-      }
+    }
+    etools-content-panel::part(ecp-header-title) {
+      font-weight: 500;
+      line-height: 43px;
+      padding: 0 30px;
+    }
+    etools-content-panel::part(ecp-toggle-btn) {
+      position: absolute;
+      top: 3px;
+      left: 13px;
+      width: 45px;
+      height: 45px;
     }
 
     div[slot='panel-btns'] {
       position: absolute;
       top: 4px;
       right: 16px;
+      opacity: 1;
     }
 
     div[slot='panel-btns'] .panel-button {

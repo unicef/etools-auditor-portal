@@ -79,22 +79,14 @@ export const mainPageStyles = html`
       font-weight: 600;
     }
 
+    etools-content-panel.cancellation-tab::part(ecp-header) {
+      height: 51px;
+      background-color: var(--module-primary);
+      border-bottom: none;
+    }
+
     etools-content-panel.cancellation-tab {
       margin-bottom: 20px;
-
-      --epc-header: {
-        padding: 2px;
-      }
-      --ecp-header-bg: var(--module-primary);
-      --ecp-header-height: 51px;
-
-      --ecp-content: {
-        padding-left: 100px;
-      }
-
-      --ecp-header-btns-wrapper: {
-        opacity: 1;
-      }
     }
 
     etools-content-panel.cancellation-tab .cancellation-title {
@@ -124,6 +116,7 @@ export const mainPageStyles = html`
       -ms-transform: scale(0.9, 1.5);
       -o-transform: scale(0.9, 1.5);
       transform: scale(0.9, 1.5);
+      opacity: 1;
     }
 
     div[slot='panel-btns'].bookmark iron-icon {

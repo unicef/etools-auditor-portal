@@ -46,10 +46,8 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
           padding: 5px 86px 0 23px !important;
         }
 
-        etools-content-panel {
-          --ecp-content: {
-            padding: 0;
-          }
+        etools-content-panel::part(ecp-content) {
+          padding: 0;
         }
         etools-dropdown#titleOptionsDropDown {
           --paper-listbox: {
