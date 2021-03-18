@@ -215,8 +215,17 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _clearFilters(): void {
-    (this.shadowRoot?.querySelector('paper-menu-button') as PaperMenuButton).close();
-    this.filters.forEach((filter) => this.removeFilter(filter.query));
+    if (this.usedFilters.length) {
+      const queryObject: GenericObject = {};
+      this.usedFilters.forEach((filter) => {
+        queryObject[filter.query] = undefined;
+      });
+      queryObject.page = '1';
+      this.usedFilters = [];
+      this.availableFilters = [...this.availableFilters];
+      updateQueries(queryObject);
+      (this.shadowRoot?.querySelector('paper-menu-button') as PaperMenuButton).close();
+    }
   }
 
   _reloadFilters() {
