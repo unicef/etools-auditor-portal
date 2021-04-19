@@ -166,10 +166,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           overflow: visible !important;
           line-height: 48px;
         }
-        etools-content-panel {
-          --ecp-content: {
-            padding: 0;
-          }
+        etools-content-panel::part(ecp-content) {
+          padding: 0;
         }
         list-pagination {
           --list-pagination-styles-margin-bottom: -8px;
