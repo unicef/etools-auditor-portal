@@ -4,7 +4,7 @@ export const StatusTabElementStyles = html` <style>
   :host {
     display: block;
 
-    --ecp-content: {
+    etools-content-panel::part(ecp-content) {
       padding: 0;
     }
   }

@@ -401,18 +401,13 @@ export const tabInputsStyles = html`
       padding: 0 12px;
       box-sizing: border-box;
     }
-    etools-content-panel[list] {
-      --ecp-content: {
-        padding: 0;
-        padding-left: 0;
-      }
+    etools-content-panel[list]::part(ecp-content) {
+      padding: 0;
+      padding-left: 0;
     }
-
-    etools-content-panel:not([list]) {
-      --ecp-content: {
-        padding: 8px 12px;
-        padding-left: 12px;
-      }
+    etools-content-panel:not([list])::part(ecp-content) {
+      padding: 8px 12px;
+      padding-left: 12px;
     }
 
     etools-currency-amount-input {

@@ -94,10 +94,8 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
           color: var(--gray-mid);
           text-decoration: none;
         }
-        etools-content-panel {
-          --ecp-content: {
-                padding: 0;
-            };
+        etools-content-panel::part(ecp-content) {
+          padding: 0;
         }
         etools-dropdown.fua-category {
           --paper-listbox: {
