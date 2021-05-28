@@ -16,6 +16,10 @@ export const navMenuStyles = html`
       border-right: 1px solid var(--dark-divider-color);
     }
 
+    .chev-right {
+      position: relative;
+    }
+
     :host([small-menu]) {
       overflow-x: visible;
     }
@@ -67,6 +71,7 @@ export const navMenuStyles = html`
     :host #menu-header-top-icon,
     :host([small-menu]) .nav-menu-item .name,
     :host(:not([small-menu])) paper-tooltip,
+    :host(:not([small-menu])) #expand-menu,
     :host([small-menu]) .section-title span,
     :host([small-menu]) #minimize-menu,
     :host([small-menu]) .menu-header .ripple-wrapper:not(.main) {
@@ -87,7 +92,8 @@ export const navMenuStyles = html`
     }
 
     #menu-header-top-icon,
-    #minimize-menu {
+    #minimize-menu,
+    #expand-menu {
       cursor: pointer;
     }
 
