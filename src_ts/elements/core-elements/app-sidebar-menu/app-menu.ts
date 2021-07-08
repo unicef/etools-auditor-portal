@@ -39,6 +39,11 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           FINANCIAL ASSURANCE MODULE
         </paper-tooltip>
 
+        <span class="chev-right">
+          <iron-icon id="expand-menu" icon="chevron-right" on-tap="_toggleSmallMenu"></iron-icon>
+          <paper-ripple class="circle" center></paper-ripple>
+        </span>
+
         <span class="ripple-wrapper">
           <iron-icon id="minimize-menu" icon="chevron-left" on-tap="_toggleSmallMenu"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
