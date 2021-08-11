@@ -9,7 +9,7 @@ import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
-
+import {createDynamicDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
 import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
 import some from 'lodash-es/some';
@@ -205,6 +205,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   public connectedCallback() {
     super.connectedCallback();
 
+    this.checkAppVersion();
     window.EtoolsEsmmFitIntoEl = this.$.appHeadLayout!.shadowRoot!.querySelector('#contentContainer');
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
@@ -405,6 +406,44 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     const path = `${this.rootPath}engagements/list`;
     this.set('route.path', path);
     return 'engagements';
+  }
+
+  checkAppVersion() {
+    fetch('version.json')
+      .then((res) => res.json())
+      .then((version) => {
+        if ('version.revision' != document.getElementById('buildRevNo')!.innerText) {
+          console.log('version.json', version.revision);
+          console.log('buildRevNo ', document.getElementById('buildRevNo')!.innerText);
+          this._showConfirmNewVersionDialog();
+        }
+      });
+  }
+
+  _showConfirmNewVersionDialog() {
+    const msg = document.createElement('span');
+    msg.innerText = 'A new version of the app is available. Refresh page?';
+    const conf: any = {
+      size: 'md',
+      closeCallback: this._onConfirmNewVersion.bind(this),
+      content: msg
+    };
+    const confirmNewVersionDialog = createDynamicDialog(conf);
+    confirmNewVersionDialog.$.dialog.style.zIndex = 9999999;
+    confirmNewVersionDialog.opened = true;
+  }
+
+  _onConfirmNewVersion(e: CustomEvent) {
+    if (e.detail.confirmed) {
+      if (navigator.serviceWorker) {
+        caches.keys().then((cacheNames) => {
+          cacheNames.forEach((cacheName) => {
+            caches.delete(cacheName);
+          });
+          location.reload();
+        });
+      }
+    }
   }
 }
 
