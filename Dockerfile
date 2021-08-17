@@ -16,6 +16,7 @@ ADD manifest.json /tmp/
 ADD polymer.json /tmp/
 ADD express.js /tmp/
 ADD tsconfig.json /tmp/
+ADD version.json /tmp/
 
 RUN npm cache verify
 RUN npm i
