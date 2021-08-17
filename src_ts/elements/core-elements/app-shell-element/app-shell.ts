@@ -412,7 +412,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     fetch('version.json')
       .then((res) => res.json())
       .then((version) => {
-        if ('version.revision' != document.getElementById('buildRevNo')!.innerText) {
+        if (version.revision != document.getElementById('buildRevNo')!.innerText) {
           console.log('version.json', version.revision);
           console.log('buildRevNo ', document.getElementById('buildRevNo')!.innerText);
           this._showConfirmNewVersionDialog();
