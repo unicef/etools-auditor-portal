@@ -1,7 +1,11 @@
 {
   "entrypoint": "index.html",
   "shell": "src/elements/core-elements/app-shell-element/app-shell.js",
-  "sources": ["src/**/*", "assets/**/*", "package.json"],
+  "sources": [
+    "src/**/*",
+    "assets/**/*",
+    "package.json"
+  ],
   "fragments": [
     "src/elements/pages/not-found-page-view/not-found-page-view.js",
     "src/elements/pages/engagements-page-components/engagements-page-main/engagements-page-main.js",
@@ -13,6 +17,7 @@
   ],
   "extraDependencies": [
     "manifest.json",
+    "version.json",
     "node_modules/@webcomponents/webcomponentsjs/**",
     "node_modules/web-animations-js/web-animations-next-lite.min.js",
     "node_modules/dayjs/dayjs.min.js",
@@ -21,7 +26,10 @@
   "builds": [
     {
       "name": "esm-bundled",
-      "browserCapabilities": ["es2015", "modules"],
+      "browserCapabilities": [
+        "es2015",
+        "modules"
+      ],
       "js": {
         "minify": true
       },
@@ -43,7 +51,9 @@
   "moduleResolution": "node",
   "npm": true,
   "lint": {
-    "rules": ["polymer-3"],
+    "rules": [
+      "polymer-3"
+    ],
     "ignoreWarnings": []
   }
 }

@@ -53,7 +53,9 @@ const famEndpoints = {
     url: '/api/v3/users/'
   },
   staffMembersUsers: {
-    url: '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true'
+    /* eslint-disable max-len */
+    url:
+      '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true&verbosity=minimal'
   },
   sectionsCovered: {
     url: '/api/reports/sectors/',

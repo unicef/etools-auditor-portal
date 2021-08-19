@@ -78,22 +78,3 @@ export function clearQueries() {
   window.history.replaceState({}, '', _getLocationProperty('pathname'));
   window.dispatchEvent(new CustomEvent('location-changed'));
 }
-
-export function getQueryParams(route: GenericObject = {}) {
-  const queries = route.__queryParams || {};
-  if (location.search) {
-    const searchString = decodeURIComponent(location.search);
-    const qsStartIndex = searchString.indexOf('?');
-    if (qsStartIndex > -1) {
-      const paramsStr = searchString.split('?')[1];
-      if (paramsStr) {
-        const qs = paramsStr.split('&');
-        qs.forEach((qp: string) => {
-          const qParam = qp.split('=');
-          queries[qParam[0] as string] = qParam[1];
-        });
-      }
-    }
-  }
-  return queries;
-}
