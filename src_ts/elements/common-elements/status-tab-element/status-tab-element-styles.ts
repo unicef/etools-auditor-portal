@@ -3,10 +3,9 @@ import {html} from '@polymer/polymer/polymer-element';
 export const StatusTabElementStyles = html` <style>
   :host {
     display: block;
-
-    etools-content-panel::part(ecp-content) {
-      padding: 0;
-    }
+  }
+  etools-content-panel::part(ecp-content) {
+    padding: 0;
   }
 
   .status-list {
