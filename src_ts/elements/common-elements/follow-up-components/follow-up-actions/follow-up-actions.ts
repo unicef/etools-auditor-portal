@@ -48,6 +48,8 @@ import {
 } from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import clone from 'lodash-es/clone';
+import famEndpoints from '../../../app-config/endpoints';
 
 /**
  * @polymer
@@ -566,10 +568,14 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Number})
   selectedPartnerId!: number | null;
 
+  @property({type: Object})
+  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+
   public connectedCallback() {
     super.connectedCallback();
 
     this.set('users', getStaticData('users') || []);
+    this.watchForAllUsersLoaded();
     this.set('offices', getStaticData('offices') || []);
     this.set('sections', getStaticData('sections') || []);
     this.set('partners', getStaticData('partners') || []);
@@ -580,12 +586,39 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
     this._requestCompleted = this._requestCompleted.bind(this);
     this.addEventListener('ap-request-completed', this._requestCompleted as any);
+    if (!getStaticData('allUsersAreLoaded')) {
+      this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+    }
+  }
+
+  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
+    const endpoint = clone(famEndpoints.users);
+    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
+    sendRequest({
+      method: 'GET',
+      endpoint: {
+        url: endpoint.url
+      }
+    }).then((resp: GenericObject) => {
+      const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
+      this.set('users', data);
+    });
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback();
 
     this.removeEventListener('ap-request-completed', this._requestCompleted as any);
+  }
+
+  watchForAllUsersLoaded() {
+    const interval = setInterval(() => {
+      if (getStaticData('allUsersAreLoaded')) {
+        clearInterval(interval);
+        this.set('users', getStaticData('users') || []);
+        this.loadUsersDropdownOptions = undefined;
+      }
+    });
   }
 
   _allowComplete(editedApBase) {

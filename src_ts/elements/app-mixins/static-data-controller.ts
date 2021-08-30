@@ -23,7 +23,8 @@ const _staticData = {
     partner_types: []
   },
   statuses: [],
-  users: []
+  users: [],
+  allUsersAreLoaded: false
 };
 
 export function setStaticData(key, data) {

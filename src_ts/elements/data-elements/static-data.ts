@@ -9,6 +9,7 @@ import sortBy from 'lodash-es/sortBy';
 import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import clone from 'lodash-es/clone';
 
 class StaticData extends PolymerElement {
   public static get template() {
@@ -45,7 +46,7 @@ class StaticData extends PolymerElement {
 
   loadStaticData() {
     this.getPartners();
-    this.getUsers();
+    this.getFirstPageUsers();
     this.getStaffUsers();
     this.getOffices();
     this.getSections();
@@ -64,12 +65,37 @@ class StaticData extends PolymerElement {
       .catch((err) => this._partnersLoaded(err));
   }
 
-  getUsers() {
-    const usersEndpoint = famEndpoints.users;
+  getFirstPageUsers() {
+    const usersEndpoint = clone(famEndpoints.users);
+    usersEndpoint.url += '?page=1&page_size=20';
     sendRequest({
       endpoint: usersEndpoint
     })
-      .then((resp) => this._handleUsersResponse(resp))
+      .then((resp) => {
+        // Dynamic fetch will be enabled on etools-dropdown,
+        // until the possibly time consuming 'get all users' is done
+        setTimeout(() => this.getAllUsers(), 20000);
+        this._handleUsersResponse(resp.results);
+      })
+      .catch((err) => this._handleUsersResponse(err));
+  }
+
+  getAllUsers() {
+    sendRequest({
+      endpoint: famEndpoints.users
+    })
+      .then((resp) => {
+        if (!resp || resp.error) {
+          this._responseError('Users', '', 'warn');
+        } else {
+          each(resp, (user) => {
+            user.full_name =
+              user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : 'Unnamed User';
+          });
+          setStaticData('users', resp);
+        }
+        setStaticData('allUsersAreLoaded', true);
+      })
       .catch((err) => this._handleUsersResponse(err));
   }
 
