@@ -462,6 +462,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               disabled$="[[isReadOnly('users_notified', basePermissionPath)]]"
               readonly$="[[isReadOnly('users_notified', basePermissionPath)]]"
               invalid="{{errors.users_notified}}"
+              preserve-search-on-close
               error-message="{{errors.users_notified}}"
               on-focus="_resetFieldError"
               on-tap="_resetFieldError"
