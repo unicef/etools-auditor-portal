@@ -83,7 +83,7 @@ const famEndpoints = {
     template: '/api/v2/attachments/links/<%=id%>/'
   },
   static: {
-    url: '/api/v2/dropdowns/static',
+    url: '/api/v2/dropdowns/static/',
     exp: 6 * 60 * 60 * 1000, // 6h
     cachingKey: 'static'
   },
