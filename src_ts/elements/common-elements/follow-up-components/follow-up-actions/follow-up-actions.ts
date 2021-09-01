@@ -316,6 +316,8 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     options="[[users]]"
                                     option-label="full_name"
                                     option-value="id"
+                                    load-data-method="[[loadUsersDropdownOptions]]"
+                                    preserve-search-on-close
                                     required$="[[_setRequired('assigned_to', editedApBase)]]"
                                     disabled$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
