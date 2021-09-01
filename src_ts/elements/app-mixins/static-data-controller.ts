@@ -4,6 +4,7 @@ const _staticData = {
   engagementTypes: [],
   offices: [],
   partners: [],
+  allPartnersAreLoaded: false,
   sections: [],
   staffMembersUsers: [],
   staticDropdown: {

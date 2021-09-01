@@ -45,7 +45,7 @@ class StaticData extends PolymerElement {
   }
 
   loadStaticData() {
-    this.getPartners();
+    this.getFirstPagePartners();
     this.getFirstPageUsers();
     this.getStaffUsers();
     this.getOffices();
@@ -56,18 +56,40 @@ class StaticData extends PolymerElement {
     this.makeOptionsCalls();
   }
 
-  getPartners() {
+  getFirstPagePartners() {
+    const partnersEndpoint = clone(getEndpoint('partnerOrganisations'));
+    partnersEndpoint.url += '&page=1&page_size=30';
+    sendRequest({
+      endpoint: partnersEndpoint
+    })
+      .then((resp) => {
+        this._partnersLoaded(resp);
+        setTimeout(() => this.getAllPartners(), 20000);
+      })
+      .catch((err) => this._partnersLoaded(err));
+  }
+
+  getAllPartners() {
     const partnersEndpoint = getEndpoint('partnerOrganisations');
     sendRequest({
       endpoint: partnersEndpoint
     })
-      .then((resp) => this._partnersLoaded(resp))
+      .then((resp) => {
+        if (!resp || resp.error) {
+          // TODO is .error ok?
+          this._responseError('Partners', '', 'warn');
+        } else {
+          const partners = sortBy(resp, ['name']);
+          setStaticData('partners', partners);
+        }
+        setStaticData('allPartnersAreLoaded', true);
+      })
       .catch((err) => this._partnersLoaded(err));
   }
 
   getFirstPageUsers() {
     const usersEndpoint = clone(famEndpoints.users);
-    usersEndpoint.url += '?page=1&page_size=20';
+    usersEndpoint.url += '?page=1&page_size=30';
     sendRequest({
       endpoint: usersEndpoint
     })

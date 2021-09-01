@@ -224,7 +224,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     selected="{{selectedPartnerId}}"
                                     label="[[getLabel('partner', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
-                                    options="{{partners}}"
+                                    options="[[partners]]"
+                                    load-data-method="[[loadPartnersDropdownOptions]]"
+                                    preserve-search-on-close
                                     option-label="name"
                                     option-value="id"
                                     required$="[[_setRequired('partner', editedApBase)]]"
@@ -527,6 +529,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   users: GenericObject[] = [];
 
   @property({type: Array})
+  partners: GenericObject[] = [];
+
+  @property({type: Array})
   sections: GenericObject[] = [];
 
   @property({type: Array})
@@ -571,14 +576,19 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
+  @property({type: Object})
+  loadPartnersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+
   public connectedCallback() {
     super.connectedCallback();
 
     this.set('users', getStaticData('users') || []);
     this.watchForAllUsersLoaded();
+
     this.set('offices', getStaticData('offices') || []);
     this.set('sections', getStaticData('sections') || []);
     this.set('partners', getStaticData('partners') || []);
+    this.watchForAllPartnersLoaded();
 
     if (!collectionExists('edited_ap_options')) {
       addToCollection('edited_ap_options', {});
@@ -588,6 +598,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.addEventListener('ap-request-completed', this._requestCompleted as any);
     if (!getStaticData('allUsersAreLoaded')) {
       this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+    }
+    if (!getStaticData('allPartnersAreLoaded')) {
+      this.loadPartnersDropdownOptions = this._loadPartnersDropdownOptions.bind(this);
     }
   }
 
@@ -604,6 +617,17 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       this.set('users', data);
     });
   }
+  _loadPartnersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
+    const endpoint = clone(famEndpoints.partnerOrganisations);
+    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
+    sendRequest({
+      method: 'GET',
+      endpoint: endpoint
+    }).then((resp: GenericObject) => {
+      const data = page > 1 ? [...this.partners, ...resp.results] : resp.results;
+      this.set('partners', data);
+    });
+  }
 
   public disconnectedCallback() {
     super.disconnectedCallback();
@@ -618,7 +642,16 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
         this.set('users', getStaticData('users') || []);
         this.loadUsersDropdownOptions = undefined;
       }
-    });
+    }, 400);
+  }
+  watchForAllPartnersLoaded() {
+    const interval = setInterval(() => {
+      if (getStaticData('allPartnersAreLoaded')) {
+        clearInterval(interval);
+        this.set('partners', getStaticData('partners') || []);
+        this.loadPartnersDropdownOptions = undefined;
+      }
+    }, 400);
   }
 
   _allowComplete(editedApBase) {

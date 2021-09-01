@@ -657,7 +657,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
         this.setUsersNotifiedIDs();
         this.loadUsersDropdownOptions = undefined;
       }
-    });
+    }, 400);
   }
 
   setUsersNotifiedIDs() {
