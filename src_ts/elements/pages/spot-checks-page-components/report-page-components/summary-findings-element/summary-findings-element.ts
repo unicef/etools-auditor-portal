@@ -56,6 +56,10 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
+
+        datepicker-lite::part(dp-calendar) {
+          position: fixed;
+        }
       </style>
 
       <etools-content-panel
