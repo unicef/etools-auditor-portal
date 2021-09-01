@@ -601,11 +601,11 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       }
     }).then((resp: GenericObject) => {
       const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.set('users', data);
       this.handleUsersNoLongerAssignedToCurrentCountry(
-        this.users,
+        data,
         this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
       );
+      this.set('users', data);
     });
   }
 
@@ -795,6 +795,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       this.users,
       this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
     );
+    this.users = [...this.users];
     this.dialogOpened = true;
   }
 
@@ -835,6 +836,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       this.users,
       this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
     );
+    this.users = [...this.users];
   }
 
   canBeEdited(status) {
