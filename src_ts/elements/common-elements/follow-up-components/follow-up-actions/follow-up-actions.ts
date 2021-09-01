@@ -48,6 +48,8 @@ import {
 } from '../../../app-mixins/permission-controller';
 import {checkNonField} from '../../../app-mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import clone from 'lodash-es/clone';
+import famEndpoints from '../../../app-config/endpoints';
 
 /**
  * @polymer
@@ -312,8 +314,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     label="[[getLabel('assigned_to', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
                                     options="[[users]]"
-                                    option-label="full_name"
+                                    option-label="name"
                                     option-value="id"
+                                    load-data-method="[[loadUsersDropdownOptions]]"
+                                    preserve-search-on-close
                                     required$="[[_setRequired('assigned_to', editedApBase)]]"
                                     disabled$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
@@ -566,10 +570,14 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Number})
   selectedPartnerId!: number | null;
 
+  @property({type: Object})
+  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+
   public connectedCallback() {
     super.connectedCallback();
 
     this.set('users', getStaticData('users') || []);
+
     this.set('offices', getStaticData('offices') || []);
     this.set('sections', getStaticData('sections') || []);
     this.set('partners', getStaticData('partners') || []);
@@ -580,6 +588,25 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
     this._requestCompleted = this._requestCompleted.bind(this);
     this.addEventListener('ap-request-completed', this._requestCompleted as any);
+    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
+    const endpoint = clone(famEndpoints.users);
+    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
+    sendRequest({
+      method: 'GET',
+      endpoint: {
+        url: endpoint.url
+      }
+    }).then((resp: GenericObject) => {
+      const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
+      this.set('users', data);
+      this.handleUsersNoLongerAssignedToCurrentCountry(
+        this.users,
+        this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
+      );
+    });
   }
 
   public disconnectedCallback() {
@@ -764,6 +791,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.editedApBase = this.basePermissionPath;
 
     this.copyDialog = true;
+    this.handleUsersNoLongerAssignedToCurrentCountry(
+      this.users,
+      this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
+    );
     this.dialogOpened = true;
   }
 
@@ -796,9 +827,14 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       this.dialogTitle = get(this, 'viewDialogTexts.title');
       this.confirmBtnText = '';
       this.cancelBtnText = 'Cancel';
+
       // @ts-ignore Defined in tableElementsMixin, not visible because of EtoolsAjaxRequestMixin
       this._openDialog(itemIndex);
     }
+    this.handleUsersNoLongerAssignedToCurrentCountry(
+      this.users,
+      this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
+    );
   }
 
   canBeEdited(status) {

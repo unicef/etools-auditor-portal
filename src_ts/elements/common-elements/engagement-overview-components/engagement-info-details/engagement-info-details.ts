@@ -30,6 +30,9 @@ import {getStaticData} from '../../../app-mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import {getUserData} from '../../../app-mixins/user-controller';
+import famEndpoints from '../../../app-config/endpoints';
+import {sendRequest} from '@unicef-polymer/etools-ajax';
+import clone from 'lodash-es/clone';
 declare const dayjs: any;
 
 /**
@@ -451,6 +454,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               label="[[getLabel('users_notified', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('users_notified', basePermissionPath)]]"
               options="[[usersNotifiedOptions]]"
+              load-data-method="[[loadUsersDropdownOptions]]"
+              preserve-search-on-close
               option-label="name"
               option-value="id"
               selected-values="{{usersNotifiedIDs}}"
@@ -562,6 +567,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Array})
   usersNotifiedIDs: any[] = [];
 
+  @property({type: Object})
+  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+
   static get observers() {
     return [
       '_errorHandler(errorObject)',
@@ -578,6 +586,22 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     super.connectedCallback();
     (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
+    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
+    const endpoint = clone(famEndpoints.users);
+    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
+    sendRequest({
+      method: 'GET',
+      endpoint: {
+        url: endpoint.url
+      }
+    }).then((resp: GenericObject) => {
+      const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
+      this.set('users', data);
+      this.setUsersNotifiedIDs();
+    });
   }
 
   _setEngagementTypeObject(e) {
@@ -844,7 +868,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _contractEndDateHasChanged(event: CustomEvent) {
-    if(!this.get('data.agreement.id')) {
+    if (!this.get('data.agreement.id')) {
       return;
     }
     const selectedDate = event.detail.date;
