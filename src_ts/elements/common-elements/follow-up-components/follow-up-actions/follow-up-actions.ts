@@ -123,6 +123,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
           border: 1px solid rgba(0, 0, 0, .54);
           padding: 6px 13px;
         }
+        datepicker-lite::part(dp-calendar) {
+          position: fixed;
+        }
       </style>
 
         <get-action-points engagement-id="[[engagementId]]" action-points="{{dataItems}}"></get-action-points>

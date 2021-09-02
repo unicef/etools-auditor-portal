@@ -53,7 +53,9 @@ const famEndpoints = {
     url: '/api/v3/users/'
   },
   staffMembersUsers: {
-    url: '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true'
+    /* eslint-disable max-len */
+    url:
+      '/api/audit/audit-firms/users/?purchase_order_auditorstaffmember__auditor_firm__unicef_users_allowed=true&verbosity=minimal'
   },
   sectionsCovered: {
     url: '/api/reports/sectors/',
@@ -81,7 +83,7 @@ const famEndpoints = {
     template: '/api/v2/attachments/links/<%=id%>/'
   },
   static: {
-    url: '/api/v2/dropdowns/static',
+    url: '/api/v2/dropdowns/static/',
     exp: 6 * 60 * 60 * 1000, // 6h
     cachingKey: 'static'
   },
