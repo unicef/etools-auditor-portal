@@ -5,7 +5,7 @@ import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-app-selector';
-import '@unicef-polymer/etools-profile-dropdown';
+// import '@unicef-polymer/etools-profile-dropdown'; TODO
 import './countries-dropdown/countries-dropdown';
 import './support-btn';
 

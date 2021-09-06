@@ -592,7 +592,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
     const endpoint = clone(famEndpoints.users);
     endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
-    sendRequest({
+    return sendRequest({
       method: 'GET',
       endpoint: {
         url: endpoint.url
@@ -601,6 +601,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
       this.set('users', data);
       this.setUsersNotifiedIDs();
+      return resp;
     });
   }
 
