@@ -497,6 +497,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
       return transform(
         data,
         function (result, value, key) {
+          // @ts-ignore
           if (value !== originalData[key]) {
             result[key] = value;
           }

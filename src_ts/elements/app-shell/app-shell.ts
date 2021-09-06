@@ -429,6 +429,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       content: msg
     };
     const confirmNewVersionDialog = createDynamicDialog(conf);
+    // @ts-ignore
     confirmNewVersionDialog.$.dialog.style.zIndex = 9999999;
     confirmNewVersionDialog.opened = true;
   }
