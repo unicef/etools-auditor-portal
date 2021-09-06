@@ -17,27 +17,27 @@ import some from 'lodash-es/some';
 import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
 import '@unicef-polymer/etools-loading';
 
-import './sidebar-menu/app-menu.js';
-import './main-header/page-header.js';
-import './footer/page-footer.js';
+import './elements/app-shell/sidebar-menu/app-menu.js';
+import './elements/app-shell/main-header/page-header.js';
+import './elements/app-shell/footer/page-footer.js';
 
-import '../styles/app-theme.js';
-import '../data-elements/static-data';
+import './elements/styles/app-theme.js';
+import './elements/data-elements/static-data';
 
 // Gesture events like tap and track generated from touch will not be
 // preventable, allowing for better scrolling performance.
 setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
-import {AppMenuMixin} from './sidebar-menu/mixins/app-menu-mixin';
-import {fireEvent} from '../utils/fire-custom-event';
+import {AppMenuMixin} from './elements/app-shell/sidebar-menu/mixins/app-menu-mixin';
+import {fireEvent} from './elements/utils/fire-custom-event';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
-import {getUserData} from '../mixins/user-controller';
-import {GenericObject} from '../../types/global';
-import {getDomainByEnv} from '../config/config';
-import {appDrawerStyles} from './sidebar-menu/styles/app-drawer-styles';
-import '../common-elements/multi-notifications/multi-notification-list';
-import {BASE_PATH} from '../config/config';
+import {getUserData} from './elements/mixins/user-controller';
+import {GenericObject} from './types/global';
+import {getDomainByEnv} from './elements/config/config';
+import {appDrawerStyles} from './elements/app-shell/sidebar-menu/styles/app-drawer-styles';
+import './elements/common-elements/multi-notifications/multi-notification-list';
+import {BASE_PATH} from './elements/config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;
