@@ -1,48 +1,58 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/app-route/app-route';
-import '@polymer/iron-pages/iron-pages';
-import '@polymer/paper-tabs/paper-tab';
 import '@polymer/paper-tabs/paper-tabs';
-import {sharedStyles} from '../../../styles/shared-styles';
-import {moduleStyles} from '../../../styles/module-styles';
-import {mainPageStyles} from '../../../styles/main-page-styles';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '../../../data-elements/engagement-info-data';
-import '../../../data-elements/update-engagement';
-import '../../../common-elements/pages-header-element/pages-header-element';
-import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
-import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import '@polymer/paper-tabs/paper-tab';
+import '@unicef-polymer/etools-dialog/etools-dialog.js';
+import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '../../app-shell/main-header/page-header';
+import '../../common-elements/status-tab-element/status-tab-element';
 // eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
-import EngagementMixin from '../../../mixins/engagement-mixin';
-import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {property} from '@polymer/decorators';
-import {GenericObject} from '../../../../types/global';
-import {fireEvent} from '../../../utils/fire-custom-event';
-import assign from 'lodash-es/assign';
-import '../questionnaire-components/questionnaire-page-main/questionnaire-page-main';
-import '../../../common-elements/status-tab-element/status-tab-element';
-import '@polymer/paper-input/paper-textarea';
-import '../report-page-components/ma-report-page-main';
-import '../../../common-elements/file-attachments-tab/file-attachments-tab';
+// eslint-disable-next-line
+import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
+import '../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
+import '../../data-elements/update-engagement';
+import '../../data-elements/engagement-info-data';
+// eslint-disable-next-line
+import './report-page-components/sa-report-page-main/sa-report-page-main';
+import '../../common-elements/file-attachments-tab/file-attachments-tab';
+import '../../common-elements/pages-header-element/pages-header-element';
 
-class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
+import EngagementMixin from '../../mixins/engagement-mixin';
+
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
+import {mainPageStyles} from '../../styles/main-page-styles';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
+
+import assign from 'lodash-es/assign';
+import isNull from 'lodash-es/isNull';
+import {GenericObject} from '../../../types/global';
+
+/**
+ * @polymer
+ * @mixinFunction
+ * @appliesMixin EngagementMixin
+ */
+class SpecialAuditsPageMain extends EngagementMixin(PolymerElement) {
   static get template() {
+    // language=HTML
     return html`
+      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
       <style>
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
       </style>
-      ${sharedStyles}${moduleStyles}${mainPageStyles}${tabInputsStyles}
+
       <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
 
       <engagement-info-data
         engagement-id="{{engagementId}}"
-        engagement-type="micro-assessments"
+        engagement-type="special-audits"
         engagement-info="{{engagement}}"
       >
       </engagement-info-data>
@@ -57,13 +67,13 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
       >
       </update-engagement>
 
-      <template is="dom-if" if="[[engagement.id]]" restamp>
+      <template is="dom-if" if="{{engagement.id}}" restamp>
         <pages-header-element
           show-export-button
           hide-print-button
           export-links="[[_setExportLinks(engagement)]]"
           engagement="[[engagement]]"
-          page-title="[[engagement.partner.name]] - Micro Assessment"
+          page-title="[[engagement.partner.name]] - Audit"
         >
         </pages-header-element>
 
@@ -81,15 +91,13 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
               <span class="tab-content">Engagement Overview</span>
             </paper-tab>
 
-            <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
-              <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
+            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+              <paper-tab name="report">
+                <span class="tab-content">Report</span>
+              </paper-tab>
             </template>
 
-            <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
-              <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>
-            </template>
-
-            <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
+            <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
               <paper-tab name="follow-up">
                 <span class="tab-content">Follow-Up</span>
               </paper-tab>
@@ -103,7 +111,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
           <div id="pageContent">
             <iron-pages id="info-tabs" selected="{{tab}}" attr-for-selected="name">
               <div name="overview">
-                <template is="dom-if" if="[[_showCancellationReason(engagement)]]">
+                <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
                   <etools-content-panel class="cancellation-tab" panel-title="">
                     <div slot="panel-btns" class="bookmark">
                       <iron-icon icon="bookmark"></iron-icon>
@@ -124,50 +132,48 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                 </engagement-info-details>
 
                 <partner-details-tab
-                  original-data="[[originalData]]"
                   id="partnerDetails"
+                  original-data="[[originalData]]"
                   engagement="{{engagement}}"
                   error-object="{{errorObject}}"
                   base-permission-path="{{permissionBase}}"
                 >
                 </partner-details-tab>
 
+                <specific-procedure
+                  id="specificProcedures"
+                  class="mb-15"
+                  without-finding-column
+                  error-object="{{errorObject}}"
+                  data-items="{{engagement.specific_procedures}}"
+                  base-permission-path="{{permissionBase}}"
+                  readonly-tab
+                >
+                </specific-procedure>
+
                 <engagement-staff-members-tab
                   id="staffMembers"
                   engagement="{{engagement}}"
-                  base-permission-path="{{permissionBase}}"
                   error-object="{{errorObject}}"
+                  base-permission-path="{{permissionBase}}"
                 >
                 </engagement-staff-members-tab>
               </div>
 
-              <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
+              <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                 <div name="report">
-                  <ma-report-page-main
+                  <sa-report-page-main
                     id="report"
                     original-data="[[originalData]]"
-                    engagement="{{engagement}}"
                     error-object="{{errorObject}}"
+                    engagement="{{engagement}}"
                     permission-base="{{permissionBase}}"
                   >
-                  </ma-report-page-main>
+                  </sa-report-page-main>
                 </div>
               </template>
 
-              <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
-                <div name="questionnaire">
-                  <questionnaire-page-main
-                    id="questionnaire"
-                    data="[[engagement.questionnaire]]"
-                    risk-assessment="[[engagement.overall_risk_assessment.blueprints.0.risk.value_display]]"
-                    error-object="{{errorObject}}"
-                    base-permission-path="{{permissionBase}}"
-                  >
-                  </questionnaire-page-main>
-                </div>
-              </template>
-
-              <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
+              <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
                 <div name="follow-up">
                   <follow-up-main
                     id="follow-up"
@@ -192,7 +198,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                 >
                 </file-attachments-tab>
 
-                <template is="dom-if" if="[[hasReportAccess(permissionBase, engagement)]]" restamp>
+                <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
                   <file-attachments-tab
                     id="report_attachments"
                     is-report-tab="true"
@@ -237,6 +243,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                     max-rows="4"
                     error-message="This field is required."
                     on-focus="_resetFieldError"
+                    on-tap="_resetFieldError"
                   >
                   </paper-textarea>
                 </div>
@@ -249,16 +256,13 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
   }
 
   @property({type: Object})
-  engagement: GenericObject = {};
+  engagement!: GenericObject;
 
   @property({type: Array})
-  otherActions = [];
-
-  @property({type: Array})
-  tabsList = ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
+  tabsList: string[] = ['overview', 'report', 'attachments', 'follow-up'];
 
   @property({type: String})
-  engagementPrefix = '/micro-assessments';
+  engagementPrefix = '/special-audits';
 
   static get observers() {
     return [
@@ -271,15 +275,22 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
 
   connectedCallback() {
     super.connectedCallback();
-
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
+    // @Lajos not found
     // this.addEventListener('main-action-activated', this._mainActionActivated);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('engagement-info-loaded', this._infoLoaded);
+    this.removeEventListener('engagement-updated', this._engagementUpdated);
+    // @Lajos not found
+    // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
     const basicInfoValid = this._validateBasicInfo();
-    const questionnaireValid = this.getElement('#questionnaire').validateComplited();
     const reportValid = this.getElement('#report').validate();
 
     if (!basicInfoValid) {
@@ -289,58 +300,44 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
       this.set('tab', 'report');
       return false;
     }
-    if (!questionnaireValid) {
-      this.set('tab', 'questionnaire');
-      fireEvent(this, 'toast', {text: 'Fill questionnaire before submiting!'});
-      return false;
-    }
     return true;
   }
 
   customDataPrepare(data) {
     data = data || {};
-    const questionnaireTab = this.getElement('#questionnaire');
-    const questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
-    if (questionnaire) {
-      data.questionnaire = questionnaire;
-    } else {
-      delete data.questionnaire;
-    }
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
-    const reportTab = hasReport ? this.getElement('#report') : null;
-
-    const subjectAreas = reportTab && reportTab.getInternalControlsData();
-    if (subjectAreas) {
-      data.test_subject_areas = subjectAreas;
-    }
-
-    const overallRisk = reportTab && reportTab.getPrimaryRiskData();
-    if (overallRisk) {
-      data.overall_risk_assessment = overallRisk;
-    }
-
-    const findingsData = reportTab && reportTab.getFindingsData();
-    if (findingsData && findingsData.length) {
-      data.findings = findingsData;
-    }
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');
     const followUpData = (followUpPage && followUpPage.getFollowUpData()) || {};
     assign(data, followUpData);
 
+    // Report Data
+    const reportPage = this.getElement('#report');
+    if (!reportPage) {
+      return data;
+    }
+
+    const specificProceduresData = reportPage.getSpecificProceduresData();
+    const otherRecommendationsData = reportPage.getOtherRecommendationsData();
+
+    if (!isNull(specificProceduresData)) {
+      data.specific_procedures = specificProceduresData;
+    }
+
+    if (!isNull(otherRecommendationsData)) {
+      data.other_recommendations = otherRecommendationsData;
+    }
+
     return data;
   }
 
   customBasicValidation() {
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
-    if (!hasReport) {
+    const reportTab = this.getElement('#report');
+    if (!reportTab) {
       return true;
     }
-    const reportTab = this.getElement('#report');
 
     const reportValid = reportTab.validate('forSave');
-
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -348,4 +345,5 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
     return true;
   }
 }
-window.customElements.define('micro-assessments-page-main', MicroAssessmentsPageMain);
+
+window.customElements.define('special-audits-page-main', SpecialAuditsPageMain);

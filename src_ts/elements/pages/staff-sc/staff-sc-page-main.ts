@@ -1,27 +1,27 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/app-route/app-route';
-import {pageLayoutStyles} from '../../../styles/page-layout-styles';
-import {sharedStyles} from '../../../styles/shared-styles';
-import {moduleStyles} from '../../../styles/module-styles';
-import '../../engagements-page-components/engagements-list-view/engagements-list-view';
-import '../../engagements-page-components/new-engagement-view/new-engagement-view';
-import {clearQueries, updateQueries} from '../../../mixins/query-params-controller';
-import {actionAllowed} from '../../../mixins/permission-controller';
+import {pageLayoutStyles} from '../../styles/page-layout-styles';
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
+import '../engagements/engagements-list-view/engagements-list-view';
+import '../engagements/new-engagement-view/new-engagement-view';
+import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
+import {actionAllowed} from '../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
-import {getEndpoint} from '../../../config/endpoints-controller';
+import {getEndpoint} from '../../config/endpoints-controller';
 
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '../../utils/fire-custom-event';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
 import isUndefined from 'lodash-es/isUndefined';
 import isEqual from 'lodash-es/isEqual';
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
-import {GenericObject} from '../../../../types/global';
-import {BASE_PATH} from '../../../config/config';
+import {GenericObject} from '../../../types/global';
+import {BASE_PATH} from '../../config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
-import {FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
+import {FilterTypes} from '../../common-elements/search-and-filter-element/search-and-filter';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class StaffScPageMain extends PolymerElement {

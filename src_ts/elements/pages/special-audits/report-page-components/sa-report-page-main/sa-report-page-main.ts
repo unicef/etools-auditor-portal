@@ -1,14 +1,14 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '../../../../../elements/common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 // eslint-disable-next-line
-import {AssignEngagementEl} from '../../../../../elements/common-elements/engagement-report-components/assign-engagement/assign-engagement';
-import '../../../../../elements/common-elements/engagement-report-components/specific-procedure/specific-procedure';
+import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
-import {SpecificProcedureEl} from '../../../../../elements/common-elements/engagement-report-components/specific-procedure/specific-procedure';
+import {SpecificProcedureEl} from '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
-import '../../../../../elements/pages/special-audits-page-components/report-page-components/other-recommendations/other-recommendations';
+import '../other-recommendations/other-recommendations';
 // eslint-disable-next-line
-import {OtherRecommendationsEl} from '../../../../../elements/pages/special-audits-page-components/report-page-components/other-recommendations/other-recommendations';
+import {OtherRecommendationsEl} from '../other-recommendations/other-recommendations';
 
 class SaReportPageMain extends PolymerElement {
   static get template() {

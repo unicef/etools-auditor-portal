@@ -9,15 +9,15 @@ import isEqual from 'lodash-es/isEqual';
 import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
 import isUndefined from 'lodash-es/isUndefined';
-import {GenericObject} from '../../../../types/global';
-import {fireEvent} from '../../../utils/fire-custom-event';
-import {actionAllowed} from '../../../mixins/permission-controller';
-import {clearQueries, updateQueries} from '../../../mixins/query-params-controller';
-import '../engagements-list-view/engagements-list-view';
-import '../new-engagement-view/new-engagement-view';
-import {pageLayoutStyles} from '../../../styles/page-layout-styles';
-import {sharedStyles} from '../../../styles/shared-styles';
-import {moduleStyles} from '../../../styles/module-styles';
+import {GenericObject} from '../../../types/global';
+import {fireEvent} from '../../utils/fire-custom-event';
+import {actionAllowed} from '../../mixins/permission-controller';
+import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
+import './engagements-list-view/engagements-list-view';
+import './new-engagement-view/new-engagement-view';
+import {pageLayoutStyles} from '../../styles/page-layout-styles';
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
 
 /**
  * @customElement

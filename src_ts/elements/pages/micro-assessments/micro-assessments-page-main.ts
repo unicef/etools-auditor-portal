@@ -1,59 +1,50 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-if';
+import {PolymerElement, html} from '@polymer/polymer';
 import '@polymer/app-route/app-route';
-import '@polymer/paper-tabs/paper-tabs';
-import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-pages/iron-pages';
-import '@polymer/paper-input/paper-textarea';
-
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
+import '@polymer/paper-tabs/paper-tab';
+import '@polymer/paper-tabs/paper-tabs';
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
+import {mainPageStyles} from '../../styles/main-page-styles';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import '@unicef-polymer/etools-dialog/etools-dialog';
-
-import {sharedStyles} from '../../../styles/shared-styles';
-import {moduleStyles} from '../../../styles/module-styles';
-import {mainPageStyles} from '../../../styles/main-page-styles';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import '../../../data-elements/engagement-info-data';
-import '../../../data-elements/update-engagement';
-import '../../../common-elements/pages-header-element/pages-header-element';
-import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
-import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import '@unicef-polymer/etools-content-panel/etools-content-panel';
+import '../../data-elements/engagement-info-data';
+import '../../data-elements/update-engagement';
+import '../../common-elements/pages-header-element/pages-header-element';
+import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 // eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
-import '../../../common-elements/file-attachments-tab/file-attachments-tab';
-import '../../../common-elements/status-tab-element/status-tab-element';
-import '../report-page-components/audit-report-page-main/audit-report-page-main';
-import {property} from '@polymer/decorators/lib/decorators';
-import {GenericObject} from '../../../../types/global';
-import EngagementMixin from '../../../mixins/engagement-mixin';
-import {setStaticData, getStaticData} from '../../../mixins/static-data-controller';
-import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices} from '../../../mixins/permission-controller';
-
+import EngagementMixin from '../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import {property} from '@polymer/decorators';
+import {GenericObject} from '../../../types/global';
+import {fireEvent} from '../../utils/fire-custom-event';
 import assign from 'lodash-es/assign';
-import isNull from 'lodash-es/isNull';
+import './questionnaire-components/questionnaire-page-main/questionnaire-page-main';
+import '../../common-elements/status-tab-element/status-tab-element';
+import '@polymer/paper-input/paper-textarea';
+import './report-page-components/ma-report-page-main';
+import '../../common-elements/file-attachments-tab/file-attachments-tab';
 
-/**
- * @customElement
- * @polymer
- * @appliesMixin CommonMethodsMixin
- * @appliesMixin EngagementMixin
- */
-class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
+class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(PolymerElement)) {
   static get template() {
-    // language=HTML
     return html`
-      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
       <style>
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
       </style>
-
+      ${sharedStyles}${moduleStyles}${mainPageStyles}${tabInputsStyles}
       <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
 
-      <engagement-info-data engagement-id="{{engagementId}}" engagement-type="audits" engagement-info="{{engagement}}">
+      <engagement-info-data
+        engagement-id="{{engagementId}}"
+        engagement-type="micro-assessments"
+        engagement-info="{{engagement}}"
+      >
       </engagement-info-data>
 
       <update-engagement
@@ -66,13 +57,13 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
       >
       </update-engagement>
 
-      <template is="dom-if" if="{{engagement.id}}" restamp>
+      <template is="dom-if" if="[[engagement.id]]" restamp>
         <pages-header-element
           show-export-button
           hide-print-button
           export-links="[[_setExportLinks(engagement)]]"
           engagement="[[engagement]]"
-          page-title="[[engagement.partner.name]] - Audit"
+          page-title="[[engagement.partner.name]] - Micro Assessment"
         >
         </pages-header-element>
 
@@ -90,13 +81,15 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
               <span class="tab-content">Engagement Overview</span>
             </paper-tab>
 
-            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
-              <paper-tab name="report">
-                <span class="tab-content">Report</span>
-              </paper-tab>
+            <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
+              <paper-tab name="report"><span class="tab-content">Report</span></paper-tab>
             </template>
 
-            <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
+            <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
+              <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>
+            </template>
+
+            <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
               <paper-tab name="follow-up">
                 <span class="tab-content">Follow-Up</span>
               </paper-tab>
@@ -110,7 +103,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
           <div id="pageContent">
             <iron-pages id="info-tabs" selected="{{tab}}" attr-for-selected="name">
               <div name="overview">
-                <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
+                <template is="dom-if" if="[[_showCancellationReason(engagement)]]">
                   <etools-content-panel class="cancellation-tab" panel-title="">
                     <div slot="panel-btns" class="bookmark">
                       <iron-icon icon="bookmark"></iron-icon>
@@ -131,8 +124,8 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
                 </engagement-info-details>
 
                 <partner-details-tab
-                  id="partnerDetails"
                   original-data="[[originalData]]"
+                  id="partnerDetails"
                   engagement="{{engagement}}"
                   error-object="{{errorObject}}"
                   base-permission-path="{{permissionBase}}"
@@ -142,26 +135,39 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
                 <engagement-staff-members-tab
                   id="staffMembers"
                   engagement="{{engagement}}"
-                  error-object="{{errorObject}}"
                   base-permission-path="{{permissionBase}}"
+                  error-object="{{errorObject}}"
                 >
                 </engagement-staff-members-tab>
               </div>
 
-              <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
+              <template is="dom-if" if="[[_showReportTabs(permissionBase, engagement)]]" restamp>
                 <div name="report">
-                  <audit-report-page-main
+                  <ma-report-page-main
                     id="report"
                     original-data="[[originalData]]"
-                    error-object="{{errorObject}}"
                     engagement="{{engagement}}"
+                    error-object="{{errorObject}}"
                     permission-base="{{permissionBase}}"
                   >
-                  </audit-report-page-main>
+                  </ma-report-page-main>
                 </div>
               </template>
 
-              <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
+              <template is="dom-if" if="[[_showQuestionnaire(permissionBase, engagement)]]" restamp>
+                <div name="questionnaire">
+                  <questionnaire-page-main
+                    id="questionnaire"
+                    data="[[engagement.questionnaire]]"
+                    risk-assessment="[[engagement.overall_risk_assessment.blueprints.0.risk.value_display]]"
+                    error-object="{{errorObject}}"
+                    base-permission-path="{{permissionBase}}"
+                  >
+                  </questionnaire-page-main>
+                </div>
+              </template>
+
+              <template is="dom-if" if="[[_showFollowUpTabs(permissionBase)]]" restamp>
                 <div name="follow-up">
                   <follow-up-main
                     id="follow-up"
@@ -186,7 +192,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
                 >
                 </file-attachments-tab>
 
-                <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
+                <template is="dom-if" if="[[hasReportAccess(permissionBase, engagement)]]" restamp>
                   <file-attachments-tab
                     id="report_attachments"
                     is-report-tab="true"
@@ -231,7 +237,6 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
                     max-rows="4"
                     error-message="This field is required."
                     on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
                   >
                   </paper-textarea>
                 </div>
@@ -247,10 +252,13 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
   engagement: GenericObject = {};
 
   @property({type: Array})
-  tabsList: string[] = ['overview', 'report', 'attachments', 'follow-up'];
+  otherActions = [];
+
+  @property({type: Array})
+  tabsList = ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
 
   @property({type: String})
-  engagementPrefix = '/audits';
+  engagementPrefix = '/micro-assessments';
 
   static get observers() {
     return [
@@ -263,32 +271,27 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
 
   connectedCallback() {
     super.connectedCallback();
-    this._infoLoaded = this._infoLoaded.bind(this);
-    this._engagementUpdated = this._engagementUpdated.bind(this);
-    // dci not found
-    // this._mainActionActivated = this._mainActionActivated.bind(this);
+
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    // dci not found
     // this.addEventListener('main-action-activated', this._mainActionActivated);
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    this.removeEventListener('engagement-info-loaded', this._infoLoaded);
-    this.removeEventListener('engagement-updated', this._engagementUpdated);
-    // dci not found
-    // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
     const basicInfoValid = this._validateBasicInfo();
+    const questionnaireValid = this.getElement('#questionnaire').validateComplited();
+    const reportValid = this.getElement('#report').validate();
+
     if (!basicInfoValid) {
       return false;
     }
-    const reportValid = this.getElement('#report').validate();
     if (!reportValid) {
       this.set('tab', 'report');
+      return false;
+    }
+    if (!questionnaireValid) {
+      this.set('tab', 'questionnaire');
+      fireEvent(this, 'toast', {text: 'Fill questionnaire before submiting!'});
       return false;
     }
     return true;
@@ -296,65 +299,53 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
 
   customDataPrepare(data) {
     data = data || {};
+    const questionnaireTab = this.getElement('#questionnaire');
+    const questionnaire = questionnaireTab && questionnaireTab.getQuestionnaireData();
+    if (questionnaire) {
+      data.questionnaire = questionnaire;
+    } else {
+      delete data.questionnaire;
+    }
+    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    const reportTab = hasReport ? this.getElement('#report') : null;
+
+    const subjectAreas = reportTab && reportTab.getInternalControlsData();
+    if (subjectAreas) {
+      data.test_subject_areas = subjectAreas;
+    }
+
+    const overallRisk = reportTab && reportTab.getPrimaryRiskData();
+    if (overallRisk) {
+      data.overall_risk_assessment = overallRisk;
+    }
+
+    const findingsData = reportTab && reportTab.getFindingsData();
+    if (findingsData && findingsData.length) {
+      data.findings = findingsData;
+    }
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');
     const followUpData = (followUpPage && followUpPage.getFollowUpData()) || {};
     assign(data, followUpData);
 
-    // Report Data
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
-    if (!hasReport) {
-      return data;
-    }
-    const reportPage = this.getElement('#report');
-
-    const findingsSummaryData = reportPage.getFindingsSummaryData();
-    const assessmentOfControlsData = reportPage.getAssessmentOfControlsData();
-    const financialFindingData = reportPage.getFinancialFindingsData();
-    const keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
-
-    assign(data, findingsSummaryData);
-
-    if (!isNull(financialFindingData)) {
-      data.financial_finding_set = financialFindingData;
-    }
-
-    if (!isNull(assessmentOfControlsData)) {
-      data.key_internal_controls = assessmentOfControlsData;
-    }
-
-    if (!isNull(keyInternalWeaknessData)) {
-      data.key_internal_weakness = keyInternalWeaknessData;
-    }
-
     return data;
   }
 
   customBasicValidation() {
-    const reportTab = this.getElement('#report');
-    if (!reportTab) {
+    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    if (!hasReport) {
       return true;
     }
+    const reportTab = this.getElement('#report');
 
     const reportValid = reportTab.validate('forSave');
+
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
     }
     return true;
   }
-
-  infoLoaded() {
-    if (getStaticData('audit_opinions')) {
-      return;
-    }
-    const auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
-    if (!auditOpinions) {
-      return;
-    }
-    setStaticData('audit_opinions', auditOpinions);
-  }
 }
-
-window.customElements.define('audits-page-main', AuditsPageMain);
+window.customElements.define('micro-assessments-page-main', MicroAssessmentsPageMain);

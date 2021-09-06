@@ -17,27 +17,27 @@ import some from 'lodash-es/some';
 import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
 import '@unicef-polymer/etools-loading';
 
-import './../app-sidebar-menu/app-menu.js';
-import './../app-main-header/page-header.js';
-import './../app-footer/page-footer.js';
+import './sidebar-menu/app-menu.js';
+import './main-header/page-header.js';
+import './footer/page-footer.js';
 
-import '../../styles/app-theme.js';
-import '../../data-elements/static-data';
+import '../styles/app-theme.js';
+import '../data-elements/static-data';
 
 // Gesture events like tap and track generated from touch will not be
 // preventable, allowing for better scrolling performance.
 setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
-import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {AppMenuMixin} from './sidebar-menu/mixins/app-menu-mixin';
+import {fireEvent} from '../utils/fire-custom-event';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
-import {getUserData} from '../../mixins/user-controller';
-import {GenericObject} from '../../../types/global';
-import {getDomainByEnv} from '../../config/config';
-import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
-import '../../common-elements/multi-notifications/multi-notification-list';
-import {BASE_PATH} from '../../config/config';
+import {getUserData} from '../mixins/user-controller';
+import {GenericObject} from '../../types/global';
+import {getDomainByEnv} from '../config/config';
+import {appDrawerStyles} from './sidebar-menu/styles/app-drawer-styles';
+import '../common-elements/multi-notifications/multi-notification-list';
+import {BASE_PATH} from '../config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;
@@ -337,7 +337,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       return;
     } else {
       // eslint-disable-next-line
-      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}-page-components/${page}-page-main/${page}-page-main.js`;
+      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}/${page}-page-main.js`;
     }
 
     import(resolvedPageUrl)

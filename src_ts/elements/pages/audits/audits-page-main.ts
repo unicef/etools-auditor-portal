@@ -1,46 +1,46 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/app-route/app-route';
 import '@polymer/polymer/lib/elements/dom-if';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/app-layout/app-layout';
+import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
+import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-pages/iron-pages';
+import '@polymer/paper-input/paper-textarea';
+
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '../../../common-elements/pages-header-element/pages-header-element';
-import '../../../common-elements/file-attachments-tab/file-attachments-tab';
-import '../../../common-elements/status-tab-element/status-tab-element';
+import '@unicef-polymer/etools-dialog/etools-dialog';
+
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
+import {mainPageStyles} from '../../styles/main-page-styles';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
+import '../../data-elements/engagement-info-data';
+import '../../data-elements/update-engagement';
+import '../../common-elements/pages-header-element/pages-header-element';
+import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 // eslint-disable-next-line
-import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
-import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
-import '../report-page-components/sc-report-page-main/sc-report-page-main';
-import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
+import '../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
+import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
+import '../../common-elements/file-attachments-tab/file-attachments-tab';
+import '../../common-elements/status-tab-element/status-tab-element';
+import '../report-page-components/audit-report-page-main/audit-report-page-main';
+import {property} from '@polymer/decorators/lib/decorators';
+import {GenericObject} from '../../../types/global';
+import EngagementMixin from '../../mixins/engagement-mixin';
+import {setStaticData, getStaticData} from '../../mixins/static-data-controller';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import {getChoices} from '../../mixins/permission-controller';
 
-import {setStaticData, getStaticData} from '../../../mixins/static-data-controller';
-import EngagementMixin from '../../../mixins/engagement-mixin';
-import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices} from '../../../mixins/permission-controller';
-
-import '../../../data-elements/update-engagement';
-import '../../../data-elements/engagement-info-data';
-
-import {sharedStyles} from '../../../styles/shared-styles';
-import {moduleStyles} from '../../../styles/module-styles';
-import {mainPageStyles} from '../../../styles/main-page-styles';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import {GenericObject} from '../../../../types/global';
-
-import isNull from 'lodash-es/isNull';
 import assign from 'lodash-es/assign';
-import sortBy from 'lodash-es/sortBy';
+import isNull from 'lodash-es/isNull';
 
 /**
+ * @customElement
  * @polymer
- * @mixinFunction
- * @appliesMixin EngagementMixin
  * @appliesMixin CommonMethodsMixin
+ * @appliesMixin EngagementMixin
  */
-class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
+class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
   static get template() {
     // language=HTML
     return html`
@@ -53,11 +53,7 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
 
       <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
 
-      <engagement-info-data
-        engagement-id="{{engagementId}}"
-        engagement-type="[[pageType]]"
-        engagement-info="{{engagement}}"
-      >
+      <engagement-info-data engagement-id="{{engagementId}}" engagement-type="audits" engagement-info="{{engagement}}">
       </engagement-info-data>
 
       <update-engagement
@@ -76,7 +72,7 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
           hide-print-button
           export-links="[[_setExportLinks(engagement)]]"
           engagement="[[engagement]]"
-          page-title="[[engagement.partner.name]] - Spot Check"
+          page-title="[[engagement.partner.name]] - Audit"
         >
         </pages-header-element>
 
@@ -106,9 +102,7 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
               </paper-tab>
             </template>
 
-            <paper-tab name="attachments">
-              <span class="tab-content">Attachments</span>
-            </paper-tab>
+            <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
           </paper-tabs>
         </div>
 
@@ -130,10 +124,9 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
                 <engagement-info-details
                   id="engagementDetails"
                   data="{{engagement}}"
-                  error-object="{{errorObject}}"
                   original-data="[[originalData]]"
+                  error-object="{{errorObject}}"
                   base-permission-path="{{permissionBase}}"
-                  is-staff-sc="[[isStaffSc]]"
                 >
                 </engagement-info-details>
 
@@ -148,24 +141,23 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
 
                 <engagement-staff-members-tab
                   id="staffMembers"
-                  base-permission-path="{{permissionBase}}"
                   engagement="{{engagement}}"
                   error-object="{{errorObject}}"
-                  page-type="[[pageType]]"
+                  base-permission-path="{{permissionBase}}"
                 >
                 </engagement-staff-members-tab>
               </div>
 
               <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
                 <div name="report">
-                  <sc-report-page-main
+                  <audit-report-page-main
                     id="report"
                     original-data="[[originalData]]"
-                    engagement="{{engagement}}"
                     error-object="{{errorObject}}"
+                    engagement="{{engagement}}"
                     permission-base="{{permissionBase}}"
                   >
-                  </sc-report-page-main>
+                  </audit-report-page-main>
                 </div>
               </template>
 
@@ -201,7 +193,6 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
                     data-base-path="[[permissionBase]]"
                     path-postfix="report_attachments"
                     base-id="[[engagement.id]]"
-                    partner-name="[[engagement.partner.name]]"
                     error-object="{{errorObject}}"
                     error-property="report_attachments"
                     endpoint-name="reportAttachments"
@@ -219,10 +210,11 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
         </div>
 
         <etools-dialog
+          no-padding
+          keep-dialog-open
           size="md"
           opened="{{dialogOpened}}"
           dialog-title="Cancellation of Engagement"
-          keep-dialog-open
           ok-btn-text="Continue"
           on-confirm-btn-clicked="_cancelEngagement"
         >
@@ -255,48 +247,46 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
   engagement: GenericObject = {};
 
   @property({type: Array})
-  otherActions: any[] = [];
-
-  @property({type: Array})
-  tabsList = ['overview', 'report', 'attachments', 'follow-up'];
+  tabsList: string[] = ['overview', 'report', 'attachments', 'follow-up'];
 
   @property({type: String})
-  pageType = '';
-
-  @property({type: Boolean})
-  isStaffSc = false;
+  engagementPrefix = '/audits';
 
   static get observers() {
     return [
       '_routeConfig(route)',
       '_checkAvailableTab(engagement, permissionBase, route)',
       '_setPermissionBase(engagement.id)',
-      '_tabChanged(tab)',
-      '_setType(isStaffSc)'
+      '_tabChanged(tab)'
     ];
   }
 
   connectedCallback() {
     super.connectedCallback();
+    this._infoLoaded = this._infoLoaded.bind(this);
+    this._engagementUpdated = this._engagementUpdated.bind(this);
+    // dci not found
+    // this._mainActionActivated = this._mainActionActivated.bind(this);
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    // @lajos not found
+    // dci not found
     // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
-  _setType(isStaffSc) {
-    const type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
-    this.set('engagementPrefix', `/${type}`);
-    this.set('pageType', type);
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.removeEventListener('engagement-info-loaded', this._infoLoaded);
+    this.removeEventListener('engagement-updated', this._engagementUpdated);
+    // dci not found
+    // this.removeEventListener('main-action-activated', this._mainActionActivated);
   }
 
   _validateEngagement() {
     const basicInfoValid = this._validateBasicInfo();
-    const reportValid = this.getElement('#report').validate();
-
     if (!basicInfoValid) {
       return false;
     }
+    const reportValid = this.getElement('#report').validate();
     if (!reportValid) {
       this.set('tab', 'report');
       return false;
@@ -306,26 +296,37 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
 
   customDataPrepare(data) {
     data = data || {};
-    // Rport data
-    const reportPage = this.getElement('#report');
-
-    const findingData = reportPage && reportPage.getFindingsData();
-    if (findingData) {
-      data.findings = findingData;
-    }
-
-    const internalControlsData = reportPage && reportPage.getInternalControlsData();
-    if (!isNull(internalControlsData)) {
-      data.internal_controls = internalControlsData;
-    }
-
-    const overviewData = (reportPage && reportPage.getOverviewData()) || {};
-    assign(data, overviewData);
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');
     const followUpData = (followUpPage && followUpPage.getFollowUpData()) || {};
     assign(data, followUpData);
+
+    // Report Data
+    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    if (!hasReport) {
+      return data;
+    }
+    const reportPage = this.getElement('#report');
+
+    const findingsSummaryData = reportPage.getFindingsSummaryData();
+    const assessmentOfControlsData = reportPage.getAssessmentOfControlsData();
+    const financialFindingData = reportPage.getFinancialFindingsData();
+    const keyInternalWeaknessData = reportPage.getKeyInternalWeaknessData();
+
+    assign(data, findingsSummaryData);
+
+    if (!isNull(financialFindingData)) {
+      data.financial_finding_set = financialFindingData;
+    }
+
+    if (!isNull(assessmentOfControlsData)) {
+      data.key_internal_controls = assessmentOfControlsData;
+    }
+
+    if (!isNull(keyInternalWeaknessData)) {
+      data.key_internal_weakness = keyInternalWeaknessData;
+    }
 
     return data;
   }
@@ -335,6 +336,7 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
     if (!reportTab) {
       return true;
     }
+
     const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
       this.set('tab', 'report');
@@ -344,20 +346,15 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
   }
 
   infoLoaded() {
-    this.loadChoices('category_of_observation');
-  }
-
-  loadChoices(property) {
-    if (getStaticData(property)) {
+    if (getStaticData('audit_opinions')) {
       return;
     }
-    const choices = getChoices(`engagement_${this.engagement.id}.findings.${property}`);
-    if (!choices) {
+    const auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
+    if (!auditOpinions) {
       return;
     }
-    const sortedChoices = sortBy(choices, ['display_name']);
-    setStaticData(property, sortedChoices);
+    setStaticData('audit_opinions', auditOpinions);
   }
 }
 
-window.customElements.define('spot-checks-page-main', SpotChecksPageMain);
+window.customElements.define('audits-page-main', AuditsPageMain);
