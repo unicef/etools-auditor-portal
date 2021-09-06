@@ -6,11 +6,11 @@ import {property} from '@polymer/decorators';
 import {DomRepeat} from '@polymer/polymer/lib/elements/dom-repeat.js';
 import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin.js';
 import {fireEvent} from '../../../utils/fire-custom-event';
-import famEndpoints from '../../../app-config/endpoints';
+import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {PaperMenuButton} from '@polymer/paper-menu-button';
 import {GenericObject} from '../../../../types/global';
-import {BASE_PATH} from '../../../app-config/config';
+import {BASE_PATH} from '../../../config/config';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**

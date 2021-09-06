@@ -1,6 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
@@ -9,11 +9,11 @@ import '../../../common-elements/list-tab-elements/list-element/list-element';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-textarea';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../../utils/fire-custom-event';
-import {checkNonField} from '../../../app-mixins/error-handler';
+import {checkNonField} from '../../../mixins/error-handler';
 
 class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
   static get template() {

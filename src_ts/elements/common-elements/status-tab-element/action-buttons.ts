@@ -3,7 +3,7 @@ import '@polymer/paper-button/paper-button';
 import '@polymer/paper-menu-button/paper-menu-button';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/paper-icon-button/paper-icon-button';
-import {moduleStyles} from '../../styles-elements/module-styles';
+import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../utils/fire-custom-event';

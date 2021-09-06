@@ -21,7 +21,7 @@ import './../app-sidebar-menu/app-menu.js';
 import './../app-main-header/page-header.js';
 import './../app-footer/page-footer.js';
 
-import './../../styles-elements/app-theme.js';
+import '../../styles/app-theme.js';
 import '../../data-elements/static-data';
 
 // Gesture events like tap and track generated from touch will not be
@@ -32,12 +32,12 @@ import {property} from '@polymer/decorators';
 import {AppMenuMixin} from '../app-sidebar-menu/mixins/app-menu-mixin';
 import {fireEvent} from '../../utils/fire-custom-event';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
-import {getUserData} from '../../app-mixins/user-controller';
+import {getUserData} from '../../mixins/user-controller';
 import {GenericObject} from '../../../types/global';
-import {getDomainByEnv} from '../../app-config/config';
+import {getDomainByEnv} from '../../config/config';
 import {appDrawerStyles} from '../app-sidebar-menu/styles/app-drawer-styles';
 import '../../common-elements/multi-notifications/multi-notification-list';
-import {BASE_PATH} from '../../app-config/config';
+import {BASE_PATH} from '../../config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;

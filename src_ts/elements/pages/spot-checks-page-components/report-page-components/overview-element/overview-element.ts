@@ -4,12 +4,12 @@ import '@polymer/paper-input/paper-input';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 
-import DateMixin from '../../../../app-mixins/date-mixin';
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import DateMixin from '../../../../mixins/date-mixin';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 

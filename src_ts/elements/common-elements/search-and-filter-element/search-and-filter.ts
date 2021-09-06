@@ -9,10 +9,10 @@ import '@polymer/paper-button/paper-button';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-icon-item';
 
-import {sharedStyles} from '../../styles-elements/shared-styles';
-import {moduleStyles} from '../../styles-elements/module-styles';
-import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
-import {updateQueries} from '../../app-mixins/query-params-controller';
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
+import {updateQueries} from '../../mixins/query-params-controller';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';

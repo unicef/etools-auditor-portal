@@ -8,10 +8,10 @@ import '@polymer/polymer/lib/elements/dom-repeat';
 import {property} from '@polymer/decorators';
 import get from 'lodash-es/get';
 import {GenericObject} from '../../../../types/global';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 
-import LocalizationMixin from '../../../app-mixins/localization-mixin';
+import LocalizationMixin from '../../../mixins/localization-mixin';
 
 /**
  * @polymer

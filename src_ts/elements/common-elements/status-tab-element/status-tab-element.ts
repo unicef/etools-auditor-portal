@@ -1,10 +1,10 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {StatusTabElementStyles} from './status-tab-element-styles';
-import {moduleStyles} from '../../styles-elements/module-styles';
+import {moduleStyles} from '../../styles/module-styles';
 import {property} from '@polymer/decorators';
 import each from 'lodash-es/each';
-import {getActions} from '../../app-mixins/permission-controller';
-import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
+import {getActions} from '../../mixins/permission-controller';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 declare const dayjs: any;
 import '../insert-html/insert-html';

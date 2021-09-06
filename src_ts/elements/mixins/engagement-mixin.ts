@@ -9,8 +9,8 @@ import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '../utils/fire-custom-event';
 import {Constructor, GenericObject} from '../../types/global';
-import {getEndpoint} from '../app-config/endpoints-controller';
-import {getUserData} from '../../elements/app-mixins/user-controller';
+import {getEndpoint} from '../config/endpoints-controller';
+import {getUserData} from './user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 import {whichPageTrows} from './error-handler';
 

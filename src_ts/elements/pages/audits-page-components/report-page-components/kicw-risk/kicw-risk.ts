@@ -4,8 +4,8 @@ import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';

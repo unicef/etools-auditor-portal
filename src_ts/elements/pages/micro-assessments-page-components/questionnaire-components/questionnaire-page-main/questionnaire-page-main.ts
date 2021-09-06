@@ -2,9 +2,9 @@ import {PolymerElement, html} from '@polymer/polymer';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import {moduleStyles} from '../../../../styles/module-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {property, query} from '@polymer/decorators';
 import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
@@ -13,10 +13,10 @@ import {fireEvent} from '../../../../utils/fire-custom-event';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
-import {getChoices} from '../../../../app-mixins/permission-controller';
+import {getChoices} from '../../../../mixins/permission-controller';
 import '../risk-tab/risk-tab';
-import {checkNonField} from '../../../../app-mixins/error-handler';
-import {refactorErrorObject} from '../../../../app-mixins/error-handler';
+import {checkNonField} from '../../../../mixins/error-handler';
+import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {

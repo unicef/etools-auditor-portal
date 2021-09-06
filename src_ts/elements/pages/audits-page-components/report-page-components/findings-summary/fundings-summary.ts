@@ -5,9 +5,9 @@ import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/iron-icons/iron-icons';
 
-import {moduleStyles} from '../../../../styles-elements/module-styles';
-import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
@@ -15,9 +15,9 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import {getStaticData} from '../../../../app-mixins/static-data-controller';
-import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import {getStaticData} from '../../../../mixins/static-data-controller';
+import TableElementsMixin from '../../../../mixins/table-elements-mixin';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 
@@ -29,7 +29,7 @@ import transform from 'lodash-es/transform';
 import toNumber from 'lodash-es/toNumber';
 import values from 'lodash-es/values';
 import {fireEvent} from '../../../../utils/fire-custom-event';
-import {refactorErrorObject} from '../../../../app-mixins/error-handler';
+import {refactorErrorObject} from '../../../../mixins/error-handler';
 import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 
 /**

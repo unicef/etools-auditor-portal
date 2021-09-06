@@ -3,11 +3,11 @@ import {property} from '@polymer/decorators/lib/decorators';
 import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
 
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 
 import {GenericObject} from '../../../../../types/global';
 

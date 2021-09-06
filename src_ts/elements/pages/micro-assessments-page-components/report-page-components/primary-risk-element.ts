@@ -1,11 +1,11 @@
 import {PolymerElement, html} from '@polymer/polymer';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getChoices, isRequired} from '../../../app-mixins/permission-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getChoices, isRequired} from '../../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '../../../utils/fire-custom-event';

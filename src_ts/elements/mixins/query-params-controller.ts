@@ -2,7 +2,7 @@ import isObject from 'lodash-es/isObject';
 import keys from 'lodash-es/keys';
 import isString from 'lodash-es/isString';
 import {GenericObject} from '../../types/global';
-import {BASE_PATH} from '../../elements/app-config/config';
+import {BASE_PATH} from '../config/config';
 
 export function parseQueries(): GenericObject {
   const queriesOvj: GenericObject = {};

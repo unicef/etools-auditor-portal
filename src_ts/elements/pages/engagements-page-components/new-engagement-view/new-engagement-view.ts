@@ -10,14 +10,14 @@ import get from 'lodash-es/get';
 import assign from 'lodash-es/assign';
 import includes from 'lodash-es/includes';
 import isUndefined from 'lodash-es/isUndefined';
-import LastCreatedMixin from '../../../app-mixins/last-created-mixin';
-import EngagementMixin from '../../../app-mixins/engagement-mixin';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {clearQueries} from '../../../app-mixins/query-params-controller';
-import '../../../app-mixins/permission-controller';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {mainPageStyles} from '../../../styles-elements/main-page-styles';
+import LastCreatedMixin from '../../../mixins/last-created-mixin';
+import EngagementMixin from '../../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {clearQueries} from '../../../mixins/query-params-controller';
+import '../../../mixins/permission-controller';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {mainPageStyles} from '../../../styles/main-page-styles';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import {FileAttachmentsTabEl} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
@@ -32,7 +32,7 @@ import {PartnerDetailsTabEl} from '../../../common-elements/engagement-overview-
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import {BASE_PATH} from '../../../app-config/config';
+import {BASE_PATH} from '../../../config/config';
 import {navigateToUrl} from '../../../utils/navigate-helper';
 /**
  * @customElement

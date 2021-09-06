@@ -12,14 +12,14 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
 
-import DateMixin from '../../../../app-mixins/date-mixin';
-import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import {getStaticData} from '../../../../app-mixins/static-data-controller';
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import DateMixin from '../../../../mixins/date-mixin';
+import TableElementsMixin from '../../../../mixins/table-elements-mixin';
+import {getStaticData} from '../../../../mixins/static-data-controller';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../../../types/global';
 
 import find from 'lodash-es/find';
@@ -375,7 +375,9 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
       }
       const compareItems = (changedObj, originalObj) => {
         // eslint-disable-next-line
-        return !((changedObj.category_of_observation && changedObj.category_of_observation !== originalObj.category_of_observation) ||
+        return !(
+          (changedObj.category_of_observation &&
+            changedObj.category_of_observation !== originalObj.category_of_observation) ||
           (changedObj.deadline_of_action && changedObj.deadline_of_action !== originalObj.deadline_of_action) ||
           (changedObj.recommendation && changedObj.recommendation !== originalObj.recommendation) ||
           (changedObj.agreed_action_by_ip && changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip)

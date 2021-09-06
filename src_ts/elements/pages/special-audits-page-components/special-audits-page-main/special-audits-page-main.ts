@@ -21,12 +21,12 @@ import '../../../../elements/pages/special-audits-page-components/report-page-co
 import '../../../../elements/common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/pages-header-element/pages-header-element';
 
-import EngagementMixin from '../../../app-mixins/engagement-mixin';
+import EngagementMixin from '../../../mixins/engagement-mixin';
 
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {mainPageStyles} from '../../../styles-elements/main-page-styles';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {mainPageStyles} from '../../../styles/main-page-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';

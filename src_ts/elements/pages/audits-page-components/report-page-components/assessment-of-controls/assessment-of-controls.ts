@@ -9,18 +9,18 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import TableElementsMixin from '../../../../app-mixins/table-elements-mixin';
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import TableElementsMixin from '../../../../mixins/table-elements-mixin';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';
-import {checkNonField} from '../../../../app-mixins/error-handler';
+import {checkNonField} from '../../../../mixins/error-handler';
 
 /**
  * @customElement

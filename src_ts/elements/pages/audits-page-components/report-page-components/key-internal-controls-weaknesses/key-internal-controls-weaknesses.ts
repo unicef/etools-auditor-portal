@@ -9,15 +9,15 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 
-import {tabInputsStyles} from '../../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../../styles-elements/module-styles';
-import {tabLayoutStyles} from '../../../../styles-elements/tab-layout-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 
 import '../../../../common-elements/list-tab-elements/list-header/list-header';
 import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import '../kicw-risk/kicw-risk';
-import {getChoices} from '../../../../app-mixins/permission-controller';
-import CommonMethodsMixin from '../../../../app-mixins/common-methods-mixin';
+import {getChoices} from '../../../../mixins/permission-controller';
+import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '../../../../utils/fire-custom-event';

@@ -16,18 +16,18 @@ import '../../../common-elements/engagement-overview-components/partner-details-
 import '../report-page-components/sc-report-page-main/sc-report-page-main';
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 
-import {setStaticData, getStaticData} from '../../../app-mixins/static-data-controller';
-import EngagementMixin from '../../../app-mixins/engagement-mixin';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getChoices} from '../../../app-mixins/permission-controller';
+import {setStaticData, getStaticData} from '../../../mixins/static-data-controller';
+import EngagementMixin from '../../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getChoices} from '../../../mixins/permission-controller';
 
 import '../../../data-elements/update-engagement';
 import '../../../data-elements/engagement-info-data';
 
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {mainPageStyles} from '../../../styles-elements/main-page-styles';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {mainPageStyles} from '../../../styles/main-page-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {GenericObject} from '../../../../types/global';
 
 import isNull from 'lodash-es/isNull';

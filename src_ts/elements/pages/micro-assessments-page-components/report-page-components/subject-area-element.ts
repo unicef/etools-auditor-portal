@@ -1,9 +1,9 @@
 import {PolymerElement, html} from '@polymer/polymer';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import '../../../common-elements/list-tab-elements/list-element/list-element';
 import '@polymer/paper-icon-button/paper-icon-button';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getChoices} from '../../../app-mixins/permission-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getChoices} from '../../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../../../utils/fire-custom-event';
 import clone from 'lodash-es/clone';

@@ -3,10 +3,10 @@ import '@polymer/app-route/app-route';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-tabs/paper-tab';
 import '@polymer/paper-tabs/paper-tabs';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {mainPageStyles} from '../../../styles-elements/main-page-styles';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {mainPageStyles} from '../../../styles/main-page-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '../../../data-elements/engagement-info-data';
@@ -17,8 +17,8 @@ import '../../../common-elements/engagement-overview-components/partner-details-
 // eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
-import EngagementMixin from '../../../app-mixins/engagement-mixin';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
+import EngagementMixin from '../../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';

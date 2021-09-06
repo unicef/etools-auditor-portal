@@ -7,8 +7,8 @@ import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
 
 /**
  * @polymer

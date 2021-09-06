@@ -1,19 +1,19 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {buildQueryString} from '../../../app-mixins/query-params-controller';
-import {getEndpoint} from '../../../app-config/endpoints-controller';
-import {pageLayoutStyles} from '../../../styles-elements/page-layout-styles';
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {getStaticData} from '../../../mixins/static-data-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {buildQueryString} from '../../../mixins/query-params-controller';
+import {getEndpoint} from '../../../config/endpoints-controller';
+import {pageLayoutStyles} from '../../../styles/page-layout-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../common-elements/search-and-filter-element/search-and-filter';
 import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
 import {SearchAndFilterEl, FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
-import {BASE_PATH} from '../../../app-config/config';
+import {BASE_PATH} from '../../../config/config';
 /**
  * @customElement
  * @polymer

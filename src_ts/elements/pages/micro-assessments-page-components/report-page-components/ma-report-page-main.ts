@@ -1,5 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import EngagementMixin from '../../../app-mixins/engagement-mixin';
+import EngagementMixin from '../../../mixins/engagement-mixin';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import '../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';

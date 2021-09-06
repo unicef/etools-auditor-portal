@@ -29,18 +29,18 @@ import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
-import {getUserData} from '../../../../elements/app-mixins/user-controller';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {getUserData} from '../../../mixins/user-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import TableElementsMixin from '../../../mixins/table-elements-mixin';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import '../../../data-elements/get-staff-members-list';
 import '../../list-tab-elements/list-header/list-header';
 import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
 import '../../../data-elements/check-user-existence';
 import '../../../data-elements/update-staff-members';
-import {refactorErrorObject, checkNonField} from '../../../app-mixins/error-handler';
+import {refactorErrorObject, checkNonField} from '../../../mixins/error-handler';
 
 /**
  * @polymer

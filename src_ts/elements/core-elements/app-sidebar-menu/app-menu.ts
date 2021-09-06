@@ -9,7 +9,7 @@ import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '../../utils/fire-custom-event';
 import {property} from '@polymer/decorators';
-import {apIcons, famIcon} from '../../styles-elements/ap-icons';
+import {apIcons, famIcon} from '../../styles/ap-icons';
 
 /**
  * @polymer
