@@ -23,7 +23,7 @@ import '../../common-elements/engagement-overview-components/engagement-staff-me
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/status-tab-element/status-tab-element';
-import '../report-page-components/audit-report-page-main/audit-report-page-main';
+import './report-page-components/audit-report-page-main/audit-report-page-main';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 import EngagementMixin from '../../mixins/engagement-mixin';

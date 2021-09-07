@@ -15,8 +15,8 @@ import '../../common-elements/pages-header-element/pages-header-element';
 import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 // eslint-disable-next-line
-import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import '../../../common-elements/follow-up-components/follow-up-main/follow-up-main';
+import '../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
+import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators';

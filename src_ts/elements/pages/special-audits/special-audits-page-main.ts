@@ -8,7 +8,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '../../app-shell/main-header/page-header';
 import '../../common-elements/status-tab-element/status-tab-element';
 // eslint-disable-next-line
-import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
+import '../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 // eslint-disable-next-line
 import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
