@@ -17,9 +17,9 @@ import some from 'lodash-es/some';
 import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
 import '@unicef-polymer/etools-loading';
 
-import './elements/app-shell/sidebar-menu/app-menu.js';
-import './elements/app-shell/main-header/page-header.js';
-import './elements/app-shell/footer/page-footer.js';
+import './elements/app-shell-components/sidebar-menu/app-menu.js';
+import './elements/app-shell-components/main-header/page-header.js';
+import './elements/app-shell-components/footer/page-footer.js';
 
 import './elements/styles/app-theme.js';
 import './elements/data-elements/static-data';
@@ -29,13 +29,13 @@ import './elements/data-elements/static-data';
 setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
-import {AppMenuMixin} from './elements/app-shell/sidebar-menu/mixins/app-menu-mixin';
+import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin';
 import {fireEvent} from './elements/utils/fire-custom-event';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import {getUserData} from './elements/mixins/user-controller';
 import {GenericObject} from './types/global';
 import {getDomainByEnv} from './elements/config/config';
-import {appDrawerStyles} from './elements/app-shell/sidebar-menu/styles/app-drawer-styles';
+import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
 import './elements/common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from './elements/config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';

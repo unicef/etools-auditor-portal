@@ -5,7 +5,7 @@ import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/paper-tabs/paper-tab';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '../../app-shell/main-header/page-header';
+import '../../app-shell-components/main-header/page-header';
 import '../../common-elements/status-tab-element/status-tab-element';
 // eslint-disable-next-line
 import '../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
