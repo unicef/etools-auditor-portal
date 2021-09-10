@@ -3,9 +3,9 @@ import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
 import {fireEvent} from '../utils/fire-custom-event';
-import {setUserData} from '../app-mixins/user-controller';
-import {resetOldUserData} from '../app-config/config';
-import famEndpoints from '../app-config/endpoints.js';
+import {setUserData} from '../mixins/user-controller';
+import {resetOldUserData} from '../config/config';
+import famEndpoints from '../config/endpoints.js';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 

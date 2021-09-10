@@ -6,8 +6,8 @@ import keys from 'lodash-es/keys';
 import pull from 'lodash-es/pull';
 import uniq from 'lodash-es/uniq';
 import difference from 'lodash-es/difference';
-import {getEndpoint} from '../app-config/endpoints-controller';
-import {updateQueries, getQueriesString} from '../app-mixins/query-params-controller';
+import {getEndpoint} from '../config/endpoints-controller';
+import {updateQueries, getQueriesString} from '../mixins/query-params-controller';
 import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 

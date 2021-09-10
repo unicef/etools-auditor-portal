@@ -5,8 +5,8 @@ import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-card/paper-card.js';
 import '@polymer/polymer/lib/elements/dom-if';
 
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 
 import {GenericObject} from '../../../../types/global';
 import {ListTabMainStyles} from './list-tab-main-styles';

@@ -12,15 +12,15 @@ import '@polymer/polymer/lib/elements/dom-if';
 declare const dayjs: any;
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {collectionExists} from '../../../app-mixins/permission-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {collectionExists} from '../../../mixins/permission-controller';
 
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import DateMixin from '../../../app-mixins/date-mixin';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import DateMixin from '../../../mixins/date-mixin';
 import DatePickerLite from '@unicef-polymer/etools-date-time/datepicker-lite';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
+import {getStaticData} from '../../../mixins/static-data-controller';
 
 /**
  * @polymer

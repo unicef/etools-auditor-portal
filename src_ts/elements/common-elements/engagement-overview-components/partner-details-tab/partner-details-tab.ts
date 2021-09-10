@@ -19,13 +19,13 @@ import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {readonlyPermission} from '../../../app-mixins/permission-controller';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {readonlyPermission} from '../../../mixins/permission-controller';
+import {getStaticData} from '../../../mixins/static-data-controller';
 
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import '../../../data-elements/get-partner-data';
 
 /**

@@ -1,6 +1,6 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
-import {getEndpoint} from '../app-config/endpoints-controller';
+import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
@@ -18,7 +18,12 @@ class UpdateAgreementData extends PolymerElement {
   errors!: GenericObject;
 
   _dateChanged(date) {
-    if (typeof(date) === 'undefined' || !this.agreement || !this.agreement.id || this.agreement.contract_end_date === date) {
+    if (
+      typeof date === 'undefined' ||
+      !this.agreement ||
+      !this.agreement.id ||
+      this.agreement.contract_end_date === date
+    ) {
       return;
     }
 
