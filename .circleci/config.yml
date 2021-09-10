@@ -77,4 +77,3 @@ workflows:
                 - master
                 - staging
                 - develop
-                - folder-structure
