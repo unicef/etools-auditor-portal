@@ -28,7 +28,6 @@ RUN export NODE_OPTIONS=--max_old_space_size=4096 && polymer build
 FROM node:12.18.3-alpine
 RUN apk update
 RUN apk add --update bash
-RUN npm install -g npm@7.23.0
 
 WORKDIR /code
 RUN npm install express --no-save
