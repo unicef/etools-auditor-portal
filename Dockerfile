@@ -1,6 +1,7 @@
-FROM node:11.9.0-alpine as fam_builder
+FROM node:12.18.3-alpine as fam_builder
 RUN apk update
 RUN apk add --update bash
+RUN npm install -g npm@7.23.0
 
 RUN apk add git
 RUN npm install -g --unsafe-perm polymer-cli
@@ -19,14 +20,16 @@ ADD tsconfig.json /tmp/
 ADD version.json /tmp/
 
 RUN npm cache verify
-RUN npm i
+RUN npm install --no-save
 # echo done is used because tsc returns a non 0 status (tsc has some errors)
 RUN tsc || echo done
 RUN export NODE_OPTIONS=--max_old_space_size=4096 && polymer build
 
-FROM node:11.9.0-alpine
+FROM node:12.18.3-alpine
 RUN apk update
 RUN apk add --update bash
+RUN npm install -g npm@7.23.0
+
 WORKDIR /code
 RUN npm install express --no-save
 RUN npm install browser-capabilities@1.1.3 --no-save
