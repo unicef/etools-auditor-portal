@@ -25,6 +25,7 @@ jobs:
       - run:
           name: Polymer3 Build
           command: npm run build
+          no_output_timeout: 25m
 
   build_and_deploy:
     working_directory: ~/code
