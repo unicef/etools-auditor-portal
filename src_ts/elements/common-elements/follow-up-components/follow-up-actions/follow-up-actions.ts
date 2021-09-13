@@ -49,7 +49,7 @@ import {
 import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-/**../../../config/endpoints
+/** ../../../config/endpoints
  * @polymer
  * @customElement
  * @appliesMixin DateMixin

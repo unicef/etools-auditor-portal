@@ -26,7 +26,6 @@ etoolsCustomDexieDb.version(1).stores({
 window.EtoolsRequestCacheDb = etoolsCustomDexieDb;
 window.EtoolsFamApp.DexieDb = etoolsCustomDexieDb;
 
-
 // -----------Environment------
 const PROD_DOMAIN = 'etools.unicef.org';
 const STAGING_DOMAIN = 'etools-staging.unicef.org';
