@@ -90,7 +90,7 @@
     "lint:eslint": "eslint --ext .ts . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .ts . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.ts\" --check --ignore-path .gitignore",
-    "lint": "polymer lint && npm run lint:eslint",
+    "lint": "polymer lint || true && npm run lint:eslint",
     "format": "npm run format:eslint"
   },
   "husky": {
