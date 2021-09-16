@@ -26,7 +26,6 @@ etoolsCustomDexieDb.version(1).stores({
 window.EtoolsRequestCacheDb = etoolsCustomDexieDb;
 window.EtoolsFamApp.DexieDb = etoolsCustomDexieDb;
 
-
 // -----------Environment------
 const PROD_DOMAIN = 'etools.unicef.org';
 const STAGING_DOMAIN = 'etools-staging';
@@ -66,5 +65,5 @@ export const resetOldUserData = () => {
 };
 
 export const getDomainByEnv = () => {
-  return window.location.protocol + window.location.host + BASE_URL.substr(0, BASE_URL.length - 1)
+  return `${window.location.origin}/${BASE_PATH}`;
 };
