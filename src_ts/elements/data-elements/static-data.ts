@@ -1,8 +1,8 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import famEndpoints from '../app-config/endpoints';
-import {getEndpoint} from '../app-config/endpoints-controller';
-import {addToCollection, getChoices, isValidCollection} from '../app-mixins/permission-controller';
-import {setStaticData, updateStaticData} from '../app-mixins/static-data-controller';
+import famEndpoints from '../config/endpoints';
+import {getEndpoint} from '../config/endpoints-controller';
+import {addToCollection, getChoices, isValidCollection} from '../mixins/permission-controller';
+import {setStaticData, updateStaticData} from '../mixins/static-data-controller';
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';

@@ -14,13 +14,13 @@ import clone from 'lodash-es/clone';
 import remove from 'lodash-es/remove';
 import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
-import {moduleStyles} from '../../styles-elements/module-styles';
-import {tabInputsStyles} from '../../styles-elements/tab-inputs-styles';
+import {moduleStyles} from '../../styles/module-styles';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
-import CommonMethodsMixin from '../../app-mixins/common-methods-mixin';
-import {getEndpoint} from '../../app-config/endpoints-controller';
-import TableElementsMixin from '../../app-mixins/table-elements-mixin';
-import {getStaticData} from '../../app-mixins/static-data-controller';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import {getEndpoint} from '../../config/endpoints-controller';
+import TableElementsMixin from '../../mixins/table-elements-mixin';
+import {getStaticData} from '../../mixins/static-data-controller';
 import {fireEvent} from '../../utils/fire-custom-event';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 

@@ -2,8 +2,8 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import get from 'lodash-es/get';
-import {getEndpoint} from '../app-config/endpoints-controller';
-import {updateCollection} from '../app-mixins/permission-controller';
+import {getEndpoint} from '../config/endpoints-controller';
+import {updateCollection} from '../mixins/permission-controller';
 import {GenericObject} from '../../types/global';
 import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 

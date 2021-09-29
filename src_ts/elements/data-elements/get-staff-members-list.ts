@@ -1,8 +1,8 @@
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
-import {getEndpoint} from '../app-config/endpoints-controller';
-import {collectionExists, addToCollection} from '../app-mixins/permission-controller';
-import {getUserData} from '../app-mixins/user-controller';
+import {getEndpoint} from '../config/endpoints-controller';
+import {collectionExists, addToCollection} from '../mixins/permission-controller';
+import {getUserData} from '../mixins/user-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';

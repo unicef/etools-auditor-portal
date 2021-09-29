@@ -14,25 +14,25 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getChoices, collectionExists} from '../../../app-mixins/permission-controller';
-import DateMixin from '../../../app-mixins/date-mixin';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getChoices, collectionExists} from '../../../mixins/permission-controller';
+import DateMixin from '../../../mixins/date-mixin';
+import {getStaticData} from '../../../mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-import {getUserData} from '../../../app-mixins/user-controller';
-import famEndpoints from '../../../app-config/endpoints';
+import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
+import {getUserData} from '../../../mixins/user-controller';
 declare const dayjs: any;
 
 /**

@@ -28,16 +28,16 @@ import {property} from '@polymer/decorators';
 
 import '../../../data-elements/get-action-points';
 import '../../../data-elements/update-action-points';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '../../../utils/fire-custom-event';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getEndpoint} from '../../../app-config/endpoints-controller';
-import TableElementsMixin from '../../../app-mixins/table-elements-mixin';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
-import DateMixin from '../../../app-mixins/date-mixin';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getEndpoint} from '../../../config/endpoints-controller';
+import TableElementsMixin from '../../../mixins/table-elements-mixin';
+import {getStaticData} from '../../../mixins/static-data-controller';
+import DateMixin from '../../../mixins/date-mixin';
 import {
   collectionExists,
   addToCollection,
@@ -45,13 +45,13 @@ import {
   getChoices,
   readonlyPermission,
   actionAllowed
-} from '../../../app-mixins/permission-controller';
-import {checkNonField} from '../../../app-mixins/error-handler';
+} from '../../../mixins/permission-controller';
+import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
 import famEndpoints from '../../../app-config/endpoints';
 
-/**
+/**../../../config/endpoints
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
