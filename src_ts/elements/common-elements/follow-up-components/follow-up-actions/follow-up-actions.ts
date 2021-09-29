@@ -49,9 +49,9 @@ import {
 import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
-import famEndpoints from '../../../app-config/endpoints';
+import famEndpoints from '../../../config/endpoints';
 
-/**../../../config/endpoints
+/**
  * @polymer
  * @customElement
  * @appliesMixin DateMixin
