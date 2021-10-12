@@ -1,6 +1,7 @@
 FROM node:12-alpine3.12 as fam_builder
 RUN apk update
 RUN apk add --update bash
+RUN npm install -g npm@7.23.0
 
 RUN apk add git
 RUN npm install -g --unsafe-perm polymer-cli
@@ -26,6 +27,7 @@ RUN export NODE_OPTIONS=--max_old_space_size=4096 && polymer build
 FROM node:12-alpine3.12
 RUN apk update
 RUN apk add --update bash
+
 WORKDIR /code
 RUN npm install express --no-save
 RUN npm install browser-capabilities@1.1.3 --no-save
