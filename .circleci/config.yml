@@ -4,14 +4,14 @@ jobs:
     working_directory: ~/code
     # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
-      - image: cimg/node:16.8.0
+      - image: node: 12.18.3
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: Install npm wee
-          command: rm -rf node_modules/@unicef-polymer & npm install
+          name: npm Install
+          command: npm ci
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
@@ -31,7 +31,7 @@ jobs:
     working_directory: ~/code
     # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
-      - image: cimg/node:16.8.0
+      - image: node: 12.18.3
     steps:
       - checkout
       - setup_remote_docker
@@ -66,7 +66,7 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  lint_and_build:
     jobs:
       - lint:
           filters:
@@ -82,3 +82,4 @@ workflows:
                 - master
                 - staging
                 - develop
+                - circleci-tweak

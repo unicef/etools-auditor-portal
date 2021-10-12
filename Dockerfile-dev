@@ -1,10 +1,9 @@
-FROM 16-alpine3.12
+FROM 12-alpine3.12
 RUN apk update
 RUN apk add --update bash
 
 RUN apk add git
 RUN npm install -g --unsafe-perm polymer-cli
-RUN npm install -g gulp
 RUN npm install -g typescript
 
 WORKDIR /code

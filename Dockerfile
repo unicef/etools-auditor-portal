@@ -1,4 +1,4 @@
-FROM node:16-alpine3.12 as fam_builder
+FROM node:12-alpine3.12 as fam_builder
 RUN apk update
 RUN apk add --update bash
 
@@ -18,13 +18,12 @@ ADD express.js /tmp/
 ADD tsconfig.json /tmp/
 ADD version.json /tmp/
 
-RUN npm cache verify
-RUN npm i
+RUN npm ci
 # echo done is used because tsc returns a non 0 status (tsc has some errors)
 RUN tsc || echo done
 RUN export NODE_OPTIONS=--max_old_space_size=4096 && polymer build
 
-FROM node:16-alpine3.12
+FROM node:12-alpine3.12
 RUN apk update
 RUN apk add --update bash
 WORKDIR /code
