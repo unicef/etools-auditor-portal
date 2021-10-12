@@ -60,7 +60,12 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
           <div class="input-container">
             <!-- Partner -->
             <template is="dom-if" if="[[isReadOnly('partner', basePermissionPath)]]">
-              <paper-input value="{{partner.name}}" disabled readonly> </paper-input>
+              <paper-input
+                label="[[getLabel('partner', basePermissionPath)]]"
+                value="{{partner.name}}"
+                disabled
+                readonly
+              ></paper-input>
             </template>
             <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
               <etools-dropdown
