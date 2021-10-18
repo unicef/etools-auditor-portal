@@ -1,7 +1,6 @@
 FROM node:12-alpine3.12 as fam_builder
 RUN apk update
 RUN apk add --update bash
-RUN npm install -g npm@7.23.0
 
 RUN apk add git
 RUN npm install -g --unsafe-perm polymer-cli
