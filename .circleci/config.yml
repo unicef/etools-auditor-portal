@@ -68,14 +68,10 @@ workflows:
   version: 2
   lint_and_build:
     jobs:
-      - lint:
-          filters:
-            branches:
-              ignore:
-                - master
-                - staging
-                - develop
+      - lint
       - build_and_deploy:
+          requires:
+            - lint
           filters:
             branches:
               only:

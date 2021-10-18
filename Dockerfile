@@ -16,9 +16,6 @@ ADD . /code/
 WORKDIR /code
 
 RUN cp -a /tmp/node_modules /code/node_modules
-ADD version.json /tmp/
-
-RUN npm ci
 
 RUN npm run build
 
