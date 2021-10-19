@@ -9,6 +9,7 @@ import sortBy from 'lodash-es/sortBy';
 import {fireEvent} from '../utils/fire-custom-event';
 import './user-data';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import clone from 'lodash-es/clone';
 
 class StaticData extends PolymerElement {
   public static get template() {
@@ -65,11 +66,14 @@ class StaticData extends PolymerElement {
   }
 
   getUsers() {
-    const usersEndpoint = famEndpoints.users;
+    const usersEndpoint = clone(famEndpoints.users);
+    usersEndpoint.url += '?page=1&page_size=30';
     sendRequest({
       endpoint: usersEndpoint
     })
-      .then((resp) => this._handleUsersResponse(resp))
+      .then((resp) => {
+        this._handleUsersResponse(resp.results);
+      })
       .catch((err) => this._handleUsersResponse(err));
   }
 
@@ -300,9 +304,6 @@ class StaticData extends PolymerElement {
     if (!details || details.error) {
       this._responseError('Users', '', 'warn');
     } else {
-      each(details, (user) => {
-        user.full_name = user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : 'Unnamed User';
-      });
       setStaticData('users', details);
     }
     this.dataLoaded.users = true;
