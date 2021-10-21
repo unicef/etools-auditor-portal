@@ -2,7 +2,7 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '../utils/fire-custom-event.js';
-import {getEndpoint} from '../app-config/endpoints-controller';
+import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
