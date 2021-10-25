@@ -303,9 +303,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
                   <div class$="row-details-content w[[item.size]]">
                     <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
-                    <template is="dom-if" if="[[_getValue(item, data)]]">
-                      [[_getValue(item, data)]]
-                    </template>
+                    <template is="dom-if" if="[[_getValue(item, data)]]"> [[_getValue(item, data)]] </template>
 
                     <template is="dom-if" if="[[!_getValue(item, data)]]">
                       <span class="">–</span>

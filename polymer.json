@@ -45,6 +45,6 @@
   "npm": true,
   "lint": {
     "rules": ["polymer-3"],
-    "ignoreWarnings": []
+    "ignoreWarnings": ["databinding-calls-must-be-functions"]
   }
 }
