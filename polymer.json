@@ -45,10 +45,6 @@
   "npm": true,
   "lint": {
     "rules": ["polymer-3"],
-<<<<<<< HEAD
     "ignoreWarnings": ["databinding-calls-must-be-functions"]
-=======
-    "ignoreWarnings": []
->>>>>>> staging
   }
 }
