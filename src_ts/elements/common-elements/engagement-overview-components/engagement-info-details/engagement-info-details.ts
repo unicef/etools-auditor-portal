@@ -651,7 +651,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     const notifiedUsers = this.get('data.users_notified') || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
     this.set('usersNotifiedOptions', availableUsers);
-    const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
+    let usersNotifiedIDs = notifiedUsers.map((user) => user.id);
+    usersNotifiedIDs = [...new Set([...usersNotifiedIDs, ...this.usersNotifiedIDs])];
     this.set('usersNotifiedIDs', usersNotifiedIDs);
   }
 
