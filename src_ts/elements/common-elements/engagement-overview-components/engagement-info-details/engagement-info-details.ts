@@ -600,7 +600,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }).then((resp: GenericObject) => {
       const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
       this.set('users', data);
-      this.setUsersNotifiedIDs();
+      this.setUsersNotifiedOptionsAndIDs();
       return resp;
     });
   }
@@ -643,17 +643,19 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     if (!this.users) {
       this.set('users', getStaticData('users') || []);
     }
-    this.setUsersNotifiedIDs();
+    this.setUsersNotifiedOptionsAndIDs(true);
   }
 
-  setUsersNotifiedIDs() {
+  setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
     const availableUsers = [...this.users];
     const notifiedUsers = this.get('data.users_notified') || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
     this.set('usersNotifiedOptions', availableUsers);
-    let usersNotifiedIDs = notifiedUsers.map((user) => user.id);
-    usersNotifiedIDs = [...new Set([...usersNotifiedIDs, ...this.usersNotifiedIDs])];
-    this.set('usersNotifiedIDs', usersNotifiedIDs);
+    if (setSavedUsersIDs) {
+      // on the first call(after `data` is set), need to set usersNotifiedIDs (the IDs of the already saved users)
+      const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
+      this.set('usersNotifiedIDs', usersNotifiedIDs);
+    }
   }
 
   populateUsersNotifiedDropDown() {
