@@ -10,8 +10,8 @@ import '@polymer/paper-item/paper-item';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '../../utils/fire-custom-event';
-import {sharedStyles} from '../../styles-elements/shared-styles';
-import {moduleStyles} from '../../styles-elements/module-styles';
+import {sharedStyles} from '../../styles/shared-styles';
+import {moduleStyles} from '../../styles/module-styles';
 import pagesHeaderElementStyles from './pages-header-element-styles';
 import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
 

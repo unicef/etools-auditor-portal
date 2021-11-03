@@ -14,22 +14,25 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {tabLayoutStyles} from '../../../styles-elements/tab-layout-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getChoices, collectionExists} from '../../../app-mixins/permission-controller';
-import DateMixin from '../../../app-mixins/date-mixin';
-import {getStaticData} from '../../../app-mixins/static-data-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getChoices, collectionExists} from '../../../mixins/permission-controller';
+import DateMixin from '../../../mixins/date-mixin';
+import {getStaticData} from '../../../mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
-import {getUserData} from '../../../app-mixins/user-controller';
+import famEndpoints from '../../../config/endpoints';
+import {sendRequest} from '@unicef-polymer/etools-ajax';
+import clone from 'lodash-es/clone';
+import {getUserData} from '../../../mixins/user-controller';
 declare const dayjs: any;
 
 /**
@@ -451,6 +454,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               label="[[getLabel('users_notified', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('users_notified', basePermissionPath)]]"
               options="[[usersNotifiedOptions]]"
+              load-data-method="[[loadUsersDropdownOptions]]"
+              preserve-search-on-close
               option-label="name"
               option-value="id"
               selected-values="{{usersNotifiedIDs}}"
@@ -562,6 +567,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Array})
   usersNotifiedIDs: any[] = [];
 
+  @property({type: Object})
+  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+
   static get observers() {
     return [
       '_errorHandler(errorObject)',
@@ -578,6 +586,23 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     super.connectedCallback();
     (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
     this.addEventListener('agreement-loaded', this._agreementLoaded);
+    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
+    const endpoint = clone(famEndpoints.users);
+    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
+    return sendRequest({
+      method: 'GET',
+      endpoint: {
+        url: endpoint.url
+      }
+    }).then((resp: GenericObject) => {
+      const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
+      this.set('users', data);
+      this.setUsersNotifiedOptionsAndIDs();
+      return resp;
+    });
   }
 
   _setEngagementTypeObject(e) {
@@ -618,16 +643,19 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     if (!this.users) {
       this.set('users', getStaticData('users') || []);
     }
-    this.setUsersNotifiedIDs();
+    this.setUsersNotifiedOptionsAndIDs(true);
   }
 
-  setUsersNotifiedIDs() {
+  setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
     const availableUsers = [...this.users];
     const notifiedUsers = this.get('data.users_notified') || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
     this.set('usersNotifiedOptions', availableUsers);
-    const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
-    this.set('usersNotifiedIDs', usersNotifiedIDs);
+    if (setSavedUsersIDs) {
+      // on the first call(after `data` is set), need to set usersNotifiedIDs (the IDs of the already saved users)
+      const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
+      this.set('usersNotifiedIDs', usersNotifiedIDs);
+    }
   }
 
   populateUsersNotifiedDropDown() {
@@ -844,7 +872,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _contractEndDateHasChanged(event: CustomEvent) {
-    if(!this.get('data.agreement.id')) {
+    if (!this.get('data.agreement.id')) {
       return;
     }
     const selectedDate = event.detail.date;

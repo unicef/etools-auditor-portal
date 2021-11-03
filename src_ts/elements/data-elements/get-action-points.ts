@@ -1,7 +1,7 @@
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
-import {getEndpoint} from '../app-config/endpoints-controller';
+import {getEndpoint} from '../config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class GetActionPoints extends PolymerElement {

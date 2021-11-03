@@ -11,11 +11,11 @@ import '@polymer/paper-input/paper-textarea.js';
 import pickBy from 'lodash-es/pickBy';
 import each from 'lodash-es/each';
 
-import CommonMethodsMixin from '../../../app-mixins/common-methods-mixin';
-import {getChoices} from '../../../app-mixins/permission-controller';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import {getChoices} from '../../../mixins/permission-controller';
 
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {moduleStyles} from '../../../styles/module-styles';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 

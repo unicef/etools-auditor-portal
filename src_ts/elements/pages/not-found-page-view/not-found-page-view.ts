@@ -1,7 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {fireEvent} from '../../utils/fire-custom-event';
 import '@polymer/paper-styles/element-styles/paper-material-styles';
-import {sharedStyles} from '../../styles-elements/shared-styles';
+import {sharedStyles} from '../../styles/shared-styles';
 
 class NotFoundPageView extends PolymerElement {
   static get template() {

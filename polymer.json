@@ -1,19 +1,15 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/elements/core-elements/app-shell-element/app-shell.js",
-  "sources": [
-    "src/**/*",
-    "assets/**/*",
-    "package.json"
-  ],
+  "shell": "src/app-shell.js",
+  "sources": ["src/**/*", "assets/**/*", "package.json"],
   "fragments": [
     "src/elements/pages/not-found-page-view/not-found-page-view.js",
-    "src/elements/pages/engagements-page-components/engagements-page-main/engagements-page-main.js",
-    "src/elements/pages/micro-assessments-page-components/micro-assessments-page-main/micro-assessments-page-main.js",
-    "src/elements/pages/spot-checks-page-components/spot-checks-page-main/spot-checks-page-main.js",
-    "src/elements/pages/audits-page-components/audits-page-main/audits-page-main.js",
-    "src/elements/pages/special-audits-page-components/special-audits-page-main/special-audits-page-main.js",
-    "src/elements/pages/staff-sc-page-components/staff-sc-page-main/staff-sc-page-main.js"
+    "src/elements/pages/engagements/engagements-page-main.js",
+    "src/elements/pages/micro-assessments/micro-assessments-page-main.js",
+    "src/elements/pages/spot-checks/spot-checks-page-main.js",
+    "src/elements/pages/audits/audits-page-main.js",
+    "src/elements/pages/special-audits/special-audits-page-main.js",
+    "src/elements/pages/staff-sc/staff-sc-page-main.js"
   ],
   "extraDependencies": [
     "manifest.json",
@@ -26,10 +22,7 @@
   "builds": [
     {
       "name": "esm-bundled",
-      "browserCapabilities": [
-        "es2015",
-        "modules"
-      ],
+      "browserCapabilities": ["es2015", "modules"],
       "js": {
         "minify": true
       },
@@ -51,9 +44,7 @@
   "moduleResolution": "node",
   "npm": true,
   "lint": {
-    "rules": [
-      "polymer-3"
-    ],
-    "ignoreWarnings": []
+    "rules": ["polymer-3"],
+    "ignoreWarnings": ["databinding-calls-must-be-functions"]
   }
 }

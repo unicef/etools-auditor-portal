@@ -2,7 +2,7 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
 import {fireEvent} from '../utils/fire-custom-event';
 import findIndex from 'lodash-es/findIndex';
-import {getEndpoint} from '../app-config/endpoints-controller';
+import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 

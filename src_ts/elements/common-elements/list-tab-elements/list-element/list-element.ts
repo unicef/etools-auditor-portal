@@ -12,13 +12,13 @@ declare const dayjs: any;
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 
-import LocalizationMixin from '../../../app-mixins/localization-mixin';
+import LocalizationMixin from '../../../mixins/localization-mixin';
 
-import {sharedStyles} from '../../../styles-elements/shared-styles';
-import {moduleStyles} from '../../../styles-elements/module-styles';
-import {tabInputsStyles} from '../../../styles-elements/tab-inputs-styles';
+import {sharedStyles} from '../../../styles/shared-styles';
+import {moduleStyles} from '../../../styles/module-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import '../../insert-html/insert-html';
-import {getChoices} from '../../../app-mixins/permission-controller';
+import {getChoices} from '../../../mixins/permission-controller';
 /**
  * @polymer
  * @customElement
@@ -303,9 +303,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
                   <div class$="row-details-content w[[item.size]]">
                     <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
 
-                    <template is="dom-if" if="[[_getValue(item, data)]]">
-                      [[_getValue(item, data)]]
-                    </template>
+                    <template is="dom-if" if="[[_getValue(item, data)]]"> [[_getValue(item, data)]] </template>
 
                     <template is="dom-if" if="[[!_getValue(item, data)]]">
                       <span class="">–</span>
