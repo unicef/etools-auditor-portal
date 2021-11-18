@@ -746,8 +746,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   _validEmailAddress(emailInput) {
     const value = trim(emailInput.value);
     const required = emailInput.required;
-    // eslint-disable-next-line
+
     const re =
+      // eslint-disable-next-line
       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (required && !value) {
