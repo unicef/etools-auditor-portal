@@ -192,13 +192,13 @@ class ListElement extends LocalizationMixin(PolymerElement) {
         }
         .wrap-text {
           white-space: pre-wrap;
-          word-wrap: break-word;
           max-height: 50px;
           height: 50px;
           line-height: 10px;
           vertical-align: middle;
           display: flex;
           word-break: break-word;
+          width: calc(100% + 50px);
         }
       </style>
 
