@@ -520,7 +520,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'E-mail Address',
       labelPath: 'staff_members.user.email',
-      name: 'user.email'
+      name: 'user.email',
+      customCss: 'wrap-text'
     }
   ];
 
