@@ -495,7 +495,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'Position',
       labelPath: 'staff_members.user.profile.job_title',
-      name: 'user.job_title'
+      name: 'user.profile.job_title'
     },
     {
       size: 20,
@@ -513,7 +513,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'Phone Number',
       labelPath: 'staff_members.user.profile.phone_number',
-      name: 'user.phone_number'
+      name: 'user.profile.phone_number'
     },
     {
       size: 20,

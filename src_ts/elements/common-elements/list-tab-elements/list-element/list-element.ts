@@ -195,10 +195,15 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           max-height: 50px;
           height: 50px;
           line-height: 10px;
-          vertical-align: middle;
           display: flex;
           word-break: break-word;
-          width: calc(100% + 50px);
+          width: 100%;
+          justify-content: left;
+          align-items: center;
+        }
+        .truncate div {
+          padding-right: 5px;
+          overflow: hidden;
         }
       </style>
 
@@ -236,7 +241,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <span class$="[[getCellClass(item)]]">
                   <template is="dom-if" if="[[_getValue(item, data)]]">
-                    [[_getValue(item, data)]]
+                    <div>[[_getValue(item, data)]]</div>
                     <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                   </template>
 
