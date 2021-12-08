@@ -25,7 +25,8 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
       <paper-menu-button
                 id="dropdown" vertical-align="top"
                 vertical-offset="56"
-                horizontal-align="right">
+                horizontal-align="right"
+                title="[[country.name]]">
             <paper-button slot="dropdown-trigger" on-tap="_toggleOpened">
                 <div class="layout-horizontal">
                    <span class="dropdown-text">[[country.name]]</span>

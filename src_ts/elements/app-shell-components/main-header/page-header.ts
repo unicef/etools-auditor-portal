@@ -100,11 +100,15 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
             country-id="[[user.country.id]]"
           ></countries-dropdown>
 
-          <support-btn></support-btn>
+          <support-btn title="Support"></support-btn>
 
-          <etools-profile-dropdown profile="[[user]]" on-sign-out="_signOut"></etools-profile-dropdown>
+          <etools-profile-dropdown
+            title="Profile and Sign out"
+            profile="[[user]]"
+            on-sign-out="_signOut"
+          ></etools-profile-dropdown>
 
-          <paper-icon-button id="refresh" icon="refresh" on-tap="refreshBtnclicked"></paper-icon-button>
+          <paper-icon-button title="Refresh" id="refresh" icon="refresh" on-tap="refreshBtnclicked"></paper-icon-button>
         </div>
       </app-toolbar>
     `;
