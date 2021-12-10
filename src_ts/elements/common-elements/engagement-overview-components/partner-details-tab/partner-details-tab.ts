@@ -7,7 +7,6 @@ import '@polymer/paper-input/paper-input-container.js';
 import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';

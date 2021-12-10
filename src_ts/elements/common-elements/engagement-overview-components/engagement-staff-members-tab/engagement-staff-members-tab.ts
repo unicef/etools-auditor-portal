@@ -10,7 +10,6 @@ import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
@@ -496,7 +495,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'Position',
       labelPath: 'staff_members.user.profile.job_title',
-      name: 'user.job_title'
+      name: 'user.profile.job_title'
     },
     {
       size: 20,
@@ -514,13 +513,14 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'Phone Number',
       labelPath: 'staff_members.user.profile.phone_number',
-      name: 'user.phone_number'
+      name: 'user.profile.phone_number'
     },
     {
       size: 20,
       label: 'E-mail Address',
       labelPath: 'staff_members.user.email',
-      name: 'user.email'
+      name: 'user.email',
+      customCss: 'wrap-text'
     }
   ];
 
@@ -747,8 +747,10 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   _validEmailAddress(emailInput) {
     const value = trim(emailInput.value);
     const required = emailInput.required;
-    // eslint-disable-next-line
-    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    const re =
+      // eslint-disable-next-line
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (required && !value) {
       this.errors = {user: {email: 'Email is required'}};
