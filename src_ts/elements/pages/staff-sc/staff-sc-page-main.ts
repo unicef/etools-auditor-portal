@@ -128,6 +128,20 @@ class StaffScPageMain extends PolymerElement {
       label: 'Date IP was contacted after',
       query: 'partner_contacted_at__gte',
       hideSearch: true
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'draft report issued to ip before',
+      label: 'Draft Report Issued to IP before',
+      query: 'date_of_draft_report_to_ip__lte',
+      hideSearch: true
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'draft report issued to ip after',
+      label: 'Draft Report Issued to IP after',
+      query: 'date_of_draft_report_to_ip__gte',
+      hideSearch: true
     }
   ];
 
