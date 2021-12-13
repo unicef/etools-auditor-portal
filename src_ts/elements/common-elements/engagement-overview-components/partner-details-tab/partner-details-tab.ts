@@ -102,7 +102,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               readonly
             >
             </paper-input>
-    
           </div>
         </div>
 
