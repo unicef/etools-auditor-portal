@@ -135,8 +135,8 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
                   <div class="row-data">
                     <paper-checkbox on-tap="_toggleChecked">
                     </paper-checkbox>
-                    <span class="pd">[[_getReferenceNumber(item.agreement_reference_number)]]
-                      <paper-tooltip>[[_getReferenceNumber(item.agreement_reference_number)]]</paper-tooltip>
+                    <span class="pd">
+                      [[_getReferenceNumber(item.agreement_reference_number)]]
                     </span>
                     <span class="doc-type">[[item.file_type]]</span>
                     <div class="document-link">
@@ -144,10 +144,9 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
                                 class="download-icon">
                       </iron-icon>
                       <a href$="[[item.file_link]]"
-                              class="truncate"
-                              target="_blank">[[item.filename]]
-                            </a>
-                      <paper-tooltip>[[item.filename]]</paper-tooltip>
+                        class="truncate"
+                        target="_blank">[[item.filename]]
+                      </a>
                     </div>
                     <span class="w12">[[item.created]]</span>
                   </div>

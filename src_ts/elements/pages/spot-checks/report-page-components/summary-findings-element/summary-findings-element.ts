@@ -89,7 +89,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
           >
             <div slot="custom">
               [[getCategoryDisplayName(item.category_of_observation, '--')]]
-              <paper-tooltip offset="0"> [[getCategoryDisplayName(item.category_of_observation)]] </paper-tooltip>
             </div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
@@ -153,9 +152,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   hide-search
                 >
                 </etools-dropdown>
-                <paper-tooltip offset="0">
-                  [[getCategoryDisplayName(editedItem.category_of_observation)]]
-                </paper-tooltip>
               </div>
             </div>
 

@@ -246,8 +246,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               on-blur="searchBlur"
               on-input="_searchChanged"
             >
-              <iron-icon icon="search" class="panel-button" slot="prefix"></iron-icon>
+              <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
             </paper-input>
+            <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
           </div>
         </div>
 
@@ -341,7 +342,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
                 >
                   <iron-icon slot="prefix" icon="communication:email"></iron-icon>
                 </paper-input>
-                <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.email)]]</paper-tooltip>
                 <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading">
                 </etools-loading>
               </div>
@@ -402,7 +402,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
                 on-tap="_resetFieldError"
               >
               </paper-input>
-              <paper-tooltip offset="0">[[_getTitleValue(editedItem.user.profile.job_title)]]</paper-tooltip>
             </div>
 
             <div class="row-h group">

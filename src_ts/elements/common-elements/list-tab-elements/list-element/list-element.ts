@@ -154,9 +154,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           white-space: nowrap;
           text-overflow: ellipsis;
         }
-        :host div[list-item] {
-          overflow: var(--list-item-overflow, hidden);
-        }
         :host([no-additional]) div[list-item] {
           padding: 0 16px 0 24px !important;
         }
@@ -227,7 +224,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
                 <span class="truncate">
                   <template is="dom-if" if="[[_getValue(item, data)]]">
                     [[_getValue(item, data)]] <iron-icon icon="icons:launch"></iron-icon>
-                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                   </template>
 
                   <template is="dom-if" if="[[!_getValue(item, data)]]">
@@ -241,8 +237,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <span class$="[[getCellClass(item)]]">
                   <template is="dom-if" if="[[_getValue(item, data)]]">
-                    <div>[[_getValue(item, data)]]</div>
-                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                    [[_getValue(item, data)]]
                   </template>
 
                   <template is="dom-if" if="[[!_getValue(item, data)]]">

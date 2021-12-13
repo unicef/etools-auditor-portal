@@ -109,10 +109,9 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
               <span class$="[[_getClassFor('documentType')]]">[[_getAttachmentType(item)]]</span>
               <div class$="[[_getClassFor('document')]]">
                 <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                <a href$="[[item.attachment]]" class="truncate" target="_blank"
+                <a href$="[[item.attachment]] class="truncate" target="_blank"
                   >[[getFileNameFromURL(item.attachment)]]
                 </a>
-                <paper-tooltip offset="0">[[getFileNameFromURL(item.attachment)]]</paper-tooltip>
               </div>
               <span class="delete-icon" hidden$="[[isTabReadonly]]">
                 <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
@@ -135,7 +134,6 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
                   <a href$="[[linkedAttachment.url]]" class="truncate" target="_blank"
                     >[[linkedAttachment.filename]]
                   </a>
-                  <paper-tooltip offset="0">[[linkedAttachment.filename]]</paper-tooltip>
                 </div>
                 <a on-click="_openDeleteLinkDialog" class="delete-icon">
                   <iron-icon hidden$="[[isTabReadonly]]" icon="icons:cancel"></iron-icon>

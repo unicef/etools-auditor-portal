@@ -90,7 +90,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
             </template>
             <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading">
             </etools-loading>
-            <paper-tooltip offset="0">[[engagement.partner.name]]</paper-tooltip>
           </div>
           <div class="input-container input-container-m">
             <!-- Partner Address -->
@@ -103,7 +102,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               readonly
             >
             </paper-input>
-            <paper-tooltip offset="0">[[_setPartnerAddress(partner)]]</paper-tooltip>
+    
           </div>
         </div>
 
@@ -119,7 +118,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               readonly
             >
             </paper-input>
-            <paper-tooltip offset="0">[[partner.phone_number]]</paper-tooltip>
           </div>
 
           <div class="input-container">
@@ -133,7 +131,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               readonly
             >
             </paper-input>
-            <paper-tooltip offset="0">[[partner.email]]</paper-tooltip>
           </div>
 
           <div class="input-container">
@@ -158,7 +155,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               dynamic-align
             >
             </etools-dropdown>
-            <paper-tooltip offset="0">[[authorizedOfficer.fullName]]</paper-tooltip>
           </div>
         </div>
 
