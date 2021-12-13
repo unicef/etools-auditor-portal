@@ -1,11 +1,10 @@
-FROM node:12-alpine3.12 as fam_builder
+FROM node:12.22.7-alpine3.12 as fam_builder
 RUN apk update
 RUN apk add --update bash
-RUN npm install -g npm@7.23.0
 
 RUN apk add git
 RUN npm install -g --unsafe-perm polymer-cli
-RUN npm install -g typescript
+RUN npm install -g typescript@4.x
 
 WORKDIR /tmp
 ADD package.json /tmp/
@@ -20,13 +19,13 @@ RUN cp -a /tmp/node_modules /code/node_modules
 
 RUN npm run build
 
-FROM node:12-alpine3.12
+FROM node:12.22.7-alpine3.12
 RUN apk update
 RUN apk add --update bash
 
 WORKDIR /code
-RUN npm install express --no-save
-RUN npm install browser-capabilities@1.1.3 --no-save
+RUN npm install express@4.17.1
+RUN npm install browser-capabilities@1.1.3
 COPY --from=fam_builder /code/express.js /code/express.js
 COPY --from=fam_builder /code/build /code/build
 EXPOSE 8080
