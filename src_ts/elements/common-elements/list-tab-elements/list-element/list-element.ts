@@ -236,9 +236,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
             <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <span class$="[[getCellClass(item)]]">
-                  <template is="dom-if" if="[[_getValue(item, data)]]">
-                    [[_getValue(item, data)]]
-                  </template>
+                  <template is="dom-if" if="[[_getValue(item, data)]]"> [[_getValue(item, data)]] </template>
 
                   <template is="dom-if" if="[[!_getValue(item, data)]]">
                     <span class="">–</span>

@@ -87,9 +87,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
             has-collapse
             no-animation
           >
-            <div slot="custom">
-              [[getCategoryDisplayName(item.category_of_observation, '--')]]
-            </div>
+            <div slot="custom">[[getCategoryDisplayName(item.category_of_observation, '--')]]</div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
               <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>

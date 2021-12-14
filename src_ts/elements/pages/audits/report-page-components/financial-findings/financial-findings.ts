@@ -82,9 +82,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
             has-collapse
             no-animation
           >
-            <div slot="custom">
-              [[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
-            </div>
+            <div slot="custom">[[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]</div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
               <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>

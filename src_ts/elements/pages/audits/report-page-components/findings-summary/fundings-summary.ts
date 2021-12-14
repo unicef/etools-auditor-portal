@@ -545,9 +545,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   customValidation() {
-    const ffElement = (this.$['financial-findings'] as unknown) as EtoolsCurrencyAmountInput;
+    const ffElement = this.$['financial-findings'] as unknown as EtoolsCurrencyAmountInput;
     const ffNumber = ffElement && toNumber(ffElement.value);
-    const aeElement = (this.$['audited-expenditure'] as unknown) as EtoolsCurrencyAmountInput;
+    const aeElement = this.$['audited-expenditure'] as unknown as EtoolsCurrencyAmountInput;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
     if (aeNumber < ffNumber) {
