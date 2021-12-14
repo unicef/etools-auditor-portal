@@ -108,10 +108,14 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
               <span class$="[[_getClassFor('date')]]">[[prettyDate(item.created)]]</span>
               <span class$="[[_getClassFor('documentType')]]">[[_getAttachmentType(item)]]</span>
               <div class$="[[_getClassFor('document')]]">
-                <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                <a href$="[[item.attachment]] class="truncate" target="_blank"
-                  >[[getFileNameFromURL(item.attachment)]]
-                </a>
+                <div class="wrap-text">
+                  <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                  <a href$="[[item.attachment]] class="truncate" 
+                    title$="[[getFileNameFromURL(item.attachment)]]" 
+                    target="_blank"
+                    >[[getFileNameFromURL(item.attachment)]]
+                  </a>
+                </div>
               </div>
               <span class="delete-icon" hidden$="[[isTabReadonly]]">
                 <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
@@ -130,10 +134,14 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
                 <span class$="[[_getClassFor('date')]]">[[prettyDate(linkedAttachment.created)]]</span>
                 <span class$="[[_getClassFor('documentType')]]">[[linkedAttachment.file_type]]</span>
                 <div class$="[[_getClassFor('document')]]">
-                  <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                  <a href$="[[linkedAttachment.url]]" class="truncate" target="_blank"
-                    >[[linkedAttachment.filename]]
-                  </a>
+                  <div class="wrap-text">
+                    <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                    <a href$="[[linkedAttachment.url]]" 
+                      title$="[[linkedAttachment.filename]]" 
+                      class="truncate" target="_blank"
+                      >[[linkedAttachment.filename]]
+                    </a>
+                  </div>
                 </div>
                 <a on-click="_openDeleteLinkDialog" class="delete-icon">
                   <iron-icon hidden$="[[isTabReadonly]]" icon="icons:cancel"></iron-icon>
