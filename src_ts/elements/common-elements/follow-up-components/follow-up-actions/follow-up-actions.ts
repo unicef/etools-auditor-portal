@@ -50,6 +50,7 @@ import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
 import famEndpoints from '../../../config/endpoints';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * @polymer
@@ -702,7 +703,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       }
       const isObj = isObject(value) && !isArray(value);
       if (isObj) {
-        return +value.id !== +get(this, `originalEditedObj.${fieldName}.id`, 0);
+        return +(value as AnyObject).id !== +get(this, `originalEditedObj.${fieldName}.id`, 0);
       } else {
         return !isEqual(value, this.originalEditedObj![fieldName]);
       }
@@ -806,7 +807,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     return every(this.originalEditedObj, (value, key) => {
       const isObj = isObject(value);
       if (isObj) {
-        return !value.id || +value.id === +get(this, `editedItem.${key}.id`);
+        return !(value as AnyObject).id || +(value as AnyObject).id === +get(this, `editedItem.${key}.id`);
       } else {
         return value === this.editedItem[key];
       }
