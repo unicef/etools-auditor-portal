@@ -110,7 +110,7 @@ class SearchAndFilter extends PolymerElement {
                     slot="item-icon"
                     hidden$="[[!_isSelected(item, availableFilters)]]"
                   ></iron-icon>
-                  <paper-item-body>[[item.name]]</paper-item-body>
+                  <paper-item-body>[[item.label]]</paper-item-body>
                 </paper-icon-item>
               </template>
             </paper-listbox>
