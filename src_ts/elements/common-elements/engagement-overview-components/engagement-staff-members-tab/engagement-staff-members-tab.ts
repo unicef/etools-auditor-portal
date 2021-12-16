@@ -513,7 +513,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'Phone Number',
       labelPath: 'staff_members.user.profile.phone_number',
-      name: 'user.profile.phone_number'
+      name: 'user.profile.phone_number',
+      customCss: 'wrap-text'
     },
     {
       size: 20,
