@@ -4,6 +4,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -15,8 +16,6 @@
     "outDir": "src",
     "rootDir": "src_ts"
   },
-  "include": [
-    "src_ts/**/*.ts"
-  ],
+  "include": ["src_ts/**/*.ts"],
   "exclude": []
 }

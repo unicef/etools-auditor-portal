@@ -46,7 +46,7 @@ class ListHeader extends LocalizationMixin(PolymerElement) {
         :host .heading-row-header .local-headings {
           display: inline-block;
           box-sizing: border-box;
-          padding-right: 10px;
+          padding-right: 16px;
           font-weight: 500;
           color: var(--gray-mid);
           overflow: hidden;
