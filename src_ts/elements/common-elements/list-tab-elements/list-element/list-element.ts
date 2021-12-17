@@ -194,7 +194,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           white-space: pre-wrap;
           max-height: 50px;
           height: 50px;
-          line-height: 14px;
+          line-height: 12px;
           display: flex;
           word-break: break-word;
           width: 100%;
