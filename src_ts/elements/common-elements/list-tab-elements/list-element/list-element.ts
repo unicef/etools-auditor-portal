@@ -192,14 +192,13 @@ class ListElement extends LocalizationMixin(PolymerElement) {
         }
         .wrap-text {
           white-space: pre-wrap;
-          max-height: 50px;
-          height: 50px;
-          line-height: 12px;
+          line-height: 14px;
           display: flex;
           word-break: break-word;
           width: 100%;
           justify-content: left;
           align-items: center;
+          padding: 4px 0px;
         }
         .truncate div {
           overflow: hidden;
