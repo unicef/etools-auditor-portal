@@ -215,6 +215,9 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _clearFilters(): void {
+    if (!window.location.href.includes('reload=true')) {
+      return;
+    }
     if (this.usedFilters.length) {
       const queryObject: GenericObject = {};
       this.usedFilters.forEach((filter) => {
