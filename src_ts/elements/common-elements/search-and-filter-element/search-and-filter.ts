@@ -215,6 +215,8 @@ class SearchAndFilter extends PolymerElement {
   }
 
   _clearFilters(): void {
+    // clear filters only if need to reload the page
+    // preserve filters if navigate from details to overview with the back button
     if (!window.location.href.includes('reload=true')) {
       return;
     }
