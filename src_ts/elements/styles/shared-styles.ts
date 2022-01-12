@@ -75,7 +75,7 @@ export const sharedStyles = html`
     }
 
     .wrap-text {
-      white-space: pre-wrap;
+      white-space: normal;
       line-height: 14px;
       display: flex;
       word-break: break-word;
