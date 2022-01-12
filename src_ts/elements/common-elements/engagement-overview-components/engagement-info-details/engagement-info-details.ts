@@ -155,7 +155,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               readonly
             >
             </paper-input>
-            <paper-tooltip offset="0">[[data.agreement.auditor_firm.name]]</paper-tooltip>
           </div>
 
           <div class="input-container" hidden$="[[_hideField('po_item', basePermissionPath)]]">
@@ -178,7 +177,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               hide-search
             >
             </etools-dropdown>
-            <paper-tooltip offset="0">[[data.po_item.number]]</paper-tooltip>
           </div>
 
           <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
@@ -280,10 +278,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 Statement of Expenditure</span
               >
             </etools-info-tooltip>
-
-            <paper-tooltip for="engagementType" offset="0">
-              [[_getEngagementTypeLabel(data.engagement_type)]]
-            </paper-tooltip>
           </div>
 
           <template is="dom-if" if="{{showInput}}" restamp>

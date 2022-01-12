@@ -103,7 +103,6 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   readonly
                 >
                 </paper-input>
-                <paper-tooltip offset="0">[[editedItem.partner.name]]</paper-tooltip>
               </div>
 
               <div class="input-container">

@@ -71,7 +71,6 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                     allow-outside-scroll
                   >
                   </etools-dropdown>
-                  <paper-tooltip offset="0">[[item.risk.value]]</paper-tooltip>
                 </template>
 
                 <template is="dom-if" if="{{!editMode}}">
@@ -132,7 +131,6 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                       allow-outside-scroll
                     >
                     </etools-dropdown>
-                    <paper-tooltip offset="0">[[item.risk.value]]</paper-tooltip>
                   </template>
 
                   <template is="dom-if" if="{{!editMode}}">

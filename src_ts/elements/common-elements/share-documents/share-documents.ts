@@ -14,6 +14,7 @@ import clone from 'lodash-es/clone';
 import remove from 'lodash-es/remove';
 import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
+import {sharedStyles} from '../../styles/shared-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
@@ -33,8 +34,7 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
   static get template() {
     return html`
-
-      ${moduleStyles} ${tabInputsStyles}
+      ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
       <style>
           :host {
             overflow: hidden;
@@ -135,19 +135,21 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
                   <div class="row-data">
                     <paper-checkbox on-tap="_toggleChecked">
                     </paper-checkbox>
-                    <span class="pd">[[_getReferenceNumber(item.agreement_reference_number)]]
-                      <paper-tooltip>[[_getReferenceNumber(item.agreement_reference_number)]]</paper-tooltip>
+                    <span class="pd">
+                      [[_getReferenceNumber(item.agreement_reference_number)]]
                     </span>
                     <span class="doc-type">[[item.file_type]]</span>
                     <div class="document-link">
-                      <iron-icon icon="icons:attachment"
-                                class="download-icon">
-                      </iron-icon>
-                      <a href$="[[item.file_link]]"
-                              class="truncate"
-                              target="_blank">[[item.filename]]
-                            </a>
-                      <paper-tooltip>[[item.filename]]</paper-tooltip>
+                      <div class="wrap-text">
+                        <iron-icon icon="icons:attachment"
+                                  class="download-icon">
+                        </iron-icon>
+                        <a href$="[[item.file_link]]"
+                          class="truncate" 
+                          title$="[[item.filename]]"
+                          target="_blank">[[item.filename]]
+                        </a>
+                      </div>
                     </div>
                     <span class="w12">[[item.created]]</span>
                   </div>
