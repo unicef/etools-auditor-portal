@@ -75,13 +75,14 @@ export const sharedStyles = html`
     }
 
     .wrap-text {
-      white-space: normal;
-      line-height: 1.2;
+      white-space: pre-wrap;
+      line-height: 14px;
       display: flex;
       word-break: break-word;
       width: 100%;
       justify-content: left;
       align-items: center;
+      padding: 4px 0px;
     }
 
     .wrap-text iron-icon {

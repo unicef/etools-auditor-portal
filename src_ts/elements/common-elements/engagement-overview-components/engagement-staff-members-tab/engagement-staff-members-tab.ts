@@ -494,25 +494,29 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       size: 20,
       label: 'Position',
       labelPath: 'staff_members.user.profile.job_title',
-      name: 'user.profile.job_title'
+      name: 'user.profile.job_title',
+      customCss: 'wrap-text'
     },
     {
       size: 20,
       label: 'First Name',
       labelPath: 'staff_members.user.first_name',
-      name: 'user.first_name'
+      name: 'user.first_name',
+      customCss: 'wrap-text'
     },
     {
       size: 20,
       label: 'Last Name',
       labelPath: 'staff_members.user.last_name',
-      name: 'user.last_name'
+      name: 'user.last_name',
+      customCss: 'wrap-text'
     },
     {
       size: 20,
       label: 'Phone Number',
       labelPath: 'staff_members.user.profile.phone_number',
-      name: 'user.profile.phone_number'
+      name: 'user.profile.phone_number',
+      customCss: 'wrap-text'
     },
     {
       size: 20,

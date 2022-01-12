@@ -55,7 +55,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           overflow: hidden;
           font-size: 13px;
           text-overflow: ellipsis;
-          padding-right: 10px;
+          padding-right: 16px;
           padding-left: 1px;
           box-sizing: border-box;
           vertical-align: var(--multiline-align, middle);
@@ -188,7 +188,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
         }
         .truncate div {
-          padding-right: 5px;
           overflow: hidden;
         }
       </style>
