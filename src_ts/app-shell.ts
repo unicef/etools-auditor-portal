@@ -92,7 +92,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
           <iron-overlay-backdrop id="appHeaderOverlay"></iron-overlay-backdrop>
           <app-header slot="header" fixed shadow>
-            <page-header id="pageheader" title="eTools" user="[[user]]"></page-header>
+            <page-header id="pageheader" user="[[user]]"></page-header>
           </app-header>
 
           <main role="main" class="main-content">

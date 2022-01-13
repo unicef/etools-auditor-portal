@@ -196,15 +196,29 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     {
       type: FilterTypes.Date,
       name: 'date IP was contacted before',
-      label: 'Date IP was contacted before',
+      label: 'Date IP Was Contacted Before',
       query: 'partner_contacted_at__lte',
       hideSearch: true
     },
     {
       type: FilterTypes.Date,
       name: 'date IP was contacted after',
-      label: 'Date IP was contacted after',
+      label: 'Date IP Was Contacted After',
       query: 'partner_contacted_at__gte',
+      hideSearch: true
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'draft report issued to ip before',
+      label: 'Draft Report Issued to IP Before',
+      query: 'date_of_draft_report_to_ip__lte',
+      hideSearch: true
+    },
+    {
+      type: FilterTypes.Date,
+      name: 'draft report issued to ip after',
+      label: 'Draft Report Issued to IP After',
+      query: 'date_of_draft_report_to_ip__gte',
       hideSearch: true
     }
   ];

@@ -34,7 +34,6 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           <iron-icon id="menu-header-top-icon" icon="fam-main-icon:fam-icon" on-tap="_toggleSmallMenu"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
-
         <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
 
         <span class="chev-right">
@@ -52,33 +51,33 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
         <iron-selector selected="[[selectedOption]]" attr-for-selected="menu-name" role="navigation">
           <a class="nav-menu-item" menu-name="engagements" href$="[[rootPath]]engagements/list?reload=true">
             <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
-            <paper-tooltip for="iconEngagements" position="right"> Engagements </paper-tooltip>
             <div class="name">Engagements</div>
           </a>
+          <paper-tooltip for="iconEngagements" position="right"> Engagements </paper-tooltip>
+
           <template is="dom-if" if="[[showSscPage]]">
             <a class="nav-menu-item" menu-name="staff-sc" href$="[[rootPath]]staff-sc/list?reload=true">
               <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
-              <paper-tooltip for="iconStaffSpotCk" position="right"> Staff Spot Checks </paper-tooltip>
               <div class="name">Staff Spot Checks</div>
             </a>
+            <paper-tooltip for="iconStaffSpotCk" position="right"> Staff Spot Checks </paper-tooltip>
           </template>
         </iron-selector>
-
         <div class="nav-menu-item section-title">
           <span>eTools Community Channels</span>
         </div>
 
         <a class="nav-menu-item lighter-item no-transform" href="[[etoolsNowLink]]" target="_blank">
           <iron-icon id="power-bi-icon" icon="ap-icons:power-bi"></iron-icon>
-          <paper-tooltip for="power-bi-icon" position="right"> Implementation Intelligence </paper-tooltip>
           <div class="name">Implementation Intelligence</div>
         </a>
+        <paper-tooltip for="power-bi-icon" position="right"> Implementation Intelligence </paper-tooltip>
 
         <a class="nav-menu-item lighter-item" href="http://etools.zendesk.com" target="_blank">
           <iron-icon id="knoledge-icon" icon="maps:local-library"></iron-icon>
-          <paper-tooltip for="knoledge-icon" position="right"> Knowledge base </paper-tooltip>
           <div class="name">Knowledge base</div>
         </a>
+        <paper-tooltip for="knoledge-icon" position="right"> Knowledge base </paper-tooltip>
 
         <a
           class="nav-menu-item lighter-item"
@@ -86,15 +85,15 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           target="_blank"
         >
           <iron-icon id="discussion-icon" icon="icons:question-answer"></iron-icon>
-          <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
           <div class="name">Discussion</div>
         </a>
+        <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
 
         <a class="nav-menu-item lighter-item last-one" href="http://etoolsinfo.unicef.org" target="_blank">
           <iron-icon id="information-icon" icon="icons:info"></iron-icon>
-          <paper-tooltip for="information-icon" position="right"> Information </paper-tooltip>
           <div class="name">Information</div>
         </a>
+        <paper-tooltip for="information-icon" position="right"> Information </paper-tooltip>
       </div>
     `;
   }

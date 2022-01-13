@@ -55,7 +55,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           overflow: hidden;
           font-size: 13px;
           text-overflow: ellipsis;
-          padding-right: 10px;
+          padding-right: 16px;
           padding-left: 1px;
           box-sizing: border-box;
           vertical-align: var(--multiline-align, middle);
@@ -190,6 +190,19 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           background-color: #eee;
           border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
         }
+        .wrap-text {
+          white-space: pre-wrap;
+          line-height: 14px;
+          display: flex;
+          word-break: break-word;
+          width: 100%;
+          justify-content: left;
+          align-items: center;
+          padding: 4px 0px;
+        }
+        .truncate div {
+          overflow: hidden;
+        }
       </style>
 
       <div list-item id="wrapper">
@@ -224,9 +237,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
 
             <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                <span class="truncate">
+                <span class$="[[getCellClass(item)]]">
                   <template is="dom-if" if="[[_getValue(item, data)]]">
-                    [[_getValue(item, data)]]
+                    <div>[[_getValue(item, data)]]</div>
                     <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                   </template>
 
@@ -523,6 +536,10 @@ class ListElement extends LocalizationMixin(PolymerElement) {
       .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
 
     return link.indexOf('undefined') === -1 ? link : '#';
+  }
+
+  getCellClass(item: GenericObject) {
+    return item.customCss ? item.customCss : 'truncate';
   }
 
   _emtyObj(data) {
