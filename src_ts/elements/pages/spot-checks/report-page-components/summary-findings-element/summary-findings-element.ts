@@ -211,11 +211,14 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   placeholder="[[getPlaceholderText('findings.deadline_of_action',
                                                     basePermissionPath)]]"
                   label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
-                  value="{{editedItem.deadline_of_action}}"
+                  value="[[editedItem.deadline_of_action]]"
                   error-message="{{errors.deadline_of_action}}"
                   required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
                   disabled$="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
+                  fire-date-has-changed
+                  property-name="deadline_of_action"
+                  on-date-has-changed="deadlineDateHasChanged"
                 >
                 </datepicker-lite>
               </div>
@@ -393,6 +396,10 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
       return item;
     });
     return [data];
+  }
+
+  deadlineDateHasChanged(e: CustomEvent) {
+    this.editedItem.deadline_of_action = e.detail.date;
   }
 }
 

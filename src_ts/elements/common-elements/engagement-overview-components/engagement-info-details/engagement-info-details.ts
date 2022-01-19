@@ -228,7 +228,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               id="contactedDateInput"
               class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}}
                                 validate-field"
-              value="{{data.partner_contacted_at}}"
+              value="[[data.partner_contacted_at]]"
               label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]"
               required="[[_setRequired('partner_contacted_at', basePermissionPath)]]"
@@ -239,6 +239,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               on-tap="_resetFieldError"
               selected-date-display-format="D MMM YYYY"
               max-date="[[maxDate]]"
+              fire-date-has-changed
+              property-name="partner_contacted_at"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>
@@ -298,6 +301,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 error-message="{{errors.start_date}}"
                 on-focus="_resetFieldError"
                 on-tap="_resetFieldError"
+                fire-date-has-changed
+                property-name="start_date"
+                on-date-has-changed="dateHasChanged"
               >
               </datepicker-lite>
             </div>
@@ -322,6 +328,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 on-focus="_resetFieldError"
                 on-tap="_resetFieldError"
                 selected-date-display-format="D MMM YYYY"
+                fire-date-has-changed
+                property-name="end_date"
+                on-date-has-changed="dateHasChanged"
               >
               </datepicker-lite>
             </div>
@@ -870,7 +879,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return;
     }
     const selectedDate = event.detail.date;
-    this.set('contractExpiryDate', selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null);
+    this.contractExpiryDate = selectedDate;
   }
 
   _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
