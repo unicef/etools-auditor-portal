@@ -33,7 +33,6 @@ import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
 import {getUserData} from '../../../mixins/user-controller';
-declare const dayjs: any;
 
 /**
  * @polymer
