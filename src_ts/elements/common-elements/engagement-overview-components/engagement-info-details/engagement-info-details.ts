@@ -693,7 +693,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   resetValidationErrors() {
     this.set('errors.agreement', false);
     const el = this.shadowRoot!.querySelectorAll('.validate-field');
-    el.forEach((e: any) => e.set('invalid', false));
+    el.forEach((e: any) => (e.invalid = false));
 
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     elements.forEach((element: any) => {
