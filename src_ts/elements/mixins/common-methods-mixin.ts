@@ -233,7 +233,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     dateHasChanged(e: CustomEvent) {
       const selDate = e.detail.date;
       // @ts-ignore
-      this.data[e.target.getAttribute('property-name')] = selDate;
+      this.set('data.' + e.target.getAttribute('property-name'), selDate);
     }
   }
 
