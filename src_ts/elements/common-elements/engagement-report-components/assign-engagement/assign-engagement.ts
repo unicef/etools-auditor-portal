@@ -42,7 +42,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               id="dateVisitInput"
               class$="disabled-as-readonly [[_setRequired('date_of_field_visit', basePermissionPath)]]
                                     validate-date"
-              value="{{data.date_of_field_visit}}"
+              value="[[data.date_of_field_visit]]"
               label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
@@ -53,6 +53,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               on-tap="_resetFieldError"
               selected-date-display-format="D MMM YYYY"
               date="[[prepareDate(data.date_of_field_visit)]]"
+              fire-date-has-changed
+              property-name="date_of_field_visit"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>
@@ -63,7 +66,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               id="draftReportToIpInput"
               class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
-              value="{{data.date_of_draft_report_to_ip}}"
+              value="[[data.date_of_draft_report_to_ip]]"
               label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
@@ -75,6 +78,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               on-tap="_resetFieldError"
               selected-date-display-format="D MMM YYYY"
               max-date="[[maxDate]]"
+              fire-date-has-changed
+              property-name="date_of_draft_report_to_ip"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>
@@ -85,7 +91,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               id="commentsReceivedByIpInput"
               class$="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
-              value="{{data.date_of_comments_by_ip}}"
+              value="[[data.date_of_comments_by_ip]]"
               label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
@@ -98,6 +104,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               selected-date-display-format="D MMM YYYY"
               min-date="[[minDate(data.date_of_draft_report_to_ip)]]"
               max-date="[[maxDate]]"
+              fire-date-has-changed
+              property-name="date_of_comments_by_ip"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>
@@ -110,7 +119,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               id="draftReportUnicefInput"
               class$="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
-              value="{{data.date_of_draft_report_to_unicef}}"
+              value="[[data.date_of_draft_report_to_unicef]]"
               label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
@@ -123,6 +132,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               selected-date-display-format="D MMM YYYY"
               min-date="[[minDate(data.date_of_comments_by_ip)]]"
               max-date="[[maxDate]]"
+              fire-date-has-changed
+              property-name="date_of_draft_report_to_unicef"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>
@@ -133,7 +145,7 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               id="commentsReceivedUnicefInput"
               class$="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]
                                     disabled-as-readonly validate-date"
-              value="{{data.date_of_comments_by_unicef}}"
+              value="[[data.date_of_comments_by_unicef]]"
               label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
               placeholder="&#8212;"
               required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
@@ -146,6 +158,9 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
               selected-date-display-format="D MMM YYYY"
               min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
               max-date="[[maxDate]]"
+              fire-date-has-changed
+              property-name="date_of_comments_by_unicef"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>

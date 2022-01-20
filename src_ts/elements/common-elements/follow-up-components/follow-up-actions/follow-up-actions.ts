@@ -381,7 +381,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     id="deadlineAction"
                                     class$="[[_setRequired('due_date', editedApBase)]]
                                             disabled-as-readonly validate-input"
-                                    value="{{editedItem.due_date}}"
+                                    value="[[editedItem.due_date]]"
                                     label="[[getLabel('due_date', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('due_date', editedApBase, 'select')]]"
                                     required$="[[_setRequired('due_date', editedApBase)]]"
@@ -391,7 +391,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     error-message="{{errors.due_date}}"
                                     on-focus="_resetFieldError"
                                     on-tap="_resetFieldError"
-                                    selected-date-display-format="D MMM YYYY">
+                                    selected-date-display-format="D MMM YYYY"
+                                    fire-date-has-changed
+                                    on-date-has-changed="dueDateHasChanged"
+                                    >
                             </datepicker-lite>
                         </div>
                     </div>
@@ -842,6 +845,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
   canBeEdited(status) {
     return status !== 'completed';
+  }
+  dueDateHasChanged(e: CustomEvent) {
+    this.editedItem.due_date = e.detail.date;
   }
 }
 window.customElements.define('follow-up-actions', FollowUpActions);
