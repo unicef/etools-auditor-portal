@@ -35,6 +35,7 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
               label="[[getLabel('face_form_start_date', basePermissionPath)]]"
               value="[[data.face_form_start_date]]"
               selected-date-display-format="D MMM YYYY"
+              disabled$="[[isReadOnly('face_form_start_date', basePermissionPath)]]"
               fire-date-has-changed
               property-name="face_form_start_date"
               on-date-has-changed="dateHasChanged"
@@ -48,6 +49,7 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
               value="[[data.face_form_end_date]]"
               label="[[getLabel('face_form_end_date', basePermissionPath)]]"
               selected-date-display-format="D MMM YYYY"
+              disabled$="[[isReadOnly('face_form_end_date', basePermissionPath)]]"
               fire-date-has-changed
               property-name="face_form_end_date"
               on-date-has-changed="dateHasChanged"
