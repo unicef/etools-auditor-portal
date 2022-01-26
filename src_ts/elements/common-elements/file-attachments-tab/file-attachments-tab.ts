@@ -110,8 +110,8 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
               <div class$="[[_getClassFor('document')]]">
                 <div class="wrap-text">
                   <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                  <a href$="[[item.attachment]] class="truncate" 
-                    title$="[[getFileNameFromURL(item.attachment)]]" 
+                  <a href$="[[item.attachment]] class="truncate"
+                    title$="[[getFileNameFromURL(item.attachment)]]"
                     target="_blank"
                     >[[getFileNameFromURL(item.attachment)]]
                   </a>
@@ -136,8 +136,8 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
                 <div class$="[[_getClassFor('document')]]">
                   <div class="wrap-text">
                     <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                    <a href$="[[linkedAttachment.url]]" 
-                      title$="[[linkedAttachment.filename]]" 
+                    <a href$="[[linkedAttachment.url]]"
+                      title$="[[linkedAttachment.filename]]"
                       class="truncate" target="_blank"
                       >[[linkedAttachment.filename]]
                     </a>
@@ -165,7 +165,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
       <etools-dialog
         theme="confirmation"
         size="md"
-        opened="{{confirmDialogOpened}}"
+        opened="[[confirmDialogOpened]]"
         on-close="_deleteAttachment"
         ok-btn-text="Delete"
       >
@@ -177,12 +177,14 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
         no-padding
         keep-dialog-open
         size="md"
-        opened="{{dialogOpened}}"
+        opened="[[dialogOpened]]"
         dialog-title="[[dialogTitle]]"
         ok-btn-text="[[confirmBtnText]]"
         show-spinner="[[_showDialogSpinner(requestInProcess, uploadInProgress)]]"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_saveAttachment"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="repeatable-item-container" without-line>
           <div class="repeatable-item-content row-h">
@@ -238,7 +240,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
         theme="confirmation"
         size="md"
         link-id$="[[linkToDeleteId]]"
-        opened="{{deleteLinkOpened}}"
+        opened="[[deleteLinkOpened]]"
         on-close="_removeLink"
         ok-btn-text="Delete"
         cancel-btn-text="Cancel"
@@ -251,11 +253,13 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
           no-padding
           keep-dialog-open
           size="lg"
-          opened="{{shareDialogOpened}}"
+          opened="[[shareDialogOpened]]"
           dialog-title="Share Documents"
           id="share-documents"
           ok-btn-text="Share"
           on-confirm-btn-clicked="_SendShareRequest"
+          openFlag="shareDialogOpened"
+          on-close="_resetDialogOpenedFlag"
           show-spinner="[[_showDialogSpinner(requestInProcess, uploadInProgress)]]"
           disable-confirm-btn="{{requestInProcess}}"
         >
@@ -585,6 +589,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
   }
 
   _deleteAttachment(event) {
+    this.confirmDialogOpened = false;
     if (this.deleteCanceled(event)) {
       return;
     }
@@ -838,11 +843,11 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
   }
 
   _removeLink(event) {
+    this.deleteLinkOpened = false;
     if (this.deleteCanceled(event)) {
       return;
     }
 
-    this.deleteLinkOpened = false;
     const id = event.currentTarget.getAttribute('link-id');
 
     sendRequest({

@@ -71,6 +71,10 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return required ? 'required' : false;
     }
 
+    _resetDialogOpenedFlag(event) {
+      this.set(event.currentTarget.getAttribute('openFlag'), false);
+    }
+
     _errorHandler(errorData) {
       if (!errorData || !Object.keys(errorData).length) {
         return false;

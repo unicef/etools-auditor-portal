@@ -225,6 +225,8 @@ class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEleme
           keep-dialog-open
           ok-btn-text="Continue"
           on-confirm-btn-clicked="_cancelEngagement"
+          openFlag="dialogOpened"
+          on-close="_resetDialogOpenedFlag"
         >
           <div class="row-h repeatable-item-container" without-line>
             <div class="repeatable-item-content">
