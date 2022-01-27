@@ -206,7 +206,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                 hide-confirm-btn="[[!confirmBtnText]]"
                 show-spinner="{{requestInProcess}}"
                 disable-confirm-btn="{{requestInProcess}}"
-                on-confirm-btn-clicked="_addActionPoint">
+                on-confirm-btn-clicked="_addActionPoint"
+                openFlag="dialogOpened"
+                on-close="_resetDialogOpenedFlag">
             <template is="dom-if" if="[[notTouched]]">
                 <div class="copy-warning">
                     It is required to change at least one of the fields below.

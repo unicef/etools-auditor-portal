@@ -303,6 +303,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         on-confirm-btn-clicked="removeStaff"
         disable-confirm-btn="{{requestInProcess}}"
         ok-btn-text="Delete"
+        openFlag="confirmDialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         [[deleteTitle]]
       </etools-dialog>
@@ -318,6 +320,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         disable-confirm-btn="{{requestInProcess}}"
         keep-dialog-open
         on-confirm-btn-clicked="_addStaffFromDialog"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">

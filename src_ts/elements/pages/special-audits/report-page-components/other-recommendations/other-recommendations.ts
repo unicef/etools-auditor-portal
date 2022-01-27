@@ -98,6 +98,8 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
         on-confirm-btn-clicked="removeItem"
         disable-confirm-btn="{{requestInProcess}}"
         ok-btn-text="Delete"
+        openFlag="confirmDialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         [[deleteTitle]]
       </etools-dialog>
@@ -111,6 +113,8 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
         show-spinner="{{requestInProcess}}"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_addItemFromDialog"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="repeatable-item-container" without-line>
           <div class="repeatable-item-content">
