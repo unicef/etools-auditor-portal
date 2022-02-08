@@ -182,7 +182,8 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Agreed Action by IP -->
                 <paper-textarea
-                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] fixed-width validate-input"
+                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] 
+                                fixed-width validate-input"
                   value="{{editedItem.agreed_action_by_ip}}"
                   allowed-pattern="[\\d\\s]"
                   label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"

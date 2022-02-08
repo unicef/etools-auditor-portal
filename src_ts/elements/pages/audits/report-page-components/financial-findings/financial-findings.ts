@@ -190,7 +190,8 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               <div class="input-container input-container-l">
                 <!-- Description -->
                 <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]] fixed-width validate-input"
+                  class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]] 
+                            fixed-width validate-input"
                   value="{{editedItem.description}}"
                   allowed-pattern="[\\d\\s]"
                   label="[[getLabel('financial_finding_set.description', basePermissionPath)]]"
@@ -211,7 +212,8 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
                 <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]] fixed-width validate-input"
+                  class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]] 
+                            fixed-width validate-input"
                   value="{{editedItem.recommendation}}"
                   allowed-pattern="[\\d\\s]"
                   label="[[getLabel('financial_finding_set.recommendation', basePermissionPath)]]"
@@ -232,7 +234,8 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               <div class="input-container input-container-l">
                 <!-- IP comments -->
                 <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]] fixed-width validate-input"
+                  class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]] 
+                            fixed-width validate-input"
                   value="{{editedItem.ip_comments}}"
                   allowed-pattern="[\\d\\s]"
                   label="[[getLabel('financial_finding_set.ip_comments', basePermissionPath)]]"
