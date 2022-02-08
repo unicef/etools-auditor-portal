@@ -436,7 +436,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
                   checked="{{editedItem.hasAccess}}"
                   disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
                                             saveWithButton)}}"
-                  readonly="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
+                  disabled$="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
                                             saveWithButton)}}"
                 >
                   Has Access

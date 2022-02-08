@@ -129,7 +129,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                 <div class="input-container input-container-l">
                   <!-- Description -->
                   <paper-textarea
-                    class$="disabled-as-readonly fixed-width validate-input
+                    class$="fixed-width validate-input
                                             [[_setRequired('specific_procedures.description', basePermissionPath)]]"
                     value="{{editedItem.description}}"
                     allowed-pattern="[ds]"
@@ -138,7 +138,6 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                                                     basePermissionPath)]]"
                     required$="[[_setRequired('specific_procedures.description',
                                                     basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
                     readonly$="[[requestInProcess]]"
                     max-rows="4"
                     invalid="[[_checkInvalid(errors.0.description)]]"
@@ -156,7 +155,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                 <div class="input-container input-container-l">
                   <!-- Finding -->
                   <paper-textarea
-                    class$="disabled-as-readonly fixed-width validate-input
+                    class$="fixed-width validate-input
                                               [[_setRequired('specific_procedures.finding', basePermissionPath)]]"
                     value="{{editedItem.finding}}"
                     allowed-pattern="[ds]"
@@ -164,7 +163,6 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                     placeholder="[[getPlaceholderText('specific_procedures.finding',
                                                     basePermissionPath)]]"
                     required$="[[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                    disabled$="[[requestInProcess]]"
                     readonly$="[[requestInProcess]]"
                     max-rows="4"
                     invalid="[[_checkInvalid(errors.0.finding)]]"

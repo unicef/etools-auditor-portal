@@ -125,14 +125,13 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
                 <!-- Recommendation -->
                 <paper-textarea
                   class$="[[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]
-                                          validate-input disabled-as-readonly"
+                                          validate-input"
                   value="{{editedItem.recommendation}}"
                   label="[[getLabel('key_internal_controls.recommendation', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('key_internal_controls.recommendation',
                                             basePermissionPath)]]"
                   required$="[[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]"
                   disabled$="[[requestInProcess]]"
-                  readonly$="[[requestInProcess]]"
                   invalid$="{{errors.recommendation}}"
                   error-message="{{errors.recommendation}}"
                   on-focus="_resetFieldError"
@@ -147,7 +146,7 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
                 <!-- Audit Observation -->
                 <paper-textarea
                   class$="[[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]]
-                                        validate-input disabled-as-readonly"
+                                        validate-input"
                   value="{{editedItem.audit_observation}}"
                   label="[[getLabel('key_internal_controls.audit_observation', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('key_internal_controls.audit_observation',
@@ -155,7 +154,6 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
                   required$="[[_setRequired('key_internal_controls.audit_observation',
                                             basePermissionPath)]]"
                   disabled$="[[requestInProcess]]"
-                  readonly$="[[requestInProcess]]"
                   invalid$="{{errors.audit_observation}}"
                   error-message="{{errors.audit_observation}}"
                   on-focus="_resetFieldError"
@@ -170,14 +168,13 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
                 <!-- IP Response -->
                 <paper-textarea
                   class$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]
-                                          validate-input disabled-as-readonly"
+                                          validate-input"
                   value="{{editedItem.ip_response}}"
                   label="[[getLabel('key_internal_controls.ip_response', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('key_internal_controls.ip_response',
                                                 basePermissionPath)]]"
                   required$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]"
                   disabled$="[[requestInProcess]]"
-                  readonly$="[[requestInProcess]]"
                   invalid$="{{errors.ip_response}}"
                   error-message="{{errors.ip_response}}"
                   on-focus="_resetFieldError"

@@ -138,7 +138,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
                 <etools-dropdown
                   id="riskAssessmentDropdown"
-                  class="disabled-as-readonly
                   required validate-input"
                   selected="[[editedItem.risk.value]]"
                   label="Risk Assessment"
@@ -147,7 +146,6 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                   option-label="display_name"
                   option-value="value"
                   disabled="[[requestInProcess]]"
-                  readonly="[[requestInProcess]]"
                   invalid="{{riskAssessmentInvalid}}"
                   error-message="This field is required"
                   on-focus="_resetFieldError"
@@ -165,7 +163,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
                 <!-- Comments -->
                 <paper-textarea
                   id="riskAssessmentComments"
-                  class="disabled-as-readonly validate-input"
+                  class="validate-input"
                   value="{{editedItem.risk.extra.comments}}"
                   label="Comments"
                   placeholder="Enter Comments"

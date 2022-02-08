@@ -119,14 +119,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Purchase Order -->
             <paper-input
               id="purchaseOrder"
-              class$="disabled-as-readonly {{_setRequired('agreement', basePermissionPath)}}"
+              class$=" {{_setRequired('agreement', basePermissionPath)}}"
               field="agreement"
               value="{{data.agreement.order_number}}"
               allowed-pattern="[0-9]"
               label="[[getLabel('agreement.order_number', basePermissionPath)]]"
               placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
-              disabled$="[[isReadOnly('agreement', basePermissionPath)]]"
-              readonly="[[requestInProcess]]"
+              readonly$="[[isReadOnly('agreement', basePermissionPath) || requestInProcess]]"
               maxlength="30"
               required
               invalid$="{{_checkInvalid(errors.agreement)}}"
@@ -146,11 +145,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Auditor -->
             <paper-input
               id="auditorInput"
-              class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
+              class$="[[_setReadonlyFieldClass(data.agreement)]]"
               value="[[data.agreement.auditor_firm.name]]"
               label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
-              disabled
               readonly
             >
             </paper-input>
@@ -159,7 +157,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           <div class="input-container" hidden$="[[_hideField('po_item', basePermissionPath)]]">
             <!-- PO Item Number -->
             <etools-dropdown
-              class$="validate-field disabled-as-readonly [[_setRequired('po_item', basePermissionPath)]]"
+              class$="validate-field  [[_setRequired('po_item', basePermissionPath)]]"
               selected="{{data.po_item}}"
               label="[[getLabel('po_item', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('po_item', basePermissionPath)]]"
@@ -167,7 +165,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               option-label="number"
               option-value="id"
               required$="[[_setRequired('po_item', basePermissionPath)]]"
-              disabled$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
               readonly$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
               invalid="{{_checkInvalid(errors.po_item)}}"
               error-message="{{errors.po_item}}"
@@ -182,11 +179,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- PO Date -->
             <datepicker-lite
               id="contractStartDateInput"
-              class$="without-border [[_setReadonlyFieldClass(data.agreement)]]"
+              class$="[[_setReadonlyFieldClass(data.agreement)]]"
               value="[[data.agreement.contract_start_date]]"
               label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
-              disabled
               readonly
               selected-date-display-format="D MMM YYYY"
               hidden$="{{!_showPrefix('contract_start_date', basePermissionPath,
@@ -200,14 +196,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Contract Expiry Date -->
             <datepicker-lite
               id="contractEndDateInput"
-              class$="disabled-as-readonly {{_setRequired('related_agreement.contract_end_date',
+              class$=" {{_setRequired('related_agreement.contract_end_date',
                                                         basePermissionPath)}} validate-field"
               value="[[data.agreement.contract_end_date]]"
               label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('agreement.contract_end_date',
                                                             basePermissionPath, 'datepicker')]]"
               required="[[_setRequired('related_agreement.contract_end_date', basePermissionPath)]]"
-              disabled$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
+              readonly$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
               invalid="{{_checkInvalid(errors.contract_end_date)}}"
               error-message="{{errors.contract_end_date}}"
               on-focus="_resetFieldError"
@@ -225,13 +221,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Date Partner Was Contacted -->
             <datepicker-lite
               id="contactedDateInput"
-              class$="disabled-as-readonly {{_setRequired('partner_contacted_at', basePermissionPath)}}
+              class$=" {{_setRequired('partner_contacted_at', basePermissionPath)}}
                                 validate-field"
               value="[[data.partner_contacted_at]]"
               label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]"
               required="[[_setRequired('partner_contacted_at', basePermissionPath)]]"
-              disabled$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
+              readonly$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
               invalid="{{_checkInvalid(errors.partner_contacted_at)}}"
               error-message="{{errors.partner_contacted_at}}"
               on-focus="_resetFieldError"
@@ -254,7 +250,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               <etools-dropdown
                 slot="field"
                 id="engagementType"
-                class$="disabled-as-readonly {{_setRequired('engagement_type', basePermissionPath)}}
+                class$=" {{_setRequired('engagement_type', basePermissionPath)}}
                                   validate-field"
                 selected="{{data.engagement_type}}"
                 label="[[getLabel('engagement_type', basePermissionPath)]]"
@@ -263,8 +259,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 option-label="label"
                 option-value="value"
                 required="[[_setRequired('engagement_type', basePermissionPath)]]"
-                disabled="[[isReadOnly('engagement_type', basePermissionPath)]]"
-                readonly="[[isReadOnly('engagement_type', basePermissionPath)]]"
+                readonly$="[[isReadOnly('engagement_type', basePermissionPath)]]"
                 invalid="{{_checkInvalid(errors.engagement_type)}}"
                 error-message="{{errors.engagement_type}}"
                 on-focus="_resetFieldError"
@@ -287,7 +282,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               <!-- Period Start Date -->
               <datepicker-lite
                 id="periodStartDateInput"
-                class$="disabled-as-readonly {{_isAdditionalFieldRequired('start_date',
+                class$=" {{_isAdditionalFieldRequired('start_date',
                                       basePermissionPath, data.engagement_type)}} validate-field"
                 value="{{data.start_date}}"
                 label="[[getLabel('start_date', basePermissionPath)]]"
@@ -295,7 +290,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 selected-date-display-format="D MMM YYYY"
                 required="[[_isAdditionalFieldRequired('start_date', basePermissionPath,
                                         data.engagement_type)]]"
-                disabled$="[[isReadOnly('start_date', basePermissionPath)]]"
+                readonly$="[[isReadOnly('start_date', basePermissionPath)]]"
                 invalid="{{_checkInvalid(errors.start_date)}}"
                 error-message="{{errors.start_date}}"
                 on-focus="_resetFieldError"
@@ -313,7 +308,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               <!-- Period End Date -->
               <datepicker-lite
                 id="periodEndDateInput"
-                class$="disabled-as-readonly {{_isAdditionalFieldRequired('end_date', basePermissionPath,
+                class$=" {{_isAdditionalFieldRequired('end_date', basePermissionPath,
                                         data.engagement_type)}} validate-field"
                 value="{{data.end_date}}"
                 label="[[getLabel('end_date', basePermissionPath)]]"
@@ -321,7 +316,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 data-selector="periodEndDate"
                 required="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
                                             data.engagement_type)]]"
-                disabled$="[[isReadOnly('end_date', basePermissionPath)]]"
+                readonly$="[[isReadOnly('end_date', basePermissionPath)]]"
                 invalid="{{_checkInvalid(errors.end_date)}}"
                 error-message="{{errors.end_date}}"
                 on-focus="_resetFieldError"
@@ -339,7 +334,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <div class="input-container" hidden$="[[_hideField('total_value', basePermissionPath)]]">
               <!-- Total Value of Selected FACE Forms -->
               <etools-currency-amount-input
-                class$="disabled-as-readonly validate-field
+                class$=" validate-field
                                 {{_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)}}"
                 field="total_value"
                 value="{{data.total_value}}"
@@ -348,7 +343,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
                 required$="[[_isAdditionalFieldRequired('total_value', basePermissionPath,
                                         data.engagement_type)]]"
-                disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
+                readonly$="[[isReadOnly('total_value', basePermissionPath)]]"
                 invalid="{{_checkInvalid(errors.total_value)}}"
                 error-message="{{errors.total_value}}"
                 on-focus="_resetFieldError"
@@ -363,7 +358,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <div class="input-container join-audit">
               <paper-checkbox
                 checked="{{data.joint_audit}}"
-                disabled="[[isReadOnly('joint_audit', basePermissionPath)]]"
+                disabled$="[[isReadOnly('joint_audit', basePermissionPath)]]"
               >
                 [[getLabel('joint_audit', basePermissionPath)]]
               </paper-checkbox>
@@ -374,7 +369,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Shared Audit with-->
             <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
               <etools-dropdown-multi
-                class$="validate-input disabled-as-readonly [[_setRequired('shared_ip_with',
+                class$="validate-input [[_setRequired('shared_ip_with',
                                         basePermissionPath)]]"
                 label="[[getLabel('shared_ip_with', basePermissionPath)]]"
                 placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
@@ -383,7 +378,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 option-value="value"
                 selected-values="{{data.shared_ip_with}}"
                 required$="[[_setRequired('shared_ip_with', basePermissionPath)]]"
-                disabled$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
                 readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
                 invalid="{{errors.shared_ip_with}}"
                 error-message="{{errors.shared_ip_with}}"
@@ -400,7 +394,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Sections -->
             <div class="input-container" hidden$="[[_hideField('sections', basePermissionPath)]]">
               <etools-dropdown-multi
-                class$="validate-input disabled-as-readonly [[_setRequired('sections',
+                class$="validate-input  [[_setRequired('sections',
                                         basePermissionPath)]]"
                 label="[[getLabel('sections', basePermissionPath)]]"
                 placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
@@ -409,7 +403,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 option-value="id"
                 selected-values="{{sectionIDs}}"
                 required$="[[_setRequired('sections', basePermissionPath)]]"
-                disabled$="[[isReadOnly('sections', basePermissionPath)]]"
                 readonly$="[[isReadOnly('sections', basePermissionPath)]]"
                 invalid="{{errors.sections}}"
                 error-message="{{errors.sections}}"
@@ -426,7 +419,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Offices -->
             <div class="input-container" hidden$="[[_hideField('offices', basePermissionPath)]]">
               <etools-dropdown-multi
-                class$="validate-input disabled-as-readonly [[_setRequired('offices',
+                class$="validate-input  [[_setRequired('offices',
                                         basePermissionPath)]]"
                 label="[[getLabel('offices', basePermissionPath)]]"
                 placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
@@ -435,7 +428,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 option-value="id"
                 selected-values="{{officeIDs}}"
                 required$="[[_setRequired('offices', basePermissionPath)]]"
-                disabled$="[[isReadOnly('offices', basePermissionPath)]]"
                 readonly$="[[isReadOnly('offices', basePermissionPath)]]"
                 invalid="{{errors.offices}}"
                 error-message="{{errors.offices}}"
@@ -451,7 +443,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           <!-- Notify when completed -->
           <div class="input-container" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
             <etools-dropdown-multi
-              class$="validate-input disabled-as-readonly [[_setRequired('users_notified',
+              class$="validate-input  [[_setRequired('users_notified',
                                       basePermissionPath)]]"
               label="[[getLabel('users_notified', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('users_notified', basePermissionPath)]]"
@@ -462,7 +454,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               option-value="id"
               selected-values="{{usersNotifiedIDs}}"
               required$="[[_setRequired('users_notified', basePermissionPath)]]"
-              disabled$="[[isReadOnly('users_notified', basePermissionPath)]]"
               readonly$="[[isReadOnly('users_notified', basePermissionPath)]]"
               invalid="{{errors.users_notified}}"
               error-message="{{errors.users_notified}}"
@@ -676,7 +667,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     let valid = true;
     elements.forEach((element: any) => {
-      if (element.required && !element.disabled && !element.validate()) {
+      if (element.required && !(element.disabled || element.readonly) && !element.validate()) {
         const label = element.label || 'Field';
         element.errorMessage = `${label} is required`;
         element.invalid = true;

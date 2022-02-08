@@ -157,7 +157,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     getPlaceholderText(path, base, datepicker) {
       if (readonlyPermission(`${base}.${path}`)) {
-        return 'Empty Field';
+        return '–';
       }
 
       const label = this.getLabel(path, base);
@@ -165,8 +165,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return `${prefix} ${label}`;
     }
 
-    getReadonlyPlaceholder(data) {
-      return data && data.id ? 'Empty Field' : '-';
+    getReadonlyPlaceholder(_data) {
+      return '–';
     }
 
     _getSavedChoices(path) {
