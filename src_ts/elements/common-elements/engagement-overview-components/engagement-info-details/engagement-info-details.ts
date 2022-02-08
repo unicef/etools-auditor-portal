@@ -125,7 +125,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               allowed-pattern="[0-9]"
               label="[[getLabel('agreement.order_number', basePermissionPath)]]"
               placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
-              readonly$="[[isReadOnly('agreement', basePermissionPath) || requestInProcess]]"
+              readonly$="[[isReadOnly('agreement', basePermissionPath)]]"
               maxlength="30"
               required
               invalid$="{{_checkInvalid(errors.agreement)}}"
