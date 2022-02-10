@@ -99,6 +99,7 @@ export const tabInputsStyles = html`
     paper-dropdown-menu,
     datepicker-lite,
     etools-currency-amount-input {
+      box-sizing: border-box;
       padding: 0 12px;
       outline: none !important;
 
@@ -416,7 +417,11 @@ export const tabInputsStyles = html`
         opacity: 1 !important;
       }
       --paper-input-container-underline: {
-        border-bottom: 1px dashed;
+        border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
+        display: block !important;
+      }
+      --paper-input-container-underline-disabled: {
+        border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
         display: block !important;
       }
       --paper-input-container-underline-focus: {
