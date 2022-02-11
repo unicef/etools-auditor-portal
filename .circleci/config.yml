@@ -78,4 +78,4 @@ workflows:
                 - master
                 - staging
                 - develop
-                - lit-packages
+                - 27653_standardize_readonly
