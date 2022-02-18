@@ -275,6 +275,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   }
 
   _removeItem(event) {
+    this.confirmDialogOpened = false;
     if (this.deleteCanceled(event)) {
       return;
     }

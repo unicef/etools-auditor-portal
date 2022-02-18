@@ -87,10 +87,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
             has-collapse
             no-animation
           >
-            <div slot="custom">
-              [[getCategoryDisplayName(item.category_of_observation, '--')]]
-              <paper-tooltip offset="0"> [[getCategoryDisplayName(item.category_of_observation)]] </paper-tooltip>
-            </div>
+            <div slot="custom">[[getCategoryDisplayName(item.category_of_observation, '--')]]</div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
               <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
@@ -111,6 +108,8 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
         keep-dialog-open
         on-confirm-btn-clicked="removeItem"
         ok-btn-text="Delete"
+        openFlag="confirmDialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         Are you sure you want to delete this attachment?
       </etools-dialog>
@@ -126,6 +125,8 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
         show-spinner="{{requestInProcess}}"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_addItemFromDialog"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
@@ -153,9 +154,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   hide-search
                 >
                 </etools-dropdown>
-                <paper-tooltip offset="0">
-                  [[getCategoryDisplayName(editedItem.category_of_observation)]]
-                </paper-tooltip>
               </div>
             </div>
 
@@ -217,11 +215,14 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   placeholder="[[getPlaceholderText('findings.deadline_of_action',
                                                     basePermissionPath)]]"
                   label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
-                  value="{{editedItem.deadline_of_action}}"
+                  value="[[editedItem.deadline_of_action]]"
                   error-message="{{errors.deadline_of_action}}"
                   required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
                   disabled$="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
+                  fire-date-has-changed
+                  property-name="deadline_of_action"
+                  on-date-has-changed="deadlineDateHasChanged"
                 >
                 </datepicker-lite>
               </div>
@@ -399,6 +400,10 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
       return item;
     });
     return [data];
+  }
+
+  deadlineDateHasChanged(e: CustomEvent) {
+    this.editedItem.deadline_of_action = e.detail.date;
   }
 }
 

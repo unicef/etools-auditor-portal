@@ -22,6 +22,7 @@ import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/pages-header-element/pages-header-element';
 
 import EngagementMixin from '../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import {sharedStyles} from '../../styles/shared-styles';
 import {moduleStyles} from '../../styles/module-styles';
@@ -37,7 +38,7 @@ import {GenericObject} from '../../../types/global';
  * @mixinFunction
  * @appliesMixin EngagementMixin
  */
-class SpecialAuditsPageMain extends EngagementMixin(PolymerElement) {
+class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
   static get template() {
     // language=HTML
     return html`
@@ -229,6 +230,8 @@ class SpecialAuditsPageMain extends EngagementMixin(PolymerElement) {
           dialog-title="Cancellation of Engagement"
           ok-btn-text="Continue"
           on-confirm-btn-clicked="_cancelEngagement"
+          openFlag="dialogOpened"
+          on-close="_resetDialogOpenedFlag"
         >
           <div class="row-h repeatable-item-container" without-line>
             <div class="repeatable-item-content">

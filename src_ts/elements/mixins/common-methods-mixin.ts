@@ -71,6 +71,10 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return required ? 'required' : false;
     }
 
+    _resetDialogOpenedFlag(event) {
+      this.set(event.currentTarget.getAttribute('openFlag'), false);
+    }
+
     _errorHandler(errorData) {
       if (!errorData || !Object.keys(errorData).length) {
         return false;
@@ -229,6 +233,12 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         }
       }
     };
+
+    dateHasChanged(e: CustomEvent) {
+      const selDate = e.detail.date;
+      // @ts-ignore
+      this.set('data.' + e.target.getAttribute('property-name'), selDate);
+    }
   }
 
   return CommonMethodsMixinClass;

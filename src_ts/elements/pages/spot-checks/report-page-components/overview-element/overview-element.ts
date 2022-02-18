@@ -33,8 +33,12 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
             <datepicker-lite
               id="dateFaceStartInput"
               label="[[getLabel('face_form_start_date', basePermissionPath)]]"
-              value="{{data.face_form_start_date}}"
+              value="[[data.face_form_start_date]]"
               selected-date-display-format="D MMM YYYY"
+              disabled$="[[isReadOnly('face_form_start_date', basePermissionPath)]]"
+              fire-date-has-changed
+              property-name="face_form_start_date"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>
@@ -42,9 +46,13 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
           <div class="input-container">
             <datepicker-lite
               id="dateFaceEndInput"
-              value="{{data.face_form_end_date}}"
+              value="[[data.face_form_end_date]]"
               label="[[getLabel('face_form_end_date', basePermissionPath)]]"
               selected-date-display-format="D MMM YYYY"
+              disabled$="[[isReadOnly('face_form_end_date', basePermissionPath)]]"
+              fire-date-has-changed
+              property-name="face_form_end_date"
+              on-date-has-changed="dateHasChanged"
             >
             </datepicker-lite>
           </div>

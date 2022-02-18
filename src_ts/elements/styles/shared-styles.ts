@@ -74,6 +74,21 @@ export const sharedStyles = html`
       padding: 16px 24px;
     }
 
+    .wrap-text {
+      white-space: normal;
+      line-height: 14px;
+      display: flex;
+      word-break: break-word;
+      width: 100%;
+      justify-content: left;
+      align-items: center;
+      padding: 4px 0px;
+    }
+
+    .wrap-text iron-icon {
+      flex-shrink: 0;
+    }
+
     /* responsive css rules */
     @media (min-width: 850px) {
     }
