@@ -109,13 +109,13 @@ export const tabInputsStyles = html`
       --esmm-multi-placeholder-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
       --paper-input-container-focus-color: var(--primary-color, #0099ff);
 
+      --paper-input-container-underline: {
+        border-bottom: 1px solid var(--gray-mid, rgba(0, 0, 0, 0.54));
+      }
+
       --paper-input-container-input: {
         font-size: 15px;
         box-sizing: border-box;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding-right: 3px;
       }
 
       --paper-input-container-label: {
