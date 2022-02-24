@@ -7,6 +7,7 @@ documentContainer.innerHTML = `
     <style>
         html {
           --primary-color: #0099ff;
+          --secondary-text-color: rgba(0, 0, 0, 0.54);
           --primary-background-color: #ffffff;
           --secondary-background-color: #eeeeee;
           --ternary-background-color: var(--paper-indigo-800);

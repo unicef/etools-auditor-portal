@@ -213,24 +213,6 @@ export const tabInputsStyles = html`
       }
     }
 
-    paper-input.bold {
-      --paper-input-container-input: {
-        font-weight: 500;
-      }
-
-      --paper-input-container-underline-focus: {
-        display: none !important;
-      }
-
-      --paper-input-container-underline-disabled: {
-        display: none !important;
-      }
-
-      --paper-input-container-underline: {
-        display: none !important;
-      }
-    }
-
     paper-input.deleted {
       --paper-input-container-input: {
         color: #b0b0b0;
@@ -448,9 +430,6 @@ export const tabInputsStyles = html`
         display: none !important;
       }
       --paper-input-container-underline-focus: {
-        display: none;
-      }
-      --paper-input-container-underline-disabled: {
         display: none;
       }
     }
