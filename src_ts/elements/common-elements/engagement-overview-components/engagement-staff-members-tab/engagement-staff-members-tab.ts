@@ -118,7 +118,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           position: relative;
           width: 100%;
           line-height: 40px;
-          color: var(--module-primary);
+          color: var(--primary-color);
           font-weight: 600;
           box-sizing: border-box;
           margin: 10px 0 0 !important;

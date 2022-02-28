@@ -103,11 +103,7 @@ export const tabInputsStyles = html`
       padding: 0 12px;
       outline: none !important;
 
-      --paper-input-container-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
       --paper-input-container-input-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
-      --esmm-placeholder-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
-      --esmm-multi-placeholder-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
-      --paper-input-container-focus-color: var(--primary-color, #0099ff);
 
       --paper-input-container-underline: {
         border-bottom: 1px solid var(--gray-mid, rgba(0, 0, 0, 0.54));
@@ -161,27 +157,16 @@ export const tabInputsStyles = html`
         display: block !important;
       }
 
-      --iron-autogrow-textarea-placeholder: {
-        color: var(--gray-20) !important;
-      }
       --iron-autogrow-textarea: {
         overflow: hidden;
         padding: 0;
       }
     }
 
-    etools-dropdown.no-data-fetched,
-    paper-input.no-data-fetched {
-      --esmm-placeholder-color: var(--gray-dark);
-      --paper-input-container-color: var(--gray-dark);
-    }
-
     etools-currency-amount-input {
       --etools-currency-container-label: {
         color: var(--gray-50);
       }
-      --paper-input-container-color: var(--gray-dark);
-      --paper-input-container-focus-color: var(--module-primary);
     }
 
     :host > * {
@@ -244,7 +229,7 @@ export const tabInputsStyles = html`
     .repeatable-item-container .form-title {
       position: relative;
       line-height: 40px;
-      color: var(--module-primary);
+      color: var(--primary-color);
       font-weight: 600;
       box-sizing: border-box;
       margin: 0 12px 15px !important;
@@ -310,7 +295,7 @@ export const tabInputsStyles = html`
     }
 
     .repeatable-item-actions .actions .action.add {
-      color: var(--module-primary);
+      color: var(--primary-color);
     }
 
     .repeatable-item-actions .actions .action[disabled] {
@@ -391,10 +376,6 @@ export const tabInputsStyles = html`
     paper-dropdown-menu[disabled],
     paper-input[disabled],
     datepicker-lite[disabled] {
-      --paper-input-container-focus-color: var(
-        --paper-input-container-label_-_color,
-        var(--paper-input-container-color, var(--secondary-text-color))
-      );
       --paper-input-container: {
         opacity: 1 !important;
       }
@@ -418,10 +399,6 @@ export const tabInputsStyles = html`
     paper-dropdown-menu[readonly],
     paper-input[readonly],
     datepicker-lite[readonly] {
-      --paper-input-container-focus-color: var(
-        --paper-input-container-label_-_color,
-        var(--paper-input-container-color, var(--secondary-text-color))
-      );
       --paper-input-container: {
         opacity: 1 !important;
       }

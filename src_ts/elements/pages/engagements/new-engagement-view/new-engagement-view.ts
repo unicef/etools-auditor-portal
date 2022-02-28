@@ -55,7 +55,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
             color: var(--gray-light);
           }
 
-          --ecp-header-bg: var(--module-primary);
+          --ecp-header-bg: var(--primary-color);
         }
 
         .tab-selector {
@@ -76,7 +76,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         }
 
         .tab-selector paper-tabs {
-          color: var(--module-primary);
+          color: var(--primary-color);
           font-size: 14px;
           font-weight: bold;
           text-transform: uppercase;
