@@ -57,7 +57,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                 <template is="dom-if" if="{{editMode}}">
                   <etools-dropdown
                     id="riskOptions1"
-                    class="disabled-as-readonly required validate-input"
+                    class="required validate-input"
                     selected="[[item.risk.value]]"
                     placeholder="&#8212;"
                     options="[[riskOptions]]"
@@ -116,7 +116,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                   <template is="dom-if" if="{{editMode}}">
                     <etools-dropdown
                       id="riskOptions2"
-                      class="disabled-as-readonly required validate-input"
+                      class="required validate-input"
                       selected="[[item.risk.value]]"
                       placeholder="&#8212;"
                       options="[[riskOptions]]"

@@ -12,7 +12,7 @@ export const mainPageStyles = html`
       --paper-tab-content-unselected: {
         color: var(--gray-light);
       }
-      --ecp-header-bg: var(--module-primary);
+      --ecp-header-bg: var(--primary-color);
     }
 
     .view-container {
@@ -41,7 +41,7 @@ export const mainPageStyles = html`
     }
 
     .tab-selector paper-tabs {
-      color: var(--module-primary);
+      color: var(--primary-color);
       font-size: 14px;
       font-weight: bold;
     }
@@ -81,7 +81,7 @@ export const mainPageStyles = html`
 
     etools-content-panel.cancellation-tab::part(ecp-header) {
       height: 51px;
-      background-color: var(--module-primary);
+      background-color: var(--primary-color);
       border-bottom: none;
     }
 

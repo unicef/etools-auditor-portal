@@ -81,7 +81,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           text-align: center;
         }
         :host .partner-data a.col-data {
-          color: var(--module-primary);
+          color: var(--primary-color);
           font-weight: 500;
           cursor: pointer;
         }
@@ -94,7 +94,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
         :host .partner-data a.col-data iron-icon {
           display: none;
           width: 16px;
-          color: var(--module-primary);
+          color: var(--primary-color);
         }
         :host .partner-data a.col-data.with-icon iron-icon {
           display: inline-flex;

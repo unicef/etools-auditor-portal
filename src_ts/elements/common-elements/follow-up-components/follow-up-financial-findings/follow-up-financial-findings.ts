@@ -49,14 +49,12 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               <!-- Audit Opinion -->
               <etools-dropdown
                 id="test"
-                class="disabled-as-readonly"
                 selected="{{engagement.audit_opinion}}"
                 label="[[getLabel('audit_opinion', basePermissionPath)]]"
                 placeholder="[[getReadonlyPlaceholder(engagement)]]"
                 options="[[auditOpinionChoices]]"
                 option-label="display_name"
                 option-value="value"
-                disabled
                 readonly
               >
               </etools-dropdown>
@@ -70,12 +68,10 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <div class="input-container">
               <!-- Audited expenditure (USD)-->
               <etools-currency-amount-input
-                class="disabled-as-readonly"
                 value="{{engagement.audited_expenditure}}"
                 currency="$"
                 label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                disabled
                 readonly
               >
               </etools-currency-amount-input>
@@ -84,12 +80,10 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <div class="input-container">
               <!-- Financial Findings (USD)-->
               <etools-currency-amount-input
-                class="disabled-as-readonly"
                 value="{{engagement.financial_findings}}"
                 currency="$"
                 label$="[[getLabel('financial_findings', basePermissionPath)]]"
                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                disabled
                 readonly
               >
               </etools-currency-amount-input>
@@ -101,12 +95,10 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <div class="input-container">
               <!-- Total amount tested-->
               <etools-currency-amount-input
-                class="disabled-as-readonly"
                 value="{{engagement.total_amount_tested}}"
                 currency="$"
                 label$="[[getLabel('total_amount_tested', basePermissionPath)]]"
                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                disabled
                 readonly
               >
               </etools-currency-amount-input>
@@ -115,12 +107,10 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <div class="input-container">
               <!-- Total amount of ineligible expenditure-->
               <etools-currency-amount-input
-                class="disabled-as-readonly"
                 value="{{engagement.total_amount_of_ineligible_expenditure}}"
                 currency="$"
                 label$="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
                 placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                disabled
                 readonly
               >
               </etools-currency-amount-input>
@@ -132,13 +122,12 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <!--Amount refunded -->
             <etools-currency-amount-input
               class$="[[_setRequired('amount_refunded', basePermissionPath)]]
-                                    validate-input disabled-as-readonly"
+                                    validate-input"
               value="{{engagement.amount_refunded}}"
               currency="$"
               label$="[[getLabel('amount_refunded', basePermissionPath)]]"
               placeholder$="[[getPlaceholderText('amount_refunded', basePermissionPath)]]"
               required$="[[_setRequired('amount_refunded', basePermissionPath)]]"
-              disabled$="[[isReadOnly('amount_refunded', basePermissionPath)]]"
               readonly$="[[isReadOnly('amount_refunded', basePermissionPath)]]"
               invalid$="{{errors.amount_refunded}}"
               error-message="{{errors.amount_refunded}}"
@@ -154,15 +143,13 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <!--Additional supporting documentation provided -->
             <etools-currency-amount-input
               class$="[[_setRequired('additional_supporting_documentation_provided', basePermissionPath)]]
-                                        validate-input disabled-as-readonly"
+                                        validate-input"
               value="{{engagement.additional_supporting_documentation_provided}}"
               currency="$"
               label$="[[getLabel('additional_supporting_documentation_provided', basePermissionPath)]]"
               placeholder$="[[getPlaceholderText('additional_supporting_documentation_provided',
                                             basePermissionPath)]]"
               required$="[[_setRequired('additional_supporting_documentation_provided',
-                                        basePermissionPath)]]"
-              disabled$="[[isReadOnly('additional_supporting_documentation_provided',
                                         basePermissionPath)]]"
               readonly$="[[isReadOnly('additional_supporting_documentation_provided',
                                         basePermissionPath)]]"
@@ -178,14 +165,13 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <!-- Justification provided and accepted -->
             <etools-currency-amount-input
               class$="[[_setRequired('justification_provided_and_accepted', basePermissionPath)]]
-                                    validate-input disabled-as-readonly"
+                                    validate-input"
               value="{{engagement.justification_provided_and_accepted}}"
               currency="$"
               label$="[[getLabel('justification_provided_and_accepted', basePermissionPath)]]"
               placeholder$="[[getPlaceholderText('justification_provided_and_accepted',
                                             basePermissionPath)]]"
               required$="[[_setRequired('justification_provided_and_accepted', basePermissionPath)]]"
-              disabled$="[[isReadOnly('justification_provided_and_accepted', basePermissionPath)]]"
               readonly$="[[isReadOnly('justification_provided_and_accepted', basePermissionPath)]]"
               invalid$="{{errors.justification_provided_and_accepted}}"
               error-message="{{errors.justification_provided_and_accepted}}"
@@ -199,13 +185,12 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
             <!--Write off required -->
             <etools-currency-amount-input
               class$="[[_setRequired('write_off_required', basePermissionPath)]]
-                                      validate-input disabled-as-readonly"
+                                      validate-input"
               value="{{engagement.write_off_required}}"
               currency="$"
               label$="[[getLabel('write_off_required', basePermissionPath)]]"
               placeholder$="[[getPlaceholderText('write_off_required', basePermissionPath)]]"
               required$="[[_setRequired('write_off_required', basePermissionPath)]]"
-              disabled$="[[isReadOnly('write_off_required', basePermissionPath)]]"
               readonly$="[[isReadOnly('write_off_required', basePermissionPath)]]"
               invalid$="{{errors.write_off_required}}"
               error-message="{{errors.write_off_required}}"
@@ -220,14 +205,12 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
           <div class="input-container">
             <!-- Pending Unsupported Amount -->
             <paper-input
-              class="disabled-as-readonly"
               value="[[setUnsupportedAmount(engagement,
                                     engagement.additional_supporting_documentation_provided,
                                     engagement.amount_refunded, engagement.justification_provided_and_accepted,
                                     engagement.write_off_required)]]"
               label$="[[getLabel('pending_unsupported_amount', basePermissionPath)]]"
               placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-              disabled
               readonly
             >
               <div prefix>$</div>
@@ -248,7 +231,6 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
               placeholder="[[getPlaceholderText('explanation_for_additional_information',
                                             basePermissionPath)]]"
               required="{{_setRequired('explanation_for_additional_information', basePermissionPath)}}"
-              disabled="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
               readonly$="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
               invalid="{{errors.explanation_for_additional_information}}"
               error-message="{{errors.explanation_for_additional_information}}"
