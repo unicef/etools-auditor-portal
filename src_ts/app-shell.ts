@@ -169,7 +169,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   static get observers() {
-    return ['_routePageChanged(route.path)', '_viewChanged(routeData.page)'];
+    return ['_routePageChanged(route.path)'];
   }
 
   @property({type: String, observer: '_pageChanged'})
@@ -278,18 +278,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   allowPageChange() {
     const urlSpaceRegex = new RegExp(`^${this.rootPath}`);
     return urlSpaceRegex.test(this.route.path);
-  }
-
-  _viewChanged() {
-    if (
-      this.page &&
-      this.routeData.page &&
-      this.page !== this.routeData.page &&
-      Object.keys(this.queryParams).length > 0
-    ) {
-      // clear url params(filters from previous page) on navigate between pages
-      this.set('queryParams', {});
-    }
   }
 
   _routePageChanged() {
