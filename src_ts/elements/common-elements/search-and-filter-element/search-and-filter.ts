@@ -61,7 +61,7 @@ class SearchAndFilter extends PolymerElement {
                 <etools-dropdown-multi
                   id="[[item.query]]"
                   class="filter-dropdown"
-                  selected-values="{{item.selectedValue}}"
+                  selected-values="[[copyArray(item.selectedValue)]]"
                   label="[[item.label]]"
                   placeholder$="&#8212;"
                   options="[[item.selection]]"
@@ -168,6 +168,11 @@ class SearchAndFilter extends PolymerElement {
     });
   }
 
+  // prevent array from mutating inside etools-dropdown
+  copyArray<T = any>(array: T[]): T[] {
+    return Array.isArray(array) ? [...array] : array;
+  }
+
   _isSelected(filter) {
     const query = typeof filter === 'string' ? filter : filter.query;
     return this.usedFilters.findIndex((usedFilter) => usedFilter.query === query) !== -1;
@@ -244,7 +249,9 @@ class SearchAndFilter extends PolymerElement {
       this.filters.forEach((filter) => {
         const usedFilter = this.usedFilters.find((used) => used.query === filter.query);
 
-        const hasValue = Boolean(usedFilter && usedFilter.length);
+        const hasValue = Boolean(
+          usedFilter?.selectedValue && (!Array.isArray(usedFilter.selectedValue) || usedFilter.selectedValue.length)
+        );
         if (!usedFilter && queryParams[filter.query] !== undefined) {
           this.addFilter(filter.query);
         } else if (usedFilter && hasValue && queryParams[filter.query] === undefined) {
@@ -330,7 +337,9 @@ class SearchAndFilter extends PolymerElement {
     if (detail.selectedItems && query) {
       const filter = this._getFilter(query);
       const optionValue = filter.optionValue || 'value';
-      queryObject[query] = detail.selectedItems.map((val) => val[optionValue]).join(',');
+      const values = detail.selectedItems.map((val) => val[optionValue]);
+      filter.selectedValue = values;
+      queryObject[query] = values.join(',');
     }
     updateQueries(queryObject);
   }
@@ -345,6 +354,8 @@ class SearchAndFilter extends PolymerElement {
     if (query) {
       queryObject[query] = detail.date ? dayjs(detail.date).format('YYYY-MM-DD') : undefined;
     }
+    const filter = this._getFilter(query);
+    filter.selectedValue = queryObject[query];
     updateQueries(queryObject);
   }
 
