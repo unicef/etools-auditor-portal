@@ -160,7 +160,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               class$="validate-field  [[_setRequired('po_item', basePermissionPath)]]"
               selected="{{data.po_item}}"
               label="[[getLabel('po_item', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('po_item', basePermissionPath)]]"
+              placeholder="&#8212;"
               options="[[_getPoItems(data.agreement)]]"
               option-label="number"
               option-value="id"

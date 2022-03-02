@@ -18,9 +18,9 @@ export const moduleStyles = html`
 
       --gray-border: rgba(0, 0, 0, 0.15);
 
-      /*--module-primary: #00AEEF;*/
-      --module-primary: #0099ff;
-      /*--module-primary-dark: #4893ff;*/
+      /*--primary-color: #00AEEF;*/
+      /* --primary-color: #0099ff; */
+      /*--primary-color-dark: #4893ff;*/
 
       --module-sec-blue: #0061e9;
       --module-sec-green: #009a54;
@@ -54,12 +54,12 @@ export const moduleStyles = html`
 
     /* TABS */
     paper-tabs {
-      --paper-tabs-selection-bar-color: var(--module-primary);
+      --paper-tabs-selection-bar-color: var(--primary-color);
     }
 
     paper-tab {
       --paper-tab-content: {
-        color: var(--module-primary);
+        color: var(--primary-color);
         text-transform: none;
         font-size: 14px;
         font-weight: 500;
@@ -77,7 +77,7 @@ export const moduleStyles = html`
 
     /* PAPER-TOGGLE-BUTTON */
     paper-toggle-button {
-      --paper-toggle-button-checked-button-color: var(--module-primary);
+      --paper-toggle-button-checked-button-color: var(--primary-color);
       --paper-toggle-button-checked-bar-color: rgba(0, 174, 239, 0.5);
       --paper-toggle-button-unchecked-button-color: rgba(241, 241, 241, 1);
       --paper-toggle-button-unchecked-bar-color: rgba(31, 31, 31, 0.26);
@@ -86,7 +86,7 @@ export const moduleStyles = html`
     /* CHECKBOX */
     paper-checkbox {
       --paper-checkbox-unchecked-color: var(--gray-mid);
-      --paper-checkbox-checked-color: var(--module-primary);
+      --paper-checkbox-checked-color: var(--primary-color);
       --paper-checkbox-label: {
         color: var(--gray-dark);
         font-size: 16px;
@@ -96,7 +96,7 @@ export const moduleStyles = html`
 
     paper-radio-button {
       --paper-radio-button-unchecked-color: var(--gray-mid);
-      --paper-radio-button-checked-color: var(--module-primary);
+      --paper-radio-button-checked-color: var(--primary-color);
     }
 
     etools-dropdown,
