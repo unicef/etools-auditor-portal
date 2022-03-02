@@ -14,7 +14,7 @@ class GetAgreementData extends PolymerElement {
 
   _handleResponse(data) {
     this.agreement = data;
-    fireEvent(this, 'agreement-loaded', {success: true});
+    fireEvent(this, 'agreement-loaded', {success: true, agreement: data});
   }
 
   _handleError() {
