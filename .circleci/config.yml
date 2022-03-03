@@ -78,4 +78,4 @@ workflows:
                 - master
                 - staging
                 - develop
-                - 27653_standardize_readonly
+                - fix-dynamic-fetch-dd

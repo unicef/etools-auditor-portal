@@ -487,7 +487,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               option-value="id"
               selected-values="[[usersNotifiedIDs]]"
               required$="[[_setRequired('users_notified', basePermissionPath)]]"
-              readonly$="[[isReadOnly('users_notified', basePermissionPath)]]"
               invalid="[[errors.users_notified]]"
               error-message="[[errors.users_notified]]"
               on-focus="_resetFieldError"
@@ -498,10 +497,36 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               on-etools-selected-items-changed="_setField"
             >
             </etools-dropdown-multi>
+            <div>
+              <label for="notifiedLbl" class="paper-label">[[getLabel('users_notified', basePermissionPath)]]</label>
+              <div class="input-label" empty$="[[_emptyArray(data.users_notified)]]">
+                <dom-repeat items="[[data.users_notified]]">
+                  <template>
+                    <div>
+                      [[item.name]]
+                      <span class="separator">[[getSeparator(items, index)]]</span>
+                    </div>
+                  </template>
+                </dom-repeat>
+              </div>
+            </div>
           </div>
         </div>
       </etools-content-panel>
     `;
+  }
+
+  _emptyArray(arr) {
+    return !arr || !arr.length;
+  }
+  getSeparator(collection, index) {
+    if (!collection) {
+      return '';
+    }
+    if (index < collection.length - 1) {
+      return '|';
+    }
+    return '';
   }
 
   @property({type: String, observer: '_basePathChanged'})
