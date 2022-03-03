@@ -91,6 +91,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           margin-bottom: 8px;
         }
 
+        .pad-lr {
+          padding: 0 12px;
+        }
+
         etools-dropdown,
         etools-dropdown-multi {
           align-items: baseline;
@@ -497,14 +501,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               on-etools-selected-items-changed="_setField"
             >
             </etools-dropdown-multi>
-            <div>
+            <div class="pad-lr">
               <label for="notifiedLbl" class="paper-label">[[getLabel('users_notified', basePermissionPath)]]</label>
               <div class="input-label" empty$="[[_emptyArray(data.users_notified)]]">
                 <dom-repeat items="[[data.users_notified]]">
                   <template>
                     <div>
                       [[item.name]]
-                      <span class="separator">[[getSeparator(items, index)]]</span>
+                      <span class="separator">[[getSeparator(data.users_notified, index)]]</span>
                     </div>
                   </template>
                 </dom-repeat>
