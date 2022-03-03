@@ -52,7 +52,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
         }
       </style>
 
-      <get-partner-data partner="{{partner}}" partner-id="{{partnerId}}"></get-partner-data>
+      <get-partner-data partner-id="[[partnerId]]" on-partner-loaded="_partnerLoaded"></get-partner-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
         <div class="row-h group">
@@ -61,7 +61,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
             <template is="dom-if" if="[[isReadOnly('partner', basePermissionPath)]]">
               <paper-input
                 label="[[getLabel('partner', basePermissionPath)]]"
-                value="{{partner.name}}"
+                value="[[partner.name]]"
                 readonly
               ></paper-input>
             </template>
@@ -70,15 +70,15 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
                 id="partner"
                 class$="[[_setRequired('partner', basePermissionPath)]]
                                     [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                selected="{{engagement.partner.id}}"
+                selected="[[engagement.partner.id]]"
                 label="[[getLabel('partner', basePermissionPath)]]"
                 placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
                 options="[[partners]]"
                 option-label="name"
                 option-value="id"
-                required$="{{_setRequired('partner', basePermissionPath)}}"
-                invalid="{{errors.partner}}"
-                error-message="{{errors.partner}}"
+                required$="[[_setRequired('partner', basePermissionPath)]]"
+                invalid="[[errors.partner]]"
+                error-message="[[errors.partner]]"
                 on-focus="_resetFieldError"
                 on-tap="_resetFieldError"
                 trigger-value-change-event
@@ -87,7 +87,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               >
               </etools-dropdown>
             </template>
-            <etools-loading active="{{requestInProcess}}" no-overlay loading-text="" class="partner-loading">
+            <etools-loading active="[[requestInProcess]]" no-overlay loading-text="" class="partner-loading">
             </etools-loading>
           </div>
           <div class="input-container input-container-m">
@@ -108,7 +108,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
             <!-- Partner Phone Number -->
             <paper-input
               class$="[[_setReadonlyFieldClass(partner)]]"
-              value="{{partner.phone_number}}"
+              value="[[partner.phone_number]]"
               label="[[getLabel('partner.phone_number', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(partner)]]"
               readonly
@@ -120,7 +120,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
             <!-- Partner E-mail Address -->
             <paper-input
               class$="[[_setReadonlyFieldClass(partner)]]"
-              value="{{partner.email}}"
+              value="[[partner.email]]"
               label="[[getLabel('partner.email', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(partner)]]"
               readonly
@@ -134,19 +134,23 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               id="authorizedOfficer"
               class$="[[_setRequired('authorized_officers', basePermissionPath)]]
                                 [[_setPlaceholderColor(partner)]]"
-              selected="{{authorizedOfficer.id}}"
+              selected="[[authorizedOfficer.id]]"
               label="[[getLabel('authorized_officers', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(partner)]]"
               options="[[partner.partnerOfficers]]"
               option-label="fullName"
               option-value="id"
-              required="{{_setRequired('authorized_officers', basePermissionPath)}}"
-              invalid="{{_checkInvalid(errors.authorized_officers)}}"
+              required="[[_setRequired('authorized_officers', basePermissionPath)]]"
+              invalid="[[_checkInvalid(errors.authorized_officers)]]"
               readonly$="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-              error-message="{{errors.authorized_officers}}"
+              error-message="[[errors.authorized_officers]"
               on-focus="_resetFieldError"
               on-tap="_resetFieldError"
               dynamic-align
+              data-value-path="detail.selectedItem"
+              data-field-path="authorizedOfficer"
+              on-etools-selected-item-changed="_setField"
+              trigger-value-change-event
             >
             </etools-dropdown>
           </div>
@@ -159,18 +163,22 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               <etools-dropdown-multi
                 id="activePd"
                 class$="[[_setPlaceholderColor(partner)]]"
-                selected-values="{{activePdIds}}"
+                selected-values="[[activePdIds]]"
                 label="[[getLabel('active_pd', basePermissionPath)]]"
                 placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                 options="[[partner.interventions]]"
                 option-label="number"
                 option-value="id"
                 readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                invalid="{{errors.active_pd}}"
-                error-message="{{errors.active_pd}}"
+                invalid="[[errors.active_pd]]"
+                error-message="[[errors.active_pd]]"
                 on-focus="_resetFieldError"
                 on-tap="_resetFieldError"
                 dynamic-align
+                trigger-value-change-event
+                data-value-path="target.selectedValues"
+                data-field-path="activePdIds"
+                on-etools-selected-items-changed="_setField"
               >
               </etools-dropdown-multi>
             </div>
@@ -233,19 +241,13 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   _initListeners() {
     this._partnerLoaded = this._partnerLoaded.bind(this);
-    this.addEventListener('partner-loaded', this._partnerLoaded as any);
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeListeners();
-  }
-
-  _removeListeners() {
-    this.removeEventListener('partner-loaded', this._partnerLoaded as any);
-  }
-
-  _partnerLoaded() {
+  _partnerLoaded(event: CustomEvent) {
+    if (event.detail) {
+      this.set('partner', event.detail);
+    }
+    this.set('partnerId', null);
     this.set('errors', {});
     this.requestInProcess = false;
     this.validatePartner();
