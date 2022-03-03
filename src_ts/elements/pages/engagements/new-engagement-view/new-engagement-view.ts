@@ -225,6 +225,13 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
   @property({type: String})
   basePermissionPath!: string;
 
+  links: {[key: string]: string} = {
+    ma: 'micro-assessments',
+    audit: 'audits',
+    sc: 'spot-checks',
+    sa: 'special-audits'
+  };
+
   static get observers() {
     return ['_pageChanged(page, isStaffSc, auditFirm)'];
   }
@@ -297,11 +304,8 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     this.reloadEngagementsList();
 
     // redirect
-    let link = get(this, 'engagement.engagement_type_details.link');
-    if (!link && this.isStaffSc) {
-      link = 'staff-spot-checks';
-    }
-
+    const engagementType = get(this, 'engagement.engagement_type');
+    const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[engagementType];
     const path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
     navigateToUrl(path);
 
