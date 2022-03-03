@@ -3,19 +3,17 @@ import {property} from '@polymer/decorators';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {fireEvent} from '../utils/fire-custom-event';
 
 class UpdateAgreementData extends PolymerElement {
   @property({type: String, observer: '_dateChanged'})
   newDate!: string;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   agreement!: GenericObject;
 
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   poUpdating = false;
-
-  @property({type: Object, notify: true})
-  errors!: GenericObject;
 
   _dateChanged(date) {
     if (
@@ -28,28 +26,27 @@ class UpdateAgreementData extends PolymerElement {
     }
 
     this.poUpdating = true;
+    fireEvent(this, 'loading-state-changed', {state: this.poUpdating});
     const url = getEndpoint('purchaseOrder', {id: this.agreement.id}).url;
     sendRequest({
       method: 'PATCH',
       endpoint: {url},
       body: {contract_end_date: date}
     })
-      .then((resp) => {
-        this._handleResponse(resp);
-      })
-      .catch((err) => {
-        this._handleError(err);
+      .then((resp) => this._handleResponse(resp))
+      .catch((err) => this._handleError(err))
+      .finally(() => {
+        this.poUpdating = false;
+        fireEvent(this, 'loading-state-changed', {state: this.poUpdating});
       });
   }
 
   _handleResponse(detail) {
-    this.poUpdating = false;
     this.agreement = Object.assign({}, detail);
+    fireEvent(this, 'agreement-loaded', {success: true, agreement: this.agreement});
   }
 
   _handleError(error) {
-    this.poUpdating = false;
-
     let response = (error || {}) as any;
     if (typeof response === 'string') {
       try {
@@ -58,8 +55,7 @@ class UpdateAgreementData extends PolymerElement {
         response = {};
       }
     }
-
-    this.set('errors', response);
+    fireEvent(this, 'agreement-loaded', {success: false, errors: response});
   }
 }
 window.customElements.define('update-agreement-data', UpdateAgreementData);

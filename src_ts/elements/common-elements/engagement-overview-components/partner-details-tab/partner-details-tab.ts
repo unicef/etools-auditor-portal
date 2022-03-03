@@ -62,7 +62,6 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               <paper-input
                 label="[[getLabel('partner', basePermissionPath)]]"
                 value="{{partner.name}}"
-                disabled
                 readonly
               ></paper-input>
             </template>
@@ -94,11 +93,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
           <div class="input-container input-container-m">
             <!-- Partner Address -->
             <paper-input
-              class$="without-border [[_setReadonlyFieldClass(partner)]]"
+              class$="[[_setReadonlyFieldClass(partner)]]"
               value="[[_setPartnerAddress(partner)]]"
               label="Partner Address"
               placeholder="[[getReadonlyPlaceholder(partner)]]"
-              disabled
               readonly
             >
             </paper-input>
@@ -109,11 +107,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
           <div class="input-container">
             <!-- Partner Phone Number -->
             <paper-input
-              class$="without-border [[_setReadonlyFieldClass(partner)]]"
+              class$="[[_setReadonlyFieldClass(partner)]]"
               value="{{partner.phone_number}}"
               label="[[getLabel('partner.phone_number', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(partner)]]"
-              disabled
               readonly
             >
             </paper-input>
@@ -122,11 +119,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
           <div class="input-container">
             <!-- Partner E-mail Address -->
             <paper-input
-              class$="without-border [[_setReadonlyFieldClass(partner)]]"
+              class$="[[_setReadonlyFieldClass(partner)]]"
               value="{{partner.email}}"
               label="[[getLabel('partner.email', basePermissionPath)]]"
               placeholder="[[getReadonlyPlaceholder(partner)]]"
-              disabled
               readonly
             >
             </paper-input>
@@ -136,7 +132,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
             <!-- Partner  Officers-->
             <etools-dropdown
               id="authorizedOfficer"
-              class$="disabled-as-readonly [[_setRequired('authorized_officers', basePermissionPath)]]
+              class$="[[_setRequired('authorized_officers', basePermissionPath)]]
                                 [[_setPlaceholderColor(partner)]]"
               selected="{{authorizedOfficer.id}}"
               label="[[getLabel('authorized_officers', basePermissionPath)]]"
@@ -146,8 +142,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               option-value="id"
               required="{{_setRequired('authorized_officers', basePermissionPath)}}"
               invalid="{{_checkInvalid(errors.authorized_officers)}}"
-              disabled="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-              readonly="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
+              readonly$="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
               error-message="{{errors.authorized_officers}}"
               on-focus="_resetFieldError"
               on-tap="_resetFieldError"
@@ -163,14 +158,13 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
               <!-- Active PD -->
               <etools-dropdown-multi
                 id="activePd"
-                class$="disabled-as-readonly [[_setPlaceholderColor(partner)]]"
+                class$="[[_setPlaceholderColor(partner)]]"
                 selected-values="{{activePdIds}}"
                 label="[[getLabel('active_pd', basePermissionPath)]]"
                 placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
                 options="[[partner.interventions]]"
                 option-label="number"
                 option-value="id"
-                disabled$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                 readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
                 invalid="{{errors.active_pd}}"
                 error-message="{{errors.active_pd}}"
@@ -324,11 +318,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _setReadonlyClass(inProcess, basePermissionPath) {
-    if (this.isReadOnly('partner', basePermissionPath)) {
-      return 'disabled-as-readonly';
-    } else {
-      return inProcess ? 'readonly' : '';
-    }
+    return inProcess || this.isReadOnly('partner', basePermissionPath) ? 'readonly' : '';
   }
 
   _showActivePd(partnerType, types) {
@@ -449,9 +439,9 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   activePdPlaceholder(basePermissionPath, partner) {
     if (!partner || !partner.id) {
-      return '-';
+      return '–';
     }
-    return readonlyPermission(`${basePermissionPath}.active_pd`) ? 'Empty Field' : 'Select Relevant PD(s) or SSFA(s)';
+    return readonlyPermission(`${basePermissionPath}.active_pd`) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
     // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
   }
 

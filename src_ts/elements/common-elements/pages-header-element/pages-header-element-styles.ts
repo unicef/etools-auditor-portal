@@ -66,7 +66,7 @@ const pagesHeaderElementStyles = html`
     }
 
     .side-heading paper-button.add-btn {
-      background-color: var(--module-primary);
+      background-color: var(--primary-color);
       color: white;
       height: 36px;
       font-weight: 500;
@@ -80,7 +80,7 @@ const pagesHeaderElementStyles = html`
 
     .side-heading .add-btn {
       margin: 11px 4px 12px 18px;
-      background-color: var(--module-primary);
+      background-color: var(--primary-color);
     }
 
     .side-heading-button-holder {

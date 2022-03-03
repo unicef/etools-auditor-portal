@@ -84,7 +84,7 @@ export const RiskTabStyles = html`
     }
     etools-content-panel::part(ecp-header) {
       height: 51px;
-      background-color: var(--module-primary);
+      background-color: var(--primary-color);
     }
     etools-content-panel::part(ecp-content) {
       padding: 0;

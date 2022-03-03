@@ -81,46 +81,6 @@ export const tabInputsStyles = html`
       padding: 8px 12px;
     }
 
-    paper-dropdown-menu,
-    paper-textarea,
-    paper-input {
-      padding: 0 12px;
-      color: var(--gray-mid);
-
-      --paper-input-container-input: {
-        font-size: 15px;
-        box-sizing: border-box;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding-right: 3px;
-      }
-
-      --paper-input-prefix: {
-        margin-right: 10px;
-        color: var(--gray-mid);
-      }
-
-      --paper-input-error: {
-        overflow: hidden;
-      }
-    }
-
-    paper-textarea {
-      --paper-input-container-input: {
-        white-space: normal;
-        display: block !important;
-      }
-      --paper-input-container-focus-color: var(--module-primary);
-      --iron-autogrow-textarea-placeholder: {
-        color: var(--gray-20) !important;
-      }
-      --iron-autogrow-textarea: {
-        overflow: hidden;
-        padding: 0;
-      }
-    }
-
     etools-dialog paper-textarea {
       --paper-input-container-input: {
         display: block;
@@ -139,12 +99,21 @@ export const tabInputsStyles = html`
     paper-dropdown-menu,
     datepicker-lite,
     etools-currency-amount-input {
+      box-sizing: border-box;
+      padding: 0 12px;
       outline: none !important;
-      --paper-input-container-color: var(--gray-20);
-      --paper-input-container-focus-color: var(--module-primary);
-      --paper-input-container-input: {
-        color: var(--gray-dark);
+
+      --paper-input-container-input-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
+
+      --paper-input-container-underline: {
+        border-bottom: 1px solid var(--gray-mid, rgba(0, 0, 0, 0.54));
       }
+
+      --paper-input-container-input: {
+        font-size: 15px;
+        box-sizing: border-box;
+      }
+
       --paper-input-container-label: {
         color: var(--gray-50);
       }
@@ -161,6 +130,15 @@ export const tabInputsStyles = html`
         color: var(--gray-light);
       }
 
+      --paper-input-prefix: {
+        margin-right: 10px;
+        color: var(--gray-mid);
+      }
+
+      --paper-input-error: {
+        overflow: hidden;
+      }
+
       --etools-currency-container-label-floating: {
         -webkit-transform: none;
         -moz-transform: none;
@@ -173,37 +151,21 @@ export const tabInputsStyles = html`
       }
     }
 
-    etools-dropdown.no-data-fetched,
-    paper-input.no-data-fetched {
-      --esmm-placeholder-color: var(--gray-dark);
-      --paper-input-container-color: var(--gray-dark);
+    paper-textarea {
+      --paper-input-container-input: {
+        white-space: normal;
+        display: block !important;
+      }
+
+      --iron-autogrow-textarea: {
+        overflow: hidden;
+        padding: 0;
+      }
     }
 
     etools-currency-amount-input {
       --etools-currency-container-label: {
         color: var(--gray-50);
-      }
-      --paper-input-container-color: var(--gray-20);
-      --paper-input-container-focus-color: var(--module-primary);
-    }
-
-    paper-textarea[disabled].without-border,
-    paper-input[disabled].without-border {
-      --paper-input-container-label: {
-        color: var(--gray-50) !important;
-      }
-      --paper-input-container: {
-        opacity: 1 !important;
-      }
-      --paper-input-container-underline: {
-        border-bottom: none !important;
-        display: none !important;
-      }
-      --paper-input-container-underline-focus: {
-        display: none;
-      }
-      --paper-input-container-underline-disabled: {
-        display: none;
       }
     }
 
@@ -233,24 +195,6 @@ export const tabInputsStyles = html`
       }
       --paper-input-container-label-floating: {
         @apply --required-star-style;
-      }
-    }
-
-    paper-input.bold {
-      --paper-input-container-input: {
-        font-weight: 500;
-      }
-
-      --paper-input-container-underline-focus: {
-        display: none !important;
-      }
-
-      --paper-input-container-underline-disabled: {
-        display: none !important;
-      }
-
-      --paper-input-container-underline: {
-        display: none !important;
       }
     }
 
@@ -285,7 +229,7 @@ export const tabInputsStyles = html`
     .repeatable-item-container .form-title {
       position: relative;
       line-height: 40px;
-      color: var(--module-primary);
+      color: var(--primary-color);
       font-weight: 600;
       box-sizing: border-box;
       margin: 0 12px 15px !important;
@@ -351,7 +295,7 @@ export const tabInputsStyles = html`
     }
 
     .repeatable-item-actions .actions .action.add {
-      color: var(--module-primary);
+      color: var(--primary-color);
     }
 
     .repeatable-item-actions .actions .action[disabled] {
@@ -416,39 +360,54 @@ export const tabInputsStyles = html`
       }
     }
 
-    paper-input[disabled],
-    etools-dropdown[disabled],
-    etools-dropdown-multi[disabled],
-    etools-currency-amount-input[disabled],
-    datepicker-lite[disabled] {
-      --paper-input: {
-        color: var(--gray-50);
-      }
-      --paper-input-container-underline: {
-        color: var(--gray-20);
-      }
-    }
-    datepicker-lite[disabled] {
-      --paper-input-prefix: {
-        color: var(--gray-50);
-      }
-    }
-
     datepicker-lite {
-      --paper-input: {
-        color: var(--gray-50);
-      }
-      --paper-input-prefix: {
-        color: var(--gray-50);
-      }
-      --paper-input-container-underline: {
-        border-bottom: solid 1px var(--gray-20);
-      }
       --paper-input-container-label: {
         width: 133%;
       }
       --paper-input-container: {
         width: 100%;
+      }
+    }
+
+    etools-dropdown-multi[disabled],
+    etools-currency-amount-input[disabled],
+    etools-dropdown[disabled],
+    paper-textarea[disabled],
+    paper-dropdown-menu[disabled],
+    paper-input[disabled],
+    datepicker-lite[disabled] {
+      --paper-input-container: {
+        opacity: 1 !important;
+      }
+      --paper-input-container-underline: {
+        border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
+        display: block !important;
+      }
+      --paper-input-container-underline-disabled: {
+        border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
+        display: block !important;
+      }
+      --paper-input-container-underline-focus: {
+        display: none;
+      }
+    }
+
+    etools-dropdown-multi[readonly],
+    etools-currency-amount-input[readonly],
+    etools-dropdown[readonly],
+    paper-textarea[readonly],
+    paper-dropdown-menu[readonly],
+    paper-input[readonly],
+    datepicker-lite[readonly] {
+      --paper-input-container: {
+        opacity: 1 !important;
+      }
+      --paper-input-container-underline: {
+        border-bottom: none !important;
+        display: none !important;
+      }
+      --paper-input-container-underline-focus: {
+        display: none;
       }
     }
   </style>

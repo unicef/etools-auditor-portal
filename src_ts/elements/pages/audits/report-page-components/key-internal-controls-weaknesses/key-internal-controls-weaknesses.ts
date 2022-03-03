@@ -55,7 +55,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
           position: relative;
           width: 100%;
           line-height: 40px;
-          color: var(--module-primary);
+          color: var(--primary-color);
           font-weight: 600;
           box-sizing: border-box;
           margin: 10px 0 0 !important;
@@ -156,7 +156,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                 <etools-dropdown
                   id="riskRatingInput"
                   class$="{{_setRequired('key_internal_weakness.blueprints.risks.value',
-                                                basePermissionPath)}} disabled-as-readonly validate-input"
+                                                basePermissionPath)}} validate-input"
                   selected="{{editedBlueprint.risks.0.value}}"
                   label="Risk rating"
                   placeholder="Select Risk rating"
@@ -166,7 +166,6 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                   required="{{_setRequired('key_internal_weakness.blueprints.risks.value',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
                   invalid="{{errors.blueprints.0.risks.value}}"
                   error-message="{{errors.blueprints.0.risks.value}}"
                   on-focus="_resetFieldError"
@@ -180,14 +179,13 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
               <div class="input-container input-container-l">
                 <paper-textarea
                   class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}} disabled-as-readonly validate-input"
+                                                basePermissionPath)}} validate-input"
                   value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
                   label="Key control observation"
                   placeholder="Enter Observation"
                   required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
-                  readonly="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.blueprints.0.risks.extra}}"
                   error-message="{{errors.blueprints.0.risks.extra}}"
@@ -201,14 +199,13 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
               <div class="input-container input-container-l">
                 <paper-textarea
                   class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}} disabled-as-readonly validate-input"
+                                                basePermissionPath)}} validate-input"
                   value="{{editedBlueprint.risks.0.extra.recommendation}}"
                   label="Recommendation"
                   placeholder="Enter Recommendation"
                   required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
-                  readonly="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.blueprints.0.risks.extra}}"
                   error-message="{{errors.blueprints.0.risks.extra}}"
@@ -222,14 +219,13 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
               <div class="input-container input-container-l">
                 <paper-textarea
                   class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}} validate-input disabled-as-readonly"
+                                                basePermissionPath)}} validate-input"
                   value="{{editedBlueprint.risks.0.extra.ip_response}}"
                   label="IP Response"
                   placeholder="Enter Response"
                   required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
                                                 basePermissionPath)}}"
                   disabled="{{requestInProcess}}"
-                  readonly="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.blueprints.0.risks.extra}}"
                   error-message="{{errors.blueprints.0.risks.extra}}"
