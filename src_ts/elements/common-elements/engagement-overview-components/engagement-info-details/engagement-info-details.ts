@@ -362,7 +362,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 readonly$="[[isReadOnly('total_value', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.total_value)]]"
                 error-message="[[errors.total_value]]"
-                disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.total_value)]]"
                 error-message="[[errors.total_value]]"
                 on-focus="_resetFieldError"
@@ -489,6 +488,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               preserve-search-on-close
               option-label="name"
               option-value="id"
+              hidden$="[[isReadOnly('users_notified', basePermissionPath)]]"
               selected-values="[[usersNotifiedIDs]]"
               required$="[[_setRequired('users_notified', basePermissionPath)]]"
               invalid="[[errors.users_notified]]"
@@ -501,7 +501,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               on-etools-selected-items-changed="_setField"
             >
             </etools-dropdown-multi>
-            <div class="pad-lr">
+            <div class="pad-lr" hidden$="[[!isReadOnly('users_notified', basePermissionPath)]]">
               <label for="notifiedLbl" class="paper-label">[[getLabel('users_notified', basePermissionPath)]]</label>
               <div class="input-label" empty$="[[_emptyArray(data.users_notified)]]">
                 <dom-repeat items="[[data.users_notified]]">
