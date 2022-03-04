@@ -39,13 +39,13 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
 
         <div class="row-h group">
           <paper-textarea
-            class$="disabled-as-readonly [[_setRequired('internalControls', basePermissionPath)]]"
+            class$="[[_setRequired('internalControls', basePermissionPath)]]"
             value="{{data}}"
             label="Document any changes identified"
             always-float-label
             placeholder="Enter comments"
             required$="[[_setRequired('internal_controls', basePermissionPath)]]"
-            disabled$="[[isReadOnly('internal_controls', basePermissionPath)]]"
+            readonly$="[[isReadOnly('internal_controls', basePermissionPath)]]"
             invalid="{{_checkInvalid(errors.internal_controls)}}"
             error-message="{{errors.internal_controls}}"
             on-focus="_resetFieldError"

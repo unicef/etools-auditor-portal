@@ -70,7 +70,7 @@ class ListPagination extends PolymerElement {
           --paper-input-container-input-overflow: hidden;
           --paper-input-container-input-text-overflow: ellipsis;
           --paper-input-container-input-color: var(--gray-mid);
-          --paper-input-container-focus-color: var(--module-primary);
+          --paper-input-container-focus-color: var(--primary-color);
           --iron-icon-height: 18px;
           --paper-input-container-shared-input-style: {
             font-size: 12px;

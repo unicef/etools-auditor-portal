@@ -35,7 +35,7 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
               label="[[getLabel('face_form_start_date', basePermissionPath)]]"
               value="[[data.face_form_start_date]]"
               selected-date-display-format="D MMM YYYY"
-              disabled$="[[isReadOnly('face_form_start_date', basePermissionPath)]]"
+              readonly$="[[isReadOnly('face_form_start_date', basePermissionPath)]]"
               fire-date-has-changed
               property-name="face_form_start_date"
               on-date-has-changed="dateHasChanged"
@@ -49,7 +49,7 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
               value="[[data.face_form_end_date]]"
               label="[[getLabel('face_form_end_date', basePermissionPath)]]"
               selected-date-display-format="D MMM YYYY"
-              disabled$="[[isReadOnly('face_form_end_date', basePermissionPath)]]"
+              readonly$="[[isReadOnly('face_form_end_date', basePermissionPath)]]"
               fire-date-has-changed
               property-name="face_form_end_date"
               on-date-has-changed="dateHasChanged"
@@ -60,12 +60,11 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
           <div class="input-container">
             <!-- Total Value of Selected FACE Forms -->
             <etools-currency-amount-input
-              class="disabled-as-readonly"
               value="{{data.total_value}}"
               currency="$"
               label="[[getLabel('total_value', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
-              disabled
+              readonly
               on-focus="_resetFieldError"
               on-tap="_resetFieldError"
             >
@@ -76,13 +75,13 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
         <div class="row-h group">
           <div class="input-container">
             <etools-currency-amount-input
-              class$="disabled-as-readonly [[_setRequired('total_amount_tested', basePermissionPath)]]"
+              class$="[[_setRequired('total_amount_tested', basePermissionPath)]]"
               value="{{data.total_amount_tested}}"
               currency="$"
               label="[[getLabel('total_amount_tested', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('total_amount_tested', basePermissionPath)]]"
               required$="[[_setRequired('total_amount_tested', basePermissionPath)]]"
-              disabled$="[[isReadOnly('total_amount_tested', basePermissionPath)]]"
+              readonly$="[[isReadOnly('total_amount_tested', basePermissionPath)]]"
               invalid="{{_checkInvalid(errors.total_amount_tested)}}"
               error-message="{{errors.total_amount_tested}}"
               on-focus="_resetFieldError"
@@ -93,15 +92,14 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
 
           <div class="input-container">
             <etools-currency-amount-input
-              class$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]
-                                    disabled-as-readonly"
+              class$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
               value="{{data.total_amount_of_ineligible_expenditure}}"
               currency="$"
               label="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
               placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure',
                                           basePermissionPath)]]"
               required$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-              disabled$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
+              readonly$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
               invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
               error-message="{{errors.total_amount_of_ineligible_expenditure}}"
               on-focus="_resetFieldError"

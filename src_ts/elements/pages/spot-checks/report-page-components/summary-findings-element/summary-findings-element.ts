@@ -146,7 +146,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   required$="[[_setRequired('findings.category_of_observation',
                                                         basePermissionPath)]]"
                   disabled$="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
                   invalid="{{errors.category_of_observation}}"
                   error-message="{{errors.category_of_observation}}"
                   on-focus="_resetFieldError"
@@ -161,8 +160,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
                 <paper-textarea
-                  class$="{{_setRequired('findings.recommendation', basePermissionPath)}}
-                                            disabled-as-readonly fixed-width validate-input"
+                  class$="{{_setRequired('findings.recommendation', basePermissionPath)}} fixed-width validate-input"
                   value="{{editedItem.recommendation}}"
                   allowed-pattern="[\\d\\s]"
                   label="[[getLabel('findings.recommendation', basePermissionPath)]]"
@@ -170,7 +168,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
                   required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
                   disabled$="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.recommendation}}"
                   error-message="{{errors.recommendation}}"
@@ -185,8 +182,8 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Agreed Action by IP -->
                 <paper-textarea
-                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]
-                                            disabled-as-readonly fixed-width validate-input"
+                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] 
+                                fixed-width validate-input"
                   value="{{editedItem.agreed_action_by_ip}}"
                   allowed-pattern="[\\d\\s]"
                   label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
@@ -195,7 +192,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                                                 basePermissionPath)]]"
                   required$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]"
                   disabled$="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.agreed_action_by_ip}}"
                   error-message="{{errors.agreed_action_by_ip}}"

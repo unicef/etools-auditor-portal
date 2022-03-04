@@ -40,7 +40,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
               <etools-dropdown
                 id="riskAssessmentInput"
-                class="validate-input disabled-as-readonly required"
+                class="validate-input required"
                 selected="{{primaryArea.risk.value.value}}"
                 label="Risk Assessment"
                 placeholder="Select Risk Assessment"
@@ -48,8 +48,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
                 option-label="display_name"
                 option-value="value"
                 required
-                disabled="[[isDisabled]]"
-                readonly="[[isDisabled]]"
+                readonly$="[[isDisabled]]"
                 invalid="{{errors.children.0.blueprints.0.risk.value}}"
                 error-message="{{errors.children.0.blueprints.0.risk.value}}"
                 on-focus="_resetFieldError"
@@ -65,12 +64,12 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
               <!-- Brief Justification -->
               <paper-textarea
                 id="briefJustification"
-                class="disabled-as-readonly validate-input required"
+                class="validate-input required"
                 value="{{primaryArea.risk.extra.comments}}"
                 label="Brief Justification for Rating (main internal control gaps)"
                 placeholder="Enter Brief Justification"
                 required
-                disabled="[[isDisabled]]"
+                readonly$="[[isDisabled]]"
                 max-rows="4"
                 invalid="{{errors.children.0.blueprints.0.risk.extra}}"
                 error-message="{{errors.children.0.blueprints.0.risk.extra}}"
