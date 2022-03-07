@@ -261,6 +261,7 @@ class SearchAndFilter extends PolymerElement {
 
       if (queryParams.search) {
         this.set('searchString', queryParams.search);
+        this.previousSearchValue = queryParams.search;
       } else {
         this.set('searchString', '');
       }
