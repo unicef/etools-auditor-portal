@@ -33,7 +33,6 @@ import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
 import {getUserData} from '../../../mixins/user-controller';
-import {getProperty, setProperty} from '../../../utils/utils';
 
 /**
  * @polymer
@@ -628,14 +627,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       this.setUsersNotifiedOptionsAndIDs();
       return resp;
     });
-  }
-
-  _setField(event: any): void {
-    const valuePath: string = event.target.dataset?.valuePath || '';
-    const fieldPath: string = event.target.dataset?.fieldPath || '';
-    const value = getProperty(event, valuePath);
-    setProperty(this, fieldPath, value);
-    this.notifyPath(fieldPath);
   }
 
   _prepareData() {
