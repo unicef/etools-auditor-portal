@@ -106,6 +106,8 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
         theme="confirmation"
         size="md"
         opened="{{confirmDialogOpened}}"
+        openFlag="confirmDialogOpened"
+        on-close="_resetDialogOpenedFlag"
         on-close="_removeItem"
         ok-btn-text="Delete"
       >
@@ -116,6 +118,8 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
         keep-dialog-open
         size="md"
         opened="{{dialogOpened}}"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
         dialog-title="[[dialogTitle]]"
         ok-btn-text="[[confirmBtnText]]"
         show-spinner="{{requestInProcess}}"
@@ -275,6 +279,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   }
 
   _removeItem(event) {
+    this.confirmDialogOpened = false;
     if (this.deleteCanceled(event)) {
       return;
     }

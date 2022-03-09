@@ -154,9 +154,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           white-space: nowrap;
           text-overflow: ellipsis;
         }
-        :host div[list-item] {
-          overflow: var(--list-item-overflow, hidden);
-        }
         :host([no-additional]) div[list-item] {
           padding: 0 16px 0 24px !important;
         }
@@ -190,16 +187,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
           background-color: #eee;
           border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
         }
-        .wrap-text {
-          white-space: pre-wrap;
-          line-height: 14px;
-          display: flex;
-          word-break: break-word;
-          width: 100%;
-          justify-content: left;
-          align-items: center;
-          padding: 4px 0px;
-        }
         .truncate div {
           overflow: hidden;
         }
@@ -225,7 +212,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
                 <span class="truncate">
                   <template is="dom-if" if="[[_getValue(item, data)]]">
                     [[_getValue(item, data)]] <iron-icon icon="icons:launch"></iron-icon>
-                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
                   </template>
 
                   <template is="dom-if" if="[[!_getValue(item, data)]]">
@@ -238,10 +224,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
             <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
               <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
                 <span class$="[[getCellClass(item)]]">
-                  <template is="dom-if" if="[[_getValue(item, data)]]">
-                    <div>[[_getValue(item, data)]]</div>
-                    <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
-                  </template>
+                  <template is="dom-if" if="[[_getValue(item, data)]]"> [[_getValue(item, data)]] </template>
 
                   <template is="dom-if" if="[[!_getValue(item, data)]]">
                     <span class="">–</span>

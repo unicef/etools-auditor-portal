@@ -88,6 +88,8 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
         on-confirm-btn-clicked="_addItemFromDialog"
         dialog-title="[[dialogTitle]]"
         ok-btn-text="Save"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
@@ -103,7 +105,6 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   readonly
                 >
                 </paper-input>
-                <paper-tooltip offset="0">[[editedItem.partner.name]]</paper-tooltip>
               </div>
 
               <div class="input-container">

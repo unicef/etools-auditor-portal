@@ -58,6 +58,8 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
         show-spinner="{{requestInProcess}}"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_saveEditedArea"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">

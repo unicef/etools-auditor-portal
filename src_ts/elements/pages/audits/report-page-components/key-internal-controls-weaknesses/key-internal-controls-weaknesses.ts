@@ -129,6 +129,8 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
         on-confirm-btn-clicked="_deleteArea"
         disable-confirm-btn="{{requestInProcess}}"
         ok-btn-text="Delete"
+        openFlag="confirmDialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         [[dialogTexts.dialogTitle]]
       </etools-dialog>
@@ -143,6 +145,8 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
         show-spinner="{{requestInProcess}}"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_saveEditedArea"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">

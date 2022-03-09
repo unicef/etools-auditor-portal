@@ -82,12 +82,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
             has-collapse
             no-animation
           >
-            <div slot="custom">
-              [[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
-              <paper-tooltip offset="0"
-                >[[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]
-              </paper-tooltip>
-            </div>
+            <div slot="custom">[[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]</div>
             <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
               <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
               <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
@@ -107,6 +102,8 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
         opened="{{confirmDialogOpened}}"
         on-confirm-btn-clicked="removeItem"
         ok-btn-text="Delete"
+        openFlag="confirmDialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         [[deleteTitle]]
       </etools-dialog>
@@ -122,6 +119,8 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
         show-spinner="{{requestInProcess}}"
         disable-confirm-btn="{{requestInProcess}}"
         on-confirm-btn-clicked="_addItemFromDialog"
+        openFlag="dialogOpened"
+        on-close="_resetDialogOpenedFlag"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
@@ -148,7 +147,6 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                   hide-search
                 >
                 </etools-dropdown>
-                <paper-tooltip offset="0">[[title.display_name]]</paper-tooltip>
               </div>
             </div>
 
