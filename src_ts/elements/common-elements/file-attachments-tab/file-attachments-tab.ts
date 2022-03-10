@@ -110,7 +110,9 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
               <div class$="[[_getClassFor('document')]]">
                 <div class="wrap-text">
                   <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                  <a href$="[[item.attachment]] class="truncate"
+                  <a
+                    href$="[[item.attachment]]"
+                    class="truncate"
                     title$="[[getFileNameFromURL(item.attachment)]]"
                     target="_blank"
                     >[[getFileNameFromURL(item.attachment)]]
@@ -136,9 +138,11 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
                 <div class$="[[_getClassFor('document')]]">
                   <div class="wrap-text">
                     <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                    <a href$="[[linkedAttachment.url]]"
+                    <a
+                      href$="[[linkedAttachment.url]]"
                       title$="[[linkedAttachment.filename]]"
-                      class="truncate" target="_blank"
+                      class="truncate"
+                      target="_blank"
                       >[[linkedAttachment.filename]]
                     </a>
                   </div>
