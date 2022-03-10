@@ -9,8 +9,8 @@ export const fileAttachmentsTabStyles = html`
       text-decoration: none;
     }
 
-    :host .truncate {
-      white-space: nowrap;
+    .truncate {
+      white-space: wrap;
     }
 
     #fileType {
