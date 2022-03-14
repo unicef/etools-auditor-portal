@@ -7,6 +7,11 @@ import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {fireEvent} from '../utils/fire-custom-event';
+
+export function getStaffCollectionName(organisationId: number): string {
+  return `staff_members_${organisationId}`;
+}
 
 /**
  * @customElement
@@ -14,35 +19,11 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
  */
 
 class GetStaffMembersList extends PolymerElement {
-  @property({type: Number, notify: true})
+  @property({type: Number})
   organisationId!: number;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   queries!: GenericObject;
-
-  @property({type: Object, notify: true})
-  dataItems!: GenericObject;
-
-  @property({type: Boolean, notify: true})
-  listLoading = false;
-
-  @property({type: Number, notify: true, observer: '_partnerIdChanged'})
-  partnerId!: number | null;
-
-  @property({type: Number, notify: true})
-  datalength!: number;
-
-  @property({type: Object})
-  requestsCompleted: GenericObject = {};
-
-  @property({type: String, notify: true})
-  staffsBase = '';
-
-  @property({type: Object})
-  responseData!: GenericObject;
-
-  @property({type: String})
-  url!: string | null;
 
   @property({type: String})
   pageType = '';
@@ -56,36 +37,27 @@ class GetStaffMembersList extends PolymerElement {
       return;
     }
 
-    this.listLoading = true;
-    const queriesString = this._prepareQueries(listQueries);
+    fireEvent(this, 'loading-state-changed', {state: true});
 
-    this.requestsCompleted = {};
-    this.url = getEndpoint('staffMembers', {id: organisationId}).url + queriesString;
+    Promise.all([this.getDataRequest(organisationId, listQueries), this.getOptionsRequest(organisationId, listQueries)])
+      .then(([data]) => fireEvent(this, 'data-loaded', data))
+      .catch((error) => {
+        const responseData = error?.request?.detail?.request?.xhr;
+        logError(responseData);
+      })
+      .finally(() => fireEvent(this, 'loading-state-changed', {state: false}));
+  }
 
+  private getDataRequest(organisationId: number, listQueries: GenericObject) {
+    const queriesString = this.prepareQueries(listQueries);
     const options = {
       method: 'GET',
-      endpoint: {url: this.url}
+      endpoint: {url: getEndpoint('staffMembers', {id: organisationId}).url + queriesString}
     };
-
-    sendRequest(options).then(this._handleDataResponse.bind(this)).catch(this._handleError.bind(this));
-
-    if (collectionExists(`staff_members_${organisationId}`)) {
-      this.requestsCompleted.options = true;
-    } else {
-      this._getOptions(organisationId, listQueries);
-    }
+    return sendRequest(options);
   }
 
-  _getOptions(organisationId, params) {
-    const options = {
-      method: 'OPTIONS',
-      endpoint: getEndpoint('staffMembers', {id: organisationId}),
-      params
-    };
-    sendRequest(options).then(this._handleOptionsResponse.bind(this)).catch(this._handleOptionsResponse.bind(this));
-  }
-
-  _prepareQueries(listQueries) {
+  private prepareQueries(listQueries) {
     const queries: string[] = [];
     each(listQueries, (value, key) => {
       if (key !== 'search' || !!value) {
@@ -99,48 +71,25 @@ class GetStaffMembersList extends PolymerElement {
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
   }
 
-  _handleDataResponse(data) {
-    this.responseData = data;
-    this.requestsCompleted.data = true;
-    this._handleResponse(this.responseData);
-  }
-
-  _handleOptionsResponse(data) {
-    const actions = data && data.actions;
-    if (actions) {
-      addToCollection(`staff_members_${this.organisationId}`, actions);
-    } else {
+  private async getOptionsRequest(organisationId, params): Promise<void> {
+    const collectionName: string = getStaffCollectionName(organisationId);
+    if (collectionExists(collectionName)) {
+      return Promise.resolve();
+    }
+    const options = {
+      method: 'OPTIONS',
+      endpoint: getEndpoint('staffMembers', {id: organisationId}),
+      params
+    };
+    try {
+      const {actions} = await sendRequest(options);
+      if (!actions) {
+        throw new Error();
+      }
+      addToCollection(collectionName, actions);
+    } catch (e) {
       logError('Can not load permissions for engagement');
     }
-
-    this.requestsCompleted.options = true;
-    this._handleResponse(this.responseData);
-  }
-
-  _handleResponse(data) {
-    if (!this.requestsCompleted.data || !this.requestsCompleted.options) {
-      return;
-    }
-
-    this.dataItems = data.results;
-    if (this.queries && !this.queries.search) {
-      this.datalength = data.count;
-    }
-    this.listLoading = false;
-    this.url = null;
-    this.staffsBase = `staff_members_${this.organisationId}`;
-  }
-
-  _handleError(error) {
-    const responseData =
-      error &&
-      error.request &&
-      error.request.detail &&
-      error.request.detail.request &&
-      error.request.detail.request.xhr;
-    logError(responseData);
-    this.listLoading = false;
-    this.url = null;
   }
 }
 window.customElements.define('get-staff-members-list', GetStaffMembersList);

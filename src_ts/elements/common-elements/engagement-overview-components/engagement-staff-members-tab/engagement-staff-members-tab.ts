@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {html, PolymerElement} from '@polymer/polymer';
 
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/iron-icons/iron-icons.js';
@@ -39,7 +39,9 @@ import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
 import '../../../data-elements/check-user-existence';
 import '../../../data-elements/update-staff-members';
-import {refactorErrorObject, checkNonField} from '../../../mixins/error-handler';
+import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
+import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
+import {setProperty} from '../../../utils/utils';
 
 /**
  * @polymer
@@ -197,25 +199,22 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
       <!--requests-->
       <get-staff-members-list
-        organisation-id="{{organisationId}}"
-        staffs-base="{{staffsBase}}"
-        datalength="{{datalength}}"
-        queries="{{listQueries}}"
-        data-items="{{dataItems}}"
-        list-loading="{{listLoading}}"
+        organisation-id="[[organisationId]]"
+        queries="[[listQueries]]"
         page-type="[[pageType]]"
+        on-data-loaded="listLoaded"
+        on-loading-state-changed="listLoadingStateChanged"
       >
       </get-staff-members-list>
 
-      <update-staff-members organisation-id="[[organisationId]]" staff-data="{{newData}}"></update-staff-members>
+      <update-staff-members organisation-id="[[organisationId]]" staff-data="[[newData]]"></update-staff-members>
 
       <check-user-existence
-        email="{{newEmail}}"
-        email-checking="{{emailChecking}}"
-        errors="{{errors}}"
+        email="[[newEmail]]"
         organisation-id="[[organisationId]]"
-        edited-item="{{editedItem}}"
-        unicef-users-allowed="{{engagement.agreement.auditor_firm.unicef_users_allowed}}"
+        edited-item="[[editedItem]]"
+        unicef-users-allowed="[[engagement.agreement.auditor_firm.unicef_users_allowed]]"
+        on-email-checked="emailChecked"
       >
       </check-user-existence>
       <!--end requests-->
@@ -241,10 +240,13 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             <paper-input
               id="searchInput"
               class$="search-input [[_getSearchInputClass(searchString)]]"
-              value="{{searchString}}"
+              value="[[searchString]]"
               placeholder="Search"
               on-blur="searchBlur"
               on-input="_searchChanged"
+              data-value-path="target.value"
+              data-field-path="searchString"
+              on-input="_setField"
             >
               <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
             </paper-input>
@@ -268,9 +270,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
               <div slot="checkbox" class="checkbox">
                 <paper-checkbox
-                  disabled="{{_isCheckboxReadonly(item.hasAccess, engagementStaffs, saveWithButton)}}"
+                  disabled="[[_isCheckboxReadonly(item.hasAccess, engagementStaffs, saveWithButton)]]"
                   on-tap="_isActive"
-                  checked="{{item.hasAccess}}"
+                  checked="[[item.hasAccess]]"
                   label=""
                 >
                 </paper-checkbox>
@@ -284,12 +286,13 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           </template>
 
           <list-pagination
-            page-size="{{listSize}}"
-            page-number="{{listPage}}"
-            datalength="{{_staffLength(datalength, dataItems.length, searchQuery)}}"
+            page-size="[[listSize]]"
+            page-number="[[listPage]]"
+            datalength="[[_staffLength(datalength, dataItems.length, searchQuery)]]"
             without-queries
             hidden$="[[!_showPagination(datalength)]]"
-            showing-results="{{showingResults}}"
+            showing-results="[[showingResults]]"
+            on-pagination-changed="updatePagination"
           >
           </list-pagination>
         </div>
@@ -299,9 +302,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         theme="confirmation"
         size="md"
         keep-dialog-open
-        opened="{{confirmDialogOpened}}"
+        opened="[[confirmDialogOpened]]"
         on-confirm-btn-clicked="removeStaff"
-        disable-confirm-btn="{{requestInProcess}}"
+        disable-confirm-btn="[[requestInProcess]]"
         ok-btn-text="Delete"
         openFlag="confirmDialogOpened"
         on-close="_resetDialogOpenedFlag"
@@ -312,12 +315,12 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       <etools-dialog
         id="staff-members"
         no-padding
-        opened="{{dialogOpened}}"
+        opened="[[dialogOpened]]"
         dialog-title="[[dialogTitle]]"
         size="md"
         ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
+        show-spinner="[[requestInProcess]]"
+        disable-confirm-btn="[[requestInProcess]]"
         keep-dialog-open
         on-confirm-btn-clicked="_addStaffFromDialog"
         openFlag="dialogOpened"
@@ -330,41 +333,47 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
                 <!-- Email address -->
                 <paper-input
                   id="emailInput"
-                  class$="validate-input {{_setRequired('user.email', staffsBase)}} email"
-                  value="{{editedItem.user.email}}"
+                  class$="validate-input [[_setRequired('user.email', staffsBase)]] email"
+                  value="[[editedItem.user.email]]"
                   label="[[getLabel('user.email', staffsBase)]]"
                   placeholder="Enter E-mail"
-                  required="{{_setRequired('user.email', staffsBase)}}"
-                  disabled="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
-                  readonly$="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
+                  required="[[_setRequired('user.email', staffsBase)]]"
+                  disabled="[[_emailDisabled(requestInProcess, addDialog, emailChecking)]]"
+                  readonly$="[[_emailDisabled(requestInProcess, addDialog, emailChecking)]]"
                   maxlength="45"
-                  invalid="{{errors.user.email}}"
-                  error-message="{{errors.user.email}}"
+                  invalid="[[errors.user.email]]"
+                  error-message="[[errors.user.email]]"
                   on-focus="_resetFieldError"
                   on-tap="_resetFieldError"
                   on-blur="_checkEmail"
+                  data-value-path="target.value"
+                  data-field-path="editedItem.user.email"
+                  on-input="_setField"
                 >
                   <iron-icon slot="prefix" icon="communication:email"></iron-icon>
                 </paper-input>
-                <etools-loading active="{{emailChecking}}" no-overlay loading-text="" class="email-loading">
+                <etools-loading active="[[emailChecking]]" no-overlay loading-text="" class="email-loading">
                 </etools-loading>
               </div>
 
               <div class="input-container">
                 <!-- First Name -->
                 <paper-input
-                  class$="validate-input {{_setRequired('user.first_name', staffsBase)}}"
-                  value="{{editedItem.user.first_name}}"
+                  class$="validate-input [[_setRequired('user.first_name', staffsBase)]]"
+                  value="[[editedItem.user.first_name]]"
                   label="[[getLabel('user.first_name', staffsBase)]]"
                   placeholder="Enter First Name"
-                  required="{{_setRequired('user.first_name', staffsBase)}}"
-                  disabled="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
+                  required="[[_setRequired('user.first_name', staffsBase)]]"
+                  disabled="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   maxlength="30"
-                  invalid="{{errors.user.first_name}}"
-                  error-message="{{errors.user.first_name}}"
+                  invalid="[[errors.user.first_name]]"
+                  error-message="[[errors.user.first_name]]"
                   on-focus="_resetFieldError"
                   on-tap="_resetFieldError"
+                  data-value-path="target.value"
+                  data-field-path="editedItem.user.first_name"
+                  on-input="_setField"
                 >
                 </paper-input>
               </div>
@@ -372,18 +381,21 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               <div class="input-container">
                 <!-- Last Name -->
                 <paper-input
-                  class$="validate-input {{_setRequired('user.last_name', staffsBase)}}"
-                  value="{{editedItem.user.last_name}}"
+                  class$="validate-input [[_setRequired('user.last_name', staffsBase)]]"
+                  value="[[editedItem.user.last_name]]"
                   label="[[getLabel('user.last_name', staffsBase)]]"
                   placeholder="Enter Last Name"
-                  required="{{_setRequired('user.last_name', staffsBase)}}"
-                  disabled="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
+                  required="[[_setRequired('user.last_name', staffsBase)]]"
+                  disabled="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   maxlength="30"
-                  invalid="{{errors.user.last_name}}"
-                  error-message="{{errors.user.last_name}}"
+                  invalid="[[errors.user.last_name]]"
+                  error-message="[[errors.user.last_name]]"
                   on-focus="_resetFieldError"
                   on-tap="_resetFieldError"
+                  data-value-path="target.value"
+                  data-field-path="editedItem.user.last_name"
+                  on-input="_setField"
                 >
                 </paper-input>
               </div>
@@ -392,18 +404,21 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             <div class="input-container">
               <!-- Position -->
               <paper-input
-                class$="validate-input {{_setRequired('user.profile.job_title', staffsBase)}}"
-                value="{{editedItem.user.profile.job_title}}"
+                class$="validate-input [[_setRequired('user.profile.job_title', staffsBase)]]"
+                value="[[editedItem.user.profile.job_title]]"
                 label="[[getLabel('user.profile.job_title', staffsBase)]]"
                 placeholder="Enter Position"
-                required="{{_setRequired('user.profile.job_title', staffsBase)}}"
-                disabled="{{requestInProcess}}"
-                readonly$="{{requestInProcess}}"
+                required="[[_setRequired('user.profile.job_title', staffsBase)]]"
+                disabled="[[requestInProcess]]"
+                readonly$="[[requestInProcess]]"
                 maxlength="45"
-                invalid="{{errors.profile.job_title}}"
-                error-message="{{errors.profile.job_title}}"
+                invalid="[[errors.profile.job_title]]"
+                error-message="[[errors.profile.job_title]]"
                 on-focus="_resetFieldError"
                 on-tap="_resetFieldError"
+                data-value-path="target.value"
+                data-field-path="editedItem.user.profile.job_title"
+                on-input="_setField"
               >
               </paper-input>
             </div>
@@ -412,17 +427,20 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               <div class="input-container">
                 <!-- Phone number -->
                 <paper-input
-                  class$="validate-input {{_setRequired('user.profile.phone_number', staffsBase)}}"
-                  value="{{editedItem.user.profile.phone_number}}"
+                  class$="validate-input [[_setRequired('user.profile.phone_number', staffsBase)]]"
+                  value="[[editedItem.user.profile.phone_number]]"
                   allowed-pattern="[0-9\\ \\.\\+\\-\\(\\)]"
                   label="[[getLabel('user.profile.phone_number', staffsBase)]]"
                   placeholder="Enter Phone"
-                  required="{{_setRequired('user.profile.phone_number', staffsBase)}}"
-                  disabled="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
+                  required="[[_setRequired('user.profile.phone_number', staffsBase)]]"
+                  disabled="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   maxlength="20"
-                  invalid="{{errors.user.profile.phone_number}}"
-                  error-message="{{errors.user.profile.phone_number}}"
+                  invalid="[[errors.user.profile.phone_number]]"
+                  error-message="[[errors.user.profile.phone_number]]"
+                  data-value-path="target.value"
+                  data-field-path="editedItem.user.profile.phone_number"
+                  on-input="_setField"
                 >
                   <iron-icon slot="prefix" icon="communication:phone"></iron-icon>
                 </paper-input>
@@ -433,11 +451,14 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               <!--receive notification-->
               <div class="staff-check-box notify-box input-container input-container-l">
                 <paper-checkbox
-                  checked="{{editedItem.hasAccess}}"
-                  disabled="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
-                                            saveWithButton)}}"
-                  disabled$="{{_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
-                                            saveWithButton)}}"
+                  checked="[[editedItem.hasAccess]]"
+                  disabled="[[_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
+                                            saveWithButton)]]"
+                  disabled$="[[_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
+                                            saveWithButton)]]"
+                  data-value-path="target.checked"
+                  data-field-path="editedItem.hasAccess"
+                  on-change="_setField"
                 >
                   Has Access
                 </paper-checkbox>
@@ -466,6 +487,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   @property({type: String})
   mainProperty = 'staff_members';
+
+  @property({type: String})
+  staffsBase = '';
 
   @property({type: Array, observer: '_dataItemsChanged'})
   dataItems: any[] = [];
@@ -568,7 +592,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   saveWithButton = false;
 
   @property({type: String})
-  newEmail = '';
+  newEmail: string | null = '';
 
   @property({type: Object})
   engagement!: GenericObject;
@@ -599,6 +623,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   @property({type: String})
   pageType = '';
+
+  @property({type: String})
+  searchString = '';
 
   private _newRequestDebouncer!: Debouncer;
 
@@ -645,6 +672,19 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       each(this.columns, (_value, index) => {
         this.set(`columns.${index}.size`, 20);
       });
+    }
+  }
+
+  listLoadingStateChanged(event: CustomEvent): void {
+    this.listLoading = event.detail.state;
+  }
+
+  listLoaded(event: CustomEvent): void {
+    const data = event.detail;
+    this.staffsBase = getStaffCollectionName(this.organisationId);
+    this.dataItems = data.results;
+    if (!this.listQueries?.search) {
+      this.datalength = data.count;
     }
   }
 
@@ -751,6 +791,11 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     return `${first}-${last} of ${length}`;
   }
 
+  updatePagination(event: CustomEvent): void {
+    this.listPage = event.detail.pageNumber;
+    this.listSize = event.detail.pageSize;
+  }
+
   _validEmailAddress(emailInput) {
     const value = trim(emailInput.value);
     const required = emailInput.required;
@@ -787,6 +832,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     if (!item) {
       throw new Error('Can not get item model!');
     }
+    item.hasAccess = event.target.checked;
 
     const me = getUserData() || {};
     const updateOptions = get(item, 'user.email') === me.email;
@@ -809,6 +855,20 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
     if (value && this._validEmailAddress(input)) {
       this.newEmail = value;
+      this.emailChecking = true;
+    }
+  }
+
+  emailChecked(event: CustomEvent) {
+    this.emailChecking = false;
+    this.newEmail = null;
+    if (event.detail.error) {
+      const currentErrors = {...this.errors} || {};
+      setProperty(currentErrors, 'user.email', event.detail.error);
+      this.errors = currentErrors;
+    }
+    if (event.detail.data) {
+      this.editedItem = event.detail.data;
     }
   }
 
