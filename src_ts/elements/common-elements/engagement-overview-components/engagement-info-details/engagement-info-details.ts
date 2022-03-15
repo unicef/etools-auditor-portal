@@ -33,7 +33,6 @@ import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
 import {getUserData} from '../../../mixins/user-controller';
-import {getProperty, setProperty} from '../../../utils/utils';
 
 /**
  * @polymer
@@ -511,22 +510,18 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   engagementTypes: GenericObject[] = [
     {
       label: 'Micro Assessment',
-      link: 'micro-assessments',
       value: 'ma'
     },
     {
       label: 'Audit',
-      link: 'audits',
       value: 'audit'
     },
     {
       label: 'Spot Check',
-      link: 'spot-checks',
       value: 'sc'
     },
     {
       label: 'Special Audit',
-      link: 'special-audits',
       value: 'sa'
     }
   ];
@@ -632,14 +627,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       this.setUsersNotifiedOptionsAndIDs();
       return resp;
     });
-  }
-
-  _setField(event: any): void {
-    const valuePath: string = event.target.dataset?.valuePath || '';
-    const fieldPath: string = event.target.dataset?.fieldPath || '';
-    const value = getProperty(event, valuePath);
-    setProperty(this, fieldPath, value);
-    this.notifyPath(fieldPath);
   }
 
   _prepareData() {
@@ -948,18 +935,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return;
     }
 
-    const links: {[key: string]: string} = {
-      ma: 'micro-assessments',
-      audit: 'audits',
-      sc: 'spot-checks',
-      sa: 'special-audits'
-    };
-
     return types.map((typeObject: any) => {
       return {
         value: typeObject.value,
-        label: typeObject.display_name,
-        link: links[typeObject.value as string]
+        label: typeObject.display_name
       };
     });
   }

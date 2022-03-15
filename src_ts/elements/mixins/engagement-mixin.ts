@@ -13,6 +13,7 @@ import {getEndpoint} from '../config/endpoints-controller';
 import {getUserData} from './user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
 import {whichPageTrows} from './error-handler';
+import {clearQueries} from './query-params-controller';
 
 let currentEngagement: {details?: GenericObject; type?: string} = {};
 /**
@@ -101,6 +102,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (tab === '' || isUndefined(tab)) {
         this.set('route.path', `/${id}/overview`);
         tab = 'overview';
+      }
+      if (!this.engagementId) {
+        clearQueries();
       }
       if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
         fireEvent(this, '404');
