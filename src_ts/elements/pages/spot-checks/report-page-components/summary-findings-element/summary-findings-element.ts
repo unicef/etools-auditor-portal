@@ -182,7 +182,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Agreed Action by IP -->
                 <paper-textarea
-                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] 
+                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]
                                 fixed-width validate-input"
                   value="{{editedItem.agreed_action_by_ip}}"
                   allowed-pattern="[\\d\\s]"
@@ -214,7 +214,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   value="[[editedItem.deadline_of_action]]"
                   error-message="{{errors.deadline_of_action}}"
                   required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   fire-date-has-changed
                   property-name="deadline_of_action"
