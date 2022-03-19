@@ -163,8 +163,8 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                   options="[[riskOptions]]"
                   option-label="display_name"
                   option-value="value"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.value',
-                                                basePermissionPath)}}"
+                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.value',
+                                                basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   invalid="{{errors.blueprints.0.risks.value}}"
                   error-message="{{errors.blueprints.0.risks.value}}"
@@ -183,8 +183,8 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                   value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
                   label="Key control observation"
                   placeholder="Enter Observation"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}}"
+                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.extra',
+                                                basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.blueprints.0.risks.extra}}"
@@ -203,8 +203,8 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                   value="{{editedBlueprint.risks.0.extra.recommendation}}"
                   label="Recommendation"
                   placeholder="Enter Recommendation"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}}"
+                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.extra',
+                                                basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.blueprints.0.risks.extra}}"
@@ -223,8 +223,8 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
                   value="{{editedBlueprint.risks.0.extra.ip_response}}"
                   label="IP Response"
                   placeholder="Enter Response"
-                  required="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}}"
+                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.extra',
+                                                basePermissionPath)]]"
                   disabled="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.blueprints.0.risks.extra}}"
@@ -247,7 +247,6 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
   dataModel: GenericObject = {
     risks: [
       {
-        value: {},
         extra: {}
       }
     ]

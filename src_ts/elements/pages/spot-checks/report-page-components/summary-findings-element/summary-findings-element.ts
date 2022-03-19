@@ -134,6 +134,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Category of Observation -->
                 <etools-dropdown
+                  class="validate-input"
                   label="[[getLabel('findings.category_of_observation',
                                                     basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('findings.category_of_observation',
@@ -166,7 +167,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                   always-float-label
                   placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                  required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
+                  required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
                   disabled$="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.recommendation}}"
@@ -386,6 +387,9 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
 
   getCurrentData() {
     if (!this.dialogOpened && !this.confirmDialogOpened) {
+      return null;
+    }
+    if (!this.validate()) {
       return null;
     }
     const data = cloneWith(this.editedItem, (item) => {
