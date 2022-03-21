@@ -134,6 +134,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Category of Observation -->
                 <etools-dropdown
+                  class="validate-input"
                   label="[[getLabel('findings.category_of_observation',
                                                     basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('findings.category_of_observation',
@@ -166,7 +167,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   label="[[getLabel('findings.recommendation', basePermissionPath)]]"
                   always-float-label
                   placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                  required$="{{_setRequired('findings.recommendation', basePermissionPath)}}"
+                  required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
                   disabled$="{{requestInProcess}}"
                   max-rows="4"
                   invalid="{{errors.recommendation}}"
@@ -182,7 +183,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
               <div class="input-container input-container-l">
                 <!-- Agreed Action by IP -->
                 <paper-textarea
-                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]] 
+                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]
                                 fixed-width validate-input"
                   value="{{editedItem.agreed_action_by_ip}}"
                   allowed-pattern="[\\d\\s]"
@@ -214,7 +215,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
                   value="[[editedItem.deadline_of_action]]"
                   error-message="{{errors.deadline_of_action}}"
                   required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
                   readonly$="{{requestInProcess}}"
                   fire-date-has-changed
                   property-name="deadline_of_action"
@@ -387,6 +387,9 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
 
   getCurrentData() {
     if (!this.dialogOpened && !this.confirmDialogOpened) {
+      return null;
+    }
+    if (!this.validate()) {
       return null;
     }
     const data = cloneWith(this.editedItem, (item) => {

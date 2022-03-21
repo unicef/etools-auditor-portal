@@ -233,7 +233,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Date Partner Was Contacted -->
             <datepicker-lite
               id="contactedDateInput"
-              class$="[[_setRequired('partner_contacted_at', basePermissionPath)]] 
+              class$="[[_setRequired('partner_contacted_at', basePermissionPath)]]
                                 validate-field"
               value="[[data.partner_contacted_at]]"
               label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
@@ -357,7 +357,6 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 readonly$="[[isReadOnly('total_value', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.total_value)]]"
                 error-message="[[errors.total_value]]"
-                disabled$="[[isReadOnly('total_value', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.total_value)]]"
                 error-message="[[errors.total_value]]"
                 on-focus="_resetFieldError"

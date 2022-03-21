@@ -101,7 +101,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   value="{{editedItem.partner.name}}"
                   label$="[[getLabel('partner.name', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('partner.name', basePermissionPath)]]"
-                  disabled
+                  readonly
                 >
                 </paper-input>
               </div>
@@ -117,7 +117,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('audited_expenditure', basePermissionPath)]]"
                   required$="[[_setRequired('audited_expenditure', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   invalid="{{errors.audited_expenditure}}"
                   error-message="{{errors.audited_expenditure}}"
                   on-blur="customValidation"
@@ -138,7 +138,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   label$="[[getLabel('financial_findings', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('financial_findings', basePermissionPath)]]"
                   required$="[[_setRequired('financial_findings', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   invalid="{{errors.financial_findings}}"
                   error-message="{{errors.financial_findings}}"
                   on-blur="customValidation"
@@ -158,7 +158,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   label$="[[getLocalLabel('audited_expenditure_local', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('audited_expenditure_local', basePermissionPath)]]"
                   required$="[[_setRequired('audited_expenditure_local', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   invalid="{{errors.audited_expenditure_local}}"
                   error-message="{{errors.audited_expenditure_local}}"
                   on-blur="customValidation"
@@ -178,7 +178,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   label$="[[getLocalLabel('financial_findings_local', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('financial_findings_local', basePermissionPath)]]"
                   required$="[[_setRequired('financial_findings_local', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   invalid="{{errors.financial_findings_local}}"
                   error-message="{{errors.financial_findings_local}}"
                   on-blur="customValidation"
@@ -196,7 +196,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   currency=""
                   label$="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
-                  disabled="disabled"
+                  readonly
                 >
                 </etools-currency-amount-input>
               </div>
@@ -229,7 +229,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   value="{{editedItem.number_of_financial_findings}}"
                   label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
-                  disabled
+                  readonly
                 >
                 </paper-input>
               </div>
@@ -240,7 +240,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   value="{{editedItem.key_internal_weakness.high_risk_count}}"
                   label$="[[getLabel('key_internal_weakness.high_risk_count', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('key_internal_weakness.high_risk_count', basePermissionPath)]]"
-                  disabled
+                  readonly
                 >
                 </paper-input>
               </div>
@@ -251,7 +251,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   value="{{editedItem.key_internal_weakness.medium_risk_count}}"
                   label$="[[getLabel('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
-                  disabled
+                  readonly
                 >
                 </paper-input>
               </div>
@@ -262,7 +262,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   value="{{editedItem.key_internal_weakness.low_risk_count}}"
                   label$="[[getLabel('key_internal_weakness.low_risk_count', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('key_internal_weakness.low_risk_count', basePermissionPath)]]"
-                  disabled
+                  readonly
                 >
                 </paper-input>
               </div>

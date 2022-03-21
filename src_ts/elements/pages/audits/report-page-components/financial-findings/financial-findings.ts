@@ -158,7 +158,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                   label="[[getLabel('financial_finding_set.local_amount', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('financial_finding_set.local_amount', basePermissionPath)]]"
                   required$="[[_setRequired('financial_finding_set.local_amount', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   invalid$="[[errors.local_amount]]"
                   error-message="{{errors.local_amount}}"
                   on-focus="_resetFieldError"
@@ -176,7 +176,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
                   label="[[getLabel('financial_finding_set.amount', basePermissionPath)]]"
                   placeholder="[[getPlaceholderText('financial_finding_set.amount', basePermissionPath)]]"
                   required$="[[_setRequired('financial_finding_set.amount', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
+                  readonly$="[[requestInProcess]]"
                   invalid$="[[errors.amount]]"
                   error-message$="[[errors.amount]]"
                   on-focus="_resetFieldError"
@@ -190,7 +190,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               <div class="input-container input-container-l">
                 <!-- Description -->
                 <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]] 
+                  class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]
                             fixed-width validate-input"
                   value="{{editedItem.description}}"
                   allowed-pattern="[\\d\\s]"
@@ -212,7 +212,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               <div class="input-container input-container-l">
                 <!-- Recommendation -->
                 <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]] 
+                  class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]
                             fixed-width validate-input"
                   value="{{editedItem.recommendation}}"
                   allowed-pattern="[\\d\\s]"
@@ -234,7 +234,7 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
               <div class="input-container input-container-l">
                 <!-- IP comments -->
                 <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]] 
+                  class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]
                             fixed-width validate-input"
                   value="{{editedItem.ip_comments}}"
                   allowed-pattern="[\\d\\s]"
