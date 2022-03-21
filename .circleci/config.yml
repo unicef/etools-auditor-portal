@@ -77,5 +77,4 @@ workflows:
               only:
                 - master
                 - staging
-                - develop
-                - fix-dynamic-fetch-dd
+                - develop        
