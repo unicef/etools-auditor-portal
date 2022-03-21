@@ -410,5 +410,30 @@ export const tabInputsStyles = html`
         display: none;
       }
     }
+
+    .paper-label {
+      font-size: 12px;
+      color: var(--secondary-text-color);
+      padding-top: 6px;
+    }
+
+    .input-label {
+      min-height: 24px;
+      padding-top: 4px;
+      padding-bottom: 6px;
+      min-width: 0;
+      font-size: 16px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .input-label[empty]::after {
+      content: '—';
+      color: var(--secondary-text-color);
+    }
+
+    .separator {
+      padding: 0 8px;
+    }
   </style>
 `;

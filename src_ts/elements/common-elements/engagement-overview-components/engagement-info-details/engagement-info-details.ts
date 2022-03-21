@@ -90,6 +90,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           margin-bottom: 8px;
         }
 
+        .pad-lr {
+          padding: 0 12px;
+        }
+
         etools-dropdown,
         etools-dropdown-multi {
           align-items: baseline;
@@ -483,9 +487,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               preserve-search-on-close
               option-label="name"
               option-value="id"
+              hidden$="[[isReadOnly('users_notified', basePermissionPath)]]"
               selected-values="[[usersNotifiedIDs]]"
               required$="[[_setRequired('users_notified', basePermissionPath)]]"
-              readonly$="[[isReadOnly('users_notified', basePermissionPath)]]"
               invalid="[[errors.users_notified]]"
               error-message="[[errors.users_notified]]"
               on-focus="_resetFieldError"
@@ -496,10 +500,36 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               on-etools-selected-items-changed="_setField"
             >
             </etools-dropdown-multi>
+            <div class="pad-lr" hidden$="[[!isReadOnly('users_notified', basePermissionPath)]]">
+              <label for="notifiedLbl" class="paper-label">[[getLabel('users_notified', basePermissionPath)]]</label>
+              <div class="input-label" empty$="[[_emptyArray(data.users_notified)]]">
+                <dom-repeat items="[[data.users_notified]]">
+                  <template>
+                    <div>
+                      [[item.name]]
+                      <span class="separator">[[getSeparator(data.users_notified, index)]]</span>
+                    </div>
+                  </template>
+                </dom-repeat>
+              </div>
+            </div>
           </div>
         </div>
       </etools-content-panel>
     `;
+  }
+
+  _emptyArray(arr) {
+    return !arr || !arr.length;
+  }
+  getSeparator(collection, index) {
+    if (!collection) {
+      return '';
+    }
+    if (index < collection.length - 1) {
+      return '|';
+    }
+    return '';
   }
 
   @property({type: String, observer: '_basePathChanged'})
