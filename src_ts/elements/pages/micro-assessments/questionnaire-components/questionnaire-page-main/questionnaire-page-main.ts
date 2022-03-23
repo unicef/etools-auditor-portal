@@ -18,7 +18,7 @@ import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
-import {get} from 'lodash-es';
+import get from 'lodash-es/get';
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   static get template() {
