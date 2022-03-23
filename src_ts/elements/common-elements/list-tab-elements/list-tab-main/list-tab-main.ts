@@ -96,11 +96,12 @@ class ListTabMain extends PolymerElement {
         <template is="dom-if" if="[[!withoutPagination]]" restamp>
           <list-pagination
             id="list-pagination"
-            page-size="{{queryParams.page_size}}"
-            page-number="{{queryParams.page}}"
+            page-size="[[queryParams.page_size]]"
+            page-number="[[queryParams.page]]"
             datalength="[[listLength]]"
             page-marker="[[pageMarker]]"
-            showing-results="{{showingResults}}"
+            showing-results="[[showingResults]]"
+            on-pagination-changed="updatePagination"
           >
           </list-pagination>
         </template>
@@ -209,6 +210,11 @@ class ListTabMain extends PolymerElement {
 
       this.noAnimation = false;
     }
+  }
+
+  updatePagination(event: CustomEvent): void {
+    this.set('queryParams.page', event.detail.pageNumber);
+    this.set('queryParams.page_size', event.detail.pageSize);
   }
 }
 
