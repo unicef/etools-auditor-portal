@@ -89,7 +89,7 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
         </a>
         <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
 
-        <a class="nav-menu-item lighter-item last-one" href="http://etoolsinfo.unicef.org" target="_blank">
+        <a class="nav-menu-item lighter-item last-one" href="https://etools.unicef.org/landing" target="_blank">
           <iron-icon id="information-icon" icon="icons:info"></iron-icon>
           <div class="name">Information</div>
         </a>
