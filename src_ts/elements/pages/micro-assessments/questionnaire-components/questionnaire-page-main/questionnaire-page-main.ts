@@ -18,6 +18,7 @@ import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
+import get from 'lodash-es/get';
 
 class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   static get template() {
@@ -104,6 +105,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
           class="validatable-tab risk-tab"
           index="{{index}}"
           first-run="[[firstRun]]"
+          current-requests="[[currentRequests]]"
           completed="{{_checkCompleted(item)}}"
           disabled="{{_checkDisabled(index, item)}}"
           edit-mode="[[editMode]]"
@@ -233,6 +235,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   editMode = false;
 
+  private currentRequests: GenericObject = {};
   private tabId!: string;
   private categoryId!: string;
   private originalComments!: string;
@@ -268,6 +271,13 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     if (!isEmpty(this.questionnaire) && this.firstRun) {
       this.firstRun = false;
     }
+    Object.entries(this.currentRequests).forEach(([path, value]) => {
+      const newValue = get(data, path);
+      if (newValue === value) {
+        delete this.currentRequests[path];
+        this.currentRequests = {...this.currentRequests};
+      }
+    });
     this.requestsCount(-1);
 
     if (!this.requestsCount()) {
@@ -345,6 +355,8 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.changedData.push({
       children: [event.detail.data]
     });
+    this.currentRequests[event.detail.requestId.path] = event.detail.requestId.value;
+    this.currentRequests = {...this.currentRequests};
     this.requestsCount(1);
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }

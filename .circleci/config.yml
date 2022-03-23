@@ -77,5 +77,4 @@ workflows:
               only:
                 - master
                 - staging
-                - develop
-                - 27653_standardize_readonly
+                - develop        

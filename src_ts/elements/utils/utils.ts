@@ -6,7 +6,7 @@ export function setProperty(object: GenericObject, path = '', dataToSet: any): a
   while (pathArray.length) {
     const field: string = pathArray.shift() as string;
     if (pathArray.length) {
-      data = data[field] || {};
+      data = data[field] || (data[field] = {});
     } else {
       data[field] = dataToSet;
     }
