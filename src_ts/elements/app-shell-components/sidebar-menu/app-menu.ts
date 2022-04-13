@@ -1,5 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icons/av-icons.js';
 import '@polymer/iron-icons/maps-icons.js';
@@ -16,7 +17,7 @@ import {apIcons, famIcon} from '../../styles/ap-icons';
  * @customElement
  * @appliesMixin GestureEventListeners
  */
-class AppMenu extends GestureEventListeners(PolymerElement) {
+class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
   public static get template() {
     // main template
     // language=HTML
@@ -67,13 +68,25 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           <span>eTools Community Channels</span>
         </div>
 
-        <a class="nav-menu-item lighter-item no-transform" href="[[etoolsNowLink]]" target="_blank">
+        <a
+          class="nav-menu-item lighter-item no-transform"
+          href="[[etoolsNowLink]]"
+          target="_blank"
+          on-tap="trackAnalytics"
+          tracker="Implementation Intelligence"
+        >
           <iron-icon id="power-bi-icon" icon="ap-icons:power-bi"></iron-icon>
           <div class="name">Implementation Intelligence</div>
         </a>
         <paper-tooltip for="power-bi-icon" position="right"> Implementation Intelligence </paper-tooltip>
 
-        <a class="nav-menu-item lighter-item" href="http://etools.zendesk.com" target="_blank">
+        <a
+          class="nav-menu-item lighter-item"
+          href="http://etools.zendesk.com"
+          target="_blank"
+          on-tap="trackAnalytics"
+          tracker="Knowledge base"
+        >
           <iron-icon id="knoledge-icon" icon="maps:local-library"></iron-icon>
           <div class="name">Knowledge base</div>
         </a>
@@ -83,13 +96,21 @@ class AppMenu extends GestureEventListeners(PolymerElement) {
           class="nav-menu-item lighter-item"
           href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"
           target="_blank"
+          on-tap="trackAnalytics"
+          tracker="Discussion"
         >
           <iron-icon id="discussion-icon" icon="icons:question-answer"></iron-icon>
           <div class="name">Discussion</div>
         </a>
         <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
 
-        <a class="nav-menu-item lighter-item last-one" href="https://etools.unicef.org/landing" target="_blank">
+        <a
+          class="nav-menu-item lighter-item last-one"
+          href="https://etools.unicef.org/landing"
+          target="_blank"
+          on-tap="trackAnalytics"
+          tracker="Information"
+        >
           <iron-icon id="information-icon" icon="icons:info"></iron-icon>
           <div class="name">Information</div>
         </a>

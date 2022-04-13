@@ -9,6 +9,7 @@ import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
+import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
 import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
@@ -57,6 +58,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     return html`
       ${appDrawerStyles}
       <static-data></static-data>
+      <etools-piwik-analytics page="[[subroute.prefix]]" user="[[user]]" toast="[[_toast]]"></etools-piwik-analytics>
+
       <app-location route="{{route}}" query-params="{{queryParams}}" url-space-regex="^[[rootPath]]"></app-location>
 
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"> </app-route>
