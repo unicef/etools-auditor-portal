@@ -7,6 +7,7 @@ import '@polymer/paper-button/paper-button';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
+import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '../../utils/fire-custom-event';
@@ -19,7 +20,7 @@ import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
  * @polymer
  * @customElement
  */
-class PagesHeaderElement extends PolymerElement {
+class PagesHeaderElement extends MatomoMixin(PolymerElement) {
   static get template() {
     return html`
       ${sharedStyles} ${moduleStyles} ${pagesHeaderElementStyles}
@@ -42,12 +43,17 @@ class PagesHeaderElement extends PolymerElement {
 
                 <paper-listbox id="dropdownMenu" slot="dropdown-content" class="dropdown-content" class="mw-150">
                   <template is="dom-repeat" items="[[exportLinks]]">
-                    <paper-item on-tap="exportData">[[item.name]]</paper-item>
+                    <paper-item tracker$="[[item.name]]" on-tap="exportData">[[item.name]]</paper-item>
                   </template>
                 </paper-listbox>
               </paper-menu-button>
 
-              <paper-button class="grey-buttons" hidden$="[[_isDropDown(exportLinks)]]" on-tap="exportData">
+              <paper-button
+                class="grey-buttons"
+                hidden$="[[_isDropDown(exportLinks)]]"
+                tracker="Export"
+                on-tap="exportData"
+              >
                 <iron-icon icon="file-download"></iron-icon>
                 Export
               </paper-button>
@@ -58,7 +64,13 @@ class PagesHeaderElement extends PolymerElement {
               Print
             </paper-button>
 
-            <paper-button class="add-btn" raised hidden$="[[hideAddButton]]" on-tap="addNewTap">
+            <paper-button
+              class="add-btn"
+              raised
+              hidden$="[[hideAddButton]]"
+              tracker="Add New Engagement"
+              on-tap="addNewTap"
+            >
               <template is="dom-if" if="{{_showLink(link)}}">
                 <a href="{{link}}" class="btn-link"></a>
               </template>
@@ -103,7 +115,8 @@ class PagesHeaderElement extends PolymerElement {
     super.connectedCallback();
   }
 
-  addNewTap() {
+  addNewTap(e) {
+    this.trackAnalytics(e);
     fireEvent(this, 'add-new-tap');
   }
 
@@ -126,6 +139,7 @@ class PagesHeaderElement extends PolymerElement {
     if (this.exportLinks.length < 1) {
       throw new Error('Can not find export link!');
     }
+    this.trackAnalytics(e);
     const url = e && e.model && e.model.item ? e.model.item.url : this.exportLinks[0].url;
     window.open(url, '_blank');
   }
