@@ -129,10 +129,10 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
   }
 
   _setTitle(engagement, title) {
-    if (!engagement || !engagement.unique_id) {
+    if (!engagement || !engagement.reference_number) {
       return title;
     }
-    return engagement.unique_id;
+    return engagement.reference_number;
   }
 
   exportData(e) {

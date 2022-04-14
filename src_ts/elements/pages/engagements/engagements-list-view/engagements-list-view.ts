@@ -100,10 +100,10 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
     {
       size: 15,
       label: 'Unique ID #',
-      name: 'unique_id',
+      name: 'reference_number',
       link: '*engagement_type*/*data_id*/overview',
       ordered: false,
-      path: 'unique_id'
+      path: 'reference_number'
     },
     {
       size: 20,
