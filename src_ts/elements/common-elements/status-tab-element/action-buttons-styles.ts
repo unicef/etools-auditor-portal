@@ -15,7 +15,7 @@ export const ActionButtonsStyles = html`
       --paper-button_-_color: #fff;
       height: 34px;
       color: #fff;
-      background-color: var(--module-primary);
+      background-color: var(--primary-color);
       margin: 0;
       width: 100%;
     }

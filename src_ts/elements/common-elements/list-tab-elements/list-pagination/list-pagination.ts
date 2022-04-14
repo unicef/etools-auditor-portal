@@ -9,6 +9,7 @@ import '@polymer/polymer/lib/elements/dom-repeat';
 
 import {moduleStyles} from '../../../styles/module-styles';
 import {sharedStyles} from '../../../styles/shared-styles';
+import {fireEvent} from '../../../utils/fire-custom-event';
 
 /**
  * @polymer
@@ -70,7 +71,7 @@ class ListPagination extends PolymerElement {
           --paper-input-container-input-overflow: hidden;
           --paper-input-container-input-text-overflow: ellipsis;
           --paper-input-container-input-color: var(--gray-mid);
-          --paper-input-container-focus-color: var(--module-primary);
+          --paper-input-container-focus-color: var(--primary-color);
           --iron-icon-height: 18px;
           --paper-input-container-shared-input-style: {
             font-size: 12px;
@@ -98,6 +99,7 @@ class ListPagination extends PolymerElement {
             class="dropdown-content"
             attr-for-selected="name"
             selected="{{pageSize}}"
+            on-iron-select="itemsNrChanged"
           >
             <!--on-iron-select="itemsNrChanged"-->
             <template is="dom-repeat" items="[[sizesAllowed]]">
@@ -106,11 +108,11 @@ class ListPagination extends PolymerElement {
           </paper-listbox>
         </paper-dropdown-menu>
 
-        <span class="textsec lh unselectable">{{showingResults}}</span>
+        <span class="textsec lh unselectable">[[showingResults]]</span>
 
         <div class="chevron-container layout around-justified horizontal">
           <paper-icon-button
-            disabled$="{{_disableButton(currentPage, datalength)}}"
+            disabled$="[[_disableButton(currentPage, datalength)]]"
             icon="first-page"
             on-click="goToFirst"
             class$="chev back-arr [[pageMarker]]"
@@ -118,7 +120,7 @@ class ListPagination extends PolymerElement {
           </paper-icon-button>
 
           <paper-icon-button
-            disabled$="{{_disableButton(currentPage, datalength)}}"
+            disabled$="[[_disableButton(currentPage, datalength)]]"
             icon="icons:chevron-left"
             class$="chev back-arr [[pageMarker]]"
             on-click="goToLeft"
@@ -126,7 +128,7 @@ class ListPagination extends PolymerElement {
           </paper-icon-button>
 
           <paper-icon-button
-            disabled$="{{_disableButton(currentPage, datalength, pageSize)}}"
+            disabled$="[[_disableButton(currentPage, datalength, pageSize)]]"
             icon="icons:chevron-right"
             class$="chev next-arr [[pageMarker]]"
             on-click="goToRight"
@@ -134,7 +136,7 @@ class ListPagination extends PolymerElement {
           </paper-icon-button>
 
           <paper-icon-button
-            disabled$="{{_disableButton(currentPage, datalength, pageSize)}}"
+            disabled$="[[_disableButton(currentPage, datalength, pageSize)]]"
             icon="last-page"
             on-click="goToLast"
             class$="chev next-arr [[pageMarker]]"
@@ -148,10 +150,10 @@ class ListPagination extends PolymerElement {
   @property({type: Array})
   sizesAllowed: any[] = ['10', '25', '50', '100'];
 
-  @property({type: String, notify: true, observer: '_sizeChanged'})
+  @property({type: String, observer: '_sizeChanged'})
   pageSize!: string;
 
-  @property({type: String, notify: true, observer: '_pageChanged'})
+  @property({type: String, observer: '_pageChanged'})
   pageNumber!: string;
 
   @property({type: Number})
@@ -165,26 +167,32 @@ class ListPagination extends PolymerElement {
 
   _sizeChanged(newSize) {
     if (this.sizesAllowed.indexOf(newSize) < 0) {
-      this.set('pageSize', '10');
+      this.fireEvent(this.pageNumber, '10');
+    }
+  }
+
+  itemsNrChanged(event) {
+    if (this.pageSize !== event.target.selected) {
+      this.fireEvent(this.pageNumber, event.target.selected);
     }
   }
 
   goToFirst() {
-    this.set('pageNumber', '1');
+    this.fireEvent('1');
   }
 
   goToLeft() {
-    this.set('pageNumber', `${(+this.currentPage || 1) - 1}`);
+    this.fireEvent(`${(+this.currentPage || 1) - 1}`);
   }
 
   goToRight() {
     if (this.currentPage !== this.lastPage) {
-      this.set('pageNumber', `${(+this.currentPage || 1) + 1}`);
+      this.fireEvent(`${(+this.currentPage || 1) + 1}`);
     }
   }
 
   goToLast() {
-    this.set('pageNumber', this.lastPage);
+    this.fireEvent(String(this.lastPage));
   }
 
   _disableButton(currentPage, datalength, pageSize) {
@@ -203,6 +211,10 @@ class ListPagination extends PolymerElement {
 
   _pageChanged(pageNumber) {
     this.currentPage = pageNumber || 1;
+  }
+
+  private fireEvent(pageNumber = this.pageNumber, pageSize = this.pageSize): void {
+    fireEvent(this, 'pagination-changed', {pageNumber, pageSize});
   }
 }
 window.customElements.define('list-pagination', ListPagination);

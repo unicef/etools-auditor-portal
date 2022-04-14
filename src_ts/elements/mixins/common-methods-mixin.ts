@@ -10,6 +10,7 @@ import {setStaticData, getStaticData} from './static-data-controller';
 import {Constructor, GenericObject} from '../../types/global';
 import {fireEvent} from '../utils/fire-custom-event';
 import {refactorErrorObject, checkNonField} from './error-handler';
+import {getProperty, setProperty} from '../utils/utils';
 
 /**
  * @polymer
@@ -108,6 +109,14 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       }
     }
 
+    _setField(event: any): void {
+      const valuePath: string = event.target.dataset?.valuePath || '';
+      const fieldPath: string = event.target.dataset?.fieldPath || '';
+      const value = getProperty(event, valuePath);
+      setProperty(this, fieldPath, value);
+      this.notifyPath(fieldPath);
+    }
+
     _basePathChanged() {
       this.updateStyles();
     }
@@ -157,7 +166,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     getPlaceholderText(path, base, datepicker) {
       if (readonlyPermission(`${base}.${path}`)) {
-        return 'Empty Field';
+        return '–';
       }
 
       const label = this.getLabel(path, base);
@@ -165,8 +174,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return `${prefix} ${label}`;
     }
 
-    getReadonlyPlaceholder(data) {
-      return data && data.id ? 'Empty Field' : '-';
+    getReadonlyPlaceholder(_data) {
+      return '–';
     }
 
     _getSavedChoices(path) {

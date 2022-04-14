@@ -68,7 +68,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskAssessmentInput"
-                  class="disabled-as-readonly validate-input required"
+                  class="validate-input required"
                   selected="{{editedArea.blueprints.0.risk.value.value}}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
@@ -77,7 +77,6 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                   option-value="value"
                   required
                   disabled="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
                   invalid="{{errors.children.0.blueprints.0.risk.value}}"
                   error-message="{{errors.children.0.blueprints.0.risk.value}}"
                   on-focus="_resetFieldError"
@@ -93,13 +92,12 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                 <!-- Brief Justification -->
                 <paper-textarea
                   id="briefJustification"
-                  class="disabled-as-readonly validate-input required"
+                  class="validate-input required"
                   value="{{editedArea.blueprints.0.risk.extra.comments}}"
                   label="Brief Justification for Rating (main internal control gaps)"
                   placeholder="Enter Brief Justification"
                   required
                   disabled="{{requestInProcess}}"
-                  readonly$="{{requestInProcess}}"
                   max-rows="4"
                   error-message="{{errors.children.0.blueprints.0.risk.extra}}"
                   invalid="{{errors.children.0.blueprints.0.risk.extra}}"

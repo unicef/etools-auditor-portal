@@ -5,22 +5,17 @@ import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
 import {getEndpoint} from '../config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {fireEvent} from '../utils/fire-custom-event';
 import {GenericObject} from '../../types/global';
 
 class CheckUserExistence extends PolymerElement {
-  @property({type: String, notify: true, observer: '_emailChanged'})
+  @property({type: String, observer: '_emailChanged'})
   email: string | null = null;
 
-  @property({type: Boolean, notify: true})
-  emailChecking = false;
-
-  @property({type: Object, notify: true})
-  errors: any | null = null;
-
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   unicefUsersAllowed!: boolean;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   editedItem!: GenericObject;
 
   @property({type: Number})
@@ -34,7 +29,6 @@ class CheckUserExistence extends PolymerElement {
       return;
     }
 
-    this.emailChecking = true;
     const url = getEndpoint('userExistence', {
       email: encodeURIComponent(email),
       id: this.organisationId
@@ -57,28 +51,27 @@ class CheckUserExistence extends PolymerElement {
 
   _handleResponse(details = []) {
     const user = get(details, '0');
+    let data;
+    let error;
     if (user) {
       const firmId = user.auditor_firm;
       const userIsNotDeleted = firmId === this.organisationId && !user.hidden;
       const alreadyExists = firmId && (firmId !== this.organisationId || userIsNotDeleted);
       if (!this.unicefUsersAllowed && this._isUnicefUser(user.email)) {
-        this._setError('UNICEF users can not be added to this engagement type.');
-        this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
-      }
-      if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
+        error = 'UNICEF users can not be added to this engagement type.';
+        data = pick(this.editedItem, ['user', 'hasAccess']);
+      } else if (alreadyExists || (details.length && !this.unicefUsersAllowed && userIsNotDeleted)) {
         // if user exists in other firm, or in current but is not deleted,
         // or user exists and unicefUsersAllowed is false
-        this._setError(`This user is already assigned to firm : ${user.auditor_firm_description}`);
+        error = `This user is already assigned to firm : ${user.auditor_firm_description}`;
         const email = get(this, 'editedItem.user.email');
         const hasAccess = false;
-        this.editedItem = {user: {email}, hasAccess};
-      }
-
-      if (firmId === this.organisationId) {
+        data = {user: {email}, hasAccess};
+      } else if (firmId === this.organisationId) {
         // if user was deleted from current organization
         const user = details[0] as any;
         user.is_active = true;
-        this.editedItem = {
+        data = {
           id: user.staff_member_id,
           hidden: false,
           hasAccess: true,
@@ -89,50 +82,34 @@ class CheckUserExistence extends PolymerElement {
         const user = details[0] as any;
         const user_pk = user.id;
 
-        this.editedItem = {
+        data = {
           hasAccess: true,
           user: omit(user, ['id', 'auditor_firm']),
           user_pk
         };
       } else if (this.unicefUsersAllowed) {
         // if is new user and unicefUsersAllowed
-        this._setError(`You can't add new user to this firm.`);
-        this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
+        error = `You can't add new user to this firm.`;
+        data = pick(this.editedItem, ['user', 'hasAccess']);
       } else {
         // if is new user
-        this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
+        data = pick(this.editedItem, ['user', 'hasAccess']);
       }
     } else if (this.unicefUsersAllowed) {
-      const errorMsg = this._isUnicefUser(this.email)
+      error = this._isUnicefUser(this.email)
         ? `We could not find this user at this time, please try again later or contact support if the issue persists`
         : 'Only UNICEF users can be added to a Staff Spot Check';
-      this._setError(errorMsg);
-      this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
+      data = pick(this.editedItem, ['user', 'hasAccess']);
     } else if (this._isUnicefUser(this.email)) {
-      this._setError('UNICEF users can not be added to this engagement type.');
-      this.editedItem = pick(this.editedItem, ['user', 'hasAccess']);
+      error = 'UNICEF users can not be added to this engagement type.';
+      data = pick(this.editedItem, ['user', 'hasAccess']);
     }
 
-    this.emailChecking = false;
-    this.email = null;
+    fireEvent(this, 'email-checked', {error, data});
   }
 
   _handleError() {
-    this._setError(`Can't get Email data!`);
-    this.emailChecking = false;
-    this.email = null;
-  }
-
-  _setError(error) {
-    if (!this.errors) {
-      this.set('errors', {});
-    }
-    if (!this.errors.user) {
-      this.set('errors.user', {});
-    }
-    if (!this.errors.user.email) {
-      this.set('errors.user.email', error);
-    }
+    fireEvent(this, 'email-checked', {error: `Can't get Email data!`});
   }
 }
 window.customElements.define('check-user-existence', CheckUserExistence);

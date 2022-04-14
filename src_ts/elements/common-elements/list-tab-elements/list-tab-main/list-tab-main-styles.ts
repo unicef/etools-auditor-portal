@@ -22,7 +22,7 @@ export const ListTabMainStyles = html`
     .data-table .data-card-heading.table-title {
       margin-left: 0;
       text-align: center;
-      background-color: var(--module-primary);
+      background-color: var(--primary-color);
       line-height: 48px;
       color: #fff;
       margin-bottom: 17px;

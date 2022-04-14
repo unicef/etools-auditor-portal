@@ -6,8 +6,8 @@
  */
 export type Constructor<T> = new (...args: any[]) => T;
 
-export interface GenericObject {
-  [key: string]: any;
+export interface GenericObject<T = any> {
+  [key: string]: T;
 }
 
 export interface ValueAndDisplayName {

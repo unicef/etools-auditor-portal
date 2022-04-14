@@ -23,7 +23,7 @@ export const fileAttachmentsTabStyles = html`
 
     paper-input-container {
       margin: 0 12px;
-      --paper-input-container-focus-color: var(--module-primary);
+      --paper-input-container-focus-color: var(--primary-color);
       --paper-input-container: {
         color: var(--gray-50) !important;
         font-size: 13px;
