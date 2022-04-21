@@ -1,5 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/iron-icons/communication-icons';
+import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 
 /* eslint-disable max-len */
 
@@ -7,7 +8,7 @@ import '@polymer/iron-icons/communication-icons';
  * @polymer
  * @customElement
  */
-class SupportBtn extends PolymerElement {
+class SupportBtn extends MatomoMixin(PolymerElement) {
   static get is() {
     return 'support-btn';
   }
@@ -35,7 +36,7 @@ class SupportBtn extends PolymerElement {
         target="_blank"
       >
         <!--    the paper-button fixes the cursor pointer issue when hovering over the icon label    -->
-        <paper-button>
+        <paper-button on-tap="trackAnalytics" tracker="Support">
           <iron-icon icon="communication:textsms"></iron-icon>
           Support
         </paper-button>
