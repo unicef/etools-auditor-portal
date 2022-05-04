@@ -40,7 +40,7 @@ class ListTabMain extends PolymerElement {
         :host .data-table .data-card-heading.table-title {
           margin-left: 0;
           text-align: center;
-          background-color: var(--module-primary);
+          background-color: var(--primary-color);
           line-height: 48px;
           color: #fff;
           margin-bottom: 17px;
@@ -96,11 +96,12 @@ class ListTabMain extends PolymerElement {
         <template is="dom-if" if="[[!withoutPagination]]" restamp>
           <list-pagination
             id="list-pagination"
-            page-size="{{queryParams.page_size}}"
-            page-number="{{queryParams.page}}"
+            page-size="[[queryParams.page_size]]"
+            page-number="[[queryParams.page]]"
             datalength="[[listLength]]"
             page-marker="[[pageMarker]]"
-            showing-results="{{showingResults}}"
+            showing-results="[[showingResults]]"
+            on-pagination-changed="updatePagination"
           >
           </list-pagination>
         </template>
@@ -209,6 +210,11 @@ class ListTabMain extends PolymerElement {
 
       this.noAnimation = false;
     }
+  }
+
+  updatePagination(event: CustomEvent): void {
+    this.set('queryParams.page', event.detail.pageNumber);
+    this.set('queryParams.page_size', event.detail.pageSize);
   }
 }
 

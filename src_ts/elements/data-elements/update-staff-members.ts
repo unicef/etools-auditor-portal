@@ -1,20 +1,16 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
-import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '../utils/fire-custom-event.js';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class UpdateStaffMembers extends PolymerElement {
-  @property({type: Object, notify: true, observer: '_dataChanged'})
+  @property({type: Object, observer: '_dataChanged'})
   staffData!: GenericObject;
 
   @property({type: Number})
   organisationId!: number;
-
-  @property({type: Object})
-  lastRequestData!: GenericObject;
 
   _dataChanged(data) {
     if (!data) {
@@ -27,12 +23,6 @@ class UpdateStaffMembers extends PolymerElement {
       throw new Error('Method or data are missing!');
     }
 
-    this.lastRequestData = cloneDeep(data);
-
-    // this.method = data.method;
-    // this.url = getEndpoint('staffMembers', {id: this.organisationId}).url + data.id;
-    // this.postData = data.data;
-    this.set('staffData', null);
     const options = {
       method: data.method,
       endpoint: {
@@ -41,16 +31,16 @@ class UpdateStaffMembers extends PolymerElement {
       body: data.data
     };
     sendRequest(options)
-      .then((resp) => this._handleResponse(resp))
+      .then((resp) => this._handleResponse(resp, data))
       .catch((err) => this._handleError(err));
   }
 
-  _handleResponse(detail) {
+  _handleResponse(detail, requestData) {
     fireEvent(this, 'staff-updated', {
-      action: this.lastRequestData.method.toLowerCase(),
+      action: requestData.method.toLowerCase(),
       data: detail,
-      hasAccess: this.lastRequestData.data.hasAccess,
-      index: this.lastRequestData.staffIndex
+      hasAccess: requestData.data.hasAccess,
+      index: requestData.staffIndex
     });
   }
 

@@ -8,7 +8,7 @@ import '@unicef-polymer/etools-app-selector';
 import '@unicef-polymer/etools-profile-dropdown';
 import './countries-dropdown/countries-dropdown';
 import './support-btn';
-
+import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {isProductionServer, checkEnvironment} from '../../config/config';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
@@ -20,7 +20,7 @@ import {fireEvent} from '../../utils/fire-custom-event';
  * @customElement
  * @appliesMixin GestureEventListeners
  */
-class PageHeader extends GestureEventListeners(PolymerElement) {
+class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
   public static get template() {
     // main template
     // language=HTML
@@ -108,7 +108,13 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
             on-sign-out="_signOut"
           ></etools-profile-dropdown>
 
-          <paper-icon-button title="Refresh" id="refresh" icon="refresh" on-tap="refreshBtnclicked"></paper-icon-button>
+          <paper-icon-button
+            title="Refresh"
+            id="refresh"
+            icon="refresh"
+            tracker="Refresh"
+            on-tap="refreshBtnclicked"
+          ></paper-icon-button>
         </div>
       </app-toolbar>
     `;
@@ -146,7 +152,8 @@ class PageHeader extends GestureEventListeners(PolymerElement) {
     return window.EtoolsFamApp.DexieDb.delete();
   }
 
-  protected refreshBtnclicked() {
+  protected refreshBtnclicked(e) {
+    this.trackAnalytics(e);
     this._clearDexieDb().then(() => {
       location.reload();
     });

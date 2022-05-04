@@ -9,11 +9,8 @@ import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class GetPartnerData extends PolymerElement {
-  @property({type: Number, notify: true, observer: '_partnerIdChanged'})
+  @property({type: Number, observer: '_partnerIdChanged'})
   partnerId!: number | null;
-
-  @property({type: Object, notify: true})
-  partner!: GenericObject;
 
   @property({type: Object})
   lastData!: GenericObject;
@@ -66,13 +63,13 @@ class GetPartnerData extends PolymerElement {
   }
 
   finishRequest() {
-    this.partner = clone(this.lastData);
-    fireEvent(this, 'partner-loaded', {success: true});
+    const partner = clone(this.lastData);
+    fireEvent(this, 'partner-loaded', partner);
 
-    const partnerDataId = `partner_${this.partner.id}`;
-    const partner = getStaticData(partnerDataId);
-    if (!partner) {
-      setStaticData(partnerDataId, this.partner);
+    const partnerDataId = `partner_${partner.id}`;
+    const savedPartner = getStaticData(partnerDataId);
+    if (!savedPartner) {
+      setStaticData(partnerDataId, partner);
     }
   }
 
@@ -91,7 +88,6 @@ class GetPartnerData extends PolymerElement {
       return;
     }
     if (partnerId === this.lastNumber) {
-      this.partnerId = null;
       const detail = clone(this.lastData);
       this.lastError ? this._handleError() : this._handleResponse(detail);
       return;
@@ -114,8 +110,6 @@ class GetPartnerData extends PolymerElement {
           this._handleError();
         });
     }
-
-    this.partnerId = null;
   }
 }
 window.customElements.define('get-partner-data', GetPartnerData);

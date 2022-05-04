@@ -121,7 +121,7 @@ export const etoolsFileStyles = html`
         padding: 0 19px 0 12px;
         height: 36px;
         color: #ffffff;
-        background-color: var(--module-primary);
+        background-color: var(--primary-color);
       };
       @apply --etools-file-upload-button;
     }
@@ -146,7 +146,7 @@ export const etoolsFileStyles = html`
         padding: 10px 8px;
         margin: 18px 0 0;
         width: 50%;
-        color: var(--module-primary) !important;
+        color: var(--primary-color) !important;
       };
     }
 

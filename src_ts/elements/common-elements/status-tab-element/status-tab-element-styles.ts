@@ -23,7 +23,7 @@ export const StatusTabElementStyles = html` <style>
   .status-buttons paper-button {
     height: 35px;
     color: #ffffff;
-    background-color: var(--module-primary);
+    background-color: var(--primary-color);
   }
 
   .status-buttons paper-button.with-actions {
@@ -173,7 +173,7 @@ export const StatusTabElementStyles = html` <style>
     display: none !important;
   }
   .status-container.active.first .status-icon .icon-wrapper {
-    background-color: var(--module-primary);
+    background-color: var(--primary-color);
   }
   .status-container.active.first iron-icon {
     display: none !important;

@@ -38,7 +38,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
         >
           <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
 
-          <template is="dom-repeat" items="{{questionnaire.blueprints}}">
+          <template is="dom-repeat" items="{{questionnaire.blueprints}}" index-as="blueprintIndex">
             <list-element
               class="list-element"
               data="[[_prepareData(item)]]"
@@ -57,12 +57,14 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                 <template is="dom-if" if="{{editMode}}">
                   <etools-dropdown
                     id="riskOptions1"
-                    class="disabled-as-readonly required validate-input"
+                    class="required validate-input"
                     selected="[[item.risk.value]]"
                     placeholder="&#8212;"
                     options="[[riskOptions]]"
                     option-label="display_name"
                     option-value="value"
+                    data-path$="[[createPath(blueprintIndex)]]"
+                    readonly$="[[isReadonly(blueprintIndex, null, currentRequests)]]"
                     on-focus="_resetFieldError_riskTab"
                     trigger-value-change-event
                     on-etools-selected-item-changed="_riskValueChanged"
@@ -80,7 +82,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
             </list-element>
           </template>
 
-          <template is="dom-repeat" items="{{questionnaire.children}}" as="category">
+          <template is="dom-repeat" items="{{questionnaire.children}}" as="category" index-as="categoryIndex">
             <list-element
               class="list-element"
               data="[[category]]"
@@ -91,7 +93,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
             >
             </list-element>
 
-            <template is="dom-repeat" items="{{category.blueprints}}">
+            <template is="dom-repeat" items="{{category.blueprints}}" index-as="blueprintIndex">
               <list-element
                 class="list-element"
                 data="[[_prepareData(item)]]"
@@ -116,7 +118,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                   <template is="dom-if" if="{{editMode}}">
                     <etools-dropdown
                       id="riskOptions2"
-                      class="disabled-as-readonly required validate-input"
+                      class="required validate-input"
                       selected="[[item.risk.value]]"
                       placeholder="&#8212;"
                       options="[[riskOptions]]"
@@ -124,6 +126,8 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
                       option-value="value"
                       category-id$="{{category.id}}"
                       on-focus="_resetFieldError_riskTab"
+                      data-path$="[[createPath(blueprintIndex, categoryIndex)]]"
+                      readonly$="[[isReadonly(blueprintIndex, categoryIndex, currentRequests)]]"
                       trigger-value-change-event
                       on-etools-selected-item-changed="_riskValueChanged"
                       dynamic-align
@@ -214,6 +218,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Array})
   riskOptions!: {value: string | number; display_name: string}[];
 
+  @property({type: Object})
+  currentRequests: GenericObject = {};
+
   static get observers() {
     return ['_setOpen(disabled, completed, firstRun, questionnaire)'];
   }
@@ -237,6 +244,17 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
 
   getRating(rating) {
     return this.riskRatingOptions[rating] || rating;
+  }
+
+  isReadonly(blueprintIndex: number, categoryIndex: number) {
+    const path = this.createPath(blueprintIndex, categoryIndex);
+    return Object.hasOwnProperty.call(this.currentRequests, path);
+  }
+
+  createPath(blueprintIndex: number, categoryIndex?: number): string {
+    return `children.${this.index}${
+      typeof categoryIndex === 'number' ? `.children.${categoryIndex}` : ''
+    }.blueprints.${blueprintIndex}.risk.value`;
   }
 
   _setOpen(disabled, completed, firstRun) {
@@ -263,7 +281,11 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     blueprint.risk.value = changedRiskRValue;
 
     fireEvent(this, 'risk-value-changed', {
-      data: this._getQuestionnaireDataToSave(changedRiskRValue, blueprint.id, event.target)
+      data: this._getQuestionnaireDataToSave(changedRiskRValue, blueprint.id, event.target),
+      requestId: {
+        path: event.target.dataset.path,
+        value: changedRiskRValue
+      }
     });
   }
 

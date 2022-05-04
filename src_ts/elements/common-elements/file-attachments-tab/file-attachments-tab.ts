@@ -197,7 +197,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
                 <div class="input-container input-container-ms">
                   <etools-dropdown
                     id="fileType"
-                    class$="validate-input disabled-as-readonly [[_setRequired('file_type', basePermissionPath)]]"
+                    class$="validate-input [[_setRequired('file_type', basePermissionPath)]]"
                     selected="{{editedItem.file_type}}"
                     label="[[getLabel('file_type', basePermissionPath)]]"
                     placeholder="[[getPlaceholderText('file_type', basePermissionPath)]]"
@@ -206,7 +206,6 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
                     option-value="value"
                     required$="[[_setRequired('file_type', basePermissionPath)]]"
                     disabled$="[[requestInProcess]]"
-                    readonly$="[[requestInProcess]]"
                     invalid="{{errors.file_type}}"
                     error-message="{{errors.file_type}}"
                     on-focus="_resetFieldError"

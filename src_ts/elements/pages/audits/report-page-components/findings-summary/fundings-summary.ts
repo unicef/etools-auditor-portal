@@ -97,11 +97,10 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
               <div class="input-container">
                 <!-- Implementing partner name -->
                 <paper-input
-                  class="validate-input disabled-as-readonly"
+                  class="validate-input"
                   value="{{editedItem.partner.name}}"
                   label$="[[getLabel('partner.name', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('partner.name', basePermissionPath)]]"
-                  disabled
                   readonly
                 >
                 </paper-input>
@@ -112,13 +111,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <etools-currency-amount-input
                   id="audited-expenditure"
                   class$="[[_setRequired('audited_expenditure', basePermissionPath)]]
-                            validate-input disabled-as-readonly"
+                            validate-input"
                   value="{{editedItem.audited_expenditure}}"
                   currency="$"
                   label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('audited_expenditure', basePermissionPath)]]"
                   required$="[[_setRequired('audited_expenditure', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
                   readonly$="[[requestInProcess]]"
                   invalid="{{errors.audited_expenditure}}"
                   error-message="{{errors.audited_expenditure}}"
@@ -134,13 +132,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <etools-currency-amount-input
                   id="financial-findings"
                   class$="[[_setRequired('financial_findings', basePermissionPath)]]
-                            validate-input disabled-as-readonly"
+                            validate-input"
                   value="{{editedItem.financial_findings}}"
                   currency="$"
                   label$="[[getLabel('financial_findings', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('financial_findings', basePermissionPath)]]"
                   required$="[[_setRequired('financial_findings', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
                   readonly$="[[requestInProcess]]"
                   invalid="{{errors.financial_findings}}"
                   error-message="{{errors.financial_findings}}"
@@ -155,14 +152,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <!-- Audited expenditure (Local) -->
                 <etools-currency-amount-input
                   id="audited-expenditure-local"
-                  class$="validate-input disabled-as-readonly
-                        [[_setRequired('audited_expenditure_local', basePermissionPath)]]"
+                  class$="validate-input [[_setRequired('audited_expenditure_local', basePermissionPath)]]"
                   value="{{editedItem.audited_expenditure_local}}"
                   currency="[[data.currency_of_report]]"
                   label$="[[getLocalLabel('audited_expenditure_local', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('audited_expenditure_local', basePermissionPath)]]"
                   required$="[[_setRequired('audited_expenditure_local', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
                   readonly$="[[requestInProcess]]"
                   invalid="{{errors.audited_expenditure_local}}"
                   error-message="{{errors.audited_expenditure_local}}"
@@ -177,14 +172,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <!-- Financial findings (Local) -->
                 <etools-currency-amount-input
                   id="financial-findings-local"
-                  class$="validate-input disabled-as-readonly
-                      [[_setRequired('financial_findings_local', basePermissionPath)]]"
+                  class$="validate-input [[_setRequired('financial_findings_local', basePermissionPath)]]"
                   value="{{editedItem.financial_findings_local}}"
                   currency="[[data.currency_of_report]]"
                   label$="[[getLocalLabel('financial_findings_local', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('financial_findings_local', basePermissionPath)]]"
                   required$="[[_setRequired('financial_findings_local', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
                   readonly$="[[requestInProcess]]"
                   invalid="{{errors.financial_findings_local}}"
                   error-message="{{errors.financial_findings_local}}"
@@ -198,12 +191,11 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
               <div class="input-container">
                 <!-- % of audited expenditure -->
                 <etools-currency-amount-input
-                  class$="validate-input disabled-as-readonly"
+                  class$="validate-input"
                   value="{{editedItem.percent_of_audited_expenditure}}"
                   currency=""
                   label$="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
-                  disabled="disabled"
                   readonly
                 >
                 </etools-currency-amount-input>
@@ -213,7 +205,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                 <!-- Audit opinion -->
                 <etools-dropdown
                   id="auditOpinionDropDown"
-                  class$="validate-input disabled-as-readonly [[_setRequired('audit_opinion', basePermissionPath)]]"
+                  class$="validate-input [[_setRequired('audit_opinion', basePermissionPath)]]"
                   selected="{{editedItem.audit_opinion}}"
                   label$="[[getLabel('audit_opinion', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
@@ -222,7 +214,6 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
                   option-value="value"
                   required$="[[_setRequired('audit_opinion', basePermissionPath)]]"
                   disabled$="[[requestInProcess]]"
-                  readonly$="[[requestInProcess]]"
                   invalid="{{errors.audit_opinion}}"
                   error-message="{{errors.audit_opinion}}"
                   on-focus="_resetFieldError"
@@ -235,11 +226,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
               <div class="input-container">
                 <!-- Number of financial findings -->
                 <paper-input
-                  class="disabled-as-readonly"
                   value="{{editedItem.number_of_financial_findings}}"
                   label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
-                  disabled
                   readonly
                 >
                 </paper-input>
@@ -248,11 +237,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
               <div class="input-container">
                 <!-- High risk -->
                 <paper-input
-                  class="disabled-as-readonly"
                   value="{{editedItem.key_internal_weakness.high_risk_count}}"
                   label$="[[getLabel('key_internal_weakness.high_risk_count', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('key_internal_weakness.high_risk_count', basePermissionPath)]]"
-                  disabled
                   readonly
                 >
                 </paper-input>
@@ -261,11 +248,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
               <div class="input-container">
                 <!-- Medium risk -->
                 <paper-input
-                  class="disabled-as-readonly"
                   value="{{editedItem.key_internal_weakness.medium_risk_count}}"
                   label$="[[getLabel('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
-                  disabled
                   readonly
                 >
                 </paper-input>
@@ -274,11 +259,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
               <div class="input-container">
                 <!-- Low risk -->
                 <paper-input
-                  class="disabled-as-readonly"
                   value="{{editedItem.key_internal_weakness.low_risk_count}}"
                   label$="[[getLabel('key_internal_weakness.low_risk_count', basePermissionPath)]]"
                   placeholder$="[[getPlaceholderText('key_internal_weakness.low_risk_count', basePermissionPath)]]"
-                  disabled
                   readonly
                 >
                 </paper-input>

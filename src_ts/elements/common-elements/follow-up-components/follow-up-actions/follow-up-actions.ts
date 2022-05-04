@@ -223,7 +223,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                             <!-- Partner -->
                             <etools-dropdown
                                     class$="[[_setRequired('partner', editedApBase)]]
-                                              disabled-as-readonly validate-input fua-person"
+                                              validate-input fua-person"
                                     selected="{{selectedPartnerId}}"
                                     label="[[getLabel('partner', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
@@ -231,7 +231,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     option-label="name"
                                     option-value="id"
                                     required$="[[_setRequired('partner', editedApBase)]]"
-                                    disabled$="{{isReadOnly('partner', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('partner', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.partner}}"
                                     error-message="{{errors.partner}}"
@@ -243,7 +242,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                             <!-- PD/SSFA -->
                             <etools-dropdown
                                     class$="[[_setRequired('intervention', editedApBase)]]
-                                            disabled-as-readonly validate-input fua-person"
+                                            validate-input fua-person"
                                     selected="{{editedItem.intervention.id}}"
                                     label="[[getLabel('intervention', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('intervention', editedApBase, 'select')]]"
@@ -251,7 +250,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     option-label="title"
                                     option-value="id"
                                     required$="[[_setRequired('intervention', editedApBase)]]"
-                                    disabled$="{{isReadOnly('intervention', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('intervention', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.intervention}}"
                                     error-message="{{errors.intervention}}"
@@ -267,7 +265,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                             <!-- Category -->
                             <etools-dropdown
                                     class$="[[_setRequired('category', editedApBase)]]
-                                            disabled-as-readonly validate-input fua-person"
+                                            validate-input fua-person"
                                     selected="{{editedItem.category}}"
                                     label="[[getLabel('category', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('category', editedApBase, 'select')]]"
@@ -275,7 +273,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     option-label="display_name"
                                     option-value="value"
                                     required$="[[_setRequired('category', editedApBase)]]"
-                                    disabled$="{{isReadOnly('category', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('category', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.category}}"
                                     error-message="{{errors.category}}"
@@ -295,7 +292,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     label="[[getLabel('description', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('description', editedApBase)]]"
                                     required$="{{_setRequired('description', editedApBase)}}"
-                                    disabled="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('description', editedApBase, requestInProcess)}}"
                                     max-rows="4"
                                     invalid="{{errors.description}}"
@@ -312,7 +308,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
                             <etools-dropdown
                                     class$="[[_setRequired('assigned_to', editedApBase)]]
-                                            disabled-as-readonly validate-input fua-person"
+                                            validate-input fua-person"
                                     selected="{{editedItem.assigned_to.id}}"
                                     label="[[getLabel('assigned_to', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
@@ -322,7 +318,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     load-data-method="[[loadUsersDropdownOptions]]"
                                     preserve-search-on-close
                                     required$="[[_setRequired('assigned_to', editedApBase)]]"
-                                    disabled$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.assigned_to}}"
                                     error-message="{{errors.assigned_to}}"
@@ -336,7 +331,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
                             <etools-dropdown
                                     class$="[[_setRequired('section', editedApBase)]]
-                                            disabled-as-readonly validate-input fua-person"
+                                            validate-input fua-person"
                                     selected="{{editedItem.section.id}}"
                                     label="[[getLabel('section', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
@@ -344,7 +339,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     option-label="name"
                                     option-value="id"
                                     required$="[[_setRequired('section', editedApBase)]]"
-                                    disabled$="{{isReadOnly('section', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('section', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.section}}"
                                     error-message="{{errors.section}}"
@@ -360,7 +354,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
                             <etools-dropdown
                                     class$="[[_setRequired('office', editedApBase)]]
-                                            disabled-as-readonly validate-input fua-person"
+                                            validate-input fua-person"
                                     selected="{{editedItem.office.id}}"
                                     label="[[getLabel('office', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('office', editedApBase, 'select')]]"
@@ -368,7 +362,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                                     option-label="name"
                                     option-value="id"
                                     required$="[[_setRequired('office', editedApBase)]]"
-                                    disabled$="{{isReadOnly('office', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('office', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.office}}"
                                     error-message="{{errors.office}}"
@@ -382,12 +375,11 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                             <datepicker-lite
                                     id="deadlineAction"
                                     class$="[[_setRequired('due_date', editedApBase)]]
-                                            disabled-as-readonly validate-input"
+                                            validate-input"
                                     value="[[editedItem.due_date]]"
                                     label="[[getLabel('due_date', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('due_date', editedApBase, 'select')]]"
                                     required$="[[_setRequired('due_date', editedApBase)]]"
-                                    disabled$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"
                                     readonly$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"
                                     invalid="{{errors.due_date}}"
                                     error-message="{{errors.due_date}}"
@@ -405,10 +397,8 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                         <!-- High Priority -->
                         <div class="input-container checkbox-container input-container-l">
                             <paper-checkbox
-                                    class="disabled-as-readonly"
                                     checked="{{editedItem.high_priority}}"
-                                    disabled="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}"
-                                    readonly$="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}">
+                                    disabled$="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}">
                                     This action point is high priority
                             </paper-checkbox>
                         </div>
