@@ -851,6 +851,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     if (value && this._validEmailAddress(input)) {
       this.newEmail = value;
       this.emailChecking = true;
+      if (get(this.errors, 'user.email')) {
+        delete this.errors.user.email;
+      }
     }
   }
 
