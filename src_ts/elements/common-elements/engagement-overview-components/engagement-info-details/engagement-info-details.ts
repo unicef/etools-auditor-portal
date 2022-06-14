@@ -799,13 +799,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _agreementLoaded(event: CustomEvent) {
-    if (event.detail.success) {
+    if (event.detail?.success) {
       this.set('data.agreement', event.detail.agreement);
-      this.requestInProcess = false;
-      (this.$.purchaseOrder as PaperInputElement).validate();
-    } else if (event.detail.errors) {
+    } else if (event.detail?.errors) {
       this.set('errors', event.detail.errors);
     }
+    this.requestInProcess = false;
+    (this.$.purchaseOrder as PaperInputElement).validate();
   }
 
   _poUpdatingStateChanged(event: CustomEvent): void {
