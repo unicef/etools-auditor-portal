@@ -224,8 +224,8 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validateEditFields() {
-    const valueValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate();
-    const extraValid = (this.$.briefJustification as EtoolsDropdownEl).validate();
+    const valueValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
+    const extraValid = (this.shadowRoot!.querySelector('#briefJustification') as EtoolsDropdownEl).validate();
 
     const errors = {
       children: [

@@ -638,7 +638,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   connectedCallback() {
     super.connectedCallback();
-    (this.$.purchaseOrder as PaperInputElement).validate = this._validatePurchaseOrder.bind(this, this.$.purchaseOrder);
+    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
   }
 
@@ -717,7 +718,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   validate() {
-    const orderField = this.$.purchaseOrder as PaperInputElement;
+    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
     const orderValid = orderField && orderField.validate();
 
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
@@ -805,7 +806,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       this.set('errors', event.detail.errors);
     }
     this.requestInProcess = false;
-    (this.$.purchaseOrder as PaperInputElement).validate();
+    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    purchaseOrderEl.validate();
   }
 
   _poUpdatingStateChanged(event: CustomEvent): void {
@@ -848,7 +850,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   resetType() {
-    (this.$.engagementType as EtoolsDropdownEl).set('selected', '');
+    const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
+    etoolsDropdownEl.set('selected', '');
   }
 
   getEngagementData() {

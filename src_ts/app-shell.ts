@@ -209,7 +209,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     super.connectedCallback();
 
     this.checkAppVersion();
-    window.EtoolsEsmmFitIntoEl = this.$.appHeadLayout!.shadowRoot!.querySelector('#contentContainer');
+    window.EtoolsEsmmFitIntoEl = this._getContentContainer();
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
@@ -217,7 +217,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       this._setDefaultLandingPage();
     }
 
-    (this.$.drawer as AppDrawerElement).$.scrim.remove();
+    (this.shadowRoot!.querySelector('#drawer') as AppDrawerElement).$.scrim.remove();
 
     this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('toast', this.queueToast as any);
@@ -226,6 +226,20 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     this.addEventListener('iron-overlay-opened', this._dialogOpening);
     this.addEventListener('iron-overlay-closed', this._dialogClosing);
+  }
+
+  protected _getContentContainer() {
+    const appShell = document.querySelector('app-shell');
+    if (!appShell) {
+      return null;
+    }
+    // @ts-ignore
+    const appHeadLayout = appShell.shadowRoot.querySelector('#appHeadLayout');
+    if (!appHeadLayout) {
+      return null;
+    }
+    // @ts-ignore
+    return appHeadLayout.shadowRoot.querySelector('#contentContainer');
   }
 
   _dialogOpening(event) {
@@ -293,14 +307,14 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
 
     // Close a non-persistent drawer when the module & route are changed.
-    const appDrawer = this.$.drawer as AppDrawerElement;
+    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
     if (!appDrawer.persistent) {
       appDrawer.close();
     }
   }
 
   onDrawerClick(e) {
-    const appDrawer = this.$.drawer as AppDrawerElement;
+    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
     if (e.target === appDrawer && appDrawer.opened) {
       appDrawer.close();
     }
@@ -314,7 +328,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       page = 'spot-checks';
     }
 
-    if (this.$[`${page}`] instanceof PolymerElement) {
+    if (this.shadowRoot!.querySelector(`#${page}`) instanceof PolymerElement) {
       return;
     }
 

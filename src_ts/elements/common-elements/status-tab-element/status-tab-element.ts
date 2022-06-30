@@ -371,8 +371,11 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
       }
     });
 
+    const statusList = this.shadowRoot!.querySelector('#statusList')!;
+    const cancelledStatus = this.shadowRoot!.querySelector('#cancelledStatus')!;
+
     if (isNaN(number)) {
-      this.$.statusList.appendChild(this.$.cancelledStatus);
+      statusList.appendChild(cancelledStatus);
     } else {
       const statuses = this.shadowRoot!.querySelectorAll('.divider:not(.cancelled)');
       const lastComplited = statuses && statuses[number];
@@ -380,10 +383,10 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
       if (!lastComplited) {
         throw new Error('Can not find last complited status element!');
       }
-      if (!this.$.statusList || !this.$.cancelledStatus) {
+      if (!statusList || !cancelledStatus) {
         throw new Error('Can not find elements!');
       }
-      this.$.statusList.insertBefore(this.$.cancelledStatus, lastComplited);
+      statusList.insertBefore(cancelledStatus, lastComplited);
     }
 
     this.cancelled = true;

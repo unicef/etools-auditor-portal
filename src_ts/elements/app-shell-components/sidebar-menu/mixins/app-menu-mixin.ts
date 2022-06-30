@@ -73,29 +73,29 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
     }
 
     private _updateDrawerStyles(): void {
-      const drawerLayout = this.$.layout as PolymerElement;
+      const drawerLayout = this.shadowRoot!.querySelector('#layout') as PolymerElement;
       if (drawerLayout) {
         drawerLayout.updateStyles();
       }
-      const drawer = this.$.drawer as PolymerElement;
+      const drawer = this.shadowRoot!.querySelector('#drawer') as PolymerElement;
       if (drawer) {
         drawer.updateStyles();
       }
     }
 
     private _notifyLayoutResize(): void {
-      const layout = this.$.layout as PolymerElement & {notifyResize(): void};
+      const layout = this.shadowRoot!.querySelector('#layout') as PolymerElement & {notifyResize(): void};
       if (layout) {
         layout.notifyResize();
       }
-      const headerLayout = this.$.appHeadLayout as PolymerElement & {notifyResize(): void};
+      const headerLayout = this.shadowRoot!.querySelector('#appHeadLayout') as PolymerElement & {notifyResize(): void};
       if (headerLayout) {
         headerLayout.notifyResize();
       }
     }
 
     _toggleDrawer(): void {
-      (this.$.drawer as AppDrawerElement).toggle();
+      (this.shadowRoot!.querySelector('#drawer') as AppDrawerElement).toggle();
     }
   }
 
