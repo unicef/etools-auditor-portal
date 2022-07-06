@@ -263,7 +263,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
   }
 
   _engagementsFiltersUpdated() {
-    const filtersElement = this.$.filters as SearchAndFilterEl;
+    const filtersElement = this.shadowRoot!.querySelector('#filters') as SearchAndFilterEl;
     this.setFiltersSelections();
 
     if (filtersElement) {

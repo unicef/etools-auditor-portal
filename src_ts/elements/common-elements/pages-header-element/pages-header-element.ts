@@ -149,7 +149,8 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
   }
 
   _toggleOpened() {
-    (this.$.dropdownMenu as PaperListboxElement).select(-1);
+    const dropdownMenu = this.shadowRoot!.querySelector('#dropdownMenu') as PaperListboxElement;
+    dropdownMenu.select(-1);
   }
 }
 

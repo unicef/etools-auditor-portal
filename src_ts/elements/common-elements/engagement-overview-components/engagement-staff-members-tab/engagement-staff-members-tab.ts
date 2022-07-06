@@ -627,7 +627,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   connectedCallback() {
     super.connectedCallback();
     this._initListeners();
-    (this.$.emailInput as PaperInputElement).validate = this._validEmailAddress.bind(this, this.$.emailInput);
+    const emailInputEl = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
+    emailInputEl.validate = this._validEmailAddress.bind(this, emailInputEl);
     this.listSize = 10;
     this.listPage = 1;
   }
@@ -724,7 +725,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   validate() {
-    const emailImput = this.$.emailInput as PaperInputElement;
+    const emailImput = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
     const elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)');
     let valid = true;
     const emailValid = emailImput.disabled || emailImput.validate();
@@ -1076,7 +1077,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   _searchChanged() {
-    const value = (this.$.searchInput as any).value || '';
+    const emailImput = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
+    const value = emailImput.value || '';
 
     if (value.length - 1) {
       this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {

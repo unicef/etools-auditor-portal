@@ -345,12 +345,12 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         sections: []
       });
 
-      (this.$.engagement_attachments as FileAttachmentsTabEl).resetData();
-      const engagementDetails = this.$.engagementDetails as EngagementInfoDetailsEl;
+      (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTabEl).resetData();
+      const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetailsEl;
       engagementDetails.resetValidationErrors();
       engagementDetails.resetAgreement();
       engagementDetails.resetType();
-      (this.$.partnerDetails as PartnerDetailsTabEl).resetValidationErrors();
+      (this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTabEl).resetValidationErrors();
     }
 
     if (page === 'new' && isStaffSc) {
