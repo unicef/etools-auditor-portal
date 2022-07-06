@@ -209,7 +209,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     super.connectedCallback();
 
     this.checkAppVersion();
-    window.EtoolsEsmmFitIntoEl = this._getContentContainer();
+    setTimeout(() => (window.EtoolsEsmmFitIntoEl = this._getContentContainer()), 100);
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
@@ -229,12 +229,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   protected _getContentContainer() {
-    const appShell = document.querySelector('app-shell');
-    if (!appShell) {
-      return null;
-    }
     // @ts-ignore
-    const appHeadLayout = appShell.shadowRoot.querySelector('#appHeadLayout');
+    const appHeadLayout = this.shadowRoot.querySelector('#appHeadLayout');
     if (!appHeadLayout) {
       return null;
     }
