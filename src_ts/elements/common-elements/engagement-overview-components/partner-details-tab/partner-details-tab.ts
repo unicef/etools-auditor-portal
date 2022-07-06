@@ -301,9 +301,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   validatePartner() {
     const partnerEl = this.shadowRoot!.querySelector('#partner') as EtoolsDropdownEl;
     if (!partnerEl || !partnerEl.required) {
+      partnerEl.invalid = false;
       return true;
     }
-    if (!get(this, 'engagement.partner.id)')) {
+    if (!this.engagement?.partner?.id) {
       this.set('errors.partner', 'Partner is required');
       partnerEl.invalid = true;
       return false;
@@ -312,6 +313,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       partnerEl.invalid = true;
       return false;
     } else {
+      partnerEl.invalid = false;
       return true;
     }
   }
