@@ -885,6 +885,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.po_item = this.data.po_item;
     }
 
+    data.joint_audit = !!this.data.joint_audit;
+
     const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map((user) => +user.id);
     if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
       data.users_notified = this.usersNotifiedIDs;
