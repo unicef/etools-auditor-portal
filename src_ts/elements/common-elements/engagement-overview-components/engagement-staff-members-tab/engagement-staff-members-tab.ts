@@ -246,7 +246,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               on-input="_searchChanged"
               data-value-path="target.value"
               data-field-path="searchString"
-              on-input="_setField"
             >
               <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
             </paper-input>
@@ -1076,15 +1075,17 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     this.updateStyles();
   }
 
-  _searchChanged() {
-    const emailImput = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
-    const value = emailImput.value || '';
+  _searchChanged(e: any) {
+    this._setField(e);
+    setTimeout(() => {
+      const value = (this.shadowRoot?.querySelector('#searchInput') as any).value || '';
 
-    if (value.length - 1) {
-      this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {
-        this.set('searchQuery', value);
-      });
-    }
+      if (value.length - 1) {
+        this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {
+          this.set('searchQuery', value);
+        });
+      }
+    });
   }
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
