@@ -175,8 +175,8 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return true;
     }
 
-    const riskValid = (this.$.riskAssessmentInput as EtoolsDropdownEl).validate();
-    const commentsValid = (this.$.briefJustification as PaperTextareaElement).validate();
+    const riskValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
+    const commentsValid = (this.shadowRoot!.querySelector('#briefJustification') as PaperTextareaElement).validate();
     const valid = riskValid && commentsValid;
 
     const errors = {

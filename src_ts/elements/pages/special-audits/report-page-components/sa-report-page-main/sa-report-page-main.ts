@@ -60,15 +60,15 @@ class SaReportPageMain extends PolymerElement {
   }
 
   getAssignVisitData() {
-    return (this.$.assignEngagement as AssignEngagementEl).getAssignVisitData();
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).getAssignVisitData();
   }
 
   getSpecificProceduresData() {
-    return (this.$.specificProcedures as SpecificProcedureEl).getTabData();
+    return (this.shadowRoot!.querySelector('#specificProcedures') as SpecificProcedureEl).getTabData();
   }
 
   getOtherRecommendationsData() {
-    return (this.$.otherRecommendations as OtherRecommendationsEl).getTabData();
+    return (this.shadowRoot!.querySelector('#otherRecommendations') as OtherRecommendationsEl).getTabData();
   }
 }
 

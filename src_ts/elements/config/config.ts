@@ -4,7 +4,7 @@ declare global {
   interface Window {
     EtoolsFamApp: any;
     EtoolsRequestCacheDb: any;
-    EtoolsEsmmFitIntoEl: HTMLElement | null;
+    EtoolsEsmmFitIntoEl: Element | null;
   }
 }
 

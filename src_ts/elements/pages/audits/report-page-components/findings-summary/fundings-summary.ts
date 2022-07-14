@@ -450,7 +450,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   _setDataItems() {
     this.setShowLocalCurrency();
     if (this.data.percent_of_audited_expenditure) {
-      this.set('data.percent_of_audited_expenditure', this.data.percent_of_audited_expenditure.toFixed(2));
+      this.set('data.percent_of_audited_expenditure', Number(this.data.percent_of_audited_expenditure).toFixed(2));
     }
     this.set('dataItems', [this.data]);
     this.set('itemModel.audit_opinion', this.data.audit_opinion);
@@ -530,9 +530,9 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   }
 
   customValidation() {
-    const ffElement = this.$['financial-findings'] as unknown as EtoolsCurrencyAmountInput;
+    const ffElement = this.shadowRoot!.querySelector('#financial-findings') as unknown as EtoolsCurrencyAmountInput;
     const ffNumber = ffElement && toNumber(ffElement.value);
-    const aeElement = this.$['audited-expenditure'] as unknown as EtoolsCurrencyAmountInput;
+    const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrencyAmountInput;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
     if (aeNumber < ffNumber) {

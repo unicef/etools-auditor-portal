@@ -72,7 +72,7 @@ export const moduleStyles = html`
 
     etools-dialog::part(ed-scrollable) {
       max-height: 50vh !important;
-      overflow: auto;
+      --etools-dialog-content_-_max-height: 50vh !important;
     }
 
     /* PAPER-TOGGLE-BUTTON */
