@@ -323,7 +323,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         keep-dialog-open
         on-confirm-btn-clicked="_addStaffFromDialog"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        on-close="_resetStaffMembDialog"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
@@ -1090,6 +1090,11 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
     return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
+  }
+
+  _resetStaffMembDialog(e: any) {
+    this.errors = {};
+    this._resetDialogOpenedFlag(e);
   }
 }
 window.customElements.define('engagement-staff-members-tab', EngagementStaffMembersTab);
