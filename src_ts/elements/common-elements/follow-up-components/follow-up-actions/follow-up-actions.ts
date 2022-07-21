@@ -781,7 +781,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.confirmBtnText = 'Save';
     this.cancelBtnText = 'Cancel';
     const index = this._getIndex(event);
-    const data = omit(this.dataItems[index], ['id']);
+    const data = cloneDeep(omit(this.dataItems[index], ['id']));
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
     this.editedApBase = this.basePermissionPath;
