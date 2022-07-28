@@ -246,7 +246,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               on-input="_searchChanged"
               data-value-path="target.value"
               data-field-path="searchString"
-              on-input="_setField"
             >
               <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
             </paper-input>
@@ -324,7 +323,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         keep-dialog-open
         on-confirm-btn-clicked="_addStaffFromDialog"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        on-close="_resetStaffMembDialog"
       >
         <div class="row-h repeatable-item-container" without-line>
           <div class="repeatable-item-content">
@@ -627,7 +626,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   connectedCallback() {
     super.connectedCallback();
     this._initListeners();
-    (this.$.emailInput as PaperInputElement).validate = this._validEmailAddress.bind(this, this.$.emailInput);
+    const emailInputEl = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
+    emailInputEl.validate = this._validEmailAddress.bind(this, emailInputEl);
     this.listSize = 10;
     this.listPage = 1;
   }
@@ -724,7 +724,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   validate() {
-    const emailImput = this.$.emailInput as PaperInputElement;
+    const emailImput = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
     const elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)');
     let valid = true;
     const emailValid = emailImput.disabled || emailImput.validate();
@@ -1075,18 +1075,26 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     this.updateStyles();
   }
 
-  _searchChanged() {
-    const value = (this.$.searchInput as any).value || '';
+  _searchChanged(e: any) {
+    this._setField(e);
+    setTimeout(() => {
+      const value = (this.shadowRoot?.querySelector('#searchInput') as any).value || '';
 
-    if (value.length - 1) {
-      this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {
-        this.set('searchQuery', value);
-      });
-    }
+      if (value.length - 1) {
+        this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {
+          this.set('searchQuery', value);
+        });
+      }
+    });
   }
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
     return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
+  }
+
+  _resetStaffMembDialog(e: any) {
+    this.errors = {};
+    this._resetDialogOpenedFlag(e);
   }
 }
 window.customElements.define('engagement-staff-members-tab', EngagementStaffMembersTab);

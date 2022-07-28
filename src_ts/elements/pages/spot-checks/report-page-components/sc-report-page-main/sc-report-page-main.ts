@@ -95,23 +95,29 @@ class ScReportPageMain extends PolymerElement {
   }
 
   getFindingsData() {
-    const findingsLowPriority = (this.$.findingsLowPriority as SummaryFindingsElement).getFindingsData();
-    const findingsHighPriority = (this.$.findingsHighPriority as SummaryFindingsElement).getFindingsData();
+    const findingsLowPriority = (
+      this.shadowRoot!.querySelector('#findingsLowPriority') as SummaryFindingsElement
+    ).getFindingsData();
+    const findingsHighPriority = (
+      this.shadowRoot!.querySelector('#findingsHighPriority') as SummaryFindingsElement
+    ).getFindingsData();
     const findings = concat(findingsLowPriority || [], findingsHighPriority || []);
     return findings.length ? findings : null;
   }
 
   getInternalControlsData() {
-    const internalControlsData = (this.$.internalControls as InternalControlsElement).getInternalControlsData();
+    const internalControlsData = (
+      this.shadowRoot!.querySelector('#internalControls') as InternalControlsElement
+    ).getInternalControlsData();
     return !isNull(internalControlsData) ? internalControlsData : null;
   }
 
   getAssignVisitData() {
-    return (this.$.assignEngagement as AssignEngagementEl).getAssignVisitData() || null;
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).getAssignVisitData() || null;
   }
 
   getOverviewData() {
-    return (this.$.overviewEngagement as OverviewElement).getOverviewData() || null;
+    return (this.shadowRoot!.querySelector('#overviewEngagement') as OverviewElement).getOverviewData() || null;
   }
 }
 

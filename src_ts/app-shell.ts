@@ -209,7 +209,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     super.connectedCallback();
 
     this.checkAppVersion();
-    window.EtoolsEsmmFitIntoEl = this.$.appHeadLayout!.shadowRoot!.querySelector('#contentContainer');
+    setTimeout(() => (window.EtoolsEsmmFitIntoEl = this._getContentContainer()), 100);
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
@@ -217,7 +217,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       this._setDefaultLandingPage();
     }
 
-    (this.$.drawer as AppDrawerElement).$.scrim.remove();
+    this.shadowRoot!.querySelector('#drawer')?.shadowRoot?.querySelector('#scrim')?.remove();
 
     this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('toast', this.queueToast as any);
@@ -226,6 +226,16 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     this.addEventListener('iron-overlay-opened', this._dialogOpening);
     this.addEventListener('iron-overlay-closed', this._dialogClosing);
+  }
+
+  protected _getContentContainer() {
+    // @ts-ignore
+    const appHeadLayout = this.shadowRoot.querySelector('#appHeadLayout');
+    if (!appHeadLayout) {
+      return null;
+    }
+    // @ts-ignore
+    return appHeadLayout.shadowRoot.querySelector('#contentContainer');
   }
 
   _dialogOpening(event) {
@@ -237,13 +247,18 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     dialogOverlay.classList.remove('opened');
 
     const zIndex = (dialogOverlay as any).style.zIndex;
-    event.target.$.drawerOverlay.style.zIndex = zIndex;
-    event.target.$.appHeaderOverlay.style.zIndex = zIndex;
-    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = zIndex;
+    const targetShadowRoot = event.target.shadowRoot;
+    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
+    const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
+    const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
 
-    event.target.$.drawerOverlay.classList.add('opened');
-    event.target.$.appHeaderOverlay.classList.add('opened');
-    event.target.$.pageheader.$.toolBarOverlay.classList.add('opened');
+    drawerOverlay.style.zIndex = zIndex;
+    appHeaderOverlay.style.zIndex = zIndex;
+    toolBarOverlay.style.zIndex = zIndex;
+
+    drawerOverlay.classList.add('opened');
+    appHeaderOverlay.classList.add('opened');
+    toolBarOverlay.classList.add('opened');
   }
   _dialogClosing(event) {
     // chrome
@@ -255,13 +270,18 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       return;
     }
 
-    event.target.$.drawerOverlay.style.zIndex = '';
-    event.target.$.appHeaderOverlay.style.zIndex = '';
-    event.target.$.pageheader.$.toolBarOverlay.style.zIndex = '';
+    const targetShadowRoot = event.target.shadowRoot;
+    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
+    const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
+    const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
 
-    event.target.$.drawerOverlay.classList.remove('opened');
-    event.target.$.appHeaderOverlay.classList.remove('opened');
-    event.target.$.pageheader.$.toolBarOverlay.classList.remove('opened');
+    drawerOverlay.style.zIndex = '';
+    appHeaderOverlay.style.zIndex = '';
+    toolBarOverlay.style.zIndex = '';
+
+    drawerOverlay.classList.remove('opened');
+    appHeaderOverlay.classList.remove('opened');
+    toolBarOverlay.classList.remove('opened');
   }
 
   queueToast(e) {
@@ -293,14 +313,14 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
 
     // Close a non-persistent drawer when the module & route are changed.
-    const appDrawer = this.$.drawer as AppDrawerElement;
+    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
     if (!appDrawer.persistent) {
       appDrawer.close();
     }
   }
 
   onDrawerClick(e) {
-    const appDrawer = this.$.drawer as AppDrawerElement;
+    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
     if (e.target === appDrawer && appDrawer.opened) {
       appDrawer.close();
     }
@@ -314,7 +334,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       page = 'spot-checks';
     }
 
-    if (this.$[`${page}`] instanceof PolymerElement) {
+    if (this.shadowRoot!.querySelector(`#${page}`) instanceof PolymerElement) {
       return;
     }
 

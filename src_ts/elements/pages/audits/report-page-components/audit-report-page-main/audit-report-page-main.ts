@@ -94,23 +94,25 @@ class AuditReportPageMain extends PolymerElement {
   }
 
   getAssignVisitData() {
-    return (this.$.assignEngagement as AssignEngagementEl).getAssignVisitData();
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).getAssignVisitData();
   }
 
   getFinancialFindingsData() {
-    return (this.$.financialFindings as FinancialFindingsEl).getTabData();
+    return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindingsEl).getTabData();
   }
 
   getFindingsSummaryData() {
-    return (this.$.findingsSummary as FindingsSummaryEl).getFindingsSummaryData();
+    return (this.shadowRoot!.querySelector('#findingsSummary') as FindingsSummaryEl).getFindingsSummaryData();
   }
 
   getAssessmentOfControlsData() {
-    return (this.$.assessmentOfControls as AssessmentOfControlsEl).getTabData();
+    return (this.shadowRoot!.querySelector('#assessmentOfControls') as AssessmentOfControlsEl).getTabData();
   }
 
   getKeyInternalWeaknessData() {
-    return (this.$.keyInternalControlsWeaknesses as KeyInternalControlsWeaknessesEl).getKeyInternalWeaknessData();
+    return (
+      this.shadowRoot!.querySelector('#keyInternalControlsWeaknesses') as KeyInternalControlsWeaknessesEl
+    ).getKeyInternalWeaknessData();
   }
 }
 

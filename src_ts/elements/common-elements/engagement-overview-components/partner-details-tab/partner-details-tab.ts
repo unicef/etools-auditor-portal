@@ -299,18 +299,23 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validatePartner() {
-    if (!this.$.partner || !(this.$.partner as EtoolsDropdownEl).required) {
+    const partnerEl = this.shadowRoot!.querySelector('#partner') as EtoolsDropdownEl;
+    if (!partnerEl || !partnerEl.required) {
+      if (partnerEl) {
+        partnerEl.invalid = false;
+      }
       return true;
     }
-    if (!get(this, 'engagement.partner.id)')) {
+    if (!this.engagement?.partner?.id) {
       this.set('errors.partner', 'Partner is required');
-      (this.$.partner as EtoolsDropdownEl).invalid = true;
+      partnerEl.invalid = true;
       return false;
     } else if (!this.partner.id) {
       this.set('errors.partner', 'Can not find partner data');
-      (this.$.partner as EtoolsDropdownEl).invalid = true;
+      partnerEl.invalid = true;
       return false;
     } else {
+      partnerEl.invalid = false;
       return true;
     }
   }
