@@ -11,7 +11,7 @@ import '../../list-tab-elements/list-header/list-header';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/polymer/lib/elements/dom-repeat';
-
+import '@polymer/paper-tooltip/paper-tooltip';
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
 import find from 'lodash-es/find';
@@ -126,6 +126,11 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
           border: 1px solid rgba(0, 0, 0, .54);
           padding: 6px 13px;
         }
+        paper-tooltip {
+          --paper-tooltip: {
+            font-size: 12px;
+          }          
+        }
         datepicker-lite::part(dp-calendar) {
           position: fixed;
         }
@@ -172,7 +177,11 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                         </paper-checkbox>
                     </div>
                     <div slot="hover" class="edit-icon-slot">
+                        <paper-tooltip for="copy" offset="0" position="top" animation-delay="0">
+                          Copy Action Point
+                        </paper-tooltip>
                         <paper-icon-button
+                           id="copy"
                             icon="icons:content-copy"
                             class="edit-icon"
                             on-tap="_openCopyDialog"></paper-icon-button>
@@ -781,7 +790,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.confirmBtnText = 'Save';
     this.cancelBtnText = 'Cancel';
     const index = this._getIndex(event);
-    const data = omit(this.dataItems[index], ['id']);
+    const data = cloneDeep(omit(this.dataItems[index], ['id']));
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
     this.editedApBase = this.basePermissionPath;
