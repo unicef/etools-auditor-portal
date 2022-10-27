@@ -156,7 +156,9 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
 
       if (!isNil(success) && data && data.status === 'final') {
-        this.tab = 'follow-up';
+        if (getUserData().is_unicef_user) {
+          this.tab = 'follow-up';
+        }
       }
     }
 
