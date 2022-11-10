@@ -67,10 +67,10 @@ const famEndpoints = {
     cacheTableName: 'offices'
   },
   reportAttachments: {
-    template: '/api/audit/engagements/<%=id%>/report-attachments/'
+    template: '/api/audit/engagements/<%=id%>/report-attachments/?page_size=all'
   },
   attachments: {
-    template: '/api/audit/engagements/<%=id%>/engagement-attachments/'
+    template: '/api/audit/engagements/<%=id%>/engagement-attachments/?page_size=all'
   },
   globalAttachments: {
     template: '/api/v2/attachments/'
