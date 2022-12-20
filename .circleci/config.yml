@@ -77,4 +77,5 @@ workflows:
               only:
                 - master
                 - staging
-                - develop        
+                - develop
+                - fix-validation

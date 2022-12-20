@@ -382,7 +382,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
   validate() {
     const riskValid = this.riskAssessmentDropdown.validate();
-    const commentsValid = (this.$.riskAssessmentComments as PaperTextareaElement).validate();
+    const commentsValid = (
+      this.shadowRoot!.querySelector('#riskAssessmentComments') as PaperTextareaElement
+    ).validate();
 
     return riskValid && commentsValid;
   }
@@ -464,8 +466,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     this.riskAssessmentDropdown.invalid = false;
     this.riskAssessmentDropdown.selected = null;
 
-    (this.$.riskAssessmentComments as PaperTextareaElement).invalid = false;
-    (this.$.riskAssessmentComments as PaperTextareaElement).value = '';
+    const riskAssessmentComments = this.shadowRoot!.querySelector('#riskAssessmentComments') as PaperTextareaElement;
+    riskAssessmentComments.invalid = false;
+    riskAssessmentComments.value = '';
   }
 
   savingError(errorObj) {

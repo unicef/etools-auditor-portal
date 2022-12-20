@@ -15,7 +15,7 @@ class GetAttachments extends PolymerElement {
   attachments!: [];
 
   _handleResponse(detail) {
-    this.attachments = (detail && detail.results) || [];
+    this.attachments = detail || [];
     fireEvent(this, 'attachments-loaded', {success: true});
   }
 

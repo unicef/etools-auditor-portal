@@ -81,7 +81,7 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
   }
 
   _toggleOpened() {
-    if ((this.$.dropdown as PaperMenuButton).opened) {
+    if ((this.shadowRoot!.querySelector('#dropdown') as PaperMenuButton).opened) {
       this.setAttribute('opened', '');
     } else {
       this.removeAttribute('opened');
@@ -89,7 +89,7 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
   }
 
   _countrySelected(e) {
-    this.country = (this.$.repeat as DomRepeat).itemForElement(e.detail.item);
+    this.country = (this.shadowRoot!.querySelector('#repeat') as DomRepeat).itemForElement(e.detail.item);
   }
 
   _changeCountry(event) {
