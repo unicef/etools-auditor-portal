@@ -128,7 +128,7 @@ class ActionButtons extends PolymerElement {
   }
 
   fireActionActivated(action: string) {
-    fireEvent(this, `toast`, {reset: true});
+    fireEvent(this, `close-toasts`);
     fireEvent(this, `action-activated`, {type: action});
   }
 
