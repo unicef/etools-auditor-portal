@@ -195,6 +195,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             white-space: normal;
           }
         }
+        .white {
+          color: #ffffff;
+        }
       </style>
 
       <!--requests-->
@@ -226,13 +229,14 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       >
         <div slot="panel-btns">
           <div class="add-button-container">
-            <paper-icon-button
-              class="panel-button"
+            <a
+              class="white"
+              href="[[_getAMPLink(organisationId)]]"
+              target="_blank"
               hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
-              on-tap="_openAddDialog"
-              icon="add-box"
             >
-            </paper-icon-button>
+              <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
+            </a>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
 
@@ -262,11 +266,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
           <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
             <list-element class="list-element" data="[[item]]" no-additional headings="[[columns]]" no-animation>
-              <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"> </paper-icon-button>
-                <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"> </paper-icon-button>
-              </div>
-
               <div slot="checkbox" class="checkbox">
                 <paper-checkbox
                   disabled="[[_isCheckboxReadonly(item.hasAccess, engagementStaffs, saveWithButton)]]"
@@ -683,11 +682,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     }
   }
 
-  _openAddDialog() {
-    this.originalEditedObj = {};
-    this.openAddDialog();
-  }
-
   _organizationChanged(id) {
     if (!this._canBeChanged() || !this.basePermissionPath) {
       return;
@@ -696,6 +690,10 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       this.resetList();
     }
     this.organisationId = +id;
+  }
+
+  _getAMPLink(organisationId: number) {
+    return `/amp/users/list?organization_type=audit&organization_id=${organisationId}`;
   }
 
   _queriesChanged(listSize, listPage, searchQuery) {
