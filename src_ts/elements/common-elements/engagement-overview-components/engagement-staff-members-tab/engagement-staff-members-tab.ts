@@ -229,12 +229,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       >
         <div slot="panel-btns">
           <div class="add-button-container">
-            <a
-              class="white"
-              href="[[_getAMPLink(organisationId)]]"
-              target="_blank"
-              hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
-            >
+            <a class="white" href="[[_getAMPLink(engagement.agreement.auditor_firm.organization_id)]]" target="_blank">
               <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
             </a>
             <paper-tooltip offset="0">Add</paper-tooltip>
