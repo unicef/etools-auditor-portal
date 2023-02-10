@@ -100,6 +100,11 @@
     "shelljs": ">=0.8.5",
     "mout": ">=1.2.3"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && tsc --skipLibCheck"
+    }
+  },
   "lint-staged": {
     "*.ts": [
       "eslint --fix"
