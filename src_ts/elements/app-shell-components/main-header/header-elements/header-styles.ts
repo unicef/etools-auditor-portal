@@ -131,11 +131,6 @@ export const HeaderStyles = html`
       }
     }
 
-    etools-dropdown::placeholder {
-      color: red;
-      opacity: 1;
-    }
-
     .w100 {
       width: 100%;
     }
