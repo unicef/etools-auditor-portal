@@ -29,7 +29,7 @@ export function getUserData() {
 
 function _setGroups(user) {
   if (!user.groups.length) {
-    return '';
+    _groups = [];
     // @dci throw new Error('Can not find user group!');
   }
   if (_groups !== undefined) {

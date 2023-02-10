@@ -27,7 +27,7 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
       <etools-dropdown
         id="organizationSelector"
         class$="[[checkMustSelectOrganization(user)]]"
-        selected="{{currentOrganizationId}}"
+        selected="[[currentOrganizationId]]"
         placeholder="Select Organization"
         options="[[organizations]]"
         option-label="name"
