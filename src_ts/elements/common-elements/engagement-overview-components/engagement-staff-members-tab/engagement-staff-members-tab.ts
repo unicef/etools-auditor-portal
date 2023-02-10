@@ -688,7 +688,12 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   _getAMPLink(organisationId: number) {
-    return `/amp/users/list?organization_type=audit&organization_id=${organisationId}`;
+    const user = getUserData();
+    let url = `/amp/users/`;
+    if (user && user.is_unicef_user) {
+      url += `list?organization_type=audit&organization_id=${organisationId}`;
+    }
+    return url;
   }
 
   _queriesChanged(listSize, listPage, searchQuery) {
