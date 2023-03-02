@@ -37,9 +37,9 @@ import {getUserData} from './elements/mixins/user-controller';
 import {GenericObject} from './types/global';
 import {getDomainByEnv} from './elements/config/config';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import './elements/common-elements/multi-notifications/multi-notification-list';
 import {BASE_PATH} from './elements/config/config';
 import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import '@unicef-polymer/etools-toasts/src/etools-toasts';
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;
 
@@ -65,6 +65,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"> </app-route>
 
       <etools-loading id="global-loading" absolute></etools-loading>
+
+      <etools-toasts></etools-toasts>
 
       <app-drawer-layout
         id="layout"
@@ -167,7 +169,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
           <page-footer></page-footer>
         </app-header-layout>
       </app-drawer-layout>
-      <multi-notification-list></multi-notification-list>
     `;
   }
 
@@ -220,7 +221,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     this.shadowRoot!.querySelector('#drawer')?.shadowRoot?.querySelector('#scrim')?.remove();
 
     this.addEventListener('global-loading', this.handleLoading);
-    this.addEventListener('toast', this.queueToast as any);
     this.addEventListener('404', this._pageNotFound);
     this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
@@ -282,20 +282,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     drawerOverlay.classList.remove('opened');
     appHeaderOverlay.classList.remove('opened');
     toolBarOverlay.classList.remove('opened');
-  }
-
-  queueToast(e) {
-    const detail = e.detail;
-    const notificationList = this.shadowRoot!.querySelector('multi-notification-list');
-    if (!notificationList) {
-      return;
-    }
-
-    if (detail && detail.reset) {
-      fireEvent(notificationList, 'reset-notifications');
-    } else {
-      fireEvent(notificationList, 'notification-push', detail);
-    }
   }
 
   allowPageChange() {
@@ -379,6 +365,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     const message = event && event.detail && event.detail.message ? `${event.detail.message}` : 'Oops you hit a 404!';
 
     fireEvent(this, 'toast', {text: message});
+
     fireEvent(this, 'global-loading', {type: 'initialisation'});
   }
 

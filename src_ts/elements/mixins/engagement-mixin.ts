@@ -94,7 +94,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       if (this.route && !~this.route.prefix.indexOf(this.engagementPrefix)) {
         return;
       }
-      fireEvent(this, 'toast', {reset: true});
+      fireEvent(this, `close-toasts`);
       this.errorObject = {};
 
       const id = this.routeData ? this.routeData.id : route.path.split('/')[1];
