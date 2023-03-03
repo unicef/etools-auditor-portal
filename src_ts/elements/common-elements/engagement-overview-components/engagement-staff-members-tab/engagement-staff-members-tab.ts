@@ -232,7 +232,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             <a class="white" href="[[_getAMPLink(engagement.agreement.auditor_firm.organization_id)]]" target="_blank">
               <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
             </a>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+            <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
           </div>
 
           <div class="search-input-container" hidden$="[[!_showPagination(datalength)]]">
@@ -595,7 +595,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   listPage!: number;
 
   @property({type: Number})
-  organisationId!: number;
+  organizationId!: number;
 
   @property({type: String})
   basePermissionPath = '';
@@ -670,7 +670,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   listLoaded(event: CustomEvent): void {
     const data = event.detail;
-    this.staffsBase = getStaffCollectionName(this.organisationId);
+    this.staffsBase = getStaffCollectionName(this.organizationId);
     this.dataItems = data.results;
     if (!this.listQueries?.search) {
       this.datalength = data.count;
@@ -684,14 +684,14 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     if (!id) {
       this.resetList();
     }
-    this.organisationId = +id;
+    this.organizationId = +id;
   }
 
-  _getAMPLink(organisationId: number) {
+  _getAMPLink(organizationId: number) {
     const user = getUserData();
     let url = `/amp/users/`;
     if (user && user.is_unicef_user) {
-      url += `list?organization_type=audit&organization_id=${organisationId}`;
+      url += `list?organization_type=audit&organization_id=${organizationId}`;
     }
     return url;
   }

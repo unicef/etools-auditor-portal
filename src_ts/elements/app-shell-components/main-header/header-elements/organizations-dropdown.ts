@@ -20,8 +20,7 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
       ${HeaderStyles}
       <style>
         #organizationSelector {
-          width: 180px;
-          margin-left: 5px;
+          width: 170px;
         }
       </style>
       <etools-dropdown

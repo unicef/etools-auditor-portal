@@ -851,7 +851,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   resetType() {
     const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
-    etoolsDropdownEl.set('selected', '');
+    etoolsDropdownEl.selected = '';
   }
 
   getEngagementData() {
