@@ -153,7 +153,7 @@ class EngagementsPageMain extends PolymerElement {
     }
 
     if (view !== this.lastView) {
-      fireEvent(this, 'toast', {reset: true});
+      fireEvent(this, `close-toasts`);
     }
     this.lastView = view;
   }
