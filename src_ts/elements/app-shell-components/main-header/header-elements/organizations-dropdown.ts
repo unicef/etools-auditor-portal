@@ -77,7 +77,7 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
   }
 
   checkMustSelectOrganization(user) {
-    if (user && Object.keys(user).length && !user.organization) {
+    if (user && user.user && !user.organization) {
       setTimeout(() => {
         fireEvent(this, 'toast', {text: 'Select Organization'});
       }, 2000);
