@@ -4,21 +4,21 @@ import '@polymer/paper-listbox';
 import '@polymer/paper-menu-button';
 import {property} from '@polymer/decorators';
 import {DomRepeat} from '@polymer/polymer/lib/elements/dom-repeat.js';
-import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin.js';
-import {fireEvent} from '../../../utils/fire-custom-event';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {PaperMenuButton} from '@polymer/paper-menu-button';
 import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../config/config';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {DexieRefresh} from '@unicef-polymer/etools-utils/dist/singleton/dexie-refresh';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin EtoolsPageRefreshMixin
  */
-class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
+class CountriesDropdown extends PolymerElement {
   public static get template() {
     return html`
       ${HeaderStyles}
@@ -123,12 +123,12 @@ class CountriesDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
   }
 
   _handleResponse() {
-    this.refreshInProgress = true;
-    this.clearDexieDbs();
+    DexieRefresh.refreshInProgress = true;
+    DexieRefresh.clearDexieDbs();
   }
 
   _refreshPage() {
-    this.refreshInProgress = false;
+    DexieRefresh.refreshInProgress = false;
     window.location.href = `${window.location.origin}/${BASE_PATH}/`;
   }
 }

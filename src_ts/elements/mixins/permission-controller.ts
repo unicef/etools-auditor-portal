@@ -1,8 +1,7 @@
 import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
 import {GenericObject} from '../../types/global';
-import '@unicef-polymer/etools-behaviors/etools-logging';
-import {logWarn} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 
 const _permissionCollection: {
   edited_ap_options?: {allowed_actions: []};
@@ -14,15 +13,15 @@ const _permissionCollection: {
 export function addToCollection(collectionName, data, title?) {
   // check arguments
   if (!collectionName || !data) {
-    logWarn('collectionName and data arguments must be provided!');
+    EtoolsLogger.warn('collectionName and data arguments must be provided!');
     return false;
   }
   if (typeof collectionName !== 'string') {
-    logWarn('collectionName must be a string');
+    EtoolsLogger.warn('collectionName must be a string');
     return false;
   }
   if (typeof data !== 'object' || typeof data.forEach === 'function') {
-    logWarn('data must be an object');
+    EtoolsLogger.warn('data must be an object');
     return false;
   }
 
