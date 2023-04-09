@@ -41,11 +41,11 @@ export function addToCollection(collectionName, data, title?) {
 
 export function updateCollection(collectionName, data, title?) {
   if (!_permissionCollection[collectionName]) {
-    logWarn(`Collection ${collectionName} does not exist!`);
+    EtoolsLogger.warn(`Collection ${collectionName} does not exist!`);
     return false;
   }
   if (typeof data !== 'object' || typeof data.forEach === 'function') {
-    logWarn('data must be an object');
+    EtoolsLogger.warn('data must be an object');
     return false;
   }
 
@@ -60,7 +60,7 @@ export function updateCollection(collectionName, data, title?) {
 function _manageActions(collectionName) {
   const collection = _permissionCollection[collectionName];
   if (!collection) {
-    logWarn(`Collection ${collectionName} does not exist!`);
+    EtoolsLogger.warn(`Collection ${collectionName} does not exist!`);
     return false;
   }
 
