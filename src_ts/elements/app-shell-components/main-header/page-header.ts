@@ -148,7 +148,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
   protected _signOut() {
     this._clearDexieDb();
     this._clearLocalStorage();
-    window.location.href = window.location.origin + '/logout';
+    window.location.href = window.location.origin + '/social/unicef-logout/';
   }
 
   protected _clearDexieDb() {
