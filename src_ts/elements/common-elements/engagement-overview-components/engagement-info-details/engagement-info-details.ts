@@ -684,19 +684,21 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   connectedCallback() {
     super.connectedCallback();
-    this.setYearOfAuditOptions();
     const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
     purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
   }
 
-  setYearOfAuditOptions() {
+  setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
     this.yearOfAuditOptions = [
       {label: currYear - 1, value: currYear - 1},
       {label: currYear, value: currYear},
       {label: currYear + 1, value: currYear + 1}
     ];
+    if (savedYearOfAudit < currYear - 1) {
+      this.yearOfAuditOptions.unshift({value: savedYearOfAudit, label: 'More than a year ago'});
+    }
   }
 
   getYearOfAuditStyle(engagementType: string) {
@@ -758,6 +760,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       this.set('users', getStaticData('users') || []);
     }
     this.setUsersNotifiedOptionsAndIDs(true);
+
+    this.setYearOfAuditOptions(this.data.year_of_audit);
   }
 
   setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
