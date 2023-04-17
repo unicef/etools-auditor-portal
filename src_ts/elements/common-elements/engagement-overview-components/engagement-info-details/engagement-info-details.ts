@@ -576,7 +576,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   @property({type: Array})
-  yearOfAuditOptions!: {label: number; value: number}[];
+  yearOfAuditOptions!: {label: string; value: number}[];
 
   @property({type: String, observer: '_basePathChanged'})
   basePermissionPath!: string;
@@ -692,9 +692,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
     this.yearOfAuditOptions = [
-      {label: currYear - 1, value: currYear - 1},
-      {label: currYear, value: currYear},
-      {label: currYear + 1, value: currYear + 1}
+      {label: String(currYear - 1), value: currYear - 1},
+      {label: String(currYear), value: currYear},
+      {label: String(currYear + 1), value: currYear + 1}
     ];
     if (savedYearOfAudit < currYear - 1) {
       this.yearOfAuditOptions.unshift({value: savedYearOfAudit, label: 'More than a year ago'});
