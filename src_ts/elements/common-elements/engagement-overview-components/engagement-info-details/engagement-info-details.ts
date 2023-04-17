@@ -697,7 +697,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       {label: String(currYear + 1), value: currYear + 1}
     ];
     if (savedYearOfAudit < currYear - 1) {
-      this.yearOfAuditOptions.unshift({value: savedYearOfAudit, label: 'More than a year ago'});
+      this.yearOfAuditOptions.unshift({value: savedYearOfAudit, label: '> 1 year ago'});
     }
   }
 
