@@ -204,7 +204,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       ]
     },
     {
-      type: FilterTypes.DropdownMulti,
+      type: FilterTypes.Dropdown,
       name: 'year of audit',
       label: 'Year of Audit',
       query: 'year_of_audit',

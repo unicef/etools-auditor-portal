@@ -27,6 +27,7 @@ import {PaperMenuButton} from '@polymer/paper-menu-button/paper-menu-button';
 
 export enum FilterTypes {
   DropdownMulti,
+  Dropdown,
   Date
 }
 
@@ -72,6 +73,22 @@ class SearchAndFilter extends PolymerElement {
                   hide-search="[[item.hideSearch]]"
                 >
                 </etools-dropdown-multi>
+              </template>
+              <template is="dom-if" if="[[filterTypeIsDropdown(item.type)]]">
+                <etools-dropdown
+                  id="[[item.query]]"
+                  class="filter-dropdown"
+                  selected="[[item.selected]]"
+                  label="[[item.label]]"
+                  placeholder$="&#8212;"
+                  options="[[item.selection]]"
+                  option-label="[[item.optionLabel]]"
+                  option-value="[[item.optionValue]]"
+                  trigger-value-change-event
+                  on-etools-selected-item-changed="_filterDropdownHasChanged"
+                  hide-search="[[item.hideSearch]]"
+                >
+                </etools-dropdown>
               </template>
               <template is="dom-if" if="[[filterTypeIsDate(item.type)]]">
                 <datepicker-lite
@@ -327,7 +344,25 @@ class SearchAndFilter extends PolymerElement {
     }
   }
 
-  _filterDropdownMultiHasChanged(e, detail) {
+  _filterDropdownHasChanged(e, detail) {
+    if (!e || !e.currentTarget || !detail) {
+      return;
+    }
+
+    const query = e.currentTarget.id;
+    const queryObject = {page: '1'};
+
+    if (detail.selectedItem && query) {
+      const filter = this._getFilter(query);
+      const optionValue = filter.optionValue || 'value';
+      const value = detail.selectedItem[optionValue];
+      filter.selectedValue = value;
+      queryObject[query] = value;
+    }
+    updateQueries(queryObject);
+  }
+
+  _filterDropdownHasMultiChanged(e, detail) {
     if (!e || !e.currentTarget || !detail) {
       return;
     }
@@ -362,6 +397,10 @@ class SearchAndFilter extends PolymerElement {
 
   filterTypeIsDropdownMulti(checkedTypeValue: FilterTypes) {
     return checkedTypeValue === FilterTypes.DropdownMulti;
+  }
+
+  filterTypeIsDropdown(checkedTypeValue: FilterTypes) {
+    return checkedTypeValue === FilterTypes.Dropdown;
   }
 
   filterTypeIsDate(checkedTypeValue: FilterTypes) {

@@ -416,7 +416,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 option-label="label"
                 option-value="value"
                 required="[[isAudit(data.engagement_type)]]"
-                readonly$="[[isReadonly_YearOfAudit(data.engagement_type, data.id)]]"
+                readonly$="[[isReadOnly('year_of_audit', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.year_of_audit)]]"
                 error-message="[[errors.year_of_audit]]"
                 on-focus="_resetFieldError"
