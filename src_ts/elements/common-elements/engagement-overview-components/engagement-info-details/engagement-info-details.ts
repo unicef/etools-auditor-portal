@@ -415,8 +415,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 options="[[yearOfAuditOptions]]"
                 option-label="label"
                 option-value="value"
-                required="[[_setRequired('year_of_audit', basePermissionPath)]]"
-                readonly$="[[isReadOnly('year_of_audit', basePermissionPath)]]"
+                required="[[isAudit(data.engagement_type)]]"
+                readonly$="[[isReadonly_YearOfAudit(data.engagement_type, data.id)]]"
                 invalid="[[_checkInvalid(errors.year_of_audit)]]"
                 error-message="[[errors.year_of_audit]]"
                 on-focus="_resetFieldError"
@@ -687,6 +687,16 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
     purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  isReadonly_YearOfAudit(engagement_type, id) {
+    if (engagement_type != 'audit') {
+      return true;
+    }
+    if (!id) {
+      return false;
+    }
+    return true;
   }
 
   setYearOfAuditOptions(savedYearOfAudit: number) {
