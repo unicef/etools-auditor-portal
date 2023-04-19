@@ -78,7 +78,7 @@ class SearchAndFilter extends PolymerElement {
                 <etools-dropdown
                   id="[[item.query]]"
                   class="filter-dropdown"
-                  selected="[[item.selected]]"
+                  selected="[[item.selectedValue]]"
                   label="[[item.label]]"
                   placeholder$="&#8212;"
                   options="[[item.selection]]"
@@ -311,6 +311,7 @@ class SearchAndFilter extends PolymerElement {
     } else if (filter.type === FilterTypes.Date) {
       return this._convertValueForDate(valueToConvert);
     }
+    return valueToConvert;
   }
 
   _convertValueForDate(valueToConvert) {
@@ -362,7 +363,7 @@ class SearchAndFilter extends PolymerElement {
     updateQueries(queryObject);
   }
 
-  _filterDropdownHasMultiChanged(e, detail) {
+  _filterDropdownMultiHasChanged(e, detail) {
     if (!e || !e.currentTarget || !detail) {
       return;
     }
