@@ -78,4 +78,3 @@ workflows:
                 - master
                 - staging
                 - develop
-                - 33415_with_etools_util
