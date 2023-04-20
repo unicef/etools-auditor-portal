@@ -111,6 +111,7 @@ export const searchAndFilterStyles = html`
     }
 
     .filter-dropdown {
+      box-sizing: border-box;
       margin-left: 20px;
       min-width: 200px;
 
@@ -121,6 +122,10 @@ export const searchAndFilterStyles = html`
       }
 
       --esmm-dropdown-menu-position: absolute;
+    }
+    etools-dropdown.filter-dropdown {
+      width: 160px;
+      --paper-input-error_-_position: absolute !important;
     }
 
     .filter-date {
