@@ -50,7 +50,7 @@ class CheckUserExistence extends PolymerElement {
   }
 
   _handleResponse(details = []) {
-    const user = get(details, '0');
+    const user = get(details, '0') as any;
     let data;
     let error;
     if (user) {

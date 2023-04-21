@@ -305,7 +305,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
 
     // redirect
     const engagementType = get(this, 'engagement.engagement_type');
-    const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[engagementType];
+    const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[String(engagementType)];
     const path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
     navigateToUrl(path);
 

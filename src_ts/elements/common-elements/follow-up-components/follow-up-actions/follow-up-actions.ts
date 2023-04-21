@@ -129,7 +129,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
         paper-tooltip {
           --paper-tooltip: {
             font-size: 12px;
-          }          
+          }
         }
         datepicker-lite::part(dp-calendar) {
           position: fixed;
@@ -830,7 +830,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     if (collectionExists('edited_ap_options.PUT')) {
       this.openEditDialog({itemIndex});
     } else {
-      this.dialogTitle = get(this, 'viewDialogTexts.title');
+      this.dialogTitle = String(get(this, 'viewDialogTexts.title') || '');
       this.confirmBtnText = '';
       this.cancelBtnText = 'Cancel';
 
