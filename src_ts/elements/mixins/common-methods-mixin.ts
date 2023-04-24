@@ -221,6 +221,10 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return type === 'audit';
     }
 
+    isAuditOrSpecialAudit(type: string) {
+      return ['audit', 'sa'].includes(type);
+    }
+
     isJSONObj(str) {
       let json;
       try {

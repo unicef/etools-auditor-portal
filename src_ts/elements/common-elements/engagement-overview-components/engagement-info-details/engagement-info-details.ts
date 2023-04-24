@@ -302,7 +302,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           <template is="dom-if" if="[[showInput]]" restamp>
             <div class="input-container" hidden$="[[_hideField('start_date', basePermissionPath)]]">
               <!-- Period Start Date -->
-              <etools-info-tooltip hide-tooltip="[[!isAudit(data.engagement_type)]]">
+              <etools-info-tooltip hide-tooltip="[[!isAuditOrSpecialAudit(data.engagement_type)]]">
                 <datepicker-lite
                   slot="field"
                   style="width: 100%"
@@ -333,7 +333,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           <template is="dom-if" if="[[showInput]]" restamp>
             <div class="input-container" hidden$="[[_hideField('end_date', basePermissionPath)]]">
               <!-- Period End Date -->
-              <etools-info-tooltip hide-tooltip="[[!isAudit(data.engagement_type)]]">
+              <etools-info-tooltip hide-tooltip="[[!isAuditOrSpecialAudit(data.engagement_type)]]">
                 <datepicker-lite
                   slot="field"
                   id="periodEndDateInput"
@@ -415,7 +415,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 options="[[yearOfAuditOptions]]"
                 option-label="label"
                 option-value="value"
-                required="[[isAudit(data.engagement_type)]]"
+                required="[[isAuditOrSpecialAudit(data.engagement_type)]]"
                 readonly$="[[isReadOnly('year_of_audit', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.year_of_audit)]]"
                 error-message="[[errors.year_of_audit]]"
@@ -713,7 +713,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   getYearOfAuditStyle(engagementType: string) {
     let cssClasses = 'year-of-audit';
-    if (engagementType !== 'audit') {
+    if (!['audit', 'sa'].includes(engagementType)) {
       cssClasses += ' hide';
     }
     return cssClasses;
@@ -967,7 +967,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.joint_audit = !!this.data.joint_audit;
     }
 
-    if ('audit' === this.data.engagement_type) {
+    if (['sa', 'audit'].includes(this.data.engagement_type)) {
       data.year_of_audit = this.data.year_of_audit;
     }
 
