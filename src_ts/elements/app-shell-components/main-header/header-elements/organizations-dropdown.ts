@@ -2,7 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import {property, query} from '@polymer/decorators';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin.js';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {BASE_PATH} from '../../../config/config';

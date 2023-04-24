@@ -2,11 +2,11 @@ import {PolymerElement} from '@polymer/polymer/polymer-element';
 import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {setUserData} from '../mixins/user-controller';
 import {resetOldUserData} from '../config/config';
 import famEndpoints from '../config/endpoints.js';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class UserData extends PolymerElement {
@@ -20,7 +20,7 @@ class UserData extends PolymerElement {
         this._handleResponse(resp);
       })
       .catch((err) => {
-        logError(err);
+        EtoolsLogger.error(err);
         this._handleError(err);
       });
   }
@@ -47,7 +47,7 @@ class UserData extends PolymerElement {
     if (err.status === 403) {
       window.location.href = window.location.origin + '/';
     } else {
-      logError("Can't load user data");
+      EtoolsLogger.error("Can't load user data");
     }
   }
 }

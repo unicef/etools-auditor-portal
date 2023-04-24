@@ -1,5 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import '@polymer/paper-styles/element-styles/paper-material-styles';
 import {sharedStyles} from '../../styles/shared-styles';
 

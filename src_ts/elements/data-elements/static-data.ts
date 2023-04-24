@@ -6,10 +6,11 @@ import {setStaticData, updateStaticData} from '../mixins/static-data-controller'
 import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import './user-data';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
+import {getUserData} from '../mixins/user-controller';
 
 class StaticData extends PolymerElement {
   public static get template() {
@@ -32,11 +33,43 @@ class StaticData extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
 
-    this.addEventListener('user-profile-loaded', this.loadStaticData);
+    this.addEventListener('user-profile-loaded', () => {
+      this.changeLanguageIfNeeded().then(() => {
+        this.loadStaticData();
+      });
+    });
 
     // document??
     this._updateEngagementsFilters = this._updateEngagementsFilters.bind(this);
     document.addEventListener('update-engagements-filters', this._updateEngagementsFilters);
+  }
+
+  changeLanguageIfNeeded() {
+    // @ts-ignore
+    const user = getUserData();
+    if (user.preferences?.language !== 'en') {
+      localStorage.setItem('defaultLanguage', 'en');
+      const endpoint = getEndpoint('userProfile');
+      return sendRequest({
+        method: 'PATCH',
+        endpoint: {
+          url: endpoint.url
+        },
+        body: {preferences: {language: 'en'}}
+      }).then(() =>
+        this.dispatchEvent(
+          new CustomEvent('toast', {
+            detail: {
+              text: 'Language set to English',
+              duration: 4000
+            },
+            bubbles: true,
+            composed: true
+          })
+        )
+      );
+    }
+    return Promise.resolve();
   }
 
   disconnectedCallback() {

@@ -9,7 +9,7 @@ import {property, query} from '@polymer/decorators';
 import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
-import {fireEvent} from '../../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';

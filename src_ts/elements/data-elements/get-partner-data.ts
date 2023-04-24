@@ -1,11 +1,11 @@
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import {getEndpoint} from '../config/endpoints-controller';
 import {getStaticData, setStaticData} from '../mixins/static-data-controller';
 import {GenericObject} from '../../types/global';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 class GetPartnerData extends PolymerElement {
@@ -74,7 +74,7 @@ class GetPartnerData extends PolymerElement {
   }
 
   _handleOfficersError() {
-    logError('Can not load partner officers!');
+    EtoolsLogger.error('Can not load partner officers!');
     this.finishRequest();
   }
 

@@ -9,7 +9,7 @@ import '@polymer/polymer/lib/elements/dom-repeat';
 
 import {moduleStyles} from '../../../styles/module-styles';
 import {sharedStyles} from '../../../styles/shared-styles';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer

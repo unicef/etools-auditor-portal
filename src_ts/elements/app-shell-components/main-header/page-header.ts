@@ -13,7 +13,7 @@ import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {isProductionServer, checkEnvironment} from '../../config/config';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * page header element
@@ -86,7 +86,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
         <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
 
         <div class="titlebar content-align">
-          <etools-app-selector id="selector" user="[[user]]"></etools-app-selector>
+          <etools-app-selector id="selector" user="[[{...user}]]"></etools-app-selector>
           <img id="app-logo" src$="[[rootPath]]/../assets/images/etools_logo.svg" />
 
           <template is="dom-if" if="[[environment]]">

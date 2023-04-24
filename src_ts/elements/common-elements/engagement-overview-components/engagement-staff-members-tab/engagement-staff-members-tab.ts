@@ -18,7 +18,7 @@ import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isString from 'lodash-es/isString';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';

@@ -31,14 +31,14 @@ setPassiveTouchGestures(true);
 
 import {property} from '@polymer/decorators';
 import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin';
-import {fireEvent} from './elements/utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import {getUserData} from './elements/mixins/user-controller';
 import {GenericObject} from './types/global';
 import {getDomainByEnv} from './elements/config/config';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
 import {BASE_PATH} from './elements/config/config';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import '@unicef-polymer/etools-toasts/src/etools-toasts';
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;
@@ -350,7 +350,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
         }
       })
       .catch((_err) => {
-        logError(_err);
+        EtoolsLogger.error(_err);
         this._pageNotFound();
       });
   }
@@ -378,7 +378,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
   handleLoading(event) {
     if (!event.detail || !event.detail.type) {
-      logError(JSON.stringify(event.detail), 'Bad details object');
+      EtoolsLogger.error(JSON.stringify(event.detail), 'Bad details object');
       return;
     }
     const loadingElement = this.shadowRoot!.querySelector('etools-loading#global-loading')! as any;
