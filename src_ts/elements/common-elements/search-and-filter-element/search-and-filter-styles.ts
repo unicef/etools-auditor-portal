@@ -125,6 +125,7 @@ export const searchAndFilterStyles = html`
     }
     etools-dropdown.filter-dropdown {
       width: 160px;
+      --paper-input-error_-_position: absolute !important;
     }
 
     .filter-date {
