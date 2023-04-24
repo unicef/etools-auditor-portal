@@ -7,7 +7,7 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -20,7 +20,7 @@ import {getChoices} from '../../../../mixins/permission-controller';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
-import {fireEvent} from '../../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isEqual from 'lodash-es/isEqual';
@@ -354,7 +354,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
 
   _getRisValueData(risk) {
     if (!this.riskOptions || !risk || isNil(risk.value)) {
-      logError('Can not get correct risk value');
+      EtoolsLogger.error('Can not get correct risk value');
       return;
     }
 

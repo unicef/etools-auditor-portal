@@ -28,7 +28,7 @@ import pick from 'lodash-es/pick';
 import transform from 'lodash-es/transform';
 import toNumber from 'lodash-es/toNumber';
 import values from 'lodash-es/values';
-import {fireEvent} from '../../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 

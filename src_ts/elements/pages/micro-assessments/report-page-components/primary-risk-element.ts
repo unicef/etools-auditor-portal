@@ -8,7 +8,7 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getChoices, isRequired} from '../../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import find from 'lodash-es/find';
@@ -142,7 +142,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       return;
     }
 
-    let extra = get(this, 'riskData.blueprints[0].risk.extra', {comments: ''});
+    let extra = get(this, 'riskData.blueprints[0].risk.extra', '{"comments":""}');
     if (this.isJSONObj(extra)) {
       extra = JSON.parse(String(extra));
     }

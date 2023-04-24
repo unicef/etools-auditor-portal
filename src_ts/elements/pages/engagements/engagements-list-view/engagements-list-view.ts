@@ -159,6 +159,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       query: 'agreement__auditor_firm__in',
       optionValue: 'id',
       optionLabel: 'name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -169,6 +170,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       hideSearch: true,
       optionValue: 'value',
       optionLabel: 'display_name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -178,6 +180,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       query: 'partner__in',
       optionValue: 'id',
       optionLabel: 'name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -188,6 +191,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       hideSearch: true,
       optionValue: 'value',
       optionLabel: 'display_name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -198,6 +202,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       hideSearch: true,
       optionValue: 'value',
       optionLabel: 'display_name',
+      selectedValue: [],
       selection: [
         {display_name: 'Yes', value: 'true'},
         {display_name: 'No', value: 'false'}

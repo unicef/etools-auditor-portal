@@ -5,7 +5,7 @@ import pick from 'lodash-es/pick';
 import omit from 'lodash-es/omit';
 import {getEndpoint} from '../config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../types/global';
 
 class CheckUserExistence extends PolymerElement {

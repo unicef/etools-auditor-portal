@@ -15,7 +15,7 @@ import {moduleStyles} from '../../../../styles/module-styles';
 
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
-import {fireEvent} from '../../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../../types/global';
 import {checkNonField} from '../../../../mixins/error-handler';
 

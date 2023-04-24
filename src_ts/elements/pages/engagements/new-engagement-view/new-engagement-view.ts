@@ -5,7 +5,7 @@ import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import assign from 'lodash-es/assign';
 import includes from 'lodash-es/includes';

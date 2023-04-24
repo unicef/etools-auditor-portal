@@ -32,7 +32,7 @@ import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {GenericObject} from '../../../../types/global';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
