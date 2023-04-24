@@ -6,7 +6,7 @@ import '@polymer/paper-icon-button/paper-icon-button';
 import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
 import {ConfigObj, createDynamicDialog, removeDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
 import EtoolsDialog from '@unicef-polymer/etools-dialog';

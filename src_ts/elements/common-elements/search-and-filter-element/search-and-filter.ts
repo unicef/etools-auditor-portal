@@ -323,7 +323,7 @@ class SearchAndFilter extends PolymerElement {
 
   _convertValueForDropdownMulti(valueToConvert, filter) {
     if (!filter || !filter.selection || valueToConvert === undefined) {
-      return;
+      return [];
     }
     const splitValues = valueToConvert.split(',');
     const optionValue = filter.optionValue;

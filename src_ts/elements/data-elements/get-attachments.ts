@@ -1,6 +1,6 @@
 import {PolymerElement} from '@polymer/polymer/polymer-element';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 

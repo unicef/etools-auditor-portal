@@ -8,7 +8,7 @@ import isObject from 'lodash-es/isObject';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import {setStaticData, getStaticData} from './static-data-controller';
 import {Constructor, GenericObject} from '../../types/global';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
 import {getProperty, setProperty} from '../utils/utils';
 
@@ -219,6 +219,10 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     isAudit(type: string) {
       return type === 'audit';
+    }
+
+    isAuditOrSpecialAudit(type: string) {
+      return ['audit', 'sa'].includes(type);
     }
 
     isJSONObj(str) {

@@ -12,7 +12,7 @@ import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {checkNonField} from '../../../mixins/error-handler';
 
 class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {

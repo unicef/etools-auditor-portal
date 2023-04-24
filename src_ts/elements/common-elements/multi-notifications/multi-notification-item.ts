@@ -1,7 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element';
 import '@polymer/paper-button/paper-button';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer

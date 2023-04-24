@@ -7,7 +7,7 @@ import isNil from 'lodash-es/isNil';
 import assign from 'lodash-es/assign';
 import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {Constructor, GenericObject} from '../../types/global';
 import {getEndpoint} from '../config/endpoints-controller';
 import {getUserData} from './user-controller';

@@ -10,7 +10,7 @@ import '@polymer/paper-item/paper-item';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sharedStyles} from '../../styles/shared-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import pagesHeaderElementStyles from './pages-header-element-styles';

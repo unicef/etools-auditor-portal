@@ -302,63 +302,55 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
           <template is="dom-if" if="[[showInput]]" restamp>
             <div class="input-container" hidden$="[[_hideField('start_date', basePermissionPath)]]">
               <!-- Period Start Date -->
-              <etools-info-tooltip hide-tooltip="[[!isAudit(data.engagement_type)]]">
-                <datepicker-lite
-                  slot="field"
-                  style="width: 100%"
-                  id="periodStartDateInput"
-                  class$="[[_isAdditionalFieldRequired('start_date',
+              <datepicker-lite
+                style="width: 100%"
+                id="periodStartDateInput"
+                class$="[[_isAdditionalFieldRequired('start_date',
                                       basePermissionPath, data.engagement_type)]] validate-field"
-                  value="[[data.start_date]]"
-                  label="[[getLabel('start_date', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
-                  selected-date-display-format="D MMM YYYY"
-                  required="[[_isAdditionalFieldRequired('start_date', basePermissionPath,
+                value="[[data.start_date]]"
+                label="[[getStartEndDateLabel(data.engagement_type,'start_date', basePermissionPath)]]"
+                placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
+                selected-date-display-format="D MMM YYYY"
+                required="[[_isAdditionalFieldRequired('start_date', basePermissionPath,
                                         data.engagement_type)]]"
-                  readonly$="[[isReadOnly('start_date', basePermissionPath)]]"
-                  invalid="[[_checkInvalid(errors.start_date)]]"
-                  error-message="[[errors.start_date]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  fire-date-has-changed
-                  property-name="start_date"
-                  on-date-has-changed="dateHasChanged"
-                >
-                </datepicker-lite>
-                <span slot="message">The start date of the first reporting FACE</span>
-              </etools-info-tooltip>
+                readonly$="[[isReadOnly('start_date', basePermissionPath)]]"
+                invalid="[[_checkInvalid(errors.start_date)]]"
+                error-message="[[errors.start_date]]"
+                on-focus="_resetFieldError"
+                on-tap="_resetFieldError"
+                fire-date-has-changed
+                property-name="start_date"
+                on-date-has-changed="dateHasChanged"
+              >
+              </datepicker-lite>
             </div>
           </template>
 
           <template is="dom-if" if="[[showInput]]" restamp>
             <div class="input-container" hidden$="[[_hideField('end_date', basePermissionPath)]]">
               <!-- Period End Date -->
-              <etools-info-tooltip hide-tooltip="[[!isAudit(data.engagement_type)]]">
-                <datepicker-lite
-                  slot="field"
-                  id="periodEndDateInput"
-                  style="width: 100%"
-                  class$="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
+              <datepicker-lite
+                id="periodEndDateInput"
+                style="width: 100%"
+                class$="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
                                         data.engagement_type)]] validate-field"
-                  value="[[data.end_date]]"
-                  label="[[getLabel('end_date', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
-                  data-selector="periodEndDate"
-                  required="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
+                value="[[data.end_date]]"
+                label="[[getStartEndDateLabel(data.engagement_type,'end_date', basePermissionPath)]]"
+                placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
+                data-selector="periodEndDate"
+                required="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
                                             data.engagement_type)]]"
-                  readonly$="[[isReadOnly('end_date', basePermissionPath)]]"
-                  invalid="[[_checkInvalid(errors.end_date)]]"
-                  error-message="[[errors.end_date]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  selected-date-display-format="D MMM YYYY"
-                  fire-date-has-changed
-                  property-name="end_date"
-                  on-date-has-changed="dateHasChanged"
-                >
-                </datepicker-lite>
-                <span slot="message">The end date of the last reporting FACE</span>
-              </etools-info-tooltip>
+                readonly$="[[isReadOnly('end_date', basePermissionPath)]]"
+                invalid="[[_checkInvalid(errors.end_date)]]"
+                error-message="[[errors.end_date]]"
+                on-focus="_resetFieldError"
+                on-tap="_resetFieldError"
+                selected-date-display-format="D MMM YYYY"
+                fire-date-has-changed
+                property-name="end_date"
+                on-date-has-changed="dateHasChanged"
+              >
+              </datepicker-lite>
             </div>
           </template>
 
@@ -415,7 +407,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
                 options="[[yearOfAuditOptions]]"
                 option-label="label"
                 option-value="value"
-                required="[[isAudit(data.engagement_type)]]"
+                required="[[isAuditOrSpecialAudit(data.engagement_type)]]"
                 readonly$="[[isReadOnly('year_of_audit', basePermissionPath)]]"
                 invalid="[[_checkInvalid(errors.year_of_audit)]]"
                 error-message="[[errors.year_of_audit]]"
@@ -713,7 +705,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   getYearOfAuditStyle(engagementType: string) {
     let cssClasses = 'year-of-audit';
-    if (engagementType !== 'audit') {
+    if (!['audit', 'sa'].includes(engagementType)) {
       cssClasses += ' hide';
     }
     return cssClasses;
@@ -745,6 +737,18 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     if (poItemId) {
       this.set('data.po_item', poItemId);
     }
+  }
+
+  getStartEndDateLabel(engType, field, basePermissionPath) {
+    if (['sa', 'audit'].includes(engType)) {
+      if (field === 'start_date') {
+        return 'Start date of first reporting FACE';
+      } else {
+        return 'End date of last reporting FACE';
+      }
+    }
+
+    return this.getLabel(field, basePermissionPath);
   }
 
   userIsFirmStaffAuditor() {
@@ -929,7 +933,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   resetType() {
     const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
-    etoolsDropdownEl.set('selected', '');
+    etoolsDropdownEl.selected = null;
   }
 
   getEngagementData() {
@@ -967,7 +971,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.joint_audit = !!this.data.joint_audit;
     }
 
-    if ('audit' === this.data.engagement_type) {
+    if (['sa', 'audit'].includes(this.data.engagement_type)) {
       data.year_of_audit = this.data.year_of_audit;
     }
 
