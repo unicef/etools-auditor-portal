@@ -144,7 +144,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
     let extra = get(this, 'riskData.blueprints[0].risk.extra', '{"comments":""}');
     if (this.isJSONObj(extra)) {
-      extra = JSON.parse(extra);
+      extra = JSON.parse(String(extra));
     }
 
     this.set(
@@ -212,7 +212,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
 
     let originalExtra = get(this, 'originalData.blueprints[0].risk.extra');
     if (this.isJSONObj(originalExtra)) {
-      originalExtra = JSON.parse(originalExtra as string);
+      originalExtra = JSON.parse(String(originalExtra));
     }
 
     if (
