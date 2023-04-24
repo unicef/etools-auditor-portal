@@ -12,7 +12,7 @@ import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {getChoices} from '../../../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../../types/global';
-import {fireEvent} from '../../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isNumber from 'lodash-es/isNumber';
 import cloneDeep from 'lodash-es/cloneDeep';
 

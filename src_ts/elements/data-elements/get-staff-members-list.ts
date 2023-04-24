@@ -5,9 +5,9 @@ import {collectionExists, addToCollection} from '../mixins/permission-controller
 import {getUserData} from '../mixins/user-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 export function getStaffCollectionName(organisationId: number): string {
   return `staff_members_${organisationId}`;
@@ -43,7 +43,7 @@ class GetStaffMembersList extends PolymerElement {
       .then(([data]) => fireEvent(this, 'data-loaded', data))
       .catch((error) => {
         const responseData = error?.request?.detail?.request?.xhr;
-        logError(responseData);
+        EtoolsLogger.error(responseData);
       })
       .finally(() => fireEvent(this, 'loading-state-changed', {state: false}));
   }
@@ -88,7 +88,7 @@ class GetStaffMembersList extends PolymerElement {
       }
       addToCollection(collectionName, actions);
     } catch (e) {
-      logError('Can not load permissions for engagement');
+      EtoolsLogger.error('Can not load permissions for engagement');
     }
   }
 }

@@ -1,6 +1,6 @@
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {getEndpoint} from '../config/endpoints-controller';
@@ -8,7 +8,7 @@ import {addToCollection, collectionExists} from '../mixins/permission-controller
 import LastCreatedMixin from '../mixins/last-created-mixin';
 import EngagementMixin from '../mixins/engagement-mixin';
 import {GenericObject} from '../../types/global';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
@@ -63,7 +63,7 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
     if (actions) {
       addToCollection(`engagement_${this.engagementId}`, actions);
     } else {
-      logError('Can not load permissions for engagement');
+      EtoolsLogger.error('Can not load permissions for engagement');
     }
 
     this.requestsCompleted.options = true;

@@ -23,7 +23,7 @@ import isEqual from 'lodash-es/isEqual';
 import findIndex from 'lodash-es/findIndex';
 import isNumber from 'lodash-es/isNumber';
 import isString from 'lodash-es/isString';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';

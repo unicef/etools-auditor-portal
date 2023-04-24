@@ -4,7 +4,7 @@ import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
-import {fireEvent} from '../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {readonlyPermission} from './permission-controller';
 import {refactorErrorObject} from './error-handler';
 

@@ -11,7 +11,7 @@ import {actionAllowed} from '../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
 import {getEndpoint} from '../../config/endpoints-controller';
 
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
 import isUndefined from 'lodash-es/isUndefined';
@@ -20,7 +20,7 @@ import clone from 'lodash-es/clone';
 import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../types/global';
 import {BASE_PATH} from '../../config/config';
-import {logError} from '@unicef-polymer/etools-behaviors/etools-logging';
+import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {FilterTypes} from '../../common-elements/search-and-filter-element/search-and-filter';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
@@ -292,7 +292,7 @@ class StaffScPageMain extends PolymerElement {
 
   _auditFirmLoaded({results}) {
     if (!results.length) {
-      logError('Error fetching audit firm.');
+      EtoolsLogger.error('Error fetching audit firm.');
     } else {
       this.auditFirm = results[0];
     }
