@@ -190,10 +190,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
         }
         paper-input.email {
-          --paper-input-error: {
-            position: relative !important;
-            white-space: normal;
-          }
+          --paper-input-error_-_position: position: relative !important;
+          --paper-input-error_-_white-space: normal;
         }
       </style>
 
