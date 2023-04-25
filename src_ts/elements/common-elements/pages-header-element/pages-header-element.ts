@@ -117,7 +117,6 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
 
   addNewTap(e) {
     this.trackAnalytics(e);
-    fireEvent(this, 'add-new-tap');
   }
 
   _showLink(link) {
