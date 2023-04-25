@@ -51,7 +51,7 @@
     "@polymer/polymer": "^3.5.1",
     "@types/lodash-es": "^4.17.7",
     "@unicef-polymer/etools-ajax": "^4.4.2",
-    "@unicef-polymer/etools-app-selector": "^4.0.8",
+    "@unicef-polymer/etools-app-selector": "^4.0.9",
     "@unicef-polymer/etools-behaviors": "^3.1.1",
     "@unicef-polymer/etools-content-panel": "^5.1.0",
     "@unicef-polymer/etools-currency-amount-input": "^4.0.4",
