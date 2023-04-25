@@ -427,6 +427,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Shared Audit with-->
             <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
               <etools-dropdown-multi
+                id="sharedWith"
                 class$="validate-input [[_setRequired('shared_ip_with',
                                         basePermissionPath)]]"
                 label="[[getLabel('shared_ip_with', basePermissionPath)]]"
