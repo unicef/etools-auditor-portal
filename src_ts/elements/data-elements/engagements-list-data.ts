@@ -1,6 +1,6 @@
 import {PolymerElement} from '@polymer/polymer';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../utils/fire-custom-event.js';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import keys from 'lodash-es/keys';
 import pull from 'lodash-es/pull';

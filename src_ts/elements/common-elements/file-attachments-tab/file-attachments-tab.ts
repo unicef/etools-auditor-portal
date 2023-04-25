@@ -34,7 +34,7 @@ import {GenericObject} from '../../../types/global';
 
 import get from 'lodash-es/get';
 import clone from 'lodash-es/clone';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../../config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';

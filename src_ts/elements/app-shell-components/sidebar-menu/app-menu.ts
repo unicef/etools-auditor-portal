@@ -8,7 +8,7 @@ import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {property} from '@polymer/decorators';
 import {apIcons, famIcon} from '../../styles/ap-icons';
 
