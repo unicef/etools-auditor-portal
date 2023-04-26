@@ -5,23 +5,18 @@ import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
+import '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/polymer/lib/elements/dom-repeat';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 
 import isUndefined from 'lodash-es/isUndefined';
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
-import trim from 'lodash-es/trim';
-import isEqual from 'lodash-es/isEqual';
-import findIndex from 'lodash-es/findIndex';
-import isNumber from 'lodash-es/isNumber';
 import isString from 'lodash-es/isString';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {property} from '@polymer/decorators';
@@ -37,11 +32,9 @@ import '../../../data-elements/get-staff-members-list';
 import '../../list-tab-elements/list-header/list-header';
 import '../../list-tab-elements/list-element/list-element';
 import '../../list-tab-elements/list-pagination/list-pagination';
-import '../../../data-elements/check-user-existence';
-import '../../../data-elements/update-staff-members';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
 import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
-import {setProperty} from '../../../utils/utils';
+import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
 
 /**
  * @polymer
@@ -195,11 +188,30 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             white-space: normal;
           }
         }
+        .white {
+          color: #ffffff;
+        }
+        .panel-btns-container {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-end;
+          column-gap: 30px;
+        }
+        paper-toggle-button.white {
+          --paper-toggle-button-label-color: #ffffff;
+          --paper-toggle-button-checked-bar-color: #ffffff !important;
+          --paper-toggle-button-checked-button-color: #ffffff;
+          --paper-toggle-button-checked-ink-color: #ffffff;
+          --paper-toggle-button-unchecked-button-color: #bfbfbf;
+          --paper-toggle-button-unchecked-bar-color: #bfbfbf !important;
+          --paper-toggle-button-unchecked-ink-color: #bfbfbf;
+        }
       </style>
 
       <!--requests-->
       <get-staff-members-list
-        organisation-id="[[organisationId]]"
+        organisation-id="[[organizationId]]"
         queries="[[listQueries]]"
         page-type="[[pageType]]"
         on-data-loaded="listLoaded"
@@ -207,16 +219,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       >
       </get-staff-members-list>
 
-      <update-staff-members organisation-id="[[organisationId]]" staff-data="[[newData]]"></update-staff-members>
-
-      <check-user-existence
-        email="[[newEmail]]"
-        organisation-id="[[organisationId]]"
-        edited-item="[[editedItem]]"
-        unicef-users-allowed="[[engagement.agreement.auditor_firm.unicef_users_allowed]]"
-        on-email-checked="emailChecked"
-      >
-      </check-user-existence>
       <!--end requests-->
 
       <etools-content-panel
@@ -225,31 +227,40 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         list
       >
         <div slot="panel-btns">
-          <div class="add-button-container">
-            <paper-icon-button
-              class="panel-button"
-              hidden$="[[!_showAddButton(basePermissionPath, engagement.agreement, listLoading)]]"
-              on-tap="_openAddDialog"
-              icon="add-box"
+          <div class="panel-btns-container">
+            <div class="search-input-container" hidden$="[[!_showPagination(datalength)]]">
+              <paper-input
+                id="searchInput"
+                class$="search-input [[_getSearchInputClass(searchString)]]"
+                value="[[searchString]]"
+                placeholder="Search"
+                on-blur="searchBlur"
+                on-input="_searchChanged"
+                data-value-path="target.value"
+                data-field-path="searchString"
+              >
+                <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
+              </paper-input>
+              <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
+            </div>
+            <paper-toggle-button
+              class="white"
+              id="toggleActive"
+              checked="[[showInactive]]"
+              on-change="onShowInactiveChanged"
             >
-            </paper-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
-          </div>
-
-          <div class="search-input-container" hidden$="[[!_showPagination(datalength)]]">
-            <paper-input
-              id="searchInput"
-              class$="search-input [[_getSearchInputClass(searchString)]]"
-              value="[[searchString]]"
-              placeholder="Search"
-              on-blur="searchBlur"
-              on-input="_searchChanged"
-              data-value-path="target.value"
-              data-field-path="searchString"
-            >
-              <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
-            </paper-input>
-            <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
+              Show Inactive
+            </paper-toggle-button>
+            <div class="add-button-container">
+              <a
+                class="white"
+                href="[[_getAMPLink(engagement.agreement.auditor_firm.organization_id)]]"
+                target="_blank"
+              >
+                <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
+              </a>
+              <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
+            </div>
           </div>
         </div>
 
@@ -261,12 +272,14 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           </list-header>
 
           <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-            <list-element class="list-element" data="[[item]]" no-additional headings="[[columns]]" no-animation>
-              <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-                <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"> </paper-icon-button>
-                <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"> </paper-icon-button>
-              </div>
-
+            <list-element
+              class="list-element"
+              data="[[item]]"
+              no-additional
+              headings="[[columns]]"
+              no-animation
+              hidden$="[[!_isVisible(item.user.is_active, showInactive)]]"
+            >
               <div slot="checkbox" class="checkbox">
                 <paper-checkbox
                   disabled="[[_isCheckboxReadonly(item.hasAccess, engagementStaffs, saveWithButton)]]"
@@ -296,178 +309,11 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           </list-pagination>
         </div>
       </etools-content-panel>
-
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        opened="[[confirmDialogOpened]]"
-        on-confirm-btn-clicked="removeStaff"
-        disable-confirm-btn="[[requestInProcess]]"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        [[deleteTitle]]
-      </etools-dialog>
-
-      <etools-dialog
-        id="staff-members"
-        no-padding
-        opened="[[dialogOpened]]"
-        dialog-title="[[dialogTitle]]"
-        size="md"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="[[requestInProcess]]"
-        disable-confirm-btn="[[requestInProcess]]"
-        keep-dialog-open
-        on-confirm-btn-clicked="_addStaffFromDialog"
-        openFlag="dialogOpened"
-        on-close="_resetStaffMembDialog"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container">
-                <!-- Email address -->
-                <paper-input
-                  id="emailInput"
-                  class$="validate-input [[_setRequired('user.email', staffsBase)]] email"
-                  value="[[editedItem.user.email]]"
-                  label="[[getLabel('user.email', staffsBase)]]"
-                  placeholder="Enter E-mail"
-                  required="{{_setRequired('user.email', staffsBase)}}"
-                  readonly$="{{_emailDisabled(requestInProcess, addDialog, emailChecking)}}"
-                  maxlength="45"
-                  invalid="[[errors.user.email]]"
-                  error-message="[[errors.user.email]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  on-blur="_checkEmail"
-                  data-value-path="target.value"
-                  data-field-path="editedItem.user.email"
-                  on-input="_setField"
-                >
-                  <iron-icon slot="prefix" icon="communication:email"></iron-icon>
-                </paper-input>
-                <etools-loading active="[[emailChecking]]" no-overlay loading-text="" class="email-loading">
-                </etools-loading>
-              </div>
-
-              <div class="input-container">
-                <!-- First Name -->
-                <paper-input
-                  class$="validate-input [[_setRequired('user.first_name', staffsBase)]]"
-                  value="[[editedItem.user.first_name]]"
-                  label="[[getLabel('user.first_name', staffsBase)]]"
-                  placeholder="Enter First Name"
-                  required="{{_setRequired('user.first_name', staffsBase)}}"
-                  readonly$="{{requestInProcess}}"
-                  maxlength="30"
-                  invalid="[[errors.user.first_name]]"
-                  error-message="[[errors.user.first_name]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  data-value-path="target.value"
-                  data-field-path="editedItem.user.first_name"
-                  on-input="_setField"
-                >
-                </paper-input>
-              </div>
-
-              <div class="input-container">
-                <!-- Last Name -->
-                <paper-input
-                  class$="validate-input [[_setRequired('user.last_name', staffsBase)]]"
-                  value="[[editedItem.user.last_name]]"
-                  label="[[getLabel('user.last_name', staffsBase)]]"
-                  placeholder="Enter Last Name"
-                  required="{{_setRequired('user.last_name', staffsBase)}}"
-                  readonly$="{{requestInProcess}}"
-                  maxlength="30"
-                  invalid="[[errors.user.last_name]]"
-                  error-message="[[errors.user.last_name]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  data-value-path="target.value"
-                  data-field-path="editedItem.user.last_name"
-                  on-input="_setField"
-                >
-                </paper-input>
-              </div>
-            </div>
-
-            <div class="input-container">
-              <!-- Position -->
-              <paper-input
-                class$="validate-input [[_setRequired('user.profile.job_title', staffsBase)]]"
-                value="[[editedItem.user.profile.job_title]]"
-                label="[[getLabel('user.profile.job_title', staffsBase)]]"
-                placeholder="Enter Position"
-                required="{{_setRequired('user.profile.job_title', staffsBase)}}"
-                readonly$="{{requestInProcess}}"
-                maxlength="45"
-                invalid="[[errors.profile.job_title]]"
-                error-message="[[errors.profile.job_title]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                data-value-path="target.value"
-                data-field-path="editedItem.user.profile.job_title"
-                on-input="_setField"
-              >
-              </paper-input>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container">
-                <!-- Phone number -->
-                <paper-input
-                  class$="validate-input [[_setRequired('user.profile.phone_number', staffsBase)]]"
-                  value="[[editedItem.user.profile.phone_number]]"
-                  allowed-pattern="[0-9\\ \\.\\+\\-\\(\\)]"
-                  label="[[getLabel('user.profile.phone_number', staffsBase)]]"
-                  placeholder="Enter Phone"
-                  required="{{_setRequired('user.profile.phone_number', staffsBase)}}"
-                  readonly$="{{requestInProcess}}"
-                  maxlength="20"
-                  invalid="[[errors.user.profile.phone_number]]"
-                  error-message="[[errors.user.profile.phone_number]]"
-                  data-value-path="target.value"
-                  data-field-path="editedItem.user.profile.phone_number"
-                  on-input="_setField"
-                >
-                  <iron-icon slot="prefix" icon="communication:phone"></iron-icon>
-                </paper-input>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <!--receive notification-->
-              <div class="staff-check-box notify-box input-container input-container-l">
-                <paper-checkbox
-                  checked="[[editedItem.hasAccess]]"
-                  disabled="[[_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
-                                            saveWithButton)]]"
-                  disabled$="[[_isCheckboxReadonly(editedItem.hasAccess, engagementStaffs,
-                                            saveWithButton)]]"
-                  data-value-path="target.checked"
-                  data-field-path="editedItem.hasAccess"
-                  on-change="_setField"
-                >
-                  Has Access
-                </paper-checkbox>
-              </div>
-            </div>
-          </div>
-        </div>
-      </etools-dialog>
     `;
   }
 
   static get observers() {
     return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
       'changePermission(basePermissionPath)',
       '_handleUpdateError(errorObject.staff_members)',
       '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
@@ -505,7 +351,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   @property({type: Array})
   columns: any[] = [
     {
-      size: '100px',
+      size: 10,
       label: 'Has Access',
       name: 'hasAccess',
       align: 'center',
@@ -513,47 +359,49 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       checkbox: true
     },
     {
-      size: 20,
+      size: 16,
       label: 'Position',
       labelPath: 'staff_members.user.profile.job_title',
       name: 'user.profile.job_title',
       customCss: 'wrap-text'
     },
     {
-      size: 20,
+      size: 16,
       label: 'First Name',
       labelPath: 'staff_members.user.first_name',
       name: 'user.first_name',
       customCss: 'wrap-text'
     },
     {
-      size: 20,
+      size: 16,
       label: 'Last Name',
       labelPath: 'staff_members.user.last_name',
       name: 'user.last_name',
       customCss: 'wrap-text'
     },
     {
-      size: 20,
+      size: 16,
       label: 'Phone Number',
       labelPath: 'staff_members.user.profile.phone_number',
       name: 'user.profile.phone_number',
       customCss: 'wrap-text'
     },
     {
-      size: 20,
+      size: 16,
       label: 'E-mail Address',
       labelPath: 'staff_members.user.email',
       name: 'user.email',
       customCss: 'wrap-text'
+    },
+    {
+      size: 10,
+      label: 'Active',
+      labelPath: 'staff_members.user.is_active',
+      name: 'user.is_active',
+      customCss: 'wrap-text',
+      html: true
     }
   ];
-
-  @property({type: Object})
-  addDialogTexts: GenericObject = {title: 'Add New Audit Staff Team Member'};
-
-  @property({type: Object})
-  editDialogTexts: GenericObject = {title: 'Edit Audit Staff Team Member'};
 
   @property({type: Object})
   listQueries: GenericObject = {
@@ -601,13 +449,16 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   listPage!: number;
 
   @property({type: Number})
-  organisationId!: number;
+  organizationId!: number;
 
   @property({type: String})
   basePermissionPath = '';
 
   @property({type: Boolean})
   emailChecking!: boolean;
+
+  @property({type: Boolean})
+  showInactive!: boolean;
 
   @property({type: Object})
   newData!: GenericObject;
@@ -625,25 +476,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   connectedCallback() {
     super.connectedCallback();
-    this._initListeners();
-    const emailInputEl = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
-    emailInputEl.validate = this._validEmailAddress.bind(this, emailInputEl);
     this.listSize = 10;
     this.listPage = 1;
-  }
-
-  _initListeners() {
-    this._staffUpdated = this._staffUpdated.bind(this);
-    this.addEventListener('staff-updated', this._staffUpdated as any);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeListeners();
-  }
-
-  _removeListeners() {
-    this.removeEventListener('staff-updated', this._staffUpdated as any);
   }
 
   changePermission(basePermissionPath) {
@@ -653,8 +487,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     const editObj = this.columns && this.columns[0];
     if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
       each(this.columns, (_value, index) => {
-        this.set(`columns.${index}.size`, 18);
+        this.set(`columns.${index}.size`, 16);
       });
+      this.set(`columns.${this.columns.length - 1}.size`, 10);
       this.unshift('columns', {
         size: 10,
         label: 'Has Access',
@@ -665,8 +500,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
       this.shift('columns');
       each(this.columns, (_value, index) => {
-        this.set(`columns.${index}.size`, 20);
+        this.set(`columns.${index}.size`, 18);
       });
+      this.set(`columns.${this.columns.length - 1}.size`, 10);
     }
   }
 
@@ -676,16 +512,20 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   listLoaded(event: CustomEvent): void {
     const data = event.detail;
-    this.staffsBase = getStaffCollectionName(this.organisationId);
+    this.staffsBase = getStaffCollectionName(this.organizationId);
     this.dataItems = data.results;
+
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
   }
 
-  _openAddDialog() {
-    this.originalEditedObj = {};
-    this.openAddDialog();
+  onShowInactiveChanged(e: CustomEvent) {
+    this.showInactive = Boolean((e.target as PaperToggleButtonElement).checked);
+  }
+
+  _isVisible(active: boolean, showInactive: boolean) {
+    return active || showInactive;
   }
 
   _organizationChanged(id) {
@@ -695,7 +535,16 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     if (!id) {
       this.resetList();
     }
-    this.organisationId = +id;
+    this.organizationId = +id;
+  }
+
+  _getAMPLink(organizationId: number) {
+    const user = getUserData();
+    let url = `/amp/users/`;
+    if (user && user.is_unicef_user) {
+      url += `list?organization_type=audit&organization_id=${organizationId}`;
+    }
+    return url;
   }
 
   _queriesChanged(listSize, listPage, searchQuery) {
@@ -721,22 +570,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       page: listPage,
       search: searchQuery || ''
     });
-  }
-
-  validate() {
-    const emailImput = this.shadowRoot!.querySelector('#emailInput') as PaperInputElement;
-    const elements = this.shadowRoot!.querySelectorAll('.validate-input:not(.email)');
-    let valid = true;
-    const emailValid = emailImput.disabled || emailImput.validate();
-
-    Array.prototype.forEach.call(elements, (element) => {
-      if (element.required && !element.disabled && !element.validate()) {
-        element.invalid = 'This field is required';
-        element.errorMessage = 'This field is required';
-        valid = false;
-      }
-    });
-    return valid && emailValid;
   }
 
   _staffMembersListChanged(data, staffs) {
@@ -791,37 +624,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     this.listSize = event.detail.pageSize;
   }
 
-  _validEmailAddress(emailInput) {
-    const value = trim(emailInput.value);
-    const required = emailInput.required;
-
-    const re =
-      // eslint-disable-next-line
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (required && !value) {
-      this.errors = {user: {email: 'Email is required'}};
-      return false;
-    }
-    if (value && !re.test(value)) {
-      this.errors = {user: {email: 'Email is incorrect'}};
-      return false;
-    }
-
-    let valid = true;
-
-    if (this.saveWithButton) {
-      each(this.dataItems, (item: any) => {
-        if (item.user && item.user.email === this.editedItem.user.email && item.id && item.id === this.editedItem.id) {
-          this.errors = {user: {email: 'Email must be unique'}};
-          valid = false;
-        }
-      });
-    }
-
-    return valid;
-  }
-
   _isActive(event) {
     const item = event && event.model && event.model.item;
     if (!item) {
@@ -836,46 +638,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     this._updateEngagement(true, updateOptions);
   }
 
-  _emailDisabled(request, createPopup, emailChecking) {
-    return !!(!createPopup || request || emailChecking);
-  }
-
-  _checkEmail(event) {
-    if (this.emailChecking) {
-      return;
-    }
-
-    const input = event && event.target;
-    const value = input && input.value;
-
-    if (value && this._validEmailAddress(input)) {
-      this.newEmail = value;
-      this.emailChecking = true;
-      if (get(this.errors, 'user.email')) {
-        delete this.errors.user.email;
-      }
-    }
-  }
-
-  emailChecked(event: CustomEvent) {
-    this.emailChecking = false;
-    this.newEmail = null;
-    if (event.detail.error) {
-      const currentErrors = {...this.errors} || {};
-      setProperty(currentErrors, 'user.email', event.detail.error);
-      this.errors = currentErrors;
-    }
-    if (event.detail.data) {
-      this.editedItem = event.detail.data;
-    }
-  }
-
-  _showAddButton(_basePath, agreement, loading) {
-    const orgId = agreement && agreement.auditor_firm && agreement.auditor_firm.id;
-
-    return !!orgId && !loading && this._canBeChanged();
-  }
-
   _showPagination(dataItems) {
     return !!(+dataItems && +dataItems > 10);
   }
@@ -883,122 +645,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   _staffLength(length, length2, search) {
     const staffLength = search ? length2 : length || length2;
     return staffLength || 0;
-  }
-
-  _addStaffFromDialog(force) {
-    if (this.requestInProcess && !force) {
-      return;
-    }
-
-    // check if errors object is not already set by check-user-existence
-    if (this.errors && this.errors.user && this.errors.user.email) {
-      return;
-    }
-
-    this.errors = {};
-
-    if (!this.validate()) {
-      return;
-    }
-
-    this.requestInProcess = true;
-
-    const item = cloneDeep(this.editedItem);
-    if ((!this.addDialog && !isNaN(this.editedIndex)) || item.id) {
-      if (isEqual(this.originalEditedObj, this.editedItem)) {
-        this.requestInProcess = false;
-        this.dialogOpened = false;
-        this.resetDialog();
-        return;
-      }
-      this.set('newData', {
-        method: 'PATCH',
-        data: item,
-        staffIndex: !this.addDialog ? this.editedIndex : null,
-        id: `${item.id}/`
-      });
-    } else {
-      const data = item.user_pk ? {user_pk: item.user_pk} : item;
-      this.set('newData', {
-        method: 'POST',
-        id: '',
-        data
-      });
-    }
-  }
-
-  removeStaff() {
-    const hasAccess = this.get('editedItem.hasAccess');
-    const removalForbidden = this._isCheckboxReadonly(hasAccess, this.engagementStaffs, this.saveWithButton);
-
-    if (removalForbidden) {
-      fireEvent(this, 'toast', {text: 'Audit Staff Team Members: Please select at least one staff member.'});
-      this.set('confirmDialogOpened', false);
-      return false;
-    }
-
-    this.requestInProcess = true;
-    this.set('newData', {
-      method: 'DELETE',
-      data: {},
-      staffIndex: this.editedIndex,
-      id: `${this.editedItem.id}/`
-    });
-  }
-
-  _staffUpdated(event) {
-    const details = event.detail;
-    if (!details) {
-      throw new Error('Detail are not provided!');
-    }
-    if (details.error) {
-      this._handleUpdateError(details.errorData);
-      return;
-    }
-
-    const me = getUserData() || {};
-    const updateOptions = get(details, 'data.user.email') === me.email;
-
-    details.data = details.data || {};
-    details.data.hasAccess = this.editedItem.hasAccess;
-    if (details.action === 'patch') {
-      this.manageEngagementStaff(details.data, details.hasAccess);
-      this._updateEngagement(false, updateOptions);
-      const index = ~details.index ? details.index : findIndex(this.dataItems, (item) => item.id === details.data.id);
-      if (isNumber(index) && ~index) {
-        this.splice('dataItems', index, 1, details.data);
-      } else {
-        this.set('listPage', 0);
-        this.set('listPage', 1);
-      }
-    } else if (details.action === 'post') {
-      this.manageEngagementStaff(details.data, details.hasAccess);
-      this._updateEngagement(false, updateOptions);
-      this.set('listPage', 0);
-      this.set('listPage', 1);
-    } else if (details.action === 'delete') {
-      const last = this.dataItems.length === 1 ? 1 : 0;
-      const email = this.editedItem.user.email;
-      this.manageEngagementStaff({user: {email: email}});
-      this.set('listQueries', {
-        page_size: this.listSize,
-        page: this.listPage - last || 1
-      });
-    }
-
-    if (this.editedItem.user_pk && !isEqual(details.data.user, this.editedItem.user)) {
-      this.editedIndex = findIndex(this.dataItems, (item) => item.id === details.data.id);
-      this.addDialog = false;
-      delete this.editedItem.user_pk;
-      this.editedItem.id = details.data.id;
-      this._addStaffFromDialog(true);
-      return;
-    }
-
-    this.requestInProcess = false;
-    this.dialogOpened = false;
-    this.confirmDialogOpened = false;
-    this.resetDialog();
   }
 
   manageEngagementStaff(staff, hasAccess?) {
@@ -1090,11 +736,6 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
     return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
-  }
-
-  _resetStaffMembDialog(e: any) {
-    this.errors = {};
-    this._resetDialogOpenedFlag(e);
   }
 }
 window.customElements.define('engagement-staff-members-tab', EngagementStaffMembersTab);

@@ -192,7 +192,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   globalLoadingQueue: any[] = [];
 
   @property({type: Object})
-  user = {};
+  user = {groups: []};
 
   @property({type: Object})
   route!: GenericObject;
