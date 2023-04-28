@@ -117,9 +117,6 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
   _handleResponse() {
     this.refreshInProgress = true;
     this.clearDexieDbs();
-  }
-
-  _refreshPage() {
     this.refreshInProgress = false;
     window.location.href = `${window.location.origin}/${BASE_PATH}/`;
   }
