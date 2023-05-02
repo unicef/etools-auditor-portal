@@ -278,7 +278,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
               no-additional
               headings="[[columns]]"
               no-animation
-              hidden$="[[!_isVisible(item.user.is_active, showInactive)]]"
+              hidden$="[[!_isVisible(item.user.has_active_realm, showInactive)]]"
             >
               <div slot="checkbox" class="checkbox">
                 <paper-checkbox
@@ -396,8 +396,8 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     {
       size: 10,
       label: 'Active',
-      labelPath: 'staff_members.user.is_active',
-      name: 'user.is_active',
+      labelPath: 'staff_members.user.has_active_realm',
+      name: 'user.has_active_realm',
       customCss: 'wrap-text',
       html: true
     }
