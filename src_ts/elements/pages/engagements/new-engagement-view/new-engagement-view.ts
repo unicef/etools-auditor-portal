@@ -5,7 +5,7 @@ import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
 import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import assign from 'lodash-es/assign';
 import includes from 'lodash-es/includes';
@@ -305,7 +305,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
 
     // redirect
     const engagementType = get(this, 'engagement.engagement_type');
-    const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[engagementType];
+    const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[String(engagementType)];
     const path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
     navigateToUrl(path);
 

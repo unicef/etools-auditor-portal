@@ -14,6 +14,16 @@ import '../../../common-elements/search-and-filter-element/search-and-filter';
 import '../../../common-elements/list-tab-elements/list-tab-main/list-tab-main';
 import {SearchAndFilterEl, FilterTypes} from '../../../common-elements/search-and-filter-element/search-and-filter';
 import {BASE_PATH} from '../../../config/config';
+
+function getYearOfAuditOptions() {
+  const currYear = new Date().getFullYear();
+  return [
+    {label: currYear - 1, value: currYear - 1},
+    {label: currYear, value: currYear},
+    {label: currYear + 1, value: currYear + 1}
+  ];
+}
+
 /**
  * @customElement
  * @polymer
@@ -149,6 +159,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       query: 'agreement__auditor_firm__in',
       optionValue: 'id',
       optionLabel: 'name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -159,6 +170,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       hideSearch: true,
       optionValue: 'value',
       optionLabel: 'display_name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -168,6 +180,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       query: 'partner__in',
       optionValue: 'id',
       optionLabel: 'name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -178,6 +191,7 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       hideSearch: true,
       optionValue: 'value',
       optionLabel: 'display_name',
+      selectedValue: [],
       selection: []
     },
     {
@@ -188,10 +202,21 @@ class EngagementsListView extends CommonMethodsMixin(PolymerElement) {
       hideSearch: true,
       optionValue: 'value',
       optionLabel: 'display_name',
+      selectedValue: [],
       selection: [
         {display_name: 'Yes', value: 'true'},
         {display_name: 'No', value: 'false'}
       ]
+    },
+    {
+      type: FilterTypes.Dropdown,
+      name: 'year of audit',
+      label: 'Year of Audit',
+      query: 'year_of_audit',
+      hideSearch: true,
+      optionValue: 'value',
+      optionLabel: 'label',
+      selection: getYearOfAuditOptions()
     },
     {
       type: FilterTypes.Date,

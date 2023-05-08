@@ -105,6 +105,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             max-height: 250px;
           }
         }
+
+        .year-of-audit {
+          width: 16.66%;
+        }
+        .year-of-audit.hide {
+          visibility: hidden;
+        }
       </style>
 
       <get-agreement-data
@@ -296,11 +303,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <div class="input-container" hidden$="[[_hideField('start_date', basePermissionPath)]]">
               <!-- Period Start Date -->
               <datepicker-lite
+                style="width: 100%"
                 id="periodStartDateInput"
                 class$="[[_isAdditionalFieldRequired('start_date',
                                       basePermissionPath, data.engagement_type)]] validate-field"
                 value="[[data.start_date]]"
-                label="[[getLabel('start_date', basePermissionPath)]]"
+                label="[[getStartEndDateLabel(data.engagement_type,'start_date', basePermissionPath)]]"
                 placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
                 selected-date-display-format="D MMM YYYY"
                 required="[[_isAdditionalFieldRequired('start_date', basePermissionPath,
@@ -323,10 +331,11 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               <!-- Period End Date -->
               <datepicker-lite
                 id="periodEndDateInput"
+                style="width: 100%"
                 class$="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
                                         data.engagement_type)]] validate-field"
                 value="[[data.end_date]]"
-                label="[[getLabel('end_date', basePermissionPath)]]"
+                label="[[getStartEndDateLabel(data.engagement_type,'end_date', basePermissionPath)]]"
                 placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
                 data-selector="periodEndDate"
                 required="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
@@ -375,7 +384,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
           <template is="dom-if" if="[[showJoinAudit]]" restamp>
             <!-- Joint Audit -->
-            <div class="input-container join-audit">
+            <div class="input-container join-audit" style="width:16.66%">
               <paper-checkbox
                 checked="[[data.joint_audit]]"
                 disabled$="[[isReadOnly('joint_audit', basePermissionPath)]]"
@@ -385,6 +394,32 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
               >
                 [[getLabel('joint_audit', basePermissionPath)]]
               </paper-checkbox>
+            </div>
+            <div class="input-container" class$="[[getYearOfAuditStyle(data.engagement_type)]]">
+              <!-- Year of Audit -->
+              <etools-dropdown
+                id="yearOfAudit"
+                class$="[[_setRequired('year_of_audit', basePermissionPath)]]
+                                  validate-field"
+                selected="[[data.year_of_audit]]"
+                label="Year of Audit"
+                placeholder="[[getPlaceholderText('year_of_audit', basePermissionPath, 'dropdown')]]"
+                options="[[yearOfAuditOptions]]"
+                option-label="label"
+                option-value="value"
+                required="[[isAuditOrSpecialAudit(data.engagement_type)]]"
+                readonly$="[[isReadOnly('year_of_audit', basePermissionPath)]]"
+                invalid="[[_checkInvalid(errors.year_of_audit)]]"
+                error-message="[[errors.year_of_audit]]"
+                on-focus="_resetFieldError"
+                on-tap="_resetFieldError"
+                trigger-value-change-event
+                data-value-path="detail.selectedItem.value"
+                data-field-path="data.year_of_audit"
+                on-etools-selected-item-changed="_setField"
+                hide-search
+              >
+              </etools-dropdown>
             </div>
           </template>
 
@@ -532,6 +567,9 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     return '';
   }
 
+  @property({type: Array})
+  yearOfAuditOptions!: {label: string; value: number}[];
+
   @property({type: String, observer: '_basePathChanged'})
   basePermissionPath!: string;
 
@@ -643,6 +681,36 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
   }
 
+  isReadonly_YearOfAudit(engagement_type, id) {
+    if (engagement_type != 'audit') {
+      return true;
+    }
+    if (!id) {
+      return false;
+    }
+    return true;
+  }
+
+  setYearOfAuditOptions(savedYearOfAudit: number) {
+    const currYear = new Date().getFullYear();
+    this.yearOfAuditOptions = [
+      {label: String(currYear - 1), value: currYear - 1},
+      {label: String(currYear), value: currYear},
+      {label: String(currYear + 1), value: currYear + 1}
+    ];
+    if (savedYearOfAudit < currYear - 1) {
+      this.yearOfAuditOptions.unshift({value: savedYearOfAudit, label: '> 1 year ago'});
+    }
+  }
+
+  getYearOfAuditStyle(engagementType: string) {
+    let cssClasses = 'year-of-audit';
+    if (!['audit', 'sa'].includes(engagementType)) {
+      cssClasses += ' hide';
+    }
+    return cssClasses;
+  }
+
   _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
     const endpoint = clone(famEndpoints.users);
     endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
@@ -671,6 +739,18 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
   }
 
+  getStartEndDateLabel(engType, field, basePermissionPath) {
+    if (['sa', 'audit'].includes(engType)) {
+      if (field === 'start_date') {
+        return 'Start date of first reporting FACE';
+      } else {
+        return 'End date of last reporting FACE';
+      }
+    }
+
+    return this.getLabel(field, basePermissionPath);
+  }
+
   userIsFirmStaffAuditor() {
     const userData = getUserData();
     return userData && !userData.is_unicef_user;
@@ -694,6 +774,8 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       this.set('users', getStaticData('users') || []);
     }
     this.setUsersNotifiedOptionsAndIDs(true);
+
+    this.setYearOfAuditOptions(this.data.year_of_audit);
   }
 
   setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
@@ -851,7 +933,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   resetType() {
     const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
-    etoolsDropdownEl.set('selected', '');
+    etoolsDropdownEl.selected = null;
   }
 
   getEngagementData() {
@@ -887,6 +969,10 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
     if (['audit', 'sa'].includes(this.data.engagement_type)) {
       data.joint_audit = !!this.data.joint_audit;
+    }
+
+    if (['sa', 'audit'].includes(this.data.engagement_type)) {
+      data.year_of_audit = this.data.year_of_audit;
     }
 
     const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map((user) => +user.id);

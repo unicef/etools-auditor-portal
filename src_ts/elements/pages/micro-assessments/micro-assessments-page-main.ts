@@ -21,7 +21,7 @@ import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
-import {fireEvent} from '../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import assign from 'lodash-es/assign';
 import './questionnaire-components/questionnaire-page-main/questionnaire-page-main';
 import '../../common-elements/status-tab-element/status-tab-element';

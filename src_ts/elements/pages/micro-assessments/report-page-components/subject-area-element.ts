@@ -5,7 +5,7 @@ import '@polymer/paper-icon-button/paper-icon-button';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getChoices} from '../../../mixins/permission-controller';
 import {property} from '@polymer/decorators';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';

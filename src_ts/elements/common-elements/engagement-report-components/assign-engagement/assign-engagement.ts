@@ -11,7 +11,7 @@ import {property} from '@polymer/decorators';
 import '@polymer/polymer/lib/elements/dom-if';
 declare const dayjs: any;
 import {GenericObject} from '../../../../types/global';
-import {fireEvent} from '../../../utils/fire-custom-event';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {collectionExists} from '../../../mixins/permission-controller';
 
