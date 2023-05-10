@@ -5,6 +5,7 @@ declare global {
     EtoolsFamApp: any;
     EtoolsRequestCacheDb: any;
     EtoolsEsmmFitIntoEl: Element | null;
+    EtoolsLanguage: any;
   }
 }
 

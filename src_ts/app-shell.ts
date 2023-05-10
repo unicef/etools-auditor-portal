@@ -47,6 +47,8 @@ dayjs.extend(dayjs_plugin_utc);
 
 setRootPath(`/${BASE_PATH}/`);
 
+window.EtoolsLanguage = 'en';
+
 /**
  * @customElement
  * @polymer
