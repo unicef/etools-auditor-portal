@@ -142,7 +142,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                               request-data="{{requestData}}"
                               errors="{{errors}}"
                               action-points="{{dataItems}}"></update-action-points>
-        <get-partner-data partner="{{fullPartner}}" partner-id="{{partnerId}}"></get-partner-data>
+        <get-partner-data on-partner-loaded="setFullPartner" partner-id="{{partnerId}}"></get-partner-data>
 
         <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
             <div slot="panel-btns">
@@ -233,10 +233,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                             <etools-dropdown
                                     class$="[[_setRequired('partner', editedApBase)]]
                                               validate-input fua-person"
-                                    selected="{{selectedPartnerId}}"
+                                    selected="[[selectedPartnerId]]"
                                     label="[[getLabel('partner', editedApBase)]]"
                                     placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
-                                    options="{{partners}}"
+                                    options="[[partners]]"
                                     option-label="name"
                                     option-value="id"
                                     required$="[[_setRequired('partner', editedApBase)]]"
@@ -576,6 +576,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   selectedPartnerId!: number | null;
 
   @property({type: Object})
+  fullPartner!: any;
+
+  @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
   public connectedCallback() {
@@ -636,6 +639,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.copyDialog = false;
     this.originalEditedObj = {};
     this.resetDialog(dialogOpened);
+    // For consecutive dialog open
+    const aux = this.selectedPartnerId;
+    this.selectedPartnerId = null;
+    this.selectedPartnerId = aux;
   }
 
   _orderChanged(newOrder, columns) {
@@ -849,6 +856,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
   dueDateHasChanged(e: CustomEvent) {
     this.editedItem.due_date = e.detail.date;
+  }
+
+  setFullPartner(event: any) {
+    this.fullPartner = event.detail;
   }
 }
 window.customElements.define('follow-up-actions', FollowUpActions);
