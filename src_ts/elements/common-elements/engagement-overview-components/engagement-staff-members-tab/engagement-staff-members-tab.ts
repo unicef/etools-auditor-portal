@@ -220,7 +220,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
       <!--end requests-->
 
       <etools-content-panel
-        panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength,
+        panel-title="Audit Staff Team Members ([[_staffLength(datalength,
                             dataItems.length, searchQuery)]])"
         list
       >
@@ -527,7 +527,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   _organizationChanged(id) {
-    if (!this._canBeChanged() || !this.basePermissionPath) {
+    if (!id || !this.basePermissionPath) {
       return;
     }
     if (!id) {
