@@ -17,3 +17,13 @@ export function getProperty(object: GenericObject, path: string): any | null {
   const pathArray = path.split('.');
   return pathArray.reduce((data: GenericObject | null, field: string) => (data && data[field]) || null, object);
 }
+
+export const validateRequiredFields = (element) => {
+  let isValid = true;
+  element.shadowRoot.querySelectorAll('[required]:not([readonly]):not([hidden])').forEach((el) => {
+    if (el && el.validate && !el.validate()) {
+      isValid = false;
+    }
+  });
+  return isValid;
+};
