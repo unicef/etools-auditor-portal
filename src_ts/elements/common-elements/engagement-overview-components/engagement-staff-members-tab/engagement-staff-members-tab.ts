@@ -394,7 +394,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     {
       size: 10,
       label: 'Active',
-      labelPath: 'staff_members.user.has_active_realm',
+      labelPath: 'staff_members.has_active_realm',
       name: 'has_active_realm',
       customCss: 'wrap-text',
       html: true
