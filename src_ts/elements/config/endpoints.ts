@@ -16,7 +16,7 @@ const famEndpoints = {
     url: '/api/audit/engagements/'
   },
   partnerOrganisations: {
-    url: '/api/v2/partners/?hidden=false',
+    url: '/api/pmp/v3/partners/?hidden=false',
     exp: 24 * 60 * 60 * 1000, // 24h
     cacheTableName: 'partners'
   },
@@ -24,7 +24,7 @@ const famEndpoints = {
     template: '/api/v2/partners/<%=id%>/'
   },
   authorizedOfficers: {
-    template: '/api/v2/partners/<%=id%>/staff-members/'
+    template: '/api/pmp/v3/partners/<%=id%>/staff-members/'
   },
   auditFirms: {
     url: '/api/audit/audit-firms/'
