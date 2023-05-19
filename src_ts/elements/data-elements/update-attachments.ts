@@ -42,6 +42,9 @@ class UpdateAttachments extends PolymerElement {
 
     let url = getEndpoint(this.endpointName, {id: this.baseId}).url;
     if (attachmentData.id) {
+      if (url.includes('?')) {
+        url = url.substring(0, url.indexOf('?'));
+      }
       url += `${attachmentData.id}/`;
     }
     this.postData = JSON.parse(JSON.stringify(attachmentData));
