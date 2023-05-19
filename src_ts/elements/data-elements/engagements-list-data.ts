@@ -135,7 +135,7 @@ class EngagementListData extends PolymerElement {
 
     updateQueries({reload: false});
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
-    fireEvent(this, 'toast', {text: 'Page not found.'});
+    fireEvent(this, 'toast', {text: 'Error loading data.'});
   }
 }
 window.customElements.define('engagements-list-data', EngagementListData);

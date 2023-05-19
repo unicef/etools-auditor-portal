@@ -204,7 +204,8 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     specific_procedures: [],
     users_notified: [],
     offices: [],
-    sections: []
+    sections: [],
+    shared_ip_with: []
   };
 
   @property({type: Array})
@@ -342,7 +343,8 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         specific_procedures: [],
         users_notified: [],
         offices: [],
-        sections: []
+        sections: [],
+        shared_ip_with: []
       });
 
       (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTabEl).resetData();

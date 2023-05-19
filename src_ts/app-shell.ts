@@ -47,6 +47,8 @@ dayjs.extend(dayjs_plugin_utc);
 
 setRootPath(`/${BASE_PATH}/`);
 
+window.EtoolsLanguage = 'en';
+
 /**
  * @customElement
  * @polymer
@@ -192,7 +194,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   globalLoadingQueue: any[] = [];
 
   @property({type: Object})
-  user = {};
+  user = {groups: []};
 
   @property({type: Object})
   route!: GenericObject;
