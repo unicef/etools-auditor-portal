@@ -5,7 +5,6 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 
 import isEmpty from 'lodash-es/isEmpty';
-import each from 'lodash-es/each';
 import pickBy from 'lodash-es/pickBy';
 import {property} from '@polymer/decorators';
 import '@polymer/polymer/lib/elements/dom-if';
@@ -19,8 +18,8 @@ import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import DateMixin from '../../../mixins/date-mixin';
-import DatePickerLite from '@unicef-polymer/etools-date-time/datepicker-lite';
 import {getStaticData} from '../../../mixins/static-data-controller';
+import {validateRequiredFields} from '../../../utils/utils';
 
 /**
  * @polymer
@@ -244,18 +243,11 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
     return this.isReadOnly(field, basePermissionPath) || !(prevDate && !nextDate);
   }
 
-  validate(forSave) {
-    const elements = this.shadowRoot!.querySelectorAll('.validate-date') as NodeListOf<DatePickerLite>;
-    let valid = true;
-    each(elements, (element, index) => {
-      const previousElement = index > 1 ? elements[index - 1] : null;
-      if (!forSave && element.required && (!previousElement || !!previousElement.value) && !element.validate()) {
-        element.errorMessage = 'Field is required';
-        element.invalid = true;
-        valid = false;
-      }
-    });
-
+  validate(escapeValidation) {
+    if (escapeValidation) {
+      return true;
+    }
+    const valid = validateRequiredFields(this);
     if (!valid) {
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
     }
