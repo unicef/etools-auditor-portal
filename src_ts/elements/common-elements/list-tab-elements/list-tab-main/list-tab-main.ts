@@ -125,7 +125,7 @@ class ListTabMain extends PolymerElement {
   orderBy = '';
 
   @property({type: Number})
-  listLength!: number;
+  listLength = 0;
 
   @property({type: Array, notify: true})
   data!: any[];
