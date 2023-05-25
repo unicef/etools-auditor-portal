@@ -10,6 +10,7 @@ import {getEndpoint} from '../config/endpoints-controller';
 import {updateQueries, getQueriesString} from '../mixins/query-params-controller';
 import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {getUserData} from '../mixins/user-controller';
 
 class EngagementListData extends PolymerElement {
   @property({type: Array, readOnly: true, notify: true})
@@ -60,8 +61,9 @@ class EngagementListData extends PolymerElement {
   getEngagementsList(forceReload = false) {
     const reloadRequired = forceReload || this.reloadRequired() || this.requestQueries.reload;
     this.lastState = cloneDeep(this.requestQueries);
+    const user = getUserData();
 
-    if (!reloadRequired || !this.endpointName) {
+    if (!reloadRequired || !this.endpointName || !user.organization) {
       // not reload the page
       return;
     }
