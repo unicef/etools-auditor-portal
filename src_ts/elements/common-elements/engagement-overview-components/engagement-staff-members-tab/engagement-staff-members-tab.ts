@@ -394,7 +394,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     {
       size: 10,
       label: 'Active',
-      labelPath: 'staff_members.has_active_realm',
+      path: 'computed_field',
       name: 'has_active_realm',
       customCss: 'wrap-text',
       html: true
@@ -512,10 +512,16 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     const data = event.detail;
     this.staffsBase = getStaffCollectionName(this.organizationId);
     this.dataItems = data.results;
-
+    this.computeStaffMembActiveColumn();
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
+  }
+
+  computeStaffMembActiveColumn() {
+    this.dataItems?.map((item: any) => {
+      item.computed_field = !item.user.is_active ? 'Inactive' : !item.has_active_realm ? 'No Access' : `&#10003;`;
+    });
   }
 
   onShowInactiveChanged(e: CustomEvent) {
@@ -580,6 +586,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     if (!this.originalTableData) {
       this._dataItemsChanged(this.dataItems);
     }
+    this.computeStaffMembActiveColumn();
   }
 
   _selectedStaffsChanged(data) {

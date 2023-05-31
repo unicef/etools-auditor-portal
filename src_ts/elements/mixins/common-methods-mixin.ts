@@ -237,7 +237,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     handleUsersNoLongerAssignedToCurrentCountry = (availableUsers: any[], savedUsers: any[]) => {
       savedUsers = savedUsers || [];
-      if (savedUsers.length > 0 && availableUsers && availableUsers.length > 0) {
+      availableUsers = availableUsers || [];
+      if (savedUsers.length > 0) {
         let changed = false;
         savedUsers.forEach((savedUser) => {
           if (availableUsers.findIndex((user) => user.id === savedUser.id) < 0) {

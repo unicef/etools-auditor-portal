@@ -48,16 +48,15 @@ class GetPartnerData extends PolymerElement {
     if (!detail) {
       this._handleOfficersError();
     } else {
-      let activePartnerOfficers = detail.filter((officer) => {
-        return officer && officer.active;
-      });
-      activePartnerOfficers = activePartnerOfficers.map((officer) => {
+      const prefixedPartnerOfficers = detail.map((officer) => {
         const partnerOfficer = clone(officer);
-        partnerOfficer.fullName = `${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
+        partnerOfficer.fullName = `${
+          !partnerOfficer.active ? '[Inactive]' : !partnerOfficer.has_active_realm ? '[No Access]' : ''
+        }${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
         return partnerOfficer;
       });
-      setStaticData(`officers_${this.lastData.id}`, activePartnerOfficers);
-      this.lastData.partnerOfficers = activePartnerOfficers;
+      setStaticData(`officers_${this.lastData.id}`, prefixedPartnerOfficers);
+      this.lastData.partnerOfficers = prefixedPartnerOfficers;
       this.finishRequest();
     }
   }
