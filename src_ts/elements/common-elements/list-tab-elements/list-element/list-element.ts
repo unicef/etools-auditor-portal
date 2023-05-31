@@ -437,8 +437,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
       value = this._refactorPercents(value);
     } else if (item.name === 'finding' || item.name === 'autoNumber') {
       value = this._refactorFindingNumber();
-    } else if (item.name && item.name.includes('has_active_realm')) {
-      value = this._refactorBoolean(value);
     }
 
     // if (typeof value === 'string') { value = value.trim(); }
