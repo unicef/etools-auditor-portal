@@ -300,7 +300,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             page-number="[[listPage]]"
             datalength="[[_staffLength(datalength, dataItems.length, searchQuery)]]"
             without-queries
-            hidddataItemsen$="[[!_showPagination(datalength)]]"
+            hidden$="[[!_showPagination(datalength)]]"
             showing-results="[[showingResults]]"
             on-pagination-changed="updatePagination"
           >
