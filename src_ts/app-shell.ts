@@ -264,7 +264,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
   _dialogClosing(event) {
     // chrome
-    if (event.path && event.path[0] && event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
+    const paths = event.composedPath() || [];
+    if (paths.length && paths[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
       return;
     }
     // edge
