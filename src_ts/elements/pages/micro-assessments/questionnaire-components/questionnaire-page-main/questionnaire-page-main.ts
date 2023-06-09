@@ -84,11 +84,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
             max-height: 140px;
           }
         }
-        etools-dropdown,
-        etools-dropdown-multi {
-          --esmm-dropdown-menu-position: absolute;
-        }
-        --esmm-dropdown-menu-position: absolute;
+       
       </style>
 
       <etools-content-panel
