@@ -78,4 +78,3 @@ workflows:
                 - master
                 - staging
                 - develop
-                - fix-risk-rating
