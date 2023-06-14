@@ -84,7 +84,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
             max-height: 140px;
           }
         }
-       
+
       </style>
 
       <etools-content-panel
@@ -451,7 +451,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
   getRating(rating) {
     const ratingString = this.riskRatingOptions[rating] || rating;
-    return ratingString ? `- ${rating}` : '';
+    return ratingString ? `- ${rating.toUpperCase()}` : '';
   }
 
   resetDialog(opened?) {
