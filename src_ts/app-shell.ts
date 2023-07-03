@@ -40,6 +40,7 @@ import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styl
 import {BASE_PATH} from './elements/config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import '@unicef-polymer/etools-toasts/src/etools-toasts';
+import {overlayStyles} from './elements/styles/overlay-styles.js';
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;
 
@@ -58,7 +59,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     // main template
     // language=HTML
     return html`
-      ${appDrawerStyles}
+      ${appDrawerStyles} ${overlayStyles}
       <static-data></static-data>
       <etools-piwik-analytics page="[[subroute.prefix]]" user="[[user]]" toast="[[_toast]]"></etools-piwik-analytics>
 
@@ -92,12 +93,11 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
             small-menu$="[[smallMenu]]"
             show-ssc-page="[[_checkSSCPage(user)]]"
           ></app-menu>
-          <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
+          <div id="drawerOverlay" class="dialogOverlay"></div>
         </app-drawer>
 
         <!-- Main content -->
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
-          <iron-overlay-backdrop id="appHeaderOverlay"></iron-overlay-backdrop>
           <app-header slot="header" fixed shadow>
             <page-header id="pageheader" user="[[user]]"></page-header>
           </app-header>
@@ -226,8 +226,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     this.addEventListener('404', this._pageNotFound);
     this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
-    this.addEventListener('iron-overlay-opened', this._dialogOpening);
-    this.addEventListener('iron-overlay-closed', this._dialogClosing);
+    this.addEventListener('sl-show', this._dialogOpening);
+    this.addEventListener('sl-hide', this._dialogClosing);
   }
 
   protected _getContentContainer() {
@@ -241,25 +241,11 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _dialogOpening(event) {
-    const dialogOverlay = document.querySelector('iron-overlay-backdrop.opened');
-    if (!dialogOverlay) {
-      return;
-    }
-
-    dialogOverlay.classList.remove('opened');
-
-    const zIndex = (dialogOverlay as any).style.zIndex;
     const targetShadowRoot = event.target.shadowRoot;
-    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
     const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
     const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
 
-    drawerOverlay.style.zIndex = zIndex;
-    appHeaderOverlay.style.zIndex = zIndex;
-    toolBarOverlay.style.zIndex = zIndex;
-
     drawerOverlay.classList.add('opened');
-    appHeaderOverlay.classList.add('opened');
     toolBarOverlay.classList.add('opened');
   }
   _dialogClosing(event) {
@@ -274,16 +260,10 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     }
 
     const targetShadowRoot = event.target.shadowRoot;
-    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
     const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
     const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
 
-    drawerOverlay.style.zIndex = '';
-    appHeaderOverlay.style.zIndex = '';
-    toolBarOverlay.style.zIndex = '';
-
     drawerOverlay.classList.remove('opened');
-    appHeaderOverlay.classList.remove('opened');
     toolBarOverlay.classList.remove('opened');
   }
 

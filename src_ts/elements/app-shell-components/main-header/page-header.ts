@@ -14,6 +14,7 @@ import {isProductionServer, checkEnvironment} from '../../config/config';
 import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {overlayStyles} from '../../styles/overlay-styles';
 
 /**
  * page header element
@@ -26,6 +27,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
     // main template
     // language=HTML
     return html`
+      ${overlayStyles}
       <style>
         app-toolbar {
           padding: 0 16px 0 0;
@@ -82,7 +84,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
       </style>
 
       <app-toolbar id="toolbar" sticky class="content-align">
-        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
+        <div id="toolBarOverlay" class="dialogOverlay"></div>
         <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
 
         <div class="titlebar content-align">

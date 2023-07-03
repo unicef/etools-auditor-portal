@@ -70,9 +70,8 @@ export const moduleStyles = html`
       }
     }
 
-    etools-dialog::part(ed-scrollable) {
+    etools-dialog::part(body) {
       max-height: 50vh !important;
-      --etools-dialog-content_-_max-height: 50vh !important;
     }
 
     /* PAPER-TOGGLE-BUTTON */

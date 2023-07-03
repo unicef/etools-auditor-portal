@@ -209,7 +209,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
         </etools-content-panel>
 
         <etools-dialog no-padding keep-dialog-open size="md"
-                opened="{{dialogOpened}}"
+                opened="[[dialogOpened]]"
                 dialog-title="[[dialogTitle]]"
                 ok-btn-text="[[confirmBtnText]]"
                 hide-confirm-btn="[[!confirmBtnText]]"

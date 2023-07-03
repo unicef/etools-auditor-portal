@@ -39,6 +39,7 @@
     <link rel="apple-touch-icon" sizes="96x96" href="assets/images/manifest/icon-96x96.png" />
     <link rel="apple-touch-icon" sizes="144x144" href="assets/images/manifest/icon-144x144.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="assets/images/manifest/icon-192x192.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/themes/light.css" />
 
     <!-- Tile icon for Windows 8 (144x144 + tile color) -->
     <meta name="msapplication-TileImage" content="assets/images/manifest/icon-144x144.png" />
@@ -85,11 +86,9 @@
   </head>
 
   <body>
-    <div id="buildRevNo" style="display: none;">revNo</div>
+    <div id="buildRevNo" style="display: none">revNo</div>
     <app-shell></app-shell>
-    <noscript>
-      Please enable JavaScript to view this website.
-    </noscript>
+    <noscript> Please enable JavaScript to view this website. </noscript>
     <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
     <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="./node_modules/web-animations-js/web-animations-next-lite.min.js"></script>
