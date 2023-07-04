@@ -131,7 +131,5 @@
       "eslint --fix"
     ]
   },
-  "relativeDependencies": {
-    "@unicef-polymer/etools-dialog": "../../etools-polymer/etools-dialog"
-  }
+  "relativeDependencies": {}
 }

@@ -241,6 +241,9 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   _dialogOpening(event) {
+    if (event.composedPath()[0].localName !== 'sl-dialog') {
+      return;
+    }
     const targetShadowRoot = event.target.shadowRoot;
     const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
     const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');

@@ -11,10 +11,12 @@ export const overlayStyles = html`
       background-color: #000;
       opacity: 0;
       transition: opacity 0.2s;
+      pointer-events: none;
     }
     .dialogOverlay.opened {
       opacity: 0.6;
       z-index: 102;
+      pointer-events: auto;
     }
   </style>
 `;
