@@ -2,7 +2,6 @@ import {html} from '@polymer/polymer/polymer-element';
 
 // language=HTML
 export const moduleStyles = html`
-  <style>
     :host {
       --gray-06: rgba(0, 0, 0, 0.06);
       --gray-08: rgba(0, 0, 0, 0.08);

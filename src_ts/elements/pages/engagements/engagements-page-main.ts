@@ -1,5 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
 import {timeOut} from '@polymer/polymer/lib/utils/async';
 import '@polymer/polymer/lib/elements/dom-if';
@@ -15,19 +14,25 @@ import {actionAllowed} from '../../mixins/permission-controller';
 import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
 import './engagements-list-view/engagements-list-view';
 import './new-engagement-view/new-engagement-view';
-import {pageLayoutStyles} from '../../styles/page-layout-styles';
-import {sharedStyles} from '../../styles/shared-styles';
-import {moduleStyles} from '../../styles/module-styles';
+import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {moduleStyles} from '../../styles/module-styles-lit';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @customElement
- * @polymer
+ * @LitElement
  */
-class EngagementsPageMain extends PolymerElement {
-  static get template() {
+@customElement('engagements-page-main')
+export class EngagementsPageMain extends LitElement {
+  static get styles() {
+    return [pageLayoutStyles, moduleStyles];
+  }
+
+  render() {
     // language=HTML
     return html`
-      ${pageLayoutStyles} ${sharedStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
@@ -35,48 +40,60 @@ class EngagementsPageMain extends PolymerElement {
         }
       </style>
 
-      <app-route route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"> </app-route>
+      <app-route
+        .route="${this.route}"
+        @route-changed="${this._routeChanged}"
+        pattern="/:view"
+        @data-changed="${this._routeDataChanged}"
+      >
+      </app-route>
 
-      <iron-pages id="categoryPages" selected="{{view}}" attr-for-selected="name" role="main">
+      <iron-pages id="categoryPages" .selected="${this.routeData?.view}" attr-for-selected="name" role="main">
         <engagements-list-view
           name="list"
           id="listPage"
-          query-params="{{queryParams}}"
-          base-route="[[baseRoute]]"
+          .queryParams="${this.queryParams}"
+          .baseRoute="${this.baseRoute}"
           has-collapse
-          request-queries="[[partnersListQueries]]"
-          endpoint-name="{{endpointName}}"
-          base-permission-path="new_engagement"
-          reload-data="{{reloadListData}}"
+          .requestQueries="${this.partnersListQueries}"
+          .endpointName="${this.endpointName}"
+          .basePermissionPath="new_engagement"
+          .reloadData="${this.reloadListData}"
         >
         </engagements-list-view>
 
-        <template is="dom-if" if="[[allowNew]]" restamp>
-          <new-engagement-view
-            name="new"
-            id="creationPage"
-            page="{{routeData.view}}"
-            query-params="{{queryParams}}"
-            route="{{subroute}}"
-            request-queries="{{partnersListQueries}}"
-            base-permission-path="new_engagement"
-            partner="{{partnerDetails}}"
-            endpoint-name="{{endpointName}}"
-            page-title="Add New Engagement"
-          >
-          </new-engagement-view>
-        </template>
+        ${this.allowNew
+          ? html` <new-engagement-view
+              name="new"
+              id="creationPage"
+              .page="${this.routeData.view}"
+              .queryParams="${this.queryParams}"
+              .route="${this.subroute}"
+              .requestQueries="${this.partnersListQueries}"
+              .basePermissionPath="new_engagement"
+              .partner="${this.partnerDetails}"
+              .endpointName="${this.endpointName}"
+              page-title="Add New Engagement"
+            >
+            </new-engagement-view>`
+          : ''}
       </iron-pages>
     `;
   }
 
   @property({type: Object})
-  route!: GenericObject;
+  route: GenericObject = {};
 
   @property({type: Object})
-  routeData!: GenericObject;
+  subroute!: GenericObject;
 
-  @property({type: Object, notify: true, observer: '_queryParamsChanged'})
+  @property({type: Object})
+  routeData: GenericObject = {};
+
+  @property({type: Object})
+  partnerDetails: GenericObject = {};
+
+  @property({type: Object})
   queryParams!: GenericObject;
 
   @property({type: String})
@@ -105,12 +122,8 @@ class EngagementsPageMain extends PolymerElement {
   @property({type: Boolean})
   hasEngagementUpdated = false;
 
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   reloadListData = false;
-
-  static get observers() {
-    return ['_routeConfig(routeData.view)'];
-  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -124,12 +137,51 @@ class EngagementsPageMain extends PolymerElement {
     document.removeEventListener('', this._engagementStatusUpdated as any);
   }
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('queryParams')) {
+      this._queryParamsChanged();
+    }
+    if (changedProperties.has('routeData')) {
+      this._routeConfig(this.routeData.view);
+    }
+  }
+
   _engagementStatusUpdated(e: CustomEvent) {
     if (e.detail && e.detail.saved && e.detail.type) {
       const type = e.detail.type;
       if (type === 'update-engagement' || type === 'finalize-engagement' || type === 'submit-engagement') {
         this.hasEngagementUpdated = true;
       }
+    }
+  }
+
+  _routeChanged({detail}: CustomEvent) {
+    const path = detail?.value?.path;
+    if (!path || !path.match(/[^\\/]/g)) {
+      this.route = {...this.route, path: '/list'};
+      fireEvent(this, 'route-changed', {value: this.route});
+      return;
+    }
+
+    if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
+      this.route = {...this.route, path: '/not-found'};
+      return;
+    }
+  }
+
+  _routeDataChanged({detail}: CustomEvent) {
+    this.routeData = detail.value;
+  }
+
+  _tailChanged({detail}: CustomEvent) {
+    if (!detail.value?.path) {
+      return;
+    }
+    if (!isJsonStrMatch(this.subroute, detail.value)) {
+      this.subroute = detail.value;
+      this.requestUpdate();
     }
   }
 
@@ -146,7 +198,7 @@ class EngagementsPageMain extends PolymerElement {
       clearQueries();
       this.view = 'new';
     } else if (view === '' || isUndefined(view)) {
-      this.set('route.path', '/list');
+      this.route.path = '/list';
     } else {
       clearQueries();
       fireEvent(this, '404');
@@ -179,7 +231,7 @@ class EngagementsPageMain extends PolymerElement {
     const queriesUpdates: GenericObject = clone(queries);
 
     if (!queries.page_size) {
-      queriesUpdates.page_size = '10';
+      queriesUpdates.page_size = '20';
     }
     if (!queries.ordering) {
       queriesUpdates.ordering = 'reference_number';
@@ -229,5 +281,3 @@ class EngagementsPageMain extends PolymerElement {
     }
   }
 }
-
-window.customElements.define('engagements-page-main', EngagementsPageMain);

@@ -145,7 +145,7 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
                                   class="download-icon">
                         </iron-icon>
                         <a href$="[[item.file_link]]"
-                          class="truncate" 
+                          class="truncate"
                           title$="[[item.filename]]"
                           target="_blank">[[item.filename]]
                         </a>

@@ -122,7 +122,7 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
               <div class="input-container input-container-l">
                 <!-- Description -->
                 <paper-textarea
-                  class$="[[_setRequired('other_recommendations.description', basePermissionPath)]] 
+                  class$="[[_setRequired('other_recommendations.description', basePermissionPath)]]
                               fixed-width validate-input"
                   value="{{editedItem.description}}"
                   allowed-pattern="[\\d\\s]"

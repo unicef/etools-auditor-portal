@@ -1,18 +1,17 @@
-import {PolymerElement, html} from '@polymer/polymer';
-
+import {LitElement, customElement, html, property} from 'lit-element';
+import {repeat} from 'lit-html/directives/repeat';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
+
 import {IronCollapseElement} from '@polymer/iron-collapse/iron-collapse.js';
 declare const dayjs: any;
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 
-import LocalizationMixin from '../../../mixins/localization-mixin';
+import LocalizationMixin from '../../../mixins/localization-mixin-lit';
 
 import {sharedStyles} from '../../../styles/shared-styles';
 import {moduleStyles} from '../../../styles/module-styles';
@@ -24,8 +23,9 @@ import {getChoices} from '../../../mixins/permission-controller';
  * @customElement
  * @appliesMixin LocalizationMixin
  */
-class ListElement extends LocalizationMixin(PolymerElement) {
-  static get template() {
+@customElement('list-element')
+export class ListElement extends LocalizationMixin(LitElement) {
+  render() {
     return html`
       ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
       <style>
@@ -193,131 +193,135 @@ class ListElement extends LocalizationMixin(PolymerElement) {
       </style>
 
       <div list-item id="wrapper">
-        <template is="dom-if" if="[[showCollapse]]">
-          <div id="iconWrapper">
-            <iron-icon id="more" icon="expand-more" hidden$="[[detailsOpened]]" on-tap="_toggleRowDetails"> </iron-icon>
+        ${this.showCollapse
+          ? html`<div id="iconWrapper">
+              <iron-icon
+                id="more"
+                icon="expand-more"
+                ?hidden="${this.detailsOpened}"
+                @click="${this._toggleRowDetails}"
+              >
+              </iron-icon>
 
-            <iron-icon id="less" icon="expand-less" hidden$="[[!detailsOpened]]" on-tap="_toggleRowDetails">
-            </iron-icon>
-          </div>
-        </template>
-        <div class="partner-data" style$="padding-right: [[paddingRight]];">
-          <template is="dom-repeat" items="[[headings]]">
-            <template is="dom-if" if="[[_isOneOfType(item, 'link')]]">
-              <a
-                class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
-                href$="[[_getLink(item.link, data)]]"
-                target="[[item.target]]"
+              <iron-icon
+                id="less"
+                icon="expand-less"
+                ?hidden="${!this.detailsOpened}"
+                @click="${this._toggleRowDetails}"
+              >
+              </iron-icon>
+            </div>`
+          : ``}
+        <div class="partner-data" style="padding-right: ${this.paddingRight}">
+          ${repeat(
+            this.headings || [],
+            (item: any) => html`
+
+              ${
+                this._isOneOfType(item, 'link')
+                  ? html`<a
+                class=col-data w${`${item.size} ${item.align} ${item.class}`} truncate"
+                href="${this._getLink(item.link, this.data)}"
+                target="${item.target}"
               >
                 <span class="truncate">
-                  <template is="dom-if" if="[[_getValue(item, data)]]">
-                    [[_getValue(item, data)]] <iron-icon icon="icons:launch"></iron-icon>
-                  </template>
-
-                  <template is="dom-if" if="[[!_getValue(item, data)]]">
-                    <span class="">–</span>
-                  </template>
+                  ${
+                    this._getValue(item, this.data)
+                      ? html`${this._getValue(item, this.data)} <iron-icon icon="icons:launch"></iron-icon>`
+                      : html`<span class="">–</span>`
+                  }
                 </span>
-              </a>
-            </template>
+              </a>`
+                  : ``
+              }
 
-            <template is="dom-if" if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]" restamp>
-              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                <span class$="[[getCellClass(item)]]">
-                  <template is="dom-if" if="[[_getValue(item, data)]]"> [[_getValue(item, data)]] </template>
+              ${
+                !this._isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')
+                  ? html` <span class="col-data w${`${item.size} ${item.align} ${item.class}`} truncate">
+                      <span class="${this.getCellClass(item)}">
+                        ${this._getValue(item, this.data) || '<span class="">–</span>'}
+                        ${item.additional
+                          ? html`<span class="additional">(${this._getAdditionalValue(item)})</span>`
+                          : ``}
+                      </span>
+                    </span>`
+                  : ``
+              }
 
-                  <template is="dom-if" if="[[!_getValue(item, data)]]">
-                    <span class="">–</span>
-                  </template>
+              ${
+                this._isOneOfType(item, 'html')
+                  ? html`<span class="col-data w${`${item.size} ${item.align} ${item.class}`} truncate">
+                      <span class="truncate">
+                        <insert-html .html="${this._getValue(item, this.data)}"></insert-html>
+                      </span>
+                    </span>`
+                  : ``
+              }
 
-                  <template is="dom-if" if="[[item.additional]]">
-                    <span class="additional">([[_getAdditionalValue(item, data)]])</span>
-                  </template>
-                </span>
-              </span>
-            </template>
+              ${
+                this._isOneOfType(item, 'checkbox')
+                  ? html`<span class="col-data w${`${item.size} ${item.align} ${item.class}`} truncate">
+                      ${this._emtyObj(this.data)
+                        ? html`<slot name="checkbox">
+                            <paper-checkbox ?checked="${this._getValue(item, this.data, 'bool')}" label="">
+                            </paper-checkbox>
+                          </slot>`
+                        : html`<span class="">–</span>`}
+                    </span>`
+                  : ``
+              }
 
-            <template is="dom-if" if="[[_isOneOfType(item, 'html')]]">
-              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                <span class="truncate">
-                  <insert-html html="[[_getValue(item, data)]]"></insert-html>
-                </span>
-              </span>
-            </template>
+              ${
+                this._isOneOfType(item, 'icon')
+                  ? html`<span class="col-data w${`${item.size} ${item.align} ${item.class}`} truncate">
+                      ${this._emtyObj(this.data) ? html`<slot name="icon"> </slot>` : html`<span class="">–</span>`}
+                    </span>`
+                  : ``
+              }
 
-            <template is="dom-if" if="[[_isOneOfType(item, 'checkbox')]]">
-              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                <template is="dom-if" if="{{_emtyObj(data)}}">
-                  <slot name="checkbox">
-                    <paper-checkbox checked="{{_getValue(item, data, 'bool')}}" label=""> </paper-checkbox>
-                  </slot>
-                </template>
+              ${
+                this._isOneOfType(item, 'custom')
+                  ? html`<span class="col-data w${`${item.size} ${item.align} ${item.class}`} truncate">
+                      ${this._hasProperty(this.data, item.property, item.doNotHide)
+                        ? html`<slot name="custom"> </slot>`
+                        : html`<span class="">–</span>`}
+                    </span>`
+                  : ``
+              }
 
-                <template is="dom-if" if="{{!_emtyObj(data)}}">
-                  <span class="">–</span>
-                </template>
-              </span>
-            </template>
-
-            <template is="dom-if" if="[[_isOneOfType(item, 'icon')]]">
-              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                <template is="dom-if" if="{{_emtyObj(data)}}">
-                  <slot name="icon"> </slot>
-                </template>
-
-                <template is="dom-if" if="{{!_emtyObj(data)}}">
-                  <span class="">–</span>
-                </template>
-              </span>
-            </template>
-
-            <template is="dom-if" if="[[_isOneOfType(item, 'custom')]]">
-              <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-                <template is="dom-if" if="{{_hasProperty(data, item.property, item.doNotHide)}}" restamp>
-                  <slot name="custom"> </slot>
-                </template>
-
-                <template is="dom-if" if="{{!_hasProperty(data, item.property, item.doNotHide)}}">
-                  <span class="">–</span>
-                </template>
-              </span>
-            </template>
 
             <span class="hover-icons-block">
               <slot name="hover"></slot>
             </span>
-          </template>
         </div>
-      </div>
+        `
+          )}
+        </div>
 
-      <template is="dom-if" if="[[showCollapse]]">
-        <iron-collapse id="details" opened="{{detailsOpened}}" no-animation="[[noAnimation]]">
+        ${this.showCollapse ? html`` : ``}
+
+        <iron-collapse id="details" ?opened="${this.detailsOpened}" ?no-animation="${this.noAnimation}">
           <slot name="custom-details">
             <div id="collapse-wrapper">
               <div class="partners-data-details group">
-                <template is="dom-repeat" items="[[details]]">
-                  <div class$="row-details-content w[[item.size]]">
-                    <span class="rdc-title">[[getHeadingLabel(basePermissionPath, item)]]</span>
-
-                    <template is="dom-if" if="[[_getValue(item, data)]]"> [[_getValue(item, data)]] </template>
-
-                    <template is="dom-if" if="[[!_getValue(item, data)]]">
-                      <span class="">–</span>
-                    </template>
-                  </div>
-                </template>
+                ${this.details.map(
+                  (item) => html`<div class="row-details-content w${item.size}">
+                    <span class="rdc-title">${this.getHeadingLabel(this.basePermissionPath, item)}</span>
+                    ${this._getValue(item, this.data) || html`<span class="">–</span>`}
+                  </div>`
+                )}
               </div>
             </div>
           </slot>
         </iron-collapse>
-      </template>
+      </div>
     `;
   }
   static get observers() {
     return ['_setRightPadding(headings.*)'];
   }
 
-  @property({type: String, observer: '_setItemValues'})
+  @property({type: String})
   basePermissionPath = '';
 
   @property({type: Object})
@@ -329,10 +333,10 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   @property({type: Boolean})
   hasCollapse = false;
 
-  @property({type: Boolean, computed: '_computeShowCollapse(details, hasCollapse)'})
-  showCollapse: any[] = [];
+  @property({type: Boolean})
+  showCollapse!: boolean;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   data!: GenericObject;
 
   @property({type: Number})
@@ -344,11 +348,20 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   @property({type: Boolean})
   noHover = false;
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean, reflect: true})
   hover!: boolean;
 
   @property({type: Array})
   headings!: any[];
+
+  @property({type: String})
+  paddingRight = '';
+
+  @property({type: Boolean})
+  detailsOpened = false;
+
+  @property({type: Boolean})
+  noAnimation = true;
 
   public connectedCallback() {
     super.connectedCallback();
@@ -373,6 +386,17 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     this.removeEventListener('mouseleave', this._resetHover);
   }
 
+  updated(changedProperties) {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('details') || changedProperties.has('hasCollapse')) {
+      this._computeShowCollapse(this.details, this.hasCollapse);
+    }
+    if (changedProperties.has('basePermissionPath')) {
+      this._setItemValues(this.basePermissionPath);
+    }
+  }
+
   _setHover() {
     this.hover = true;
   }
@@ -395,15 +419,16 @@ class ListElement extends LocalizationMixin(PolymerElement) {
       }
     });
 
-    (this as any).paddingRight = `${rightPadding}px`;
+    this.paddingRight = `${rightPadding}px`;
   }
 
   _computeShowCollapse(details: any[], hasCollapse: boolean) {
-    return details.length > 0 && hasCollapse;
+    this.showCollapse = details.length > 0 && hasCollapse;
   }
 
   _toggleRowDetails() {
     (this.shadowRoot!.querySelector('#details') as IronCollapseElement).toggle();
+    this.detailsOpened = !this.detailsOpened;
   }
 
   _isOneOfType(item: GenericObject, ...theRestOfArgs) {
@@ -422,9 +447,9 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     let value;
 
     if (!item.path) {
-      value = this.get('data.' + item.name);
+      value = this.data[item.name];
     } else {
-      value = this.get('data.' + item.path);
+      value = this.data[item.path];
     }
 
     if (item.name === 'engagement_type' || item.name === 'status') {
@@ -513,15 +538,15 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     }
   }
 
-  _getLink(pattern) {
+  _getLink(pattern, data: GenericObject) {
     if (typeof pattern !== 'string') {
       return '#';
     }
 
     const link = pattern
-      .replace('*ap_link*', this.data.url)
-      .replace('*data_id*', this.data.id)
-      .replace('*engagement_type*', this._refactorValue('link_type', this.data.engagement_type));
+      .replace('*ap_link*', data.url)
+      .replace('*data_id*', data.id)
+      .replace('*engagement_type*', this._refactorValue('link_type', data.engagement_type));
 
     return link.indexOf('undefined') === -1 ? link : '#';
   }
@@ -535,24 +560,24 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   }
 
   _hasProperty(data, property, doNotHide) {
-    return data && (doNotHide || (property && this.get('data.' + property)));
+    return data && (doNotHide || (property && this.data[property]));
   }
 
   _setItemValues(base) {
     if (!base) {
       return;
     }
-    if (!this.get('itemValues')) {
-      this.set('itemValues', {});
+    if (!this.itemValues) {
+      this.itemValues = {};
     }
     this.setField(getChoices(`${base}.engagement_type`), 'engagement_type');
     this.setField(getChoices(`${base}.status`), 'status');
-    this.set('itemValues.link_type', {
+    this.itemValues.link_type = {
       ma: 'micro-assessments',
       audit: 'audits',
       sc: 'spot-checks',
       sa: 'special-audits'
-    });
+    };
   }
 
   setField(choices, field) {
@@ -565,7 +590,6 @@ class ListElement extends LocalizationMixin(PolymerElement) {
       data[choice.value] = choice.display_name;
     });
 
-    this.set(`itemValues.${field}`, data);
+    this.itemValues[field] = data;
   }
 }
-window.customElements.define('list-element', ListElement);

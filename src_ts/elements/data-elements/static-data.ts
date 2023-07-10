@@ -171,7 +171,7 @@ class StaticData extends PolymerElement {
       this.dataLoaded.engagementTypes &&
       this.dataLoaded.statuses
     ) {
-      this._triggerGlobalEvent('engagements-filters-updated');
+      this._triggerGlobalEvent('engagements-filters-data-loaded');
 
       this.dataLoaded.filters = true;
       this.dataLoaded.filterAuditors = false;

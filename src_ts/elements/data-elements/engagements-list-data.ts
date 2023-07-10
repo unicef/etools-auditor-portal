@@ -1,5 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import keys from 'lodash-es/keys';
@@ -12,27 +11,34 @@ import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {getUserData} from '../mixins/user-controller';
 
-class EngagementListData extends PolymerElement {
-  @property({type: Array, readOnly: true, notify: true})
-  engagementsList!: [];
-
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('engagements-list-data')
+export class EngagementListData extends LitElement {
   @property({type: Object})
-  requestQueries!: any;
+  requestQueries!: GenericObject;
 
   @property({type: Object})
   lastState: GenericObject = {};
 
-  @property({type: Number, notify: true})
-  listLength!: number;
-
   @property({type: String})
   endpointName = '';
 
-  @property({type: Boolean, notify: true, observer: '_reloadDataChanged'})
+  @property({type: Boolean})
   reloadData = false;
 
-  static get observers() {
-    return ['getEngagementsList(requestQueries.*)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('requestQueries')) {
+      this.getEngagementsList(this.requestQueries);
+    }
+    if (changedProperties.has('reloadData')) {
+      this._reloadDataChanged();
+    }
   }
 
   _reloadDataChanged() {
@@ -50,11 +56,8 @@ class EngagementListData extends PolymerElement {
       return;
     }
 
-    // @ts-ignore
-    this._setEngagementsList(detail.results);
-    this.listLength = detail.count;
     updateQueries({reload: false});
-    fireEvent(this, 'update-export-links');
+    fireEvent(this, 'data-loaded', detail);
     fireEvent(this, 'global-loading', {type: 'engagements-list'});
   }
 
@@ -140,4 +143,3 @@ class EngagementListData extends PolymerElement {
     fireEvent(this, 'toast', {text: 'Error loading data.'});
   }
 }
-window.customElements.define('engagements-list-data', EngagementListData);

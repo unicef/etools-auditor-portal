@@ -1,14 +1,13 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/app-route/app-route';
-import {pageLayoutStyles} from '../../styles/page-layout-styles';
-import {sharedStyles} from '../../styles/shared-styles';
-import {moduleStyles} from '../../styles/module-styles';
+import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {moduleStyles} from '../../styles/module-styles-lit';
 import '../engagements/engagements-list-view/engagements-list-view';
 import '../engagements/new-engagement-view/new-engagement-view';
 import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
 import {actionAllowed} from '../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
 import {getEndpoint} from '../../config/endpoints-controller';
 
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -24,17 +23,34 @@ import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {FilterTypes} from '../../common-elements/search-and-filter-element/search-and-filter';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class StaffScPageMain extends PolymerElement {
-  static get template() {
+/**
+ * @customElement
+ * @LitElement
+ */
+@customElement('staff-sc-page-main')
+export class StaffScPageMain extends LitElement {
+  static get styles() {
+    return [pageLayoutStyles, moduleStyles];
+  }
+
+  render() {
     return html`
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
           display: block;
         }
       </style>
-      ${pageLayoutStyles} ${sharedStyles} ${moduleStyles}
-      <app-route route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"> </app-route>
+
+      <app-route
+        .route="${this.route}"
+        @route-changed="${this._routeChanged}"
+        pattern="/:view"
+        @data-changed="${this._routeDataChanged}"
+      >
+      </app-route>
+
       <iron-pages id="categoryPages" selected="{{view}}" attr-for-selected="name" role="main">
         <engagements-list-view
           name="list"
@@ -173,7 +189,7 @@ class StaffScPageMain extends PolymerElement {
   allowNew = false;
 
   static get observers() {
-    return ['_routeConfig(routeData.view, selectedPage)'];
+    return ['_routeConfig(routeData.view)'];
   }
 
   private _updateEngagementsFiltersDebouncer!: Debouncer;
@@ -192,8 +208,19 @@ class StaffScPageMain extends PolymerElement {
       });
   }
 
-  _routeConfig(view, selectedPage) {
-    if (!this.route || !~this.route.prefix.indexOf('/staff-sc') || selectedPage !== 'staff-sc') {
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('queryParams')) {
+      this._queryParamsChanged();
+    }
+    if (changedProperties.has('routeData')) {
+      this._routeConfig(this.routeData.view);
+    }
+  }
+
+  _routeConfig(view) {
+    if (!this.route || !~this.route.prefix.indexOf('/staff-sc')) {
       this.resetLastView();
       return;
     }
@@ -210,7 +237,7 @@ class StaffScPageMain extends PolymerElement {
       clearQueries();
       this.view = 'new';
     } else if (view === '' || isUndefined(view)) {
-      this.set('route.path', '/list');
+      this.route.path = '/list';
     } else {
       clearQueries();
       fireEvent(this, '404');
@@ -269,6 +296,24 @@ class StaffScPageMain extends PolymerElement {
     return queriesUpdates;
   }
 
+  _routeChanged({detail}: CustomEvent) {
+    const path = detail?.value?.path;
+    if (!path || !path.match(/[^\\/]/g)) {
+      this.route = {...this.route, path: '/list'};
+      fireEvent(this, 'route-changed', {value: this.route});
+      return;
+    }
+
+    if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
+      this.route = {...this.route, path: '/not-found'};
+      return;
+    }
+  }
+
+  _routeDataChanged({detail}: CustomEvent) {
+    this.routeData = detail.value;
+  }
+
   _queryParamsChanged() {
     if (!this.route) {
       return;
@@ -298,5 +343,3 @@ class StaffScPageMain extends PolymerElement {
     }
   }
 }
-
-window.customElements.define('staff-sc-page-main', StaffScPageMain);
