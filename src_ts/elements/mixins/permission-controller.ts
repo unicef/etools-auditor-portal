@@ -113,6 +113,16 @@ export function readonlyPermission(path) {
   return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
 }
 
+export function getHeadingLabel(base, labelPath, defaultLabel) {
+  if (!base || !labelPath) {
+    return defaultLabel || '';
+  }
+
+  const label = getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
+
+  return label && typeof label === 'string' ? label : defaultLabel || '';
+}
+
 export function isRequired(path) {
   return getFieldAttribute(path, 'required', 'POST') || getFieldAttribute(path, 'required', 'PUT');
 }

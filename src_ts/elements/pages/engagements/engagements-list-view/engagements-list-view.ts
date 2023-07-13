@@ -12,7 +12,8 @@ import {moduleStyles} from '../../../styles/module-styles-lit';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element-lit';
-import {BASE_PATH, ROOT_PATH} from '../../../config/config';
+import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
+import {BASE_PATH} from '../../../config/config';
 import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
 import {
   EtoolsPaginator,
@@ -26,7 +27,17 @@ import {
   updateFiltersSelectedValues,
   setselectedValueTypeByFilterKey
 } from '@unicef-polymer/etools-filters/src/filters';
-import {EngagementFilterKeys, getEngagementFilters, selectedValueTypeByFilterKey} from '../engagement-filters';
+import {
+  EngagementFilterKeys,
+  getEngagementFilters,
+  EngagementSelectedValueTypeByFilterKey
+} from '../engagement-filters';
+import {
+  StaffScFilterKeys,
+  getStaffScFilters,
+  StaffScSelectedValueTypeByFilterKey
+} from '../../staff-sc/staff-sc-filters';
+import {getChoices, getHeadingLabel} from '../../../mixins/permission-controller';
 
 /**
  * @customElement
@@ -87,6 +98,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
           .columns="${this.listColumns}"
           .items="${this.engagementsList}"
           .paginator="${this.paginator}"
+          .extraCSS="${this.getTableStyle()}"
           singleSort
           @paginator-change="${this.paginatorChange}"
           @sort-change="${this.sortChange}"
@@ -104,40 +116,51 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
   @property({type: String})
   baseRoute!: string;
 
+  @property({type: Object})
+  columnValuesFullText!: GenericObject;
+
+  @property({type: Array})
+  riskTypes!: [];
+
   @property({type: Array})
   listColumns: GenericObject[] = [
     {
       label: 'Unique ID #',
       name: 'reference_number',
-      link_tmpl: `${ROOT_PATH}/:engagement_type/:id/overview`,
+      link_tmpl: `${ROOT_PATH}:engagement_link/:id/overview`,
       type: EtoolsTableColumnType.Link,
-      sort: 'reference_number'
+      sort: 'reference_number',
+      path: 'reference_number'
     },
     {
       label: 'Audit Firm',
       name: 'agreement.auditor_firm.name',
       type: EtoolsTableColumnType.Text,
-      sort: 'agreement__auditor_firm__name'
+      sort: 'agreement__auditor_firm__name',
+      path: 'agreement.audit_firm'
     },
     {
-      label: 'Partner Name',
+      label: 'Name',
       name: 'partner.name',
       type: EtoolsTableColumnType.Text,
-      sort: 'partner__name'
+      sort: 'partner__name',
+      path: 'partner.name'
     },
     {
       label: 'Engagement Type',
       name: 'engagement_type',
       type: EtoolsTableColumnType.Text,
-      sort: 'engagement_type'
+      sort: 'engagement_type',
+      path: 'engagement_type'
     },
     {
       label: 'Status',
       name: 'status',
       type: EtoolsTableColumnType.Custom,
       sort: 'status',
+      path: 'status',
       customMethod: (item: any, _key: string) => {
-        return `${item.status} ${prettyDate(item.status_date)})`;
+        return html`${item.status} (<span class="dateLabel">${prettyDate(item.status_date)}</span>)`;
       }
     }
   ];
@@ -147,6 +170,9 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
 
   @property({type: Array})
   filters!: EtoolsFilter[];
+
+  @property({type: Object})
+  itemValues: GenericObject = {};
 
   @property({type: Array})
   engagementsList: any[] = [];
@@ -160,10 +186,20 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
   @property({type: String})
   addBtnText = 'Add New Engagement';
 
+  private _isStaffSc = false;
   @property({type: Boolean})
-  isStaffSc = false;
+  get isStaffSc() {
+    return this._isStaffSc;
+  }
 
-  @property({type: Boolean}) // , notify: true
+  set isStaffSc(isStaffSc: boolean) {
+    if (this._isStaffSc !== isStaffSc) {
+      this._isStaffSc = isStaffSc;
+      this.setReferenceNumberLink(this._isStaffSc);
+    }
+  }
+
+  @property({type: Boolean})
   reloadData = false;
 
   @property({type: Array})
@@ -177,6 +213,8 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
+    this.setHeadersText();
+    this._setItemValues(this.basePermissionPath);
     this.filtersDataLoaded = this.filtersDataLoaded.bind(this);
     document.addEventListener('engagements-filters-data-loaded', this.filtersDataLoaded);
   }
@@ -189,11 +227,37 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('isStaffSc') || changedProperties.has('listColumns')) {
-      this._changeLinkTemplate(this.isStaffSc, this.listColumns);
-    }
     if (changedProperties.has('endpointName')) {
       this._setExportLinks();
+    }
+  }
+
+  setHeadersText() {
+    this.listColumns.forEach((col) => {
+      col.label = getHeadingLabel(this.basePermissionPath, col.path, col.label);
+    });
+  }
+
+  _setItemValues(base) {
+    if (!base) {
+      return;
+    }
+    this.columnValuesFullText = {
+      engagementTypes: getChoices(`${base}.engagement_type`),
+      status: getChoices(`${base}.status`),
+      linkTypes: [
+        {value: 'ma', display_name: 'micro-assessments'},
+        {value: 'audit', display_name: 'audits'},
+        {value: 'sc', display_name: 'spot-checks'},
+        {value: 'sa', display_name: 'special-audits'}
+      ]
+    };
+  }
+
+  _refactorValue(type, value) {
+    const values = this.itemValues[type];
+    if (values) {
+      return values[value];
     }
   }
 
@@ -201,10 +265,18 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
     this.initFiltersForDisplay();
   }
 
+  setReferenceNumberLink(isStaffSc: boolean) {
+    this.listColumns[0].link_tmpl = isStaffSc
+      ? `${ROOT_PATH}:engagement_type/:id/overview`
+      : `${ROOT_PATH}:staff-spot-checks/:id/overview`;
+  }
+
   initFiltersForDisplay() {
-    setselectedValueTypeByFilterKey(selectedValueTypeByFilterKey);
-    const availableFilters = JSON.parse(JSON.stringify(getEngagementFilters()));
-    this.populateDropdownFilterOptionsFromCommonData(availableFilters);
+    setselectedValueTypeByFilterKey(
+      this.isStaffSc ? StaffScSelectedValueTypeByFilterKey : EngagementSelectedValueTypeByFilterKey
+    );
+    const availableFilters = JSON.parse(JSON.stringify(this.isStaffSc ? getStaffScFilters() : getEngagementFilters()));
+    this.populateFilterOptionsFromCommonData(availableFilters);
     const currentParams = Object.assign({}, this.queryParams || {});
     ['page', 'page_size', 'sort'].forEach((key) => {
       if (currentParams[key]) {
@@ -215,7 +287,13 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
     this.filters = updateFiltersSelectedValues(currentParams, this.filters);
   }
 
-  populateDropdownFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
+  populateFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
+    this.isStaffSc
+      ? this.populateStaffScFilterOptionsFromCommonData(filters)
+      : this.populateEngagementsFilterOptionsFromCommonData(filters);
+  }
+
+  populateEngagementsFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
     updateFilterSelectionOptions(filters, EngagementFilterKeys.partner__in, getStaticData('filterPartners') || []);
     updateFilterSelectionOptions(
       filters,
@@ -228,11 +306,16 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
       EngagementFilterKeys.engagement_type__in,
       getStaticData('engagementTypes') || []
     );
-    // updateFilterSelectionOptions(
-    //   filters,
-    //   EngagementFilterKeys.staff_members__user__in,
-    //   getStaticData('staffMembersUsers') || []
-    // );
+  }
+
+  populateStaffScFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
+    updateFilterSelectionOptions(filters, StaffScFilterKeys.partner__in, getStaticData('filterPartners') || []);
+    updateFilterSelectionOptions(filters, StaffScFilterKeys.status__in, getStaticData('statuses') || []);
+    updateFilterSelectionOptions(
+      filters,
+      StaffScFilterKeys.staff_members__user__in,
+      getStaticData('staffMembersUsers') || []
+    );
   }
 
   paginatorChange(e: CustomEvent) {
@@ -263,7 +346,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
   }
 
   onDataLoaded(data: GenericObject) {
-    debugger;
+    this.formatTableDataForDisplay(data.results);
     this.engagementsList = data.results;
     this.paginator = getPaginatorWithBackend(this.paginator, data.count);
     this.tableTitle = `${this.paginator.visible_range[0]}-${this.paginator.visible_range[1]} of
@@ -271,21 +354,34 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
     this._setExportLinks();
   }
 
+  formatTableDataForDisplay(data: GenericObject[]) {
+    (data || []).forEach((item) => {
+      item.status = `${this.formatColText(item.status, this.columnValuesFullText.status)}`;
+      item.engagement_link = `${this.formatColText(item.engagement_type, this.columnValuesFullText.linkTypes)}`;
+      item.engagement_type = `${this.formatColText(item.engagement_type, this.columnValuesFullText.engagementTypes)}`;
+    });
+  }
+
+  formatColText(itemValue: string, colValues: GenericObject[]) {
+    const item = colValues.find((x) => x.value === itemValue) || {
+      display_name: '—'
+    };
+    return item.display_name;
+  }
+
+  getTableStyle() {
+    return html`<style>
+      .dateLabel {
+        font-size: 11px;
+        color: var(--dark-secondary-text-color);
+      }
+    </style>`;
+  }
+
   _setExportLinks() {
     const endpoint = getEndpoint(this.endpointName);
     const queryString = buildQueryString(this.queryParams);
     const exportLinks = endpoint ? [{name: 'Export Engagements', url: `${endpoint.url}csv/?${queryString}`}] : [];
     this.exportLinks = exportLinks;
-  }
-
-  _changeLinkTemplate(isStaffSc, headings) {
-    if (!headings) {
-      return;
-    }
-    if (isStaffSc) {
-      this.listColumns[0].link = 'staff-spot-checks/*data_id*/overview';
-    } else {
-      this.listColumns[0].link = '*engagement_type*/*data_id*/overview';
-    }
   }
 }

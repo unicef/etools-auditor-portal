@@ -36,11 +36,6 @@ const LOCAL_DOMAIN = 'localhost';
 
 export const BASE_PATH = 'ap';
 export const BASE_URL = '/ap/';
-export const ROOT_PATH = '/' + getBasePath().replace(window.location.origin, '').slice(1, -1) + '/';
-
-function getBasePath() {
-  return document.getElementsByTagName('base')[0].href;
-}
 
 export const isProductionServer = () => {
   const location = window.location.href;

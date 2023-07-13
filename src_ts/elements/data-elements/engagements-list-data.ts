@@ -34,7 +34,7 @@ export class EngagementListData extends LitElement {
     super.updated(changedProperties);
 
     if (changedProperties.has('requestQueries')) {
-      this.getEngagementsList(this.requestQueries);
+      this.getEngagementsList();
     }
     if (changedProperties.has('reloadData')) {
       this._reloadDataChanged();

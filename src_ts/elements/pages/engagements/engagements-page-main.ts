@@ -1,6 +1,4 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/app-route/app-route';
@@ -18,6 +16,7 @@ import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles-lit';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
  * @customElement
@@ -57,7 +56,7 @@ export class EngagementsPageMain extends LitElement {
           has-collapse
           .requestQueries="${this.partnersListQueries}"
           .endpointName="${this.endpointName}"
-          .basePermissionPath="new_engagement"
+          basePermissionPath="new_engagement"
           .reloadData="${this.reloadListData}"
         >
         </engagements-list-view>
@@ -70,7 +69,7 @@ export class EngagementsPageMain extends LitElement {
               .queryParams="${this.queryParams}"
               .route="${this.subroute}"
               .requestQueries="${this.partnersListQueries}"
-              .basePermissionPath="new_engagement"
+              basePermissionPath="new_engagement"
               .partner="${this.partnerDetails}"
               .endpointName="${this.endpointName}"
               page-title="Add New Engagement"
@@ -108,8 +107,6 @@ export class EngagementsPageMain extends LitElement {
   @property({type: String})
   lastView = '';
 
-  private _updateEngagementsFiltersDebouncer!: Debouncer;
-
   @property({type: Object})
   lastParams!: GenericObject;
 
@@ -130,6 +127,7 @@ export class EngagementsPageMain extends LitElement {
     this.allowNew = actionAllowed('new_engagement', 'create');
     this._engagementStatusUpdated = this._engagementStatusUpdated.bind(this);
     document.addEventListener('global-loading', this._engagementStatusUpdated as any);
+    this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
   }
 
   disconnectedCallback() {
@@ -198,7 +196,7 @@ export class EngagementsPageMain extends LitElement {
       clearQueries();
       this.view = 'new';
     } else if (view === '' || isUndefined(view)) {
-      this.route.path = '/list';
+      this.route = {...this.route, path: '/list'};
     } else {
       clearQueries();
       fireEvent(this, '404');
@@ -217,13 +215,7 @@ export class EngagementsPageMain extends LitElement {
   }
 
   _fireUpdateEngagementsFilters() {
-    this._updateEngagementsFiltersDebouncer = Debouncer.debounce(
-      this._updateEngagementsFiltersDebouncer,
-      timeOut.after(100),
-      () => {
-        document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-      }
-    );
+    document.dispatchEvent(new CustomEvent('update-engagements-filters'));
   }
 
   _configListParams(noNotify = false) {

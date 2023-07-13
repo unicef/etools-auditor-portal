@@ -11,8 +11,7 @@ import {actionAllowed} from '../../mixins/permission-controller';
 import {getEndpoint} from '../../config/endpoints-controller';
 
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import isUndefined from 'lodash-es/isUndefined';
 import isEqual from 'lodash-es/isEqual';
 import clone from 'lodash-es/clone';
@@ -20,7 +19,6 @@ import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../types/global';
 import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
-import {FilterTypes} from '../../common-elements/search-and-filter-element/search-and-filter';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
@@ -51,124 +49,70 @@ export class StaffScPageMain extends LitElement {
       >
       </app-route>
 
-      <iron-pages id="categoryPages" selected="{{view}}" attr-for-selected="name" role="main">
+      <iron-pages id="categoryPages" .selected="${this.routeData?.view}" attr-for-selected="name" role="main">
         <engagements-list-view
           name="list"
           id="listPage"
-          query-params="{{queryParams}}"
-          base-route="[[baseRoute]]"
+          .queryParams="${this.queryParams}"
+          .baseRoute="${this.baseRoute}"
           has-collapse
-          request-queries="[[partnersListQueries]]"
-          base-permission-path="new_engagement"
-          filters="[[filters]]"
+          .requestQueries="${this.partnersListQueries}"
+          .endpointName="${this.endpointName}"
+          basePermissionPath="new_engagement"
           add-btn-text="Add New Staff Spot Checks"
-          new-btn-link="{{newBtnLink}}"
-          endpoint-name="{{endpointName}}"
+          .newBtnLink="${this.newBtnLink}"
           is-staff-sc
         >
         </engagements-list-view>
 
-        <template is="dom-if" if="[[allowNew]]" restamp>
-          <new-engagement-view
-            name="new"
-            id="creationPage"
-            page="{{routeData.view}}"
-            query-params="{{queryParams}}"
-            route="{{subroute}}"
-            request-queries="{{partnersListQueries}}"
-            base-permission-path="new_staff_sc"
-            partner="{{partnerDetails}}"
-            audit-firm="[[auditFirm]]"
-            page-title="Add New Staff Spot Check"
-            endpoint-name="{{endpointName}}"
-            is-staff-sc
-          >
-          </new-engagement-view>
-        </template>
+        ${this.allowNew
+          ? html` <new-engagement-view
+              name="new"
+              id="creationPage"
+              basePermissionPath="new_staff_sc"
+              auditFirm="${this.auditFirm}"
+              page-title="Add New Staff Spot Check"
+              isStaffSc
+              .page="${this.routeData.view}"
+              .queryParams="${this.queryParams}"
+              .route="${this.subroute}"
+              .requestQueries="${this.partnersListQueries}"
+              .basePermissionPath="new_engagement"
+              .partner="${this.partnerDetails}"
+              .endpointName="${this.endpointName}"
+            >
+            </new-engagement-view>`
+          : ''}
       </iron-pages>
     `;
   }
 
-  @property({type: Object, notify: true, observer: '_queryParamsChanged'})
+  @property({type: Object})
   queryParams!: GenericObject;
 
   @property({type: String})
   baseRoute!: string;
 
+  @property({type: Object})
+  subroute!: GenericObject;
+
   @property({type: Number})
   initiation = 0;
 
+  @property({type: Object})
+  partnerDetails: GenericObject = {};
+
   @property({type: String})
   newBtnLink = `/${BASE_PATH}/staff-sc/new/overview`;
-
-  @property({type: Array})
-  filters = [
-    {
-      type: FilterTypes.DropdownMulti,
-      name: 'partner',
-      label: 'Partner',
-      query: 'partner__in',
-      optionValue: 'id',
-      optionLabel: 'name',
-      selection: []
-    },
-    {
-      type: FilterTypes.DropdownMulti,
-      name: 'status',
-      label: 'Status',
-      query: 'status__in',
-      hideSearch: true,
-      optionValue: 'value',
-      optionLabel: 'display_name',
-      selection: []
-    },
-    {
-      type: FilterTypes.DropdownMulti,
-      name: 'unicef user',
-      label: 'Unicef User',
-      query: 'staff_members__user__in',
-      optionValue: 'id',
-      optionLabel: 'full_name',
-      selection: []
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'date IP was contacted before',
-      label: 'Date IP was contacted before',
-      query: 'partner_contacted_at__lte',
-      hideSearch: true
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'date IP was contacted after',
-      label: 'Date IP was contacted after',
-      query: 'partner_contacted_at__gte',
-      hideSearch: true
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'draft report issued to ip before',
-      label: 'Draft Report Issued to IP before',
-      query: 'date_of_draft_report_to_ip__lte',
-      hideSearch: true
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'draft report issued to ip after',
-      label: 'Draft Report Issued to IP after',
-      query: 'date_of_draft_report_to_ip__gte',
-      hideSearch: true
-    }
-  ];
 
   @property({type: String})
   endpointName = 'staffSCList';
 
   @property({type: Object})
-  route!: GenericObject;
+  route: GenericObject = {};
 
   @property({type: Object})
-  routeData!: GenericObject;
+  routeData: GenericObject = {};
 
   @property({type: Object})
   partnersListQueries!: GenericObject;
@@ -188,15 +132,10 @@ export class StaffScPageMain extends LitElement {
   @property({type: Boolean})
   allowNew = false;
 
-  static get observers() {
-    return ['_routeConfig(routeData.view)'];
-  }
-
-  private _updateEngagementsFiltersDebouncer!: Debouncer;
-
   connectedCallback() {
     super.connectedCallback();
     this.allowNew = actionAllowed('new_staff_sc', 'create');
+    this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
     sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     })
@@ -237,7 +176,7 @@ export class StaffScPageMain extends LitElement {
       clearQueries();
       this.view = 'new';
     } else if (view === '' || isUndefined(view)) {
-      this.route.path = '/list';
+      this.route = {...this.route, path: '/list'};
     } else {
       clearQueries();
       fireEvent(this, '404');
@@ -256,13 +195,7 @@ export class StaffScPageMain extends LitElement {
   }
 
   _fireUpdateEngagementsFilters() {
-    this._updateEngagementsFiltersDebouncer = Debouncer.debounce(
-      this._updateEngagementsFiltersDebouncer,
-      timeOut.after(100),
-      () => {
-        document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-      }
-    );
+    document.dispatchEvent(new CustomEvent('update-engagements-filters'));
   }
 
   _configListParams(noNotify?) {
