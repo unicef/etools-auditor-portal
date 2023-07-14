@@ -160,7 +160,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
       sort: 'status',
       path: 'status',
       customMethod: (item: any, _key: string) => {
-        return html`${item.status} (<span class="dateLabel">${prettyDate(item.status_date)}</span>)`;
+        return html`${item.status} <span class="dateLabel">(${prettyDate(item.status_date)})</span>`;
       }
     }
   ];

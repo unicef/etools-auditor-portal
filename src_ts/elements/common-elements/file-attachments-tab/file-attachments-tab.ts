@@ -456,7 +456,7 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
 
   _setLinksEndpoint() {
     const currEngagement = this.getCurrentEngagement();
-    if (!currEngagement) {
+    if (!currEngagement || !Object.keys(currEngagement).length) {
       return;
     }
     const {details: engagement, type: engagementType} = currEngagement;

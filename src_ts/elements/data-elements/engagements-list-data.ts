@@ -10,6 +10,7 @@ import {updateQueries, getQueriesString} from '../mixins/query-params-controller
 import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {getUserData} from '../mixins/user-controller';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
  * main menu
@@ -29,6 +30,11 @@ export class EngagementListData extends LitElement {
 
   @property({type: Boolean})
   reloadData = false;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.getEngagementsList = debounce(this.getEngagementsList.bind(this), 500) as any;
+  }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
