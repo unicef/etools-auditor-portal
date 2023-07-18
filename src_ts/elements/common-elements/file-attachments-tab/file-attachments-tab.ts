@@ -560,6 +560,8 @@ class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(Engagemen
       const uploadResponse = e.detail.success;
       this.set('editedItem.attachment', uploadResponse.id);
       this.set('editedItem.filename', uploadResponse.filename);
+    } else if (e.detail.error && e.detail.error.error) {
+      fireEvent(this, 'toast', {text: e.detail.error.error.message});
     }
   }
 
