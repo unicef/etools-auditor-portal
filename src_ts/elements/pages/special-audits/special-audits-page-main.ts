@@ -1,5 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/paper-tabs/paper-tab';
@@ -21,240 +20,258 @@ import './report-page-components/sa-report-page-main/sa-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/pages-header-element/pages-header-element';
 
-import EngagementMixin from '../../mixins/engagement-mixin';
-import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import EngagementMixinLit from '../../mixins/engagement-mixin-lit';
+import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
 
-import {sharedStyles} from '../../styles/shared-styles';
-import {moduleStyles} from '../../styles/module-styles';
-import {mainPageStyles} from '../../styles/main-page-styles';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
+import {moduleStyles} from '../../styles/module-styles-lit';
+import {mainPageStyles} from '../../styles/main-page-styles-lit';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
 import {GenericObject} from '../../../types/global';
 
 /**
- * @polymer
+ * @customElement
  * @mixinFunction
  * @appliesMixin EngagementMixin
+ * @appliesMixin CommonMethodsMixin
  */
-class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
-  static get template() {
-    // language=HTML
+@customElement('special-audits-page-main')
+export class SpecialAuditsPageMain extends CommonMethodsMixinLit(EngagementMixinLit(LitElement)) {
+  static get styles() {
+    return [moduleStyles, mainPageStyles, tabInputsStyles];
+  }
+
+  render() {
     return html`
-      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
+      ${sharedStyles}
       <style>
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
       </style>
-
-      <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
+      <app-route
+        .route="${this.route}"
+        @route-changed="${({detail}: CustomEvent) => {
+          this.route = detail.value;
+        }}"
+        pattern="/:id/:tab"
+        @data-changed="${({detail}: CustomEvent) => (this.routeData = detail.value)}"
+      >
+      </app-route>
 
       <engagement-info-data
-        engagement-id="{{engagementId}}"
-        engagement-type="special-audits"
-        engagement-info="{{engagement}}"
+        engagementType="micro-assessments"
+        .engagementId="${this.engagementId}"
+        .engagementInfo="${this.engagement}"
+        @engagement-info-loaded="${(e: CustomEvent) => {
+          this.engagement = e.detail;
+        }}"
       >
       </engagement-info-data>
 
       <update-engagement
-        updated-engagement-data="{{updatedEngagement}}"
-        quiet-adding="{{quietAdding}}"
-        force-options-update="{{forceOptionsUpdate}}"
-        engagement="{{engagement}}"
-        error-object="{{errorObject}}"
-        base-permission-path="{{permissionBase}}"
+        .updatedEngagementData="${this.updatedEngagement}"
+        .quietAdding="${this.quietAdding}"
+        @quiet-adding-changed="${(e: CustomEvent) => (this.quietAdding = e.detail)}"
+        .forceOptionsUpdate="${this.forceOptionsUpdate}"
+        @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail)}"
+        .engagement="${this.engagement}"
+        @engagement-updated="${(e: CustomEvent) => (this.engagement = e.detail.data)}"
+        .errorObject="${this.errorObject}"
+        @error-changed="${(e: CustomEvent) => (this.errorObject = e.detail)}"
+        .basePermissionPath="${this.permissionBase}"
+        @base-permission-changed="${(e: CustomEvent) => (this.permissionBase = e.detail)}"
       >
       </update-engagement>
 
-      <template is="dom-if" if="{{engagement.id}}" restamp>
-        <pages-header-element
-          show-export-button
-          hide-print-button
-          export-links="[[_setExportLinks(engagement)]]"
-          engagement="[[engagement]]"
-          page-title="[[engagement.partner.name]] - Audit"
-        >
-        </pages-header-element>
+      ${this.engagement?.id
+        ? html`
+            <pages-header-element
+              show-export-button
+              hide-print-button
+              .exportLinks="${this._setExportLinks(this.engagement)}"
+              .engagement="${this.engagement}"
+              pageTitle="${this.engagement.partner.name} - Audit"
+            >
+            </pages-header-element>
 
-        <div class="tab-selector">
-          <paper-tabs
-            attr-for-selected="name"
-            noink
-            bottom-item
-            role="tablist"
-            tabindex="0"
-            selected="{{tab}}"
-            id="pageTabs"
-          >
-            <paper-tab name="overview">
-              <span class="tab-content">Engagement Overview</span>
-            </paper-tab>
+            <div class="tab-selector">
+              <paper-tabs
+                attr-for-selected="name"
+                noink
+                bottom-item
+                role="tablist"
+                tabindex="0"
+                .selected="${this.tab}"
+                @selected-changed="${(e: CustomEvent) => (this.tab = e.detail.value)}"
+                id="pageTabs"
+              >
+                <paper-tab name="overview">
+                  <span class="tab-content">Engagement Overview</span>
+                </paper-tab>
 
-            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
-              <paper-tab name="report">
-                <span class="tab-content">Report</span>
-              </paper-tab>
-            </template>
+                ${this._showReportTabs(this.permissionBase, this.engagement)
+                  ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
+                  : ``}
+                ${this._showFollowUpTabs(this.permissionBase)
+                  ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
+                  : ``}
+                <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
+              </paper-tabs>
+            </div>
 
-            <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
-              <paper-tab name="follow-up">
-                <span class="tab-content">Follow-Up</span>
-              </paper-tab>
-            </template>
+            <div class="view-container">
+              <div id="pageContent">
+                <iron-pages id="info-tabs" .selected="${this.tab}" attr-for-selected="name">
+                  <div name="overview">
+                    ${this._showCancellationReason(this.engagement)
+                      ? html`<etools-content-panel class="cancellation-tab" panel-title="">
+                          <div slot="panel-btns" class="bookmark">
+                            <iron-icon icon="bookmark"></iron-icon>
+                          </div>
 
-            <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-          </paper-tabs>
-        </div>
+                          <div class="cancellation-title">Cancellation Note</div>
+                          <div class="cancellation-text">${this.engagement.cancel_comment}</div>
+                        </etools-content-panel>`
+                      : ``}
 
-        <div class="view-container">
-          <div id="pageContent">
-            <iron-pages id="info-tabs" selected="{{tab}}" attr-for-selected="name">
-              <div name="overview">
-                <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
-                  <etools-content-panel class="cancellation-tab" panel-title="">
-                    <div slot="panel-btns" class="bookmark">
-                      <iron-icon icon="bookmark"></iron-icon>
-                    </div>
+                    <engagement-info-details
+                      id="engagementDetails"
+                      .data="${this.engagement}"
+                      @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
+                      .originalData="${this.originalData}"
+                      .errorObject="${this.errorObject}"
+                      .basePermissionPath="${this.permissionBase}"
+                    >
+                    </engagement-info-details>
 
-                    <div class="cancellation-title">Cancellation Note</div>
-                    <div class="cancellation-text">[[engagement.cancel_comment]]</div>
-                  </etools-content-panel>
-                </template>
+                    <partner-details-tab
+                      .originalData="${this.originalData}"
+                      id="partnerDetails"
+                      .engagement="${this.engagement}"
+                      .errorObject="${this.errorObject}"
+                      .basePermissionPath="${this.permissionBase}"
+                    >
+                    </partner-details-tab>
 
-                <engagement-info-details
-                  id="engagementDetails"
-                  data="{{engagement}}"
-                  original-data="[[originalData]]"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}"
-                >
-                </engagement-info-details>
+                    <specific-procedure
+                      id="specificProcedures"
+                      class="mb-15"
+                      without-finding-column
+                      .errorObject="${this.errorObject}"
+                      .dataItems="${this.engagement.specific_procedures}"
+                      .basePermissionPath="${this.permissionBase}"
+                      readonly-tab
+                    >
+                    </specific-procedure>
 
-                <partner-details-tab
-                  id="partnerDetails"
-                  original-data="[[originalData]]"
-                  engagement="{{engagement}}"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}"
-                >
-                </partner-details-tab>
+                    <engagement-staff-members-tab
+                      id="staffMembers"
+                      .engagement="${this.engagement}"
+                      .basePermissionPath="${this.permissionBase}"
+                      .errorObject="${this.errorObject}"
+                    >
+                    </engagement-staff-members-tab>
+                  </div>
 
-                <specific-procedure
-                  id="specificProcedures"
-                  class="mb-15"
-                  without-finding-column
-                  error-object="{{errorObject}}"
-                  data-items="{{engagement.specific_procedures}}"
-                  base-permission-path="{{permissionBase}}"
-                  readonly-tab
-                >
-                </specific-procedure>
+                  ${this._showReportTabs(this.permissionBase, this.engagement)
+                    ? html`<div name="report">
+                        <sa-report-page-main
+                          id="report"
+                          .originalData="${this.originalData}"
+                          .engagement="${this.engagement}"
+                          .errorObject="${this.errorObject}"
+                          .permissionBase="${this.permissionBase}"
+                        >
+                        </sa-report-page-main>
+                      </div>`
+                    : ``}
+                  ${this._showFollowUpTabs(this.permissionBase)
+                    ? html`<div name="follow-up">
+                        <follow-up-main
+                          id="follow-up"
+                          .originalData="${this.originalData}"
+                          .errorObject="${this.errorObject}"
+                          .engagement="${this.engagement}}"
+                          .permissionBase="${this.permissionBase}"
+                        >
+                        </follow-up-main>
+                      </div>`
+                    : ``}
 
-                <engagement-staff-members-tab
-                  id="staffMembers"
-                  engagement="{{engagement}}"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}"
-                >
-                </engagement-staff-members-tab>
+                  <div name="attachments">
+                    <file-attachments-tab
+                      id="engagement_attachments"
+                      .dataBasePath="${this.permissionBase}"
+                      path-postfix="attachments"
+                      .baseId="${this.engagement.id}"
+                      .errorObject="${this.errorObject}"
+                      .timeStamp="${this.timeStamp}"
+                      error-property="engagement_attachments"
+                      endpoint-name="attachments"
+                    >
+                    </file-attachments-tab>
+
+                    ${this.hasReportAccess(this.permissionBase, this.engagement)
+                      ? html`<file-attachments-tab
+                          id="report_attachments"
+                          is-report-tab="true"
+                          .dataBasePath="${this.permissionBase}"
+                          path-postfix="report_attachments"
+                          .baseId="${this.engagement.id}"
+                          .errorObject="${this.errorObject}"
+                          .timeStamp="${this.timeStamp}"
+                          error-property="report_attachments"
+                          endpoint-name="reportAttachments"
+                        >
+                        </file-attachments-tab>`
+                      : ``}
+                  </div>
+                </iron-pages>
               </div>
 
-              <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
-                <div name="report">
-                  <sa-report-page-main
-                    id="report"
-                    original-data="[[originalData]]"
-                    error-object="{{errorObject}}"
-                    engagement="{{engagement}}"
-                    permission-base="{{permissionBase}}"
-                  >
-                  </sa-report-page-main>
-                </div>
-              </template>
-
-              <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
-                <div name="follow-up">
-                  <follow-up-main
-                    id="follow-up"
-                    original-data="[[originalData]]"
-                    error-object="{{errorObject}}"
-                    engagement="{{engagement}}"
-                    permission-base="{{permissionBase}}"
-                  >
-                  </follow-up-main>
-                </div>
-              </template>
-
-              <div name="attachments">
-                <file-attachments-tab
-                  id="engagement_attachments"
-                  data-base-path="[[permissionBase]]"
-                  path-postfix="attachments"
-                  base-id="[[engagement.id]]"
-                  error-object="{{errorObject}}"
-                  error-property="engagement_attachments"
-                  endpoint-name="attachments"
-                >
-                </file-attachments-tab>
-
-                <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
-                  <file-attachments-tab
-                    id="report_attachments"
-                    is-report-tab="true"
-                    data-base-path="[[permissionBase]]"
-                    path-postfix="report_attachments"
-                    base-id="[[engagement.id]]"
-                    error-object="{{errorObject}}"
-                    error-property="report_attachments"
-                    endpoint-name="reportAttachments"
-                  >
-                  </file-attachments-tab>
-                </template>
-              </div>
-            </iron-pages>
-          </div>
-
-          <div id="sidebar">
-            <status-tab-element engagement-data="[[engagement]]" permission-base="[[permissionBase]]">
-            </status-tab-element>
-          </div>
-        </div>
-
-        <etools-dialog
-          no-padding
-          keep-dialog-open
-          size="md"
-          opened="{{dialogOpened}}"
-          dialog-title="Cancellation of Engagement"
-          ok-btn-text="Continue"
-          on-confirm-btn-clicked="_cancelEngagement"
-          openFlag="dialogOpened"
-          on-close="_resetDialogOpenedFlag"
-        >
-          <div class="row-h repeatable-item-container" without-line>
-            <div class="repeatable-item-content">
-              <div class="row-h group">
-                <div class="input-container input-container-l">
-                  <paper-textarea
-                    id="cancellationReasonInput"
-                    class="required"
-                    label="Cancellation Reason"
-                    placeholder="Enter reason of cancellation"
-                    required
-                    max-rows="4"
-                    error-message="This field is required."
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
-                  >
-                  </paper-textarea>
-                </div>
+              <div id="sidebar">
+                <status-tab-element .engagementData="${this.engagement}" .permissionBase="${this.permissionBase}">
+                </status-tab-element>
               </div>
             </div>
-          </div>
-        </etools-dialog>
-      </template>
+
+            <etools-dialog
+              no-padding
+              keep-dialog-open
+              size="md"
+              .opened="${this.dialogOpened}"
+              dialog-title="Cancellation of Engagement"
+              ok-btn-text="Continue"
+              @confirm-btn-clicked="${this._cancelEngagement}"
+              openFlag="dialogOpened"
+              @close="${this._resetDialogOpenedFlag}"
+            >
+              <div class="row-h repeatable-item-container" without-line>
+                <div class="repeatable-item-content">
+                  <div class="row-h group">
+                    <div class="input-container input-container-l">
+                      <paper-textarea
+                        id="cancellationReasonInput"
+                        class="required"
+                        label="Cancellation Reason"
+                        placeholder="Enter reason of cancellation"
+                        required
+                        max-rows="4"
+                        error-message="This field is required."
+                        @focus="${this._resetFieldError}"
+                      >
+                      </paper-textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </etools-dialog>
+          `
+        : ``}
     `;
   }
 
@@ -267,29 +284,37 @@ class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEl
   @property({type: String})
   engagementPrefix = '/special-audits';
 
-  static get observers() {
-    return [
-      '_routeConfig(route)',
-      '_checkAvailableTab(engagement, permissionBase, route)',
-      '_setPermissionBase(engagement.id)',
-      '_tabChanged(tab)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
-    // @Lajos not found
-    // this.addEventListener('main-action-activated', this._mainActionActivated);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
-    // @Lajos not found
-    // this.removeEventListener('main-action-activated', this._mainActionActivated);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('route')) {
+      this._routeConfig(this.route);
+    }
+    if (
+      changedProperties.has('engagement') ||
+      changedProperties.has('permissionBase') ||
+      changedProperties.has('route')
+    ) {
+      this._checkAvailableTab(this.engagement, this.permissionBase, this.route);
+    }
+    if (changedProperties.has('engagement')) {
+      this._setPermissionBase(this.engagement?.id);
+    }
+    if (changedProperties.has('tab')) {
+      this._tabChanged(this.tab);
+    }
   }
 
   _validateEngagement() {
@@ -300,7 +325,7 @@ class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEl
       return false;
     }
     if (!reportValid) {
-      this.set('tab', 'report');
+      this.tab = 'report';
       return false;
     }
     return true;
@@ -342,11 +367,9 @@ class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerEl
 
     const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
-      this.set('tab', 'report');
+      this.tab = 'report';
       return false;
     }
     return true;
   }
 }
-
-window.customElements.define('special-audits-page-main', SpecialAuditsPageMain);

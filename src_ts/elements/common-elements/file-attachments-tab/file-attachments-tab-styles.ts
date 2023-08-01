@@ -1,8 +1,12 @@
-import {html} from '@polymer/polymer/polymer-element';
+import {html} from 'lit-element';
 
 // language=HTML
 export const fileAttachmentsTabStyles = html`
   <style>
+    :host {
+      display: block;
+    }
+
     :host a {
       padding-left: 5px;
       color: #40c4ff;
@@ -89,6 +93,45 @@ export const fileAttachmentsTabStyles = html`
       --iron-icon-width: 20px;
       --iron-icon-height: 20px;
       --iron-icon-fill-color: var(--gray-50);
+    }
+
+     etools-content-panel::part(ecp-content) {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .attachment {
+      margin-inline-end: 8px;
+    }
+    iron-icon {
+      color: var(--dark-icon-color);
+    }
+    icons-actions {
+      visibility: hidden;
+    }
+    etools-data-table-row:hover icons-actions {
+      visibility: visible;
+    }
+    etools-data-table-row {
+      --list-divider-color: var(--light-divider-color);
+    }
+    .separator {
+      border-inline-start: solid 1px var(--light-secondary-text-color);
+      padding-inline-end: 10px;
+      margin: 6px 0 6px 10px;
+    }
+    .editable-row {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding: 12px 0;
+    }
+
+    etools-data-table-header {
+      --list-header-wrapper-column-height: 48px;
+    }
+    paper-icon-button[icon='add-box'] {
+      color: var(--primary-text-color);
+      margin-inline-start: 20px;
     }
   </style>
 `;

@@ -122,6 +122,9 @@ export const moduleStyles = css`
     line-height: 43px;
     padding: 0 30px;
   }
+  etools-content-panel::part(ecp-header) {
+    background-color: var(--primary-color);
+  }
   etools-content-panel::part(ecp-toggle-btn) {
     position: absolute;
     top: 3px;
@@ -135,6 +138,21 @@ export const moduleStyles = css`
     top: 4px;
     right: 16px;
     opacity: 1;
+  }
+
+  .wrap-text {
+    white-space: normal;
+    line-height: 14px;
+    display: flex;
+    word-break: break-word;
+    width: 100%;
+    justify-content: left;
+    align-items: center;
+    padding: 4px 0px;
+  }
+
+  .wrap-text iron-icon {
+    flex-shrink: 0;
   }
 
   div[slot='panel-btns'] .panel-button {

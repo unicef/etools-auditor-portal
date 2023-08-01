@@ -1,23 +1,30 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
 import {StatusTabElementStyles} from './status-tab-element-styles';
-import {moduleStyles} from '../../styles/module-styles';
-import {property} from '@polymer/decorators';
+import {moduleStyles} from '../../styles/module-styles-lit';
 import each from 'lodash-es/each';
 import {getActions} from '../../mixins/permission-controller';
-import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
 import {GenericObject} from '../../../types/global';
 declare const dayjs: any;
 import '../insert-html/insert-html';
 import './action-buttons';
 
-class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
-    return html`
-      ${StatusTabElementStyles} ${moduleStyles}
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('status-tab-element')
+export class StatusTabElement extends CommonMethodsMixinLit(LitElement) {
+  static get styles() {
+    return [StatusTabElementStyles, moduleStyles];
+  }
 
+  render() {
+    return html`
       <etools-content-panel panel-title="Status">
         <div class="status-list" id="statusList">
-          <div class="cancelled-status" id="cancelledStatus" hidden$="[[!cancelled]]">
+          <div class="cancelled-status" id="cancelledStatus" ?hidden="${!this.cancelled}">
             <div class="divider cancelled">
               <div class="status-divider"></div>
             </div>
@@ -29,30 +36,28 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
                 </span>
               </div>
 
-              <div class$="status [[statusStates.canceled.class]]">
+              <div class="status ${this.statusStates.canceled?.class}">
                 <span class="status-header">
-                  <insert-html html="[[statusStates.cancelled.statusText]]"></insert-html>
+                  <insert-html .html="${this.statusStates.cancelled?.statusText}"></insert-html>
                 </span>
-                <span class="status-date">{{_getFormattedDate('date_of_cancel', engagementData.date_of_cancel)}}</span>
+                <span class="status-date">${this._getFormattedDate('date_of_cancel')}</span>
               </div>
             </div>
           </div>
 
-          <div class$="status-container first [[_getStatusState(1, engagementData)]]">
+          <div class="status-container first ${this._getStatusState(1)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(1, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(1, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.partner_contacted.class]]">
+            <div class="status ${this.statusStates.partner_contacted?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.partner_contacted.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.partner_contacted?.statusText}"></insert-html>
               </span>
-              <span class="status-date">
-                {{_getFormattedDate('partner_contacted_at', engagementData.partner_contacted_at)}}
-              </span>
+              <span class="status-date"> ${this._getFormattedDate('partner_contacted_at')} </span>
             </div>
           </div>
 
@@ -60,21 +65,19 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(2, engagementData.date_of_field_visit)]]">
+          <div class="status-container ${this._getStatusState(2)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(2, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(2, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.field_visit.class]]">
+            <div class="status ${this.statusStates.field_visit?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.field_visit.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.field_visit?.statusText}"></insert-html>
               </span>
-              <span class="status-date">
-                {{_getFormattedDate('date_of_field_visit', engagementData.date_of_field_visit)}}
-              </span>
+              <span class="status-date"> ${this._getFormattedDate('date_of_field_visit')} </span>
             </div>
           </div>
 
@@ -82,22 +85,19 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(3, engagementData.date_of_field_visit,
-                                        engagementData.date_of_draft_report_to_ip)]]">
+          <div class="status-container ${this._getStatusState(3)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(3, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(3, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.draft_issued_to_partner.class]]">
+            <div class="status ${this.statusStates.draft_issued_to_partner?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.draft_issued_to_partner.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.draft_issued_to_partner?.statusText}"></insert-html>
               </span>
-              <span class="status-date">
-                {{_getFormattedDate('date_of_draft_report_to_ip', engagementData.date_of_draft_report_to_ip)}}
-              </span>
+              <span class="status-date"> ${this._getFormattedDate('date_of_draft_report_to_ip')} </span>
             </div>
           </div>
 
@@ -105,22 +105,19 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(4, engagementData.date_of_draft_report_to_ip,
-                                            engagementData.date_of_comments_by_ip)]]">
+          <div class="status-container ${this._getStatusState(4)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(4, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(4, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.comments_received_by_partner.class]]">
+            <div class="status ${this.statusStates.comments_received_by_partner?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.comments_received_by_partner.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.comments_received_by_partner?.statusText}"></insert-html>
               </span>
-              <span class="status-date">
-                {{_getFormattedDate('date_of_comments_by_ip', engagementData.date_of_comments_by_ip)}}
-              </span>
+              <span class="status-date"> ${this._getFormattedDate('date_of_comments_by_ip')} </span>
             </div>
           </div>
 
@@ -128,23 +125,19 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div
-            class$="status-container [[_getStatusState(5, engagementData.date_of_comments_by_ip,
-                    engagementData.date_of_draft_report_to_unicef)]]">
+          <div class="status-container ${this._getStatusState(5)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(5, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(5, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.draft_issued_to_unicef.class]]">
+            <div class="status ${this.statusStates.draft_issued_to_unicef?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.draft_issued_to_unicef.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.draft_issued_to_unicef?.statusText}"></insert-html>
               </span>
-              <span class="status-date">
-                {{_getFormattedDate('date_of_draft_report_to_unicef', engagementData.date_of_draft_report_to_unicef)}}
-              </span>
+              <span class="status-date"> ${this._getFormattedDate('date_of_draft_report_to_unicef')}} </span>
             </div>
           </div>
 
@@ -152,22 +145,19 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container [[_getStatusState(6, engagementData.date_of_draft_report_to_unicef,
-                                                engagementData.date_of_comments_by_unicef)]]">
+          <div class="status-container ${this._getStatusState(6)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(6, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(6, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.comments_received_by_unicef.class]]">
+            <div class="status ${this.statusStates.comments_received_by_unicef?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.comments_received_by_unicef.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.comments_received_by_unicef?.statusText}"></insert-html>
               </span>
-              <span class="status-date">
-                {{_getFormattedDate('date_of_comments_by_unicef', engagementData.date_of_comments_by_unicef)}}
-              </span>
+              <span class="status-date"> ${this._getFormattedDate('date_of_comments_by_unicef')} </span>
             </div>
           </div>
 
@@ -175,29 +165,28 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class$="status-container first [[_getStatusState(8, engagementData)]]">
+          <div class="status-container first ${this._getStatusState(8)}">
             <div class="status-icon">
               <span class="icon-wrapper">
-                <span class="status-nr">[[_refactorStatusNumber(7, engagementData.status)]]</span>
+                <span class="status-nr">${this._refactorStatusNumber(7, this.engagementData.status)}</span>
                 <iron-icon icon="check"></iron-icon>
               </span>
             </div>
 
-            <div class$="status [[statusStates.final.class]]">
+            <div class="status ${this.statusStates.final?.class}">
               <span class="status-header">
-                <insert-html html="[[statusStates.final.statusText]]"></insert-html>
+                <insert-html .html="${this.statusStates.final?.statusText}"></insert-html>
               </span>
             </div>
           </div>
         </div>
 
-        <template is="dom-if" if="{{_showActionButtons(actions)}}">
-          <div class="status-buttons">
-            <action-buttons actions="{{actions}}"></action-buttons>
-          </div>
-        </template>
+        ${this._showActionButtons(this.actions)
+          ? html`<div class="status-buttons">
+              <action-buttons .actions="${this.actions}"></action-button>
+            </div>`
+          : ``}
       </etools-content-panel>
-      </template>
     `;
   }
 
@@ -208,7 +197,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
   actions = [];
 
   @property({type: Object})
-  statusStates = {};
+  statusStates: GenericObject = {};
 
   @property({type: Boolean})
   cancelled = false;
@@ -240,17 +229,22 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
     'date_of_report_submit'
   ];
 
-  static get observers() {
-    return [
-      'checkCancelled(engagementData.status)',
-      'setActions(permissionBase)',
-      'setStatusStates(permissionBase, engagementData)'
-    ];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('engagementData')) {
+      this.checkCancelled(this.engagementData.status);
+      this.setStatusStates();
+    }
+    if (changedProperties.has('permissionBase')) {
+      this.setActions(this.permissionBase);
+      this.setStatusStates();
+    }
   }
 
   setActions(permissionBase) {
     const actions = permissionBase ? getActions(permissionBase) : [];
-    this.set('actions', actions);
+    this.actions = actions;
   }
 
   setStatusStates() {
@@ -267,9 +261,7 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
       this.statusStates[statusKey].class = this._getStatusClass(displayName);
     });
 
-    const temp = this.statusStates;
-    this.set('statusStates', {});
-    this.set('statusStates', temp);
+    this.statusStates = {...this.statusStates};
   }
 
   _getStatusText(displayName) {
@@ -392,5 +384,3 @@ class StatusTabElement extends CommonMethodsMixin(PolymerElement) {
     this.cancelled = true;
   }
 }
-
-window.customElements.define('status-tab-element', StatusTabElement);

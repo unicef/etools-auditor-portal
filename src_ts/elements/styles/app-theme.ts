@@ -50,8 +50,7 @@ documentContainer.innerHTML = `
             margin: 0;
           }
 
-           --esmm-dropdown-menu-position: fixed;
-
+          --esmm-dropdown-menu-position: fixed;
         }
 
     </style>

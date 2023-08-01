@@ -1,6 +1,6 @@
-import {html} from '@polymer/polymer/polymer-element';
+import {css} from 'lit-element';
 
-export const StatusTabElementStyles = html` <style>
+export const StatusTabElementStyles = css`
   :host {
     display: block;
   }
@@ -86,15 +86,16 @@ export const StatusTabElementStyles = html` <style>
 
   .status-container {
     position: relative;
-    @apply --layout-horizontal;
-    @apply --layout-center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   .status-container .status-icon,
   .status-container .status {
-    @apply --layout-vertical;
-    @apply --layout-center-justified;
-    @apply --layout-warp;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .status-container iron-icon {
     display: inline-block !important;
@@ -109,6 +110,7 @@ export const StatusTabElementStyles = html` <style>
     -moz-border-radius: 50%;
     border-radius: 50%;
     color: #ffffff;
+    display: block;
   }
 
   .status-container .status-icon .icon-wrapper iron-icon {
@@ -131,6 +133,7 @@ export const StatusTabElementStyles = html` <style>
     margin-bottom: 15px;
     box-sizing: border-box;
     text-transform: capitalize;
+    font-size: 14px;
     color: var(--gray-mid);
   }
 
@@ -203,4 +206,4 @@ export const StatusTabElementStyles = html` <style>
     width: 11px;
     border-right: 1px solid var(--gray-mid);
   }
-</style>`;
+`;

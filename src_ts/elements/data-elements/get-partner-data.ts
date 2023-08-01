@@ -1,5 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import {getEndpoint} from '../config/endpoints-controller';
@@ -8,8 +7,14 @@ import {GenericObject} from '../../types/global';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class GetPartnerData extends PolymerElement {
-  @property({type: Number, observer: '_partnerIdChanged'})
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('get-partner-data')
+export class GetPartnerData extends LitElement {
+  @property({type: Number})
   partnerId!: number | null;
 
   @property({type: Object})
@@ -20,6 +25,14 @@ class GetPartnerData extends PolymerElement {
 
   @property({type: Number})
   lastNumber?: number;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('partnerId')) {
+      this._partnerIdChanged(this.partnerId);
+    }
+  }
 
   _handleResponse(detail) {
     if (!detail || !detail.id) {
@@ -111,4 +124,3 @@ class GetPartnerData extends PolymerElement {
     }
   }
 }
-window.customElements.define('get-partner-data', GetPartnerData);

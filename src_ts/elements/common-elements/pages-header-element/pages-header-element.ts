@@ -1,6 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, property, html, customElement} from 'lit-element';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/paper-menu-button/paper-menu-button';
 import '@polymer/paper-button/paper-button';
@@ -8,31 +6,34 @@ import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../types/global';
-import {sharedStyles} from '../../styles/shared-styles';
-import {moduleStyles} from '../../styles/module-styles';
-import pagesHeaderElementStyles from './pages-header-element-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {moduleStyles} from '../../styles/module-styles-lit';
+import {pagesHeaderElementStyles} from './pages-header-element-styles';
 import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
 
 /**
  * @polymer
- * @customElement
+ * @LitElement
  */
-class PagesHeaderElement extends MatomoMixin(PolymerElement) {
-  static get template() {
+@customElement('pages-header-element')
+export class PagesHeaderElement extends MatomoMixin(LitElement) {
+  static get styles() {
+    return [moduleStyles, pagesHeaderElementStyles];
+  }
+  render() {
     return html`
-      ${sharedStyles} ${moduleStyles} ${pagesHeaderElementStyles}
+      ${sharedStyles}
       <div class="header-wrapper">
         <div class="side-heading horizontal layout center">
-          <span class="flex title">[[_setTitle(engagement, pageTitle)]]</span>
+          <span class="flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
 
           <div class="layout horizontal side-heading-button-holder">
-            <div class="export-buttons" hidden$="[[!exportLinks.length]]">
+            <div class="export-buttons" ?hidden="${!this.exportLinks || !this.exportLinks.length}">
               <paper-menu-button
                 id="dropdown"
-                hidden$="[[!_isDropDown(exportLinks)]]"
-                on-tap="_toggleOpened"
+                ?hidden="${!this._isDropDown(this.exportLinks)}"
+                @tap="${this._toggleOpened}"
                 horizontal-align="right"
               >
                 <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
@@ -41,24 +42,27 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
                 </paper-button>
 
                 <paper-listbox id="dropdownMenu" slot="dropdown-content" class="dropdown-content" class="mw-150">
-                  <template is="dom-repeat" items="[[exportLinks]]">
-                    <paper-item tracker$="[[item.name]]" on-tap="exportData">[[item.name]]</paper-item>
-                  </template>
+                  ${this.exportLinks?.map(
+                    (item) =>
+                      html`
+                        <paper-item tracker="Export ${item.name}" @tap="${this.exportData}">${item.name}</paper-item>
+                      `
+                  )}
                 </paper-listbox>
               </paper-menu-button>
 
               <paper-button
                 class="grey-buttons"
-                hidden$="[[_isDropDown(exportLinks)]]"
+                ?hidden="${this._isDropDown(this.exportLinks)}"
                 tracker="Export"
-                on-tap="exportData"
+                @tap="${this.exportData}"
               >
                 <iron-icon icon="file-download"></iron-icon>
                 Export
               </paper-button>
             </div>
 
-            <paper-button hidden$="[[hidePrintButton]]" class="grey-buttons" on-click="print">
+            <paper-button ?hidden="${this.hidePrintButton}" class="grey-buttons" on-click="print">
               <iron-icon icon="print"></iron-icon>
               Print
             </paper-button>
@@ -66,17 +70,13 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
             <paper-button
               class="add-btn"
               raised
-              hidden$="[[hideAddButton]]"
+              ?hidden="${this.hideAddButton}"
               tracker="Add New Engagement"
-              on-tap="addNewTap"
+              @tap="${this.addNewTap}"
             >
-              <template is="dom-if" if="{{_showLink(link)}}">
-                <a href="{{link}}" class="btn-link"></a>
-              </template>
-
+              <a href="${this.link}" class="btn-link" ?hidden="${!this._showLink(this.link)}"></a>
               <iron-icon icon="add"></iron-icon>
-
-              <span>[[btnText]]</span>
+              <span>${this.btnText}</span>
             </paper-button>
           </div>
         </div>
@@ -86,16 +86,19 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
     `;
   }
 
-  @property({type: String})
-  title = '';
+  @property({type: String, attribute: 'page-title'})
+  pageTitle!: string;
 
   @property({type: Object})
   engagement: GenericObject = {};
 
-  @property({type: Boolean})
+  @property({type: Boolean, reflect: true, attribute: 'hide-add-button'})
   hideAddButton = true;
 
-  @property({type: Boolean})
+  @property({type: String, attribute: 'btn-text'})
+  btnText!: string;
+
+  @property({type: Boolean, reflect: true, attribute: 'hide-print-button'})
   hidePrintButton = false;
 
   @property({type: Object})
@@ -109,10 +112,6 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
 
   @property({type: Array})
   exportLinks: GenericObject[] = [];
-
-  connectedCallback() {
-    super.connectedCallback();
-  }
 
   addNewTap(e) {
     this.trackAnalytics(e);
@@ -151,5 +150,3 @@ class PagesHeaderElement extends MatomoMixin(PolymerElement) {
     dropdownMenu.select(-1);
   }
 }
-
-window.customElements.define('pages-header-element', PagesHeaderElement);

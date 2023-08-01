@@ -11,9 +11,10 @@ import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/st
 import {moduleStyles} from '../../../styles/module-styles-lit';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../data-elements/engagements-list-data';
-import '../../../common-elements/pages-header-element/pages-header-element-lit';
+import '../../../common-elements/pages-header-element/pages-header-element';
 import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
 import {BASE_PATH} from '../../../config/config';
+import '@unicef-polymer/etools-table/etools-table';
 import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
 import {
   EtoolsPaginator,
@@ -77,7 +78,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
       >
       </engagements-list-data>
 
-      <pages-header-element-lit
+      <pages-header-element
         show-export-button
         hide-print-button
         .exportLinks="${this.exportLinks}"
@@ -86,7 +87,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
         .btnText="${this.addBtnText}"
         page-title="Engagements"
       >
-      </pages-header-element-lit>
+      </pages-header-element>
 
       <section class="elevation page-content filters" elevation="1">
         <etools-filters .filters="${this.filters}" @filter-change="${this.filtersChange}"></etools-filters>

@@ -1,31 +1,30 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {getEndpoint} from '../config/endpoints-controller';
 import {addToCollection, collectionExists} from '../mixins/permission-controller';
-import LastCreatedMixin from '../mixins/last-created-mixin';
-import EngagementMixin from '../mixins/engagement-mixin';
-import {GenericObject} from '../../types/global';
+import LastCreatedMixinLit from '../mixins/last-created-mixin-lit';
+import EngagementMixinLit from '../mixins/engagement-mixin-lit';
+import {GenericObject} from '@unicef-polymer/etools-types';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
 /**
- * @polymer
+ * main menu
+ * @LitElement
  * @customElement
- * @appliesMixin LastCreatedMixin
- * @appliesMixin EngagementMixin
  */
-class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement)) {
+@customElement('engagement-info-data')
+export class EngagementInfoData extends LastCreatedMixinLit(EngagementMixinLit(LitElement)) {
   // ts-@ignore
-  @property({type: Number, notify: true, observer: '_idChanged'})
+  @property({type: Number})
   engagementId: number | null = null;
 
   @property({type: String})
   engagementType!: string;
 
-  @property({type: Object, notify: true, observer: '_setToResponse'})
+  @property({type: Object})
   engagementInfo!: GenericObject;
 
   @property({type: Number})
@@ -51,6 +50,17 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
 
   @property({type: Boolean})
   lastError?: boolean;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('engagementId')) {
+      this._idChanged(this.engagementId);
+    }
+    if (changedProperties.has('engagementInfo')) {
+      this._setToResponse(this.engagementInfo);
+    }
+  }
 
   _handleDataResponse(data) {
     this.responseData = data;
@@ -98,7 +108,7 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
     }
 
     fireEvent(this, 'global-loading', {type: 'engagement-info'});
-    fireEvent(this, 'engagement-info-loaded');
+    fireEvent(this, 'engagement-info-loaded', this.engagementInfo);
     this.persistCurrentEngagement(data, this.engagementType);
     this.engagementId = null;
     this.lastError = false;
@@ -208,4 +218,3 @@ class EngagementInfoData extends LastCreatedMixin(EngagementMixin(PolymerElement
     sendRequest(options).then(this._handleOptionsResponse.bind(this)).catch(this._handleOptionsResponse.bind(this));
   }
 }
-window.customElements.define('engagement-info-data', EngagementInfoData);

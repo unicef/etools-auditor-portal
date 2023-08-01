@@ -1,12 +1,15 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, property, customElement, PropertyValues} from 'lit-element';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
-class UpdateAgreementData extends PolymerElement {
-  @property({type: String, observer: '_dateChanged'})
+/**
+ * @customElement
+ */
+@customElement('update-agreement-data')
+export class UpdateAgreementData extends LitElement {
+  @property({type: String})
   newDate!: string;
 
   @property({type: Object})
@@ -14,6 +17,14 @@ class UpdateAgreementData extends PolymerElement {
 
   @property({type: Boolean})
   poUpdating = false;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('newDate')) {
+      this._dateChanged(this.newDate);
+    }
+  }
 
   _dateChanged(date) {
     if (
@@ -58,4 +69,3 @@ class UpdateAgreementData extends PolymerElement {
     fireEvent(this, 'agreement-loaded', {success: false, errors: response});
   }
 }
-window.customElements.define('update-agreement-data', UpdateAgreementData);

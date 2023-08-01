@@ -1,20 +1,22 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import findIndex from 'lodash-es/findIndex';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UpdateAttachments extends PolymerElement {
-  @property({type: String, observer: '_requestDataChanged'})
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('update-attachments')
+export class UpdateAttachments extends LitElement {
+  @property({type: String})
   requestData!: string;
 
-  @property({type: Array, notify: true})
-  attachments!: [];
-
-  @property({type: Object, notify: true})
-  errors!: GenericObject;
+  @property({type: Array})
+  attachments: any[] = [];
 
   @property({type: Number})
   baseId!: number;
@@ -22,7 +24,7 @@ class UpdateAttachments extends PolymerElement {
   @property({type: String})
   endpointName!: string;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   requestOptions!: GenericObject;
 
   @property({type: String})
@@ -33,6 +35,14 @@ class UpdateAttachments extends PolymerElement {
 
   @property({type: Object})
   editedItem!: GenericObject;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('requestData')) {
+      this._requestDataChanged(this.requestData);
+    }
+  }
 
   _requestDataChanged(data = {}) {
     const {method, attachmentData} = data as any;
@@ -103,14 +113,14 @@ class UpdateAttachments extends PolymerElement {
 
   _handleResponse(detail) {
     this._updateAttachmentsList(detail);
-    fireEvent(this, 'attachments-request-completed', {success: true});
+    fireEvent(this, 'attachments-request-completed', {success: true, data: this.attachments});
   }
 
   _handleChangedFileResponse(response) {
     this._updateAttachmentsList(response);
     this.method = 'DELETE';
     this._updateAttachmentsList(response);
-    fireEvent(this, 'attachments-request-completed', {success: true});
+    fireEvent(this, 'attachments-request-completed', {success: true, data: this.attachments});
   }
 
   _updateAttachmentsList(detail) {
@@ -119,11 +129,11 @@ class UpdateAttachments extends PolymerElement {
     const index = findIndex(this.attachments, (item: any) => item.id === id);
 
     if (wasDeleteRequest && ~index) {
-      this.splice('attachments', index, 1);
+      this.attachments.splice(index, 1);
     } else if (~index) {
-      this.splice('attachments', index, 1, detail);
+      this.attachments.splice(index, 1, detail);
     } else if (!wasDeleteRequest) {
-      this.push('attachments', detail);
+      this.attachments.push(detail);
     }
   }
 
@@ -137,8 +147,6 @@ class UpdateAttachments extends PolymerElement {
       }
     }
 
-    this.set('errors', response);
-    fireEvent(this, 'attachments-request-completed', {success: false});
+    fireEvent(this, 'attachments-request-error', {data: response});
   }
 }
-window.customElements.define('update-attachments', UpdateAttachments);

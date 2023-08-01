@@ -1,39 +1,54 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/paper-button/paper-button';
 import '@polymer/paper-menu-button/paper-menu-button';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/paper-icon-button/paper-icon-button';
-import {moduleStyles} from '../../styles/module-styles';
+import {moduleStyles} from '../../styles/module-styles-lit';
 import {ActionButtonsStyles} from './action-buttons-styles';
-import {property} from '@polymer/decorators';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
 import {ConfigObj, createDynamicDialog, removeDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
 import EtoolsDialog from '@unicef-polymer/etools-dialog';
 
-class ActionButtons extends PolymerElement {
-  static get template() {
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('action-buttons')
+export class ActionButtons extends LitElement {
+  static get styles() {
+    return [moduleStyles];
+  }
+
+  render() {
     return html`
-      ${moduleStyles} ${ActionButtonsStyles}
+      ${ActionButtonsStyles}
       <paper-button
-        class$="main-action status-tab-button {{withActionsMenu(actions.length)}}"
+        class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}}"
         raised
-        on-tap="_btnClicked"
+        @tap="${this._btnClicked}"
       >
-        <span class="main-action text">[[_setButtonText(actions.0)]]</span>
-        <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
-          <paper-menu-button class="option-button" dynamic-align opened="{{statusBtnMenuOpened}}">
-            <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
-            <div slot="dropdown-content">
-              <template class="other-btns-template" is="dom-repeat" items="[[actions]]" filter="_filterActions">
-                <div class="other-options" on-click="closeMenu" action-code$="[[_setActionCode(item)]]">
-                  <iron-icon icon="[[_setIcon(item, icons)]]" class="option-icon"></iron-icon>
-                  <span>{{_setButtonText(item)}}</span>
-                </div>
-              </template>
-            </div>
-          </paper-menu-button>
-        </template>
+        <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
+        ${this._showOtherActions(this.actions.length)
+          ? html`<paper-menu-button class="option-button" dynamic-align opened="${this.statusBtnMenuOpened}">
+              <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
+              <div slot="dropdown-content">
+                ${(this.actions || [])
+                  .filter((x) => this._filterActions(x))
+                  .map(
+                    (item: any) => html`<div
+                      class="other-options"
+                      @click="${this.closeMenu}"
+                      action-code="${this._setActionCode(item)}"
+                    >
+                      <iron-icon icon="${this._setIcon(item, this.icons)}" class="option-icon"></iron-icon>
+                      <span>${this._setButtonText(item)}}</span>
+                    </div>`
+                  )}
+              </div>
+            </paper-menu-button>`
+          : ``}
       </paper-button>
     `;
   }
@@ -159,5 +174,3 @@ class ActionButtons extends PolymerElement {
     return item && (item.code || item);
   }
 }
-
-window.customElements.define('action-buttons', ActionButtons);

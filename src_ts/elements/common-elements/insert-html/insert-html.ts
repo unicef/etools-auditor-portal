@@ -1,20 +1,27 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html, customElement, property, PropertyValues} from 'lit-element';
 
 /**
+ * main menu
+ * @LitElement
  * @customElement
- * @polymer
  */
-class InsertHtml extends PolymerElement {
-  static get template() {
+@customElement('insert-html')
+export class InsertHtml extends LitElement {
+  render() {
     return html``;
   }
-  @property({type: String, observer: '_htmlChanged'})
+  @property({type: String})
   html = '';
 
   _htmlChanged(html) {
     this.shadowRoot!.innerHTML = html || '--';
   }
-}
 
-window.customElements.define('insert-html', InsertHtml);
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('html')) {
+      this._htmlChanged(this.html);
+    }
+  }
+}

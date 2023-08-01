@@ -164,7 +164,7 @@ function CommonMethodsMixinLit<T extends Constructor<LitElement>>(baseClass: T) 
       return getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
     }
 
-    getPlaceholderText(path, base, datepicker) {
+    getPlaceholderText(path, base, datepicker?) {
       if (readonlyPermission(`${base}.${path}`)) {
         return '–';
       }

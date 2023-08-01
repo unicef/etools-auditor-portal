@@ -11,7 +11,7 @@ import {GenericObject} from '../../../../types/global';
 import {sharedStyles} from '../../../styles/shared-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 
-import LocalizationMixin from '../../../mixins/localization-mixin-lit';
+import LocalizationMixin from '../../../mixins/localization-mixin';
 
 /**
  * @polymer

@@ -1,5 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {getEndpoint} from '../config/endpoints-controller';
 import {collectionExists, addToCollection} from '../mixins/permission-controller';
 import {getUserData} from '../mixins/user-controller';
@@ -15,10 +14,10 @@ export function getStaffCollectionName(organisationId: number): string {
 
 /**
  * @customElement
- * @polymer
+ * @LitElement
  */
-
-class GetStaffMembersList extends PolymerElement {
+@customElement('get-staff-members-list')
+export class GetStaffMembersList extends LitElement {
   @property({type: Number})
   organisationId!: number;
 
@@ -30,6 +29,14 @@ class GetStaffMembersList extends PolymerElement {
 
   static get observers() {
     return ['_startRequest(organisationId, queries)'];
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('organisationId') || changedProperties.has('queries')) {
+      this._startRequest(this.organisationId, this.queries);
+    }
   }
 
   _startRequest(organisationId, listQueries) {
@@ -92,4 +99,3 @@ class GetStaffMembersList extends PolymerElement {
     }
   }
 }
-window.customElements.define('get-staff-members-list', GetStaffMembersList);

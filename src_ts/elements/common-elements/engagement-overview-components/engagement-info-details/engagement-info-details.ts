@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-input/paper-input.js';
@@ -14,18 +14,15 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import {moduleStyles} from '../../../styles/module-styles';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
+import {moduleStyles} from '../../../styles/module-styles-lit';
 
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {property} from '@polymer/decorators';
-import {GenericObject} from '../../../../types/global';
-import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import CommonMethodsMixinLit from '../../../mixins/common-methods-mixin-lit';
 import {getChoices, collectionExists} from '../../../mixins/permission-controller';
-import DateMixin from '../../../mixins/date-mixin';
 import {getStaticData} from '../../../mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
@@ -33,19 +30,31 @@ import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
 import {getUserData} from '../../../mixins/user-controller';
+import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
- * @polymer
  * @customElement
- * @appliesMixin DateMixin
  * @appliesMixin CommonMethodsMixin
  */
-class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)) {
-  static get template() {
-    // language=HTML
+@customElement('engagement-info-details')
+export class EngagementInfoDetails extends CommonMethodsMixinLit(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, tabLayoutStyles];
+  }
+
+  render() {
+    if (!this.data) {
+      return html``;
+    }
+
     return html`
-      ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
       <style>
+        :host {
+          position: relative;
+          display: block;
+          margin-bottom: 24px;
+        }
         .po-loading {
           position: absolute;
           top: 25px;
@@ -115,48 +124,48 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       </style>
 
       <get-agreement-data
-        agreement="[[data.agreement]]"
-        order-number="[[orderNumber]]"
-        on-agreement-loaded="_agreementLoaded"
+        .agreement="${this.data.agreement}"
+        .orderNumber="${this.orderNumber}"
+        @agreement-loaded="${this._agreementLoaded}"
       >
       </get-agreement-data>
 
       <update-agreement-data
-        agreement="[[data.agreement]]"
-        new-date="[[contractExpiryDate]]"
-        on-loading-state-changed="_poUpdatingStateChanged"
-        on-agreement-changed="_agreementLoaded"
+        .agreement="${this.data.agreement}"
+        .newDate="${this.contractExpiryDate}"
+        @loading-state-changed="${this._poUpdatingStateChanged}"
+        @agreement-changed="${this._agreementLoaded}"
       >
       </update-agreement-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
+
         <div class="row-h group  float">
-          <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
+          <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Purchase Order -->
             <paper-input
               id="purchaseOrder"
-              class$="[[_setRequired('agreement', basePermissionPath)]]"
+              class="${this._setRequired('agreement', this.basePermissionPath)}"
               field="agreement"
-              value="[[data.agreement.order_number]]"
+              .value="${this.data.agreement.order_number}"
               allowed-pattern="[0-9]"
-              label="[[getLabel('agreement.order_number', basePermissionPath)]]"
-              placeholder="Enter [[getLabel('agreement.order_number', basePermissionPath)]]"
-              readonly$="[[isReadOnly('agreement', basePermissionPath)]]"
+              label="${this.getLabel('agreement.order_number', this.basePermissionPath)}"
+              placeholder="Enter ${this.getLabel('agreement.order_number', this.basePermissionPath)}"
+              ?readonly="${this.isReadOnly('agreement', this.basePermissionPath)}"
               maxlength="30"
               required
-              invalid$="[[_checkInvalid(errors.agreement)]]"
-              error-message="[[errors.agreement]]"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
-              on-keydown="poKeydown"
-              on-blur="_requestAgreement"
+              ?invalid="${this._checkInvalid(this.errors.agreement)}"
+              .errorMessage="${this.errors?.agreement}"
+              @focus="${(event: any) => this._resetFieldError(event)}"
+              @keydown="${(event: any) => this.poKeydown(event)}"
+              @blur="${(event: any) => this._requestAgreement(event)}"
               data-value-path="target.value"
               data-field-path="data.agreement.order_number"
-              on-input="_setField"
+              @input="${(event: any) => this._setField(event)}"
             >
             </paper-input>
 
-            <etools-loading active="[[requestInProcess]]" no-overlay loading-text="" class="po-loading">
+            <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="po-loading">
             </etools-loading>
           </div>
 
@@ -164,130 +173,136 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             <!-- Auditor -->
             <paper-input
               id="auditorInput"
-              class$="[[_setReadonlyFieldClass(data.agreement)]]"
-              value="[[data.agreement.auditor_firm.name]]"
-              label="[[getLabel('agreement.auditor_firm.name', basePermissionPath)]]"
-              placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
+              class="${this._setReadonlyFieldClass(this.data.agreement)}"
+              .value="${this.data.agreement.auditor_firm.name}"
+              label="${this.getLabel('agreement.auditor_firm.name', this.basePermissionPath)}"
+              placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
             >
             </paper-input>
           </div>
 
-          <div class="input-container" hidden$="[[_hideField('po_item', basePermissionPath)]]">
+          <div class="input-container" ?hidden="${this._hideField('po_item', this.basePermissionPath)}">
             <!-- PO Item Number -->
             <etools-dropdown
-              class$="validate-field  [[_setRequired('po_item', basePermissionPath)]]"
-              selected="[[data.po_item]]"
-              label="[[getLabel('po_item', basePermissionPath)]]"
+              class="validate-field ${this._setRequired('po_item', this.basePermissionPath)}"
+              .selected="${this.data.po_item}"
+              label="${this.getLabel('po_item', this.basePermissionPath)}"
               placeholder="&#8212;"
-              options="[[_getPoItems(data.agreement)]]"
+              .options="${this._getPoItems(this.data.agreement)}"
               option-label="number"
               option-value="id"
-              required$="[[_setRequired('po_item', basePermissionPath)]]"
-              readonly$="[[_isDataAgreementReadonly('po_item', basePermissionPath, data.agreement)]]"
-              invalid="[[_checkInvalid(errors.po_item)]]"
-              error-message="[[errors.po_item]]"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('po_item', this.basePermissionPath)}"
+              ?readonly="${this._isDataAgreementReadonly('po_item', this.basePermissionPath, this.data.agreement)}"
+              ?invalid="${this._checkInvalid(this.errors.po_item)}"
+              .errorMessage="${this.errors.po_item}"
+              @focus="${(event: any) => this._resetFieldError(event)}"
               data-value-path="detail.selectedItem.id"
               data-field-path="data.po_item"
-              on-etools-selected-item-changed="_setField"
+              @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}
               hide-search
               trigger-value-change-event
             >
             </etools-dropdown>
           </div>
 
-          <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
+          <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- PO Date -->
             <datepicker-lite
               id="contractStartDateInput"
-              class$="[[_setReadonlyFieldClass(data.agreement)]]"
-              value="[[data.agreement.contract_start_date]]"
-              label="[[getLabel('agreement.contract_start_date', basePermissionPath)]]"
-              placeholder="[[getReadonlyPlaceholder(data.agreement)]]"
+              class="${this._setReadonlyFieldClass(this.data.agreement)}"
+              .value="${this.data.agreement.contract_start_date}"
+              label="${this.getLabel('agreement.contract_start_date', this.basePermissionPath)}"
+              placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
               selected-date-display-format="D MMM YYYY"
-              hidden$="[[!_showPrefix('contract_start_date', basePermissionPath,
-                                    data.agreement.contract_start_date, 'readonly')]]"
+              ?hidden="${!this._showPrefix(
+                'contract_start_date',
+                this.basePermissionPath,
+                this.data.agreement.contract_start_date,
+                'readonly'
+              )}"
               icon="date-range"
             >
             </datepicker-lite>
           </div>
 
-          <div class="input-container" hidden$="[[_hideForSc(isStaffSc)]]">
+          <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Contract Expiry Date -->
             <datepicker-lite
               id="contractEndDateInput"
-              class$=" [[_setRequired('related_agreement.contract_end_date',
-                                                        basePermissionPath)]] validate-field"
-              value="[[data.agreement.contract_end_date]]"
-              label="[[getLabel('agreement.contract_end_date', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('agreement.contract_end_date',
-                                                            basePermissionPath, 'datepicker')]]"
-              required="[[_setRequired('related_agreement.contract_end_date', basePermissionPath)]]"
-              readonly$="[[isReadOnly('related_agreement.contract_end_date', basePermissionPath)]]"
-              invalid="[[_checkInvalid(errors.contract_end_date)]]"
-              error-message="[[errors.contract_end_date]]"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
-              on-date-has-changed="_contractEndDateHasChanged"
-              fire-date-has-changed
+              class="${this._setRequired(
+                'related_agreement.contract_end_date',
+                this.basePermissionPath
+              )} validate-field"
+              .value="${this.data.agreement.contract_end_date}"
+              label="${this.getLabel('agreement.contract_end_date', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText(
+                'agreement.contract_end_date',
+                this.basePermissionPath,
+                'datepicker'
+              )}"
+              ?required="${this._setRequired('related_agreement.contract_end_date', this.basePermissionPath)}"
+              ?readonly="${this.isReadOnly('related_agreement.contract_end_date', this.basePermissionPath)}"
+              ?invalid="${this._checkInvalid(this.errors.contract_end_date)}"
+              .errorMessage="${this.errors.contract_end_date}"
+              @focus="${(event: any) => this._resetFieldError(event)}"
+              @date-has-changed="${(e: CustomEvent) => this._contractEndDateHasChanged(e)}"
               selected-date-display-format="D MMM YYYY"
-              min-date="[[_setExpiryMinDate(data.agreement.contract_start_date)]]"
+              min-date="${this._setExpiryMinDate(this.data.agreement.contract_start_date)}"
             >
             </datepicker-lite>
-            <etools-loading active="[[poUpdating]]" no-overlay loading-text="" class="po-loading"> </etools-loading>
+            <etools-loading .active="${this.poUpdating}" no-overlay loading-text="" class="po-loading"></etools-loading>
           </div>
 
-          <div class="input-container" hidden$="[[_hideField('partner_contacted_at', basePermissionPath)]]">
+          <div class="input-container" ?hidden="${this._hideField('partner_contacted_at', this.basePermissionPath)}">
             <!-- Date Partner Was Contacted -->
             <datepicker-lite
               id="contactedDateInput"
-              class$="[[_setRequired('partner_contacted_at', basePermissionPath)]]
-                                validate-field"
-              value="[[data.partner_contacted_at]]"
-              label="[[getLabel('partner_contacted_at', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('partner_contacted_at', basePermissionPath, 'datepicker')]]"
-              required="[[_setRequired('partner_contacted_at', basePermissionPath)]]"
-              readonly$="[[isReadOnly('partner_contacted_at', basePermissionPath)]]"
-              invalid="[[_checkInvalid(errors.partner_contacted_at)]]"
-              error-message="[[errors.partner_contacted_at]]"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              class="${this._setRequired('partner_contacted_at', this.basePermissionPath)} validate-field"
+              .value="${this.data.partner_contacted_at}"
+              label="${this.getLabel('partner_contacted_at', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('partner_contacted_at', this.basePermissionPath, 'datepicker')}"
+              ?required="${this._setRequired('partner_contacted_at', this.basePermissionPath)}"
+              ?readonly="${this.isReadOnly('partner_contacted_at', this.basePermissionPath)}"
+              ?invalid="${this._checkInvalid(this.errors.partner_contacted_at)}"
+              .errorMessage="${this.errors.partner_contacted_at}"
+              @focus="${(event: any) => this._resetFieldError(event)}"
               selected-date-display-format="D MMM YYYY"
-              max-date="[[maxDate]]"
+              max-date="${this.maxDate}"
               fire-date-has-changed
               property-name="partner_contacted_at"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${(e: CustomEvent) => this.dateHasChanged(e)}"
             >
             </datepicker-lite>
           </div>
 
           <div class="input-container">
-            <etools-info-tooltip hide-tooltip="[[_hideTooltip(basePermissionPath, showInput, data.engagement_type)]]">
+            <etools-info-tooltip .hideTooltip="${this._hideTooltip(
+              this.basePermissionPath,
+              this.showInput,
+              this.data.engagement_type
+            )}">
               <!-- Engagement Type -->
               <etools-dropdown
                 slot="field"
                 id="engagementType"
-                class$="[[_setRequired('engagement_type', basePermissionPath)]]
-                                  validate-field"
-                selected="[[data.engagement_type]]"
-                label="[[getLabel('engagement_type', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('engagement_type', basePermissionPath, 'dropdown')]]"
-                options="[[engagementTypes]]"
+                class="${this._setRequired('engagement_type', this.basePermissionPath)} validate-field"
+                .selected="${this.data.engagement_type}"
+                label="${this.getLabel('engagement_type', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('engagement_type', this.basePermissionPath, 'dropdown')}"
+                .options="${this.engagementTypes}"
                 option-label="label"
                 option-value="value"
-                required="[[_setRequired('engagement_type', basePermissionPath)]]"
-                readonly$="[[isReadOnly('engagement_type', basePermissionPath)]]"
-                invalid="[[_checkInvalid(errors.engagement_type)]]"
-                error-message="[[errors.engagement_type]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
+                ?required="${this._setRequired('engagement_type', this.basePermissionPath)}"
+                ?readonly="${this.isReadOnly('engagement_type', this.basePermissionPath)}"
+                ?invalid="${this._checkInvalid(this.errors.engagement_type)}"
+                .errorMessage="${this.errors.engagement_type}"
+                @focus="${(event: any) => this._resetFieldError(event)}"
                 trigger-value-change-event
                 data-value-path="detail.selectedItem.value"
                 data-field-path="data.engagement_type"
-                on-etools-selected-item-changed="_setField"
+                @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
                 hide-search
               >
               </etools-dropdown>
@@ -299,254 +314,272 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
             </etools-info-tooltip>
           </div>
 
-          <template is="dom-if" if="[[showInput]]" restamp>
-            <div class="input-container" hidden$="[[_hideField('start_date', basePermissionPath)]]">
-              <!-- Period Start Date -->
-              <datepicker-lite
-                style="width: 100%"
-                id="periodStartDateInput"
-                class$="[[_isAdditionalFieldRequired('start_date',
-                                      basePermissionPath, data.engagement_type)]] validate-field"
-                value="[[data.start_date]]"
-                label="[[getStartEndDateLabel(data.engagement_type,'start_date', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('start_date', basePermissionPath, 'datepicker')]]"
-                selected-date-display-format="D MMM YYYY"
-                required="[[_isAdditionalFieldRequired('start_date', basePermissionPath,
-                                        data.engagement_type)]]"
-                readonly$="[[isReadOnly('start_date', basePermissionPath)]]"
-                invalid="[[_checkInvalid(errors.start_date)]]"
-                error-message="[[errors.start_date]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                fire-date-has-changed
-                property-name="start_date"
-                on-date-has-changed="dateHasChanged"
-              >
-              </datepicker-lite>
-            </div>
-          </template>
+          ${
+            this.showInput
+              ? html`<div class="input-container" ?hidden="${this._hideField('start_date', this.basePermissionPath)}">
+                  <!-- Period Start Date -->
+                  <datepicker-lite
+                    style="width: 100%"
+                    id="periodStartDateInput"
+                    class="${this._isAdditionalFieldRequired(
+                      'start_date',
+                      this.basePermissionPath,
+                      this.data.engagement_type
+                    )} validate-field"
+                    .value="${this.data.start_date}"
+                    label="${this.getStartEndDateLabel(
+                      this.data.engagement_type,
+                      'start_date',
+                      this.basePermissionPath
+                    )}"
+                    placeholder="${this.getPlaceholderText('start_date', this.basePermissionPath, 'datepicker')}"
+                    selected-date-display-format="D MMM YYYY"
+                    ?required="${this._isAdditionalFieldRequired(
+                      'start_date',
+                      this.basePermissionPath,
+                      this.data.engagement_type
+                    )}"
+                    ?readonly="${this.isReadOnly('start_date', this.basePermissionPath)}"
+                    ?invalid="${this._checkInvalid(this.errors.start_date)}"
+                    .errorMessage="${this.errors.start_date}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    fire-date-has-changed
+                    property-name="start_date"
+                    @date-has-changed="${(e: CustomEvent) => this.dateHasChanged(e)}"
+                  >
+                  </datepicker-lite>
+                </div>`
+              : ``
+          }
 
-          <template is="dom-if" if="[[showInput]]" restamp>
-            <div class="input-container" hidden$="[[_hideField('end_date', basePermissionPath)]]">
-              <!-- Period End Date -->
-              <datepicker-lite
-                id="periodEndDateInput"
-                style="width: 100%"
-                class$="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
-                                        data.engagement_type)]] validate-field"
-                value="[[data.end_date]]"
-                label="[[getStartEndDateLabel(data.engagement_type,'end_date', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('end_date', basePermissionPath, 'datepicker')]]"
-                data-selector="periodEndDate"
-                required="[[_isAdditionalFieldRequired('end_date', basePermissionPath,
-                                            data.engagement_type)]]"
-                readonly$="[[isReadOnly('end_date', basePermissionPath)]]"
-                invalid="[[_checkInvalid(errors.end_date)]]"
-                error-message="[[errors.end_date]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                selected-date-display-format="D MMM YYYY"
-                fire-date-has-changed
-                property-name="end_date"
-                on-date-has-changed="dateHasChanged"
-              >
-              </datepicker-lite>
-            </div>
-          </template>
+          ${
+            this.showInput
+              ? html` <div class="input-container" ?hidden="${this._hideField('end_date', this.basePermissionPath)}">
+                    <!-- Period End Date -->
+                    <datepicker-lite
+                      id="periodEndDateInput"
+                      style="width: 100%"
+                      class="${this._isAdditionalFieldRequired(
+                        'end_date',
+                        this.basePermissionPath,
+                        this.data.engagement_type
+                      )} validate-field"
+                      .value="${this.data.end_date}"
+                      label="${this.getStartEndDateLabel(
+                        this.data.engagement_type,
+                        'end_date',
+                        this.basePermissionPath
+                      )}"
+                      placeholder="${this.getPlaceholderText('end_date', this.basePermissionPath, 'datepicker')}"
+                      data-selector="periodEndDate"
+                      ?required="${this._isAdditionalFieldRequired(
+                        'end_date',
+                        this.basePermissionPath,
+                        this.data.engagement_type
+                      )}"
+                      ?readonly="${this.isReadOnly('end_date', this.basePermissionPath)}"
+                      ?invalid="${this._checkInvalid(this.errors.end_date)}"
+                      .errorMessage="${this.errors.end_date}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      selected-date-display-format="D MMM YYYY"
+                      fire-date-has-changed
+                      property-name="end_date"
+                      @date-has-changed="${(e: CustomEvent) => this.dateHasChanged(e)}"
+                    >
+                    </datepicker-lite>
+                  </div>
+                  <div class="input-container" ?hidden="${this._hideField('total_value', this.basePermissionPath)}">
+                    <!-- Total Value of Selected FACE Forms -->
+                    <etools-currency-amount-input
+                      class=" validate-field
+                                ${this._isAdditionalFieldRequired(
+                        'total_value',
+                        this.basePermissionPath,
+                        this.data.engagement_type
+                      )}"
+                      field="total_value"
+                      .value="${this.data.total_value}"
+                      currency="$"
+                      label="${this.getLabel('total_value', this.basePermissionPath)}"
+                      placeholder="${this.getPlaceholderText('total_value', this.basePermissionPath)}"
+                      ?required="${this._isAdditionalFieldRequired(
+                        'total_value',
+                        this.basePermissionPath,
+                        this.data.engagement_type
+                      )}"
+                      ?readonly="${this.isReadOnly('total_value', this.basePermissionPath)}"
+                      ?invalid="${this._checkInvalid(this.errors.total_value)}"
+                      .errorMessage="${this.errors.total_value}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      data-value-path="target.value"
+                      data-field-path="data.total_value"
+                      @input="${(event: CustomEvent) => this._setField(event)}"
+                    >
+                    </etools-currency-amount-input>
+                  </div>`
+              : ``
+          }
 
-          <template is="dom-if" if="[[showInput]]" restamp>
-            <div class="input-container" hidden$="[[_hideField('total_value', basePermissionPath)]]">
-              <!-- Total Value of Selected FACE Forms -->
-              <etools-currency-amount-input
-                class$=" validate-field
-                                [[_isAdditionalFieldRequired('total_value', basePermissionPath, data.engagement_type)]]"
-                field="total_value"
-                value="[[data.total_value]]"
-                currency="$"
-                label="[[getLabel('total_value', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
-                required$="[[_isAdditionalFieldRequired('total_value', basePermissionPath,
-                                        data.engagement_type)]]"
-                readonly$="[[isReadOnly('total_value', basePermissionPath)]]"
-                invalid="[[_checkInvalid(errors.total_value)]]"
-                error-message="[[errors.total_value]]"
-                invalid="[[_checkInvalid(errors.total_value)]]"
-                error-message="[[errors.total_value]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                data-value-path="target.value"
-                data-field-path="data.total_value"
-                on-input="_setField"
-              >
-              </etools-currency-amount-input>
-            </div>
-          </template>
+          ${
+            this.showJoinAudit
+              ? html` <!-- Joint Audit -->
+                  <div class="input-container join-audit" style="width:16.66%">
+                    <paper-checkbox
+                      ?checked="${this.data.joint_audit}"
+                      ?disabled="${this.isReadOnly('joint_audit', this.basePermissionPath)}"
+                      data-value-path="target.checked"
+                      data-field-path="data.joint_audit"
+                      @change="${(event: CustomEvent) => this._setField(event)}"
+                    >
+                      ${this.getLabel('joint_audit', this.basePermissionPath)}
+                    </paper-checkbox>
+                  </div>
+                  <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
+                    <!-- Year of Audit -->
+                    <etools-dropdown
+                      id="yearOfAudit"
+                      class="${this._setRequired('year_of_audit', this.basePermissionPath)} validate-field"
+                      .selected="${this.data.year_of_audit}"
+                      label="Year of Audit"
+                      placeholder="${this.getPlaceholderText('year_of_audit', this.basePermissionPath, 'dropdown')}"
+                      .options="${this.yearOfAuditOptions}"
+                      option-label="label"
+                      option-value="value"
+                      ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
+                      ?readonly="${this.isReadOnly('year_of_audit', this.basePermissionPath)}"
+                      ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
+                      .errorMessage="${this.errors.year_of_audit}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      trigger-value-change-event
+                      data-value-path="detail.selectedItem.value"
+                      data-field-path="data.year_of_audit"
+                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
+                      hide-search
+                    >
+                    </etools-dropdown>
+                  </div>`
+              : ``
+          }
 
-          <template is="dom-if" if="[[showJoinAudit]]" restamp>
-            <!-- Joint Audit -->
-            <div class="input-container join-audit" style="width:16.66%">
-              <paper-checkbox
-                checked="[[data.joint_audit]]"
-                disabled$="[[isReadOnly('joint_audit', basePermissionPath)]]"
-                data-value-path="target.checked"
-                data-field-path="data.joint_audit"
-                on-change="_setField"
-              >
-                [[getLabel('joint_audit', basePermissionPath)]]
-              </paper-checkbox>
-            </div>
-            <div class="input-container" class$="[[getYearOfAuditStyle(data.engagement_type)]]">
-              <!-- Year of Audit -->
-              <etools-dropdown
-                id="yearOfAudit"
-                class$="[[_setRequired('year_of_audit', basePermissionPath)]]
-                                  validate-field"
-                selected="[[data.year_of_audit]]"
-                label="Year of Audit"
-                placeholder="[[getPlaceholderText('year_of_audit', basePermissionPath, 'dropdown')]]"
-                options="[[yearOfAuditOptions]]"
-                option-label="label"
-                option-value="value"
-                required="[[isAuditOrSpecialAudit(data.engagement_type)]]"
-                readonly$="[[isReadOnly('year_of_audit', basePermissionPath)]]"
-                invalid="[[_checkInvalid(errors.year_of_audit)]]"
-                error-message="[[errors.year_of_audit]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                trigger-value-change-event
-                data-value-path="detail.selectedItem.value"
-                data-field-path="data.year_of_audit"
-                on-etools-selected-item-changed="_setField"
-                hide-search
-              >
-              </etools-dropdown>
-            </div>
-          </template>
+          ${
+            this.showAdditionalInput
+              ? html` <!-- Shared Audit with-->
+                  <div class="input-container" ?hidden="${this._hideField('shared_ip_with', this.basePermissionPath)}">
+                    <etools-dropdown-multi
+                      id="sharedWith"
+                      class="validate-input ${this._setRequired('shared_ip_with', this.basePermissionPath)}"
+                      label="${this.getLabel('shared_ip_with', this.basePermissionPath)}"
+                      placeholder="${this.getPlaceholderText('shared_ip_with', this.basePermissionPath)}"
+                      .options="${this.sharedIpWithOptions}"
+                      option-label="display_name"
+                      option-value="value"
+                      .selectedValues="${this.data.shared_ip_with}"
+                      ?required="${this._setRequired('shared_ip_with', this.basePermissionPath)}"
+                      ?readonly="${this.isReadOnly('shared_ip_with', this.basePermissionPath)}"
+                      ?invalid="${this.errors.shared_ip_with}"
+                      .errorMessage="${this.errors.shared_ip_with}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      dynamic-align
+                      hide-search
+                      trigger-value-change-event
+                      data-value-path="target.selectedValues"
+                      data-field-path="data.shared_ip_with"
+                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
+                    >
+                    </etools-dropdown-multi>
+                  </div>`
+              : ``
+          }
 
-          <template is="dom-if" if="[[showAdditionalInput]]" restamp>
-            <!-- Shared Audit with-->
-            <div class="input-container" hidden$="[[_hideField('shared_ip_with', basePermissionPath)]]">
-              <etools-dropdown-multi
-                id="sharedWith"
-                class$="validate-input [[_setRequired('shared_ip_with',
-                                        basePermissionPath)]]"
-                label="[[getLabel('shared_ip_with', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('shared_ip_with', basePermissionPath)]]"
-                options="[[sharedIpWithOptions]]"
-                option-label="display_name"
-                option-value="value"
-                selected-values="[[data.shared_ip_with]]"
-                required$="[[_setRequired('shared_ip_with', basePermissionPath)]]"
-                readonly$="[[isReadOnly('shared_ip_with', basePermissionPath)]]"
-                invalid="[[errors.shared_ip_with]]"
-                error-message="[[errors.shared_ip_with]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                dynamic-align
-                hide-search
-                trigger-value-change-event
-                data-value-path="target.selectedValues"
-                data-field-path="data.shared_ip_with"
-                on-etools-selected-items-changed="_setField"
-              >
-              </etools-dropdown-multi>
-            </div>
-          </template>
-
-          <template is="dom-if" if="[[showInput]]" restamp>
-            <!-- Sections -->
-            <div class="input-container" hidden$="[[_hideField('sections', basePermissionPath)]]">
-              <etools-dropdown-multi
-                class$="validate-input [[_setRequired('sections',
-                                        basePermissionPath)]]"
-                label="[[getLabel('sections', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('sections', basePermissionPath)]]"
-                options="[[sectionOptions]]"
-                option-label="name"
-                option-value="id"
-                selected-values="[[sectionIDs]]"
-                required$="[[_setRequired('sections', basePermissionPath)]]"
-                readonly$="[[isReadOnly('sections', basePermissionPath)]]"
-                invalid="[[errors.sections]]"
-                error-message="[[errors.sections]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                dynamic-align
-                hide-search
-                trigger-value-change-event
-                data-value-path="target.selectedValues"
-                data-field-path="sectionIDs"
-                on-etools-selected-items-changed="_setField"
-              >
-              </etools-dropdown-multi>
-            </div>
-          </template>
-
-          <template is="dom-if" if="[[showInput]]" restamp>
-            <!-- Offices -->
-            <div class="input-container" hidden$="[[_hideField('offices', basePermissionPath)]]">
-              <etools-dropdown-multi
-                class$="validate-input [[_setRequired('offices',
-                                        basePermissionPath)]]"
-                label="[[getLabel('offices', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('offices', basePermissionPath)]]"
-                options="[[officeOptions]]"
-                option-label="name"
-                option-value="id"
-                selected-values="[[officeIDs]]"
-                required$="[[_setRequired('offices', basePermissionPath)]]"
-                readonly$="[[isReadOnly('offices', basePermissionPath)]]"
-                invalid="[[errors.offices]]"
-                error-message="[[errors.offices]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                dynamic-align
-                hide-search
-                trigger-value-change-event
-                data-value-path="target.selectedValues"
-                data-field-path="officeIDs"
-                on-etools-selected-items-changed="_setField"
-              >
-              </etools-dropdown-multi>
-            </div>
-          </template>
-
+          ${
+            this.showInput
+              ? html` <!-- Sections -->
+                  <div class="input-container" ?hidden="${this._hideField('sections', this.basePermissionPath)}">
+                    <etools-dropdown-multi
+                      class="validate-input ${this._setRequired('sections', this.basePermissionPath)}"
+                      label="${this.getLabel('sections', this.basePermissionPath)}"
+                      placeholder="${this.getPlaceholderText('sections', this.basePermissionPath)}"
+                      .options="${this.sectionOptions}"
+                      option-label="name"
+                      option-value="id"
+                      .selectedValues="${this.sectionIDs}"
+                      ?required="${this._setRequired('sections', this.basePermissionPath)}"
+                      ?readonly="${this.isReadOnly('sections', this.basePermissionPath)}"
+                      ?invalid="${this.errors.sections}"
+                      .errorMessage="${this.errors.sections}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      dynamic-align
+                      hide-search
+                      trigger-value-change-event
+                      data-value-path="target.selectedValues"
+                      data-field-path="sectionIDs"
+                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
+                    >
+                    </etools-dropdown-multi>
+                  </div>
+                  <!-- Offices -->
+                  <div class="input-container" ?hidden="${this._hideField('offices', this.basePermissionPath)}">
+                    <etools-dropdown-multi
+                      class="validate-input ${this._setRequired('offices', this.basePermissionPath)}"
+                      label="${this.getLabel('offices', this.basePermissionPath)}"
+                      placeholder="${this.getPlaceholderText('offices', this.basePermissionPath)}"
+                      .options="${this.officeOptions}"
+                      option-label="name"
+                      option-value="id"
+                      .selectedValues="${this.officeIDs}"
+                      ?required="${this._setRequired('offices', this.basePermissionPath)}"
+                      ?readonly="${this.isReadOnly('offices', this.basePermissionPath)}"
+                      ?invalid="${this.errors.offices}"
+                      .errorMessage="${this.errors.offices}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      dynamic-align
+                      hide-search
+                      trigger-value-change-event
+                      data-value-path="target.selectedValues"
+                      data-field-path="officeIDs"
+                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
+                    >
+                    </etools-dropdown-multi>
+                  </div>`
+              : ``
+          }
           <!-- Notified when completed -->
-          <div class="input-container" hidden$="[[_hideField('users_notified', basePermissionPath)]]">
+          <div class="input-container" ?hidden="${this._hideField('users_notified', this.basePermissionPath)}">
             <etools-dropdown-multi
-              class$="validate-input  [[_setRequired('users_notified',
-                                      basePermissionPath)]]"
-              label="[[getLabel('users_notified', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('users_notified', basePermissionPath)]]"
-              options="[[usersNotifiedOptions]]"
-              load-data-method="[[loadUsersDropdownOptions]]"
+              class="validate-input ${this._setRequired('users_notified', this.basePermissionPath)}"
+              label="${this.getLabel('users_notified', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('users_notified', this.basePermissionPath)}"
+              .options="${this.usersNotifiedOptions}"
+              load-data-method="${this.loadUsersDropdownOptions}"
               preserve-search-on-close
               option-label="name"
               option-value="id"
-              hidden$="[[isReadOnly('users_notified', basePermissionPath)]]"
-              selected-values="[[usersNotifiedIDs]]"
-              required$="[[_setRequired('users_notified', basePermissionPath)]]"
-              invalid="[[errors.users_notified]]"
-              error-message="[[errors.users_notified]]"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?hidden="${this.isReadOnly('users_notified', this.basePermissionPath)}"
+              .selectedValues="${this.usersNotifiedIDs}"
+              ?required="${this._setRequired('users_notified', this.basePermissionPath)}"
+              ?invalid="${this.errors.users_notified}"
+              .errorMessage="${this.errors.users_notified}"
+              @focus="${(event: any) => this._resetFieldError(event)}"
               trigger-value-change-event
               data-value-path="target.selectedValues"
               data-field-path="usersNotifiedIDs"
-              on-etools-selected-items-changed="_setField"
+              @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
             >
             </etools-dropdown-multi>
-            <div class="pad-lr" hidden$="[[!isReadOnly('users_notified', basePermissionPath)]]">
-              <label for="notifiedLbl" class="paper-label">[[getLabel('users_notified', basePermissionPath)]]</label>
-              <div class="input-label" empty$="[[_emptyArray(data.users_notified)]]">
-                <dom-repeat items="[[data.users_notified]]">
-                  <template>
+            <div class="pad-lr" ?hidden="${!this.isReadOnly('users_notified', this.basePermissionPath)}">
+              <label for="notifiedLbl" class="paper-label">${this.getLabel(
+                'users_notified',
+                this.basePermissionPath
+              )}</label>
+              <div class="input-label" ?empty="${this._emptyArray(this.data.users_notified)}">
+                ${(this.data.users_notified || []).map(
+                  (item, index) => html`
                     <div>
-                      [[item.name]]
-                      <span class="separator">[[getSeparator(data.users_notified, index)]]</span>
+                      ${item.name}
+                      <span class="separator">${this.getSeparator(this.data.users_notified, index)}</span>
                     </div>
-                  </template>
-                </dom-repeat>
+                  `
+                )}
               </div>
             </div>
           </div>
@@ -571,10 +604,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Array})
   yearOfAuditOptions!: {label: string; value: number}[];
 
-  @property({type: String, observer: '_basePathChanged'})
-  basePermissionPath!: string;
-
-  @property({type: Array, computed: '_setEngagementTypes(basePermissionPath)'})
+  @property({type: Array})
   engagementTypes: GenericObject[] = [
     {
       label: 'Micro Assessment',
@@ -594,14 +624,17 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     }
   ];
 
-  @property({type: Object, notify: true})
+  @property({type: String})
+  basePermissionPath!: string;
+
+  @property({type: Object})
   data!: any;
 
   @property({type: Object})
   originalData: any = {};
 
   @property({type: Object})
-  errors = {};
+  errors: AnyObject = {};
 
   @property({type: String})
   engagementType = '';
@@ -618,13 +651,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     fields: ['agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value']
   };
 
-  @property({type: Array, computed: '_setSharedIpWith(basePermissionPath)'})
+  @property({type: Array})
   sharedIpWithOptions: [] = [];
 
   @property({type: Array})
   sharedIpWith: any[] = [];
 
-  @property({type: Boolean, computed: '_showJoinAudit(showInput, showAdditionalInput)'})
+  @property({type: Boolean})
   showJoinAudit = false;
 
   @property({type: Boolean})
@@ -654,32 +687,61 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   @property({type: Array})
   users!: GenericObject[];
 
+  @property({type: Object})
+  errorObject!: GenericObject;
+
   @property({type: Array})
   usersNotifiedOptions: GenericObject[] = [];
 
   @property({type: Array})
   usersNotifiedIDs: any[] = [];
 
+  @property({type: Boolean})
+  poUpdating!: boolean;
+
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
-  static get observers() {
-    return [
-      '_errorHandler(errorObject)',
-      '_setShowInput(data.engagement_type)',
-      '_setAdditionalInput(data.engagement_type)',
-      'updateStyles(poPermissionPath, poUpdating)',
-      'updateStyles(data.engagement_type)',
-      'updatePoBasePath(data.agreement.id)',
-      '_prepareData(data)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
+
+    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  firstUpdated(changedProperties: PropertyValues): void {
+    super.firstUpdated(changedProperties);
+
     const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
     purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
-    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    // @dci
+    // 'updateStyles(poPermissionPath, poUpdating)',
+    // 'updateStyles(data.engagement_type)',
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject);
+    }
+    if (changedProperties.has('data')) {
+      this.updatePoBasePath(this.data.agreement.id);
+      this._prepareData();
+      this._setShowInput(this.data.engagement_type);
+      this._setAdditionalInput(this.data.engagement_type);
+    }
+    if (changedProperties.has('basePermissionPath')) {
+      this._basePathChanged();
+      this._setEngagementTypes(this.basePermissionPath);
+      this._setSharedIpWith(this.basePermissionPath);
+    }
+    if (changedProperties.has('showInput') || changedProperties.has('showAdditionalInput')) {
+      this._showJoinAudit(this.showInput, this.showAdditionalInput);
+    }
+    if (changedProperties.has('basePermissionPath')) {
+      this._setSharedIpWith(this.basePermissionPath);
+    }
   }
 
   isReadonly_YearOfAudit(engagement_type, id) {
@@ -721,8 +783,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
         url: endpoint.url
       }
     }).then((resp: GenericObject) => {
-      const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.set('users', data);
+      this.users = page > 1 ? [...this.users, ...resp.results] : resp.results;
       this.setUsersNotifiedOptionsAndIDs();
       return resp;
     });
@@ -730,13 +791,14 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   _prepareData() {
     // reset orderNumber
-    this.set('orderNumber', null);
+    this.orderNumber = null;
 
     this.populateDropdownsAndSetSelectedValues();
 
-    const poItemId = this.get('data.po_item.id');
-    if (poItemId) {
-      this.set('data.po_item', poItemId);
+    const poItemId = this.data.po_item.id;
+    if (poItemId && this.data.po_item !== poItemId) {
+      this.data = {...this.data, po_item: poItemId};
+      fireEvent(this, 'data-changed', this.data);
     }
   }
 
@@ -761,18 +823,18 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     // For firm staff auditors certain endpoints return 403
     const userIsFirmStaffAuditor = this.userIsFirmStaffAuditor();
 
-    const savedSections = this.get('data.sections') || [];
-    this.set('sectionOptions', (userIsFirmStaffAuditor ? savedSections : getStaticData('sections')) || []);
+    const savedSections = this.data.sections || [];
+    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : getStaticData('sections')) || [];
     const sectionIDs = savedSections.map((section) => section.id);
-    this.set('sectionIDs', sectionIDs);
+    this.sectionIDs = sectionIDs;
 
-    const savedOffices = this.get('data.offices') || [];
-    this.set('officeOptions', (userIsFirmStaffAuditor ? savedOffices : getStaticData('offices')) || []);
+    const savedOffices = this.data.offices || [];
+    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : getStaticData('offices')) || [];
     const officeIDs = savedOffices.map((office) => office.id);
-    this.set('officeIDs', officeIDs);
+    this.officeIDs = officeIDs;
 
     if (!this.users) {
-      this.set('users', getStaticData('users') || []);
+      this.users = getStaticData('users') || [];
     }
     this.setUsersNotifiedOptionsAndIDs(true);
 
@@ -781,13 +843,13 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
     const availableUsers = [...this.users];
-    const notifiedUsers = this.get('data.users_notified') || [];
+    const notifiedUsers = this.data.users_notified || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
-    this.set('usersNotifiedOptions', availableUsers);
+    this.usersNotifiedOptions = availableUsers;
     if (setSavedUsersIDs) {
       // on the first call(after `data` is set), need to set usersNotifiedIDs (the IDs of the already saved users)
       const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
-      this.set('usersNotifiedIDs', usersNotifiedIDs);
+      this.usersNotifiedIDs = usersNotifiedIDs;
     }
   }
 
@@ -797,7 +859,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
 
   _setSharedIpWith(basePermissionPath: string) {
     const sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
-    return sharedIpWithOptions || [];
+    this.sharedIpWith = sharedIpWithOptions || [];
   }
 
   validate() {
@@ -830,7 +892,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   resetValidationErrors() {
-    this.set('errors.agreement', false);
+    this.errors = {...this.errors, agreement: false};
     const el = this.shadowRoot!.querySelectorAll('.validate-field');
     el.forEach((e: any) => (e.invalid = false));
 
@@ -867,40 +929,44 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     this.resetAgreement();
 
     if (!value) {
-      this.set('orderNumber', null);
+      this.orderNumber = null;
       return;
     }
 
     if (!this._validatePOLength(value)) {
-      this.set('errors.agreement', 'Purchase order number must be 10 digits');
-      this.set('orderNumber', null);
+      this.errors = {...this.errors, agreement: 'Purchase order number must be 10 digits'};
+      this.orderNumber = null;
       return;
     }
 
     this.requestInProcess = true;
-    this.set('orderNumber', value);
+    this.orderNumber = value;
     return true;
   }
 
   _agreementLoaded(event: CustomEvent) {
     if (event.detail?.success) {
-      this.set('data.agreement', event.detail.agreement);
+      this.data = {...this.data, agreement: event.detail.agreement};
+      fireEvent(this, 'data-changed', this.data);
     } else if (event.detail?.errors) {
-      this.set('errors', event.detail.errors);
+      this.errors = event.detail.errors;
     }
     this.requestInProcess = false;
+
     const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
     purchaseOrderEl.validate();
   }
 
   _poUpdatingStateChanged(event: CustomEvent): void {
-    this.set('poUpdating', event.detail.state);
+    this.poUpdating = event.detail.state;
   }
 
   resetAgreement() {
-    this.set('data.agreement', {order_number: this.data && this.data.agreement && this.data.agreement.order_number});
-    this.set('contractExpiryDate', undefined);
-    this.set('orderNumber', null);
+    this.data.agreement.order_number = this.data && this.data.agreement && this.data.agreement.order_number;
+    // @dci
+    fireEvent(this, 'data-changed', this.data);
+    this.contractExpiryDate = undefined;
+    this.orderNumber = null;
   }
 
   _validatePurchaseOrder(orderInput: any) {
@@ -908,23 +974,23 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return true;
     }
     if (this.requestInProcess) {
-      this.set('errors.agreement', 'Please, wait until Purchase Order loaded');
+      this.errors = {...this.errors, agreement: 'Please, wait until Purchase Order loaded'};
       return false;
     }
     const value = orderInput && orderInput.value;
     if (!value && orderInput && orderInput.required) {
-      this.set('errors.agreement', 'Purchase order is required');
+      this.errors = {...this.errors, agreement: 'Purchase order is required'};
       return false;
     }
     if (!this._validatePOLength(value)) {
-      this.set('errors.agreement', 'Purchase order number must be 10 digits');
+      this.errors = {...this.errors, agreement: 'Purchase order number must be 10 digits'};
       return false;
     }
     if (!this.data || !this.data.agreement || !this.data.agreement.id) {
-      this.set('errors.agreement', 'Purchase order not found');
+      this.errors = {...this.errors, agreement: 'Purchase order not found'};
       return false;
     }
-    this.set('errors.agreement', false);
+    this.errors = {...this.errors, agreement: false};
     return true;
   }
 
@@ -976,23 +1042,23 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       data.year_of_audit = this.data.year_of_audit;
     }
 
-    const originalUsersNotifiedIDs = (this.get('originalData.users_notified') || []).map((user) => +user.id);
+    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
     if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
       data.users_notified = this.usersNotifiedIDs;
     }
 
-    const originalSharedIpWith = this.get('originalData.shared_ip_with') || [];
+    const originalSharedIpWith = this.originalData?.shared_ip_with || [];
     const sharedIpWith = this.data.shared_ip_with || [];
     if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
       data.shared_ip_with = sharedIpWith;
     }
 
-    const originalOfficeIDs = (this.get('originalData.offices') || []).map((office) => +office.id);
+    const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
     if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
       data.offices = this.officeIDs;
     }
 
-    const originalSectionIDs = (this.get('originalData.sections') || []).map((section) => +section.id);
+    const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
     if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
       data.sections = this.sectionIDs;
     }
@@ -1024,7 +1090,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _contractEndDateHasChanged(event: CustomEvent) {
-    if (!this.get('data.agreement.id')) {
+    if (!this.data?.agreement?.id) {
       return;
     }
     const selectedDate = event.detail.date;
@@ -1032,12 +1098,12 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
   }
 
   _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
-    return showAdditionalInput && showInput;
+    this.showJoinAudit = showAdditionalInput && showInput;
   }
 
   updatePoBasePath(id: any) {
     const path = id ? `po_${id}` : '';
-    this.set('poPermissionPath', path);
+    this.poPermissionPath = path;
   }
 
   _setExpiryMinDate(minDate: any) {
@@ -1058,7 +1124,7 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
       return;
     }
 
-    return types.map((typeObject: any) => {
+    this.engagementTypes = types.map((typeObject: any) => {
       return {
         value: typeObject.value,
         label: typeObject.display_name
@@ -1122,7 +1188,3 @@ class EngagementInfoDetails extends DateMixin(CommonMethodsMixin(PolymerElement)
     return !!value;
   }
 }
-
-window.customElements.define('engagement-info-details', EngagementInfoDetails);
-
-export {EngagementInfoDetails as EngagementInfoDetailsEl};
