@@ -11,15 +11,13 @@ import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 
-import isUndefined from 'lodash-es/isUndefined';
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isString from 'lodash-es/isString';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../types/global';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {getUserData} from '../../../mixins/user-controller';
 import CommonMethodsMixinLit from '../../../mixins/common-methods-mixin-lit';
 import TableElementsMixinLit from '../../../mixins/table-elements-mixin-lit';
@@ -30,6 +28,11 @@ import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler'
 import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
 import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
 import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
+import {
+  EtoolsPaginator,
+  defaultPaginator,
+  getPaginatorWithBackend
+} from '@unicef-polymer/etools-table/pagination/etools-pagination';
 
 /**
  * @LitElement
@@ -220,7 +223,7 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
           this.basePermissionPath,
           this.datalength,
           this.dataItems.length,
-          this.searchQuery
+          this.listQueries?.search
         )}"
         list
       >
@@ -229,13 +232,15 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
             <div class="search-input-container" ?hidden="${!this._showPagination(this.datalength)}">
               <paper-input
                 id="searchInput"
-                class="search-input ${this._getSearchInputClass(this.searchString)}"
-                .value="${this.searchString}"
+                class="search-input  ${this._getSearchInputClass(this.searchString)}"
                 placeholder="Search"
-                @blur="${this.searchBlur}"
-                @input="${this._searchChanged}"
-                data-value-path="target.value"
-                data-field-path="searchString"
+                .value="${this.searchString}"
+                @value-changed="${({detail}) => {
+                  if (detail.value !== this.searchString) {
+                    this.searchString = detail.value;
+                    this._searchChanged(this.searchString);
+                  }
+                }}"
               >
                 <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
               </paper-input>
@@ -266,7 +271,15 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
           <etools-loading .active="${this.listLoading}" loading-text="Loading list data..." class="loading">
           </etools-loading>
 
-          <etools-table .columns="${this.columns}" .items="${this.dataItems}" singleSort></etools-table>
+          <etools-table
+            .columns="${this.columns}"
+            .items="${this.dataItems}"
+            .paginator="${this._showPagination(this.datalength) ? this.paginator : null}"
+            @paginator-change="${this.paginatorChange}"
+            @item-changed="${({detail}: CustomEvent) => {
+              console.log(detail);
+            }}"
+          ></etools-table>
         </div>
       </etools-content-panel>
     `;
@@ -278,22 +291,25 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   @property({type: String})
   staffsBase = '';
 
+  @property({type: Object})
+  paginator: EtoolsPaginator | null = null;
+
   @property({type: Array})
   dataItems: any[] = [];
 
-  @property({type: Object})
-  itemModel: GenericObject = {
-    user: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      profile: {
-        job_title: '',
-        phone_number: ''
-      }
-    },
-    hasAccess: true
-  };
+  // @property({type: Object})
+  // itemModel: GenericObject = {
+  //   user: {
+  //     first_name: '',
+  //     last_name: '',
+  //     email: '',
+  //     profile: {
+  //       job_title: '',
+  //       phone_number: ''
+  //     }
+  //   },
+  //   hasAccess: true
+  // };
 
   @property({type: Array})
   columns: any[] = [
@@ -351,7 +367,8 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   @property({type: Object})
   listQueries: GenericObject = {
     page: 1,
-    page_size: 10
+    page_size: 10,
+    search: ''
   };
 
   @property({type: Object})
@@ -360,15 +377,8 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   @property({type: Boolean})
   listLoading = false;
 
-  @property({type: String})
-  // computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' + 'dataItems.length)'
-  showingResults!: string;
-
   @property({type: Number})
   datalength = 0;
-
-  @property({type: String})
-  searchQuery = '';
 
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this Audit Staff Team Member?';
@@ -376,20 +386,8 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   @property({type: Boolean})
   saveWithButton = false;
 
-  @property({type: String})
-  newEmail: string | null = '';
-
   @property({type: Object})
   engagement!: GenericObject;
-
-  @property({type: Number})
-  listSize!: number;
-
-  @property({type: Number})
-  lastSize!: number;
-
-  @property({type: Number})
-  listPage!: number;
 
   @property({type: Number})
   organizationId!: number;
@@ -398,16 +396,7 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   basePermissionPath = '';
 
   @property({type: Boolean})
-  emailChecking!: boolean;
-
-  @property({type: Boolean})
   showInactive!: boolean;
-
-  @property({type: Object})
-  newData!: GenericObject;
-
-  @property({type: Object})
-  lastSearchQuery!: GenericObject;
 
   @property({type: String})
   pageType = '';
@@ -415,12 +404,10 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   @property({type: String})
   searchString = '';
 
-  private _newRequestDebouncer!: Debouncer;
-
   connectedCallback() {
     super.connectedCallback();
-    this.listSize = 10;
-    this.listPage = 1;
+
+    this._searchChanged = debounce(this._searchChanged.bind(this), 400) as any;
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -435,13 +422,6 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     if (changedProperties.has('engagement') || changedProperties.has('basePermissionPath')) {
       this._organizationChanged(this.engagement.agreement.auditor_firm.id);
       this._selectedStaffsChanged(this.engagement.staff_members);
-    }
-    if (
-      changedProperties.has('listSize') ||
-      changedProperties.has('listPage') ||
-      changedProperties.has('searchQuery')
-    ) {
-      this._queriesChanged(this.listSize, this.listPage, this.searchQuery);
     }
     if (changedProperties.has('dataItems') || changedProperties.has('engagementStaffs')) {
       this._staffMembersListChanged(this.dataItems, this.engagementStaffs);
@@ -486,11 +466,23 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   listLoaded(event: CustomEvent): void {
     const data = event.detail;
     this.staffsBase = getStaffCollectionName(this.organizationId);
-    this.dataItems = data.results;
-    this.computeStaffMembActiveColumn();
+
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
+    if (this._showPagination(this.datalength)) {
+      if (!this.paginator) {
+        this.paginator = {...defaultPaginator, page_size: 10};
+        this.paginator = getPaginatorWithBackend(this.paginator, data.count);
+      }
+    }
+    this.dataItems = data.results;
+    this.computeStaffMembActiveColumn();
+  }
+
+  paginatorChange(e: CustomEvent) {
+    this.paginator = {...e.detail};
+    this.listQueries = {...this.listQueries, page: this.paginator?.page, page_size: this.paginator?.page_size};
   }
 
   computeStaffMembActiveColumn() {
@@ -524,31 +516,6 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
       url += `list?organization_type=audit&organization_id=${organizationId}`;
     }
     return url;
-  }
-
-  _queriesChanged(listSize, listPage, searchQuery) {
-    if (!listPage || !listSize) {
-      return;
-    }
-
-    if (
-      ((this.lastSize && this.lastSize !== listSize) ||
-        (!isUndefined(this.lastSearchQuery) && this.lastSearchQuery !== searchQuery)) &&
-      this.listPage !== 1
-    ) {
-      this.lastSearchQuery = searchQuery;
-      this.lastSize = listSize;
-      this.listPage = 1;
-      return;
-    }
-    this.lastSize = listSize;
-    this.lastSearchQuery = searchQuery;
-
-    this.listQueries = {
-      page_size: listSize,
-      page: listPage,
-      search: searchQuery || ''
-    };
   }
 
   _staffMembersListChanged(data, staffs) {
@@ -585,25 +552,6 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     }
   }
 
-  _calcShowingResults(datalength, listSize, listPage, searchQuery, itemsLength) {
-    let last = listSize * listPage;
-    let first = last - listSize + 1;
-    const length = searchQuery ? itemsLength : datalength;
-
-    if (last > length) {
-      last = length;
-    }
-    if (first > length) {
-      first = 0;
-    }
-    return `${first}-${last} of ${length}`;
-  }
-
-  updatePagination(event: CustomEvent): void {
-    this.listPage = event.detail.pageNumber;
-    this.listSize = event.detail.pageSize;
-  }
-
   _isActive(event) {
     const item = event && event.model && event.model.item;
     if (!item) {
@@ -618,8 +566,8 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     this._updateEngagement(true, updateOptions);
   }
 
-  _showPagination(dataItems) {
-    return !!(+dataItems && +dataItems > 10);
+  _showPagination(dataItemsCount) {
+    return !!(+dataItemsCount && +dataItemsCount > 10);
   }
 
   _getTitle(path, basePermission, length, length2, search) {
@@ -663,8 +611,7 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
 
   resetList() {
     this.dataItems = [];
-    this.listPage = 1;
-    this.searchQuery = '';
+    this.listQueries = {page: 1, page_size: 10, search: ''};
     this.searchString = '';
     this.engagementStaffs = {};
     this.datalength = 0;
@@ -693,31 +640,18 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     return dataChanged ? staffs : null;
   }
 
-  _getSearchInputClass(searchString) {
-    if (searchString) {
-      return 'filled';
+  _searchChanged(searchString) {
+    if (this.paginator) {
+      this.paginator.page = 1;
     }
-    return 'empty';
-  }
-
-  searchBlur() {
-    // @dci can be removed ???
-  }
-
-  _searchChanged(e: any) {
-    this._setField(e);
-    setTimeout(() => {
-      const value = (this.shadowRoot?.querySelector('#searchInput') as any).value || '';
-
-      if (value.length - 1) {
-        this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {
-          this.searchQuery = value;
-        });
-      }
-    });
+    this.listQueries = {...this.listQueries, search: searchString, page: 1};
   }
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
     return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
+  }
+
+  _getSearchInputClass(searchString) {
+    return searchString ? 'filled' : 'empty';
   }
 }

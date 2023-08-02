@@ -27,10 +27,6 @@ export class GetStaffMembersList extends LitElement {
   @property({type: String})
   pageType = '';
 
-  static get observers() {
-    return ['_startRequest(organisationId, queries)'];
-  }
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
