@@ -20,12 +20,12 @@ import './report-page-components/sa-report-page-main/sa-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/pages-header-element/pages-header-element';
 
-import EngagementMixinLit from '../../mixins/engagement-mixin-lit';
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
+import EngagementMixin from '../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles-lit';
 
 import assign from 'lodash-es/assign';
@@ -39,7 +39,7 @@ import {GenericObject} from '../../../types/global';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('special-audits-page-main')
-export class SpecialAuditsPageMain extends CommonMethodsMixinLit(EngagementMixinLit(LitElement)) {
+export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -195,7 +195,7 @@ export class SpecialAuditsPageMain extends CommonMethodsMixinLit(EngagementMixin
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
-                          .engagement="${this.engagement}}"
+                          .engagement="${this.engagement}"
                           .permissionBase="${this.permissionBase}"
                         >
                         </follow-up-main>

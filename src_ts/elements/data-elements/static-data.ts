@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, customElement} from 'lit-element';
 import famEndpoints from '../config/endpoints';
 import {getEndpoint} from '../config/endpoints-controller';
 import {addToCollection, getChoices, isValidCollection} from '../mixins/permission-controller';
@@ -11,8 +11,9 @@ import './user-data';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
 
-class StaticData extends PolymerElement {
-  public static get template() {
+@customElement('static-data')
+export class StaticData extends LitElement {
+  render() {
     return html` <user-data></user-data> `;
   }
 
@@ -338,5 +339,3 @@ class StaticData extends PolymerElement {
     console[eventType](`Can not load initial data: ${message || '?'}. Reason: ${type || '?'}`);
   }
 }
-
-window.customElements.define('static-data', StaticData);

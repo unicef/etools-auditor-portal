@@ -1,25 +1,25 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-textarea';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-tooltip/paper-tooltip';
-import {property} from '@polymer/decorators/lib/decorators';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import DateMixin from '../../../../mixins/date-mixin';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
-import {getStaticData} from '../../../../mixins/static-data-controller';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import {getStaticData} from '../../../../mixins/static-data-controller';
 import {GenericObject} from '../../../../../types/global';
 
 import find from 'lodash-es/find';
@@ -28,19 +28,26 @@ import isObject from 'lodash-es/isObject';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqualWith from 'lodash-es/isEqualWith';
 import cloneWith from 'lodash-es/cloneWith';
+import {getHeadingLabel} from '../../../../mixins/permission-controller';
 
 /**
- * @polymer
+ * @LitEelement
  * @mixinFunction
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin DateMixin
  */
-class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
-  static get template() {
-    // language=HTML
+@customElement('summary-findings-element')
+export class SummaryFindingsElement extends CommonMethodsMixin(
+  TableElementsMixin(DateMixin(ModelChangedMixin(LitElement)))
+) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host {
           .repeatable-item-container[without-line] {
@@ -56,183 +63,198 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-
         datepicker-lite::part(dp-calendar) {
           position: fixed;
+        }
+        .mt-30 {
+          margin-top: 30px;
         }
       </style>
 
       <etools-content-panel
         list
         class="content-section clearfix"
-        panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations"
+        panel-title="Summary of ${this.priority?.display_name} Priority Findings and Recommendations"
       >
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
+          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
             <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
+        <etools-data-table-header no-title>
+          <etools-data-table-column class="col-3">Finding Number</etools-data-table-column>
+          <etools-data-table-column class="col-6">
+            ${getHeadingLabel(this.basePermissionPath, 'findings.category_of_observation', 'Subject Area')}
+          </etools-data-table-column>
+          <etools-data-table-column class="col-3">
+            ${getHeadingLabel(this.basePermissionPath, 'findings.deadline_of_action', 'Deadline of Action')}
+          </etools-data-table-column>
+        </etools-data-table-header>
 
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showFindings">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            details="[[details]]"
-            has-collapse
-            no-animation
-          >
-            <div slot="custom">[[getCategoryDisplayName(item.category_of_observation, '--')]]</div>
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
-
-        <template is="dom-if" if="[[!_getLength(dataItems, dataItems.length)]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-        </template>
-      </etools-content-panel>
-
-      <etools-dialog
-        theme="confirmation"
-        id="delete-summary-findings"
-        size="md"
-        opened="{{confirmDialogOpened}}"
-        keep-dialog-open
-        on-confirm-btn-clicked="removeItem"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        Are you sure you want to delete this attachment?
-      </etools-dialog>
-
-      <etools-dialog
-        size="md"
-        no-padding
-        id="summary-findings"
-        dialog-title="[[dialogTitle]]"
-        keep-dialog-open
-        opened="{{dialogOpened}}"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Category of Observation -->
-                <etools-dropdown
-                  class="validate-input"
-                  label="[[getLabel('findings.category_of_observation',
-                                                    basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('findings.category_of_observation',
-                                                            basePermissionPath)]]"
-                  options="[[categoryOfObservation]]"
-                  option-label="display_name"
-                  option-value="value"
-                  selected="{{editedItem.category_of_observation}}"
-                  trigger-value-change-event
-                  required$="[[_setRequired('findings.category_of_observation',
-                                                        basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
-                  invalid="{{errors.category_of_observation}}"
-                  error-message="{{errors.category_of_observation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  hide-search
-                >
-                </etools-dropdown>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-3">${item.finding}</span>
+                <span class="col-data col-6">${item.category_of_observation}</span>
+                <span class="col-data col-3">${item.deadline_of_action}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
               </div>
-            </div>
 
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Recommendation -->
-                <paper-textarea
-                  class$="{{_setRequired('findings.recommendation', basePermissionPath)}} fixed-width validate-input"
-                  value="{{editedItem.recommendation}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('findings.recommendation', basePermissionPath)]]"
-                  always-float-label
-                  placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                  required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.recommendation}}"
-                  error-message="{{errors.recommendation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
+              <div slot="row-data-details">
+                <div class="row-details-content col-12">
+                  <span class="rdc-title">
+                    ${getHeadingLabel(this.basePermissionPath, 'findings.recommendation', 'Recommendation')}
+                  </span>
+                  <span>${item.recommendation}</span>
+                </div>
+                <div class="row-details-content col-12 mt-30">
+                  <span class="rdc-title">
+                    ${getHeadingLabel(this.basePermissionPath, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
+                  </span>
+                  <span>${item.agreed_action_by_ip}</span>
+                </div>
               </div>
-            </div>
+            </etools-data-table-row>
+          `
+        )}
 
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Agreed Action by IP -->
-                <paper-textarea
-                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]
-                                fixed-width validate-input"
-                  value="{{editedItem.agreed_action_by_ip}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
-                  always-float-label
-                  placeholder="[[getPlaceholderText('findings.agreed_action_by_ip',
-                                                basePermissionPath)]]"
-                  required$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.agreed_action_by_ip}}"
-                  error-message="{{errors.agreed_action_by_ip}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
+        <etools-dialog
+          theme="confirmation"
+          id="delete-summary-findings"
+          size="md"
+          .opened="${this.confirmDialogOpened}"
+          keep-dialog-open
+          @confirm-btn-clicked="${this.removeItem}"
+          ok-btn-text="Delete"
+          openFlag="confirmDialogOpened"
+          @close="${this._resetDialogOpenedFlag}"
+        >
+          Are you sure you want to delete this attachment?
+        </etools-dialog>
 
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Deadline of Action -->
-                <datepicker-lite
-                  id="deadlineActionSelector"
-                  selected-date-display-format="D MMM YYYY"
-                  placeholder="[[getPlaceholderText('findings.deadline_of_action',
-                                                    basePermissionPath)]]"
-                  label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
-                  value="[[editedItem.deadline_of_action]]"
-                  error-message="{{errors.deadline_of_action}}"
-                  required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
-                  readonly$="{{requestInProcess}}"
-                  fire-date-has-changed
-                  property-name="deadline_of_action"
-                  on-date-has-changed="deadlineDateHasChanged"
-                >
-                </datepicker-lite>
-              </div>
+        <etools-dialog
+          size="md"
+          no-padding
+          id="summary-findings"
+          .dialogTitle="${this.dialogTitle}"
+          keep-dialog-open
+          .opened="${this.dialogOpened}"
+          .okBtnText="${this.confirmBtnText}"
+          ?showSpinner="${this.requestInProcess}"
+          ?disable-confirm-btn="${this.requestInProcess}"
+          @confirm-btn-clicked="${this._addItemFromDialog}"
+          openFlag="dialogOpened"
+          @close="${this._resetDialogOpenedFlag}"
+        >
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Category of Observation -->
+              <etools-dropdown
+                class="validate-input"
+                label="${this.getLabel('findings.category_of_observation', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('findings.category_of_observation', this.basePermissionPath)}"
+                .options="${this.categoryOfObservation}"
+                option-label="display_name"
+                option-value="value"
+                .selected="${this.editedItem?.category_of_observation}"
+                trigger-value-change-event
+                ?required="${this._setRequired('findings.category_of_observation', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors?.category_of_observation}"
+                .errorMessage="${this.errors?.category_of_observation}"
+                @focus="${this._resetFieldError}"
+                @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                  this.selectedItemChanged(detail, 'category_of_observation', 'value', 'editedItem')}"
+                hide-search
+              >
+              </etools-dropdown>
             </div>
           </div>
-        </div>
-      </etools-dialog>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Recommendation -->
+              <paper-textarea
+                class="${this._setRequired(
+                  'findings.recommendation',
+                  this.basePermissionPath
+                )} fixed-width validate-input"
+                .value="${this.editedItem?.recommendation}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"
+                always-float-label
+                placeholder="${this.getPlaceholderText('findings.recommendation', this.basePermissionPath)}"
+                ?required="${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors?.recommendation}"
+                .errorMessage="${this.errors?.recommendation}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.valueChanged(detail, 'recommendation', this.editedItem)}"
+              >
+              </paper-textarea>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Agreed Action by IP -->
+              <paper-textarea
+                class="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}
+                                fixed-width validate-input"
+                .value="${this.editedItem?.agreed_action_by_ip}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                always-float-label
+                placeholder="${this.getPlaceholderText('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                ?required="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors?.agreed_action_by_ip}"
+                .errorMessage="${this.errors?.agreed_action_by_ip}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.valueChanged(detail, 'agreed_action_by_ip', this.editedItem)}"
+              >
+              </paper-textarea>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-6">
+              <!-- Deadline of Action -->
+              <datepicker-lite
+                id="deadlineActionSelector"
+                selected-date-display-format="D MMM YYYY"
+                placeholder="${this.getPlaceholderText('findings.deadline_of_action', this.basePermissionPath)}"
+                label="${this.getLabel('findings.deadline_of_action', this.basePermissionPath)}"
+                .value="${this.editedItem?.deadline_of_action}"
+                .errorMessage="${this.errors?.deadline_of_action}"
+                ?required="${this._setRequired('findings.deadline_of_action', this.basePermissionPath)}"
+                ?readonly="${this.requestInProcess}"
+                fire-date-has-changed
+                property-name="deadline_of_action"
+                @date-has-changed="${this.deadlineDateHasChanged}"
+              >
+              </datepicker-lite>
+            </div>
+          </div>
+        </etools-dialog>
+      </etools-content-panel>
     `;
   }
 
   @property({type: Array})
   categoryOfObservation: any[] = [];
 
-  @property({type: Array, notify: true})
+  @property({type: Array})
   dataItems: any[] = [];
 
   @property({type: String})
@@ -290,7 +312,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   @property({type: Object})
   priority: GenericObject = {};
 
-  @property({type: String, computed: 'getErrorBaseText(priority)'})
+  @property({type: String})
   errorBaseText!: string;
 
   @property({type: String})
@@ -299,28 +321,42 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   @property({type: Object})
   originalData!: GenericObject;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_setPriority(itemModel, priority)',
-      '_complexErrorHandler(errorObject.findings)'
-    ];
-  }
+  @property({type: Object})
+  errorObject!: GenericObject;
 
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener('dialog-confirmed', this._addItemFromDialog);
     this.addEventListener('delete-confirmed', this.removeItem);
     this.categoryOfObservation = getStaticData('category_of_observation');
-    this.set('errors.deadline_of_action', false);
+    this.errors.deadline_of_action = false;
   }
 
-  getErrorBaseText(priority) {
-    if (!priority) {
-      return '';
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
     }
-    return `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
+    if (changedProperties.has('confirmDialogOpened')) {
+      this.resetDialog(this.confirmDialogOpened);
+    }
+    if (changedProperties.has('itemModel') || changedProperties.has('priority')) {
+      this._setPriority(this.itemModel, this.priority);
+    }
+    if (changedProperties.has('priority')) {
+      this.setErrorBaseText(this.priority);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject.findings);
+    }
+  }
+
+  setErrorBaseText(priority) {
+    if (!priority) {
+      this.errorBaseText = '';
+    }
+    this.errorBaseText = `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
   }
 
   getCategoryDisplayName(value, emptyValue) {
@@ -340,7 +376,8 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   _setPriority(itemModel, priority) {
     itemModel.priority = priority.value;
     if (priority.value === 'high') {
-      this.updateStyles({'--ecp-header-bg': 'var(--module-warning)'});
+      // @dci
+      // this.updateStyles({'--ecp-header-bg': 'var(--module-warning)'});
     }
   }
 
@@ -405,6 +442,3 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
     this.editedItem.deadline_of_action = e.detail.date;
   }
 }
-
-window.customElements.define('summary-findings-element', SummaryFindingsElement);
-export {SummaryFindingsElement};

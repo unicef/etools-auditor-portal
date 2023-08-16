@@ -1,6 +1,5 @@
-import {Constructor, GenericObject} from '../../types/global';
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property} from 'lit-element';
+import {Constructor, GenericObject} from '@unicef-polymer/etools-types';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
@@ -12,9 +11,9 @@ import {refactorErrorObject} from './error-handler';
  * @polymer
  * @mixinFunction
  */
-function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class TableElementsMixinClass extends baseClass {
-    @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
+    @property({type: Array})
     dataItems: any[] = [];
 
     @property({type: Object})
@@ -36,12 +35,10 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     errors: GenericObject = {};
 
-    // TODO: polymer 3 migration - check if this observer is needed
-    @property({type: Boolean, observer: 'updateStyles'})
+    @property({type: Boolean})
     canBeRemoved = false;
 
-    // TODO: polymer 3 migration - check if this observer is needed
-    @property({type: Boolean, observer: 'updateStyles'})
+    @property({type: Boolean})
     requestInProcess = false;
 
     @property({type: Boolean})
@@ -89,6 +86,14 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
+    }
+
+    updated(changedProperties: PropertyValues): void {
+      super.updated(changedProperties);
+
+      if (changedProperties.has('dataItems')) {
+        this._dataItemsChanged(this.dataItems);
+      }
     }
 
     _dataItemsChanged(data) {
@@ -176,11 +181,12 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       this.dialogOpened = true;
     }
 
-    openEditDialog(event = {}) {
-      let index = (event as GenericObject).itemIndex; // TODO is event.itemIndex ever valid?
-      if (isNaN(index) || !~index) {
-        index = this._getIndex(event);
-      }
+    openEditDialog(index) {
+      // @dci
+      // let index = (event as GenericObject).itemIndex; // TODO is event.itemIndex ever valid?
+      // if (isNaN(index) || !~index) {
+      //   index = this._getIndex(event);
+      // }
 
       this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
       this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
@@ -190,23 +196,12 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       this.dialogOpened = true;
     }
 
-    openDeleteDialog(event) {
-      const index = this._getIndex(event);
-
+    openDeleteDialog(index) {
+      // const index = this._getIndex(event);
+      // @dci
       this._setDialogData(index);
 
       this.confirmDialogOpened = true;
-    }
-
-    _getIndex(event) {
-      const item = event && event.model && event.model.item;
-      const index = this.dataItems && this.dataItems.indexOf(item);
-
-      if ((!index && index !== 0) || index < 0) {
-        throw Error('Can not find user data');
-      }
-
-      return index;
     }
 
     _setDialogData(index) {
@@ -258,10 +253,10 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       const item = cloneDeep(this.editedItem);
       if (!this.addDialog && !isNaN(this.editedIndex)) {
         // if is edit popup
-        this.splice('dataItems', this.editedIndex, 1, item);
+        this.dataItems.splice(this.editedIndex, 1, item);
       } else {
         // if is creation popup
-        this.push('dataItems', item);
+        this.dataItems.push(item);
       }
     }
 
@@ -291,10 +286,10 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     removeItem() {
       if (this.editedItem && this.editedItem.id !== undefined) {
-        this.set('editedItem._delete', true);
+        this.editedItem._delete = true;
         this._triggerSaveEngagement();
       } else {
-        this.splice('dataItems', this.editedIndex, 1);
+        this.dataItems.splice(this.editedIndex, 1);
         this.resetDialog();
         this.confirmDialogOpened = false;
       }
@@ -314,7 +309,7 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return;
       }
       const refactoredData = this.dialogOpened ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
-      this.set('errors', refactoredData);
+      this.errors = refactoredData;
     }
 
     deleteCanceled(event) {

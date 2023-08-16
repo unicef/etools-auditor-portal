@@ -1,5 +1,4 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property} from 'lit-element';
 import isUndefined from 'lodash-es/isUndefined';
 import includes from 'lodash-es/includes';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -8,7 +7,7 @@ import assign from 'lodash-es/assign';
 import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {Constructor, GenericObject} from '../../types/global';
+import {Constructor, GenericObject} from '@unicef-polymer/etools-types';
 import {getEndpoint} from '../config/endpoints-controller';
 import {getUserData} from './user-controller';
 import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
@@ -22,8 +21,8 @@ let currentEngagement: {details?: GenericObject; type?: string} = {};
  */
 // TODO: in old behavior config globals was used, check usage
 
-function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class EngagementMixinClass extends baseClass {
+function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
+  class EngagementMixinLitClass extends baseClass {
     @property({type: Number})
     engagementId!: number | null;
 
@@ -45,10 +44,13 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: String})
     permissionBase!: string | null;
 
-    @property({type: Object, observer: '_errorOccurred'})
+    @property({type: String})
+    timeStamp!: string;
+
+    @property({type: Object})
     errorObject: GenericObject = {};
 
-    @property({type: Boolean, observer: 'resetInputDialog'})
+    @property({type: Boolean})
     dialogOpened = false;
 
     @property({type: String})
@@ -90,6 +92,17 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       this.removeEventListener('action-activated', this._processAction as any);
     }
 
+    updated(changedProperties: PropertyValues): void {
+      super.updated(changedProperties);
+
+      if (changedProperties.has('errorObject')) {
+        this._errorOccurred(this.errorObject);
+      }
+      if (changedProperties.has('dialogOpened')) {
+        this.resetInputDialog(this.dialogOpened);
+      }
+    }
+
     _routeConfig(route) {
       if (this.route && !~this.route.prefix.indexOf(this.engagementPrefix)) {
         return;
@@ -100,7 +113,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const id = this.routeData ? this.routeData.id : route.path.split('/')[1];
       let tab = this.routeData ? this.routeData.tab : route.path.split('/')[2];
       if (tab === '' || isUndefined(tab)) {
-        this.set('route.path', `/${id}/overview`);
+        this.route = {...this.route, path: `/${id}/overview`};
         tab = 'overview';
       }
       if (!this.engagementId) {
@@ -123,17 +136,19 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
         (tab === 'follow-up' && !this._showFollowUpTabs(permissionBase))
       ) {
         const id = route.path.split('/')[1];
-        this.set('route.path', `/${id}/overview`);
+        this.route = {...this.route, path: `/${id}/overview`};
       }
     }
 
     _infoLoaded() {
       // save data copy
-      this.set('originalData', cloneDeep(this.engagement));
+      this.originalData = cloneDeep(this.engagement);
+      this.engagement = {...this.engagement};
+      this.timeStamp = String(new Date().getTime());
 
       const tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
       if (!~this.tabsList.indexOf(tab)) {
-        this.routeData.tab = this.tabsList[0] || '';
+        this.routeData = {...this.routeData, tab: this.tabsList[0] || ''};
         return;
       }
 
@@ -152,7 +167,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const data = event.detail.data;
       const success = event.detail.success;
       if (data) {
-        this.set('originalData', cloneDeep(this.engagement));
+        this.originalData = cloneDeep(this.engagement);
       }
 
       if (!isNil(success) && data && data.status === 'final') {
@@ -164,7 +179,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     _tabChanged(tab) {
       if (tab && this.routeData && this.routeData.tab !== tab) {
-        this.set('routeData.tab', tab);
+        this.routeData = {...this.routeData, tab: tab};
       }
     }
 
@@ -305,7 +320,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
     persistCurrentEngagement(engagement, type) {
       currentEngagement = {details: engagement, type};
-      this.set('currentEngagement', currentEngagement);
+      this.currentEngagement = currentEngagement;
     }
 
     getCurrentEngagement() {
@@ -374,7 +389,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       if (!detailsValid || !partnerDetailsValid) {
         const openTab = partnerDetailsValid && detailsValid ? 'attachments' : 'overview';
-        this.set(property || 'tab', openTab);
+        this[property || 'tab'] = openTab;
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
       }
@@ -474,11 +489,11 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       const page = whichPageTrows(errorObj);
       if (page) {
         const tab = this.tab ? 'tab' : 'routeData.tab';
-        this.set(tab, page);
+        this[tab] = page;
       }
     }
   }
-  return EngagementMixinClass;
+  return EngagementMixinLitClass;
 }
 
 export default EngagementMixin;

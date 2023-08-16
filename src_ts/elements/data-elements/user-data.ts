@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {LitElement, customElement} from 'lit-element';
 import get from 'lodash-es/get';
 import sortBy from 'lodash-es/sortBy';
 import set from 'lodash-es/set';
@@ -9,7 +9,8 @@ import famEndpoints from '../config/endpoints.js';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 
-class UserData extends PolymerElement {
+@customElement('user-data')
+export class UserData extends LitElement {
   public connectedCallback() {
     super.connectedCallback();
 
@@ -51,4 +52,3 @@ class UserData extends PolymerElement {
     }
   }
 }
-window.customElements.define('user-data', UserData);

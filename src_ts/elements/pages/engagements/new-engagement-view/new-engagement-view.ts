@@ -1,9 +1,7 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-if';
+import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
 import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
@@ -15,20 +13,21 @@ import EngagementMixin from '../../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {clearQueries} from '../../../mixins/query-params-controller';
 import '../../../mixins/permission-controller';
-import {sharedStyles} from '../../../styles/shared-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {mainPageStyles} from '../../../styles/main-page-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {mainPageStyles} from '../../../styles/main-page-styles-lit';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
-import {FileAttachmentsTabEl} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
+import {FileAttachmentsTab} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../data-elements/add-new-engagement';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 // eslint-disable-next-line
-import {EngagementInfoDetailsEl} from '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import {EngagementInfoDetails} from '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 // eslint-disable-next-line
-import {PartnerDetailsTabEl} from '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import {PartnerDetailsTab} from '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
@@ -36,16 +35,21 @@ import {BASE_PATH} from '../../../config/config';
 import {navigateToUrl} from '../../../utils/navigate-helper';
 /**
  * @customElement
- * @polymer
+ * @LitElement
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin LastCreatedMixin
  */
-class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement))) {
-  static get template() {
-    // language=HTML
+
+@customElement('new-engagement-view')
+export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMixin(LitElement))) {
+  static get styles() {
+    return [moduleStyles, gridLayoutStylesLit, mainPageStyles];
+  }
+
+  render() {
     return html`
-      ${sharedStyles} ${moduleStyles} ${mainPageStyles}
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
@@ -87,16 +91,24 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         }
       </style>
 
-      <app-route route="{{route}}" pattern="/:tab" data="{{routeData}}"> </app-route>
+      <app-route
+        .route="${this.route}"
+        @route-changed="${this._routeChanged}"
+        pattern="/:tab"
+        .data="${this.routeData}"
+        @data-changed="${this._routeDataChanged}"
+      >
+      </app-route>
 
       <add-new-engagement
-        endpoint-name="[[endpointName]]"
-        new-engagement-data="{{newEngagementData}}"
-        error-object="{{errorObject}}"
+        .endpointName="${this.endpointName}"
+        .newEngagementData="${this.newEngagementData}"
+        @engagement-created="${({detail}) => (this.newEngagementData = detail.data)}"
+        .errorObject="${this.errorObject}"
       >
       </add-new-engagement>
 
-      <pages-header-element hide-print-button page-title="[[pageTitle]]" engagement="[[engagement]]">
+      <pages-header-element hide-print-button .pageTitle="${this.pageTitle}" engagement="${this.engagement}">
       </pages-header-element>
 
       <div class="tab-selector">
@@ -106,7 +118,8 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
           bottom-item=""
           role="tablist"
           tabindex="0"
-          selected="{{routeData.tab}}"
+          .selected="${this.routeData?.tab}"
+          @selected-changed="${(e: CustomEvent) => (this.routeData.tab = e.detail.value)}"
         >
           <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
           <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -115,44 +128,44 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
 
       <div class="view-container">
         <div id="pageContent">
-          <iron-pages id="info-tabs" selected="{{routeData.tab}}" attr-for-selected="name">
+          <iron-pages id="info-tabs" .selected="${this.routeData?.tab}" attr-for-selected="name">
             <div name="overview">
               <engagement-info-details
-                error-object="{{errorObject}}"
-                data="{{engagement}}"
+                .errorObject="${this.errorObject}"
+                .data="${this.engagement}"
                 id="engagementDetails"
-                base-permission-path="[[basePermissionPath]]"
-                is-staff-sc="[[isStaffSc]]"
+                .basePermissionPath="${this.basePermissionPath}"
+                ?isStaffSc="${this.isStaffSc}"
               >
               </engagement-info-details>
 
               <partner-details-tab
                 id="partnerDetails"
-                error-object="{{errorObject}}"
-                engagement="{{engagement}}"
-                base-permission-path="[[basePermissionPath]]"
+                .errorObject="${this.errorObject}"
+                .engagement="${this.engagement}"
+                .basePermissionPath="${this.basePermissionPath}"
               >
               </partner-details-tab>
 
-              <template is="dom-if" if="[[isSpecialAudit(engagement.engagement_type)]]" restamp>
-                <specific-procedure
-                  id="specificProcedures"
-                  class="mb-15"
-                  without-finding-column
-                  error-object="{{errorObject}}"
-                  save-with-button
-                  data-items="{{engagement.specific_procedures}}"
-                  base-permission-path="[[basePermissionPath]]"
-                >
-                </specific-procedure>
-              </template>
+              ${this.isSpecialAudit(this.engagement?.engagement_type)
+                ? html` <specific-procedure
+                    id="specificProcedures"
+                    class="mb-15"
+                    without-finding-column
+                    .errorObject="${this.errorObject}"
+                    save-with-button
+                    .dataItems="${this.engagement.specific_procedures}"
+                    .basePermissionPath="${this.basePermissionPath}"
+                  >
+                  </specific-procedure>`
+                : ``}
 
               <engagement-staff-members-tab
                 id="staffMembers"
-                error-object="{{errorObject}}"
+                .errorObject="${this.errorObject}"
                 save-with-button
-                engagement="[[engagement]]"
-                base-permission-path="[[basePermissionPath]]"
+                .engagement="${this.engagement}"
+                .basePermissionPath="${this.basePermissionPath}"
               >
               </engagement-staff-members-tab>
             </div>
@@ -160,8 +173,8 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
             <div name="attachments">
               <file-attachments-tab
                 id="engagement_attachments"
-                base-id="[[engagement.id]]"
-                data-base-path="[[basePermissionPath]]"
+                .baseId="${this.engagement.id}"
+                .dataBasePath="${this.basePermissionPath}"
                 error-property="engagement_attachments"
                 path-postfix="attachments"
               >
@@ -171,11 +184,20 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         </div>
 
         <div id="sidebar">
-          <status-tab-element engagement-data="[[engagement]]" permission-base="new_engagement"></status-tab-element>
+          <status-tab-element
+            .engagementData="${this.engagement}"
+            permission-base="new_engagement"
+          ></status-tab-element>
         </div>
       </div>
     `;
   }
+
+  @property({type: String})
+  endpointName!: string;
+
+  @property({type: String})
+  page!: string;
 
   @property({type: Object})
   route!: GenericObject;
@@ -185,6 +207,9 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
 
   @property({type: Object})
   routeData!: GenericObject;
+
+  @property({type: Object})
+  requestQueries!: GenericObject;
 
   @property({type: Object})
   engagement: GenericObject = {
@@ -211,7 +236,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
   @property({type: Array})
   tabsList: string[] = ['overview', 'attachments'];
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   queryParams: GenericObject = {};
 
   @property({type: String})
@@ -233,10 +258,6 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     sa: 'special-audits'
   };
 
-  static get observers() {
-    return ['_pageChanged(page, isStaffSc, auditFirm)'];
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this._engagementCreated = this._engagementCreated.bind(this);
@@ -249,6 +270,32 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     this.removeEventListener('engagement-created', this._engagementCreated);
   }
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('page') || changedProperties.has('isStaffSc') || changedProperties.has('auditFirm')) {
+      this._pageChanged(this.page, this.isStaffSc, this.auditFirm);
+    }
+  }
+
+  _routeChanged({detail}: CustomEvent) {
+    const path = detail?.value?.path;
+    if (!path || !path.match(/[^\\/]/g)) {
+      this.route = {...this.route, path: '/list'};
+      fireEvent(this, 'route-changed', {value: this.route});
+      return;
+    }
+
+    if (!['detail', 'list', 'new', 'not-found'].includes(path.split('/')[1])) {
+      this.route = {...this.route, path: '/not-found'};
+      return;
+    }
+  }
+
+  _routeDataChanged({detail}: CustomEvent) {
+    this.routeData = detail.value;
+  }
+
   _routeConfig() {
     if (!this.route || !~this.route.prefix.indexOf('new')) {
       return;
@@ -256,7 +303,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
 
     const currentTab = this.routeData && this.routeData.tab;
     if (currentTab === '' || isUndefined(currentTab)) {
-      this.set('route.path', '/overview');
+      this.route = {...this.route, path: '/overview'};
     } else if (!includes(this.tabsList, currentTab)) {
       fireEvent(this, '404');
     }
@@ -307,7 +354,7 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     // redirect
     const engagementType = get(this, 'engagement.engagement_type');
     const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[String(engagementType)];
-    const path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
+    const path = `${BASE_PATH}${link}/${this.engagement.id}/overview`;
     navigateToUrl(path);
 
     // reset data
@@ -321,12 +368,12 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
   }
 
   reloadEngagementsList() {
-    this.set('requestQueries.reload', true);
+    this.requestQueries = {...this.requestQueries, reload: true};
   }
 
   _pageChanged(page, isStaffSc, auditFirm) {
     if (page === 'new' || page === 'list') {
-      this.set('engagement', {
+      this.engagement = {
         id: null,
         status: '',
         staff_members: [],
@@ -345,22 +392,21 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         offices: [],
         sections: [],
         shared_ip_with: []
-      });
+      };
 
-      (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTabEl).resetData();
-      const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetailsEl;
+      (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab).resetData();
+      const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetails;
       engagementDetails.resetValidationErrors();
       engagementDetails.resetAgreement();
       engagementDetails.resetType();
-      (this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTabEl).resetValidationErrors();
+      (this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTab).resetValidationErrors();
     }
 
     if (page === 'new' && isStaffSc) {
-      this.set('engagement.agreement.auditor_firm', auditFirm);
-      this.set('engagement.engagement_type', 'sc');
-      this.set('engagement.engagement_type_details', {value: 'sc', label: 'Spot Check'});
+      this.engagement.agreement.auditor_firm = auditFirm;
+      this.engagement.engagement_type = 'sc';
+      this.engagement.engagement_type_details = {value: 'sc', label: 'Spot Check'};
+      this.engagement = {... this.engagement};
     }
   }
 }
-
-window.customElements.define('new-engagement-view', NewEngagementView);

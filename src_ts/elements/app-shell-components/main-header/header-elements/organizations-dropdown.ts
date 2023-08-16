@@ -1,7 +1,6 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property, query} from '@polymer/decorators';
+import {LitElement, html, customElement, property, query, PropertyValues} from 'lit-element';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import EtoolsPageRefreshMixin from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin.js';
+import EtoolsPageRefreshMixinLit from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin-lit.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
@@ -14,8 +13,9 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown'
  * @customElement
  * @appliesMixin EtoolsPageRefreshMixin
  */
-class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
-  public static get template() {
+@customElement('organizations-dropdown')
+export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement) {
+  render() {
     return html`
       ${HeaderStyles}
       <style>
@@ -25,14 +25,14 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
       </style>
       <etools-dropdown
         id="organizationSelector"
-        class$="[[checkMustSelectOrganization(user)]]"
-        selected="[[currentOrganizationId]]"
+        class="${this.checkMustSelectOrganization(this.user)}"
+        .selected="${this.currentOrganizationId}"
         placeholder="Select Organization"
-        options="[[organizations]]"
+        .options="${this.organizations}"
         option-label="name"
         option-value="id"
         trigger-value-change-event
-        on-etools-selected-item-changed="onOrganizationChange"
+        @etools-selected-item-changed="${this.onOrganizationChange}"
         allow-outside-scroll
         no-label-float
         hide-search
@@ -52,10 +52,6 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
 
   @query('#organizationSelector') organizationSelectorDropdown!: EtoolsDropdownEl;
 
-  public static get observers() {
-    return ['onUserChange(user)'];
-  }
-
   public connectedCallback() {
     super.connectedCallback();
 
@@ -67,13 +63,21 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
     }, 500);
   }
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('user')) {
+      this.onUserChange(this.user);
+    }
+  }
+
   public onUserChange(user: any) {
     if (!user || !Object.keys(user).length) {
       return;
     }
 
-    this.set('organizations', this.user.organizations_available);
-    this.set('currentOrganizationId', this.user.organization?.id || null);
+    this.organizations = this.user.organizations_available;
+    this.currentOrganizationId = this.user.organization?.id || null;
   }
 
   checkMustSelectOrganization(user) {
@@ -118,8 +122,6 @@ class OrganizationsDropdown extends EtoolsPageRefreshMixin(PolymerElement) {
     this.refreshInProgress = true;
     this.clearDexieDbs();
     this.refreshInProgress = false;
-    window.location.href = `${window.location.origin}/${BASE_PATH}/`;
+    window.location.href = `${window.location.origin}${BASE_PATH}`;
   }
 }
-
-window.customElements.define('organizations-dropdown', OrganizationsDropdown);

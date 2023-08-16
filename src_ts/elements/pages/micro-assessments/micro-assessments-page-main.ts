@@ -5,7 +5,7 @@ import '@polymer/paper-tabs/paper-tab';
 import '@polymer/paper-tabs/paper-tabs';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles-lit';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
@@ -18,8 +18,8 @@ import '../../common-elements/engagement-overview-components/partner-details-tab
 // eslint-disable-next-line
 import '../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
-import EngagementMixinLit from '../../mixins/engagement-mixin-lit';
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
+import EngagementMixin from '../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import assign from 'lodash-es/assign';
@@ -36,7 +36,7 @@ import '../../common-elements/file-attachments-tab/file-attachments-tab';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('micro-assessments-page-main')
-export class MicroAssessmentsPageMain extends EngagementMixinLit(CommonMethodsMixinLit(LitElement)) {
+export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -197,7 +197,7 @@ export class MicroAssessmentsPageMain extends EngagementMixinLit(CommonMethodsMi
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
-                          .engagement="${this.engagement}}"
+                          .engagement="${this.engagement}"
                           .permissionBase="${this.permissionBase}"
                         >
                         </follow-up-main>

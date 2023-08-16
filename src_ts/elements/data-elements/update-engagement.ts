@@ -132,7 +132,8 @@ export class UpdateEngagement extends LitElement {
       fireEvent(this, 'toast', {text: `Engagement ${action !== 'saved' ? '' : 'data '}has been ${action}!`});
     } else {
       this.quietAdding = false;
-      fireEvent(this, 'quiet-adding-changed', this.quietAdding);
+      // @dci need to check
+      // fireEvent(this, 'quiet-adding-changed', this.quietAdding);
     }
   }
 
@@ -227,7 +228,8 @@ export class UpdateEngagement extends LitElement {
 
     if (this.quietAdding) {
       this.quietAdding = false;
-      fireEvent(this, 'quiet-adding-changed', this.quietAdding);
+      // @dci - need to check
+      // fireEvent(this, 'quiet-adding-changed', this.quietAdding);
     }
   }
 

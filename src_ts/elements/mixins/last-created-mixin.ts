@@ -1,5 +1,5 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {Constructor, GenericObject} from '../../types/global';
+import {LitElement} from 'lit-element';
+import {Constructor, GenericObject} from '@unicef-polymer/etools-types';
 
 let _engagementData: GenericObject | null = null;
 
@@ -7,7 +7,7 @@ let _engagementData: GenericObject | null = null;
  * @polymer
  * @mixinFunction
  */
-function LastCreatedMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function LastCreatedMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class LastCreatedMixinClass extends baseClass {
     _setLastEngagementData(data) {
       if (!data || !data.id) {

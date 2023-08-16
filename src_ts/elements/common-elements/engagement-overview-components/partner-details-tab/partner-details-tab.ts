@@ -17,13 +17,14 @@ import findIndex from 'lodash-es/findIndex';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {GenericObject} from '../../../../types/global';
-import CommonMethodsMixinLit from '../../../mixins/common-methods-mixin-lit';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {readonlyPermission} from '../../../mixins/permission-controller';
 import {getStaticData} from '../../../mixins/static-data-controller';
 
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
-import {moduleStyles} from '../../../styles/module-styles-lit';
+import {moduleStyles} from '../../../styles/module-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '../../../data-elements/get-partner-data';
 
 /**
@@ -32,13 +33,14 @@ import '../../../data-elements/get-partner-data';
  * @customElement
  */
 @customElement('partner-details-tab')
-export class PartnerDetailsTab extends CommonMethodsMixinLit(LitElement) {
+export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
   static get styles() {
     return [moduleStyles, tabLayoutStyles, tabInputsStyles];
   }
 
   render() {
     return html`
+    ${sharedStyles}
       <style>
         .partner-loading {
           position: absolute;
@@ -73,7 +75,7 @@ export class PartnerDetailsTab extends CommonMethodsMixinLit(LitElement) {
                     this.requestInProcess,
                     this.basePermissionPath
                   )}"
-                  .selected="${this.engagement.partner.id}"
+                  .selected="${this.engagement.partner?.id}"
                   label="${this.getLabel('partner', this.basePermissionPath)}"
                   placeholder="${this.getPlaceholderText('partner', this.basePermissionPath, 'dropdown')}"
                   .options="${this.partners}"
@@ -188,9 +190,6 @@ export class PartnerDetailsTab extends CommonMethodsMixinLit(LitElement) {
       </etools-content-panel>
     `;
   }
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   @property({type: Array})
   partners!: [];

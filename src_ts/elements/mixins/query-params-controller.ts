@@ -27,8 +27,8 @@ export function getQueriesString() {
 
 function getPath() {
   let path = _getLocationProperty('pathname');
-  if (~path.indexOf(`/${BASE_PATH}`)) {
-    path = path.replace(`/${BASE_PATH}`, '');
+  if (~path.indexOf(`${BASE_PATH}`)) {
+    path = path.replace(`${BASE_PATH}`, '/');
   }
   return path.slice(1);
 }
@@ -51,7 +51,6 @@ export function updateQueries(newQueries, path?, noNotify?) {
   if (!keys.length) {
     return false;
   }
-
   path = path && isString(path) ? path : getPath();
 
   const queries = parseQueries();

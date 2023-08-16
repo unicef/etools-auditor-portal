@@ -1,59 +1,71 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, property, customElement} from 'lit-element';
 import EngagementMixin from '../../../mixins/engagement-mixin';
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import '../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import './primary-risk-element';
 import './key-internal-controls-tab';
 import './control-findings-tab';
 
-class MaReportPageMain extends EngagementMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin EngagementMixinLit
+ */
+@customElement('ma-report-page-main')
+export class MaReportPageMain extends EngagementMixin(LitElement) {
+  render() {
     return html`
       <assign-engagement
         id="assignEngagement"
-        data="{{engagement}}"
-        original-data="[[originalData]]"
-        error-object="{{errorObject}}"
+        .data="${this.engagement}"
+        .originalData="${this.originalData}"
+        .errorObject="${this.errorObject}"
+        @data-changed="${({detail}) => (this.engagement = detail)}"
         audit-type="Micro Assessment"
-        base-permission-path="{{permissionBase}}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </assign-engagement>
 
-      <template is="dom-if" if="[[engagement.overall_risk_assessment]]" restamp>
-        <primary-risk-element
-          id="primaryRisk"
-          risk-data="[[engagement.overall_risk_assessment]]"
-          dialog-opened="[[riskDialogOpened]]"
-          error-object="{{errorObject}}"
-          base-permission-path="{{permissionBase}}"
-        >
-        </primary-risk-element>
-      </template>
-
-      <template is="dom-if" if="[[engagement.test_subject_areas]]">
-        <key-internal-controls-tab
-          id="internalControls"
-          subject-areas="[[engagement.test_subject_areas]]"
-          dialog-opened="{{riskDialogOpened}}"
-          error-object="{{errorObject}}"
-          base-permission-path="{{permissionBase}}"
-        >
-        </key-internal-controls-tab>
-      </template>
+      ${this.engagement.overall_risk_assessment
+        ? html`<primary-risk-element
+            id="primaryRisk"
+            .riskData="${this.engagement.overall_risk_assessment}"
+            .dialogOpened="${this.riskDialogOpened}"
+            .errorObject="${this.errorObject}"
+            .basePermissionPath="${this.permissionBase}"
+          >
+          </primary-risk-element>`
+        : ``}
+      ${this.engagement.test_subject_areas
+        ? html`<key-internal-controls-tab
+            id="internalControls"
+            .subjectAreas="${this.engagement.test_subject_areas}"
+            .dialogOpened="${this.riskDialogOpened}"
+            .errorObject="${this.errorObject}"
+            .basePermissionPath="${this.permissionBase}"
+          >
+          </key-internal-controls-tab>`
+        : ``}
 
       <control-findings-tab
         id="controlFindings"
-        data-items="{{engagement.findings}}"
-        error-object="{{errorObject}}"
-        base-permission-path="{{permissionBase}}"
+        .dataItems="${this.engagement.findings}"
+        .errorObject="${this.errorObject}"
+        .basePermissionPath="${this.permissionBase}"
+        @data-changed="${({detail}) => (this.engagement = {...this.engagement, findings: detail})}"
       >
       </control-findings-tab>
     `;
   }
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   engagement!: GenericObject;
+
+  @property({type: Object})
+  errorObject!: GenericObject;
+
+  @property({type: Boolean})
+  riskDialogOpened!: boolean;
 
   @property({type: Object})
   primaryArea!: GenericObject;
@@ -86,5 +98,3 @@ class MaReportPageMain extends EngagementMixin(PolymerElement) {
     return this.getElement('#controlFindings').getTabData();
   }
 }
-
-window.customElements.define('ma-report-page-main', MaReportPageMain);

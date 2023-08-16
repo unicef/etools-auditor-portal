@@ -1,5 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
@@ -10,32 +9,36 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {getChoices} from '../../../../mixins/permission-controller';
+import {getChoices, getHeadingLabel} from '../../../../mixins/permission-controller';
 import sortBy from 'lodash-es/sortBy';
 import {checkNonField} from '../../../../mixins/error-handler';
 
 /**
  * @customElement
- * @polymer
+ * @LitElement
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  */
-class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-  static get template() {
-    // language=HTML
+@customElement('financial-findings')
+export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         .repeatable-item-container[without-line] {
           min-width: 0 !important;
@@ -58,206 +61,228 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('financial_finding_set', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('financial_finding_set', this.basePermissionPath)}"
         list
       >
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
+          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header id="list-header" no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]">
-        </list-header>
-
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            details="[[details]]"
-            has-collapse
-            no-animation
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
+          <etools-data-table-column class="col-4"
+            >${getHeadingLabel(
+              this.basePermissionPath,
+              'financial_finding_set.title',
+              'Title (Category)'
+            )}</etools-data-table-column
           >
-            <div slot="custom">[[getDisplayName('financial_finding_set.title', basePermissionPath, item.title)]]</div>
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+          <etools-data-table-column class="col-3"
+            >${getHeadingLabel(
+              this.basePermissionPath,
+              'financial_finding_set.local_amount',
+              'Amount (local)'
+            )}</etools-data-table-column
+          >
+          <etools-data-table-column class="col-3"
+            >${getHeadingLabel(
+              this.basePermissionPath,
+              'financial_finding_set.amount',
+              'Amount USD'
+            )}</etools-data-table-column
+          >
+        </etools-data-table-header>
 
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-        </template>
-      </etools-content-panel>
-
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        opened="{{confirmDialogOpened}}"
-        on-confirm-btn-clicked="removeItem"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        [[deleteTitle]]
-      </etools-dialog>
-
-      <etools-dialog
-        id="financial-findings"
-        no-padding
-        size="md"
-        opened="{{dialogOpened}}"
-        keep-dialog-open
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="Add"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Title -->
-                <etools-dropdown
-                  id="titleOptionsDropDown"
-                  class$="[[_setRequired('financial_finding_set.title', basePermissionPath)]] validate-input"
-                  label="[[getLabel('financial_finding_set.title', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('financial_finding_set.title', basePermissionPath)]]"
-                  options="[[titleOptions]]"
-                  option-label="display_name"
-                  option-value="value"
-                  selected="{{editedItem.title}}"
-                  required$="[[_setRequired('financial_finding_set.title', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  invalid="{{errors.title}}"
-                  error-message="{{errors.title}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  hide-search
-                >
-                </etools-dropdown>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-3">${item.finding}</span>
+                <span class="col-data col-3">${item.title}</span>
+                <span class="col-data col-1">${item.local_amount}</span>
+                <span class="col-data col-2">${item.amount}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
               </div>
-            </div>
+            </etools-data-table-row>
+          `
+        )}
 
-            <div class="row-h group">
-              <div class="input-container input-container-ms">
-                <!-- Amount (local) -->
-                <etools-currency-amount-input
-                  class$="{{_setRequired('financial_finding_set.local_amount', basePermissionPath)}} validate-input"
-                  value="{{editedItem.local_amount}}"
-                  currency=""
-                  label="[[getLabel('financial_finding_set.local_amount', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('financial_finding_set.local_amount', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_finding_set.local_amount', basePermissionPath)]]"
-                  readonly$="[[requestInProcess]]"
-                  invalid$="[[errors.local_amount]]"
-                  error-message="{{errors.local_amount}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </etools-currency-amount-input>
-              </div>
+        <etools-dialog
+          theme="confirmation"
+          size="md"
+          keep-dialog-open
+          ?opened="${this.confirmDialogOpened}"
+          @confirm-btn-clicked="${this.removeItem}"
+          ok-btn-text="Delete"
+          openFlag="confirmDialogOpened"
+          @close="${this._resetDialogOpenedFlag}"
+        >
+          ${this.deleteTitle}
+        </etools-dialog>
 
-              <div class="input-container input-container-ms">
-                <!-- Amount USD -->
-                <etools-currency-amount-input
-                  class$="{{_setRequired('financial_finding_set.amount', basePermissionPath)}} validate-input"
-                  value="{{editedItem.amount}}"
-                  currency="$"
-                  label="[[getLabel('financial_finding_set.amount', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('financial_finding_set.amount', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_finding_set.amount', basePermissionPath)]]"
-                  readonly$="[[requestInProcess]]"
-                  invalid$="[[errors.amount]]"
-                  error-message$="[[errors.amount]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </etools-currency-amount-input>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Description -->
-                <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]
-                            fixed-width validate-input"
-                  value="{{editedItem.description}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('financial_finding_set.description', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('financial_finding_set.description', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_finding_set.description', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  max-rows="4"
-                  invalid$="[[errors.description]]"
-                  error-message$="[[errors.description]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Recommendation -->
-                <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]
-                            fixed-width validate-input"
-                  value="{{editedItem.recommendation}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('financial_finding_set.recommendation', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('financial_finding_set.recommendation', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_finding_set.recommendation', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  max-rows="4"
-                  invalid$="[[errors.recommendation]]"
-                  error-message$="[[errors.recommendation]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- IP comments -->
-                <paper-textarea
-                  class$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]
-                            fixed-width validate-input"
-                  value="{{editedItem.ip_comments}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('financial_finding_set.ip_comments', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('financial_finding_set.ip_comments', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_finding_set.ip_comments', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  max-rows="4"
-                  invalid$="[[errors.ip_comments]]"
-                  error-message$="[[errors.ip_comments]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
+        <etools-dialog
+          id="financial-findings"
+          no-padding
+          size="md"
+          ?opened="${this.dialogOpened}"
+          keep-dialog-open
+          .dialogTitle="${this.dialogTitle}"
+          ok-btn-text="Add"
+          ?showSpinner="${this.requestInProcess}"
+          ?disable-confirm-btn="${this.requestInProcess}"
+          @confirm-btn-clicked="${this._addItemFromDialog}"
+          openFlag="dialogOpened"
+          @close="${this._resetDialogOpenedFlag}"
+        >
+          <div class="layout-horizontal">
+            <div class="col col-6">
+              <!-- Title -->
+              <etools-dropdown
+                id="titleOptionsDropDown"
+                class="${this._setRequired('financial_finding_set.title', this.basePermissionPath)} validate-input"
+                label="${this.getLabel('financial_finding_set.title', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.title', this.basePermissionPath)}"
+                .options="${this.titleOptions}"
+                option-label="display_name"
+                option-value="value"
+                .selected="${this.editedItem.title}"
+                ?required="${this._setRequired('financial_finding_set.title', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors.title}"
+                .errorMessage="${this.errors.title}"
+                @focus="${this._resetFieldError}"
+                trigger-value-change-event
+                @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                  this.selectedItemChanged(detail, 'title', 'value', this.editedItem)}"
+                hide-search
+              >
+              </etools-dropdown>
             </div>
           </div>
-        </div>
-      </etools-dialog>
+
+          <div class="layout-horizontal">
+            <div class="col col-6">
+              <!-- Amount (local) -->
+              <etools-currency-amount-input
+                class="${this._setRequired(
+                  'financial_finding_set.local_amount',
+                  this.basePermissionPath
+                )} validate-input"
+                .value="${this.editedItem.local_amount}"
+                currency=""
+                label="${this.getLabel('financial_finding_set.local_amount', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.local_amount', this.basePermissionPath)}"
+                ?required="${this._setRequired('financial_finding_set.local_amount', this.basePermissionPath)}"
+                ?readonly="${this.requestInProcess}"
+                ?invalid="${this.errors.local_amount}"
+                .errorMessage="${this.errors.local_amount}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.numberChanged(detail, 'local_amount', this.editedItem)}"
+              >
+              </etools-currency-amount-input>
+            </div>
+
+            <div class="col col-6">
+              <!-- Amount USD -->
+              <etools-currency-amount-input
+                class="${this._setRequired('financial_finding_set.amount', this.basePermissionPath)} validate-input"
+                .value="${this.editedItem.amount}"
+                currency="$"
+                label="${this.getLabel('financial_finding_set.amount', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.basePermissionPath)}"
+                ?required="${this._setRequired('financial_finding_set.amount', this.basePermissionPath)}"
+                ?readonly="${this.requestInProcess}"
+                ?invalid="${this.errors.amount}"
+                .errorMessage="${this.errors.amount}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'amount', this.editedItem)}"
+              >
+              </etools-currency-amount-input>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Description -->
+              <paper-textarea
+                class="w100 ${this._setRequired('financial_finding_set.description', this.basePermissionPath)}
+                            fixed-width validate-input"
+                .value="${this.editedItem.description}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('financial_finding_set.description', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.description', this.basePermissionPath)}"
+                ?required="${this._setRequired('financial_finding_set.description', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors.description}"
+                .errorMessage="${this.errors.description}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'description', this.editedItem)}"
+              >
+              </paper-textarea>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Recommendation -->
+              <paper-textarea
+                class="w100 ${this._setRequired('financial_finding_set.recommendation', this.basePermissionPath)}
+                            fixed-width validate-input"
+                .value="${this.editedItem.recommendation}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('financial_finding_set.recommendation', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText(
+                  'financial_finding_set.recommendation',
+                  this.basePermissionPath
+                )}"
+                ?required="${this._setRequired('financial_finding_set.recommendation', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors.recommendation}"
+                .errorMessage="${this.errors.recommendation}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.valueChanged(detail, 'recommendation', this.editedItem)}"
+              >
+              </paper-textarea>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- IP comments -->
+              <paper-textarea
+                class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.basePermissionPath)}
+                            fixed-width validate-input"
+                .value="${this.editedItem.ip_comments}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('financial_finding_set.ip_comments', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.ip_comments', this.basePermissionPath)}"
+                ?required="${this._setRequired('financial_finding_set.ip_comments', this.basePermissionPath)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors.ip_comments}"
+                .errorMessage="${this.errors.ip_comments}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'ip_comments', this.editedItem)}"
+              >
+              </paper-textarea>
+            </div>
+          </div>
+        </etools-dialog>
+      </etools-content-panel>
     `;
   }
 
-  @property({type: Array, notify: true})
+  @property({type: Array})
   dataItems!: any[];
 
   @property({type: String})
@@ -338,26 +363,37 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
     title: 'Edit Finding'
   };
 
+  @property({type: Object})
+  errorObject!: GenericObject;
+
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
   @property({type: Array})
   titleOptions: any[] = [];
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_errorHandler(errorObject.financial_finding_set)',
-      '_checkNonField(errorObject.financial_finding_set)',
-      'setChoices(basePermissionPath)'
-    ];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('confirmDialogOpened')) {
+      this.resetDialog(this.confirmDialogOpened);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._checkNonField(this.errorObject.financial_finding_set);
+      this._errorHandler(this.errorObject.financial_finding_set);
+    }
+    if (changedProperties.has('errorObject')) {
+      this.setChoices(this.basePermissionPath);
+    }
   }
 
   setChoices(basePath) {
     const unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
     const titleOptions = sortBy(unsortedOptions, ['display_name']);
-    this.set('titleOptions', titleOptions || []);
+    this.titleOptions = titleOptions || [];
   }
 
   _checkNonField(error) {
@@ -371,7 +407,3 @@ class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(PolymerEle
     }
   }
 }
-
-window.customElements.define('financial-findings', FinancialFindings);
-
-export {FinancialFindings as FinancialFindingsEl};

@@ -1,4 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
@@ -6,212 +6,229 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 
 import isEmpty from 'lodash-es/isEmpty';
 import pickBy from 'lodash-es/pickBy';
-import {property} from '@polymer/decorators';
-import '@polymer/polymer/lib/elements/dom-if';
 declare const dayjs: any;
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {collectionExists} from '../../../mixins/permission-controller';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import DateMixin from '../../../mixins/date-mixin';
 import {getStaticData} from '../../../mixins/static-data-controller';
 import {validateRequiredFields} from '../../../utils/utils';
 
 /**
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin DateMixin
  * @appliesMixin CommonMethodsMixin
  */
-class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
-  static get template() {
+
+@customElement('assign-engagement')
+export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style></style>
 
       <etools-content-panel class="content-section clearfx" panel-title="Engagement Status">
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <!-- Date of Field Visit -->
             <datepicker-lite
               id="dateVisitInput"
-              class$="[[_setRequired('date_of_field_visit', basePermissionPath)]]
-                                    validate-date"
-              value="[[data.date_of_field_visit]]"
-              label="[[getLabel('date_of_field_visit', basePermissionPath)]]"
+              class="${this._setRequired('date_of_field_visit', this.basePermissionPath)} validate-date"
+              .value="${this.data.date_of_field_visit}"
+              label="${this.getLabel('date_of_field_visit', this.basePermissionPath)}"
               placeholder="&#8212;"
-              required="[[_setRequired('date_of_field_visit', basePermissionPath)]]"
-              readonly$="[[_isReadOnly('date_of_field_visit', 'true', falseValue, basePermissionPath)]]"
-              invalid="{{_checkFieldInvalid(errors.date_of_field_visit)}}"
-              error-message="{{errors.date_of_field_visit}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('date_of_field_visit', this.basePermissionPath)}"
+              ?readonly="${this._isReadOnly('date_of_field_visit', 'true', this.falseValue, this.basePermissionPath)}"
+              ?invalid="${this._checkFieldInvalid(this.errors?.date_of_field_visit)}"
+              .errorMessage="${this.errors?.date_of_field_visit}"
+              @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              date="[[prepareDate(data.date_of_field_visit)]]"
+              .date="${this.prepareDate(this.data.date_of_field_visit)}"
               fire-date-has-changed
               property-name="date_of_field_visit"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${(e: CustomEvent) => {
+                this.onDataChanged('date_of_field_visit', e.detail.date);
+              }}"
             >
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Draft Report Issued to IP -->
             <datepicker-lite
               id="draftReportToIpInput"
-              class$="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]] validate-date"
-              value="[[data.date_of_draft_report_to_ip]]"
-              label="[[getLabel('date_of_draft_report_to_ip', basePermissionPath)]]"
+              class="${this._setRequired('date_of_draft_report_to_ip', this.basePermissionPath)} validate-date"
+              .value="${this.data.date_of_draft_report_to_ip}"
+              label="${this.getLabel('date_of_draft_report_to_ip', this.basePermissionPath)}"
               placeholder="&#8212;"
-              required="[[_setRequired('date_of_draft_report_to_ip', basePermissionPath)]]"
-              readonly$="[[_isReadOnly('date_of_draft_report_to_ip', 'true', data.date_of_comments_by_ip,
-                                    basePermissionPath)]]"
-              invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_ip)}}"
-              error-message="{{errors.date_of_draft_report_to_ip}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('date_of_draft_report_to_ip', this.basePermissionPath)}"
+              ?readonly="${this._isReadOnly(
+                'date_of_draft_report_to_ip',
+                'true',
+                this.data.date_of_comments_by_ip,
+                this.basePermissionPath
+              )}"
+              ?invalid="${this._checkFieldInvalid(this.errors?.date_of_draft_report_to_ip)}"
+              .errorMessage="${this.errors?.date_of_draft_report_to_ip}"
+              @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              max-date="[[maxDate]]"
+              .maxDate="${this.maxDate}"
               fire-date-has-changed
               property-name="date_of_draft_report_to_ip"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${(e: CustomEvent) => {
+                this.onDataChanged('date_of_draft_report_to_ip', e.detail.date);
+              }}"
             >
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Comments Received by IP -->
             <datepicker-lite
               id="commentsReceivedByIpInput"
-              class$="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]] validate-date"
-              value="[[data.date_of_comments_by_ip]]"
-              label="[[getLabel('date_of_comments_by_ip', basePermissionPath)]]"
+              class="${this._setRequired('date_of_comments_by_ip', this.basePermissionPath)} validate-date"
+              .value="${this.data.date_of_comments_by_ip}"
+              label="${this.getLabel('date_of_comments_by_ip', this.basePermissionPath)}"
               placeholder="&#8212;"
-              required="[[_setRequired('date_of_comments_by_ip', basePermissionPath)]]"
-              readonly$="[[_isReadOnly('date_of_comments_by_ip', data.date_of_draft_report_to_ip,
-                                        data.date_of_draft_report_to_unicef, basePermissionPath)]]"
-              invalid="{{_checkFieldInvalid(errors.date_of_comments_by_ip)}}"
-              error-message="{{errors.date_of_comments_by_ip}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('date_of_comments_by_ip', this.basePermissionPath)}"
+              ?readonly="${this._isReadOnly(
+                'date_of_comments_by_ip',
+                this.data?.date_of_draft_report_to_ip,
+                this.data?.date_of_draft_report_to_unicef,
+                this.basePermissionPath
+              )}"
+              ?invalid="${this._checkFieldInvalid(this.errors?.date_of_comments_by_ip)}"
+              .errorMessage="${this.errors?.date_of_comments_by_ip}"
+              @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              min-date="[[minDate(data.date_of_draft_report_to_ip)]]"
-              max-date="[[maxDate]]"
+              .minDate="${this.minDate(this.data?.date_of_draft_report_to_ip)}"
+              .maxDate="${this.maxDate}"
               fire-date-has-changed
               property-name="date_of_comments_by_ip"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${(e: CustomEvent) => {
+                this.onDataChanged('date_of_comments_by_ip', e.detail.date);
+              }}"
             >
             </datepicker-lite>
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <!-- Draft Report Issued to UNICEF -->
             <datepicker-lite
               id="draftReportUnicefInput"
-              class$="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]] validate-date"
-              value="[[data.date_of_draft_report_to_unicef]]"
-              label="[[getLabel('date_of_draft_report_to_unicef', basePermissionPath)]]"
+              class="${this._setRequired('date_of_draft_report_to_unicef', this.basePermissionPath)} validate-date"
+              .value="${this.data.date_of_draft_report_to_unicef}"
+              label="${this.getLabel('date_of_draft_report_to_unicef', this.basePermissionPath)}"
               placeholder="&#8212;"
-              required="[[_setRequired('date_of_draft_report_to_unicef', basePermissionPath)]]"
-              readonly$="[[_isReadOnly('date_of_draft_report_to_unicef', data.date_of_comments_by_ip,
-                                    data.date_of_comments_by_unicef, basePermissionPath)]]"
-              invalid="{{_checkFieldInvalid(errors.date_of_draft_report_to_unicef)}}"
-              error-message="{{errors.date_of_draft_report_to_unicef}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('date_of_draft_report_to_unicef', this.basePermissionPath)}"
+              ?readonly="${this._isReadOnly(
+                'date_of_draft_report_to_unicef',
+                this.data.date_of_comments_by_ip,
+                this.data.date_of_comments_by_unicef,
+                this.basePermissionPath
+              )}"
+              ?invalid="${this._checkFieldInvalid(this.errors?.date_of_draft_report_to_unicef)}"
+              .errorMessage="${this.errors?.date_of_draft_report_to_unicef}"
+              @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              min-date="[[minDate(data.date_of_comments_by_ip)]]"
-              max-date="[[maxDate]]"
+              .minDate="${this.minDate(this.data.date_of_comments_by_ip)}"
+              .maxDate="${this.maxDate}"
               fire-date-has-changed
               property-name="date_of_draft_report_to_unicef"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${(e: CustomEvent) => {
+                this.onDataChanged('date_of_draft_report_to_unicef', e.detail.date);
+              }}"
             >
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Comments Received by UNICEF -->
             <datepicker-lite
               id="commentsReceivedUnicefInput"
-              class$="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]] validate-date"
-              value="[[data.date_of_comments_by_unicef]]"
-              label="[[getLabel('date_of_comments_by_unicef', basePermissionPath)]]"
+              class="${this._setRequired('date_of_comments_by_unicef', this.basePermissionPath)} validate-date"
+              .value="${this.data.date_of_comments_by_unicef}"
+              label="${this.getLabel('date_of_comments_by_unicef', this.basePermissionPath)}"
               placeholder="&#8212;"
-              required="[[_setRequired('date_of_comments_by_unicef', basePermissionPath)]]"
-              readonly$="[[_isReadOnly('date_of_comments_by_unicef', data.date_of_draft_report_to_unicef,
-                                        '', basePermissionPath)]]"
-              invalid="{{_checkFieldInvalid(errors.date_of_comments_by_unicef)}}"
-              error-message="{{errors.date_of_comments_by_unicef}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('date_of_comments_by_unicef', this.basePermissionPath)}"
+              ?readonly="${this._isReadOnly(
+                'date_of_comments_by_unicef',
+                this.data.date_of_draft_report_to_unicef,
+                '',
+                this.basePermissionPath
+              )}"
+              ?invalid="${this._checkFieldInvalid(this.errors?.date_of_comments_by_unicef)}"
+              .errorMessage="${this.errors?.date_of_comments_by_unicef}"
+              @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              min-date="[[minDate(data.date_of_draft_report_to_unicef)]]"
-              max-date="[[maxDate]]"
+              .minDate="${this.minDate(this.data.date_of_draft_report_to_unicef)}"
+              .maxDate="${this.maxDate}"
               fire-date-has-changed
               property-name="date_of_comments_by_unicef"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${(e: CustomEvent) => {
+                this.onDataChanged('date_of_comments_by_unicef', e.detail.date);
+              }}"
             >
             </datepicker-lite>
           </div>
 
-          <template is="dom-if" if="[[showCurrency(basePermissionPath)]]">
-            <div class="input-container">
-              <!-- Currency of Report -->
-              <etools-dropdown
-                id="currency_of_report"
-                class$="validate-input [[_setRequired('currency_of_report', basePermissionPath)]]"
-                selected="{{data.currency_of_report}}"
-                options="[[currencies]]"
-                option-label="label"
-                option-value="value"
-                label="[[getLabel('currency_of_report', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('currency_of_report', basePermissionPath, 'dropdown')]]"
-                required$="{{_setRequired('currency_of_report', basePermissionPath)}}"
-                readonly$="[[isReadOnly('currency_of_report', basePermissionPath)]]"
-                invalid="{{_checkInvalid(errors.currency_of_report)}}"
-                error-message="{{errors.currency_of_report}}"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                dynamic-align
-              >
-              </etools-dropdown>
-            </div>
-          </template>
+          ${this.showCurrency(this.basePermissionPath)
+            ? html`<div class="col col-4">
+                <!-- Currency of Report -->
+                <etools-dropdown
+                  id="currency_of_report"
+                  class="validate-input ${this._setRequired('currency_of_report', this.basePermissionPath)}"
+                  .selected="${this.data.currency_of_report}"
+                  .options="${this.currencies}"
+                  option-label="label"
+                  option-value="value"
+                  label="${this.getLabel('currency_of_report', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('currency_of_report', this.basePermissionPath, 'dropdown')}"
+                  ?required="${this._setRequired('currency_of_report', this.basePermissionPath)}"
+                  ?readonly="${this.isReadOnly('currency_of_report', this.basePermissionPath)}"
+                  ?invalid="${this._checkInvalid(this.errors?.currency_of_report)}"
+                  .errorMessage="${this.errors?.currency_of_report}"
+                  trigger-value-change-event
+                  @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                    this.onDataChanged('currency_of_report', detail.selectedItem && detail.selectedItem.value)}"
+                  @focus="${this._resetFieldError}"
+                  dynamic-align
+                >
+                </etools-dropdown>
+              </div>`
+            : ``}
         </div>
       </etools-content-panel>
     `;
-  }
-  static get observers() {
-    return [
-      '_updateStyles(data.date_of_field_visit)',
-      '_updateStyles(data.date_of_draft_report_to_ip)',
-      '_updateStyles(data.date_of_comments_by_ip)',
-      '_updateStyles(data.date_of_draft_report_to_unicef)',
-      '_updateStyles(data.date_of_comments_by_unicef)',
-      '_updateStyles(basePermissionPath)',
-      '_errorHandler(errorObject)'
-    ];
   }
 
   @property({type: Object})
   data!: GenericObject;
 
   @property({type: Object})
-  originalData!: GenericObject;
+  errorObject!: GenericObject;
 
-  @property({type: String, observer: '_updateStyles'})
-  basePermissionPath!: string;
+  @property({type: Object})
+  originalData!: GenericObject;
 
   @property({type: Date})
   maxDate = new Date();
 
-  @property({type: Boolean, readOnly: true})
+  @property({type: Boolean})
   falseValue = false;
 
   @property({type: Array})
@@ -231,16 +248,26 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
 
   connectedCallback() {
     super.connectedCallback();
-    this.set('currencies', getStaticData('staticDropdown').currencies);
+    this.currencies = getStaticData('staticDropdown').currencies;
   }
 
-  _updateStyles() {
-    this.updateStyles();
-    this.checkDateValues();
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject);
+    }
   }
 
   _isReadOnly(field, prevDate, nextDate, basePermissionPath) {
     return this.isReadOnly(field, basePermissionPath) || !(prevDate && !nextDate);
+  }
+
+  onDataChanged(field, value) {
+    this.data[field] = value;
+    this.checkDateValues();
+    this.requestUpdate();
+    fireEvent(this, 'data-changed', this.data);
   }
 
   validate(escapeValidation) {
@@ -317,6 +344,3 @@ class AssignEngagement extends DateMixin(CommonMethodsMixin(PolymerElement)) {
     return !!value;
   }
 }
-window.customElements.define('assign-engagement', AssignEngagement);
-
-export {AssignEngagement as AssignEngagementEl};

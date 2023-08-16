@@ -1,25 +1,25 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html, property, customElement} from 'lit-element';
 import {GenericObject} from '../../../../../types/global';
 
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 // eslint-disable-next-line
-import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../findings-summary/fundings-summary';
-import {FindingsSummaryEl} from '../findings-summary/fundings-summary';
+import {FindingsSummary} from '../findings-summary/fundings-summary';
 import '../financial-findings/financial-findings';
-import {FinancialFindingsEl} from '../financial-findings/financial-findings';
+import {FinancialFindings} from '../financial-findings/financial-findings';
 import '../assessment-of-controls/assessment-of-controls';
-import {AssessmentOfControlsEl} from '../assessment-of-controls/assessment-of-controls';
+import {AssessmentOfControls} from '../assessment-of-controls/assessment-of-controls';
 import '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
-import {KeyInternalControlsWeaknessesEl} from '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
+import {KeyInternalControlsWeaknesses} from '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 
 /**
+ * @LitEelement
  * @customElement
- * @polymer
  */
-class AuditReportPageMain extends PolymerElement {
-  static get template() {
+@customElement('audit-report-page-main')
+export class AuditReportPageMain extends LitElement {
+  render() {
     // language=HTML
     return html`
       <style>
@@ -30,54 +30,54 @@ class AuditReportPageMain extends PolymerElement {
 
       <assign-engagement
         id="assignEngagement"
-        original-data="[[originalData]]"
-        class="mb-24"
-        error-object="{{errorObject}}"
-        data="{{engagement}}"
+        .data="${this.engagement}"
+        .originalData="${this.originalData}"
+        .errorObject="${this.errorObject}"
+        @data-changed="${({detail}) => (this.engagement = detail)}"
         audit-type="Audit"
-        base-permission-path="{{permissionBase}}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </assign-engagement>
 
       <findings-summary
         id="findingsSummary"
         class="mb-24"
-        data="{{engagement}}"
-        error-object="{{errorObject}}"
-        base-permission-path="{{permissionBase}}"
+        .data="${this.engagement}"
+        .errorObject="${this.errorObject}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </findings-summary>
 
       <financial-findings
         id="financialFindings"
         class="mb-24"
-        error-object="{{errorObject}}"
-        data-items="{{engagement.financial_finding_set}}"
-        base-permission-path="{{permissionBase}}"
+        .errorObject="${this.errorObject}"
+        .dataItems="${this.engagement?.financial_finding_set}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </financial-findings>
 
       <assessment-of-controls
         id="assessmentOfControls"
         class="mb-24"
-        data-items="{{engagement.key_internal_controls}}"
-        error-object="{{errorObject}}"
-        base-permission-path="{{permissionBase}}"
+        .dataItems="${this.engagement?.key_internal_controls}"
+        .errorObject="${this.errorObject}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </assessment-of-controls>
 
       <key-internal-controls-weaknesses
         id="keyInternalControlsWeaknesses"
         class="mb-24"
-        error-object="{{errorObject}}"
-        subject-areas="[[engagement.key_internal_weakness]]"
-        base-permission-path="{{permissionBase}}"
+        .errorObject="${this.errorObject}"
+        .subjectAreas="${this.engagement?.key_internal_weakness}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </key-internal-controls-weaknesses>
     `;
   }
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   engagement: GenericObject = {};
 
   @property({type: Object})
@@ -90,30 +90,28 @@ class AuditReportPageMain extends PolymerElement {
   permissionBase!: string;
 
   validate(forSave) {
-    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(forSave);
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).validate(forSave);
   }
 
   getAssignVisitData() {
-    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).getAssignVisitData();
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).getAssignVisitData();
   }
 
   getFinancialFindingsData() {
-    return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindingsEl).getTabData();
+    return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindings).getTabData();
   }
 
   getFindingsSummaryData() {
-    return (this.shadowRoot!.querySelector('#findingsSummary') as FindingsSummaryEl).getFindingsSummaryData();
+    return (this.shadowRoot!.querySelector('#findingsSummary') as FindingsSummary).getFindingsSummaryData();
   }
 
   getAssessmentOfControlsData() {
-    return (this.shadowRoot!.querySelector('#assessmentOfControls') as AssessmentOfControlsEl).getTabData();
+    return (this.shadowRoot!.querySelector('#assessmentOfControls') as AssessmentOfControls).getTabData();
   }
 
   getKeyInternalWeaknessData() {
     return (
-      this.shadowRoot!.querySelector('#keyInternalControlsWeaknesses') as KeyInternalControlsWeaknessesEl
+      this.shadowRoot!.querySelector('#keyInternalControlsWeaknesses') as KeyInternalControlsWeaknesses
     ).getKeyInternalWeaknessData();
   }
 }
-
-window.customElements.define('audit-report-page-main', AuditReportPageMain);

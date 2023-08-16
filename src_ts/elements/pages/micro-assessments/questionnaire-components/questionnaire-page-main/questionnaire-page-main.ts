@@ -1,11 +1,12 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html, property, customElement, PropertyValues, query} from 'lit-element';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
-import {property, query} from '@polymer/decorators';
 import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
@@ -20,10 +21,20 @@ import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 import get from 'lodash-es/get';
 
-class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @mixinFunction
+ * @appliesMixin CommonMethodsMixin
+ */
+@customElement('questionnaire-page-main')
+export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${moduleStyles} ${tabInputsStyles}
+      ${sharedStyles}
       <style>
         etools-content-panel.totals {
           margin-bottom: 24px;
@@ -89,97 +100,96 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
       <etools-content-panel
         class="totals"
-        panel-title$="OVERALL RISK RATING [[getRating(riskAssessment)]]"
-        open="{{overalRiskOpen}}"
+        .panelTitle="OVERALL RISK RATING ${this.getRating(this.riskAssessment)}"
+        .open="${this.overalRiskOpen}"
       >
       </etools-content-panel>
 
-      <template is="dom-repeat" items="{{questionnaire.children}}">
-        <risk-tab
-          questionnaire="{{item}}"
-          base-permission-path="{{basePermissionPath}}"
+      ${(this.questionnaire.children || []).map(
+        (item, index) => html`<risk-tab
+          .questionnaire="${item}"
+          .basePermissionPath="${this.basePermissionPath}"
           class="validatable-tab risk-tab"
-          index="{{index}}"
-          first-run="[[firstRun]]"
-          current-requests="[[currentRequests]]"
-          completed="{{_checkCompleted(item)}}"
-          disabled="{{_checkDisabled(index, item)}}"
-          edit-mode="[[editMode]]"
+          index="${index}"
+          .firstRun="${this.firstRun}"
+          .currentRequests="${this.currentRequests}"
+          ?completed="${this._checkCompleted(item)}"
+          ?disabled="${this._checkDisabled(index)}"
+          ?editMode="${this.editMode}"
         >
-        </risk-tab>
-      </template>
+        </risk-tab>`
+      )}
 
       <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
-        opened="{{dialogOpened}}"
+        .opened="${this.dialogOpened}"
         dialog-title="Edit Question"
         ok-btn-text="Save"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
+        ?showSpinner="${this.requestInProcess}"
+        ?disable-confirm-btn="${this.requestInProcess}"
+        @confirm-btn-clicked="${this._addItemFromDialog}"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="row-h repeatable-item-container" without-line>
+       <div class="layout-horizontal">
           <div class="form-title">
             <div class="text" id="questionHeader">
-              <insert-html html="[[editedItem.header]]"></insert-html>
+              ${html`${this.editedItem?.header}`}
             </div>
           </div>
+        </div>
 
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container  input-container-ms">
+          <div class="layout-horizontal">
+            <div class="col col-6">
                 <!-- Risk Assessment -->
-
                 <etools-dropdown
                   id="riskAssessmentDropdown"
                   required validate-input"
-                  selected="[[editedItem.risk.value]]"
+                  .selected="${this.editedItem?.risk?.value}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
-                  options="[[riskOptions]]"
+                  .options="${this.riskOptions}"
                   option-label="display_name"
                   option-value="value"
-                  disabled="[[requestInProcess]]"
-                  invalid="{{riskAssessmentInvalid}}"
-                  error-message="This field is required"
-                  on-focus="_resetFieldError"
+                  ?disabled="${this.requestInProcess}"
+                  errorMessage="This field is required"
+                  @focus="${this._resetFieldError}"
                   required
                   trigger-value-change-event
-                  on-etools-selected-item-changed="_setSelectedRiskRatingEntity"
+                  @etools-selected-item-changed="${this._setSelectedRiskRatingEntity}"
                   hide-search
                 >
                 </etools-dropdown>
               </div>
             </div>
 
-            <div class="row-h group">
-              <div class="input-container input-container-l comment-container">
+          <div class="layout-horizontal">
+            <div class="col col-12">
                 <!-- Comments -->
                 <paper-textarea
                   id="riskAssessmentComments"
                   class="validate-input"
-                  value="{{editedItem.risk.extra.comments}}"
+                  .value="${this.editedItem?.risk?.extra?.comments}"
                   label="Comments"
                   placeholder="Enter Comments"
-                  disabled$="[[requestInProcess]]"
+                  ?disabled="${this.requestInProcess}"
                   max-rows="4"
                   error-message="This field is required"
-                  on-focus="_resetFieldError"
+                  @focus="${this._resetFieldError}"
                 >
                 </paper-textarea>
               </div>
             </div>
+
           </div>
         </div>
       </etools-dialog>
     `;
   }
 
-  @property({type: Object, observer: 'dataChanged'})
+  @property({type: Object})
   data!: GenericObject;
 
   @property({type: Object})
@@ -198,7 +208,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   firstRun = true;
 
-  @property({type: Object, observer: 'savingError'})
+  @property({type: Object})
   errorObject!: GenericObject;
 
   @property({type: Boolean})
@@ -207,7 +217,7 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @property({type: Array})
   changedData: GenericObject[] = [];
 
-  @property({type: Number, readOnly: true})
+  @property({type: Number})
   requests = 0;
 
   @property({type: String})
@@ -225,6 +235,9 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   requestInProcess = false;
 
+  @property({type: Array})
+  riskOptions!: GenericObject[];
+
   @query('#riskAssessmentDropdown')
   riskAssessmentDropdown!: EtoolsDropdownEl;
 
@@ -237,15 +250,11 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
   private originalComments!: string;
   private originalRiskValue!: string;
 
-  static get observers() {
-    return ['updateStyles(requestInProcess)', 'resetDialog(dialogOpened)'];
-  }
-
   connectedCallback() {
     super.connectedCallback();
 
     const riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
-    this.set('riskOptions', riskOptions);
+    this.riskOptions = riskOptions;
 
     this.addEventListener('edit-blueprint', this._openEditDialog as any);
     this.addEventListener('risk-value-changed', this._riskValueChanged as any);
@@ -256,6 +265,20 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
 
     this.removeEventListener('edit-blueprint', this._openEditDialog as any);
     this.removeEventListener('risk-value-changed', this._riskValueChanged as any);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('data')) {
+      this.dataChanged(this.data);
+    }
+    if (changedProperties.has('errorObject')) {
+      this.savingError(this.errorObject);
+    }
   }
 
   dataChanged(data) {
@@ -342,9 +365,10 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     if (!this.editedItem.risk) {
       this.editedItem.risk = {};
     }
+    this.editedItem.risk.value = selectedItem.value;
+    this.editedItem.risk.display_name = selectedItem.display_name;
 
-    this.set('editedItem.risk.value', selectedItem.value);
-    this.set('editedItem.risk.display_name', selectedItem.display_name);
+    this.editedItem = {...this.editedItem};
   }
 
   _riskValueChanged(event) {
@@ -499,5 +523,3 @@ class QuestionnairePageMain extends CommonMethodsMixin(PolymerElement) {
     return this.requests;
   }
 }
-
-window.customElements.define('questionnaire-page-main', QuestionnairePageMain);

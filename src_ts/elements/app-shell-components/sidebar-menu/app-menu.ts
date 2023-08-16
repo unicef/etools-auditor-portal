@@ -1,5 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import {LitElement, PropertyValues, customElement, html, property} from 'lit-element';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icons/av-icons.js';
@@ -9,16 +8,17 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {property} from '@polymer/decorators';
 import {apIcons, famIcon} from '../../styles/ap-icons';
+import {BASE_PATH} from '../../config/config';
 
 /**
  * @polymer
  * @customElement
  * @appliesMixin GestureEventListeners
  */
-class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
-  public static get template() {
+@customElement('app-menu')
+export class AppMenu extends MatomoMixin(LitElement) {
+  render() {
     // main template
     // language=HTML
     return html`
@@ -32,37 +32,41 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
         </span>
 
         <span class="ripple-wrapper main">
-          <iron-icon id="menu-header-top-icon" icon="fam-main-icon:fam-icon" on-tap="_toggleSmallMenu"></iron-icon>
+          <iron-icon
+            id="menu-header-top-icon"
+            icon="fam-main-icon:fam-icon"
+            @click="${this._toggleSmallMenu}"
+          ></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
         <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
 
         <span class="chev-right">
-          <iron-icon id="expand-menu" icon="chevron-right" on-tap="_toggleSmallMenu"></iron-icon>
+          <iron-icon id="expand-menu" icon="chevron-right" @click="${this._toggleSmallMenu}"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
 
         <span class="ripple-wrapper">
-          <iron-icon id="minimize-menu" icon="chevron-left" on-tap="_toggleSmallMenu"></iron-icon>
+          <iron-icon id="minimize-menu" icon="chevron-left" @click="${this._toggleSmallMenu}"></iron-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
       </div>
 
       <div class="nav-menu">
-        <iron-selector selected="[[selectedOption]]" attr-for-selected="menu-name" role="navigation">
-          <a class="nav-menu-item" menu-name="engagements" href$="[[rootPath]]engagements/list?reload=true">
+        <iron-selector .selected="${this.selectedOption}" attr-for-selected="menu-name" role="navigation">
+          <a class="nav-menu-item" menu-name="engagements" href="${BASE_PATH}engagements/list?reload=true">
             <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
             <div class="name">Engagements</div>
           </a>
           <paper-tooltip for="iconEngagements" position="right"> Engagements </paper-tooltip>
 
-          <template is="dom-if" if="[[showSscPage]]">
-            <a class="nav-menu-item" menu-name="staff-sc" href$="[[rootPath]]staff-sc/list?reload=true">
-              <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
-              <div class="name">Staff Spot Checks</div>
-            </a>
-            <paper-tooltip for="iconStaffSpotCk" position="right"> Staff Spot Checks </paper-tooltip>
-          </template>
+          ${this.showSscPage
+            ? html`<a class="nav-menu-item" menu-name="staff-sc" href="${BASE_PATH}staff-sc/list?reload=true">
+                  <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
+                  <div class="name">Staff Spot Checks</div>
+                </a>
+                <paper-tooltip for="iconStaffSpotCk" position="right"> Staff Spot Checks </paper-tooltip>`
+            : ``}
         </iron-selector>
         <div class="nav-menu-item section-title">
           <span>eTools Community Channels</span>
@@ -70,9 +74,9 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
 
         <a
           class="nav-menu-item lighter-item no-transform"
-          href="[[etoolsNowLink]]"
+          href="${this.etoolsNowLink}"
           target="_blank"
-          on-tap="trackAnalytics"
+          @tap="${this.trackAnalytics}"
           tracker="Implementation Intelligence"
         >
           <iron-icon id="power-bi-icon" icon="ap-icons:power-bi"></iron-icon>
@@ -84,7 +88,7 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
           class="nav-menu-item lighter-item"
           href="http://etools.zendesk.com"
           target="_blank"
-          on-tap="trackAnalytics"
+          @tap="${this.trackAnalytics}"
           tracker="Knowledge base"
         >
           <iron-icon id="knoledge-icon" icon="maps:local-library"></iron-icon>
@@ -96,7 +100,7 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
           class="nav-menu-item lighter-item"
           href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"
           target="_blank"
-          on-tap="trackAnalytics"
+          @tap="${this.trackAnalytics}"
           tracker="Discussion"
         >
           <iron-icon id="discussion-icon" icon="icons:question-answer"></iron-icon>
@@ -108,7 +112,7 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
           class="nav-menu-item lighter-item last-one"
           href="https://etools.unicef.org/landing"
           target="_blank"
-          on-tap="trackAnalytics"
+          @tap="${this.trackAnalytics}"
           tracker="Information"
         >
           <iron-icon id="information-icon" icon="icons:info"></iron-icon>
@@ -119,16 +123,13 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
     `;
   }
 
-  @property({type: String, observer: '_pageChanged'})
+  @property({type: String})
   selectedPage!: string;
 
   @property({type: String})
   selectedOption!: string;
 
-  @property({type: String})
-  rootPath!: string;
-
-  @property({type: Boolean, reflectToAttribute: true, observer: '_menuSizeChange'})
+  @property({type: Boolean, reflect: true, attribute: 'small-menu'})
   smallMenu!: boolean;
 
   @property({type: Boolean})
@@ -138,21 +139,29 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
   // eslint-disable-next-line max-len
   etoolsNowLink = `https://app.powerbi.com/groups/me/apps/2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/9726e9e7-c72f-4153-9fd2-7b418a1e426c/ReportSection?ctid=77410195-14e1-4fb8-904b-ab1892023667`;
 
-  // @ts-ignore
-  private _menuSizeChange(newVal: boolean, oldVal: boolean): void {
-    if (newVal !== oldVal) {
-      setTimeout(() => fireEvent(this, 'resize-main-layout'));
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('selectedPage')) {
+      this._pageChanged();
+    }
+    if (changedProperties.has('smallMenu')) {
+      this._smallMenuChanged();
     }
   }
 
-  // @ts-ignore
-  private _toggleSmallMenu(e: Event): void {
+  _toggleSmallMenu(e: Event): void {
     e.stopImmediatePropagation();
+    this.smallMenu = !this.smallMenu;
     fireEvent(this, 'toggle-small-menu');
   }
 
   _pageChanged() {
     this.selectedOption = this._getSelectedMenu(this.selectedPage);
+  }
+
+  _smallMenuChanged() {
+    setTimeout(() => fireEvent(this, 'resize-main-layout'));
   }
 
   _getSelectedMenu(page: string) {
@@ -167,5 +176,3 @@ class AppMenu extends GestureEventListeners(MatomoMixin(PolymerElement)) {
     }
   }
 }
-
-window.customElements.define('app-menu', AppMenu);

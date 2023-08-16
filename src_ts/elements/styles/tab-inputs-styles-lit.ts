@@ -434,4 +434,15 @@ export const tabInputsStyles = css`
   .separator {
     padding: 0 8px;
   }
+
+  .editable-row:hover .hover-block {
+    background-color: transparent;
+  }
+  .editable-row .hover-block paper-icon-button {
+    --iron-icon-fill-color: var(--gray-mid);
+  }
+  .editable-row {
+    position: relative;
+    align-items: center;
+  }
 `;

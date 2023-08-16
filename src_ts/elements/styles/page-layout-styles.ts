@@ -1,5 +1,4 @@
-import {html} from '@polymer/polymer/polymer-element';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import {html} from 'lit-element';
 
 // language=HTML
 export const pageLayoutStyles = html`
@@ -24,18 +23,23 @@ export const pageLayoutStyles = html`
     }
 
     .page {
-      @apply --layout-horizontal;
-      @apply --layout-wrap;
-      padding: 25px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: 24px;
     }
 
     #pageContent {
-      @apply --layout-flex-9;
+      width: 100%;
     }
 
     #sidebar {
-      @apply --layout-flex-3;
-      padding-left: 25px;
+      display: flex;
+      width: 224px;
+      padding-left: 24px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
     }
   </style>
 `;

@@ -1,15 +1,14 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/polymer/lib/elements/dom-repeat';
 import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -18,10 +17,15 @@ import cloneDeep from 'lodash-es/cloneDeep';
  * @customElement
  * @polymer
  */
-class KicwRisk extends PolymerElement {
-  static get template() {
+@customElement('kicw-risk')
+export class KicwRisk extends LitElement {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
@@ -33,40 +37,42 @@ class KicwRisk extends PolymerElement {
         .edit-icon-slot {
           align-items: flex-start;
         }
-        list-element.list-element {
-          border-bottom: none;
-          --primary-background-color: #eee;
-          --multiline-align: top;
-          --hover-block-bg-color: transparent;
+        etools-data-table-header {
+          --list-bg-color: transparent;
         }
-        list-header {
-          box-shadow: none;
+        etools-data-table-row::part(edt-list-row-collapse-wrapper) {
+          border-bottom: none !important;
+        }
+        etools-data-table-row::part(edt-list-row-collapse-wrapper) {
+          border-bottom: none !important;
         }
       </style>
 
-      <list-header no-ordered data="[[columns]]"> </list-header>
+      <etools-data-table-header no-collapse no-title>
+        <etools-data-table-column class="col-1">Risk #</etools-data-table-column>
+        <etools-data-table-column class="col-2">Risks Rating</etools-data-table-column>
+        <etools-data-table-column class="col-3">Key control observation</etools-data-table-column>
+        <etools-data-table-column class="col-3">Recommendation</etools-data-table-column>
+        <etools-data-table-column class="col-3">IP response</etools-data-table-column>
+      </etools-data-table-header>
 
-      <template is="dom-repeat" items="[[risksData]]">
-        <list-element
-          class="list-element"
-          data="[[item]]"
-          headings="[[columns]]"
-          item-index="[[index]]"
-          multiline
-          no-animation
-        >
-          <div slot="hover" class="edit-icon-slot" hidden$="[[!isEditable]]">
-            <div class="hover-icons">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="editRisk"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="removeRisk"></paper-icon-button>
+      ${(this.risksData || []).map(
+        (item, index) => html`
+          <etools-data-table-row no-collapse>
+            <div slot="row-data" class="layout-horizontal editable-row">
+              <span class="col-data col-1"></span>
+              <span class="col-data col-2">${item.value_display}</span>
+              <span class="col-data col-2">${item.extra.key_control_observation}</span>
+              <span class="col-data col-2">${item.extra.recommendation}</span>
+              <span class="col-data col-2">${item.extra.ip_response}</span>
+              <div class="hover-block" ?hidden="${!this.isEditable}">
+                <paper-icon-button icon="create" @click="${() => this.editRisk(index)}"></paper-icon-button>
+                <paper-icon-button icon="delete" @click="${() => this.removeRisk(index)}"></paper-icon-button>
+              </div>
             </div>
-          </div>
-        </list-element>
-      </template>
-
-      <template is="dom-if" if="[[!risksData.length]]">
-        <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-      </template>
+          </etools-data-table-row>
+        `
+      )}
     `;
   }
 
@@ -88,36 +94,6 @@ class KicwRisk extends PolymerElement {
 
   @property({type: Number})
   blueprintId!: number;
-
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: '80px',
-      label: 'Risk #',
-      name: 'autoNumber',
-      align: 'center'
-    },
-    {
-      size: 10,
-      label: 'Risks Rating',
-      path: 'value_display'
-    },
-    {
-      size: 30,
-      label: 'Key control observation',
-      path: 'extra.key_control_observation'
-    },
-    {
-      size: 30,
-      label: 'Recommendation',
-      path: 'extra.recommendation'
-    },
-    {
-      size: 30,
-      label: 'IP response',
-      path: 'extra.ip_response'
-    }
-  ];
 
   editRisk(event) {
     const blueprint = this._createBlueprintFromEvent(event);
@@ -144,5 +120,3 @@ class KicwRisk extends PolymerElement {
     };
   }
 }
-
-window.customElements.define('kicw-risk', KicwRisk);

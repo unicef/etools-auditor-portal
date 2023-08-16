@@ -1,14 +1,14 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import {GenericObject} from '../../../../types/global';
 import {getStaticData} from '../../../mixins/static-data-controller';
-import CommonMethodsMixinLit from '../../../mixins/common-methods-mixin-lit';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {buildQueryString, updateQueries} from '../../../mixins/query-params-controller';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import {pageLayoutStyles} from '../../../styles/page-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {elevationStyles} from '@unicef-polymer/etools-modules-common/dist/styles/elevation-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import {moduleStyles} from '../../../styles/module-styles-lit';
+import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
@@ -44,7 +44,7 @@ import {getChoices, getHeadingLabel} from '../../../mixins/permission-controller
  * @customElement
  */
 @customElement('engagements-list-view')
-export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
+export class EngagementsListView extends CommonMethodsMixin(LitElement) {
   static get styles() {
     return [pageLayoutStyles, moduleStyles, gridLayoutStylesLit, elevationStyles];
   }
@@ -74,7 +74,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
         @data-loaded="${({detail}: CustomEvent) => this.onDataLoaded(detail)}"
         .endpointName="${this.endpointName}"
         .requestQueries="${this.requestQueries}"
-        .reloadData="${this.reloadData}"
+        ?reloadData="${this.reloadData}"
       >
       </engagements-list-data>
 
@@ -83,7 +83,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
         hide-print-button
         .exportLinks="${this.exportLinks}"
         .link="${this.newBtnLink}"
-        .hideAddButton="${this._hideAddButton()}"
+        ?hideAddButton="${this._hideAddButton()}"
         .btnText="${this.addBtnText}"
         page-title="Engagements"
       >
@@ -179,7 +179,7 @@ export class EngagementsListView extends CommonMethodsMixinLit(LitElement) {
   engagementsList: any[] = [];
 
   @property({type: String})
-  newBtnLink = `/${BASE_PATH}/engagements/new/overview`;
+  newBtnLink = `${BASE_PATH}engagements/new/overview`;
 
   @property({type: String})
   tableTitle = '';

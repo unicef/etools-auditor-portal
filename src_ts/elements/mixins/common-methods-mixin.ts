@@ -1,5 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, Constructor, property} from 'lit-element';
 import clone from 'lodash-es/clone';
 import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
@@ -7,16 +6,16 @@ import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
 import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
 import {setStaticData, getStaticData} from './static-data-controller';
-import {Constructor, GenericObject} from '../../types/global';
+import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
-import {getProperty, setProperty} from '../utils/utils';
+import {getProperty} from '../utils/utils';
 
 /**
  * @polymer
  * @mixinFunction
  */
-function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class CommonMethodsMixinClass extends baseClass {
     @property({type: Boolean})
     requestInProcess!: boolean;
@@ -27,6 +26,9 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     errors!: GenericObject;
 
+    @property({type: Object})
+    errorObject!: GenericObject;
+
     @property({type: Boolean})
     dialogOpened = false;
 
@@ -36,6 +38,9 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Boolean})
     confirmDialogOpened = false;
 
+    @property({type: String})
+    basePermissionPath!: string;
+
     _resetFieldError(event) {
       if (!event || !event.target) {
         return false;
@@ -43,7 +48,8 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
       const field = event.target.getAttribute('field');
       if (field) {
-        this.set(`errors.${field}`, false);
+        this.errors[field] = false;
+        this.requestUpdate();
       }
 
       event.target.invalid = false;
@@ -73,7 +79,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     _resetDialogOpenedFlag(event) {
-      this.set(event.currentTarget.getAttribute('openFlag'), false);
+      this[event.currentTarget.getAttribute('openFlag')] = false;
     }
 
     _errorHandler(errorData) {
@@ -83,7 +89,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
-      this.set('errors', clone(refactorErrorObject(errorData)));
+      this.errors = clone(refactorErrorObject(errorData));
       if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }
@@ -101,7 +107,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       if (!this.dialogOpened && isString(data)) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${data}`});
       } else {
-        this.set('errors', data);
+        this.errors = data;
       }
 
       if (nonField) {
@@ -113,12 +119,12 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       const valuePath: string = event.target.dataset?.valuePath || '';
       const fieldPath: string = event.target.dataset?.fieldPath || '';
       const value = getProperty(event, valuePath);
-      setProperty(this, fieldPath, value);
-      this.notifyPath(fieldPath);
+      this[fieldPath] = value;
+      this.requestUpdate();
     }
 
     _basePathChanged() {
-      this.updateStyles();
+      //@dci this.updateStyles();
     }
 
     _dataChanged() {
@@ -164,7 +170,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
     }
 
-    getPlaceholderText(path, base, datepicker) {
+    getPlaceholderText(path, base, datepicker?) {
       if (readonlyPermission(`${base}.${path}`)) {
         return '–';
       }
@@ -255,10 +261,9 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     dateHasChanged(e: CustomEvent) {
       const selDate = e.detail.date;
       // @ts-ignore
-      this.set('data.' + e.target.getAttribute('property-name'), selDate);
+      this.data[e.target.getAttribute('property-name')] = selDate;
     }
   }
-
   return CommonMethodsMixinClass;
 }
 

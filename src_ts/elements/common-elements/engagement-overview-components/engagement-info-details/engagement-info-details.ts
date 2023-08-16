@@ -14,14 +14,15 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
-import {moduleStyles} from '../../../styles/module-styles-lit';
+import {moduleStyles} from '../../../styles/module-styles';
 
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import CommonMethodsMixinLit from '../../../mixins/common-methods-mixin-lit';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getChoices, collectionExists} from '../../../mixins/permission-controller';
 import {getStaticData} from '../../../mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
@@ -38,7 +39,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-info-details')
-export class EngagementInfoDetails extends CommonMethodsMixinLit(LitElement) {
+export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
   static get styles() {
     return [tabInputsStyles, moduleStyles, tabLayoutStyles];
   }
@@ -49,6 +50,7 @@ export class EngagementInfoDetails extends CommonMethodsMixinLit(LitElement) {
     }
 
     return html`
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
@@ -174,7 +176,7 @@ export class EngagementInfoDetails extends CommonMethodsMixinLit(LitElement) {
             <paper-input
               id="auditorInput"
               class="${this._setReadonlyFieldClass(this.data.agreement)}"
-              .value="${this.data.agreement.auditor_firm.name}"
+              .value="${this.data.agreement.auditor_firm?.name}"
               label="${this.getLabel('agreement.auditor_firm.name', this.basePermissionPath)}"
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
@@ -623,9 +625,6 @@ export class EngagementInfoDetails extends CommonMethodsMixinLit(LitElement) {
       value: 'sa'
     }
   ];
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   @property({type: Object})
   data!: any;

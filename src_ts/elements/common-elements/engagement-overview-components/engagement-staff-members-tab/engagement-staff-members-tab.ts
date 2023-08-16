@@ -19,20 +19,17 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../types/global';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {getUserData} from '../../../mixins/user-controller';
-import CommonMethodsMixinLit from '../../../mixins/common-methods-mixin-lit';
-import TableElementsMixinLit from '../../../mixins/table-elements-mixin-lit';
+import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import TableElementsMixin from '../../../mixins/table-elements-mixin';
+import PaginationMixin from '@unicef-polymer/etools-modules-common/dist/mixins/pagination-mixin';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
-import {moduleStyles} from '../../../styles/module-styles-lit';
+import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '../../../data-elements/get-staff-members-list';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
 import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
 import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
-import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
-import {
-  EtoolsPaginator,
-  defaultPaginator,
-  getPaginatorWithBackend
-} from '@unicef-polymer/etools-table/pagination/etools-pagination';
+import '@unicef-polymer/etools-data-table/etools-data-table.js';
 
 /**
  * @LitElement
@@ -41,9 +38,11 @@ import {
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-staff-members-tab')
-export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMethodsMixinLit(LitElement)) {
+export class EngagementStaffMembersTab extends PaginationMixin(
+  TableElementsMixin(CommonMethodsMixin(LitElement))
+) {
   static get styles() {
-    return [moduleStyles, tabInputsStyles];
+    return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
   }
   render() {
     return html`
@@ -95,74 +94,24 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
           top: -1px;
           color: #fff;
         }
-        .edit-icon {
-          padding: 5px;
-          width: 33px;
-          height: 33px;
-          color: var(--gray-mid);
-        }
-        .edit-icon-slot {
-          overflow: visible !important;
-          display: flex;
-          align-items: center;
-          height: 100%;
-        }
-        .check-icon {
-          margin-left: -3%;
-        }
-        .form-title {
-          position: relative;
-          width: 100%;
-          line-height: 40px;
-          color: var(--primary-color);
-          font-weight: 600;
-          box-sizing: border-box;
-          margin: 10px 0 0 !important;
-          padding: 0 !important;
-        }
-        .form-title .text {
-          background-color: var(--gray-06);
-          border-radius: 3px;
-          margin: 0 24px;
-          padding: 0 24px;
-        }
-        .line {
-          width: 'calc(100% - 48px)';
-          margin-left: 24px;
-          box-sizing: border-box;
-          margin-bottom: 0 !important;
-          border-bottom: 1px solid var(--gray-border);
-        }
-        .notify-box {
-          padding-left: 12px;
-          box-sizing: border-box;
-        }
-        .confirm-backdrop[opened] {
-          position: fixed;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 104;
-        }
-        .confirm-text {
-          padding: 5px 86px 0 23px !important;
-        }
-        .repeatable-item-container {
-          margin-bottom: 0 !important;
-        }
         .panel-content {
           position: relative;
           margin-bottom: -7px;
           padding-bottom: 0;
         }
         .checkbox {
-          overflow: visible !important;
-          line-height: 48px;
+          margin-left: 15px;
         }
         etools-content-panel::part(ecp-content) {
           padding: 0;
+        }
+        .editable-row {
+          margin-top: 0;
+          margin-bottom: 0;
+          padding: 12px 0;
+        }
+        .editable-row paper-icon-button {
+          --iron-icon-fill-color: var(--gray-mid);
         }
         etools-loading {
           --etools-loading-overlay-transparency: 0.4;
@@ -257,7 +206,7 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
             <div class="add-button-container">
               <a
                 class="white"
-                href="${this._getAMPLink(this.engagement.agreement.auditor_firm.organization_id)}"
+                href="${this._getAMPLink(this.engagement.agreement.auditor_firm?.organization_id)}"
                 target="_blank"
               >
                 <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
@@ -271,16 +220,67 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
           <etools-loading .active="${this.listLoading}" loading-text="Loading list data..." class="loading">
           </etools-loading>
 
-          <etools-table
-            .columns="${this.columns}"
-            .items="${this.dataItems}"
-            .paginator="${this._showPagination(this.datalength) ? this.paginator : null}"
-            @paginator-change="${this.paginatorChange}"
-            @item-changed="${({detail}: CustomEvent) => {
-              console.log(detail);
-            }}"
-          ></etools-table>
-        </div>
+          <etools-data-table-header no-collapse no-title>
+          ${
+            this.showHasAccess
+              ? html`<etools-data-table-column class="col-1">Has Access</etools-data-table-column>`
+              : ``
+          }
+            <etools-data-table-column class="col-2">Position</etools-data-table-column>
+            <etools-data-table-column class="${
+              this.showHasAccess ? 'col-2' : 'col-3'
+            }">First Name</etools-data-table-column>
+            <etools-data-table-column class="col-2">Last Name</etools-data-table-column>
+            <etools-data-table-column class="col-2">Phone Number</etools-data-table-column>
+            <etools-data-table-column class="col-2">E-mail Address</etools-data-table-column>
+            <etools-data-table-column class="col-1 center-align">Active</etools-data-table-column>
+          </etools-data-table-header>
+          ${(this.dataItems || [])
+            .filter((x) => this._isVisible(x.has_active_realm, this.showInactive))
+            .map(
+              (item) => html` <etools-data-table-row no-collapse>
+                <div slot="row-data" class="layout-horizontal editable-row">
+                  ${this.showHasAccess
+                    ? html` <span class="col-data col-1" ?hidden="${!this.showHasAccess}">
+                        <paper-checkbox
+                          class="checkbox"
+                          ?disabled="${this._isCheckboxReadonly(
+                            item.hasAccess,
+                            this.engagementStaffs,
+                            this.saveWithButton
+                          )}"
+                          @click="${(e) => this._isActive(e, item)}"
+                        >
+                        </paper-checkbox>
+                      </span>`
+                    : ``}
+                  <span class="col-data col-2 wrap-text">${item.user.profile.job_title || '–'}</span>
+                  <span class="col-data ${this.showHasAccess ? 'col-2' : 'col-3'} wrap-text"
+                    >${item.user.first_name}</span
+                  >
+                  <span class="col-data col-2 wrap-text">${item.user.last_name}</span>
+                  <span class="col-data col-2 wrap-text">${item.user.profile.phone_number || '–'}</span>
+                  <span class="col-data col-2 wrap-text">${item.user.email}</span>
+                  <span class="col-data col-1 wrap-text center-align"
+                    >${this.computeStaffMembActiveColumn(item) || html`<iron-icon icon="check"></iron-icon>`}</span
+                  >
+                </div>
+              </etools-data-table-row>`
+            )}
+        ${
+          this._showPagination(this.datalength)
+            ? html`<etools-data-table-footer
+                .pageSize="${this.paginator.page_size}"
+                .pageNumber="${this.paginator.page}"
+                .totalResults="${this.paginator.count}"
+                .visibleRange="${this.paginator.visible_range}"
+                @page-size-changed="${this.pageSizeChange}"
+                @page-number-changed="${this.pageNumberChange}"
+              >
+              </etools-data-table-footer>`
+            : ``
+        }
+
       </etools-content-panel>
     `;
   }
@@ -288,81 +288,14 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   @property({type: String})
   mainProperty = 'staff_members';
 
+  @property({type: Boolean})
+  showHasAccess = false;
+
   @property({type: String})
   staffsBase = '';
 
-  @property({type: Object})
-  paginator: EtoolsPaginator | null = null;
-
   @property({type: Array})
   dataItems: any[] = [];
-
-  // @property({type: Object})
-  // itemModel: GenericObject = {
-  //   user: {
-  //     first_name: '',
-  //     last_name: '',
-  //     email: '',
-  //     profile: {
-  //       job_title: '',
-  //       phone_number: ''
-  //     }
-  //   },
-  //   hasAccess: true
-  // };
-
-  @property({type: Array})
-  columns: any[] = [
-    {
-      label: 'Has Access',
-      name: 'hasAccess',
-      property: 'hasAccess',
-      type: EtoolsTableColumnType.Checkbox
-    },
-    {
-      label: 'Position',
-      labelPath: 'staff_members.user.profile.job_title',
-      name: 'user.profile.job_title',
-      type: EtoolsTableColumnType.Text,
-      customCss: 'wrap-text'
-    },
-    {
-      label: 'First Name',
-      labelPath: 'staff_members.user.first_name',
-      name: 'user.first_name',
-      type: EtoolsTableColumnType.Text,
-      customCss: 'wrap-text'
-    },
-    {
-      label: 'Last Name',
-      labelPath: 'staff_members.user.last_name',
-      name: 'user.last_name',
-      type: EtoolsTableColumnType.Text,
-      customCss: 'wrap-text'
-    },
-    {
-      label: 'Phone Number',
-      labelPath: 'staff_members.user.profile.phone_number',
-      name: 'user.profile.phone_number',
-      type: EtoolsTableColumnType.Text,
-      customCss: 'wrap-text'
-    },
-    {
-      label: 'E-mail Address',
-      labelPath: 'staff_members.user.email',
-      name: 'user.email',
-      type: EtoolsTableColumnType.Text,
-      customCss: 'wrap-text'
-    },
-    {
-      label: 'Active',
-      path: 'computed_field',
-      name: 'has_active_realm',
-      type: EtoolsTableColumnType.Text,
-      customCss: 'wrap-text',
-      html: true
-    }
-  ];
 
   @property({type: Object})
   listQueries: GenericObject = {
@@ -414,13 +347,13 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     super.updated(changedProperties);
 
     if (changedProperties.has('basePermissionPath')) {
-      this.changePermission(this.basePermissionPath);
+      this.setPermission(this.basePermissionPath);
     }
     if (changedProperties.has('errorObject')) {
       this._handleUpdateError(this.errorObject?.staff_members);
     }
     if (changedProperties.has('engagement') || changedProperties.has('basePermissionPath')) {
-      this._organizationChanged(this.engagement.agreement.auditor_firm.id);
+      this._organizationChanged(this.engagement.agreement?.auditor_firm?.id);
       this._selectedStaffsChanged(this.engagement.staff_members);
     }
     if (changedProperties.has('dataItems') || changedProperties.has('engagementStaffs')) {
@@ -431,32 +364,11 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     }
   }
 
-  changePermission(basePermissionPath) {
-    // @ dci need to show/hide hasAccess column
-    return;
+  setPermission(basePermissionPath) {
     if (!basePermissionPath) {
       return;
     }
-    const editObj = this.columns && this.columns[0];
-    if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
-      // each(this.columns, (_value, index) => {
-      //   this.set(`columns.${index}.size`, 16);
-      // });
-      // this.set(`columns.${this.columns.length - 1}.size`, 10);
-      this.columns.unshift({
-        size: 10,
-        label: 'Has Access',
-        name: 'hasAccess',
-        property: 'hasAccess',
-        checkbox: true
-      });
-    } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
-      this.columns.shift();
-      // each(this.columns, (_value, index) => {
-      //   this.set(`columns.${index}.size`, 18);
-      // });
-      // this.set(`columns.${this.columns.length - 1}.size`, 10);
-    }
+    this.showHasAccess = this._canBeChanged();
   }
 
   listLoadingStateChanged(event: CustomEvent): void {
@@ -470,25 +382,26 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
-    if (this._showPagination(this.datalength)) {
-      if (!this.paginator) {
-        this.paginator = {...defaultPaginator, page_size: 10};
-        this.paginator = getPaginatorWithBackend(this.paginator, data.count);
-      }
-    }
+    this.paginator = {...this.paginator, count: data.count};
     this.dataItems = data.results;
-    this.computeStaffMembActiveColumn();
   }
 
-  paginatorChange(e: CustomEvent) {
-    this.paginator = {...e.detail};
-    this.listQueries = {...this.listQueries, page: this.paginator?.page, page_size: this.paginator?.page_size};
+  pageSizeChange(e: CustomEvent) {
+    this.paginator = {...this.paginator, page_size: e.detail.value};
+    this.updateListQueries();
   }
 
-  computeStaffMembActiveColumn() {
-    this.dataItems?.map((item: any) => {
-      item.computed_field = !item.user.is_active ? 'Inactive' : !item.has_active_realm ? 'No Access' : `&#10003;`;
-    });
+  pageNumberChange(e: CustomEvent) {
+    this.paginator = {...this.paginator, page: e.detail.value};
+    this.updateListQueries();
+  }
+
+  updateListQueries() {
+    this.listQueries = {...this.listQueries, page: this.paginator.page, page_size: this.paginator.page_size};
+  }
+
+  computeStaffMembActiveColumn(item) {
+    return !item.user.is_active ? 'Inactive' : !item.has_active_realm ? 'No Access' : null;
   }
 
   onShowInactiveChanged(e: CustomEvent) {
@@ -528,7 +441,6 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     if (!this.originalTableData) {
       this._dataItemsChanged(this.dataItems);
     }
-    this.computeStaffMembActiveColumn();
   }
 
   _selectedStaffsChanged(data) {
@@ -552,8 +464,7 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
     }
   }
 
-  _isActive(event) {
-    const item = event && event.model && event.model.item;
+  _isActive(event, item) {
     if (!item) {
       throw new Error('Can not get item model!');
     }
@@ -641,9 +552,7 @@ export class EngagementStaffMembersTab extends TableElementsMixinLit(CommonMetho
   }
 
   _searchChanged(searchString) {
-    if (this.paginator) {
-      this.paginator.page = 1;
-    }
+    this.paginator = {...this.paginator, page: 1};
     this.listQueries = {...this.listQueries, search: searchString, page: 1};
   }
 

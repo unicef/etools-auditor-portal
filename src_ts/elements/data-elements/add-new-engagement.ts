@@ -1,22 +1,26 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {GenericObject} from '../../types/global.js';
 
-class AddNewEngagement extends PolymerElement {
+@customElement('add-new-engagement')
+export class AddNewEngagement extends LitElement {
   @property({type: Object})
   newEngagementData!: GenericObject;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   errorObject = {};
 
   @property({type: String})
   endpointName = '';
 
-  static get observers() {
-    return ['_newEngagementChanged(newEngagementData, endpointName)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('newEngagementData') || changedProperties.has('endpointName')) {
+      this._newEngagementChanged(this.newEngagementData, this.endpointName);
+    }
   }
 
   _handleResponse(data) {
@@ -34,9 +38,9 @@ class AddNewEngagement extends PolymerElement {
     }
 
     if (status === 400) {
-      this.set('errorObject', response);
+      this.errorObject = response;
     } else if (status === 413) {
-      this.set('errorObject', {});
+      this.errorObject = {};
       fireEvent(this, 'toast', {
         text: `Error: Exceeded the maximum size of uploaded file(s).`
       });
@@ -68,5 +72,3 @@ class AddNewEngagement extends PolymerElement {
     sendRequest(options).then(this._handleResponse.bind(this)).catch(this._handleError.bind(this));
   }
 }
-
-window.customElements.define('add-new-engagement', AddNewEngagement);

@@ -45,7 +45,7 @@ declare const dayjs_plugin_utc: any;
 
 dayjs.extend(dayjs_plugin_utc);
 
-setRootPath(`/${BASE_PATH}/`);
+setRootPath(`${BASE_PATH}`);
 
 window.EtoolsLanguage = 'en';
 
@@ -216,7 +216,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === `/${BASE_PATH}/`) {
+    if (this.initLoadingComplete && this.route.path === `${BASE_PATH}`) {
       this._setDefaultLandingPage();
     }
 

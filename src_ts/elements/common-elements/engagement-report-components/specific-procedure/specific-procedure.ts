@@ -1,5 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
@@ -10,17 +9,20 @@ import '@polymer/polymer/lib/elements/dom-repeat';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import isString from 'lodash-es/isString';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@polymer/paper-input/paper-textarea';
 import {checkNonField} from '../../../mixins/error-handler';
+import {getHeadingLabel} from '../../../mixins/permission-controller';
 
 /**
  * @polymer
@@ -28,10 +30,15 @@ import {checkNonField} from '../../../mixins/error-handler';
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-  static get template() {
+@customElement('specific-procedure')
+export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host .repeatable-item-container[without-line] {
           min-width: 0 !important;
@@ -50,146 +57,154 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('specific_procedures', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('specific_procedures', this.basePermissionPath)}"
         list
       >
         <div slot="panel-btns">
-          <div hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]">
+          <div ?hidden="${!this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)}">
             <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header
-          id="list-header"
-          no-ordered
-          no-additional
-          data="[[columns]]"
-          base-permission-path="[[basePermissionPath]]"
-        >
-        </list-header>
-
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            no-additional
-            multiline
-            no-animation
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-2">Procedure</etools-data-table-column>
+          <etools-data-table-column class="${this.withoutFindingColumn ? 'col-10' : 'col-5'}"
+            >${getHeadingLabel(
+              this.basePermissionPath,
+              'specific_procedures.description',
+              'Description'
+            )}</etools-data-table-column
           >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button
-                icon="icons:create"
-                class="edit-icon"
-                hidden$="[[_hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab)]]"
-                on-tap="openEditDialog"
-              ></paper-icon-button>
-              <paper-icon-button
-                icon="icons:delete"
-                class="edit-icon"
-                hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]"
-                on-tap="openDeleteDialog"
-              ></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+          <etools-data-table-column class="col-5" ?hidden="${this.withoutFindingColumn}"
+            >${getHeadingLabel(
+              this.basePermissionPath,
+              'specific_procedures.finding',
+              'Finding'
+            )}</etools-data-table-column
+          >
+        </etools-data-table-header>
 
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-additional no-animation>
-          </list-element>
-        </template>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-2">${item.finding}</span>
+                <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">${item.description}</span>
+                <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}"
+                  >${item.specific_procedures.finding}</span
+                >
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                  <paper-icon-button
+                    icon="create"
+                    ?hidden="${this._hideEditIcon(
+                      this.basePermissionPath,
+                      this.withoutFindingColumn,
+                      this.readonlyTab
+                    )}"
+                    @click="${() => this.openEditDialog(index)}"
+                  ></paper-icon-button>
+                  <paper-icon-button
+                    icon="delete"
+                    ?hidden="${!this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)}"
+                    @click="${() => this.openDeleteDialog(index)}"
+                  ></paper-icon-button>
+                </div>
+              </div>
+            </etools-data-table-row>
+          `
+        )}
       </etools-content-panel>
+
       <etools-dialog
         theme="confirmation"
         size="md"
-        opened="{{confirmDialogOpened}}"
+        .opened="${this.confirmDialogOpened}"
         openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-        on-close="_removeItem"
+        @close="${(e: CustomEvent) => {
+          this._resetDialogOpenedFlag(e);
+          this._removeItem(e);
+        }}"
         ok-btn-text="Delete"
       >
-        [[deleteTitle]]
+        ${this.deleteTitle}
       </etools-dialog>
+
       <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
-        opened="{{dialogOpened}}"
+        .opened="${this.dialogOpened}"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
+        @close="${this._resetDialogOpenedFlag}"
+        .dialogTitle="${this.dialogTitle}"
+        .okBtnText="${this.confirmBtnText}"
+        ?showSpinner="${this.requestInProcess}"
+        ?disable-confirm-btn="${this.requestInProcess}"
+        @confirm-btn-clicked="${this._addItemFromDialog}"
       >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <template is="dom-if" if="[[canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
-              <div class="row-h group">
-                <div class="input-container input-container-l">
+        ${
+          this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)
+            ? html`<div class="layout-horizontal">
+                <div class="col col-12">
                   <!-- Description -->
                   <paper-textarea
-                    class$="fixed-width validate-input
-                                            [[_setRequired('specific_procedures.description', basePermissionPath)]]"
-                    value="{{editedItem.description}}"
+                    class="fixed-width validate-input ${this._setRequired(
+                      'specific_procedures.description',
+                      this.basePermissionPath
+                    )}"
+                    .value="${this.editedItem?.description}"
                     allowed-pattern="[ds]"
-                    label="[[getLabel('specific_procedures.description', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('specific_procedures.description',
-                                                    basePermissionPath)]]"
-                    required$="[[_setRequired('specific_procedures.description',
-                                                    basePermissionPath)]]"
-                    readonly$="[[requestInProcess]]"
+                    label="${this.getLabel('specific_procedures.description', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('specific_procedures.description', this.basePermissionPath)}"
+                    ?required="${this._setRequired('specific_procedures.description', this.basePermissionPath)}"
+                    ?readonly="${this.requestInProcess}"
                     max-rows="4"
-                    invalid="[[_checkInvalid(errors.0.description)]]"
-                    error-message="[[errors.0.description]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
+                    ?invalid="${this._checkInvalid(this.errors[0]?.description)}"
+                    .errorMessage="${this.errors[0]?.description}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      (this.editedItem = {...this.editedItem, description: detail.value})}"
+                    @focus="${this._resetFieldError}"
                   >
                   </paper-textarea>
                 </div>
-              </div>
-            </template>
+              </div>`
+            : ``
+        }
 
-            <template is="dom-if" if="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
-              <div class="row-h group">
-                <div class="input-container input-container-l">
+        ${
+          this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)
+            ? html` <div class="layout-horizontal">
+                <div class="col col-12">
                   <!-- Finding -->
                   <paper-textarea
-                    class$="fixed-width validate-input
-                                              [[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                    value="{{editedItem.finding}}"
+                    class="fixed-width validate-input ${this._setRequired(
+                      'specific_procedures.finding',
+                      this.basePermissionPath
+                    )}"
+                    .value="${this.editedItem?.finding}"
                     allowed-pattern="[ds]"
-                    label="[[getLabel('specific_procedures.finding', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('specific_procedures.finding',
-                                                    basePermissionPath)]]"
-                    required$="[[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                    readonly$="[[requestInProcess]]"
+                    label="${this.getLabel('specific_procedures.finding', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('specific_procedures.finding', this.basePermissionPath)}"
+                    ?required="${this._setRequired('specific_procedures.finding', this.basePermissionPath)}"
+                    ?readonly="${this.requestInProcess}"
                     max-rows="4"
-                    invalid="[[_checkInvalid(errors.0.finding)]]"
-                    error-message="[[errors.0.finding]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
+                    ?invalid="${this._checkInvalid(this.errors[0]?.finding)}"
+                    .errorMessage="${this.errors[0]?.finding}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      (this.editedItem = {...this.editedItem, finding: detail.value})}"
+                    @focus="${this._resetFieldError}"
                   >
                   </paper-textarea>
                 </div>
-              </div>
-            </template>
+              </div>`
+            : ``
+        }
+
           </div>
         </div>
       </etools-dialog>
     `;
-  }
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      '_errorHandler(errorObject.specific_procedures)',
-      '_checkNonField(errorObject.specific_procedures)',
-      '_manageColumns(withoutFindingColumn, columns)'
-    ];
   }
 
   @property({type: Object})
@@ -200,8 +215,8 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
     path: 'finding'
   };
 
-  @property({type: Array, notify: true})
-  dataItems!: [];
+  @property({type: Array})
+  dataItems!: GenericObject[];
 
   @property({type: String})
   mainProperty = 'specific_procedures';
@@ -239,11 +254,24 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean})
   withoutFindingColumn = false;
 
   @property({type: Boolean})
   readonlyTab = false;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject?.specific_procedures);
+      this._checkNonField(this.errorObject?.specific_procedures);
+    }
+    // @dci '_manageColumns(withoutFindingColumn, columns)'
+  }
 
   _checkNonField(error) {
     if (
@@ -260,11 +288,12 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
     }
   }
 
+  // @dci to be removed
   _manageColumns(removeFinding, columns) {
     if (removeFinding && columns.length === 3) {
-      this.splice('columns', 2, 1);
+      this.columns.splice(2, 1);
     } else if (!removeFinding && columns.length === 2) {
-      this.splice('columns', 2, 0, this.findingColumn);
+      this.columns.splice(2, 0, this.findingColumn);
     }
   }
 
@@ -288,6 +317,3 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
     return !!value;
   }
 }
-window.customElements.define('specific-procedure', SpecificProcedure);
-
-export {SpecificProcedure as SpecificProcedureEl};

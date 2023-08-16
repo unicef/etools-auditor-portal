@@ -3,7 +3,7 @@ import '@polymer/iron-pages/iron-pages';
 import '@polymer/app-route/app-route';
 import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import '../engagements/engagements-list-view/engagements-list-view';
 import '../engagements/new-engagement-view/new-engagement-view';
 import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
@@ -103,7 +103,7 @@ export class StaffScPageMain extends LitElement {
   partnerDetails: GenericObject = {};
 
   @property({type: String})
-  newBtnLink = `/${BASE_PATH}/staff-sc/new/overview`;
+  newBtnLink = `${BASE_PATH}staff-sc/new/overview`;
 
   @property({type: String})
   endpointName = 'staffSCList';

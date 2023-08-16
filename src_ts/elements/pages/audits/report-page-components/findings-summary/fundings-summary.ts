@@ -1,24 +1,23 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-repeat';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/iron-icons/iron-icons';
 
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import {getStaticData} from '../../../../mixins/static-data-controller';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
+
 import {GenericObject} from '../../../../../types/global';
 
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -31,6 +30,7 @@ import values from 'lodash-es/values';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 
 /**
  * @customElement
@@ -38,11 +38,15 @@ import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-
  * @appliesMixin  TableElementsMixin
  * @appliesMixin  CommonMethodsMixin
  */
-class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-  static get template() {
-    // language=HTML
+@customElement('findings-summary')
+export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${moduleStyles} ${tabLayoutStyles} ${tabInputsStyles}
+      ${sharedStyles}
       <style>
         etools-content-panel::part(ecp-content) {
           padding: 0;
@@ -61,22 +65,43 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
       </style>
 
       <etools-content-panel list panel-title="Summary of Audit Findings">
-        <list-header
-          id="list-header"
-          no-additional
-          no-ordered
-          data="[[headerColumns]]"
-          base-permission-path="[[basePermissionPath]]"
-        >
-        </list-header>
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-2">IP name</etools-data-table-column>
+          <etools-data-table-column class="col-1">Audited Expenditure $</etools-data-table-column>
+          <etools-data-table-column class="col-1">Financial Findings $</etools-data-table-column>
+          <etools-data-table-column class="col-1">Audited Expenditure</etools-data-table-column>
+          <etools-data-table-column class="col-1">Financial Findings</etools-data-table-column>
+          <etools-data-table-column class="col-1">% Of Audited Expenditure</etools-data-table-column>
+          <etools-data-table-column class="col-1">Audit Opinion</etools-data-table-column>
+          <etools-data-table-column class="col-1">No. of Financial Findings</etools-data-table-column>
+          <etools-data-table-column class="col-1">High Risk</etools-data-table-column>
+          <etools-data-table-column class="col-1">Medium Risk</etools-data-table-column>
+          <etools-data-table-column class="col-1">Low Risk</etools-data-table-column>
+        </etools-data-table-header>
 
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element class="list-element" no-additional data="[[item]]" headings="[[columns]]">
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-2">${item.partner.name}</span>
+                <span class="col-data col-1">${item.audited_expenditure}</span>
+                <span class="col-data col-1">${item.financial_findings}</span>
+                <span class="col-data col-1">${item.audited_expenditure_local}</span>
+                <span class="col-data col-1">${item.financial_findings_local}</span>
+                <span class="col-data col-1">${item.percent_of_audited_expenditure}</span>
+                <span class="col-data col-1">${item.display_name}</span>
+                <span class="col-data col-1">${item.number_of_financial_findings}</span>
+                <span class="col-data col-1">${item.key_internal_weakness.high_risk_count}</span>
+                <span class="col-data col-1">${item.key_internal_weakness.medium_risk_count}</span>
+                <span class="col-data col-1">${item.key_internal_weakness.low_risk_count}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <!-- @dci  openEditDialog(index) -->
+                </div>
+              </div>
+            </etools-data-table-row>
+          `
+        )}
       </etools-content-panel>
 
       <etools-dialog
@@ -84,189 +109,196 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
         size="md"
         no-padding
         keep-dialog-open
-        opened="{{dialogOpened}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-        dialog-title="[[dialogTitle]]"
+        .opened="${this.dialogOpened}"
+        @confirm-btn-clicked="${this._addItemFromDialog}"
+        .dialogTitle="${this.dialogTitle}"
         ok-btn-text="Save"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container">
-                <!-- Implementing partner name -->
-                <paper-input
-                  class="validate-input"
-                  value="{{editedItem.partner.name}}"
-                  label$="[[getLabel('partner.name', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('partner.name', basePermissionPath)]]"
-                  readonly
-                >
-                </paper-input>
-              </div>
+        <div class="layout-horizontal">
+          <div class="col col-4">
+            <!-- Implementing partner name -->
+            <paper-input
+              class="validate-input"
+              .value="${this.editedItem.partner.name}"
+              label="${this.getLabel('partner.name', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('partner.name', this.basePermissionPath)}"
+              readonly
+            >
+            </paper-input>
+          </div>
 
-              <div class="input-container">
-                <!-- Audited expenditure (USD) -->
-                <etools-currency-amount-input
-                  id="audited-expenditure"
-                  class$="[[_setRequired('audited_expenditure', basePermissionPath)]]
-                            validate-input"
-                  value="{{editedItem.audited_expenditure}}"
-                  currency="$"
-                  label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('audited_expenditure', basePermissionPath)]]"
-                  required$="[[_setRequired('audited_expenditure', basePermissionPath)]]"
-                  readonly$="[[requestInProcess]]"
-                  invalid="{{errors.audited_expenditure}}"
-                  error-message="{{errors.audited_expenditure}}"
-                  on-blur="customValidation"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </etools-currency-amount-input>
-              </div>
+          <div class="col col-4">
+            <!-- Audited expenditure (USD) -->
+            <etools-currency-amount-input
+              id="audited-expenditure"
+              class="${this._setRequired('audited_expenditure', this.basePermissionPath)} validate-input"
+              .value="${this.editedItem.audited_expenditure}"
+              currency="$"
+              label="${this.getLabel('audited_expenditure', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('audited_expenditure', this.basePermissionPath)}"
+              ?required="${this._setRequired('audited_expenditure', this.basePermissionPath)}"
+              ?readonly="${this.requestInProcess}"
+              ?invalid="${this.errors.audited_expenditure}"
+              .errorMessage="${this.errors.audited_expenditure}"
+              @value-changed="${({detail}: CustomEvent) => {
+                this.numberChanged(detail, 'audited_expenditure', this.editedItem);
+                this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
+              }}"
+              @blur="${this.customValidation}"
+              @focus="${this._resetFieldError}"
+            >
+            </etools-currency-amount-input>
+          </div>
 
-              <div class="input-container">
-                <!-- Financial findings (USD) -->
-                <etools-currency-amount-input
-                  id="financial-findings"
-                  class$="[[_setRequired('financial_findings', basePermissionPath)]]
-                            validate-input"
-                  value="{{editedItem.financial_findings}}"
-                  currency="$"
-                  label$="[[getLabel('financial_findings', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('financial_findings', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_findings', basePermissionPath)]]"
-                  readonly$="[[requestInProcess]]"
-                  invalid="{{errors.financial_findings}}"
-                  error-message="{{errors.financial_findings}}"
-                  on-blur="customValidation"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </etools-currency-amount-input>
-              </div>
+          <div class="col col-4">
+            <!-- Financial findings (USD) -->
+            <etools-currency-amount-input
+              id="financial-findings"
+              class="${this._setRequired('financial_findings', this.basePermissionPath)} validate-input"
+              .value="${this.editedItem.financial_findings}"
+              currency="$"
+              label="${this.getLabel('financial_findings', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('financial_findings', this.basePermissionPath)}"
+              ?required="${this._setRequired('financial_findings', this.basePermissionPath)}"
+              ?readonly="${this.requestInProcess}"
+              ?invalid="${this.errors.financial_findings}"
+              .errorMessage="${this.errors.financial_findings}"
+              @value-changed="${({detail}: CustomEvent) => {
+                this.numberChanged(detail, 'financial_findings', this.editedItem);
+                this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
+              }}"
+              @blur="${this.customValidation}"
+              @focus="${this._resetFieldError}"
+            >
+            </etools-currency-amount-input>
+          </div>
 
-              <div class="input-container" hidden$="[[!showLocalCurrency]]">
-                <!-- Audited expenditure (Local) -->
-                <etools-currency-amount-input
-                  id="audited-expenditure-local"
-                  class$="validate-input [[_setRequired('audited_expenditure_local', basePermissionPath)]]"
-                  value="{{editedItem.audited_expenditure_local}}"
-                  currency="[[data.currency_of_report]]"
-                  label$="[[getLocalLabel('audited_expenditure_local', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('audited_expenditure_local', basePermissionPath)]]"
-                  required$="[[_setRequired('audited_expenditure_local', basePermissionPath)]]"
-                  readonly$="[[requestInProcess]]"
-                  invalid="{{errors.audited_expenditure_local}}"
-                  error-message="{{errors.audited_expenditure_local}}"
-                  on-blur="customValidation"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </etools-currency-amount-input>
-              </div>
+          <div class="col col-4" ?hidden="${!this.showLocalCurrency}">
+            <!-- Audited expenditure (Local) -->
+            <etools-currency-amount-input
+              id="audited-expenditure-local"
+              class="validate-input ${this._setRequired('audited_expenditure_local', this.basePermissionPath)}"
+              .value="${this.editedItem.audited_expenditure_local}"
+              .currency="${this.data.currency_of_report}"
+              label="${this.getLocalLabel('audited_expenditure_local', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('audited_expenditure_local', this.basePermissionPath)}"
+              ?required="${this._setRequired('audited_expenditure_local', this.basePermissionPath)}"
+              ?readonly="${this.requestInProcess}"
+              ?invalid="${this.errors.audited_expenditure_local}"
+              .errorMessage="${this.errors.audited_expenditure_local}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.numberChanged(detail, 'audited_expenditure_local', this.editedItem)}"
+              @blur="${this.customValidation}"
+              @focus="${this._resetFieldError}"
+            >
+            </etools-currency-amount-input>
+          </div>
 
-              <div class="input-container" hidden$="[[!showLocalCurrency]]">
-                <!-- Financial findings (Local) -->
-                <etools-currency-amount-input
-                  id="financial-findings-local"
-                  class$="validate-input [[_setRequired('financial_findings_local', basePermissionPath)]]"
-                  value="{{editedItem.financial_findings_local}}"
-                  currency="[[data.currency_of_report]]"
-                  label$="[[getLocalLabel('financial_findings_local', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('financial_findings_local', basePermissionPath)]]"
-                  required$="[[_setRequired('financial_findings_local', basePermissionPath)]]"
-                  readonly$="[[requestInProcess]]"
-                  invalid="{{errors.financial_findings_local}}"
-                  error-message="{{errors.financial_findings_local}}"
-                  on-blur="customValidation"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </etools-currency-amount-input>
-              </div>
+          <div class="col col-4" ?hidden="${!this.showLocalCurrency}">
+            <!-- Financial findings (Local) -->
+            <etools-currency-amount-input
+              id="financial-findings-local"
+              class="validate-input ${this._setRequired('financial_findings_local', this.basePermissionPath)}"
+              .value="${this.editedItem.financial_findings_local}"
+              .currency="${this.data.currency_of_report}"
+              label="${this.getLocalLabel('financial_findings_local', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('financial_findings_local', this.basePermissionPath)}"
+              ?required="${this._setRequired('financial_findings_local', this.basePermissionPath)}"
+              ?readonly="${this.requestInProcess}"
+              ?invalid="${this.errors.financial_findings_local}"
+              .errorMessage="${this.errors.financial_findings_local}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.numberChanged(detail, 'financial_findings_local', this.editedItem)}"
+              @blur="${this.customValidation}"
+              @focus="${this._resetFieldError}"
+            >
+            </etools-currency-amount-input>
+          </div>
 
-              <div class="input-container">
-                <!-- % of audited expenditure -->
-                <etools-currency-amount-input
-                  class$="validate-input"
-                  value="{{editedItem.percent_of_audited_expenditure}}"
-                  currency=""
-                  label$="[[getLabel('percent_of_audited_expenditure', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('percent_of_audited_expenditure', basePermissionPath)]]"
-                  readonly
-                >
-                </etools-currency-amount-input>
-              </div>
+          <div class="col col-4">
+            <!-- % of audited expenditure -->
+            <etools-currency-amount-input
+              class="validate-input"
+              .value="${this.editedItem.percent_of_audited_expenditure}"
+              currency=""
+              label="${this.getLabel('percent_of_audited_expenditure', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('percent_of_audited_expenditure', this.basePermissionPath)}"
+              readonly
+            >
+            </etools-currency-amount-input>
+          </div>
 
-              <div class="input-container">
-                <!-- Audit opinion -->
-                <etools-dropdown
-                  id="auditOpinionDropDown"
-                  class$="validate-input [[_setRequired('audit_opinion', basePermissionPath)]]"
-                  selected="{{editedItem.audit_opinion}}"
-                  label$="[[getLabel('audit_opinion', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('audit_opinion', basePermissionPath)]]"
-                  options="[[auditOpinions]]"
-                  option-label="display_name"
-                  option-value="value"
-                  required$="[[_setRequired('audit_opinion', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  invalid="{{errors.audit_opinion}}"
-                  error-message="{{errors.audit_opinion}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  hide-search
-                >
-                </etools-dropdown>
-              </div>
+          <div class="col col-4">
+            <!-- Audit opinion -->
+            <etools-dropdown
+              id="auditOpinionDropDown"
+              class="validate-input ${this._setRequired('audit_opinion', this.basePermissionPath)}"
+              .selected="${this.editedItem.audit_opinion}"
+              label="${this.getLabel('audit_opinion', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('audit_opinion', this.basePermissionPath)}"
+              .options="${this.auditOpinions}"
+              option-label="display_name"
+              option-value="value"
+              ?required="${this._setRequired('audit_opinion', this.basePermissionPath)}"
+              ?disabled="${this.requestInProcess}"
+              ?invalid="${this.errors.audit_opinion}"
+              .errorMessage="${this.errors.audit_opinion}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.numberChanged(detail, 'audit_opinion', this.editedItem)}"
+              @focus="${this._resetFieldError}"
+              @tap="${this._resetFieldError}"
+              hide-search
+            >
+            </etools-dropdown>
+          </div>
 
-              <div class="input-container">
-                <!-- Number of financial findings -->
-                <paper-input
-                  value="{{editedItem.number_of_financial_findings}}"
-                  label$="[[getLabel('number_of_financial_findings', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('number_of_financial_findings', basePermissionPath)]]"
-                  readonly
-                >
-                </paper-input>
-              </div>
+          <div class="col col-4">
+            <!-- Number of financial findings -->
+            <paper-input
+              .value="${this.editedItem.number_of_financial_findings}"
+              label="${this.getLabel('number_of_financial_findings', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('number_of_financial_findings', this.basePermissionPath)}"
+              readonly
+            >
+            </paper-input>
+          </div>
 
-              <div class="input-container">
-                <!-- High risk -->
-                <paper-input
-                  value="{{editedItem.key_internal_weakness.high_risk_count}}"
-                  label$="[[getLabel('key_internal_weakness.high_risk_count', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('key_internal_weakness.high_risk_count', basePermissionPath)]]"
-                  readonly
-                >
-                </paper-input>
-              </div>
+          <div class="col col-4">
+            <!-- High risk -->
+            <paper-input
+              .value="${this.editedItem.key_internal_weakness?.high_risk_count}"
+              label="${this.getLabel('key_internal_weakness.high_risk_count', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('key_internal_weakness.high_risk_count', this.basePermissionPath)}"
+              readonly
+            >
+            </paper-input>
+          </div>
 
-              <div class="input-container">
-                <!-- Medium risk -->
-                <paper-input
-                  value="{{editedItem.key_internal_weakness.medium_risk_count}}"
-                  label$="[[getLabel('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('key_internal_weakness.medium_risk_count', basePermissionPath)]]"
-                  readonly
-                >
-                </paper-input>
-              </div>
+          <div class="col col-4">
+            <!-- Medium risk -->
+            <paper-input
+              .value="${this.editedItem.key_internal_weakness?.medium_risk_count}"
+              label="${this.getLabel('key_internal_weakness.medium_risk_count', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText(
+                'key_internal_weakness.medium_risk_count',
+                this.basePermissionPath
+              )}"
+              readonly
+            >
+            </paper-input>
+          </div>
 
-              <div class="input-container">
-                <!-- Low risk -->
-                <paper-input
-                  value="{{editedItem.key_internal_weakness.low_risk_count}}"
-                  label$="[[getLabel('key_internal_weakness.low_risk_count', basePermissionPath)]]"
-                  placeholder$="[[getPlaceholderText('key_internal_weakness.low_risk_count', basePermissionPath)]]"
-                  readonly
-                >
-                </paper-input>
-              </div>
-            </div>
+          <div class="col col-4">
+            <!-- Low risk -->
+            <paper-input
+              .value="${this.editedItem.key_internal_weakness?.low_risk_count}"
+              label="${this.getLabel('key_internal_weakness.low_risk_count', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('key_internal_weakness.low_risk_count', this.basePermissionPath)}"
+              readonly
+            >
+            </paper-input>
           </div>
         </div>
       </etools-dialog>
@@ -397,22 +429,28 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   @property({type: Object})
   originalData!: GenericObject;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'fundingsSummaryErrHandler(errorObject)',
-      '_setDataItems(data)',
-      '_setAuditOpinion(data.audit_opinion, auditOpinions)',
-      'updateStyles(basePermissionPath, requestInProcess)',
-      '_setAuditedExpenditure(editedItem.financial_findings, editedItem.audited_expenditure)',
-      'currencyChanged(data.currency_of_report)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this.auditOpinions = getStaticData('audit_opinions') || [];
     this.setColumnsAndHeaders();
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('errorObject')) {
+      this.fundingsSummaryErrHandler(this.errorObject);
+    }
+    if (changedProperties.has('data')) {
+      this._setDataItems();
+      this.currencyChanged();
+    }
+    if (changedProperties.has('data') || changedProperties.has('auditOpinions')) {
+      this._setAuditOpinion(this.data.audit_opinion, this.auditOpinions);
+    }
   }
 
   setColumnsAndHeaders() {
@@ -450,11 +488,12 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
   _setDataItems() {
     this.setShowLocalCurrency();
     if (this.data.percent_of_audited_expenditure) {
-      this.set('data.percent_of_audited_expenditure', Number(this.data.percent_of_audited_expenditure).toFixed(2));
+      this.data.percent_of_audited_expenditure = Number(this.data.percent_of_audited_expenditure).toFixed(2);
     }
-    this.set('dataItems', [this.data]);
-    this.set('itemModel.audit_opinion', this.data.audit_opinion);
-    this.set('itemModel.partner.name', this.data.partner && this.data.partner.name);
+    this.dataItems = [this.data];
+    this.itemModel.audit_opinion = this.data.audit_opinion;
+    this.itemModel.partner.name = this.data.partner && this.data.partner.name;
+    // @dci - need to trigger update???
   }
 
   getFindingsSummaryData() {
@@ -506,7 +545,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     const ffNumber = toNumber(financialFindings);
     const aeNumber = toNumber(auditedExpenditure);
     const val = aeNumber === 0 ? 0 : Math.floor((ffNumber / aeNumber) * 100);
-    this.set('editedItem.percent_of_audited_expenditure', val);
+    this.editedItem.percent_of_audited_expenditure = val;
   }
 
   fundingsSummaryErrHandler(errorData) {
@@ -525,7 +564,7 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     if (!this.dialogOpened && values(findingsSummaryErrors).length) {
       fireEvent(this, 'toast', {text: 'Please fill in the Summary of Audit Findings.'});
     } else {
-      this.set('errors', refactoredData);
+      this.errors = refactoredData;
     }
   }
 
@@ -564,7 +603,3 @@ class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(PolymerEleme
     return String(this.getLabel(path, base));
   }
 }
-
-window.customElements.define('findings-summary', FindingsSummary);
-
-export {FindingsSummary as FindingsSummaryEl};

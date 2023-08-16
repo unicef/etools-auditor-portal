@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer';
+import {LitElement} from 'lit-element';
 import {getFieldAttribute} from './permission-controller';
 import {Constructor} from '../../types/global';
 
@@ -6,8 +6,8 @@ import {Constructor} from '../../types/global';
  * @polymer
  * @mixinFunction
  */
-function LocalizationMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class LocalizationMixinClass extends (baseClass as Constructor<PolymerElement>) {
+function LocalizationMixin<T extends Constructor<LitElement>>(baseClass: T) {
+  class LocalizationMixinClass extends (baseClass as Constructor<LitElement>) {
     getHeadingLabel(base, item) {
       if (!item) {
         return '';

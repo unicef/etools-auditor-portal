@@ -1,19 +1,14 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, customElement} from 'lit-element';
 import '@polymer/iron-icons/communication-icons';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
-
-/* eslint-disable max-len */
 
 /**
  * @polymer
  * @customElement
  */
-class SupportBtn extends MatomoMixin(PolymerElement) {
-  static get is() {
-    return 'support-btn';
-  }
-
-  static get template() {
+@customElement('support-btn')
+export class SupportBtn extends MatomoMixin(LitElement) {
+  render() {
     return html`
       <style>
         a,
@@ -36,7 +31,7 @@ class SupportBtn extends MatomoMixin(PolymerElement) {
         target="_blank"
       >
         <!--    the paper-button fixes the cursor pointer issue when hovering over the icon label    -->
-        <paper-button on-tap="trackAnalytics" tracker="Support">
+        <paper-button @tap="${this.trackAnalytics}" tracker="Support">
           <iron-icon icon="communication:textsms"></iron-icon>
           Support
         </paper-button>
@@ -44,5 +39,3 @@ class SupportBtn extends MatomoMixin(PolymerElement) {
     `;
   }
 }
-
-window.customElements.define('support-btn', SupportBtn);

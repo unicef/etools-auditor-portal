@@ -95,7 +95,7 @@ export const fileAttachmentsTabStyles = html`
       --iron-icon-fill-color: var(--gray-50);
     }
 
-     etools-content-panel::part(ecp-content) {
+    etools-content-panel::part(ecp-content) {
       padding: 0;
       overflow: hidden;
     }
@@ -112,17 +112,12 @@ export const fileAttachmentsTabStyles = html`
     etools-data-table-row:hover icons-actions {
       visibility: visible;
     }
-    etools-data-table-row {
-      --list-divider-color: var(--light-divider-color);
-    }
     .separator {
       border-inline-start: solid 1px var(--light-secondary-text-color);
       padding-inline-end: 10px;
       margin: 6px 0 6px 10px;
     }
     .editable-row {
-      margin-top: 0;
-      margin-bottom: 0;
       padding: 12px 0;
     }
 

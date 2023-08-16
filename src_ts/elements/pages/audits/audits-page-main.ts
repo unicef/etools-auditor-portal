@@ -11,7 +11,7 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles-lit';
 import '../../data-elements/engagement-info-data';
 import '../../data-elements/update-engagement';
@@ -24,9 +24,9 @@ import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/status-tab-element/status-tab-element';
 import './report-page-components/audit-report-page-main/audit-report-page-main';
 import {GenericObject} from '../../../types/global';
-import EngagementMixinLit from '../../mixins/engagement-mixin-lit';
+import EngagementMixin from '../../mixins/engagement-mixin';
 import {setStaticData, getStaticData} from '../../mixins/static-data-controller';
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {getChoices} from '../../mixins/permission-controller';
 
 import assign from 'lodash-es/assign';
@@ -39,7 +39,7 @@ import isNull from 'lodash-es/isNull';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('audits-page-main')
-export class AuditsPageMain extends CommonMethodsMixinLit(EngagementMixinLit(LitElement)) {
+export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -185,7 +185,7 @@ export class AuditsPageMain extends CommonMethodsMixinLit(EngagementMixinLit(Lit
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
-                          .engagement="${this.engagement}}"
+                          .engagement="${this.engagement}"
                           .permissionBase="${this.permissionBase}"
                         >
                         </follow-up-main>

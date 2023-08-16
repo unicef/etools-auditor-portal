@@ -1,9 +1,9 @@
 import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
 import {StatusTabElementStyles} from './status-tab-element-styles';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';
 import {getActions} from '../../mixins/permission-controller';
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 declare const dayjs: any;
 import '../insert-html/insert-html';
@@ -15,7 +15,7 @@ import './action-buttons';
  * @customElement
  */
 @customElement('status-tab-element')
-export class StatusTabElement extends CommonMethodsMixinLit(LitElement) {
+export class StatusTabElement extends CommonMethodsMixin(LitElement) {
   static get styles() {
     return [StatusTabElementStyles, moduleStyles];
   }
@@ -137,7 +137,7 @@ export class StatusTabElement extends CommonMethodsMixinLit(LitElement) {
               <span class="status-header">
                 <insert-html .html="${this.statusStates.draft_issued_to_unicef?.statusText}"></insert-html>
               </span>
-              <span class="status-date"> ${this._getFormattedDate('date_of_draft_report_to_unicef')}} </span>
+              <span class="status-date"> ${this._getFormattedDate('date_of_draft_report_to_unicef')} </span>
             </div>
           </div>
 

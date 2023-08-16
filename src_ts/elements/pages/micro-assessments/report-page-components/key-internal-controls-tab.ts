@@ -1,16 +1,16 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {KeyInternalControlsTabStyles} from './key-internal-controls-tab-styles';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '../../../common-elements/list-tab-elements/list-header/list-header';
-import './subject-area-element';
+import '@unicef-polymer/etools-data-table/etools-data-table';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getChoices, isRequired} from '../../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
 import isEqual from 'lodash-es/isEqual';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -18,10 +18,20 @@ import pick from 'lodash-es/pick';
 import {GenericObject} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 
-class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin CommonMethodsMixinLit
+ */
+@customElement('key-internal-controls-tab')
+export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit, KeyInternalControlsTabStyles];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles} ${KeyInternalControlsTabStyles}
+      ${sharedStyles}
       <style>
         etools-dropdown#riskAssessmentInput {
           --paper-listbox: {
@@ -32,55 +42,71 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
           padding-top: 2px;
         }
       </style>
-      <etools-content-panel panel-title="[[subjectAreas.header]]" list>
-        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
+      <etools-content-panel .panelTitle="${this.subjectAreas.header}" list>
 
-        <template is="dom-repeat" items="[[subjectAreas.children]]">
-          <subject-area-element
-            class="area-element"
-            base-permission-path="{{basePermissionPath}}"
-            area="{{item}}"
-            details="[[details]]"
-            edit-mode="[[canBeChanged]]"
-            headings="[[columns]]"
-          >
-          </subject-area-element>
-        </template>
+         <etools-data-table-header no-title>
+            <etools-data-table-column class="col-8">Subject area</etools-data-table-column>
+            <etools-data-table-column class="col-4">Risk Assessment</etools-data-table-column>
+          </etools-data-table-header>
+
+            ${(this.subjectAreas?.children || []).map(
+              (item, index) => html`
+                <etools-data-table-row>
+                  <div slot="row-data" class="layout-horizontal editable-row">
+                    <span class="col-data col-8">${item.header}</span>
+                    <span class="col-data col-4">${item.risk?.value?.display_name}</span>
+                    <div class="hover-block" ?hidden="${!this.canBeChanged}">
+                      <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                    </div>
+                  </div>
+                  <div slot="row-data-details">
+                    <div class="row-details-content col-12">
+                      <span class="rdc-title">Brief Justification for Rating (main internal control gaps)</span>
+                      <span>${item.risk?.extra?.comments || 'None'}</span>
+                    </div>
+                  </div>
+                </etools-data-table-row>
+              `
+            )}
+
       </etools-content-panel>
 
       <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
-        opened="{{dialogOpened}}"
-        dialog-title="Edit Subject Area - {{editedArea.blueprints.0.header}}"
+        .opened="${this.dialogOpened}"
+        .dialogTitle="Edit Subject Area - ${this.editedArea?.blueprints[0]?.header}"
         ok-btn-text="Save"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_saveEditedArea"
+        ?showSpinner="${this.requestInProcess}"
+        ?disableConfirmBtn="${this.requestInProcess}"
+        @confirm-btn-clicked="${this._saveEditedArea}"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-ms">
+         <div class="layout-horizontal">
+            <div class="col col-4">
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskAssessmentInput"
                   class="validate-input required"
-                  selected="{{editedArea.blueprints.0.risk.value.value}}"
+                  .selected="${this.editedArea?.blueprints[0]?.risk?.value.value}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
-                  options="[[riskOptions]]"
+                  .options="${this.riskOptions}"
                   option-label="display_name"
                   option-value="value"
                   required
-                  disabled="{{requestInProcess}}"
-                  invalid="{{errors.children.0.blueprints.0.risk.value}}"
-                  error-message="{{errors.children.0.blueprints.0.risk.value}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
+                  ?disabled="${this.requestInProcess}"
+                  ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk.value}"
+                  .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk.value}"
+                  @focus="${this._resetFieldError}"
+                  trigger-value-change-event
+                  @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                    if (this.editedArea?.blueprints[0]) {
+                      this.editedArea.blueprints[0].risk.value.value = detail.selectedItem && detail.selectedItem.value;
+                    }
+                  }}"
                   hide-search
                 >
                 </etools-dropdown>
@@ -92,17 +118,21 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
                 <!-- Brief Justification -->
                 <paper-textarea
                   id="briefJustification"
-                  class="validate-input required"
-                  value="{{editedArea.blueprints.0.risk.extra.comments}}"
+                  class="validate-input required w100"
+                  .value="${this.editedArea?.blueprints[0]?.risk.extra.comments}"
                   label="Brief Justification for Rating (main internal control gaps)"
                   placeholder="Enter Brief Justification"
                   required
-                  disabled="{{requestInProcess}}"
+                  ?disabled="${this.requestInProcess}"
                   max-rows="4"
-                  error-message="{{errors.children.0.blueprints.0.risk.extra}}"
-                  invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
+                  .errorMessage="${this.errors?.children[0]?.blueprints[0].risk?.extra}"
+                  ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.extra}"
+                  @focus="${this._resetFieldError}"
+                  @value-changed="${({detail}: CustomEvent) => {
+                    if (this.editedArea?.blueprints[0]) {
+                      this.editedArea.blueprints[0].risk.extra.comments = detail.value;
+                    }
+                  }}"
                 >
                 </paper-textarea>
               </div>
@@ -136,7 +166,10 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     }
   ];
 
-  @property({type: Boolean, notify: true})
+  @property({type: Array})
+  riskOptions!: any[];
+
+  @property({type: Boolean})
   dialogOpened!: boolean;
 
   @property({type: String})
@@ -157,6 +190,9 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   subjectAreas!: GenericObject;
 
+  @property({type: Object})
+  errorObject!: GenericObject;
+
   @property({type: Number})
   editedAreaIndex!: number;
 
@@ -166,22 +202,27 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   canBeChanged = false;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'updateStyles(requestInProcess)',
-      '_dataChanged(subjectAreas)',
-      'dataChanged(subjectAreas)',
-      '_complexErrorHandler(errorObject.test_subject_areas)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
 
     const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
-    this.set('riskOptions', riskOptions);
+    this.riskOptions = riskOptions;
     this.addEventListener('open-edit-dialog', this.openEditDialog);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('subjectAreas')) {
+      this._dataChanged();
+      this.dataChanged();
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject.test_subject_areas);
+    }
   }
 
   dataChanged() {
@@ -241,7 +282,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
         }
       ]
     };
-    this.set('errors', errors);
+    this.errors = errors;
 
     return valueValid && extraValid;
   }
@@ -267,11 +308,12 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     return valid;
   }
 
-  openEditDialog(event) {
-    const index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
-    if ((!index && index !== 0) || !~index) {
-      throw new Error('Can not find data');
-    }
+  openEditDialog(index) {
+    // @dci
+    // const index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
+    // if ((!index && index !== 0) || !~index) {
+    //   throw new Error('Can not find data');
+    // }
     const data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
 
@@ -303,7 +345,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
     const data = cloneDeep(this.editedArea);
     data.changed = true;
-    this.splice('subjectAreas.children', this.editedAreaIndex, 1, data);
+    this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
     this.dialogOpened = false;
   }
 
@@ -319,4 +361,3 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     });
   }
 }
-window.customElements.define('key-internal-controls-tab', KeyInternalControlsTab);

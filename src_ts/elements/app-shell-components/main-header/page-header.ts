@@ -1,6 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
@@ -9,28 +7,35 @@ import '@unicef-polymer/etools-profile-dropdown';
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
-import {isProductionServer, checkEnvironment} from '../../config/config';
-import {property} from '@polymer/decorators';
+import {isProductionServer, checkEnvironment, BASE_PATH} from '../../config/config';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * page header element
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin GestureEventListeners
  */
-class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
-  public static get template() {
+@customElement('page-header')
+export class PageHeader extends MatomoMixin(LitElement) {
+  static get styles() {
+    return [gridLayoutStylesLit];
+  }
+
+  render() {
     // main template
     // language=HTML
     return html`
+      ${sharedStyles}
       <style>
         app-toolbar {
           padding: 0 16px 0 0;
           height: 60px;
-          background-color: var(--header-bg-color);
+          background-color: ${this.headerColor};
         }
 
         .titlebar {
@@ -38,8 +43,9 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
         }
 
         support-btn,
-        paper-icon-button#refresh {
+        #pageRefresh {
           color: var(--light-secondary-text-color);
+          margin-left: 8px;
         }
 
         #menuButton {
@@ -48,7 +54,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
         }
 
         .titlebar {
-          @apply --layout-flex;
+          flex: 1;
           font-size: 28px;
           font-weight: 300;
         }
@@ -56,11 +62,6 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
         .titlebar img {
           width: 34px;
           margin: 0 8px 0 24px;
-        }
-
-        .content-align {
-          @apply --layout-horizontal;
-          @apply --layout-center;
         }
 
         #app-logo {
@@ -81,43 +82,37 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
         }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="content-align">
+      <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
         <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
-        <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
-
-        <div class="titlebar content-align">
-          <etools-app-selector id="selector" user="[[user]]"></etools-app-selector>
-          <img id="app-logo" src$="[[rootPath]]/../assets/images/etools_logo.svg" />
-
-          <template is="dom-if" if="[[environment]]">
-            <div class="envWarning">- [[environment]] TESTING ENVIRONMENT</div>
-          </template>
+        <div class="titlebar layout-horizontal align-items-center">
+          <paper-icon-button id="menuButton" icon="menu" @click="${this.menuBtnClicked}"></paper-icon-button>
+          <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
+          <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" />
+          <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
         </div>
-
-        <div class="content-align">
+        <div class="layout-horizontal align-items-center">
           <countries-dropdown
             id="countries"
-            countries="[[user.countries_available]]"
-            country-id="[[user.country.id]]"
-          ></countries-dropdown>
+            .countries="${this.user?.countries_available}"
+            .currentCountry="${this.user?.country}"
+          >
+          </countries-dropdown>
 
-          <organizations-dropdown user="[[user]]"></organizations-dropdown>
+          <organizations-dropdown .user="${this.user}"></organizations-dropdown>
 
           <support-btn title="Support"></support-btn>
 
-          <etools-profile-dropdown
-            title="Profile and Sign out"
-            profile="[[user]]"
-            on-sign-out="_signOut"
-          ></etools-profile-dropdown>
+          <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">
+          </etools-profile-dropdown>
 
           <paper-icon-button
             title="Refresh"
-            id="refresh"
+            id="pageRefresh"
             icon="refresh"
             tracker="Refresh"
-            on-tap="refreshBtnclicked"
-          ></paper-icon-button>
+            @click="${this.refreshBtnclicked}"
+          >
+          </paper-icon-button>
         </div>
       </app-toolbar>
     `;
@@ -128,6 +123,9 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
 
   @property({type: String})
   environment: string | null = checkEnvironment();
+
+  @property({type: String})
+  headerColor = 'var(--header-bg-color)';
 
   public connectedCallback() {
     super.connectedCallback();
@@ -141,7 +139,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
   public _setBgColor() {
     // If not production environment, changing header color to red
     if (!isProductionServer()) {
-      this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
+      this.headerColor = 'var(--nonprod-header-color)';
     }
   }
 
@@ -166,5 +164,3 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
     localStorage.clear();
   }
 }
-
-window.customElements.define('page-header', PageHeader);

@@ -1,8 +1,8 @@
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
-import {html} from '@polymer/polymer';
+import {html, TemplateResult} from 'lit-element';
 /* eslint-disable max-len */
 
-export const apIcons = html`
+export const apIcons: TemplateResult = html`
   <iron-iconset-svg name="ap-icons" size="36">
     <svg>
       <defs>

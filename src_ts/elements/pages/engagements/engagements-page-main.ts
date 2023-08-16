@@ -14,7 +14,7 @@ import './engagements-list-view/engagements-list-view';
 import './new-engagement-view/new-engagement-view';
 import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
@@ -57,7 +57,7 @@ export class EngagementsPageMain extends LitElement {
           .requestQueries="${this.partnersListQueries}"
           .endpointName="${this.endpointName}"
           basePermissionPath="new_engagement"
-          .reloadData="${this.reloadListData}"
+          ?reloadData="${this.reloadListData}"
         >
         </engagements-list-view>
 
@@ -162,7 +162,6 @@ export class EngagementsPageMain extends LitElement {
       fireEvent(this, 'route-changed', {value: this.route});
       return;
     }
-
     if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
       this.route = {...this.route, path: '/not-found'};
       return;
@@ -170,7 +169,9 @@ export class EngagementsPageMain extends LitElement {
   }
 
   _routeDataChanged({detail}: CustomEvent) {
-    this.routeData = detail.value;
+    if (!isJsonStrMatch(this.routeData, detail.value)) {
+      this.routeData = detail.value;
+    }
   }
 
   _tailChanged({detail}: CustomEvent) {
@@ -179,7 +180,6 @@ export class EngagementsPageMain extends LitElement {
     }
     if (!isJsonStrMatch(this.subroute, detail.value)) {
       this.subroute = detail.value;
-      this.requestUpdate();
     }
   }
 

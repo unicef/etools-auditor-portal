@@ -1,12 +1,12 @@
-import {Constructor} from '../../types/global';
-import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {LitElement} from 'lit-element';
+import {Constructor} from '@unicef-polymer/etools-types';
 
 declare const dayjs: any;
 /**
  * @polymer
  * @mixinFunction
  */
-function DateMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function DateMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class DateMixinClass extends baseClass {
     /**
      * Format date string to any format supported by dayjs

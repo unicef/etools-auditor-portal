@@ -1,12 +1,14 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {LitElement, html, property, customElement} from 'lit-element';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getChoices, isRequired} from '../../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
@@ -17,10 +19,21 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown'
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import isEmpty from 'lodash-es/isEmpty';
 
-class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin CommonMethodsMixinLit
+ */
+
+@customElement('primary-risk-element')
+export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         etools-content-panel.overal-risks {
           margin: 20px 0;
@@ -32,52 +45,53 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
         }
       </style>
 
-      <etools-content-panel panel-title="{{riskData.header}}" class="overal-risks">
-        <div class="repeatable-item-content">
-          <div class="row-h group">
-            <div class="input-container">
-              <!-- Risk Assessment -->
+      <etools-content-panel .panelTitle="${this.riskData.header}" class="overal-risks">
+        <div class="layout-horizontal">
+          <div class="col col-4">
+            <!-- Risk Assessment -->
 
-              <etools-dropdown
-                id="riskAssessmentInput"
-                class="validate-input required"
-                selected="{{primaryArea.risk.value.value}}"
-                label="Risk Assessment"
-                placeholder="Select Risk Assessment"
-                options="[[riskOptions]]"
-                option-label="display_name"
-                option-value="value"
-                required
-                readonly$="[[isDisabled]]"
-                invalid="{{errors.children.0.blueprints.0.risk.value}}"
-                error-message="{{errors.children.0.blueprints.0.risk.value}}"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                hide-search
-              >
-              </etools-dropdown>
-            </div>
+            <etools-dropdown
+              id="riskAssessmentInput"
+              class="validate-input required"
+              .selected="${this.primaryArea.risk.value.value}"
+              label="Risk Assessment"
+              placeholder="Select Risk Assessment"
+              .options="${this.riskOptions}"
+              option-label="display_name"
+              option-value="value"
+              required
+              ?readonly="${this.isDisabled}"
+              ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.value}"
+              .errorMessage="${this.errors?.children[0].blueprints[0].risk.value}"
+              @focus="${this._resetFieldError}"
+              trigger-value-change-event
+              @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                this.selectedItemChanged(detail, 'risk.value.value', 'value', this.primaryArea)}"
+              hide-search
+            >
+            </etools-dropdown>
           </div>
+        </div>
 
-          <div class="row-h group">
-            <div class="input-container input-container-l">
-              <!-- Brief Justification -->
-              <paper-textarea
-                id="briefJustification"
-                class="validate-input required"
-                value="{{primaryArea.risk.extra.comments}}"
-                label="Brief Justification for Rating (main internal control gaps)"
-                placeholder="Enter Brief Justification"
-                required
-                readonly$="[[isDisabled]]"
-                max-rows="4"
-                invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                error-message="{{errors.children.0.blueprints.0.risk.extra}}"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-              >
-              </paper-textarea>
-            </div>
+        <div class="layout-horizontal">
+          <div class="col col-12">
+            <!-- Brief Justification -->
+            <paper-textarea
+              id="briefJustification"
+              class="validate-input required w100"
+              .value="${this.primaryArea.risk.extra.comments}"
+              label="Brief Justification for Rating (main internal control gaps)"
+              placeholder="Enter Brief Justification"
+              required
+              ?readonly="${this.isDisabled}"
+              max-rows="4"
+              invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.extra}"
+              .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk.extra}"
+              @focus="${this._resetFieldError}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.valueChanged(detail, 'risk.extra.comments', this.primaryArea)}"
+            >
+            </paper-textarea>
           </div>
         </div>
       </etools-content-panel>
@@ -147,23 +161,24 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       extra = JSON.parse(String(extra));
     }
 
-    this.set(
-      'primaryArea.risk.value',
-      find(this.riskOptions, (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value)
+    this.primaryArea.risk.value = find(
+      this.riskOptions,
+      (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value
     );
-    this.set('primaryArea.risk.extra', extra);
+    this.primaryArea.risk.extra = extra;
+    this.primaryArea = {...this.primaryArea};
   }
 
   _populateRiskOptions() {
     if (!this.riskOptions) {
       const riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
-      this.set('riskOptions', riskOptions);
+      this.riskOptions = riskOptions;
     }
   }
 
   validate(forSave) {
     if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
-      this.set('errors', {children: [{blueprints: [{risk: {value: 'Field is required'}}]}]});
+      this.errors = {children: [{blueprints: [{risk: {value: 'Field is required'}}]}]};
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       return false;
     }
@@ -193,7 +208,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
         }
       ]
     };
-    this.set('errors', errors);
+    this.errors = errors;
     if (!valid) {
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
     }
@@ -246,4 +261,3 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
     this._errorHandler(errorData);
   }
 }
-window.customElements.define('primary-risk-element', PrimaryRiskElement);

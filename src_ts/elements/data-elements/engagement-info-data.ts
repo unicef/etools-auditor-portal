@@ -4,8 +4,8 @@ import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {getEndpoint} from '../config/endpoints-controller';
 import {addToCollection, collectionExists} from '../mixins/permission-controller';
-import LastCreatedMixinLit from '../mixins/last-created-mixin-lit';
-import EngagementMixinLit from '../mixins/engagement-mixin-lit';
+import LastCreatedMixin from '../mixins/last-created-mixin';
+import EngagementMixin from '../mixins/engagement-mixin';
 import {GenericObject} from '@unicef-polymer/etools-types';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
@@ -16,7 +16,7 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
  * @customElement
  */
 @customElement('engagement-info-data')
-export class EngagementInfoData extends LastCreatedMixinLit(EngagementMixinLit(LitElement)) {
+export class EngagementInfoData extends LastCreatedMixin(EngagementMixin(LitElement)) {
   // ts-@ignore
   @property({type: Number})
   engagementId: number | null = null;

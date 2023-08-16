@@ -1,5 +1,4 @@
 import {LitElement, property, html, customElement} from 'lit-element';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/paper-menu-button/paper-menu-button';
 import '@polymer/paper-button/paper-button';
 import '@polymer/iron-icons/iron-icons';
@@ -8,7 +7,7 @@ import '@polymer/paper-item/paper-item';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {GenericObject} from '../../../types/global';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {pagesHeaderElementStyles} from './pages-header-element-styles';
 import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
 
@@ -26,8 +25,6 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
       ${sharedStyles}
       <div class="header-wrapper">
         <div class="side-heading horizontal layout center">
-          <span class="flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
-
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" ?hidden="${!this.exportLinks || !this.exportLinks.length}">
               <paper-menu-button

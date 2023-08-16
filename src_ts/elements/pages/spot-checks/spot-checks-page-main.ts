@@ -16,8 +16,8 @@ import './report-page-components/sc-report-page-main/sc-report-page-main';
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 
 import {setStaticData, getStaticData} from '../../mixins/static-data-controller';
-import EngagementMixinLit from '../../mixins/engagement-mixin-lit';
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
+import EngagementMixin from '../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {getChoices} from '../../mixins/permission-controller';
 
 import '../../data-elements/update-engagement';
@@ -25,7 +25,7 @@ import '../../data-elements/engagement-info-data';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles-lit';
 import {GenericObject} from '../../../types/global';
 
@@ -40,7 +40,7 @@ import sortBy from 'lodash-es/sortBy';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('spot-checks-page-main')
-export class SpotChecksPageMain extends CommonMethodsMixinLit(EngagementMixinLit(LitElement)) {
+export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -187,7 +187,7 @@ export class SpotChecksPageMain extends CommonMethodsMixinLit(EngagementMixinLit
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
-                          .engagement="${this.engagement}}"
+                          .engagement="${this.engagement}"
                           .permissionBase="${this.permissionBase}"
                         >
                         </follow-up-main>

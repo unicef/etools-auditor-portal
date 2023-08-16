@@ -1,6 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@polymer/polymer/lib/elements/dom-if';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
@@ -9,18 +7,18 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {checkNonField} from '../../../../mixins/error-handler';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 
 /**
  * @customElement
@@ -28,10 +26,15 @@ import {checkNonField} from '../../../../mixins/error-handler';
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  */
-class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-  static get template() {
+@customElement('assessment-of-controls')
+export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         .repeatable-item-container[without-line] {
           min-width: 0 !important;
@@ -49,7 +52,7 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('key_internal_controls', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('key_internal_controls', this.basePermissionPath)}"
         list
       >
         <div class="header-content">
@@ -59,137 +62,138 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
           </div>
         </div>
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
+          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
             <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header id="list-header" no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]">
-        </list-header>
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-12">Audit Observation</etools-data-table-column>
+        </etools-data-table-header>
 
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            details="[[details]]"
-            has-collapse
-            no-animation
-          >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-12">${item.audit_observation}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
+              </div>
+            </etools-data-table-row>
+          `
+        )}
 
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-        </template>
+        <etools-dialog
+          theme="confirmation"
+          size="md"
+          keep-dialog-open
+          .opened="${this.confirmDialogOpened}"
+          ?disable-confirm-btn="${this.requestInProcess}"
+          @confirm-btn-clicked="${this.removeItem}"
+          ok-btn-text="Delete"
+          openFlag="confirmDialogOpened"
+          @close="${this._resetDialogOpenedFlag}"
+        >
+          ${this.deleteTitle}
+        </etools-dialog>
+
+        <etools-dialog
+          no-padding
+          keep-dialog-open
+          size="md"
+          .opened="${this.dialogOpened}"
+          .dialogTitle="${this.dialogTitle}"
+          .okBtnText="${this.confirmBtnText}"
+          ?showSpinner="${this.requestInProcess}"
+          ?disable-confirm-btn="${this.requestInProcess}"
+          @confirm-btn-clicked="${this._addItemFromDialog}"
+          openFlag="dialogOpened"
+          @close="${this._resetDialogOpenedFlag}"
+        >
+            <div class="layout-horizontal">
+                <div class="col col-12">
+                  <!-- Recommendation -->
+                  <paper-textarea
+                    class="${this._setRequired(
+                      'key_internal_controls.recommendation',
+                      this.basePermissionPath
+                    )} validate-input"
+                    .value="${this.editedItem.recommendation}"
+                    label="${this.getLabel('key_internal_controls.recommendation', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText(
+                      'key_internal_controls.recommendation',
+                      this.basePermissionPath
+                    )}"
+                    ?required="${this._setRequired('key_internal_controls.recommendation', this.basePermissionPath)}"
+                    ?disabled="${this.requestInProcess}"
+                    ?invalid="${this.errors.recommendation}"
+                    .errorMessage="${this.errors.recommendation}"
+                    @focus="${this._resetFieldError}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      this.valueChanged(detail, 'recommendation', this.editedItem)}""
+                  >
+                  </paper-textarea>
+                </div>
+              </div>
+
+              <div class="layout-horizontal">
+                <div class="col col-12">
+                  <!-- Audit Observation -->
+                  <paper-textarea
+                    class="${this._setRequired(
+                      'key_internal_controls.audit_observation',
+                      this.basePermissionPath
+                    )} validate-input"
+                    .value="${this.editedItem.audit_observation}"
+                    label="${this.getLabel('key_internal_controls.audit_observation', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText(
+                      'key_internal_controls.audit_observation',
+                      this.basePermissionPath
+                    )}"
+                    ?required="${this._setRequired('key_internal_controls.audit_observation', this.basePermissionPath)}"
+                    ?disabled="${this.requestInProcess}"
+                    ?invalid="${this.errors.audit_observation}"
+                    .errorMessage="${this.errors.audit_observation}"
+                    @focus="${this._resetFieldError}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      this.valueChanged(detail, 'audit_observation', this.editedItem)}""
+                  >
+                  </paper-textarea>
+                </div>
+              </div>
+
+               <div class="layout-horizontal">
+                <div class="col col-12">
+                  <!-- IP Response -->
+                  <paper-textarea
+                    class="${this._setRequired('key_internal_controls.ip_response', this.basePermissionPath)}
+                                          validate-input"
+                    .value="${this.editedItem.ip_response}"
+                    label="${this.getLabel('key_internal_controls.ip_response', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText(
+                      'key_internal_controls.ip_response',
+                      this.basePermissionPath
+                    )}"
+                    ?required="${this._setRequired('key_internal_controls.ip_response', this.basePermissionPath)}"
+                    ?disabled="${this.requestInProcess}"
+                    ?invalid="${this.errors.ip_response}"
+                    .errorMessage="${this.errors.ip_response}"
+                    @focus="${this._resetFieldError}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      this.valueChanged(detail, 'ip_response', this.editedItem)}""
+                  >
+                  </paper-textarea>
+                </div>
+              </div>
+        </etools-dialog>
       </etools-content-panel>
-
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        opened="{{confirmDialogOpened}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="removeItem"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        [[deleteTitle]]
-      </etools-dialog>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        opened="{{dialogOpened}}"
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Recommendation -->
-                <paper-textarea
-                  class$="[[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]
-                                          validate-input"
-                  value="{{editedItem.recommendation}}"
-                  label="[[getLabel('key_internal_controls.recommendation', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('key_internal_controls.recommendation',
-                                            basePermissionPath)]]"
-                  required$="[[_setRequired('key_internal_controls.recommendation', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  invalid$="{{errors.recommendation}}"
-                  error-message="{{errors.recommendation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Audit Observation -->
-                <paper-textarea
-                  class$="[[_setRequired('key_internal_controls.audit_observation', basePermissionPath)]]
-                                        validate-input"
-                  value="{{editedItem.audit_observation}}"
-                  label="[[getLabel('key_internal_controls.audit_observation', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('key_internal_controls.audit_observation',
-                                                basePermissionPath)]]"
-                  required$="[[_setRequired('key_internal_controls.audit_observation',
-                                            basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  invalid$="{{errors.audit_observation}}"
-                  error-message="{{errors.audit_observation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- IP Response -->
-                <paper-textarea
-                  class$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]
-                                          validate-input"
-                  value="{{editedItem.ip_response}}"
-                  label="[[getLabel('key_internal_controls.ip_response', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('key_internal_controls.ip_response',
-                                                basePermissionPath)]]"
-                  required$="[[_setRequired('key_internal_controls.ip_response', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  invalid$="{{errors.ip_response}}"
-                  error-message="{{errors.ip_response}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-      </etools-dialog>
     `;
   }
 
-  @property({type: Array, notify: true})
+  @property({type: Array})
   dataItems: GenericObject[] = [];
 
   @property({type: String})
@@ -197,6 +201,9 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
 
   @property({type: Object})
   itemModel: GenericObject = {};
+
+  @property({type: Object})
+  errorObject!: GenericObject;
 
   @property({type: Array})
   columns: GenericObject[] = [
@@ -237,13 +244,19 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
   @property({type: String})
   basePermissionPath!: string;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_errorHandler(errorObject.key_internal_controls)',
-      '_checkNonField(errorObject.key_internal_controls)'
-    ];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('confirmDialogOpened')) {
+      this.resetDialog(this.confirmDialogOpened);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject.key_internal_controls);
+      this._checkNonField(this.errorObject.key_internal_controls);
+    }
   }
 
   _checkNonField(error) {
@@ -257,7 +270,3 @@ class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(Polymer
     }
   }
 }
-
-window.customElements.define('assessment-of-controls', AssessmentOfControls);
-
-export {AssessmentOfControls as AssessmentOfControlsEl};

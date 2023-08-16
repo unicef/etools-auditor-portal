@@ -14,17 +14,18 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
 import {tabLayoutStyles} from '../../styles/tab-layout-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {fileAttachmentsTabStyles} from './file-attachments-tab-styles';
 import '../../data-elements/get-attachments';
 import '../../data-elements/update-attachments';
 import '../share-documents/share-documents';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
-import DateMixinLit from '../../mixins/date-mixin-lit';
+import {dataTableStylesLit} from '@unicef-polymer/etools-data-table/data-table-styles-lit';
+import DateMixin from '../../mixins/date-mixin';
 import {getUserData} from '../../mixins/user-controller';
-import EngagementMixinLit from '../../mixins/engagement-mixin-lit';
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
-import TableElementsMixinLit from '../../mixins/table-elements-mixin-lit';
+import EngagementMixin from '../../mixins/engagement-mixin';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import TableElementsMixin from '../../mixins/table-elements-mixin';
 import {GenericObject} from '../../../types/global';
 
 import get from 'lodash-es/get';
@@ -52,9 +53,7 @@ import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/et
  */
 
 @customElement('file-attachments-tab')
-export class FileAttachmentsTab extends CommonMethodsMixinLit(
-  TableElementsMixinLit(EngagementMixinLit(DateMixinLit(LitElement)))
-) {
+export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(EngagementMixin(DateMixin(LitElement)))) {
   static get styles() {
     return [moduleStyles, tabLayoutStyles, tabInputsStyles, gridLayoutStylesLit];
   }
@@ -63,7 +62,7 @@ export class FileAttachmentsTab extends CommonMethodsMixinLit(
     return html`
       ${sharedStyles} ${fileAttachmentsTabStyles}
       <style>
-        .padd-top {
+        ${dataTableStylesLit} .padd-top {
           padding-top: 26px;
         }
         paper-icon-button {
@@ -72,16 +71,8 @@ export class FileAttachmentsTab extends CommonMethodsMixinLit(
         paper-icon-button[icon='add-box'] {
           margin-inline-start: 0px;
         }
-        .editable-row:hover .hover-block {
-          background-color: #ffffff;
-        }
-        .editable-row .hover-block paper-icon-button {
-          --iron-icon-fill-color: var(--gray-mid);
-        }
-        .editable-row {
-          border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
-          position: relative;
-          align-items: center;
+        etools-data-table-row::part(edt-list-row-wrapper) {
+          height: 48px;
         }
       </style>
       <get-attachments
@@ -219,60 +210,56 @@ export class FileAttachmentsTab extends CommonMethodsMixinLit(
         .opened="${this.dialogOpened}"
         dialog-title="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
-        .showSpinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
+        ?showSpinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
         ?disableConfirmBtn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._saveAttachment}"
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="repeatable-item-container" without-line>
-          <div class="repeatable-item-content row-h">
-            ${this.showFileTypes(this.basePermissionPath)
-              ? html`<div class="row-h group">
-                  <div class="input-container input-container-ms">
-                    <etools-dropdown
-                      id="fileType"
-                      class="validate-input ${this._setRequired('file_type', this.basePermissionPath)}"
-                      .selected="${this.editedItem.file_type}"
-                      label="${this.getLabel('file_type', this.basePermissionPath)}"
-                      placeholder="${this.getPlaceholderText('file_type', this.basePermissionPath)}"
-                      .options="${this.fileTypes || []}"
-                      option-label="display_name"
-                      option-value="value"
-                      ?required="${this._setRequired('file_type', this.basePermissionPath)}"
-                      ?disabled="${this.requestInProcess}"
-                      ?invalid="${this.errors.file_type}"
-                      .errorMessage="${this.errors.file_type}"
-                      trigger-value-change-event
-                      @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                        this.editedItem.file_type = detail.selectedItem ? detail.selectedItem.value : null;
-                      }}"
-                      @focus="${this._resetFieldError}"
-                      hide-search
-                      disable-on-focus-handling
-                    >
-                    </etools-dropdown>
-                  </div>
-                </div>`
-              : ``}
+        ${this.showFileTypes(this.basePermissionPath)
+          ? html` <div class="layout-horizontal row-padding-v">
+              <div class="col col-6">
+                <etools-dropdown
+                  id="fileType"
+                  class="validate-input ${this._setRequired('file_type', this.basePermissionPath)}"
+                  .selected="${this.editedItem.file_type}"
+                  label="${this.getLabel('file_type', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('file_type', this.basePermissionPath)}"
+                  .options="${this.fileTypes || []}"
+                  option-label="display_name"
+                  option-value="value"
+                  ?required="${this._setRequired('file_type', this.basePermissionPath)}"
+                  ?disabled="${this.requestInProcess}"
+                  ?invalid="${this.errors.file_type}"
+                  .errorMessage="${this.errors.file_type}"
+                  trigger-value-change-event
+                  @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                    this.editedItem.file_type = detail.selectedItem ? detail.selectedItem.value : null;
+                  }}"
+                  @focus="${this._resetFieldError}"
+                  hide-search
+                  disable-on-focus-handling
+                >
+                </etools-dropdown>
+              </div>
+            </div>`
+          : ``}
 
-            <div class="row-h group padd-top">
-              <etools-upload
-                label="${this.uploadLabel}"
-                .fileUrl="${this.editedItem.attachment}"
-                .uploadEndpoint="${this.uploadEndpoint}"
-                @upload-started="${this._onUploadStarted}"
-                @upload-finished="${this._attachmentUploadFinished}"
-                ?invalid="${this.errors.file}"
-                .errorMessage="${this.errors.file}"
-                .showDeleteBtn="${this.showDeleteBtn}"
-                .currentAttachmentId="${this.editedItem.id}"
-                required
-              >
-                <!-- Here editedItem.id is the same as the uploaded attachment id -->
-              </etools-upload>
-            </div>
-          </div>
+        <div class="layout-horizontal row-padding-v">
+          <etools-upload
+            label="${this.uploadLabel}"
+            .fileUrl="${this.editedItem.attachment}"
+            .uploadEndpoint="${this.uploadEndpoint}"
+            @upload-started="${this._onUploadStarted}"
+            @upload-finished="${this._attachmentUploadFinished}"
+            ?invalid="${this.errors.file}"
+            .errorMessage="${this.errors.file}"
+            .showDeleteBtn="${this.showDeleteBtn}"
+            .currentAttachmentId="${this.editedItem.id}"
+            required
+          >
+            <!-- Here editedItem.id is the same as the uploaded attachment id -->
+          </etools-upload>
         </div>
       </etools-dialog>
 
@@ -301,8 +288,8 @@ export class FileAttachmentsTab extends CommonMethodsMixinLit(
             @confirm-btn-clicked="${this._SendShareRequest}"
             openFlag="shareDialogOpened"
             @close="${this._resetDialogOpenedFlag}"
-            .showSpinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
-            .disableConfirmBtn="${this.requestInProcess || !this.shareParams?.attachments?.length}"
+            ?showSpinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
+            ?disableConfirmBtn="${this.requestInProcess || !this.shareParams?.attachments?.length}"
           >
             <share-documents
               id="shareDocuments"

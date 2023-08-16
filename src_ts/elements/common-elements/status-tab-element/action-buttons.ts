@@ -3,7 +3,7 @@ import '@polymer/paper-button/paper-button';
 import '@polymer/paper-menu-button/paper-menu-button';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/paper-icon-button/paper-icon-button';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
@@ -25,7 +25,7 @@ export class ActionButtons extends LitElement {
     return html`
       ${ActionButtonsStyles}
       <paper-button
-        class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}}"
+        class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
         raised
         @tap="${this._btnClicked}"
       >
@@ -43,7 +43,7 @@ export class ActionButtons extends LitElement {
                       action-code="${this._setActionCode(item)}"
                     >
                       <iron-icon icon="${this._setIcon(item, this.icons)}" class="option-icon"></iron-icon>
-                      <span>${this._setButtonText(item)}}</span>
+                      <span>${this._setButtonText(item)}</span>
                     </div>`
                   )}
               </div>

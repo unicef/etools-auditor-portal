@@ -1,29 +1,35 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
-import {RiskTabStyles} from './risk-tab-styles';
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {riskTabStyles} from './risk-tab-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {getChoices} from '../../../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isNumber from 'lodash-es/isNumber';
 import cloneDeep from 'lodash-es/cloneDeep';
 
-class RiskTab extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @polymer
+ * @mixinFunction
+ * @appliesMixin CommonMethodsMixin
+ */
+@customElement('risk-tab')
+export class RiskTab extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit, riskTabStyles];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles} ${RiskTabStyles}
+      ${sharedStyles}
       <style>
-        list-element {
-          --list-item-overflow: visible;
-        }
         etools-dropdown {
           --esmm-dropdown-menu-position: absolute !important;
         }
@@ -31,125 +37,111 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
       <div class="tab-container">
         <etools-content-panel
           list
-          completed$="[[completed]]"
+          ?completed="${this.completed}"
           show-expand-btn
-          panel-title="{{setPanelTitle(questionnaire.header, completed)}}"
-          open="{{opened}}"
+          .panelTitle="${this.setPanelTitle(this.questionnaire.header, this.completed)}"
+          .open="${this.opened}"
         >
-          <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
+          <etools-data-table-header no-title>
+            <etools-data-table-column class="col-10">Question</etools-data-table-column>
+            <etools-data-table-column class="col-2">Risk Assessment</etools-data-table-column>
+          </etools-data-table-header>
+          ${(this.questionnaire?.blueprints || []).map(
+            (item, index) => html`
+              <etools-data-table-row>
+                <div slot="row-data" class="layout-horizontal editable-row">
+                  <span class="col-data col-10">${item.header}</span>
+                  <span class="col-data col-2">
+                    ${this.editMode
+                      ? html` <etools-dropdown
+                          id="riskOptions1"
+                          class="required validate-input"
+                          .selected="${item.risk?.value}"
+                          placeholder="&#8212;"
+                          .options="${this.riskOptions}"
+                          option-label="display_name"
+                          option-value="value"
+                          data-path="${this.createPath(index)}"
+                          ?readonly="${this.isReadonly(index, null, this.currentRequests)}"
+                          @focus="${this._resetFieldError_riskTab}"
+                          trigger-value-change-event
+                          @etools-selected-item-changed="${this._riskValueChanged}"
+                          dynamic-align
+                          hide-search
+                          allow-outside-scroll
+                        >
+                        </etools-dropdown>`
+                      : html`${this._getStringValue(item.risk.value, this.riskOptions, '–')}`}
+                  </span>
 
-          <template is="dom-repeat" items="{{questionnaire.blueprints}}" index-as="blueprintIndex">
-            <list-element
-              class="list-element"
-              data="[[_prepareData(item)]]"
-              base-permission-path="[[basePermissionPath]]"
-              headings="[[columns]]"
-              details="[[details]]"
-              has-collapse
-              multiline
-              no-animation
-            >
-              <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"> </paper-icon-button>
-              </div>
-
-              <div slot="custom">
-                <template is="dom-if" if="{{editMode}}">
-                  <etools-dropdown
-                    id="riskOptions1"
-                    class="required validate-input"
-                    selected="[[item.risk.value]]"
-                    placeholder="&#8212;"
-                    options="[[riskOptions]]"
-                    option-label="display_name"
-                    option-value="value"
-                    data-path$="[[createPath(blueprintIndex)]]"
-                    readonly$="[[isReadonly(blueprintIndex, null, currentRequests)]]"
-                    on-focus="_resetFieldError_riskTab"
-                    trigger-value-change-event
-                    on-etools-selected-item-changed="_riskValueChanged"
-                    dynamic-align
-                    hide-search
-                    allow-outside-scroll
-                  >
-                  </etools-dropdown>
-                </template>
-
-                <template is="dom-if" if="{{!editMode}}">
-                  [[_getStringValue(item.risk.value, riskOptions, '–')]]
-                </template>
-              </div>
-            </list-element>
-          </template>
-
-          <template is="dom-repeat" items="{{questionnaire.children}}" as="category" index-as="categoryIndex">
-            <list-element
-              class="list-element"
-              data="[[category]]"
-              headings="[[categoryHeader]]"
-              no-animation
-              multiline
-              no-hover
-            >
-            </list-element>
-
-            <template is="dom-repeat" items="{{category.blueprints}}" index-as="blueprintIndex">
-              <list-element
-                class="list-element"
-                data="[[_prepareData(item)]]"
-                base-permission-path="[[basePermissionPath]]"
-                headings="[[columns]]"
-                details="[[details]]"
-                has-collapse
-                multiline
-                no-animation
-              >
-                <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-                  <paper-icon-button
-                    icon="create"
-                    class="edit-icon"
-                    on-tap="openEditDialog"
-                    category-id$="{{category.id}}"
-                  >
-                  </paper-icon-button>
+                  <div class="hover-block" ?hidden="${!this.editMode}">
+                    <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  </div>
                 </div>
-
-                <div slot="custom">
-                  <template is="dom-if" if="{{editMode}}">
-                    <etools-dropdown
-                      id="riskOptions2"
-                      class="required validate-input"
-                      selected="[[item.risk.value]]"
-                      placeholder="&#8212;"
-                      options="[[riskOptions]]"
-                      option-label="display_name"
-                      option-value="value"
-                      category-id$="{{category.id}}"
-                      on-focus="_resetFieldError_riskTab"
-                      data-path$="[[createPath(blueprintIndex, categoryIndex)]]"
-                      readonly$="[[isReadonly(blueprintIndex, categoryIndex, currentRequests)]]"
-                      trigger-value-change-event
-                      on-etools-selected-item-changed="_riskValueChanged"
-                      dynamic-align
-                      hide-search
-                      allow-outside-scroll
-                    >
-                    </etools-dropdown>
-                  </template>
-
-                  <template is="dom-if" if="{{!editMode}}">
-                    [[_getStringValue(item.risk.value, riskOptions, '–')]]
-                  </template>
+                <div slot="row-data-details">
+                  <div class="row-details-content col-12">
+                    <span class="rdc-title">Comments</span>
+                    <span>${item.risk?.extra?.comments || '–'}</span>
+                  </div>
                 </div>
-              </list-element>
-            </template>
-          </template>
+              </etools-data-table-row>
+            `
+          )}
+          ${(this.questionnaire?.children || []).map(
+            (category, categoryIndex) =>
+              html` ${(category.blueprints || []).map(
+                (item, blueprintIndex) => html`
+                  <etools-data-table-row>
+                    <div slot="row-data" class="layout-horizontal editable-row">
+                      <span class="col-data col-10">${item.header}</span>
+                      <span class="col-data col-2">
+                        ${this.editMode
+                          ? html` <etools-dropdown
+                              id="riskOptions2"
+                              class="required validate-input"
+                              .selected="${item.risk?.value}"
+                              placeholder="&#8212;"
+                              .options="${this.riskOptions}"
+                              option-label="display_name"
+                              option-value="value"
+                              category-id="${category.id}"
+                              ?readonly="${this.isReadonly(blueprintIndex, categoryIndex, this.currentRequests)}"
+                              @focus="${this._resetFieldError_riskTab}"
+                              data-path="${this.createPath(blueprintIndex, categoryIndex)}"
+                              trigger-value-change-event
+                              @etools-selected-item-changed="${this._riskValueChanged}"
+                              dynamic-align
+                              hide-search
+                              allow-outside-scroll
+                            >
+                            </etools-dropdown>`
+                          : html`${this._getStringValue(item.risk.value, this.riskOptions, '–')}`}
+                      </span>
+
+                      <div class="hover-block" ?hidden="${!this.editMode}">
+                        <paper-icon-button
+                          icon="create"
+                          category-id="${category.id}"
+                          @click="${() => this.openEditDialog}"
+                        ></paper-icon-button>
+                      </div>
+                    </div>
+                    <div slot="row-data-details">
+                      <div class="row-details-content col-12">
+                        <span class="rdc-title">Comments</span>
+                        <span>${item.risk?.extra?.comments || '–'}</span>
+                      </div>
+                    </div>
+                  </etools-data-table-row>
+                `
+              )}`
+          )}
         </etools-content-panel>
       </div>
     `;
   }
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   questionnaire: GenericObject = {};
 
   @property({type: Number})
@@ -158,11 +150,20 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   opened = false;
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean})
+  editMode!: boolean;
+
+  @property({type: Boolean, reflect: true})
   completed = false;
 
   @property({type: Boolean})
+  firstRun = false;
+
+  @property({type: Boolean})
   disabled!: boolean;
+
+  @property({type: Object})
+  currentRequests: GenericObject = {};
 
   @property({type: Object})
   riskRatingOptions = {
@@ -218,17 +219,23 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   @property({type: Array})
   riskOptions!: {value: string | number; display_name: string}[];
 
-  @property({type: Object})
-  currentRequests: GenericObject = {};
-
-  static get observers() {
-    return ['_setOpen(disabled, completed, firstRun, questionnaire)'];
-  }
-
   connectedCallback() {
     super.connectedCallback();
     const riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
-    this.set('riskOptions', riskOptions);
+    this.riskOptions = riskOptions;
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (
+      changedProperties.has('disabled') ||
+      changedProperties.has('completed') ||
+      changedProperties.has('firstRun') ||
+      changedProperties.has('questionnaire')
+    ) {
+      this._setOpen(this.disabled, this.completed, this.firstRun);
+    }
   }
 
   showResults(completed, open) {
@@ -246,9 +253,9 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return this.riskRatingOptions[rating] || rating;
   }
 
-  isReadonly(blueprintIndex: number, categoryIndex: number) {
+  isReadonly(blueprintIndex: number, categoryIndex: number, currentRequests: GenericObject) {
     const path = this.createPath(blueprintIndex, categoryIndex);
-    return Object.hasOwnProperty.call(this.currentRequests, path);
+    return Object.hasOwnProperty.call(currentRequests, path);
   }
 
   createPath(blueprintIndex: number, categoryIndex?: number): string {
@@ -261,7 +268,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     if (!firstRun) {
       return;
     }
-    this.set('opened', !completed && !disabled);
+    this.opened = !completed && !disabled;
   }
 
   _riskValueChanged(event) {
@@ -314,7 +321,7 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _resetFieldError_riskTab() {
-    this.set('errors.partner', false);
+    this.errors = {...this.errors, partner: false};
   }
 
   setPanelTitle(header, complited) {
@@ -382,4 +389,3 @@ class RiskTab extends CommonMethodsMixin(PolymerElement) {
     return data;
   }
 }
-window.customElements.define('risk-tab', RiskTab);

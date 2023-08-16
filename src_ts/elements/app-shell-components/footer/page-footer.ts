@@ -1,13 +1,19 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import {LitElement, html, customElement} from 'lit-element';
+import {BASE_PATH} from '../../config/config';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 
 /**
  * page footer element
- * @polymer
+ * @LitElement
  * @customElement
  */
-class PageFooter extends PolymerElement {
-  public static get template() {
+@customElement('page-footer')
+export class PageFooter extends LitElement {
+  static get styles() {
+    return [gridLayoutStylesLit];
+  }
+
+  render() {
     // main template
     // language=HTML
     return html`
@@ -54,9 +60,9 @@ class PageFooter extends PolymerElement {
         }
       </style>
       <footer>
-        <div id="footer-content">
-          <span id="unicef-logo">
-            <img src$="[[rootPath]]assets/images/UNICEF_logo.png" alt="UNICEF logo" />
+        <div id="footer-content" class="layout-horizontal">
+          <span id="unicef-logo" class="layout-horizontal layout-inline">
+            <img src="${BASE_PATH}assets/images/UNICEF_logo.png" alt="UNICEF logo" />
           </span>
           <!-- TODO: modify span to a with proper href values after footer pages are ready -->
           <!--   <span class="footer-link">Contact</span>
@@ -67,5 +73,3 @@ class PageFooter extends PolymerElement {
     `;
   }
 }
-
-window.customElements.define('page-footer', PageFooter);

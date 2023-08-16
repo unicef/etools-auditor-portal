@@ -1,5 +1,4 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
@@ -7,10 +6,7 @@ import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '../../list-tab-elements/list-header/list-header';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
 import '@polymer/paper-tooltip/paper-tooltip';
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
@@ -24,13 +20,14 @@ import isArray from 'lodash-es/isArray';
 import every from 'lodash-es/every';
 import omit from 'lodash-es/omit';
 import each from 'lodash-es/each';
-import {property} from '@polymer/decorators';
 
 import '../../../data-elements/get-action-points';
 import '../../../data-elements/update-action-points';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -44,7 +41,8 @@ import {
   updateCollection,
   getChoices,
   readonlyPermission,
-  actionAllowed
+  actionAllowed,
+  getHeadingLabel
 } from '../../../mixins/permission-controller';
 import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
@@ -53,22 +51,22 @@ import famEndpoints from '../../../config/endpoints';
 import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin DateMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
-  static get template() {
+@customElement('follow-up-actions')
+export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement))) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
-        :host .repeatable-item-container[without-line] {
-          min-width: 0 !important;
-          margin-bottom: 0 !important;
-          overflow: auto;
-        }
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
         }
@@ -113,10 +111,8 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
             };
         }
         .checkbox-container {
-          padding-left: 12px;
-          box-sizing: border-box;
-          height: 34px;
-          padding-top: 6px;
+          padding-inline-start: 14px;
+          padding-top: 14px;
         }
         .input-container paper-button {
           height: 34px;
@@ -136,278 +132,339 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
         }
       </style>
 
-        <get-action-points engagement-id="[[engagementId]]" action-points="{{dataItems}}"></get-action-points>
-        <update-action-points engagement-id="[[engagementId]]"
-                              request-in-process="{{requestInProcess}}"
-                              request-data="{{requestData}}"
-                              errors="{{errors}}"
-                              action-points="{{dataItems}}"></update-action-points>
-        <get-partner-data on-partner-loaded="setFullPartner" partner-id="{{partnerId}}"></get-partner-data>
+      <get-action-points .engagementId="${this.engagementId}" @ap-loaded="${({detail}: CustomEvent) => {
+      if (detail.success) {
+        this.dataItems = detail.data;
+      }
+    }}"></get-action-points>
+
+        <update-action-points .engagementId="${this.engagementId}"
+                              .requestData="${this.requestData}"
+                              .errors="${this.errors}"
+                              .actionPoints="${this.dataItems}"
+                              @ap-request-completed="${this._apRequestCompleted}">
+        </update-action-points>
+        <get-partner-data .partnerId="${this.partnerId}"
+            @partner-loaded="${({detail}) => {
+              this.fullPartner = detail;
+            }}">
+        </get-partner-data>
 
         <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
             <div slot="panel-btns">
-                <div hidden$="[[!canBeChanged]]">
+                <div ?hidden="${!this.canBeChanged}">
                     <paper-icon-button
                             class="panel-button"
-                            on-tap="_openAddDialog"
+                            @tap="${this._openAddDialog}"
                             icon="add-box">
                     </paper-icon-button>
                     <paper-tooltip offset="0">Add</paper-tooltip>
                 </div>
             </div>
 
-            <list-header data="[[columns]]"
-                         order-by="{{orderBy}}"
-                         no-additional
-                         base-permission-path="[[basePermissionPath]]"></list-header>
+          <etools-data-table-header no-collapse no-title>
+            <etools-data-table-column class="col-2">${getHeadingLabel(
+              this.basePermissionPath,
+              'reference_number',
+              'Reference Number #'
+            )}</etools-data-table-column>
+            <etools-data-table-column class="col-3">${getHeadingLabel(
+              this.basePermissionPath,
+              'category',
+              'Action Point Category'
+            )}</etools-data-table-column>
+            <etools-data-table-column class="col-3">Assignee (Section / Office)</etools-data-table-column>
+            <etools-data-table-column class="col-1">${getHeadingLabel(
+              this.basePermissionPath,
+              'status',
+              'Status'
+            )}</etools-data-table-column>
+            <etools-data-table-column class="col-2">${getHeadingLabel(
+              this.basePermissionPath,
+              'due_date',
+              'Due Date'
+            )}</etools-data-table-column>
+            <etools-data-table-column class="col-1">${getHeadingLabel(
+              this.basePermissionPath,
+              'high_priority',
+              'Priority'
+            )}</etools-data-table-column>
+          </etools-data-table-header>
 
-            <template is="dom-repeat" items="[[itemsToDisplay]]" filter="_showItems">
-                <list-element
-                        class="list-element"
-                        data="[[item]]"
-                        base-permission-path="[[basePermissionPath]]"
-                        headings="[[columns]]"
-                        no-additional
-                        no-animation>
-                    <div slot="checkbox" class="checkbox">
-                        <paper-checkbox
-                                disabled="disabled"
-                                checked="{{item.high_priority}}"
-                                label="">
-                        </paper-checkbox>
-                    </div>
-                    <div slot="hover" class="edit-icon-slot">
-                        <paper-tooltip for="copy" offset="0" position="top" animation-delay="0">
-                          Copy Action Point
-                        </paper-tooltip>
-                        <paper-icon-button
-                           id="copy"
-                            icon="icons:content-copy"
-                            class="edit-icon"
-                            on-tap="_openCopyDialog"></paper-icon-button>
-                        <paper-icon-button
-                            icon="icons:create"
-                            class="edit-icon"
-                            on-tap="_openEditDialog"
-                            hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
-                    </div>
-                </list-element>
-            </template>
-
-            <template is="dom-if" if="[[!dataItems.length]]">
-                <list-element
-                        class="list-element"
-                        data="[[itemModel]]"
-                        headings="[[columns]]"
-                        no-additional
-                        no-animation>
-                    <div slot="checkbox" class="checkbox">
-                        <span>–</span>
-                    </div>
-                </list-element>
-            </template>
-        </etools-content-panel>
+          ${(this.itemsToDisplay || []).map(
+            (item, index) => html`
+              <etools-data-table-row no-collapse>
+                <div slot="row-data" class="layout-horizontal editable-row">
+                  <span class="col-data col-2">
+                    <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank"
+                      >${item.reference_number}
+                    </a>
+                  </span>
+                  <span class="col-data col-3">${item.ap_category.display_name}</span>
+                  <span class="col-data col-3">${item.computed_field}</span>
+                  <span class="col-data col-1">${item.status}</span>
+                  <span class="col-data col-2">${this.prettyDate(String(item.due_date), '') || '-'}</span>
+                  <span class="col-data col-1">${item.priority}</span>
+                  <div class="hover-block">
+                    <paper-icon-button
+                      icon="content-copy"
+                      @click="${() => this._openCopyDialog(index)}"
+                    ></paper-icon-button>
+                    <paper-icon-button
+                      icon="create"
+                      ?hidden="${!this.canBeEdited(item.status)}"
+                      @click="${() => this._openEditDialog(index)}"
+                    ></paper-icon-button>
+                  </div>
+                </div>
+              </etools-data-table-row>
+            `
+          )}
 
         <etools-dialog no-padding keep-dialog-open size="md"
-                opened="{{dialogOpened}}"
-                dialog-title="[[dialogTitle]]"
-                ok-btn-text="[[confirmBtnText]]"
-                hide-confirm-btn="[[!confirmBtnText]]"
-                show-spinner="{{requestInProcess}}"
-                disable-confirm-btn="{{requestInProcess}}"
-                on-confirm-btn-clicked="_addActionPoint"
+                ?opened="${this.dialogOpened}"
+                .dialogTitle="${this.dialogTitle}"
+                .okBtnText="${this.confirmBtnText}"
+                .hideConfirmBtn="${!this.confirmBtnText}"
+                ?show-spinner="${this.requestInProcess}"
+                ?disable-confirm-btn="${this.requestInProcess}"
+                @confirm-btn-clicked="${this._addActionPoint}"
                 openFlag="dialogOpened"
-                on-close="_resetDialogOpenedFlag">
-            <template is="dom-if" if="[[notTouched]]">
-                <div class="copy-warning">
-                    It is required to change at least one of the fields below.
-                </div>
-            </template>
+                @close="${this._resetDialogOpenedFlag}">
+            ${
+              this.notTouched
+                ? html`<div class="copy-warning">It is required to change at least one of the fields below.</div>`
+                : ``
+            }
 
-            <div class="row-h repeatable-item-container" without-line>
-                <div class="repeatable-item-content">
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
+                    <div class="layout-horizontal row-padding">
+                        <div class="col col-6">
                             <!-- Partner -->
                             <etools-dropdown
-                                    class$="[[_setRequired('partner', editedApBase)]]
-                                              validate-input fua-person"
-                                    selected="[[selectedPartnerId]]"
-                                    label="[[getLabel('partner', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
-                                    options="[[partners]]"
+                                    class="${this._setRequired('partner', this.editedApBase)} validate-input fua-person"
+                                    .selected="${this.selectedPartnerId}"
+                                    label="${this.getLabel('partner', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('partner', this.editedApBase, 'select')}"
+                                    .options="${this.partners}"
                                     option-label="name"
                                     option-value="id"
-                                    required$="[[_setRequired('partner', editedApBase)]]"
-                                    readonly$="{{isReadOnly('partner', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.partner}}"
-                                    error-message="{{errors.partner}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?required="${this._setRequired('partner', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly('partner', this.editedApBase, this.requestInProcess)}"
+                                    ?invalid="${this.errors.partner}"
+                                    .errorMessage="${this.errors.partner}"
+                                    @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
-                        <div class="input-container input-container-ms">
+                        <div class="col col-6">
                             <!-- PD/SSFA -->
                             <etools-dropdown
-                                    class$="[[_setRequired('intervention', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.intervention.id}}"
-                                    label="[[getLabel('intervention', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('intervention', editedApBase, 'select')]]"
-                                    options="[[fullPartner.interventions]]"
+                                    class="${this._setRequired(
+                                      'intervention',
+                                      this.editedApBase
+                                    )} validate-input fua-person"
+                                    .selected="${this.editedItem.intervention?.id}"
+                                    label="${this.getLabel('intervention', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText(
+                                      'intervention',
+                                      this.editedApBase,
+                                      'select'
+                                    )}"
+                                    .options="${this.fullPartner?.interventions}"
                                     option-label="title"
                                     option-value="id"
-                                    required$="[[_setRequired('intervention', editedApBase)]]"
-                                    readonly$="{{isReadOnly('intervention', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.intervention}}"
-                                    error-message="{{errors.intervention}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?required="${this._setRequired('intervention', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly(
+                                      'intervention',
+                                      this.editedApBase,
+                                      this.requestInProcess
+                                    )}"
+                                    ?invalid="${this.errors.intervention}"
+                                    .errorMessage="${this.errors.intervention}"
+                                    trigger-value-change-event
+                                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem = {
+                                        ...this.editedItem,
+                                        intervention: {id: detail.selectedItem?.id}
+                                      })}"
+                                    @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
                     </div>
                 </div>
 
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
+                    <div class="layout-horizontal row-padding">
+                        <div class="col col-6">
                             <!-- Category -->
                             <etools-dropdown
-                                    class$="[[_setRequired('category', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.category}}"
-                                    label="[[getLabel('category', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('category', editedApBase, 'select')]]"
-                                    options="[[categories]]"
+                                    class="${this._setRequired(
+                                      'category',
+                                      this.editedApBase
+                                    )} validate-input fua-person"
+                                    .selected="${this.editedItem.category}"
+                                    label="${this.getLabel('category', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('category', this.editedApBase, 'select')}"
+                                    .options="${this.categories}"
                                     option-label="display_name"
                                     option-value="value"
-                                    required$="[[_setRequired('category', editedApBase)]]"
-                                    readonly$="{{isReadOnly('category', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.category}}"
-                                    error-message="{{errors.category}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?required="${this._setRequired('category', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly('category', this.editedApBase, this.requestInProcess)}"
+                                    ?invalid="${this.errors.category}"
+                                    .errorMessage="${this.errors.category}"
+                                    trigger-value-change-event
+                                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem.category = detail.selectedItem?.value)}"
+                                    @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
                     </div>
 
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
+                    <div class="layout-horizontal row-padding">
+                        <div class="col col-12">
                             <!-- Description -->
                             <paper-textarea
-                                    class$="validate-input {{_setRequired('description', editedApBase)}}"
-                                    value="{{editedItem.description}}"
+                                    class="w100 validate-input ${this._setRequired('description', this.editedApBase)}"
+                                    .value="${this.editedItem.description}"
                                     allowed-pattern="[\d\s]"
-                                    label="[[getLabel('description', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('description', editedApBase)]]"
-                                    required$="{{_setRequired('description', editedApBase)}}"
-                                    readonly$="{{isReadOnly('description', editedApBase, requestInProcess)}}"
+                                    label="${this.getLabel('description', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('description', this.editedApBase)}"
+                                    ?required="${this._setRequired('description', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly(
+                                      'description',
+                                      this.editedApBase,
+                                      this.requestInProcess
+                                    )}"
                                     max-rows="4"
-                                    invalid="{{errors.description}}"
-                                    error-message="{{errors.description}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?invalid="${this.errors.description}"
+                                    .errorMessage="${this.errors.description}"
+                                    @value-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem.description = detail.value)}"
+                                    @focus="${this._resetFieldError}">
                             </paper-textarea>
                         </div>
                     </div>
 
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
+                    <div class="layout-horizontal row-padding">
+                        <div class="col col-6">
                             <!-- Assigned To -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('assigned_to', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.assigned_to.id}}"
-                                    label="[[getLabel('assigned_to', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
-                                    options="[[users]]"
+                                    class="${this._setRequired(
+                                      'assigned_to',
+                                      this.editedApBase
+                                    )} validate-input fua-person"
+                                    .selected="${this.editedItem.assigned_to?.id}"
+                                    label="${this.getLabel('assigned_to', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('assigned_to', this.editedApBase, 'select')}"
+                                    .options="${this.users}"
                                     option-label="name"
                                     option-value="id"
-                                    load-data-method="[[loadUsersDropdownOptions]]"
+                                    .loadDataMethod="${this.loadUsersDropdownOptions}"
                                     preserve-search-on-close
-                                    required$="[[_setRequired('assigned_to', editedApBase)]]"
-                                    readonly$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.assigned_to}}"
-                                    error-message="{{errors.assigned_to}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?required="${this._setRequired('assigned_to', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly(
+                                      'assigned_to',
+                                      this.editedApBase,
+                                      this.requestInProcess
+                                    )}"
+                                    ?invalid="${this.errors.assigned_to}"
+                                    .errorMessage="${this.errors.assigned_to}"
+                                    trigger-value-change-event
+                                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem = {
+                                        ...this.editedItem,
+                                        assigned_to: {id: detail.selectedItem?.id}
+                                      })}"
+                                    @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
 
-                        <div class="input-container input-container-ms">
+                        <div class="col col-6">
                             <!-- Sections -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('section', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.section.id}}"
-                                    label="[[getLabel('section', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
-                                    options="[[sections]]"
+                                    class="${this._setRequired('section', this.editedApBase)} validate-input fua-person"
+                                    .selected="${this.editedItem.section?.id}"
+                                    label="${this.getLabel('section', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('section', this.editedApBase, 'select')}"
+                                    .options="${this.sections}"
                                     option-label="name"
                                     option-value="id"
-                                    required$="[[_setRequired('section', editedApBase)]]"
-                                    readonly$="{{isReadOnly('section', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.section}}"
-                                    error-message="{{errors.section}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?required="${this._setRequired('section', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly('section', this.editedApBase, this.requestInProcess)}"
+                                    ?invalid="${this.errors.section}"
+                                    .errorMessage="${this.errors.section}"
+                                    trigger-value-change-event
+                                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem = {
+                                        ...this.editedItem,
+                                        section: {id: detail.selectedItem?.id}
+                                      })}"
+                                    @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
                     </div>
 
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
+                    <div class="layout-horizontal row-padding">
+                        <div class="col col-6">
                             <!-- Offices -->
 
                             <etools-dropdown
-                                    class$="[[_setRequired('office', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.office.id}}"
-                                    label="[[getLabel('office', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('office', editedApBase, 'select')]]"
-                                    options="[[offices]]"
+                                    class="${this._setRequired('office', this.editedApBase)} validate-input fua-person"
+                                    .selected="${this.editedItem.office?.id}"
+                                    label="${this.getLabel('office', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('office', this.editedApBase, 'select')}"
+                                    .options="${this.offices}"
                                     option-label="name"
                                     option-value="id"
-                                    required$="[[_setRequired('office', editedApBase)]]"
-                                    readonly$="{{isReadOnly('office', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.office}}"
-                                    error-message="{{errors.office}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
+                                    ?required="${this._setRequired('office', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly('office', this.editedApBase, this.requestInProcess)}"
+                                    ?invalid="${this.errors.office}"
+                                    .errorMessage="${this.errors.office}"
+                                    trigger-value-change-event
+                                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem = {
+                                        ...this.editedItem,
+                                        office: {id: detail.selectedItem?.id}
+                                      })}"
+                                    @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
 
-                        <div class="input-container input-container-40">
+                        <div class="col col-6">
                             <!-- Due Date -->
                             <datepicker-lite
                                     id="deadlineAction"
-                                    class$="[[_setRequired('due_date', editedApBase)]]
-                                            validate-input"
-                                    value="[[editedItem.due_date]]"
-                                    label="[[getLabel('due_date', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('due_date', editedApBase, 'select')]]"
-                                    required$="[[_setRequired('due_date', editedApBase)]]"
-                                    readonly$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.due_date}}"
-                                    error-message="{{errors.due_date}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError"
+                                    class="${this._setRequired('due_date', this.editedApBase)} validate-input"
+                                    .value="${this.editedItem.due_date}"
+                                    label="${this.getLabel('due_date', this.editedApBase)}"
+                                    placeholder="${this.getPlaceholderText('due_date', this.editedApBase, 'select')}"
+                                    ?required="${this._setRequired('due_date', this.editedApBase)}"
+                                    ?readonly="${this.isReadOnly('due_date', this.editedApBase, this.requestInProcess)}"
+                                    ?invalid="${this.errors.due_date}"
+                                    .errorMessage="${this.errors.due_date}"
+                                    @focus="${this._resetFieldError}"
                                     selected-date-display-format="D MMM YYYY"
                                     fire-date-has-changed
-                                    on-date-has-changed="dueDateHasChanged"
+                                    @date-has-changed="${(e: CustomEvent) => {
+                                      this.editedItem.due_date = e.detail.date;
+                                    }}"
                                     >
                             </datepicker-lite>
                         </div>
                     </div>
 
-                    <div class="row-h group">
+                    <div class="layout-horizontal row-padding">
                         <!-- High Priority -->
-                        <div class="input-container checkbox-container input-container-l">
+                        <div class="col col-12 checkbox-container">
                             <paper-checkbox
-                                    checked="{{editedItem.high_priority}}"
-                                    disabled$="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}">
+                                    ?checked="${this.editedItem.high_priority}"
+                                    ?disabled="${this.isReadOnly(
+                                      'high_priority',
+                                      this.editedApBase,
+                                      this.requestInProcess
+                                    )}"
+                                    @checked-changed="${({detail}: CustomEvent) =>
+                                      (this.editedItem.high_priority = detail.value)}">
                                     This action point is high priority
                             </paper-checkbox>
                         </div>
@@ -415,32 +472,19 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
                 </div>
             </div>
 
-            <div class="action-complete" hidden$="[[!_allowComplete(editedApBase)]]">
+            <div class="action-complete" ?hidden="${!this._allowComplete(this.editedApBase)}">
                 <paper-button>
-                    <a href$="[[editedItem.url]]" target="_blank">Go To action points to complete
+                    <a href="${this.editedItem.url}" target="_blank">Go To action points to complete
                         <iron-icon icon="icons:launch"></iron-icon>
                     </a>
                 </paper-button>
             </div>
         </etools-dialog>
-
             `;
-  }
-  static get observers() {
-    return [
-      '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
-      '_checkNonField(errorObject)',
-      'setPermissionPath(baseEngagementPath)',
-      'updateStyles(editedApBase)',
-      '_addComputedField(dataItems.*)',
-      '_orderChanged(orderBy, columns, dataItems.*)',
-      '_requestPartner(partnerData, selectedPartnerId, partners)'
-    ];
   }
 
   @property({type: Array})
-  dataItems!: [];
+  dataItems!: GenericObject[];
 
   @property({type: Object})
   itemModel: GenericObject = {
@@ -539,10 +583,16 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Array})
   offices: GenericObject[] = [];
 
+  @property({type: Object})
+  partnerData!: GenericObject;
+
+  @property({type: Array})
+  partners!: GenericObject[];
+
   @property({type: String})
   orderBy = '-reference_number';
 
-  @property({type: Boolean, computed: '_checkNotTouched(copyDialog, editedItem.*)'})
+  @property({type: Boolean})
   notTouched = false;
 
   @property({type: Object})
@@ -556,6 +606,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
   @property({type: String})
   editedApBase!: string;
+
+  @property({type: String})
+  baseEngagementPath!: string;
 
   @property({type: Array})
   itemsToDisplay!: GenericObject[];
@@ -584,19 +637,42 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   public connectedCallback() {
     super.connectedCallback();
 
-    this.set('users', getStaticData('users') || []);
-
-    this.set('offices', getStaticData('offices') || []);
-    this.set('sections', getStaticData('sections') || []);
-    this.set('partners', getStaticData('partners') || []);
+    this.users = getStaticData('users') || [];
+    this.offices = getStaticData('offices') || [];
+    this.sections = getStaticData('sections') || [];
+    this.partners = getStaticData('partners') || [];
 
     if (!collectionExists('edited_ap_options')) {
       addToCollection('edited_ap_options', {});
     }
 
-    this._requestCompleted = this._requestCompleted.bind(this);
-    this.addEventListener('ap-request-completed', this._requestCompleted as any);
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this._resetDialog(this.dialogOpened);
+    }
+    // if (changedProperties.has('errorObject')) {
+    // this._errorHandler(this.errorObject); // @dci  errorObject doesn't exist here
+    // this._checkNonField(this.errorObject); // @dci  errorObject doesn't exist here
+    // }
+    if (changedProperties.has('baseEngagementPath')) {
+      this.setPermissionPath(this.baseEngagementPath);
+    }
+    if (changedProperties.has('dataItems')) {
+      this._addComputedField();
+    }
+    if (changedProperties.has('partnerData')) {
+      this._requestPartner(this.partnerData);
+    }
+    if (changedProperties.has('copyDialog') || changedProperties.has('editedItem')) {
+      this._checkNotTouched(this.copyDialog, this.editedItem);
+    }
+
+    // @dci _orderChanged(orderBy, columns, dataItems.*)
   }
 
   _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
@@ -613,19 +689,14 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
         data,
         this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
       );
-      this.set('users', data);
+      this.users = data;
     });
-  }
-
-  public disconnectedCallback() {
-    super.disconnectedCallback();
-
-    this.removeEventListener('ap-request-completed', this._requestCompleted as any);
   }
 
   _allowComplete(editedApBase) {
     return actionAllowed(editedApBase, 'complete');
   }
+
   _requestPartner(partner) {
     const id = (partner && +partner.id) || null;
     this.partnerId = id;
@@ -661,10 +732,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
     columns.forEach((column, index) => {
       if (column.name === name) {
-        this.set(`columns.${index}.ordered`, direction);
+        this.columns[index].ordered = direction;
         orderBy = column.orderBy || name;
       } else {
-        this.set(`columns.${index}.ordered`, false);
+        this.columns[index].ordered = false;
       }
     });
 
@@ -678,7 +749,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       const assignedTo = get(item, 'assigned_to.name', '--');
       const section = get(item, 'section.name', '--');
       const office = get(item, 'office.name', '--');
-      item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
+      item.computed_field = html`<b>${assignedTo}</b> <br />(${section} / ${office})`;
       item.ap_category = find(this.categories, (category) => category.value === item.category);
       return item;
     });
@@ -686,7 +757,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
 
   setPermissionPath(basePath) {
     this.basePermissionPath = basePath ? `${basePath}_ap` : '';
-    this.set('categories', getChoices(`${this.basePermissionPath}.category`) || []);
+    this.categories = getChoices(`${this.basePermissionPath}.category`) || [];
     this.canBeChanged = !readonlyPermission(`${this.basePermissionPath}.POST`);
   }
 
@@ -732,6 +803,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
 
   _addActionPoint() {
+    this._checkNotTouched(this.copyDialog, this.editedItem);
     if (!this.validate() || this.notTouched) {
       return;
     }
@@ -741,12 +813,14 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     if (apData) {
       const method = apData.id ? 'PATCH' : 'POST';
       this.requestData = {method, apData};
-    } else {
-      this._requestCompleted({detail: {success: true}});
     }
+    // @dci ? trying to signal that it's Ok without making the request ???
+    // else {
+    //   this._requestCompleted({detail: {success: true}});
+    // }
   }
 
-  _requestCompleted(event) {
+  _apRequestCompleted(event) {
     if (!event || !event.detail) {
       return;
     }
@@ -754,6 +828,9 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.requestInProcess = false;
     if (detail && detail.success) {
       this.dialogOpened = false;
+      this.dataItems = [...event.detail.data];
+    } else {
+      this.errors = event.detail.errors;
     }
   }
 
@@ -766,11 +843,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.openAddDialog();
   }
 
-  _openEditDialog(event) {
+  _openEditDialog(index) {
     this.editedApBase = '';
     fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
-    const index = this._getIndex(event);
     this._selectedAPIndex = index;
 
     const id = get(this, `dataItems.${index}.id`);
@@ -792,11 +868,10 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       .catch(this._handleOptionResponse.bind(this));
   }
 
-  _openCopyDialog(event) {
+  _openCopyDialog(index) {
     this.dialogTitle = (this.copyDialogTexts && this.copyDialogTexts.title) || 'Add New Item';
     this.confirmBtnText = 'Save';
     this.cancelBtnText = 'Cancel';
-    const index = this._getIndex(event);
     const data = cloneDeep(omit(this.dataItems[index], ['id']));
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
@@ -811,16 +886,17 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this.dialogOpened = true;
   }
 
-  _checkNotTouched(copyDialog) {
+  _checkNotTouched(copyDialog, editedItem) {
     if (!copyDialog || isEmpty(this.originalEditedObj)) {
-      return false;
+      this.notTouched = false;
+      return;
     }
-    return every(this.originalEditedObj, (value, key) => {
+    this.notTouched = every(this.originalEditedObj, (value, key) => {
       const isObj = isObject(value);
       if (isObj) {
         return !(value as AnyObject).id || +(value as AnyObject).id === +get(this, `editedItem.${key}.id`);
       } else {
-        return value === this.editedItem[key];
+        return value === editedItem[key];
       }
     });
   }
@@ -835,7 +911,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     this._selectedAPIndex = null;
 
     if (collectionExists('edited_ap_options.PUT')) {
-      this.openEditDialog({itemIndex});
+      this.openEditDialog(itemIndex);
     } else {
       this.dialogTitle = String(get(this, 'viewDialogTexts.title') || '');
       this.confirmBtnText = '';
@@ -854,13 +930,4 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   canBeEdited(status) {
     return status !== 'completed';
   }
-  dueDateHasChanged(e: CustomEvent) {
-    this.editedItem.due_date = e.detail.date;
-  }
-
-  setFullPartner(event: any) {
-    this.fullPartner = event.detail;
-  }
 }
-window.customElements.define('follow-up-actions', FollowUpActions);
-export default FollowUpActions;

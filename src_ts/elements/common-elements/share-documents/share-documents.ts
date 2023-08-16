@@ -13,13 +13,13 @@ import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import {moduleStyles} from '../../styles/module-styles-lit';
+import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
 
-import CommonMethodsMixinLit from '../../mixins/common-methods-mixin-lit';
-import DateMixinLit from '../../mixins/date-mixin-lit';
+import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
-import TableElementsMixinLit from '../../mixins/table-elements-mixin-lit';
+import TableElementsMixin from '../../mixins/table-elements-mixin';
 import {getStaticData} from '../../mixins/static-data-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
@@ -31,7 +31,7 @@ import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('share-documents')
-export class ShareDocuments extends TableElementsMixinLit(CommonMethodsMixinLit(DateMixinLit(LitElement))) {
+export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
   }
@@ -145,9 +145,6 @@ export class ShareDocuments extends TableElementsMixinLit(CommonMethodsMixinLit(
 
   @property({type: String})
   partnerName!: string;
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   @property({type: String})
   dataBasePath!: string;

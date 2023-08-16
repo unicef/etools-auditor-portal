@@ -1,24 +1,36 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
+
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
-import '../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../common-elements/list-tab-elements/list-element/list-element';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
-import {property} from '@polymer/decorators';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {checkNonField} from '../../../mixins/error-handler';
+import {GenericObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
-class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin CommonMethodsMixinLit
+ */
+@customElement('control-findings-tab')
+export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
@@ -49,103 +61,100 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
 
       <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
         <div slot="panel-btns">
-          <div hidden$="[[!canBeChanged]]">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
+          <div ?hidden="${!this.canBeChanged}">
+            <paper-icon-button class="panel-button" @tap="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
-
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            headings="[[columns]]"
-            details="[[details]]"
-            has-collapse
-            no-animation
-          >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!canBeChanged]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
-
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-        </template>
+        <etools-data-table-header no-title>
+          <etools-data-table-column class="col-12">Description of Finding</etools-data-table-column>
+        </etools-data-table-header>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-12">${item.finding}</span>
+                <div class="hover-block" ?hidden="${!this.canBeChanged}">
+                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
+              </div>
+              <div slot="row-data-details">
+                <div class="row-details-content col-12">
+                  <span class="rdc-title">Recommendation and IP Management Response</span>
+                </div>
+                <span>${item.recommendation}</span>
+              </div>
+            </etools-data-table-row>
+          `
+        )}
       </etools-content-panel>
+
       <etools-dialog
         theme="confirmation"
         size="md"
         keep-dialog-open
-        opened="{{confirmDialogOpened}}"
-        on-confirm-btn-clicked="removeItem"
+        .opened="${this.confirmDialogOpened}"
+        @confirm-btn-clicked="${this.removeItem}"
         ok-btn-text="Delete"
         openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        [[deleteTitle]]
+        ${this.deleteTitle}
       </etools-dialog>
 
       <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
-        opened="{{dialogOpened}}"
-        delete-dialog="[[deleteDialog]]"
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
+        .opened="${this.dialogOpened}"
+        .deleteDialog="${this.deleteDialog}"
+        .dialogTitle="${this.dialogTitle}"
+        .okBtnText="${this.confirmBtnText}"
+        ?showSpinner="${this.requestInProcess}"
+        ?disableConfirmBtn="${this.requestInProcess}"
+        @confirm-btn-clicked="${this._addItemFromDialog}"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Finding -->
-                <paper-input
-                  class$="validate-input {{_setRequired('findings.finding', basePermissionPath)}}"
-                  value="{{editedItem.finding}}"
-                  label="[[getLabel('findings.finding', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('findings.finding', basePermissionPath)]]"
-                  required$="[[_setRequired('findings.finding', basePermissionPath)]]"
-                  readonly$="{{requestInProcess}}"
-                  maxlength="400"
-                  invalid="{{errors.0.finding}}"
-                  error-message="{{errors.0.finding}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-input>
-              </div>
-            </div>
+        <div class="layout-horizontal">
+          <div class="col col-12">
+            <!-- Finding -->
+            <paper-input
+              class="validate-input ${this._setRequired('findings.finding', this.basePermissionPath)}"
+              .value="${this.editedItem.finding}"
+              label="${this.getLabel('findings.finding', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('findings.finding', this.basePermissionPath)}"
+              ?required="${this._setRequired('findings.finding', this.basePermissionPath)}"
+              ?readonly="${this.requestInProcess}"
+              maxlength="400"
+              ?invalid="${this.errors[0]?.finding}"
+              .errorMessage="${this.errors[0]?.finding}"
+              @focus="${this._resetFieldError}"
+              @value-changed="${({detail}: CustomEvent) => (this.editedItem.finding = detail.value)}"
+            >
+            </paper-input>
+          </div>
 
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Recommendation -->
-                <paper-textarea
-                  class$="validate-input {{_setRequired('findings.recommendation', basePermissionPath)}}"
-                  value="{{editedItem.recommendation}}"
-                  allowed-pattern="[ds]"
-                  label="[[getLabel('findings.recommendation', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                  required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
-                  readonly$="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.0.recommendation}}"
-                  error-message="{{errors.0.recommendation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Recommendation -->
+              <paper-textarea
+                class="validate-input ${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                .value="${this.editedItem.recommendation}"
+                allowed-pattern="[ds]"
+                label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('findings.recommendation', this.basePermissionPath)}"
+                ?required="${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                ?readonly="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors[0]?.recommendation}"
+                .errorMessage="${this.errors[0]?.recommendation}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => (this.editedItem.recommendation = detail.value)}"
+              >
+              </paper-textarea>
             </div>
           </div>
         </div>
@@ -153,8 +162,11 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
     `;
   }
 
-  @property({type: Array, notify: true, observer: 'dataItemsChanged'})
-  dataItems!: [];
+  @property({type: Array})
+  dataItems!: GenericObject[];
+
+  @property({type: Array})
+  originalDataItems!: GenericObject[];
 
   @property({type: String})
   mainProperty = 'findings';
@@ -195,6 +207,9 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
     title: 'Edit Finding'
   };
 
+  @property({type: Object})
+  errorObject!: GenericObject;
+
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
@@ -204,13 +219,22 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
   @property({type: Boolean})
   canBeChanged = false;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_errorHandler(errorObject.findings)',
-      '_checkNonField(errorObject.findings)'
-    ];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dataItems')) {
+      this.dataItemsChanged();
+    }
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('confirmDialogOpened')) {
+      this.resetDialog(this.confirmDialogOpened);
+    }
+    if (changedProperties.has('dataItems')) {
+      this._errorHandler(this.errorObject?.findings);
+      this._checkNonField(this.errorObject?.findings);
+    }
   }
 
   _checkNonField(error) {
@@ -226,6 +250,12 @@ class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(PolymerEl
 
   dataItemsChanged() {
     this.canBeChanged = this._canBeChanged(this.basePermissionPath);
+
+    if (!this.originalDataItems) {
+      this.originalDataItems = this.dataItems;
+    }
+    if (!isJsonStrMatch(this.originalDataItems, this.dataItems)) {
+      fireEvent(this, 'data-changed', this.dataItems);
+    }
   }
 }
-window.customElements.define('control-findings-tab', ControlFindingsTab);

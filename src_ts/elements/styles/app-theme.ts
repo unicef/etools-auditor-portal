@@ -51,6 +51,10 @@ documentContainer.innerHTML = `
           }
 
           --esmm-dropdown-menu-position: fixed;
+
+          --paper-input-prefix: {
+            color: var(--secondary-text-color);
+          };
         }
 
     </style>

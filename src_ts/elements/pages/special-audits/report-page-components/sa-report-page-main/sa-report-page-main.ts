@@ -1,17 +1,19 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html,  customElement, property} from 'lit-element';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 // eslint-disable-next-line
-import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
-import {SpecificProcedureEl} from '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
+import {SpecificProcedure} from '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
 import '../other-recommendations/other-recommendations';
 // eslint-disable-next-line
-import {OtherRecommendationsEl} from '../other-recommendations/other-recommendations';
+import {OtherRecommendations} from '../other-recommendations/other-recommendations';
+import {GenericObject} from '@unicef-polymer/etools-types';
 
-class SaReportPageMain extends PolymerElement {
-  static get template() {
+@customElement('sa-report-page-main')
+export class SaReportPageMain extends LitElement {
+  render() {
     // language=HTML
     return html`
       <style>
@@ -22,54 +24,62 @@ class SaReportPageMain extends PolymerElement {
 
       <assign-engagement
         id="assignEngagement"
-        original-data="[[originalData]]"
-        class="mb-24"
-        error-object="{{errorObject}}"
-        data="{{engagement}}"
+        .data="${this.engagement}"
+        .originalData="${this.originalData}"
+        .errorObject="${this.errorObject}"
+        @data-changed="${({detail}) => (this.engagement = detail)}"
         audit-type="Special Audit"
-        base-permission-path="{{permissionBase}}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </assign-engagement>
 
       <specific-procedure
         id="specificProcedures"
         class="mb-24"
-        error-object="{{errorObject}}"
-        data-items="{{engagement.specific_procedures}}"
-        base-permission-path="{{permissionBase}}"
+        .errorObject="${this.errorObject}"
+        .dataItems="${this.engagement.specific_procedures}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </specific-procedure>
 
       <other-recommendations
         id="otherRecommendations"
         class="mb-24"
-        error-object="{{errorObject}}"
-        data-items="{{engagement.other_recommendations}}"
-        base-permission-path="{{permissionBase}}"
+        .errorObject="${this.errorObject}"
+        .dataItems="${this.engagement.other_recommendations}"
+        .basePermissionPath="${this.permissionBase}"
       >
       </other-recommendations>
     `;
   }
 
+  @property({type: Object})
+  engagement: GenericObject = {};
+
+  @property({type: Object})
+  originalData: GenericObject = {};
+
+  @property({type: Object})
+  errorObject: GenericObject = {};
+
+  @property({type: String})
+  permissionBase!: string;
+
   validate(forSave) {
-    const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).validate(
-      forSave
-    );
+    const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).validate(forSave);
 
     return assignTabValid;
   }
 
   getAssignVisitData() {
-    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).getAssignVisitData();
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).getAssignVisitData();
   }
 
   getSpecificProceduresData() {
-    return (this.shadowRoot!.querySelector('#specificProcedures') as SpecificProcedureEl).getTabData();
+    return (this.shadowRoot!.querySelector('#specificProcedures') as SpecificProcedure).getTabData();
   }
 
   getOtherRecommendationsData() {
-    return (this.shadowRoot!.querySelector('#otherRecommendations') as OtherRecommendationsEl).getTabData();
+    return (this.shadowRoot!.querySelector('#otherRecommendations') as OtherRecommendations).getTabData();
   }
 }
-
-window.customElements.define('sa-report-page-main', SaReportPageMain);

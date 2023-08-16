@@ -1,23 +1,23 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../../types/global';
 import {checkNonField} from '../../../../mixins/error-handler';
+import {getHeadingLabel} from '../../../../mixins/permission-controller';
 
 /**
  * @polymer
@@ -25,10 +25,15 @@ import {checkNonField} from '../../../../mixins/error-handler';
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  */
-class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
-  static get template() {
+@customElement('other-recommendations')
+export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
+      ${sharedStyles}
       <style>
         :host {
           .repeatable-item-container[without-line] {
@@ -48,106 +53,100 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('other_recommendations', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('other_recommendations', this.basePermissionPath)}"
         list
       >
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
+          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
             <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <list-header
-          id="list-header"
-          no-ordered
-          no-additional
-          data="[[columns]]"
-          base-permission-path="[[basePermissionPath]]"
-        >
-        </list-header>
-
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            no-additional
-            multiline
-            no-animation
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-3">Recommendation Number</etools-data-table-column>
+          <etools-data-table-column class="col-9"
+            >${getHeadingLabel(
+              this.basePermissionPath,
+              'other_recommendations.description',
+              'Description'
+            )}</etools-data-table-column
           >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+        </etools-data-table-header>
 
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-additional no-animation>
-          </list-element>
-        </template>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-3">${item.finding}</span>
+                <span class="col-data col-9">${item.description}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
+              </div>
+            </etools-data-table-row>
+          `
+        )}
       </etools-content-panel>
+
       <etools-dialog
         theme="confirmation"
         size="md"
         keep-dialog-open
-        opened="{{confirmDialogOpened}}"
-        on-confirm-btn-clicked="removeItem"
-        disable-confirm-btn="{{requestInProcess}}"
+        .opened="${this.confirmDialogOpened}"
+        @confirm-btn-clicked="${this.removeItem}"
+        ?disable-confirm-btn="${this.requestInProcess}"
         ok-btn-text="Delete"
         openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        [[deleteTitle]]
+        ${this.deleteTitle}
       </etools-dialog>
+
       <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
-        opened="{{dialogOpened}}"
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
+        .opened="${this.dialogOpened}"
+        .dialogTitle="${this.dialogTitle}"
+        .okBtnText="${this.confirmBtnText}"
+        ?showSpinner="${this.requestInProcess}"
+        ?disable-confirm-btn="${this.requestInProcess}"
+        @confirm-btn-clicked="${this._addItemFromDialog}"
         openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
+        @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="group">
-              <div class="input-container input-container-l">
-                <!-- Description -->
-                <paper-textarea
-                  class$="[[_setRequired('other_recommendations.description', basePermissionPath)]]
-                              fixed-width validate-input"
-                  value="{{editedItem.description}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('other_recommendations.description', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('other_recommendations.description',
-                                          basePermissionPath)]]"
-                  required$="[[_setRequired('other_recommendations.description', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  max-rows="4"
-                  invalid="[[_checkInvalid(errors.0.description)]]"
-                  error-message="[[errors.0.description]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
+        <div class="layout-horizontal">
+          <div class="col col-12">
+            <!-- Description -->
+            <paper-textarea
+              class="${this._setRequired(
+                'other_recommendations.description',
+                this.basePermissionPath
+              )} fixed-width validate-input"
+              .value="${this.editedItem.description}"
+              allowed-pattern="[\\d\\s]"
+              label="${this.getLabel('other_recommendations.description', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('other_recommendations.description', this.basePermissionPath)}"
+              ?required="${this._setRequired('other_recommendations.description', this.basePermissionPath)}"
+              ?disabled="${this.requestInProcess}"
+              max-rows="4"
+              ?invalid="${this._checkInvalid(this.errors[0]?.description)}"
+              .errorMessage="${this.errors[0]?.description}"
+              @value-changed="${({detail}: CustomEvent) =>
+                (this.editedItem = {...this.editedItem, description: detail.value})}"
+            >
+              @focus="${this._resetFieldError}" >
+            </paper-textarea>
           </div>
         </div>
       </etools-dialog>
     `;
   }
 
-  @property({type: Array, notify: true})
-  dataItems: [] = [];
+  @property({type: Array})
+  dataItems: GenericObject[] = [];
 
   @property({type: String})
   mainProperty = 'other_recommendations';
@@ -179,13 +178,20 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this Recommendation?';
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_errorHandler(errorObject.other_recommendations)',
-      '_checkNonField(errorObject.other_recommendations)'
-    ];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('dialogOpened')) {
+      this.resetDialog(this.dialogOpened);
+    }
+    if (changedProperties.has('confirmDialogOpened')) {
+      this.resetDialog(this.confirmDialogOpened);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject?.other_recommendations);
+      this._checkNonField(this.errorObject?.other_recommendations);
+    }
+    // @dci '_manageColumns(withoutFindingColumn, columns)'
   }
 
   _checkNonField(error) {
@@ -203,7 +209,3 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
     return !!value;
   }
 }
-
-window.customElements.define('other-recommendations', OtherRecommendations);
-
-export {OtherRecommendations as OtherRecommendationsEl};
