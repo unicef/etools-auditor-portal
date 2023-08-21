@@ -184,7 +184,7 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                         <questionnaire-page-main
                           id="questionnaire"
                           .data="${this.engagement.questionnaire}"
-                          .riskAssessment="${this.engagement.questionnaire.risk_rating}"
+                          .riskAssessment="${this.engagement?.questionnaire?.risk_rating}"
                           .errorObject="${this.errorObject}"
                           .basePermissionPath="${this.permissionBase}"
                         >

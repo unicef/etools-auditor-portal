@@ -17,12 +17,7 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown'
 export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement) {
   render() {
     return html`
-      ${HeaderStyles}
-      <style>
-        #organizationSelector {
-          width: 170px;
-        }
-      </style>
+    ${HeaderStyles}
       <etools-dropdown
         id="organizationSelector"
         class="${this.checkMustSelectOrganization(this.user)}"

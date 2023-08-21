@@ -25,6 +25,7 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
       ${sharedStyles}
       <div class="header-wrapper">
         <div class="side-heading horizontal layout center">
+          <span class="flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" ?hidden="${!this.exportLinks || !this.exportLinks.length}">
               <paper-menu-button
@@ -89,7 +90,7 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
   @property({type: Object})
   engagement: GenericObject = {};
 
-  @property({type: Boolean, reflect: true, attribute: 'hide-add-button'})
+  @property({type: Boolean})
   hideAddButton = true;
 
   @property({type: String, attribute: 'btn-text'})

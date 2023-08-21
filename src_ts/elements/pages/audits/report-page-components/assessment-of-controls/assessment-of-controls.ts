@@ -48,6 +48,10 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
+
+        .mt-30 {
+          margin-top: 30px
+        }
       </style>
 
       <etools-content-panel
@@ -63,23 +67,33 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
         </div>
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
+            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
 
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-title>
           <etools-data-table-column class="col-12">Audit Observation</etools-data-table-column>
         </etools-data-table-header>
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse>
+            <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-12">${item.audit_observation}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
+              </div>
+              <div slot="row-data-details">
+                <div class="row-details-content col-12">
+                  <span class="rdc-title">Recommendation</span>
+                  <span>${item.recommendation}</span>
+                </div>
+                <div class="row-details-content col-12 mt-30">
+                  <span class="rdc-title">IP response</span>
+                  <span>${item.ip_response}</span>
                 </div>
               </div>
             </etools-data-table-row>
@@ -113,11 +127,12 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           openFlag="dialogOpened"
           @close="${this._resetDialogOpenedFlag}"
         >
+          <div class="row-h">
             <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Recommendation -->
                   <paper-textarea
-                    class="${this._setRequired(
+                    class="w100 ${this._setRequired(
                       'key_internal_controls.recommendation',
                       this.basePermissionPath
                     )} validate-input"
@@ -143,7 +158,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                 <div class="col col-12">
                   <!-- Audit Observation -->
                   <paper-textarea
-                    class="${this._setRequired(
+                    class="w100 ${this._setRequired(
                       'key_internal_controls.audit_observation',
                       this.basePermissionPath
                     )} validate-input"
@@ -169,7 +184,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                 <div class="col col-12">
                   <!-- IP Response -->
                   <paper-textarea
-                    class="${this._setRequired('key_internal_controls.ip_response', this.basePermissionPath)}
+                    class="w100 ${this._setRequired('key_internal_controls.ip_response', this.basePermissionPath)}
                                           validate-input"
                     .value="${this.editedItem.ip_response}"
                     label="${this.getLabel('key_internal_controls.ip_response', this.basePermissionPath)}"
@@ -188,6 +203,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                   </paper-textarea>
                 </div>
               </div>
+            </div>
         </etools-dialog>
       </etools-content-panel>
     `;

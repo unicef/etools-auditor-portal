@@ -13,6 +13,13 @@ export function setProperty(object: GenericObject, path = '', dataToSet: any): a
   }
 }
 
+export function getTableRowIndexText(index) {
+  if (!index && index !== 0) {
+    return;
+  }
+  return `000${index + 1}`;
+}
+
 export function getProperty(object: GenericObject, path: string): any | null {
   const pathArray = path.split('.');
   return pathArray.reduce((data: GenericObject | null, field: string) => (data && data[field]) || null, object);

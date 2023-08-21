@@ -115,18 +115,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _setField(event: any): void {
-      const valuePath: string = event.target.dataset?.valuePath || '';
-      const fieldPath: string = event.target.dataset?.fieldPath || '';
-      const value = getProperty(event, valuePath);
-      this[fieldPath] = value;
-      this.requestUpdate();
-    }
-
-    _basePathChanged() {
-      //@dci this.updateStyles();
-    }
-
     _dataChanged() {
       if (this.dialogOpened) {
         this.requestInProcess = false;
@@ -241,6 +229,11 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return isObject(json);
     }
 
+    _updatePath(path: string) {
+      history.pushState(window.history.state, '', path);
+      window.dispatchEvent(new CustomEvent('popstate'));
+    }
+
     handleUsersNoLongerAssignedToCurrentCountry = (availableUsers: any[], savedUsers: any[]) => {
       savedUsers = savedUsers || [];
       availableUsers = availableUsers || [];
@@ -257,12 +250,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         }
       }
     };
-
-    dateHasChanged(e: CustomEvent) {
-      const selDate = e.detail.date;
-      // @ts-ignore
-      this.data[e.target.getAttribute('property-name')] = selDate;
-    }
   }
   return CommonMethodsMixinClass;
 }

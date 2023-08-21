@@ -59,7 +59,9 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
           this.route = detail.value;
         }}"
         pattern="/:id/:tab"
-        @data-changed="${({detail}: CustomEvent) => (this.routeData = detail.value)}"
+        @data-changed="${({detail}: CustomEvent) => {
+          this.routeData = detail.value;
+        }}"
       >
       </app-route>
 

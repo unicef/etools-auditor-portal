@@ -23,6 +23,7 @@ import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getChoices, collectionExists} from '../../../mixins/permission-controller';
 import {getStaticData} from '../../../mixins/static-data-controller';
 import '../../../data-elements/get-agreement-data';
@@ -39,7 +40,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-info-details')
-export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
+export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(LitElement)) {
   static get styles() {
     return [tabInputsStyles, moduleStyles, tabLayoutStyles];
   }
@@ -117,6 +118,10 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
           }
         }
 
+        datepicker-lite {
+          --paper-input-container_-_width: 100%;
+        }
+
         .year-of-audit {
           width: 16.66%;
         }
@@ -141,15 +146,14 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
       </update-agreement-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
-
         <div class="row-h group  float">
           <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Purchase Order -->
             <paper-input
               id="purchaseOrder"
-              class="${this._setRequired('agreement', this.basePermissionPath)}"
+              class="w100 ${this._setRequired('agreement', this.basePermissionPath)}"
               field="agreement"
-              .value="${this.data.agreement.order_number}"
+              .value="${this.data.agreement?.order_number}"
               allowed-pattern="[0-9]"
               label="${this.getLabel('agreement.order_number', this.basePermissionPath)}"
               placeholder="Enter ${this.getLabel('agreement.order_number', this.basePermissionPath)}"
@@ -161,9 +165,9 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
               @focus="${(event: any) => this._resetFieldError(event)}"
               @keydown="${(event: any) => this.poKeydown(event)}"
               @blur="${(event: any) => this._requestAgreement(event)}"
-              data-value-path="target.value"
-              data-field-path="data.agreement.order_number"
-              @input="${(event: any) => this._setField(event)}"
+              @value-changed="${({detail}: CustomEvent) => {
+                this.valueChanged(detail, 'order_number', this.data.agreement);
+              }}"
             >
             </paper-input>
 
@@ -175,8 +179,8 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
             <!-- Auditor -->
             <paper-input
               id="auditorInput"
-              class="${this._setReadonlyFieldClass(this.data.agreement)}"
-              .value="${this.data.agreement.auditor_firm?.name}"
+              class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
+              .value="${this.data.agreement?.auditor_firm?.name}"
               label="${this.getLabel('agreement.auditor_firm.name', this.basePermissionPath)}"
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
@@ -187,7 +191,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
           <div class="input-container" ?hidden="${this._hideField('po_item', this.basePermissionPath)}">
             <!-- PO Item Number -->
             <etools-dropdown
-              class="validate-field ${this._setRequired('po_item', this.basePermissionPath)}"
+              class="w100 validate-field ${this._setRequired('po_item', this.basePermissionPath)}"
               .selected="${this.data.po_item}"
               label="${this.getLabel('po_item', this.basePermissionPath)}"
               placeholder="&#8212;"
@@ -199,9 +203,8 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
               ?invalid="${this._checkInvalid(this.errors.po_item)}"
               .errorMessage="${this.errors.po_item}"
               @focus="${(event: any) => this._resetFieldError(event)}"
-              data-value-path="detail.selectedItem.id"
-              data-field-path="data.po_item"
-              @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}
+              @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                this.selectedItemChanged(detail, 'po_item', 'id', this.data)}"
               hide-search
               trigger-value-change-event
             >
@@ -212,8 +215,8 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
             <!-- PO Date -->
             <datepicker-lite
               id="contractStartDateInput"
-              class="${this._setReadonlyFieldClass(this.data.agreement)}"
-              .value="${this.data.agreement.contract_start_date}"
+              class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
+              .value="${this.data.agreement?.contract_start_date}"
               label="${this.getLabel('agreement.contract_start_date', this.basePermissionPath)}"
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
@@ -221,7 +224,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
               ?hidden="${!this._showPrefix(
                 'contract_start_date',
                 this.basePermissionPath,
-                this.data.agreement.contract_start_date,
+                this.data.agreement?.contract_start_date,
                 'readonly'
               )}"
               icon="date-range"
@@ -233,11 +236,11 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
             <!-- Contract Expiry Date -->
             <datepicker-lite
               id="contractEndDateInput"
-              class="${this._setRequired(
+              class="w100 ${this._setRequired(
                 'related_agreement.contract_end_date',
                 this.basePermissionPath
               )} validate-field"
-              .value="${this.data.agreement.contract_end_date}"
+              .value="${this.data.agreement?.contract_end_date}"
               label="${this.getLabel('agreement.contract_end_date', this.basePermissionPath)}"
               placeholder="${this.getPlaceholderText(
                 'agreement.contract_end_date',
@@ -251,7 +254,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
               @focus="${(event: any) => this._resetFieldError(event)}"
               @date-has-changed="${(e: CustomEvent) => this._contractEndDateHasChanged(e)}"
               selected-date-display-format="D MMM YYYY"
-              min-date="${this._setExpiryMinDate(this.data.agreement.contract_start_date)}"
+              min-date="${this._setExpiryMinDate(this.data.agreement?.contract_start_date)}"
             >
             </datepicker-lite>
             <etools-loading .active="${this.poUpdating}" no-overlay loading-text="" class="po-loading"></etools-loading>
@@ -261,7 +264,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
             <!-- Date Partner Was Contacted -->
             <datepicker-lite
               id="contactedDateInput"
-              class="${this._setRequired('partner_contacted_at', this.basePermissionPath)} validate-field"
+              class="w100 ${this._setRequired('partner_contacted_at', this.basePermissionPath)} validate-field"
               .value="${this.data.partner_contacted_at}"
               label="${this.getLabel('partner_contacted_at', this.basePermissionPath)}"
               placeholder="${this.getPlaceholderText('partner_contacted_at', this.basePermissionPath, 'datepicker')}"
@@ -274,22 +277,21 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
               max-date="${this.maxDate}"
               fire-date-has-changed
               property-name="partner_contacted_at"
-              @date-has-changed="${(e: CustomEvent) => this.dateHasChanged(e)}"
+              @date-has-changed="${({detail}: CustomEvent) =>
+                this.dateHasChanged(detail, 'partner_contacted_at', this.data)}"
             >
             </datepicker-lite>
           </div>
 
           <div class="input-container">
-            <etools-info-tooltip .hideTooltip="${this._hideTooltip(
-              this.basePermissionPath,
-              this.showInput,
-              this.data.engagement_type
-            )}">
+            <etools-info-tooltip
+              .hideTooltip="${this._hideTooltip(this.basePermissionPath, this.showInput, this.data.engagement_type)}"
+            >
               <!-- Engagement Type -->
               <etools-dropdown
                 slot="field"
                 id="engagementType"
-                class="${this._setRequired('engagement_type', this.basePermissionPath)} validate-field"
+                class="w100 ${this._setRequired('engagement_type', this.basePermissionPath)} validate-field"
                 .selected="${this.data.engagement_type}"
                 label="${this.getLabel('engagement_type', this.basePermissionPath)}"
                 placeholder="${this.getPlaceholderText('engagement_type', this.basePermissionPath, 'dropdown')}"
@@ -302,9 +304,10 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
                 .errorMessage="${this.errors.engagement_type}"
                 @focus="${(event: any) => this._resetFieldError(event)}"
                 trigger-value-change-event
-                data-value-path="detail.selectedItem.value"
-                data-field-path="data.engagement_type"
-                @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
+                @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
+                  this.onEngagementTypeChanged();
+                }}"
                 hide-search
               >
               </etools-dropdown>
@@ -316,239 +319,213 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
             </etools-info-tooltip>
           </div>
 
-          ${
-            this.showInput
-              ? html`<div class="input-container" ?hidden="${this._hideField('start_date', this.basePermissionPath)}">
-                  <!-- Period Start Date -->
+          ${this.showInput
+            ? html`<div class="input-container" ?hidden="${this._hideField('start_date', this.basePermissionPath)}">
+                <!-- Period Start Date -->
+                <datepicker-lite
+                  id="periodStartDateInput"
+                  class="w100 ${this._isAdditionalFieldRequired(
+                    'start_date',
+                    this.basePermissionPath,
+                    this.data.engagement_type
+                  )} validate-field"
+                  .value="${this.data.start_date}"
+                  label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('start_date', this.basePermissionPath, 'datepicker')}"
+                  selected-date-display-format="D MMM YYYY"
+                  ?required="${this._isAdditionalFieldRequired(
+                    'start_date',
+                    this.basePermissionPath,
+                    this.data.engagement_type
+                  )}"
+                  ?readonly="${this.isReadOnly('start_date', this.basePermissionPath)}"
+                  ?invalid="${this._checkInvalid(this.errors.start_date)}"
+                  .errorMessage="${this.errors.start_date}"
+                  @focus="${(event: any) => this._resetFieldError(event)}"
+                  fire-date-has-changed
+                  @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'start_date', this.data)}"
+                >
+                </datepicker-lite>
+              </div>`
+            : ``}
+          ${this.showInput
+            ? html` <div class="input-container" ?hidden="${this._hideField('end_date', this.basePermissionPath)}">
+                  <!-- Period End Date -->
                   <datepicker-lite
-                    style="width: 100%"
-                    id="periodStartDateInput"
-                    class="${this._isAdditionalFieldRequired(
-                      'start_date',
+                    id="periodEndDateInput"
+                    class="w100 ${this._isAdditionalFieldRequired(
+                      'end_date',
                       this.basePermissionPath,
                       this.data.engagement_type
                     )} validate-field"
-                    .value="${this.data.start_date}"
-                    label="${this.getStartEndDateLabel(
-                      this.data.engagement_type,
-                      'start_date',
-                      this.basePermissionPath
-                    )}"
-                    placeholder="${this.getPlaceholderText('start_date', this.basePermissionPath, 'datepicker')}"
-                    selected-date-display-format="D MMM YYYY"
+                    .value="${this.data.end_date}"
+                    label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('end_date', this.basePermissionPath, 'datepicker')}"
+                    data-selector="periodEndDate"
                     ?required="${this._isAdditionalFieldRequired(
-                      'start_date',
+                      'end_date',
                       this.basePermissionPath,
                       this.data.engagement_type
                     )}"
-                    ?readonly="${this.isReadOnly('start_date', this.basePermissionPath)}"
-                    ?invalid="${this._checkInvalid(this.errors.start_date)}"
-                    .errorMessage="${this.errors.start_date}"
+                    ?readonly="${this.isReadOnly('end_date', this.basePermissionPath)}"
+                    ?invalid="${this._checkInvalid(this.errors.end_date)}"
+                    .errorMessage="${this.errors.end_date}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
+                    selected-date-display-format="D MMM YYYY"
                     fire-date-has-changed
-                    property-name="start_date"
-                    @date-has-changed="${(e: CustomEvent) => this.dateHasChanged(e)}"
+                    @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'end_date', this.data)}"
                   >
                   </datepicker-lite>
-                </div>`
-              : ``
-          }
-
-          ${
-            this.showInput
-              ? html` <div class="input-container" ?hidden="${this._hideField('end_date', this.basePermissionPath)}">
-                    <!-- Period End Date -->
-                    <datepicker-lite
-                      id="periodEndDateInput"
-                      style="width: 100%"
-                      class="${this._isAdditionalFieldRequired(
-                        'end_date',
-                        this.basePermissionPath,
-                        this.data.engagement_type
-                      )} validate-field"
-                      .value="${this.data.end_date}"
-                      label="${this.getStartEndDateLabel(
-                        this.data.engagement_type,
-                        'end_date',
-                        this.basePermissionPath
-                      )}"
-                      placeholder="${this.getPlaceholderText('end_date', this.basePermissionPath, 'datepicker')}"
-                      data-selector="periodEndDate"
-                      ?required="${this._isAdditionalFieldRequired(
-                        'end_date',
-                        this.basePermissionPath,
-                        this.data.engagement_type
-                      )}"
-                      ?readonly="${this.isReadOnly('end_date', this.basePermissionPath)}"
-                      ?invalid="${this._checkInvalid(this.errors.end_date)}"
-                      .errorMessage="${this.errors.end_date}"
-                      @focus="${(event: any) => this._resetFieldError(event)}"
-                      selected-date-display-format="D MMM YYYY"
-                      fire-date-has-changed
-                      property-name="end_date"
-                      @date-has-changed="${(e: CustomEvent) => this.dateHasChanged(e)}"
-                    >
-                    </datepicker-lite>
-                  </div>
-                  <div class="input-container" ?hidden="${this._hideField('total_value', this.basePermissionPath)}">
-                    <!-- Total Value of Selected FACE Forms -->
-                    <etools-currency-amount-input
-                      class=" validate-field
+                </div>
+                <div class="input-container" ?hidden="${this._hideField('total_value', this.basePermissionPath)}">
+                  <!-- Total Value of Selected FACE Forms -->
+                  <etools-currency-amount-input
+                    class="w100 validate-field
                                 ${this._isAdditionalFieldRequired(
-                        'total_value',
-                        this.basePermissionPath,
-                        this.data.engagement_type
-                      )}"
-                      field="total_value"
-                      .value="${this.data.total_value}"
-                      currency="$"
-                      label="${this.getLabel('total_value', this.basePermissionPath)}"
-                      placeholder="${this.getPlaceholderText('total_value', this.basePermissionPath)}"
-                      ?required="${this._isAdditionalFieldRequired(
-                        'total_value',
-                        this.basePermissionPath,
-                        this.data.engagement_type
-                      )}"
-                      ?readonly="${this.isReadOnly('total_value', this.basePermissionPath)}"
-                      ?invalid="${this._checkInvalid(this.errors.total_value)}"
-                      .errorMessage="${this.errors.total_value}"
-                      @focus="${(event: any) => this._resetFieldError(event)}"
-                      data-value-path="target.value"
-                      data-field-path="data.total_value"
-                      @input="${(event: CustomEvent) => this._setField(event)}"
-                    >
-                    </etools-currency-amount-input>
-                  </div>`
-              : ``
-          }
-
-          ${
-            this.showJoinAudit
-              ? html` <!-- Joint Audit -->
-                  <div class="input-container join-audit" style="width:16.66%">
-                    <paper-checkbox
-                      ?checked="${this.data.joint_audit}"
-                      ?disabled="${this.isReadOnly('joint_audit', this.basePermissionPath)}"
-                      data-value-path="target.checked"
-                      data-field-path="data.joint_audit"
-                      @change="${(event: CustomEvent) => this._setField(event)}"
-                    >
-                      ${this.getLabel('joint_audit', this.basePermissionPath)}
-                    </paper-checkbox>
-                  </div>
-                  <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
-                    <!-- Year of Audit -->
-                    <etools-dropdown
-                      id="yearOfAudit"
-                      class="${this._setRequired('year_of_audit', this.basePermissionPath)} validate-field"
-                      .selected="${this.data.year_of_audit}"
-                      label="Year of Audit"
-                      placeholder="${this.getPlaceholderText('year_of_audit', this.basePermissionPath, 'dropdown')}"
-                      .options="${this.yearOfAuditOptions}"
-                      option-label="label"
-                      option-value="value"
-                      ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
-                      ?readonly="${this.isReadOnly('year_of_audit', this.basePermissionPath)}"
-                      ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
-                      .errorMessage="${this.errors.year_of_audit}"
-                      @focus="${(event: any) => this._resetFieldError(event)}"
-                      trigger-value-change-event
-                      data-value-path="detail.selectedItem.value"
-                      data-field-path="data.year_of_audit"
-                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
-                      hide-search
-                    >
-                    </etools-dropdown>
-                  </div>`
-              : ``
-          }
-
-          ${
-            this.showAdditionalInput
-              ? html` <!-- Shared Audit with-->
-                  <div class="input-container" ?hidden="${this._hideField('shared_ip_with', this.basePermissionPath)}">
-                    <etools-dropdown-multi
-                      id="sharedWith"
-                      class="validate-input ${this._setRequired('shared_ip_with', this.basePermissionPath)}"
-                      label="${this.getLabel('shared_ip_with', this.basePermissionPath)}"
-                      placeholder="${this.getPlaceholderText('shared_ip_with', this.basePermissionPath)}"
-                      .options="${this.sharedIpWithOptions}"
-                      option-label="display_name"
-                      option-value="value"
-                      .selectedValues="${this.data.shared_ip_with}"
-                      ?required="${this._setRequired('shared_ip_with', this.basePermissionPath)}"
-                      ?readonly="${this.isReadOnly('shared_ip_with', this.basePermissionPath)}"
-                      ?invalid="${this.errors.shared_ip_with}"
-                      .errorMessage="${this.errors.shared_ip_with}"
-                      @focus="${(event: any) => this._resetFieldError(event)}"
-                      dynamic-align
-                      hide-search
-                      trigger-value-change-event
-                      data-value-path="target.selectedValues"
-                      data-field-path="data.shared_ip_with"
-                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
-                    >
-                    </etools-dropdown-multi>
-                  </div>`
-              : ``
-          }
-
-          ${
-            this.showInput
-              ? html` <!-- Sections -->
-                  <div class="input-container" ?hidden="${this._hideField('sections', this.basePermissionPath)}">
-                    <etools-dropdown-multi
-                      class="validate-input ${this._setRequired('sections', this.basePermissionPath)}"
-                      label="${this.getLabel('sections', this.basePermissionPath)}"
-                      placeholder="${this.getPlaceholderText('sections', this.basePermissionPath)}"
-                      .options="${this.sectionOptions}"
-                      option-label="name"
-                      option-value="id"
-                      .selectedValues="${this.sectionIDs}"
-                      ?required="${this._setRequired('sections', this.basePermissionPath)}"
-                      ?readonly="${this.isReadOnly('sections', this.basePermissionPath)}"
-                      ?invalid="${this.errors.sections}"
-                      .errorMessage="${this.errors.sections}"
-                      @focus="${(event: any) => this._resetFieldError(event)}"
-                      dynamic-align
-                      hide-search
-                      trigger-value-change-event
-                      data-value-path="target.selectedValues"
-                      data-field-path="sectionIDs"
-                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
-                    >
-                    </etools-dropdown-multi>
-                  </div>
-                  <!-- Offices -->
-                  <div class="input-container" ?hidden="${this._hideField('offices', this.basePermissionPath)}">
-                    <etools-dropdown-multi
-                      class="validate-input ${this._setRequired('offices', this.basePermissionPath)}"
-                      label="${this.getLabel('offices', this.basePermissionPath)}"
-                      placeholder="${this.getPlaceholderText('offices', this.basePermissionPath)}"
-                      .options="${this.officeOptions}"
-                      option-label="name"
-                      option-value="id"
-                      .selectedValues="${this.officeIDs}"
-                      ?required="${this._setRequired('offices', this.basePermissionPath)}"
-                      ?readonly="${this.isReadOnly('offices', this.basePermissionPath)}"
-                      ?invalid="${this.errors.offices}"
-                      .errorMessage="${this.errors.offices}"
-                      @focus="${(event: any) => this._resetFieldError(event)}"
-                      dynamic-align
-                      hide-search
-                      trigger-value-change-event
-                      data-value-path="target.selectedValues"
-                      data-field-path="officeIDs"
-                      @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
-                    >
-                    </etools-dropdown-multi>
-                  </div>`
-              : ``
-          }
+                      'total_value',
+                      this.basePermissionPath,
+                      this.data.engagement_type
+                    )}"
+                    field="total_value"
+                    .value="${this.data.total_value}"
+                    currency="$"
+                    label="${this.getLabel('total_value', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('total_value', this.basePermissionPath)}"
+                    ?required="${this._isAdditionalFieldRequired(
+                      'total_value',
+                      this.basePermissionPath,
+                      this.data.engagement_type
+                    )}"
+                    ?readonly="${this.isReadOnly('total_value', this.basePermissionPath)}"
+                    ?invalid="${this._checkInvalid(this.errors.total_value)}"
+                    .errorMessage="${this.errors.total_value}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
+                  >
+                  </etools-currency-amount-input>
+                </div>`
+            : ``}
+          ${this.showJoinAudit
+            ? html` <!-- Joint Audit -->
+                <div class="input-container join-audit" style="width:16.66%">
+                  <paper-checkbox
+                    ?checked="${this.data.joint_audit}"
+                    ?disabled="${this.isReadOnly('joint_audit', this.basePermissionPath)}"
+                    @checked-changed="${(e: CustomEvent) => {
+                      this.data.joint_audit = e.detail.value;
+                    }}"
+                  >
+                    ${this.getLabel('joint_audit', this.basePermissionPath)}
+                  </paper-checkbox>
+                </div>
+                <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
+                  <!-- Year of Audit -->
+                  <etools-dropdown
+                    id="yearOfAudit"
+                    class="w100 ${this._setRequired('year_of_audit', this.basePermissionPath)} validate-field"
+                    .selected="${this.data.year_of_audit}"
+                    label="Year of Audit"
+                    placeholder="${this.getPlaceholderText('year_of_audit', this.basePermissionPath, 'dropdown')}"
+                    .options="${this.yearOfAuditOptions}"
+                    option-label="label"
+                    option-value="value"
+                    ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
+                    ?readonly="${this.isReadOnly('year_of_audit', this.basePermissionPath)}"
+                    ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
+                    .errorMessage="${this.errors.year_of_audit}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    trigger-value-change-event
+                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                      this.selectedItemChanged(detail, 'year_of_audit', 'value', this.data)}"
+                    hide-search
+                  >
+                  </etools-dropdown>
+                </div>`
+            : ``}
+          ${this.showAdditionalInput
+            ? html` <!-- Shared Audit with-->
+                <div class="input-container" ?hidden="${this._hideField('shared_ip_with', this.basePermissionPath)}">
+                  <etools-dropdown-multi
+                    id="sharedWith"
+                    class="w100 validate-input ${this._setRequired('shared_ip_with', this.basePermissionPath)}"
+                    label="${this.getLabel('shared_ip_with', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('shared_ip_with', this.basePermissionPath)}"
+                    .options="${this.sharedIpWithOptions}"
+                    option-label="display_name"
+                    option-value="value"
+                    .selectedValues="${this.data.shared_ip_with}"
+                    ?required="${this._setRequired('shared_ip_with', this.basePermissionPath)}"
+                    ?readonly="${this.isReadOnly('shared_ip_with', this.basePermissionPath)}"
+                    ?invalid="${this.errors.shared_ip_with}"
+                    .errorMessage="${this.errors.shared_ip_with}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    dynamic-align
+                    hide-search
+                    trigger-value-change-event
+                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                      const newIds = detail.selectedItems.map((i: any) => i.value);
+                      this.data.shared_ip_with = newIds;
+                    }}"
+                  >
+                  </etools-dropdown-multi>
+                </div>`
+            : ``}
+          ${this.showInput
+            ? html` <!-- Sections -->
+                <div class="input-container" ?hidden="${this._hideField('sections', this.basePermissionPath)}">
+                  <etools-dropdown-multi
+                    class="w100 validate-input ${this._setRequired('sections', this.basePermissionPath)}"
+                    label="${this.getLabel('sections', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('sections', this.basePermissionPath)}"
+                    .options="${this.sectionOptions}"
+                    option-label="name"
+                    option-value="id"
+                    .selectedValues="${this.sectionIDs}"
+                    ?required="${this._setRequired('sections', this.basePermissionPath)}"
+                    ?readonly="${this.isReadOnly('sections', this.basePermissionPath)}"
+                    ?invalid="${this.errors.sections}"
+                    .errorMessage="${this.errors.sections}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    dynamic-align
+                    hide-search
+                    trigger-value-change-event
+                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                      const newIds = detail.selectedItems.map((i: any) => i.id);
+                      this.sectionIDs = newIds;
+                    }}"
+                  >
+                  </etools-dropdown-multi>
+                </div>
+                <!-- Offices -->
+                <div class="input-container" ?hidden="${this._hideField('offices', this.basePermissionPath)}">
+                  <etools-dropdown-multi
+                    class="w100 validate-input ${this._setRequired('offices', this.basePermissionPath)}"
+                    label="${this.getLabel('offices', this.basePermissionPath)}"
+                    placeholder="${this.getPlaceholderText('offices', this.basePermissionPath)}"
+                    .options="${this.officeOptions}"
+                    option-label="name"
+                    option-value="id"
+                    .selectedValues="${this.officeIDs}"
+                    ?required="${this._setRequired('offices', this.basePermissionPath)}"
+                    ?readonly="${this.isReadOnly('offices', this.basePermissionPath)}"
+                    ?invalid="${this.errors.offices}"
+                    .errorMessage="${this.errors.offices}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    dynamic-align
+                    hide-search
+                    trigger-value-change-event
+                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                      const newIds = detail.selectedItems.map((i: any) => i.id);
+                      this.officeIDs = newIds;
+                    }}"
+                  >
+                  </etools-dropdown-multi>
+                </div>`
+            : ``}
           <!-- Notified when completed -->
           <div class="input-container" ?hidden="${this._hideField('users_notified', this.basePermissionPath)}">
             <etools-dropdown-multi
-              class="validate-input ${this._setRequired('users_notified', this.basePermissionPath)}"
+              class="w100 validate-input ${this._setRequired('users_notified', this.basePermissionPath)}"
               label="${this.getLabel('users_notified', this.basePermissionPath)}"
               placeholder="${this.getPlaceholderText('users_notified', this.basePermissionPath)}"
               .options="${this.usersNotifiedOptions}"
@@ -563,16 +540,16 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
               .errorMessage="${this.errors.users_notified}"
               @focus="${(event: any) => this._resetFieldError(event)}"
               trigger-value-change-event
-              data-value-path="target.selectedValues"
-              data-field-path="usersNotifiedIDs"
-              @etools-selected-item-changed="${(event: CustomEvent) => this._setField(event)}"
+              @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                const newIds = detail.selectedItems.map((i: any) => i.id);
+                this.usersNotifiedIDs = newIds;
+              }}"
             >
             </etools-dropdown-multi>
             <div class="pad-lr" ?hidden="${!this.isReadOnly('users_notified', this.basePermissionPath)}">
-              <label for="notifiedLbl" class="paper-label">${this.getLabel(
-                'users_notified',
-                this.basePermissionPath
-              )}</label>
+              <label for="notifiedLbl" class="paper-label"
+                >${this.getLabel('users_notified', this.basePermissionPath)}</label
+              >
               <div class="input-label" ?empty="${this._emptyArray(this.data.users_notified)}">
                 ${(this.data.users_notified || []).map(
                   (item, index) => html`
@@ -727,11 +704,10 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
     if (changedProperties.has('data')) {
       this.updatePoBasePath(this.data.agreement.id);
       this._prepareData();
-      this._setShowInput(this.data.engagement_type);
-      this._setAdditionalInput(this.data.engagement_type);
+      this.onEngagementTypeChanged();
     }
     if (changedProperties.has('basePermissionPath')) {
-      this._basePathChanged();
+      // @dci this._basePathChanged();
       this._setEngagementTypes(this.basePermissionPath);
       this._setSharedIpWith(this.basePermissionPath);
     }
@@ -753,6 +729,10 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
     return true;
   }
 
+  onEngagementTypeChanged() {
+    this._setShowInput(this.data.engagement_type);
+    this._setAdditionalInput(this.data.engagement_type);
+  }
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
     this.yearOfAuditOptions = [
@@ -797,7 +777,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
     const poItemId = this.data.po_item.id;
     if (poItemId && this.data.po_item !== poItemId) {
       this.data = {...this.data, po_item: poItemId};
-      fireEvent(this, 'data-changed', this.data);
+      fireEvent(this, 'engagement-changed', this.data);
     }
   }
 
@@ -946,7 +926,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
   _agreementLoaded(event: CustomEvent) {
     if (event.detail?.success) {
       this.data = {...this.data, agreement: event.detail.agreement};
-      fireEvent(this, 'data-changed', this.data);
+      fireEvent(this, 'engagement-changed', this.data);
     } else if (event.detail?.errors) {
       this.errors = event.detail.errors;
     }
@@ -963,7 +943,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(LitElement) {
   resetAgreement() {
     this.data.agreement.order_number = this.data && this.data.agreement && this.data.agreement.order_number;
     // @dci
-    fireEvent(this, 'data-changed', this.data);
+    fireEvent(this, 'engagement-changed', this.data);
     this.contractExpiryDate = undefined;
     this.orderNumber = null;
   }

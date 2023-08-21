@@ -1,6 +1,6 @@
+import '@polymer/polymer/polymer-element.js';
 import '@polymer/polymer/lib/elements/custom-style';
 
-// language=HTML
 const documentContainer = document.createElement('template');
 documentContainer.innerHTML = `
 <custom-style>
@@ -54,10 +54,25 @@ documentContainer.innerHTML = `
 
           --paper-input-prefix: {
             color: var(--secondary-text-color);
-          };
+          }
+
+          --required-star-style: {
+            background: url('./assets/images/required.svg') no-repeat 99% 20%/8px;
+            width: auto !important;
+            max-width: 100%;
+            right: auto;
+            padding-inline-end: 15px;
+          }
         }
 
+        html[dir="rtl"] {
+          --required-star-style: {
+            background: url('./assets/images/required.svg') no-repeat 0 20%/8px;
+            right: auto;
+            padding-inline-end: 15px;
+          }
+        }
     </style>
-</custom-style>
-`;
+</custom-style>`;
+
 document.head.appendChild(documentContainer.content);

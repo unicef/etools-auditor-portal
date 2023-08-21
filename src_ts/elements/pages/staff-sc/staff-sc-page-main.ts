@@ -77,7 +77,7 @@ export class StaffScPageMain extends LitElement {
               .queryParams="${this.queryParams}"
               .route="${this.subroute}"
               .requestQueries="${this.partnersListQueries}"
-              .basePermissionPath="new_engagement"
+              basePermissionPath="new_engagement"
               .partner="${this.partnerDetails}"
               .endpointName="${this.endpointName}"
             >

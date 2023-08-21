@@ -19,22 +19,15 @@ export class PageFooter extends LitElement {
     return html`
       <style>
         :host {
-          @apply --layout-vertical;
-          @apply --layout-flex;
-          @apply --layout-end-justified;
+          display: flex;
+          align-items: flex-end;
           padding: 18px 24px;
           width: 100%;
           min-height: 90px;
           box-sizing: border-box;
         }
 
-        #footer-content {
-          @apply --layout-horizontal;
-        }
-
         #unicef-logo {
-          @apply --layout-horizontal;
-          @apply --layout-inline;
           padding-right: 30px;
         }
 

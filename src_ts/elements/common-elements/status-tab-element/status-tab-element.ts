@@ -45,7 +45,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             </div>
           </div>
 
-          <div class="status-container first ${this._getStatusState(1)}">
+          <div class="status-container first ${this._getStatusState(1, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(1, this.engagementData.status)}</span>
@@ -65,7 +65,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class="status-container ${this._getStatusState(2)}">
+          <div class="status-container ${this._getStatusState(2, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(2, this.engagementData.status)}</span>
@@ -85,7 +85,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class="status-container ${this._getStatusState(3)}">
+          <div class="status-container ${this._getStatusState(3, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(3, this.engagementData.status)}</span>
@@ -105,7 +105,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class="status-container ${this._getStatusState(4)}">
+          <div class="status-container ${this._getStatusState(4, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(4, this.engagementData.status)}</span>
@@ -125,7 +125,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class="status-container ${this._getStatusState(5)}">
+          <div class="status-container ${this._getStatusState(5, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(5, this.engagementData.status)}</span>
@@ -145,7 +145,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class="status-container ${this._getStatusState(6)}">
+          <div class="status-container ${this._getStatusState(6, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(6, this.engagementData.status)}</span>
@@ -165,7 +165,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-divider"></div>
           </div>
 
-          <div class="status-container first ${this._getStatusState(8)}">
+          <div class="status-container first ${this._getStatusState(8, this.engagementData)}">
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(7, this.engagementData.status)}</span>
@@ -202,7 +202,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
   @property({type: Boolean})
   cancelled = false;
 
-  @property({type: String})
+  @property({type: String, attribute: 'permission-base'})
   permissionBase!: string;
 
   private statuses = [
@@ -232,14 +232,19 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('engagementData')) {
-      this.checkCancelled(this.engagementData.status);
-      this.setStatusStates();
+    if (changedProperties.has('engagementData') || changedProperties.has('permissionBase')) {
+      this.onRequiredDataLoaded(this.engagementData, this.permissionBase);
     }
-    if (changedProperties.has('permissionBase')) {
-      this.setActions(this.permissionBase);
-      this.setStatusStates();
+  }
+
+  onRequiredDataLoaded(engagementData, permissionBase) {
+    if (!engagementData || !permissionBase) {
+      return;
     }
+
+    this.setActions(this.permissionBase);
+    this.setStatusStates();
+    this.checkCancelled(this.engagementData.status);
   }
 
   setActions(permissionBase) {
@@ -291,15 +296,15 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
     return displayName.indexOf('<br>') !== -1 ? 'multi-line' : '';
   }
 
-  _getStatusState(statusNumber) {
-    if (!this.engagementData || this.engagementData.status === undefined) {
+  _getStatusState(statusNumber, engagementData) {
+    if (!engagementData || engagementData.status === undefined) {
       return;
     }
 
     if (isNaN(statusNumber)) {
       statusNumber = this._getStatusNumber(statusNumber);
     }
-    const currentStatusNumber = this._getStatusNumber(this.engagementData.status);
+    const currentStatusNumber = this._getStatusNumber(engagementData.status);
     if (statusNumber === 1 || statusNumber === 8) {
       return this._classByStatus(statusNumber, currentStatusNumber);
     } else {

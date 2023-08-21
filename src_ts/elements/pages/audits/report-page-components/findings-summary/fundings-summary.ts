@@ -62,6 +62,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         .input-container {
           height: 75px;
         }
+        .wrap {
+          flex-wrap: wrap;
+        }
+        .col:not(:first-of-type) {
+          padding-inline-start: none;
+        }
       </style>
 
       <etools-content-panel list panel-title="Summary of Audit Findings">
@@ -83,7 +89,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           (item, index) => html`
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2">${item.partner.name}</span>
+                <span class="col-data col-2 text-ellipsis">${item.partner.name}</span>
                 <span class="col-data col-1">${item.audited_expenditure}</span>
                 <span class="col-data col-1">${item.financial_findings}</span>
                 <span class="col-data col-1">${item.audited_expenditure_local}</span>
@@ -116,7 +122,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="layout-horizontal">
+        <div class="row-h flex-c wrap">
           <div class="col col-4">
             <!-- Implementing partner name -->
             <paper-input
@@ -246,7 +252,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               ?invalid="${this.errors.audit_opinion}"
               .errorMessage="${this.errors.audit_opinion}"
               @value-changed="${({detail}: CustomEvent) =>
-                this.numberChanged(detail, 'audit_opinion', this.editedItem)}"
+                this.selectedItemChanged(detail, 'audit_opinion', 'value', this.editedItem)}"
               @focus="${this._resetFieldError}"
               @tap="${this._resetFieldError}"
               hide-search

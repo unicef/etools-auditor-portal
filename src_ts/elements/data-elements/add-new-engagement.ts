@@ -24,7 +24,7 @@ export class AddNewEngagement extends LitElement {
   }
 
   _handleResponse(data) {
-    fireEvent(this, 'engagement-created', {success: true, data});
+    fireEvent(this, 'engagement-created', {success: true, data: data});
   }
 
   _handleError(error) {

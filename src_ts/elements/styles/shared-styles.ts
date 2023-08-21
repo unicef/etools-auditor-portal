@@ -43,11 +43,6 @@ export const sharedStyles = html`
       }
     }
 
-    .tab-link {
-      @apply --layout-horizontal;
-      @apply --layout-center-center;
-    }
-
     iron-pages[hidden] {
       display: none;
     }

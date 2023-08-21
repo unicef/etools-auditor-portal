@@ -198,7 +198,8 @@ export const StatusTabElementStyles = css`
   }
 
   .divider {
-    @apply --layout-vertical;
+    display: flex;
+    flex-direction: row;
     width: 100%;
   }
   .divider .status-divider {

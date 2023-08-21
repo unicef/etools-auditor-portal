@@ -12,6 +12,7 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
+import {getTableRowIndexText} from '../../../../utils/utils';
 
 /**
  * @customElement
@@ -30,6 +31,7 @@ export class KicwRisk extends LitElement {
         :host {
           position: relative;
           display: block;
+          background: transparent;
         }
         .hover-icons {
           background-color: #eee;
@@ -38,13 +40,12 @@ export class KicwRisk extends LitElement {
           align-items: flex-start;
         }
         etools-data-table-header {
+          --list-divider-color: none !important;
           --list-bg-color: transparent;
         }
-        etools-data-table-row::part(edt-list-row-collapse-wrapper) {
+        etools-data-table-row::part(edt-list-row-wrapper) {
           border-bottom: none !important;
-        }
-        etools-data-table-row::part(edt-list-row-collapse-wrapper) {
-          border-bottom: none !important;
+          background: transparent;
         }
       </style>
 
@@ -60,11 +61,11 @@ export class KicwRisk extends LitElement {
         (item, index) => html`
           <etools-data-table-row no-collapse>
             <div slot="row-data" class="layout-horizontal editable-row">
-              <span class="col-data col-1"></span>
+              <span class="col-data col-1">${getTableRowIndexText(index)}</span>
               <span class="col-data col-2">${item.value_display}</span>
-              <span class="col-data col-2">${item.extra.key_control_observation}</span>
-              <span class="col-data col-2">${item.extra.recommendation}</span>
-              <span class="col-data col-2">${item.extra.ip_response}</span>
+              <span class="col-data col-3">${item.extra.key_control_observation}</span>
+              <span class="col-data col-3">${item.extra.recommendation}</span>
+              <span class="col-data col-3">${item.extra.ip_response}</span>
               <div class="hover-block" ?hidden="${!this.isEditable}">
                 <paper-icon-button icon="create" @click="${() => this.editRisk(index)}"></paper-icon-button>
                 <paper-icon-button icon="delete" @click="${() => this.removeRisk(index)}"></paper-icon-button>
@@ -95,25 +96,19 @@ export class KicwRisk extends LitElement {
   @property({type: Number})
   blueprintId!: number;
 
-  editRisk(event) {
-    const blueprint = this._createBlueprintFromEvent(event);
+  editRisk(index) {
+    const blueprint = this._createBlueprintFromEvent(index);
     fireEvent(this, 'kicw-risk-edit', {blueprint});
   }
 
-  removeRisk(event) {
-    const blueprint = this._createBlueprintFromEvent(event);
+  removeRisk(index) {
+    const blueprint = this._createBlueprintFromEvent(index);
     blueprint.risks[0]._delete = true;
     fireEvent(this, 'kicw-risk-delete', {blueprint, delete: true});
   }
 
-  _createBlueprintFromEvent(event) {
-    const item = event && event.model && event.model.item;
-    const index = this.risksData.indexOf(item);
-
-    if ((!index && index !== 0) || !~index) {
-      throw new Error('Can not find data');
-    }
-
+  _createBlueprintFromEvent(index) {
+    const item = this.risksData[index];
     return {
       id: this.blueprintId,
       risks: [cloneDeep(item)]

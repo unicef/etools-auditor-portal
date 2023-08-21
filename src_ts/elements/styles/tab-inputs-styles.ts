@@ -360,15 +360,6 @@ export const tabInputsStyles = html`
       }
     }
 
-    datepicker-lite {
-      --paper-input-container-label: {
-        width: 133%;
-      }
-      --paper-input-container: {
-        width: 100%;
-      }
-    }
-
     etools-dropdown-multi[disabled],
     etools-currency-amount-input[disabled],
     etools-dropdown[disabled],

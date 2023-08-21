@@ -12,6 +12,7 @@ import '../assessment-of-controls/assessment-of-controls';
 import {AssessmentOfControls} from '../assessment-of-controls/assessment-of-controls';
 import '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 import {KeyInternalControlsWeaknesses} from '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitEelement
@@ -33,7 +34,10 @@ export class AuditReportPageMain extends LitElement {
         .data="${this.engagement}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
-        @data-changed="${({detail}) => (this.engagement = detail)}"
+        @data-changed="${({detail}) => {
+          this.engagement = detail;
+          fireEvent(this, 'data-changed', this.engagement);
+        }}"
         audit-type="Audit"
         .basePermissionPath="${this.permissionBase}"
       >

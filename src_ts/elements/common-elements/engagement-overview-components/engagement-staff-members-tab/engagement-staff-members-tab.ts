@@ -38,9 +38,7 @@ import '@unicef-polymer/etools-data-table/etools-data-table.js';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-staff-members-tab')
-export class EngagementStaffMembersTab extends PaginationMixin(
-  TableElementsMixin(CommonMethodsMixin(LitElement))
-) {
+export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
   }
@@ -206,7 +204,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(
             <div class="add-button-container">
               <a
                 class="white"
-                href="${this._getAMPLink(this.engagement.agreement.auditor_firm?.organization_id)}"
+                href="${this._getAMPLink(this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
                 <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
@@ -244,6 +242,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(
                     ? html` <span class="col-data col-1" ?hidden="${!this.showHasAccess}">
                         <paper-checkbox
                           class="checkbox"
+                          ?checked="${item.hasAccess}"
                           ?disabled="${this._isCheckboxReadonly(
                             item.hasAccess,
                             this.engagementStaffs,

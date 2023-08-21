@@ -26,6 +26,7 @@ import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '../../../data-elements/get-partner-data';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * main menu
@@ -151,9 +152,11 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
               .errorMessage="${this.errors.authorized_officers}"
               @focus="${this._resetFieldError}"
               dynamic-align
-              data-value-path="detail.selectedItem"
-              data-field-path="authorizedOfficer"
-              @etools-selected-item-changed="${this._setField}"
+              @etools-selected-item-changed="${(event: CustomEvent) => {
+                if (this.authorizedOfficer) {
+                  this.authorizedOfficer.id = event.detail.selectedItem?.id;
+                }
+              }}"
               trigger-value-change-event
             >
             </etools-dropdown>
@@ -179,9 +182,10 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
                   @focus="${this._resetFieldError}"
                   dynamic-align
                   trigger-value-change-event
-                  data-value-path="target.selectedValues"
-                  data-field-path="activePdIds"
-                  @etools-selected-items-changed="${this._setField}"
+                  @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                    const newIds = detail.selectedItems.map((i: any) => i.id);
+                    this.activePdIds = newIds;
+                  }}"
                 >
                 </etools-dropdown-multi>
               </div>
@@ -222,7 +226,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
   activePdIds!: any[];
 
   @property({type: Object})
-  authorizedOfficer!: GenericObject;
+  authorizedOfficer: GenericObject | null = null;
 
   @property({type: Object})
   engagement!: GenericObject;
@@ -240,7 +244,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     super.updated(changedProperties);
 
     if (changedProperties.has('basePermissionPath')) {
-      this._basePathChanged();
+      // @dci this._basePathChanged();
     }
     if (changedProperties.has('engagement') || changedProperties.has('basePermissionPath')) {
       this._engagementChanged(this.engagement);
@@ -258,7 +262,6 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     ) {
       this.setOfficers(this.partner, this.engagement);
     }
-    // @dci 'updateStyles(basePermissionPath, requestInProcess, partner, engagement.engagement_type)',
   }
 
   _initListeners() {
@@ -390,9 +393,8 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     }
 
     this.partner = {};
-    this.activePdIds = null;
+    this.activePdIds = [];
     this.authorizedOfficer = null;
-
     const selectedPartner = event && event.detail && event.detail.selectedItem;
 
     const partnerId = (selectedPartner && selectedPartner.id) || +id;
@@ -406,6 +408,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
       return;
     } else {
       this.engagement.partner = selectedPartner;
+      fireEvent(this, 'engagement-changed', this.engagement);
     }
 
     this.requestInProcess = true;
@@ -416,7 +419,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
   _engagementChanged(engagement) {
     if (!engagement || !engagement.partner) {
       this.partner = {};
-      this.activePdIds = null;
+      this.activePdIds = [];
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
@@ -428,10 +431,10 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     }
 
     const data = {} as any;
-    const originalPartnerId = this.originalData.partner.id;
-    const partnerId = this.engagement.partner.id;
-    const partnerType = this.engagement.partner.partner_type;
-    let originalActivePd = this.originalData.active_pd || [];
+    const originalPartnerId = this.originalData?.partner?.id;
+    const partnerId = this.engagement?.partner?.id;
+    const partnerType = this.engagement?.partner?.partner_type;
+    let originalActivePd = this.originalData?.active_pd || [];
     const activePdIds = (this.activePdIds || []).map((id) => +id);
 
     originalActivePd = originalActivePd.map((pd) => +pd.id);

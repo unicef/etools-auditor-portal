@@ -203,7 +203,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
                 .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
                 @value-changed="${({detail}: CustomEvent) => {
-                  this.editedBlueprint.risks[0].extra.key_control_observation = detail.selectedItem?.value;
+                  this.editedBlueprint.risks[0].extra.key_control_observation = detail.value;
                   this.editedBlueprint = {...this.editedBlueprint};
                 }}"
                 @focus="${this._resetFieldError}"
@@ -412,27 +412,18 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   }
 
   openEditDialog(event) {
-    if (!event || !event.detail) {
-      return;
-    }
-    const data = event.detail;
+    // called from here with index and from kicw-risk with detail
+    const data = event.detail ? event.detail : this.subjectAreas?.blueprints[event];
     if (data.blueprint) {
       const blueprint = data.blueprint;
       const risk = blueprint.risks[0];
-
       risk.value = this._getRisValueData(risk);
 
       this.editedBlueprint = blueprint;
       this.dialogTexts = this.editDialogTexts;
     } else {
-      const index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
-      if ((!index && index !== 0) || !~index) {
-        throw new Error('Can not find data');
-      }
-
-      const blueprint = this.subjectAreas.blueprints[index];
       this.editedBlueprint = cloneDeep(this.dataModel);
-      this.editedBlueprint.id = blueprint.id;
+      this.editedBlueprint.id = data.id;
       this.dialogTexts = this.addDialogTexts;
     }
 

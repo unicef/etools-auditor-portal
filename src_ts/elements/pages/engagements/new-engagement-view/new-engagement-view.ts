@@ -33,6 +33,7 @@ import '../../../common-elements/engagement-report-components/specific-procedure
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import {BASE_PATH} from '../../../config/config';
 import {navigateToUrl} from '../../../utils/navigate-helper';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 /**
  * @customElement
  * @LitElement
@@ -93,9 +94,8 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
 
       <app-route
         .route="${this.route}"
-        @route-changed="${this._routeChanged}"
+        @route-chaged=${this._routeChanged}
         pattern="/:tab"
-        .data="${this.routeData}"
         @data-changed="${this._routeDataChanged}"
       >
       </app-route>
@@ -103,12 +103,12 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
       <add-new-engagement
         .endpointName="${this.endpointName}"
         .newEngagementData="${this.newEngagementData}"
-        @engagement-created="${({detail}) => (this.newEngagementData = detail.data)}"
+        @engagement-created="${this._engagementCreated}"
         .errorObject="${this.errorObject}"
       >
       </add-new-engagement>
 
-      <pages-header-element hide-print-button .pageTitle="${this.pageTitle}" engagement="${this.engagement}">
+      <pages-header-element hide-print-button .pageTitle="${this.pageTitle}" .engagement="${this.engagement}">
       </pages-header-element>
 
       <div class="tab-selector">
@@ -119,7 +119,13 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
           role="tablist"
           tabindex="0"
           .selected="${this.routeData?.tab}"
-          @selected-changed="${(e: CustomEvent) => (this.routeData.tab = e.detail.value)}"
+          @selected-changed="${({detail}: CustomEvent) => {
+            if (this.route?.path !== `/${detail.value}`) {
+              const newRoute: GenericObject = {...this.route, path: `/${detail.value}`};
+              fireEvent(this, 'sub-route-changed', {value: newRoute});
+              this._updatePath(`${newRoute.prefix}${newRoute.path}`);
+            }
+          }}"
         >
           <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
           <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -133,6 +139,9 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
               <engagement-info-details
                 .errorObject="${this.errorObject}"
                 .data="${this.engagement}"
+                @engagement-changed="${(e: CustomEvent) => {
+                  this.engagement = {...e.detail};
+                }}"
                 id="engagementDetails"
                 .basePermissionPath="${this.basePermissionPath}"
                 ?isStaffSc="${this.isStaffSc}"
@@ -143,6 +152,9 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
                 id="partnerDetails"
                 .errorObject="${this.errorObject}"
                 .engagement="${this.engagement}"
+                @engagement-changed="${(e: CustomEvent) => {
+                  this.engagement = {...e.detail};
+                }}"
                 .basePermissionPath="${this.basePermissionPath}"
               >
               </partner-details-tab>
@@ -260,14 +272,7 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
 
   connectedCallback() {
     super.connectedCallback();
-    this._engagementCreated = this._engagementCreated.bind(this);
-    this.addEventListener('engagement-created', this._engagementCreated);
     this._routeConfig();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.removeEventListener('engagement-created', this._engagementCreated);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -279,17 +284,10 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
   }
 
   _routeChanged({detail}: CustomEvent) {
-    const path = detail?.value?.path;
-    if (!path || !path.match(/[^\\/]/g)) {
-      this.route = {...this.route, path: '/list'};
-      fireEvent(this, 'route-changed', {value: this.route});
+    if (!detail.value.path || !detail.value.prefix) {
       return;
     }
-
-    if (!['detail', 'list', 'new', 'not-found'].includes(path.split('/')[1])) {
-      this.route = {...this.route, path: '/not-found'};
-      return;
-    }
+    this.route = detail.value;
   }
 
   _routeDataChanged({detail}: CustomEvent) {
@@ -406,7 +404,7 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
       this.engagement.agreement.auditor_firm = auditFirm;
       this.engagement.engagement_type = 'sc';
       this.engagement.engagement_type_details = {value: 'sc', label: 'Spot Check'};
-      this.engagement = {... this.engagement};
+      this.engagement = {...this.engagement};
     }
   }
 }

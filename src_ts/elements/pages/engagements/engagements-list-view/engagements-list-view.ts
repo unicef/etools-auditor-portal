@@ -83,7 +83,7 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
         hide-print-button
         .exportLinks="${this.exportLinks}"
         .link="${this.newBtnLink}"
-        ?hideAddButton="${this._hideAddButton()}"
+        .hideAddButton="${this._hideAddButton()}"
         .btnText="${this.addBtnText}"
         page-title="Engagements"
       >
@@ -116,6 +116,9 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
 
   @property({type: String})
   baseRoute!: string;
+
+  @property({type: Boolean})
+  hideAddButton!: boolean;
 
   @property({type: Object})
   columnValuesFullText!: GenericObject;
@@ -179,7 +182,7 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
   engagementsList: any[] = [];
 
   @property({type: String})
-  newBtnLink = `${BASE_PATH}engagements/new/overview`;
+  newBtnLink = `engagements/new/overview`;
 
   @property({type: String})
   tableTitle = '';
@@ -344,6 +347,7 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
 
   _hideAddButton() {
     return this.isReadOnly('partner', this.isStaffSc ? 'new_staff_sc' : 'new_engagement');
+    // this.hideAddButton = aa;
   }
 
   onDataLoaded(data: GenericObject) {

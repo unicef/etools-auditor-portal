@@ -44,6 +44,8 @@ export class EngagementsPageMain extends LitElement {
         @route-changed="${this._routeChanged}"
         pattern="/:view"
         @data-changed="${this._routeDataChanged}"
+        .tail="${this.subroute}"
+        @tail-changed="${this._tailChanged}"
       >
       </app-route>
 
@@ -68,6 +70,11 @@ export class EngagementsPageMain extends LitElement {
               .page="${this.routeData.view}"
               .queryParams="${this.queryParams}"
               .route="${this.subroute}"
+              @sub-route-changed="${({detail}: CustomEvent) => {
+                if (!isJsonStrMatch(this.subroute, detail.value)) {
+                  this.subroute = detail.value;
+                }
+              }}"
               .requestQueries="${this.partnersListQueries}"
               basePermissionPath="new_engagement"
               .partner="${this.partnerDetails}"
@@ -156,16 +163,20 @@ export class EngagementsPageMain extends LitElement {
   }
 
   _routeChanged({detail}: CustomEvent) {
-    const path = detail?.value?.path;
-    if (!path || !path.match(/[^\\/]/g)) {
-      this.route = {...this.route, path: '/list'};
-      fireEvent(this, 'route-changed', {value: this.route});
-      return;
+    if (detail.value.path && detail.value.prefix && !isJsonStrMatch(this.route, detail.value)) {
+      this.route = detail.value;
     }
-    if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
-      this.route = {...this.route, path: '/not-found'};
-      return;
-    }
+
+    // const path = detail?.value?.path;
+    // if (!path || !path.match(/[^\\/]/g)) {
+    //   this.route = {...this.route, path: '/list'};
+    //   fireEvent(this, 'route-changed', {value: this.route});
+    //   return;
+    // }
+    // if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
+    //   this.route = {...this.route, path: '/not-found'};
+    //   return;
+    // }
   }
 
   _routeDataChanged({detail}: CustomEvent) {
@@ -184,7 +195,7 @@ export class EngagementsPageMain extends LitElement {
   }
 
   _routeConfig(view) {
-    if (!this.route || !~this.route.prefix.indexOf('/engagements')) {
+    if (!this.route || !~this.route.prefix?.indexOf('/engagements')) {
       this.resetLastView();
       return;
     }

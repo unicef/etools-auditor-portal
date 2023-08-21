@@ -23,6 +23,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getChoices, getHeadingLabel} from '../../../../mixins/permission-controller';
 import sortBy from 'lodash-es/sortBy';
 import {checkNonField} from '../../../../mixins/error-handler';
+import {getTableRowIndexText} from '../../../../utils/utils';
 
 /**
  * @customElement
@@ -57,6 +58,9 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             max-height: 340px;
           }
         }
+        .row-details-content.col-12 {
+          margin-bottom: 30px;
+        }
       </style>
 
       <etools-content-panel
@@ -71,7 +75,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           </div>
         </div>
 
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-title>
           <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
           <etools-data-table-column class="col-4"
             >${getHeadingLabel(
@@ -98,15 +102,47 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse>
+            <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-3">${item.finding}</span>
-                <span class="col-data col-3">${item.title}</span>
-                <span class="col-data col-1">${item.local_amount}</span>
-                <span class="col-data col-2">${item.amount}</span>
+                <span class="col-data col-2">${getTableRowIndexText(index)}</span>
+                <span class="col-data col-4">${item.title}</span>
+                <span class="col-data col-3">${item.local_amount}</span>
+                <span class="col-data col-1">${item.amount}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                </div>
+              </div>
+              <div slot="row-data-details">
+                <div class="row-details-content col-12">
+                  <span class="rdc-title"
+                    >${getHeadingLabel(
+                      this.basePermissionPath,
+                      'financial_finding_set.description',
+                      'Description'
+                    )}</span
+                  >
+                  <span>${item.description}</span>
+                </div>
+                <div class="row-details-content col-12">
+                  <span class="rdc-title"
+                    >${getHeadingLabel(
+                      this.basePermissionPath,
+                      'financial_finding_set.recommendation',
+                      'Recommendation'
+                    )}</span
+                  >
+                  <span>${item.recommendation}</span>
+                </div>
+                <div class="row-details-content col-12">
+                  <span class="rdc-title"
+                    >${getHeadingLabel(
+                      this.basePermissionPath,
+                      'financial_finding_set.ip_comments',
+                      'IP comments'
+                    )}</span
+                    <span>${item.ip_comments}</span>
+                  >
                 </div>
               </div>
             </etools-data-table-row>

@@ -185,6 +185,9 @@ export const moduleStyles = css`
   .row-details-content {
     font-size: 14px;
   }
+  datepicker-lite {
+    --paper-input-container_-_width: 100%;
+  }
 
   div[slot='panel-btns'] .panel-button {
     opacity: 0.7;
@@ -200,6 +203,11 @@ export const moduleStyles = css`
 
   .pr-45 {
     padding-right: 45px !important;
+  }
+  .text-ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .f1 {

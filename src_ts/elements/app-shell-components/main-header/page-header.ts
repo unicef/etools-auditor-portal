@@ -8,7 +8,7 @@ import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {HeaderStyles} from '../main-header/header-elements/header-styles';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {isProductionServer, checkEnvironment, BASE_PATH} from '../../config/config';
 import {GenericObject} from '../../../types/global';
@@ -27,10 +27,8 @@ export class PageHeader extends MatomoMixin(LitElement) {
   }
 
   render() {
-    // main template
-    // language=HTML
     return html`
-      ${sharedStyles}
+      ${HeaderStyles}
       <style>
         app-toolbar {
           padding: 0 16px 0 0;
@@ -83,7 +81,6 @@ export class PageHeader extends MatomoMixin(LitElement) {
       </style>
 
       <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
-        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
         <div class="titlebar layout-horizontal align-items-center">
           <paper-icon-button id="menuButton" icon="menu" @click="${this.menuBtnClicked}"></paper-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
