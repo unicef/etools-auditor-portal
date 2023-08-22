@@ -20,6 +20,7 @@ import {GenericObject} from '../../../types/global';
 import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @customElement
@@ -46,6 +47,8 @@ export class StaffScPageMain extends LitElement {
         @route-changed="${this._routeChanged}"
         pattern="/:view"
         @data-changed="${this._routeDataChanged}"
+        .tail="${this.subroute}"
+        @tail-changed="${this._tailChanged}"
       >
       </app-route>
 
@@ -70,12 +73,17 @@ export class StaffScPageMain extends LitElement {
               name="new"
               id="creationPage"
               basePermissionPath="new_staff_sc"
-              auditFirm="${this.auditFirm}"
+              .auditFirm="${this.auditFirm}"
               page-title="Add New Staff Spot Check"
               isStaffSc
               .page="${this.routeData.view}"
               .queryParams="${this.queryParams}"
               .route="${this.subroute}"
+              @sub-route-changed="${({detail}: CustomEvent) => {
+                if (!isJsonStrMatch(this.subroute, detail.value)) {
+                  this.subroute = detail.value;
+                }
+              }}"
               .requestQueries="${this.partnersListQueries}"
               basePermissionPath="new_engagement"
               .partner="${this.partnerDetails}"
@@ -230,21 +238,24 @@ export class StaffScPageMain extends LitElement {
   }
 
   _routeChanged({detail}: CustomEvent) {
-    const path = detail?.value?.path;
-    if (!path || !path.match(/[^\\/]/g)) {
-      this.route = {...this.route, path: '/list'};
-      fireEvent(this, 'route-changed', {value: this.route});
-      return;
-    }
-
-    if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
-      this.route = {...this.route, path: '/not-found'};
-      return;
+    if (detail.value.path && detail.value.prefix && !isJsonStrMatch(this.route, detail.value)) {
+      this.route = detail.value;
     }
   }
 
   _routeDataChanged({detail}: CustomEvent) {
-    this.routeData = detail.value;
+    if (!isJsonStrMatch(this.routeData, detail.value)) {
+      this.routeData = detail.value;
+    }
+  }
+
+  _tailChanged({detail}: CustomEvent) {
+    if (!detail.value?.path) {
+      return;
+    }
+    if (!isJsonStrMatch(this.subroute, detail.value)) {
+      this.subroute = detail.value;
+    }
   }
 
   _queryParamsChanged() {

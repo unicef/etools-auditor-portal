@@ -10,6 +10,7 @@ import '../other-recommendations/other-recommendations';
 // eslint-disable-next-line
 import {OtherRecommendations} from '../other-recommendations/other-recommendations';
 import {GenericObject} from '@unicef-polymer/etools-types';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 @customElement('sa-report-page-main')
 export class SaReportPageMain extends LitElement {
@@ -27,7 +28,10 @@ export class SaReportPageMain extends LitElement {
         .data="${this.engagement}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
-        @data-changed="${({detail}) => (this.engagement = detail)}"
+        @data-changed="${({detail}) => {
+          this.engagement = detail;
+          fireEvent(this, 'data-changed', this.engagement);
+        }}"
         audit-type="Special Audit"
         .basePermissionPath="${this.permissionBase}"
       >

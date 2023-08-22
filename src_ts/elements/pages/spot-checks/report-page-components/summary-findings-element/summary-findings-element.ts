@@ -152,98 +152,97 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           openFlag="dialogOpened"
           @close="${this._resetDialogOpenedFlag}"
         >
-          <div class="layout-horizontal">
-            <div class="col col-12">
-              <!-- Category of Observation -->
-              <etools-dropdown
-                class="validate-input"
-                label="${this.getLabel('findings.category_of_observation', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('findings.category_of_observation', this.basePermissionPath)}"
-                .options="${this.categoryOfObservation}"
-                option-label="display_name"
-                option-value="value"
-                .selected="${this.editedItem?.category_of_observation}"
-                trigger-value-change-event
-                ?required="${this._setRequired('findings.category_of_observation', this.basePermissionPath)}"
-                ?disabled="${this.requestInProcess}"
-                ?invalid="${this.errors?.category_of_observation}"
-                .errorMessage="${this.errors?.category_of_observation}"
-                @focus="${this._resetFieldError}"
-                @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                  this.selectedItemChanged(detail, 'category_of_observation', 'value', 'editedItem')}"
-                hide-search
-              >
-              </etools-dropdown>
+          <div class="container">
+            <div class="layout-horizontal">
+              <div class="col col-12">
+                <!-- Category of Observation -->
+                <etools-dropdown
+                  class="w100 validate-input"
+                  label="${this.getLabel('findings.category_of_observation', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('findings.category_of_observation', this.basePermissionPath)}"
+                  .options="${this.categoryOfObservation}"
+                  option-label="display_name"
+                  option-value="value"
+                  .selected="${this.editedItem?.category_of_observation}"
+                  trigger-value-change-event
+                  ?required="${this._setRequired('findings.category_of_observation', this.basePermissionPath)}"
+                  ?disabled="${this.requestInProcess}"
+                  ?invalid="${this.errors?.category_of_observation}"
+                  .errorMessage="${this.errors?.category_of_observation}"
+                  @focus="${this._resetFieldError}"
+                  @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                    this.selectedItemChanged(detail, 'category_of_observation', 'value', 'editedItem')}"
+                  hide-search
+                >
+                </etools-dropdown>
+              </div>
             </div>
-          </div>
 
-          <div class="layout-horizontal">
-            <div class="col col-12">
-              <!-- Recommendation -->
-              <paper-textarea
-                class="${this._setRequired(
-                  'findings.recommendation',
-                  this.basePermissionPath
-                )} fixed-width validate-input"
-                .value="${this.editedItem?.recommendation}"
-                allowed-pattern="[\\d\\s]"
-                label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"
-                always-float-label
-                placeholder="${this.getPlaceholderText('findings.recommendation', this.basePermissionPath)}"
-                ?required="${this._setRequired('findings.recommendation', this.basePermissionPath)}"
-                ?disabled="${this.requestInProcess}"
-                max-rows="4"
-                ?invalid="${this.errors?.recommendation}"
-                .errorMessage="${this.errors?.recommendation}"
-                @focus="${this._resetFieldError}"
-                @value-changed="${({detail}: CustomEvent) =>
-                  this.valueChanged(detail, 'recommendation', this.editedItem)}"
-              >
-              </paper-textarea>
+            <div class="layout-horizontal">
+              <div class="col col-12">
+                <!-- Recommendation -->
+                <paper-textarea
+                  class="${this._setRequired('findings.recommendation', this.basePermissionPath)} validate-input w100"
+                  .value="${this.editedItem?.recommendation}"
+                  allowed-pattern="[\\d\\s]"
+                  label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"
+                  always-float-label
+                  placeholder="${this.getPlaceholderText('findings.recommendation', this.basePermissionPath)}"
+                  ?required="${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                  ?disabled="${this.requestInProcess}"
+                  max-rows="4"
+                  ?invalid="${this.errors?.recommendation}"
+                  .errorMessage="${this.errors?.recommendation}"
+                  @focus="${this._resetFieldError}"
+                  @value-changed="${({detail}: CustomEvent) =>
+                    this.valueChanged(detail, 'recommendation', this.editedItem)}"
+                >
+                </paper-textarea>
+              </div>
             </div>
-          </div>
 
-          <div class="layout-horizontal">
-            <div class="col col-12">
-              <!-- Agreed Action by IP -->
-              <paper-textarea
-                class="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}
-                                fixed-width validate-input"
-                .value="${this.editedItem?.agreed_action_by_ip}"
-                allowed-pattern="[\\d\\s]"
-                label="${this.getLabel('findings.agreed_action_by_ip', this.basePermissionPath)}"
-                always-float-label
-                placeholder="${this.getPlaceholderText('findings.agreed_action_by_ip', this.basePermissionPath)}"
-                ?required="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}"
-                ?disabled="${this.requestInProcess}"
-                max-rows="4"
-                ?invalid="${this.errors?.agreed_action_by_ip}"
-                .errorMessage="${this.errors?.agreed_action_by_ip}"
-                @focus="${this._resetFieldError}"
-                @value-changed="${({detail}: CustomEvent) =>
-                  this.valueChanged(detail, 'agreed_action_by_ip', this.editedItem)}"
-              >
-              </paper-textarea>
+            <div class="layout-horizontal">
+              <div class="col col-12">
+                <!-- Agreed Action by IP -->
+                <paper-textarea
+                  class="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}
+                               validate-input w100"
+                  .value="${this.editedItem?.agreed_action_by_ip}"
+                  allowed-pattern="[\\d\\s]"
+                  label="${this.getLabel('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                  always-float-label
+                  placeholder="${this.getPlaceholderText('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                  ?required="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                  ?disabled="${this.requestInProcess}"
+                  max-rows="4"
+                  ?invalid="${this.errors?.agreed_action_by_ip}"
+                  .errorMessage="${this.errors?.agreed_action_by_ip}"
+                  @focus="${this._resetFieldError}"
+                  @value-changed="${({detail}: CustomEvent) =>
+                    this.valueChanged(detail, 'agreed_action_by_ip', this.editedItem)}"
+                >
+                </paper-textarea>
+              </div>
             </div>
-          </div>
 
-          <div class="layout-horizontal">
-            <div class="col col-6">
-              <!-- Deadline of Action -->
-              <datepicker-lite
-                id="deadlineActionSelector"
-                selected-date-display-format="D MMM YYYY"
-                placeholder="${this.getPlaceholderText('findings.deadline_of_action', this.basePermissionPath)}"
-                label="${this.getLabel('findings.deadline_of_action', this.basePermissionPath)}"
-                .value="${this.editedItem?.deadline_of_action}"
-                .errorMessage="${this.errors?.deadline_of_action}"
-                ?required="${this._setRequired('findings.deadline_of_action', this.basePermissionPath)}"
-                ?readonly="${this.requestInProcess}"
-                fire-date-has-changed
-                property-name="deadline_of_action"
-                @date-has-changed="${this.deadlineDateHasChanged}"
-              >
-              </datepicker-lite>
+            <div class="layout-horizontal">
+              <div class="col col-6">
+                <!-- Deadline of Action -->
+                <datepicker-lite
+                  id="deadlineActionSelector"
+                  selected-date-display-format="D MMM YYYY"
+                  placeholder="${this.getPlaceholderText('findings.deadline_of_action', this.basePermissionPath)}"
+                  label="${this.getLabel('findings.deadline_of_action', this.basePermissionPath)}"
+                  .value="${this.editedItem?.deadline_of_action}"
+                  .errorMessage="${this.errors?.deadline_of_action}"
+                  ?required="${this._setRequired('findings.deadline_of_action', this.basePermissionPath)}"
+                  ?readonly="${this.requestInProcess}"
+                  fire-date-has-changed
+                  property-name="deadline_of_action"
+                  @date-has-changed="${this.deadlineDateHasChanged}"
+                >
+                </datepicker-lite>
+              </div>
             </div>
           </div>
         </etools-dialog>

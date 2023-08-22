@@ -176,6 +176,7 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
                         <sc-report-page-main
                           id="report"
                           .originalData="${this.originalData}"
+                          @data-changed="${({detail}) => (this.engagement = {...detail})}"
                           .engagement="${this.engagement}"
                           .errorObject="${this.errorObject}"
                           .permissionBase="${this.permissionBase}"

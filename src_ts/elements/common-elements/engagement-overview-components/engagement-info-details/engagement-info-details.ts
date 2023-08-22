@@ -433,7 +433,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
                     ?readonly="${this.isReadOnly('year_of_audit', this.basePermissionPath)}"
                     ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
                     .errorMessage="${this.errors.year_of_audit}"
-                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    @focus="${this._resetFieldError}"
                     trigger-value-change-event
                     @etools-selected-item-changed="${({detail}: CustomEvent) =>
                       this.selectedItemChanged(detail, 'year_of_audit', 'value', this.data)}"

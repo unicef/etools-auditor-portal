@@ -12,6 +12,7 @@ import {AssignEngagement} from '../../../../common-elements/engagement-report-co
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
 import {InternalControls} from '../internal-controls/internal-controls';
 import {OverviewElement} from '../overview-element/overview-element';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitElement
@@ -26,7 +27,10 @@ export class ScReportPageMain extends LitElement {
         .data="${this.engagement}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
-        @data-changed="${({detail}) => (this.engagement = detail)}"
+        @data-changed="${({detail}) => {
+          this.engagement = detail;
+          fireEvent(this, 'data-changed', this.engagement);
+        }}"
         audit-type="Audit"
         .basePermissionPath="${this.permissionBase}"
       >
@@ -35,7 +39,10 @@ export class ScReportPageMain extends LitElement {
       <overview-element
         id="overviewEngagement"
         .data="${this.engagement}"
-        @data-changed="${({detail}) => (this.engagement = detail)}"
+        @data-changed="${({detail}) => {
+          this.engagement = detail;
+          fireEvent(this, 'data-changed', this.engagement);
+        }}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
         .basePermissionPath="${this.permissionBase}"

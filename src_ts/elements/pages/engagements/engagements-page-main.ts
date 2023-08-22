@@ -166,17 +166,6 @@ export class EngagementsPageMain extends LitElement {
     if (detail.value.path && detail.value.prefix && !isJsonStrMatch(this.route, detail.value)) {
       this.route = detail.value;
     }
-
-    // const path = detail?.value?.path;
-    // if (!path || !path.match(/[^\\/]/g)) {
-    //   this.route = {...this.route, path: '/list'};
-    //   fireEvent(this, 'route-changed', {value: this.route});
-    //   return;
-    // }
-    // if (!['list', 'new', 'not-found'].includes(path.split('/')[1])) {
-    //   this.route = {...this.route, path: '/not-found'};
-    //   return;
-    // }
   }
 
   _routeDataChanged({detail}: CustomEvent) {
