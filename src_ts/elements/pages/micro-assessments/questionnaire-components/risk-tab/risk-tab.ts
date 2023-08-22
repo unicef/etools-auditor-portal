@@ -65,7 +65,9 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                           ?readonly="${this.isReadonly(index, null, this.currentRequests)}"
                           @focus="${this._resetFieldError_riskTab}"
                           trigger-value-change-event
-                          @etools-selected-item-changed="${this._riskValueChanged}"
+                          @etools-selected-item-changed="${(e: CustomEvent) => {
+                            this._riskValueChanged(item, e.detail.selectedItem?.value, e);
+                          }}"
                           dynamic-align
                           hide-search
                           allow-outside-scroll
@@ -75,7 +77,10 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                   </span>
 
                   <div class="hover-block" ?hidden="${!this.editMode}">
-                    <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                    <paper-icon-button
+                      icon="create"
+                      @click="${(e: CustomEvent) => this.openEditDialog(e, item)}"
+                    ></paper-icon-button>
                   </div>
                 </div>
                 <div slot="row-data-details">
@@ -109,7 +114,9 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                               @focus="${this._resetFieldError_riskTab}"
                               data-path="${this.createPath(blueprintIndex, categoryIndex)}"
                               trigger-value-change-event
-                              @etools-selected-item-changed="${this._riskValueChanged}"
+                              @etools-selected-item-changed="${(e: CustomEvent) => {
+                                this._riskValueChanged(item, e.detail.selectedItem?.value, e);
+                              }}"
                               dynamic-align
                               hide-search
                               allow-outside-scroll
@@ -122,7 +129,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                         <paper-icon-button
                           icon="create"
                           category-id="${category.id}"
-                          @click="${() => this.openEditDialog}"
+                          @click="${(e: CustomEvent) => this.openEditDialog(e, item)}"
                         ></paper-icon-button>
                       </div>
                     </div>
@@ -271,13 +278,10 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     this.opened = !completed && !disabled;
   }
 
-  _riskValueChanged(event) {
-    const blueprint = event && event.model.item;
+  _riskValueChanged(blueprint, changedRiskRValue, event) {
     if (!blueprint) {
       return;
     }
-    const changedRiskRValue = event.detail.selectedItem && event.detail.selectedItem.value;
-
     if (!blueprint.risk) {
       blueprint.risk = {};
     }
@@ -339,9 +343,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     return this.shadowRoot!.querySelectorAll(`.${className}`);
   }
 
-  openEditDialog(event) {
-    const item = event && event.model && event.model.item;
-
+  openEditDialog(event, item) {
     if (!item) {
       throw new Error('Can not find user data');
     }

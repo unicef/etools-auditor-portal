@@ -1,4 +1,4 @@
-import {LitElement, html, property, customElement} from 'lit-element';
+import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
@@ -7,7 +7,6 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getChoices, isRequired} from '../../../mixins/permission-controller';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -26,7 +25,7 @@ import isEmpty from 'lodash-es/isEmpty';
  */
 
 @customElement('primary-risk-element')
-export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(LitElement)) {
+export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
   static get styles() {
     return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
   }
@@ -52,7 +51,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(Lit
 
             <etools-dropdown
               id="riskAssessmentInput"
-              class="validate-input required"
+              class="w100 validate-input required"
               .selected="${this.primaryArea.risk.value.value}"
               label="Risk Assessment"
               placeholder="Select Risk Assessment"
@@ -66,7 +65,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(Lit
               @focus="${this._resetFieldError}"
               trigger-value-change-event
               @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                this.selectedItemChanged(detail, 'risk.value.value', 'value', this.primaryArea)}"
+                (this.primaryArea.risk.value.value = detail.selectedItem?.value)}"
               hide-search
             >
             </etools-dropdown>
@@ -78,18 +77,17 @@ export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(Lit
             <!-- Brief Justification -->
             <paper-textarea
               id="briefJustification"
-              class="validate-input required w100"
+              class="w100 validate-input required"
               .value="${this.primaryArea.risk.extra.comments}"
               label="Brief Justification for Rating (main internal control gaps)"
               placeholder="Enter Brief Justification"
               required
               ?readonly="${this.isDisabled}"
               max-rows="4"
-              invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.extra}"
+              ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.extra}"
               .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk.extra}"
               @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) =>
-                this.valueChanged(detail, 'risk.extra.comments', this.primaryArea)}"
+              @value-changed="${({detail}: CustomEvent) => (this.primaryArea.risk.extra.comments = detail.value)}"
             >
             </paper-textarea>
           </div>
@@ -128,21 +126,30 @@ export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(Lit
   @property({type: Boolean})
   dialogOpened!: boolean;
 
-  static get observers() {
-    return [
-      '_setValues(riskData, riskOptions)',
-      'updateStyles(basePermissionPath)',
-      '_complexErrorHandler(errorObject.overall_risk_assessment)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
-
     this._populateRiskOptions();
   }
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (
+      changedProperties.has('riskData') ||
+      changedProperties.has('riskOptions') ||
+      changedProperties.has('basePermissionPath')
+    ) {
+      this._setValues(this.riskData);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject.overall_risk_assessment);
+    }
+  }
+
   _setValues(data) {
+    if (!this.basePermissionPath || !this.riskData) {
+      return;
+    }
     this._populateRiskOptions();
     this.isDisabled = this.isReadOnly('test_subject_areas', this.basePermissionPath);
 
@@ -217,7 +224,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(ModelChangedMixin(Lit
   }
 
   getRiskData() {
-    if (isEmpty(this.primaryArea.risk.value)) {
+    if (isEmpty(this.primaryArea.risk.value) || isEmpty(this.primaryArea.risk.value.value)) {
       return null;
     }
 

@@ -95,7 +95,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         theme="confirmation"
         size="md"
         keep-dialog-open
-        .opened="${this.confirmDialogOpened}"
+        ?opened="${this.confirmDialogOpened}"
         @confirm-btn-clicked="${this.removeItem}"
         ok-btn-text="Delete"
         openFlag="confirmDialogOpened"
@@ -108,7 +108,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         no-padding
         keep-dialog-open
         size="md"
-        .opened="${this.dialogOpened}"
+        ?opened="${this.dialogOpened}"
         .deleteDialog="${this.deleteDialog}"
         .dialogTitle="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
@@ -118,30 +118,31 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <!-- Finding -->
-            <paper-input
-              class="validate-input ${this._setRequired('findings.finding', this.basePermissionPath)}"
-              .value="${this.editedItem.finding}"
-              label="${this.getLabel('findings.finding', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('findings.finding', this.basePermissionPath)}"
-              ?required="${this._setRequired('findings.finding', this.basePermissionPath)}"
-              ?readonly="${this.requestInProcess}"
-              maxlength="400"
-              ?invalid="${this.errors[0]?.finding}"
-              .errorMessage="${this.errors[0]?.finding}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => (this.editedItem.finding = detail.value)}"
-            >
-            </paper-input>
+        <div class="container">
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Finding -->
+              <paper-input
+                class="w100 validate-input ${this._setRequired('findings.finding', this.basePermissionPath)}"
+                .value="${this.editedItem.finding}"
+                label="${this.getLabel('findings.finding', this.basePermissionPath)}"
+                placeholder="${this.getPlaceholderText('findings.finding', this.basePermissionPath)}"
+                ?required="${this._setRequired('findings.finding', this.basePermissionPath)}"
+                ?readonly="${this.requestInProcess}"
+                maxlength="400"
+                ?invalid="${this.errors[0]?.finding}"
+                .errorMessage="${this.errors[0]?.finding}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => (this.editedItem.finding = detail.value)}"
+              >
+              </paper-input>
+            </div>
           </div>
-
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Recommendation -->
               <paper-textarea
-                class="validate-input ${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                class="w100 validate-input ${this._setRequired('findings.recommendation', this.basePermissionPath)}"
                 .value="${this.editedItem.recommendation}"
                 allowed-pattern="[ds]"
                 label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"

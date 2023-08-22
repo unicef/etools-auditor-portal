@@ -113,7 +113,7 @@ export class UpdateEngagement extends LitElement {
     this.basePermissionPath = '';
     this.basePermissionPath = `engagement_${this.engagement.id}`;
     fireEvent(this, 'base-permission-changed', this.basePermissionPath);
-    fireEvent(this, 'engagement-updated', {success: true, data});
+    fireEvent(this, 'engagement-updated', {success: true, data: data});
     fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     fireEvent(this, 'global-loading', {type: 'update-permissions'});
 

@@ -9,6 +9,7 @@ import '@unicef-polymer/etools-data-table/etools-data-table';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
+import './subject-area-element';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getChoices, isRequired} from '../../../mixins/permission-controller';
 import isEqual from 'lodash-es/isEqual';
@@ -17,6 +18,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import pick from 'lodash-es/pick';
 import {GenericObject} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import isObject from 'lodash-es/isObject';
 
 /**
  * @LitEelement
@@ -41,6 +43,9 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         .input-container {
           padding-top: 2px;
         }
+        .editable-row:hover .hover-block {
+          background-color: transparent;
+        }
       </style>
       <etools-content-panel .panelTitle="${this.subjectAreas.header}" list>
 
@@ -51,21 +56,14 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
             ${(this.subjectAreas?.children || []).map(
               (item, index) => html`
-                <etools-data-table-row>
-                  <div slot="row-data" class="layout-horizontal editable-row">
-                    <span class="col-data col-8">${item.header}</span>
-                    <span class="col-data col-4">${item.risk?.value?.display_name}</span>
-                    <div class="hover-block" ?hidden="${!this.canBeChanged}">
-                      <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                    </div>
-                  </div>
-                  <div slot="row-data-details">
-                    <div class="row-details-content col-12">
-                      <span class="rdc-title">Brief Justification for Rating (main internal control gaps)</span>
-                      <span>${item.risk?.extra?.comments || 'None'}</span>
-                    </div>
-                  </div>
-                </etools-data-table-row>
+                <subject-area-element
+                  class="area-element"
+                  .basePermissionPath="${this.basePermissionPath}"
+                  .area="${item}"
+                  .index="${index}"
+                  .canBeChanged="${this.canBeChanged}"
+                >
+                </subject-area-element>
               `
             )}
 
@@ -85,12 +83,12 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         @close="${this._resetDialogOpenedFlag}"
       >
          <div class="layout-horizontal">
-            <div class="col col-4">
+            <div class="col col-6">
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskAssessmentInput"
                   class="validate-input required"
-                  .selected="${this.editedArea?.blueprints[0]?.risk?.value.value}"
+                  .selected="${this.editedArea?.blueprints[0]?.risk?.value?.value}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"
                   .options="${this.riskOptions}"
@@ -98,13 +96,16 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
                   option-value="value"
                   required
                   ?disabled="${this.requestInProcess}"
-                  ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk.value}"
-                  .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk.value}"
+                  ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.value}"
+                  .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk?.value}"
                   @focus="${this._resetFieldError}"
                   trigger-value-change-event
                   @etools-selected-item-changed="${({detail}: CustomEvent) => {
                     if (this.editedArea?.blueprints[0]) {
-                      this.editedArea.blueprints[0].risk.value.value = detail.selectedItem && detail.selectedItem.value;
+                      if (!isObject(this.editedArea.blueprints[0].risk.value)) {
+                        this.editedArea.blueprints[0].risk.value = {};
+                      }
+                      this.editedArea.blueprints[0].risk.value.value = detail.selectedItem?.value;
                     }
                   }}"
                   hide-search
@@ -113,13 +114,13 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
               </div>
             </div>
 
-            <div class="row-h group">
-              <div class="input-container input-container-l">
+            <div class="layout-horizontal">
+              <div class="col col-12">
                 <!-- Brief Justification -->
                 <paper-textarea
                   id="briefJustification"
                   class="validate-input required w100"
-                  .value="${this.editedArea?.blueprints[0]?.risk.extra.comments}"
+                  .value="${this.editedArea?.blueprints[0]?.risk?.extra?.comments}"
                   label="Brief Justification for Rating (main internal control gaps)"
                   placeholder="Enter Brief Justification"
                   required
@@ -130,6 +131,9 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
                   @focus="${this._resetFieldError}"
                   @value-changed="${({detail}: CustomEvent) => {
                     if (this.editedArea?.blueprints[0]) {
+                      if (!isObject(this.editedArea.blueprints[0].risk.extra)) {
+                        this.editedArea.blueprints[0].risk.extra = {};
+                      }
                       this.editedArea.blueprints[0].risk.extra.comments = detail.value;
                     }
                   }}"
@@ -191,6 +195,9 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   subjectAreas!: GenericObject;
 
   @property({type: Object})
+  originalSubjectAreas!: GenericObject;
+
+  @property({type: Object})
   errorObject!: GenericObject;
 
   @property({type: Number})
@@ -227,6 +234,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
   dataChanged() {
     this.canBeChanged = !this.isReadOnly('test_subject_areas', this.basePermissionPath);
+    this.originalSubjectAreas = cloneDeep(this.subjectAreas);
   }
 
   getRiskData() {
@@ -308,12 +316,8 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     return valid;
   }
 
-  openEditDialog(index) {
-    // @dci
-    // const index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
-    // if ((!index && index !== 0) || !~index) {
-    //   throw new Error('Can not find data');
-    // }
+  openEditDialog(event) {
+    const index = event.detail;
     const data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
 

@@ -78,7 +78,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       >
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
+            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>

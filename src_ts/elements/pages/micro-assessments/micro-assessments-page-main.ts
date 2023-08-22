@@ -76,7 +76,9 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
         .forceOptionsUpdate="${this.forceOptionsUpdate}"
         @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail)}"
         .engagement="${this.engagement}"
-        @engagement-updated="${(e: CustomEvent) => (this.engagement = e.detail.data)}"
+        @engagement-updated="${(e: CustomEvent) => {
+          this.engagement = {...e.detail.data};
+        }}"
         .errorObject="${this.errorObject}"
         @error-changed="${(e: CustomEvent) => (this.errorObject = e.detail)}"
         .basePermissionPath="${this.permissionBase}"
@@ -173,6 +175,9 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                           id="report"
                           .originalData="${this.originalData}"
                           .engagement="${this.engagement}"
+                          @data-changed="${({detail}) => {
+                            this.engagement = {...detail};
+                          }}"
                           .errorObject="${this.errorObject}"
                           .permissionBase="${this.permissionBase}"
                         >

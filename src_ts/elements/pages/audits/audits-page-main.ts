@@ -142,7 +142,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                     <engagement-info-details
                       id="engagementDetails"
                       .data="${this.engagement}"
-                      @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
+                      @data-changed="${(e: CustomEvent) => (this.engagement = {...e.detail})}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
                       .basePermissionPath="${this.permissionBase}"

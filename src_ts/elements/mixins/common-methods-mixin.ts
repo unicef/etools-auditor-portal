@@ -9,7 +9,6 @@ import {setStaticData, getStaticData} from './static-data-controller';
 import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
-import {getProperty} from '../utils/utils';
 
 /**
  * @polymer

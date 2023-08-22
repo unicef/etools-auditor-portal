@@ -74,6 +74,10 @@ export const moduleStyles = css`
     --etools-dialog-content_-_max-height: 50vh !important;
   }
 
+  .container {
+    padding: 16px 16px;
+  }
+
   /* PAPER-TOGGLE-BUTTON */
   paper-toggle-button {
     --paper-toggle-button-checked-button-color: var(--primary-color);

@@ -5,6 +5,7 @@ import '../../../common-elements/engagement-report-components/assign-engagement/
 import './primary-risk-element';
 import './key-internal-controls-tab';
 import './control-findings-tab';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitEelement
@@ -20,7 +21,10 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
         .data="${this.engagement}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
-        @data-changed="${({detail}) => (this.engagement = detail)}"
+        @data-changed="${({detail}) => {
+          this.engagement = detail;
+          fireEvent(this, 'data-changed', this.engagement);
+        }}"
         audit-type="Micro Assessment"
         .basePermissionPath="${this.permissionBase}"
       >
@@ -72,8 +76,10 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
 
   validate(forSave) {
     const assignTabValid = this.getElement('#assignEngagement').validate(forSave);
-    const primaryValid = this.getElement('#primaryRisk').validate(forSave);
-    const internalControlsValid = this.getElement('#internalControls').validate(forSave);
+    const primaryRiskEl = this.getElement('#primaryRisk');
+    const primaryValid = primaryRiskEl ? primaryRiskEl.validate(forSave) : true;
+    const internalControlsEl = this.getElement('#internalControls');
+    const internalControlsValid = internalControlsEl ? internalControlsEl.validate(forSave) : true;
 
     return assignTabValid && primaryValid && internalControlsValid;
   }

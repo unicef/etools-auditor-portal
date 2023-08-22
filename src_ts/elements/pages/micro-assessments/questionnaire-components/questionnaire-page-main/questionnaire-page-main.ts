@@ -133,13 +133,14 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-       <div class="layout-horizontal">
-          <div class="form-title">
-            <div class="text" id="questionHeader">
-              ${html`${this.editedItem?.header}`}
+        <div class="container">
+          <div class="layout-horizontal">
+            <div class="col-12">
+              <div class="text" id="questionHeader">
+                ${html`${this.editedItem?.header}`}
+              </div>
             </div>
           </div>
-        </div>
 
           <div class="layout-horizontal">
             <div class="col col-6">
@@ -170,7 +171,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
                 <!-- Comments -->
                 <paper-textarea
                   id="riskAssessmentComments"
-                  class="validate-input"
+                  class="w100 validate-input"
                   .value="${this.editedItem?.risk?.extra?.comments}"
                   label="Comments"
                   placeholder="Enter Comments"
@@ -178,6 +179,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
                   max-rows="4"
                   error-message="This field is required"
                   @focus="${this._resetFieldError}"
+                  @value-changed="${({detail}: CustomEvent) => (this.editedItem.risk.extra.comments = detail.value)}"
                 >
                 </paper-textarea>
               </div>
@@ -185,6 +187,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
 
           </div>
         </div>
+       </div>
       </etools-dialog>
     `;
   }
@@ -273,7 +276,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
     }
-    if (changedProperties.has('data')) {
+    if (changedProperties.has('data') || changedProperties.has('basePermissionPath')) {
       this.dataChanged(this.data);
     }
     if (changedProperties.has('errorObject')) {
