@@ -2,7 +2,7 @@ import {LitElement, html, property, customElement, PropertyValues, query} from '
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -14,12 +14,14 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
-import {getChoices} from '../../../../mixins/permission-controller';
+import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 import get from 'lodash-es/get';
+import {AnyAction} from 'redux';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * @LitEelement
@@ -108,7 +110,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       ${(this.questionnaire.children || []).map(
         (item, index) => html`<risk-tab
           .questionnaire="${item}"
-          .basePermissionPath="${this.basePermissionPath}"
+          .optionsData="${this.optionsData}"
           class="validatable-tab risk-tab"
           index="${index}"
           .firstRun="${this.firstRun}"
@@ -179,7 +181,18 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
                   max-rows="4"
                   error-message="This field is required"
                   @focus="${this._resetFieldError}"
-                  @value-changed="${({detail}: CustomEvent) => (this.editedItem.risk.extra.comments = detail.value)}"
+                  @value-changed="${({detail}: CustomEvent) => {
+                    if (!this.editedItem) {
+                      return;
+                    }
+                    if (!this.editedItem.risk) {
+                      this.editedItem.risk = {};
+                    }
+                    if (!this.editedItem.risk.extra) {
+                      this.editedItem.risk = {extra: {comments: ''}};
+                    }
+                    this.editedItem.risk.extra.comments = detail.value;
+                  }}}"
                 >
                 </paper-textarea>
               </div>
@@ -226,11 +239,8 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   @property({type: String})
   riskAssessment = '';
 
-  @property({type: String})
-  basePermissionPath!: string; // engagement_[id]
-
   @property({type: Object})
-  editedItem!: GenericObject;
+  editedItem!: AnyObject;
 
   @property({type: Boolean})
   dialogOpened = false;
@@ -256,9 +266,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    const riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
-    this.riskOptions = riskOptions;
-
     this.addEventListener('edit-blueprint', this._openEditDialog as any);
     this.addEventListener('risk-value-changed', this._riskValueChanged as any);
   }
@@ -276,7 +283,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
     }
-    if (changedProperties.has('data') || changedProperties.has('basePermissionPath')) {
+    if (changedProperties.has('data') || changedProperties.has('optionsData')) {
       this.dataChanged(this.data);
     }
     if (changedProperties.has('errorObject')) {
@@ -285,7 +292,9 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   }
 
   dataChanged(data) {
-    this.editMode = !this.isReadOnly('questionnaire', this.basePermissionPath);
+    this.editMode = !this.isReadOnly('questionnaire', this.optionsData);
+    const riskOptions = getOptionsChoices(this.optionsData, 'questionnaire.blueprints.risk.value') || [];
+    this.riskOptions = riskOptions;
 
     if (!data) {
       return;

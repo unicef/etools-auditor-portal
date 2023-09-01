@@ -1,7 +1,7 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/app-route/app-route';
-import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
+import {pageLayoutStyles} from '../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
 import '../engagements/engagements-list-view/engagements-list-view';
@@ -21,13 +21,18 @@ import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../redux/store';
+import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
+import get from 'lodash-es/get';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
 
 /**
  * @customElement
  * @LitElement
  */
 @customElement('staff-sc-page-main')
-export class StaffScPageMain extends LitElement {
+export class StaffScPageMain extends connect(store)(LitElement) {
   static get styles() {
     return [pageLayoutStyles, moduleStyles];
   }
@@ -42,24 +47,11 @@ export class StaffScPageMain extends LitElement {
         }
       </style>
 
-      <app-route
-        .route="${this.route}"
-        @route-changed="${this._routeChanged}"
-        pattern="/:view"
-        @data-changed="${this._routeDataChanged}"
-        .tail="${this.subroute}"
-        @tail-changed="${this._tailChanged}"
-      >
-      </app-route>
-
-      <iron-pages id="categoryPages" .selected="${this.routeData?.view}" attr-for-selected="name" role="main">
+      <iron-pages id="categoryPages" selected="${this.activePage}" attr-for-selected="name" role="main">
         <engagements-list-view
           name="list"
           id="listPage"
-          .queryParams="${this.queryParams}"
-          .baseRoute="${this.baseRoute}"
           has-collapse
-          .requestQueries="${this.partnersListQueries}"
           .endpointName="${this.endpointName}"
           basePermissionPath="new_engagement"
           add-btn-text="Add New Staff Spot Checks"
@@ -76,14 +68,6 @@ export class StaffScPageMain extends LitElement {
               .auditFirm="${this.auditFirm}"
               page-title="Add New Staff Spot Check"
               isStaffSc
-              .page="${this.routeData.view}"
-              .queryParams="${this.queryParams}"
-              .route="${this.subroute}"
-              @sub-route-changed="${({detail}: CustomEvent) => {
-                if (!isJsonStrMatch(this.subroute, detail.value)) {
-                  this.subroute = detail.value;
-                }
-              }}"
               .requestQueries="${this.partnersListQueries}"
               basePermissionPath="new_engagement"
               .partner="${this.partnerDetails}"
@@ -94,15 +78,6 @@ export class StaffScPageMain extends LitElement {
       </iron-pages>
     `;
   }
-
-  @property({type: Object})
-  queryParams!: GenericObject;
-
-  @property({type: String})
-  baseRoute!: string;
-
-  @property({type: Object})
-  subroute!: GenericObject;
 
   @property({type: Number})
   initiation = 0;
@@ -117,13 +92,10 @@ export class StaffScPageMain extends LitElement {
   endpointName = 'staffSCList';
 
   @property({type: Object})
-  route: GenericObject = {};
-
-  @property({type: Object})
-  routeData: GenericObject = {};
-
-  @property({type: Object})
   partnersListQueries!: GenericObject;
+
+  @property({type: String})
+  activePage!: string;
 
   @property({type: String})
   view!: string;
@@ -140,10 +112,13 @@ export class StaffScPageMain extends LitElement {
   @property({type: Boolean})
   allowNew = false;
 
+  @property({type: Object})
+  reduxRouteDetails?: EtoolsRouteDetails;
+
   connectedCallback() {
     super.connectedCallback();
     this.allowNew = actionAllowed('new_staff_sc', 'create');
-    this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
+    // this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
     sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     })
@@ -155,129 +130,115 @@ export class StaffScPageMain extends LitElement {
       });
   }
 
-  updated(changedProperties: PropertyValues): void {
-    super.updated(changedProperties);
-
-    if (changedProperties.has('queryParams')) {
-      this._queryParamsChanged();
-    }
-    if (changedProperties.has('routeData')) {
-      this._routeConfig(this.routeData.view);
-    }
-  }
-
-  _routeConfig(view) {
-    if (!this.route || !~this.route.prefix.indexOf('/staff-sc')) {
-      this.resetLastView();
-      return;
-    }
-
-    if (view === this.lastView) {
-      return;
-    }
-    if (view === 'list') {
-      const queries = this._configListParams(this.initiation++);
-      this._setEngagementsListQueries(queries);
-      this._fireUpdateEngagementsFilters();
-      this.view = 'list';
-    } else if (view === 'new' && actionAllowed('new_staff_sc', 'create')) {
-      clearQueries();
-      this.view = 'new';
-    } else if (view === '' || isUndefined(view)) {
-      this.route = {...this.route, path: '/list'};
-    } else {
-      clearQueries();
-      fireEvent(this, '404');
-    }
-
-    if (view !== this.lastView) {
-      fireEvent(this, `close-toasts`);
-    }
-    this.lastView = view;
-  }
-
-  resetLastView() {
-    if (this.lastView) {
-      this.lastView = null;
-    }
-  }
-
-  _fireUpdateEngagementsFilters() {
-    document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-  }
-
-  _configListParams(noNotify?) {
-    const queries = this.route.__queryParams || {};
-    const queriesUpdates: GenericObject = clone(queries);
-
-    if (!queries.page_size) {
-      queriesUpdates.page_size = '10';
-    }
-    if (!queries.ordering) {
-      queriesUpdates.ordering = 'reference_number';
-    }
-    if (!queries.page) {
-      queriesUpdates.page = '1';
-    }
-
-    const page = +queries.page;
+  stateChanged(state: RootState) {
     if (
-      isNaN(page) ||
-      (this.lastParams &&
-        (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))
+      pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'staff-sc') ||
+      isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)
     ) {
-      queriesUpdates.page = '1';
-    }
-
-    if (!this.lastParams || !isEqual(this.lastParams, queries)) {
-      this.lastParams = clone(queries);
-    }
-
-    updateQueries(queriesUpdates, null, noNotify);
-    return queriesUpdates;
-  }
-
-  _routeChanged({detail}: CustomEvent) {
-    if (detail.value.path && detail.value.prefix && !isJsonStrMatch(this.route, detail.value)) {
-      this.route = detail.value;
-    }
-  }
-
-  _routeDataChanged({detail}: CustomEvent) {
-    if (!isJsonStrMatch(this.routeData, detail.value)) {
-      this.routeData = detail.value;
-    }
-  }
-
-  _tailChanged({detail}: CustomEvent) {
-    if (!detail.value?.path) {
       return;
     }
-    if (!isJsonStrMatch(this.subroute, detail.value)) {
-      this.subroute = detail.value;
-    }
+    this.reduxRouteDetails = state.app.routeDetails;
+    this.activePage = this.reduxRouteDetails.subRouteName!;
+    this._routeChanged(this.activePage);
   }
 
-  _queryParamsChanged() {
-    if (!this.route) {
-      return;
-    }
-    if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {
-      return;
-    }
-    if (this.routeData.view === 'list') {
-      const queries = this._configListParams();
-      this._setEngagementsListQueries(queries);
-    } else if (!isNaN(+this.routeData.view)) {
+  _routeChanged(activePage) {
+    if (activePage !== 'list') {
       clearQueries();
     }
   }
+  // @dci - do we need these ??
+  // _routeConfig(view) {
+  //   if (!this.route || !~this.route.prefix.indexOf('/staff-sc')) {
+  //     this.resetLastView();
+  //     return;
+  //   }
 
-  _setEngagementsListQueries(queries) {
-    if (!isEmpty(queries) && (!this.partnersListQueries || !isEqual(this.partnersListQueries, queries))) {
-      this.partnersListQueries = queries;
-    }
-  }
+  //   if (view === this.lastView) {
+  //     return;
+  //   }
+  //   if (view === 'list') {
+  //     const queries = this._configListParams(this.initiation++);
+  //     this._setEngagementsListQueries(queries);
+  //     this._fireUpdateEngagementsFilters();
+  //     this.view = 'list';
+  //   } else if (view === 'new' && actionAllowed('new_staff_sc', 'create')) {
+  //     clearQueries();
+  //     this.view = 'new';
+  //   } else if (view === '' || isUndefined(view)) {
+  //     this.route = {...this.route, path: '/list'};
+  //   } else {
+  //     clearQueries();
+  //     fireEvent(this, '404');
+  //   }
+
+  //   if (view !== this.lastView) {
+  //     fireEvent(this, `close-toasts`);
+  //   }
+  //   this.lastView = view;
+  // }
+
+  // resetLastView() {
+  //   if (this.lastView) {
+  //     this.lastView = null;
+  //   }
+  // }
+
+  // _fireUpdateEngagementsFilters() {
+  //   document.dispatchEvent(new CustomEvent('update-engagements-filters'));
+  // }
+
+  // _configListParams(noNotify?) {
+  //   const queries = this.route.__queryParams || {};
+  //   const queriesUpdates: GenericObject = clone(queries);
+
+  //   if (!queries.page_size) {
+  //     queriesUpdates.page_size = '10';
+  //   }
+  //   if (!queries.ordering) {
+  //     queriesUpdates.ordering = 'reference_number';
+  //   }
+  //   if (!queries.page) {
+  //     queriesUpdates.page = '1';
+  //   }
+
+  //   const page = +queries.page;
+  //   if (
+  //     isNaN(page) ||
+  //     (this.lastParams &&
+  //       (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))
+  //   ) {
+  //     queriesUpdates.page = '1';
+  //   }
+
+  //   if (!this.lastParams || !isEqual(this.lastParams, queries)) {
+  //     this.lastParams = clone(queries);
+  //   }
+
+  //   updateQueries(queriesUpdates, null, noNotify);
+  //   return queriesUpdates;
+  // }
+
+  // _queryParamsChanged() {
+  //   if (!this.route) {
+  //     return;
+  //   }
+  //   if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {
+  //     return;
+  //   }
+  //   if (this.routeData.view === 'list') {
+  //     const queries = this._configListParams();
+  //     this._setEngagementsListQueries(queries);
+  //   } else if (!isNaN(+this.routeData.view)) {
+  //     clearQueries();
+  //   }
+  // }
+
+  // _setEngagementsListQueries(queries) {
+  //   if (!isEmpty(queries) && (!this.partnersListQueries || !isEqual(this.partnersListQueries, queries))) {
+  //     this.partnersListQueries = queries;
+  //   }
+  // }
 
   _auditFirmLoaded({results}) {
     if (!results.length) {

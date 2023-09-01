@@ -13,6 +13,7 @@ import {AssessmentOfControls} from '../assessment-of-controls/assessment-of-cont
 import '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 import {KeyInternalControlsWeaknesses} from '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * @LitEelement
@@ -39,7 +40,7 @@ export class AuditReportPageMain extends LitElement {
           fireEvent(this, 'data-changed', this.engagement);
         }}"
         audit-type="Audit"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </assign-engagement>
 
@@ -48,7 +49,7 @@ export class AuditReportPageMain extends LitElement {
         class="mb-24"
         .data="${this.engagement}"
         .errorObject="${this.errorObject}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </findings-summary>
 
@@ -57,7 +58,7 @@ export class AuditReportPageMain extends LitElement {
         class="mb-24"
         .errorObject="${this.errorObject}"
         .dataItems="${this.engagement?.financial_finding_set}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </financial-findings>
 
@@ -66,7 +67,7 @@ export class AuditReportPageMain extends LitElement {
         class="mb-24"
         .dataItems="${this.engagement?.key_internal_controls}"
         .errorObject="${this.errorObject}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </assessment-of-controls>
 
@@ -75,7 +76,7 @@ export class AuditReportPageMain extends LitElement {
         class="mb-24"
         .errorObject="${this.errorObject}"
         .subjectAreas="${this.engagement?.key_internal_weakness}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </key-internal-controls-weaknesses>
     `;
@@ -90,8 +91,8 @@ export class AuditReportPageMain extends LitElement {
   @property({type: Object})
   errorObject: GenericObject = {};
 
-  @property({type: String})
-  permissionBase!: string;
+  @property({type: Object})
+  optionsData!: AnyObject;
 
   validate(forSave) {
     return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).validate(forSave);

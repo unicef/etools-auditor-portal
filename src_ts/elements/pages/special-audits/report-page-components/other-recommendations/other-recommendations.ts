@@ -6,8 +6,8 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -53,11 +53,11 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
 
       <etools-content-panel
         class="content-section clearfix"
-        .panelTitle="${this.getLabel('other_recommendations', this.basePermissionPath)}"
+        .panelTitle="${this.getLabel('other_recommendations', this.optionsData)}"
         list
       >
         <div slot="panel-btns">
-          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+          <div ?hidden="${!this._canBeChanged(this.optionsData)}">
             <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
@@ -67,7 +67,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
           <etools-data-table-column class="col-3">Recommendation Number</etools-data-table-column>
           <etools-data-table-column class="col-9"
             >${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'other_recommendations.description',
               'Description'
             )}</etools-data-table-column
@@ -80,7 +80,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-3">${item.finding}</span>
                 <span class="col-data col-9">${item.description}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
                 </div>
@@ -123,13 +123,13 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
             <paper-textarea
               class="${this._setRequired(
                 'other_recommendations.description',
-                this.basePermissionPath
+                this.optionsData
               )} fixed-width validate-input"
               .value="${this.editedItem.description}"
               allowed-pattern="[\\d\\s]"
-              label="${this.getLabel('other_recommendations.description', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('other_recommendations.description', this.basePermissionPath)}"
-              ?required="${this._setRequired('other_recommendations.description', this.basePermissionPath)}"
+              label="${this.getLabel('other_recommendations.description', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('other_recommendations.description', this.optionsData)}"
+              ?required="${this._setRequired('other_recommendations.description', this.optionsData)}"
               ?disabled="${this.requestInProcess}"
               max-rows="4"
               ?invalid="${this._checkInvalid(this.errors[0]?.description)}"

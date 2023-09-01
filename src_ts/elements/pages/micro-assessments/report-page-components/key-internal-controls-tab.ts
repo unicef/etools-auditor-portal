@@ -1,5 +1,5 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -11,7 +11,7 @@ import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import './subject-area-element';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices, isRequired} from '../../../mixins/permission-controller';
+import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
 import isEqual from 'lodash-es/isEqual';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -58,7 +58,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
               (item, index) => html`
                 <subject-area-element
                   class="area-element"
-                  .basePermissionPath="${this.basePermissionPath}"
+                  .optionsData="${this.optionsData}"
                   .area="${item}"
                   .index="${index}"
                   .canBeChanged="${this.canBeChanged}"
@@ -179,9 +179,6 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   @property({type: String})
   errorBaseText = 'Test Subject Areas: ';
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   @property({type: Boolean})
   requestInProcess!: boolean;
 
@@ -211,9 +208,6 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-
-    const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
-    this.riskOptions = riskOptions;
     this.addEventListener('open-edit-dialog', this.openEditDialog);
   }
 
@@ -230,10 +224,14 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     if (changedProperties.has('errorObject')) {
       this._complexErrorHandler(this.errorObject.test_subject_areas);
     }
+    if (changedProperties.has('optionsData')) {
+      const riskOptions = getOptionsChoices(this.optionsData, 'test_subject_areas.blueprints.risk.value') || [];
+      this.riskOptions = riskOptions;
+      this.canBeChanged = !this.isReadOnly('test_subject_areas', this.optionsData);
+    }
   }
 
   dataChanged() {
-    this.canBeChanged = !this.isReadOnly('test_subject_areas', this.basePermissionPath);
     this.originalSubjectAreas = cloneDeep(this.subjectAreas);
   }
 
@@ -296,10 +294,10 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   }
 
   validate(forSave) {
-    if (!this.basePermissionPath || forSave) {
+    if (!this.optionsData || forSave) {
       return true;
     }
-    const required = isRequired(`${this.basePermissionPath}.test_subject_areas`);
+    const required = isRequired('test_subject_areas', this.optionsData);
     if (!required) {
       return true;
     }

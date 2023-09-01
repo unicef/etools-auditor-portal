@@ -12,8 +12,8 @@ import '@unicef-polymer/etools-upload/etools-upload';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../styles/tab-layout-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {fileAttachmentsTabStyles} from './file-attachments-tab-styles';
 import '../../data-elements/get-attachments';
@@ -22,7 +22,7 @@ import '../share-documents/share-documents';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
 import {dataTableStylesLit} from '@unicef-polymer/etools-data-table/data-table-styles-lit';
 import DateMixin from '../../mixins/date-mixin';
-import {getUserData} from '../../mixins/user-controller';
+
 import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
@@ -35,13 +35,14 @@ import {getEndpoint} from '../../config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
-import {getChoices, collectionExists, getFieldAttribute, getHeadingLabel} from '../../mixins/permission-controller';
+import {getHeadingLabel, getOptionsChoices} from '../../mixins/permission-controller';
 import famEndpoints from '../../config/endpoints';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocuments} from '../share-documents/share-documents';
 import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
 
 /**
  * @customElement
@@ -121,16 +122,16 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
         <etools-data-table-header no-collapse no-title>
           <etools-data-table-column class="col-2"
-            >${getHeadingLabel(this.basePermissionPath, 'created', 'Created')}</etools-data-table-column
+            >${getHeadingLabel(this.optionsData, 'created', 'Created')}</etools-data-table-column
           >
           <etools-data-table-column class="col-2"
-            >${getHeadingLabel(this.basePermissionPath, 'file_type', 'Document Type')}</etools-data-table-column
+            >${getHeadingLabel(this.optionsData, 'file_type', 'Document Type')}</etools-data-table-column
           >
           <etools-data-table-column class="col-5"
-            >${getHeadingLabel(this.basePermissionPath, 'file', ' File Attachment')}</etools-data-table-column
+            >${getHeadingLabel(this.optionsData, 'file', ' File Attachment')}</etools-data-table-column
           >
           <etools-data-table-column class="col-3 center-align"
-            >${getHeadingLabel(this.basePermissionPath, 'tpm_activities.date', 'Source')}</etools-data-table-column
+            >${getHeadingLabel(this.optionsData, 'tpm_activities.date', 'Source')}</etools-data-table-column
           >
         </etools-data-table-header>
         ${this.dataItems.map(
@@ -216,19 +217,19 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-        ${this.showFileTypes(this.basePermissionPath)
+        ${this.showFileTypes(this.optionsData)
           ? html` <div class="layout-horizontal row-padding-v">
               <div class="col col-6">
                 <etools-dropdown
                   id="fileType"
-                  class="validate-input ${this._setRequired('file_type', this.basePermissionPath)}"
+                  class="validate-input ${this._setRequired('file_type', this.optionsData)}"
                   .selected="${this.editedItem.file_type}"
-                  label="${this.getLabel('file_type', this.basePermissionPath)}"
-                  placeholder="${this.getPlaceholderText('file_type', this.basePermissionPath)}"
+                  label="${this.getLabel('file_type', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('file_type', this.optionsData)}"
                   .options="${this.fileTypes || []}"
                   option-label="display_name"
                   option-value="value"
-                  ?required="${this._setRequired('file_type', this.basePermissionPath)}"
+                  ?required="${this._setRequired('file_type', this.optionsData)}"
                   ?disabled="${this.requestInProcess}"
                   ?invalid="${this.errors.file_type}"
                   .errorMessage="${this.errors.file_type}"
@@ -293,8 +294,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
           >
             <share-documents
               id="shareDocuments"
-              .dataBasePath="${this.dataBasePath}"
-              .basePermissionPath="${this.basePermissionPath}"
               .partnerName="${this.engagement?.partner?.name}"
               .shareParams="${this.shareParams}"
               @share-params-changed="${({detail}) => {
@@ -306,15 +305,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         : ``}
     `;
   }
-
-  @property({type: String})
-  basePermissionPath = '';
-
-  @property({type: String}) // ex. engagement_57
-  dataBasePath = '';
-
-  @property({type: String, reflect: true, attribute: 'path-postfix'})
-  pathPostfix = '';
 
   @property({type: String})
   linkToDeleteId = '';
@@ -383,7 +373,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   @property({type: String, reflect: true, attribute: 'error-property'})
   errorProperty = '';
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'is-report-tab'})
   isReportTab = false;
 
   @property({type: Boolean})
@@ -433,12 +423,11 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (
-      changedProperties.has('dataBasePath') ||
-      changedProperties.has('pathPostfix') ||
-      changedProperties.has('timeStamp')
-    ) {
-      this._setBasePath(this.dataBasePath, this.pathPostfix);
+    if (changedProperties.has('optionsData')) {
+      this._setBasePath(this.optionsData);
+    }
+    if (changedProperties.has('engagement')) {
+      this._handleLinksInDetailsView(this.engagement);
     }
     if (changedProperties.has('dialogOpened')) {
       this._resetDialog(this.dialogOpened);
@@ -449,7 +438,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (changedProperties.has('_isUnicefUser') || changedProperties.has('baseId')) {
       this._shouldHideShare(this._isUnicefUser, this.baseId);
     }
-    if (changedProperties.has('dataBasePath')) {
+    if (changedProperties.has('user')) {
       this._setIsUnicefUser();
     }
   }
@@ -463,25 +452,28 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _setIsUnicefUser() {
-    const user = getUserData();
-    this._isUnicefUser = Boolean(user.groups.find(({name}) => name === 'UNICEF User'));
+    if (!this.user) {
+      return;
+    }
+    this._isUnicefUser = Boolean(this.user.groups.find(({name}) => name === 'UNICEF User'));
   }
 
-  _hanldeLinksForEngagement() {
+  _handleLinksForEngagement() {
     this._setLinksEndpoint();
     this._getLinkedAttachments();
   }
 
   _setLinksEndpoint() {
-    const currEngagement = this.getCurrentEngagement();
-    if (!currEngagement || !Object.keys(currEngagement).length) {
-      return;
-    }
-    const {details: engagement, type: engagementType} = currEngagement;
-    this.engagement = {...engagement};
+    // @dci
+    // const currEngagement = this.engagement;
+    // if (!currEngagement || !Object.keys(currEngagement).length) {
+    //   return;
+    // }
+    // const {details: engagement, type: engagementType} = currEngagement;
+    // this.engagement = {...engagement};
     this.auditLinksOptions = getEndpoint('auditLinks', {
-      type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[engagementType!],
-      id: engagement!.id
+      type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[this.engagement.engagementType!],
+      id: this.engagement!.id
     });
   }
 
@@ -496,38 +488,33 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       .catch(this.filesTabErrorHandler.bind(this));
   }
 
-  _setBasePath(dataBase, pathPostfix) {
-    this._handleLinksInDetailsView(dataBase);
-    const base = dataBase && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
-    this.basePermissionPath = base;
-    if (base) {
-      const title = getFieldAttribute(base, 'title');
+  _setBasePath(optionsData: AnyObject) {
+    this._handleLinksInDetailsView(optionsData);
+    // const base = engagementOptions && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
+    // this.basePermissionPath = base;
+    // @dci
+    if (optionsData) {
+      const title = get(optionsData, 'name');
       this.tabTitle = title;
-      this.fileTypes = getChoices(`${base}.file_type`);
+      this.fileTypes = getOptionsChoices(optionsData, 'file_type');
     }
     this.setReadOnly();
   }
 
-  _handleLinksInDetailsView(dataBase) {
-    if (!dataBase) {
-      // null check
-      dataBase = '';
-    }
-    const isEngagementDetailsView = !dataBase.includes('new');
+  _handleLinksInDetailsView(engagement: AnyObject) {
+    const isEngagementDetailsView = !engagement.id;
     if (isEngagementDetailsView && !this.isReportTab) {
-      this._hanldeLinksForEngagement();
+      this._handleLinksForEngagement();
     }
   }
 
   setReadOnly() {
-    this.isTabReadonly =
-      !this.basePermissionPath ||
-      (!collectionExists(`${this.basePermissionPath}.PUT`) && !collectionExists(`${this.basePermissionPath}.POST`));
+    this.isTabReadonly = !this.optionsData || (!get(this.optionsData, 'POST') && !get(this.optionsData, 'PUT'));
     this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
-  showFileTypes(basePath) {
-    return !!basePath && collectionExists(`${basePath}.file_type`, 'GET');
+  showFileTypes(options: AnyObject) {
+    return !!options && get(options, 'GET.file_type');
   }
 
   _resetDialog(dialogOpened) {
@@ -661,7 +648,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   _requestCompleted(event, detail) {
     detail = detail || event.detail;
     this.requestInProcess = false;
-    if (detail.success) {
+    if (detail?.success) {
       this.dialogOpened = false;
     }
   }

@@ -81,6 +81,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
       </style>
 
       <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
+        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
         <div class="titlebar layout-horizontal align-items-center">
           <paper-icon-button id="menuButton" icon="menu" @click="${this.menuBtnClicked}"></paper-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>

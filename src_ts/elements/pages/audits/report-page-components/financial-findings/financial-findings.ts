@@ -9,8 +9,8 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -20,10 +20,11 @@ import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {getChoices, getHeadingLabel} from '../../../../mixins/permission-controller';
+import {getHeadingLabel, getOptionsChoices} from '../../../../mixins/permission-controller';
 import sortBy from 'lodash-es/sortBy';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {getTableRowIndexText} from '../../../../utils/utils';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @customElement
@@ -65,11 +66,11 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
 
       <etools-content-panel
         class="content-section clearfix"
-        .panelTitle="${this.getLabel('financial_finding_set', this.basePermissionPath)}"
+        .panelTitle="${this.getLabel('financial_finding_set', this.optionsData)}"
         list
       >
         <div slot="panel-btns">
-          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+          <div ?hidden="${!this._canBeChanged(this.optionsData)}">
             <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
@@ -79,21 +80,21 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
           <etools-data-table-column class="col-4"
             >${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'financial_finding_set.title',
               'Title (Category)'
             )}</etools-data-table-column
           >
           <etools-data-table-column class="col-3"
             >${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'financial_finding_set.local_amount',
               'Amount (local)'
             )}</etools-data-table-column
           >
           <etools-data-table-column class="col-3"
             >${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'financial_finding_set.amount',
               'Amount USD'
             )}</etools-data-table-column
@@ -108,7 +109,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 <span class="col-data col-4">${item.title}</span>
                 <span class="col-data col-3">${item.local_amount}</span>
                 <span class="col-data col-1">${item.amount}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
                 </div>
@@ -116,18 +117,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
               <div slot="row-data-details">
                 <div class="row-details-content col-12">
                   <span class="rdc-title"
-                    >${getHeadingLabel(
-                      this.basePermissionPath,
-                      'financial_finding_set.description',
-                      'Description'
-                    )}</span
+                    >${getHeadingLabel(this.optionsData, 'financial_finding_set.description', 'Description')}</span
                   >
                   <span>${item.description}</span>
                 </div>
                 <div class="row-details-content col-12">
                   <span class="rdc-title"
                     >${getHeadingLabel(
-                      this.basePermissionPath,
+                      this.optionsData,
                       'financial_finding_set.recommendation',
                       'Recommendation'
                     )}</span
@@ -136,11 +133,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 </div>
                 <div class="row-details-content col-12">
                   <span class="rdc-title"
-                    >${getHeadingLabel(
-                      this.basePermissionPath,
-                      'financial_finding_set.ip_comments',
-                      'IP comments'
-                    )}</span
+                    >${getHeadingLabel(this.optionsData, 'financial_finding_set.ip_comments', 'IP comments')}</span
                     <span>${item.ip_comments}</span>
                   >
                 </div>
@@ -181,14 +174,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
               <!-- Title -->
               <etools-dropdown
                 id="titleOptionsDropDown"
-                class="${this._setRequired('financial_finding_set.title', this.basePermissionPath)} validate-input"
-                label="${this.getLabel('financial_finding_set.title', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('financial_finding_set.title', this.basePermissionPath)}"
+                class="${this._setRequired('financial_finding_set.title', this.optionsData)} validate-input"
+                label="${this.getLabel('financial_finding_set.title', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.title', this.optionsData)}"
                 .options="${this.titleOptions}"
                 option-label="display_name"
                 option-value="value"
                 .selected="${this.editedItem.title}"
-                ?required="${this._setRequired('financial_finding_set.title', this.basePermissionPath)}"
+                ?required="${this._setRequired('financial_finding_set.title', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 ?invalid="${this.errors.title}"
                 .errorMessage="${this.errors.title}"
@@ -206,15 +199,12 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-6">
               <!-- Amount (local) -->
               <etools-currency-amount-input
-                class="${this._setRequired(
-                  'financial_finding_set.local_amount',
-                  this.basePermissionPath
-                )} validate-input"
+                class="${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.local_amount}"
                 currency=""
-                label="${this.getLabel('financial_finding_set.local_amount', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('financial_finding_set.local_amount', this.basePermissionPath)}"
-                ?required="${this._setRequired('financial_finding_set.local_amount', this.basePermissionPath)}"
+                label="${this.getLabel('financial_finding_set.local_amount', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.local_amount', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.local_amount', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 ?invalid="${this.errors.local_amount}"
                 .errorMessage="${this.errors.local_amount}"
@@ -228,12 +218,12 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-6">
               <!-- Amount USD -->
               <etools-currency-amount-input
-                class="${this._setRequired('financial_finding_set.amount', this.basePermissionPath)} validate-input"
+                class="${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.amount}"
                 currency="$"
-                label="${this.getLabel('financial_finding_set.amount', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.basePermissionPath)}"
-                ?required="${this._setRequired('financial_finding_set.amount', this.basePermissionPath)}"
+                label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.amount', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 ?invalid="${this.errors.amount}"
                 .errorMessage="${this.errors.amount}"
@@ -248,13 +238,13 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-12">
               <!-- Description -->
               <paper-textarea
-                class="w100 ${this._setRequired('financial_finding_set.description', this.basePermissionPath)}
+                class="w100 ${this._setRequired('financial_finding_set.description', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.description}"
                 allowed-pattern="[\\d\\s]"
-                label="${this.getLabel('financial_finding_set.description', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('financial_finding_set.description', this.basePermissionPath)}"
-                ?required="${this._setRequired('financial_finding_set.description', this.basePermissionPath)}"
+                label="${this.getLabel('financial_finding_set.description', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.description', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.description', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors.description}"
@@ -270,16 +260,13 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-12">
               <!-- Recommendation -->
               <paper-textarea
-                class="w100 ${this._setRequired('financial_finding_set.recommendation', this.basePermissionPath)}
+                class="w100 ${this._setRequired('financial_finding_set.recommendation', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.recommendation}"
                 allowed-pattern="[\\d\\s]"
-                label="${this.getLabel('financial_finding_set.recommendation', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText(
-                  'financial_finding_set.recommendation',
-                  this.basePermissionPath
-                )}"
-                ?required="${this._setRequired('financial_finding_set.recommendation', this.basePermissionPath)}"
+                label="${this.getLabel('financial_finding_set.recommendation', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.recommendation', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.recommendation', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors.recommendation}"
@@ -296,13 +283,13 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-12">
               <!-- IP comments -->
               <paper-textarea
-                class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.basePermissionPath)}
+                class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.ip_comments}"
                 allowed-pattern="[\\d\\s]"
-                label="${this.getLabel('financial_finding_set.ip_comments', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('financial_finding_set.ip_comments', this.basePermissionPath)}"
-                ?required="${this._setRequired('financial_finding_set.ip_comments', this.basePermissionPath)}"
+                label="${this.getLabel('financial_finding_set.ip_comments', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.ip_comments', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors.ip_comments}"
@@ -422,12 +409,12 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       this._errorHandler(this.errorObject.financial_finding_set);
     }
     if (changedProperties.has('errorObject')) {
-      this.setChoices(this.basePermissionPath);
+      this.setChoices(this.optionsData);
     }
   }
 
-  setChoices(basePath) {
-    const unsortedOptions = getChoices(`${basePath}.financial_finding_set.title`);
+  setChoices(options: AnyObject) {
+    const unsortedOptions = getOptionsChoices(options, 'financial_finding_set.title');
     const titleOptions = sortBy(unsortedOptions, ['display_name']);
     this.titleOptions = titleOptions || [];
   }

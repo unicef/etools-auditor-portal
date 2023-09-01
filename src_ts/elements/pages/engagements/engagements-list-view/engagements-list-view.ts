@@ -1,16 +1,14 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 import {GenericObject} from '../../../../types/global';
-import {getStaticData} from '../../../mixins/static-data-controller';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {buildQueryString, updateQueries} from '../../../mixins/query-params-controller';
 import {getEndpoint} from '../../../config/endpoints-controller';
-import {pageLayoutStyles} from '../../../styles/page-layout-styles-lit';
+import {pageLayoutStyles} from '../../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {elevationStyles} from '@unicef-polymer/etools-modules-common/dist/styles/elevation-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
-import '../../../data-elements/engagements-list-data';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
 import '@unicef-polymer/etools-table/etools-table';
@@ -37,13 +35,27 @@ import {
   getStaffScFilters,
   StaffScSelectedValueTypeByFilterKey
 } from '../../staff-sc/staff-sc-filters';
-import {getChoices, getHeadingLabel} from '../../../mixins/permission-controller';
+import {getLabelFromOptions, getOptionsChoices} from '../../../mixins/permission-controller';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {RootState, store} from '../../../../redux/store';
+import {RouteDetails, RouteQueryParams} from '@unicef-polymer/etools-types/dist/router.types';
+import {buildUrlQueryString, cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import {isJsonStrMatch, isObject} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types';
+import {connect} from 'pwa-helpers/connect-mixin';
+import pick from 'lodash-es/pick';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import get from 'lodash-es/get';
+import {sendRequest} from '@unicef-polymer/etools-ajax';
+import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
+import omit from 'lodash-es/omit';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
  * @customElement
  */
 @customElement('engagements-list-view')
-export class EngagementsListView extends CommonMethodsMixin(LitElement) {
+export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitElement)) {
   static get styles() {
     return [pageLayoutStyles, moduleStyles, gridLayoutStylesLit, elevationStyles];
   }
@@ -67,15 +79,6 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
           box-shadow: 1px -3px 9px 0 #000000;
         }
       </style>
-
-      <engagements-list-data
-        id="listData"
-        @data-loaded="${({detail}: CustomEvent) => this.onDataLoaded(detail)}"
-        .endpointName="${this.endpointName}"
-        .requestQueries="${this.requestQueries}"
-        ?reloadData="${this.reloadData}"
-      >
-      </engagements-list-data>
 
       <pages-header-element
         show-export-button
@@ -110,20 +113,11 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
   @property({type: String})
   basePermissionPath = '';
 
-  @property({type: Object}) // , notify: true
-  queryParams!: GenericObject;
-
-  @property({type: String})
-  baseRoute!: string;
-
   @property({type: Boolean})
   hideAddButton!: boolean;
 
   @property({type: Object})
-  columnValuesFullText!: GenericObject;
-
-  @property({type: Array})
-  riskTypes!: [];
+  columnValuesFromOptions!: GenericObject;
 
   @property({type: Array})
   listColumns: GenericObject[] = [
@@ -202,9 +196,6 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
     }
   }
 
-  @property({type: Boolean})
-  reloadData = false;
-
   @property({type: Array})
   exportLinks: any[] = [];
 
@@ -212,19 +203,115 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
   endpointName = '';
 
   @property({type: Object})
-  requestQueries!: GenericObject;
+  prevQueryStringObj: GenericObject = {page_size: 10, page: 1, ordering: 'reference_number'};
+
+  private routeDetails!: RouteDetails | null;
 
   connectedCallback() {
     super.connectedCallback();
-    this.setHeadersText();
-    this._setItemValues(this.basePermissionPath);
-    this.filtersDataLoaded = this.filtersDataLoaded.bind(this);
-    document.addEventListener('engagements-filters-data-loaded', this.filtersDataLoaded);
+    fireEvent(this, 'global-loading', {
+      active: false,
+      loadingSource: 'main-page'
+    });
+    this.getListData = debounce(this.getListData.bind(this), 400) as any;
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener('engagements-filters-data-loaded', this.filtersDataLoaded);
+  stateChanged(state: RootState) {
+    if (
+      !state.app?.routeDetails ||
+      !(
+        (state.app.routeDetails?.routeName === 'engagements' || state.app.routeDetails?.routeName === 'staff-sc') &&
+        state.app.routeDetails?.subRouteName === 'list'
+      )
+    ) {
+      return; // Avoid code execution while on a different page
+    }
+
+    const stateRouteDetails = get(state, 'app.routeDetails');
+    if (!isJsonStrMatch(stateRouteDetails, this.routeDetails)) {
+      this.routeDetails = cloneDeep(stateRouteDetails);
+      this.isStaffSc = this.routeDetails?.routeName === 'staff-sc';
+      if (this.hadToinitializeUrlWithPrevQueryString(stateRouteDetails)) {
+        return;
+      }
+      this.initializePaginatorFromUrl(this.routeDetails?.queryParams);
+      this.getListData();
+    }
+
+    this.initFiltersForDisplay(state);
+  }
+
+  hadToinitializeUrlWithPrevQueryString(stateRouteDetails: any) {
+    if (
+      (!stateRouteDetails.queryParams || Object.keys(stateRouteDetails.queryParams).length === 0) &&
+      this.prevQueryStringObj
+    ) {
+      this.updateCurrentParams(this.prevQueryStringObj);
+      return true;
+    }
+    return false;
+  }
+
+  private updateCurrentParams(paramsToUpdate: GenericObject<any>, reset = false): void {
+    let currentParams = this.routeDetails ? this.routeDetails.queryParams : this.prevQueryStringObj;
+    if (reset) {
+      currentParams = pick(currentParams, ['ordering', 'page_size', 'page']);
+    }
+    this.prevQueryStringObj = cloneDeep({...currentParams, ...paramsToUpdate});
+    const stringParams: string = buildUrlQueryString(this.prevQueryStringObj);
+    EtoolsRouter.replaceAppLocation(`${this.routeDetails?.path}?${stringParams}`);
+  }
+
+  initializePaginatorFromUrl(queryParams: any) {
+    if (queryParams.page) {
+      this.paginator.page = Number(queryParams.page);
+    } else {
+      this.paginator.page = 1;
+    }
+
+    if (queryParams.page_size) {
+      this.paginator.page_size = Number(queryParams.page_size);
+    }
+  }
+
+  getListData() {
+    fireEvent(this, 'global-loading', {
+      type: 'engagements-list',
+      active: true,
+      message: 'Loading of engagements list...'
+    });
+
+    const endpoint = getEndpoint(this.endpointName);
+    endpoint.url += `?${buildUrlQueryString(this.routeDetails!.queryParams! || {})}`;
+    console.log('url:', endpoint.url);
+    sendRequest({
+      endpoint: endpoint
+    })
+      .then((resp) => {
+        this.onDataLoaded(resp);
+      })
+      .catch((err) => {
+        console.log('onDataLoadError:', err);
+        this.onDataLoadError(err);
+      })
+      .finally(() => {
+        fireEvent(this, 'global-loading', {
+          type: 'engagements-list',
+          active: false,
+          message: 'Loading of engagements list...'
+        });
+      });
+  }
+
+  onDataLoadError(err) {
+    const {status} = (err || {}) as any;
+
+    // wrong page in queries
+    if (status === 404 && this.routeDetails!.queryParams!.page !== '1') {
+      updateQueries({page: '1'});
+      return;
+    }
+    fireEvent(this, 'toast', {text: 'Error loading data.'});
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -235,19 +322,40 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
     }
   }
 
-  setHeadersText() {
-    this.listColumns.forEach((col) => {
-      col.label = getHeadingLabel(this.basePermissionPath, col.path, col.label);
-    });
+  private initFiltersForDisplay(state: RootState) {
+    if (!this.filters && this.dataRequiredByFiltersHasBeenLoaded(state)) {
+      this.setValuesFromOptions(
+        this.isStaffSc ? state.commonData.new_staff_scOptions : state.commonData.new_engagementOptions
+      );
+      setselectedValueTypeByFilterKey(
+        this.isStaffSc ? StaffScSelectedValueTypeByFilterKey : EngagementSelectedValueTypeByFilterKey
+      );
+      const availableFilters = JSON.parse(
+        JSON.stringify(this.isStaffSc ? getStaffScFilters() : getEngagementFilters())
+      );
+      this.populateFilterOptionsFromCommonData(state, availableFilters);
+      const currentParams: RouteQueryParams = state.app!.routeDetails.queryParams || {};
+      this.filters = updateFiltersSelectedValues(currentParams, availableFilters);
+    }
   }
 
-  _setItemValues(base) {
-    if (!base) {
+  private dataRequiredByFiltersHasBeenLoaded(state: RootState): boolean {
+    return !!(
+      state.commonData?.loadedTimestamp &&
+      this.routeDetails?.queryParams &&
+      Object.keys(this.routeDetails?.queryParams).length > 0
+    );
+  }
+
+  setValuesFromOptions(optionsData) {
+    if (!optionsData) {
       return;
     }
-    this.columnValuesFullText = {
-      engagementTypes: getChoices(`${base}.engagement_type`),
-      status: getChoices(`${base}.status`),
+    this.setHeadersText(optionsData);
+    debugger;
+    this.columnValuesFromOptions = {
+      engagementTypes: getOptionsChoices(optionsData, 'engagement_type'),
+      status: getOptionsChoices(optionsData, 'status'),
       linkTypes: [
         {value: 'ma', display_name: 'micro-assessments'},
         {value: 'audit', display_name: 'audits'},
@@ -257,15 +365,17 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
     };
   }
 
+  setHeadersText(optionsData) {
+    this.listColumns.forEach((col) => {
+      col.label = getLabelFromOptions(optionsData, col.path, col.label);
+    });
+  }
+
   _refactorValue(type, value) {
     const values = this.itemValues[type];
     if (values) {
       return values[value];
     }
-  }
-
-  filtersDataLoaded() {
-    this.initFiltersForDisplay();
   }
 
   setReferenceNumberLink(isStaffSc: boolean) {
@@ -274,57 +384,44 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
       : `${ROOT_PATH}:staff-spot-checks/:id/overview`;
   }
 
-  initFiltersForDisplay() {
-    setselectedValueTypeByFilterKey(
-      this.isStaffSc ? StaffScSelectedValueTypeByFilterKey : EngagementSelectedValueTypeByFilterKey
-    );
-    const availableFilters = JSON.parse(JSON.stringify(this.isStaffSc ? getStaffScFilters() : getEngagementFilters()));
-    this.populateFilterOptionsFromCommonData(availableFilters);
-    const currentParams = Object.assign({}, this.queryParams || {});
-    ['page', 'page_size', 'sort'].forEach((key) => {
-      if (currentParams[key]) {
-        delete currentParams[key];
-      }
-    });
-    this.filters = availableFilters;
-    this.filters = updateFiltersSelectedValues(currentParams, this.filters);
-  }
-
-  populateFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
+  populateFilterOptionsFromCommonData(state: RootState, filters: EtoolsFilter[]) {
     this.isStaffSc
-      ? this.populateStaffScFilterOptionsFromCommonData(filters)
-      : this.populateEngagementsFilterOptionsFromCommonData(filters);
+      ? this.populateStaffScFilterOptionsFromCommonData(state, filters)
+      : this.populateEngagementsFilterOptionsFromCommonData(state, filters);
   }
 
-  populateEngagementsFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
-    updateFilterSelectionOptions(filters, EngagementFilterKeys.partner__in, getStaticData('filterPartners') || []);
+  populateEngagementsFilterOptionsFromCommonData(state: RootState, filters: EtoolsFilter[]) {
+    updateFilterSelectionOptions(filters, EngagementFilterKeys.partner__in, state.commonData.filterPartners || []);
     updateFilterSelectionOptions(
       filters,
       EngagementFilterKeys.agreement__auditor_firm__in,
-      getStaticData('filterAuditors') || []
+      state.commonData.filterAuditors || []
     );
-    updateFilterSelectionOptions(filters, EngagementFilterKeys.status__in, getStaticData('statuses') || []);
+    updateFilterSelectionOptions(filters, EngagementFilterKeys.status__in, this.columnValuesFromOptions.status || []);
     updateFilterSelectionOptions(
       filters,
       EngagementFilterKeys.engagement_type__in,
-      getStaticData('engagementTypes') || []
+      this.columnValuesFromOptions.engagementTypes || []
     );
   }
 
-  populateStaffScFilterOptionsFromCommonData(filters: EtoolsFilter[]) {
-    updateFilterSelectionOptions(filters, StaffScFilterKeys.partner__in, getStaticData('filterPartners') || []);
-    updateFilterSelectionOptions(filters, StaffScFilterKeys.status__in, getStaticData('statuses') || []);
+  populateStaffScFilterOptionsFromCommonData(state: RootState, filters: EtoolsFilter[]) {
+    updateFilterSelectionOptions(filters, StaffScFilterKeys.partner__in, state.commonData.filterPartners || []);
+    updateFilterSelectionOptions(filters, StaffScFilterKeys.status__in, this.columnValuesFromOptions.status || []);
     updateFilterSelectionOptions(
       filters,
       StaffScFilterKeys.staff_members__user__in,
-      getStaticData('staffMembersUsers') || []
+      state.commonData.staffMembersUsers || []
     );
   }
 
   paginatorChange(e: CustomEvent) {
-    this.paginator = {...e.detail};
+    // this.paginator = {...e.detail};
+    // const {page, page_size}: EtoolsPaginator = e.detail;
+    // updateQueries({page: page, page_size: page_size});
+
     const {page, page_size}: EtoolsPaginator = e.detail;
-    updateQueries({page: page, page_size: page_size});
+    this.updateCurrentParams({page, page_size});
   }
 
   sortChange(e: CustomEvent) {
@@ -336,12 +433,14 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
       status: 'status'
     };
     const sortCol = e.detail.filter((c) => c.sort)[0];
-    updateQueries({ordering: `${sortCol.sort === 'asc' ? '' : '-'}${colKeyToSortKey[sortCol.name]}`});
+    this.updateCurrentParams({ordering: `${sortCol.sort === 'asc' ? '' : '-'}${colKeyToSortKey[sortCol.name]}`});
   }
 
   filtersChange(e: CustomEvent) {
-    this.paginator.page = 1;
-    updateQueries({...e.detail, page: 1, page_size: this.paginator.page_size});
+    // this.paginator.page = 1;
+    // updateQueries({...e.detail, page: 1, page_size: this.paginator.page_size});
+
+    this.updateCurrentParams({...e.detail, page: 1}, true);
   }
 
   _hideAddButton() {
@@ -350,19 +449,35 @@ export class EngagementsListView extends CommonMethodsMixin(LitElement) {
   }
 
   onDataLoaded(data: GenericObject) {
-    this.formatTableDataForDisplay(data.results);
-    this.engagementsList = data.results;
-    this.paginator = getPaginatorWithBackend(this.paginator, data.count);
-    this.tableTitle = `${this.paginator.visible_range[0]}-${this.paginator.visible_range[1]} of
+    this.waitForValuesFromOptions().then(() => {
+      this.formatTableDataForDisplay(data.results);
+      this.engagementsList = data.results;
+      this.paginator = getPaginatorWithBackend(this.paginator, data.count);
+      this.tableTitle = `${this.paginator.visible_range[0]}-${this.paginator.visible_range[1]} of
       ${this.paginator.count}`;
-    this._setExportLinks();
+      this._setExportLinks();
+    });
+  }
+
+  waitForValuesFromOptions() {
+    return new Promise((resolve) => {
+      const check = setInterval(() => {
+        if (this.columnValuesFromOptions) {
+          clearInterval(check);
+          resolve(true);
+        }
+      }, 50);
+    });
   }
 
   formatTableDataForDisplay(data: GenericObject[]) {
     (data || []).forEach((item) => {
-      item.status = `${this.formatColText(item.status, this.columnValuesFullText.status)}`;
-      item.engagement_link = `${this.formatColText(item.engagement_type, this.columnValuesFullText.linkTypes)}`;
-      item.engagement_type = `${this.formatColText(item.engagement_type, this.columnValuesFullText.engagementTypes)}`;
+      item.status = `${this.formatColText(item.status, this.columnValuesFromOptions.status)}`;
+      item.engagement_link = `${this.formatColText(item.engagement_type, this.columnValuesFromOptions.linkTypes)}`;
+      item.engagement_type = `${this.formatColText(
+        item.engagement_type,
+        this.columnValuesFromOptions.engagementTypes
+      )}`;
     });
   }
 

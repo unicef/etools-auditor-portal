@@ -4,7 +4,7 @@ import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -47,6 +47,18 @@ export class KicwRisk extends LitElement {
           border-bottom: none !important;
           background: transparent;
         }
+        .col-data {
+          display: inline-block;
+          overflow: hidden;
+          font-size: 13px;
+          text-overflow: ellipsis;
+          padding-right: 16px;
+          padding-left: 1px;
+          box-sizing: border-box;
+        }
+        .truncate {
+          white-space: nowrap;
+        }
       </style>
 
       <etools-data-table-header no-collapse no-title>
@@ -63,9 +75,9 @@ export class KicwRisk extends LitElement {
             <div slot="row-data" class="layout-horizontal editable-row">
               <span class="col-data col-1">${getTableRowIndexText(index)}</span>
               <span class="col-data col-2">${item.value_display}</span>
-              <span class="col-data col-3">${item.extra.key_control_observation}</span>
-              <span class="col-data col-3">${item.extra.recommendation}</span>
-              <span class="col-data col-3">${item.extra.ip_response}</span>
+              <span class="col-data col-3 truncate">${item.extra.key_control_observation}</span>
+              <span class="col-data col-3 truncate">${item.extra.recommendation}</span>
+              <span class="col-data col-3 truncate">${item.extra.ip_response}</span>
               <div class="hover-block" ?hidden="${!this.isEditable}">
                 <paper-icon-button icon="create" @click="${() => this.editRisk(index)}"></paper-icon-button>
                 <paper-icon-button icon="delete" @click="${() => this.removeRisk(index)}"></paper-icon-button>

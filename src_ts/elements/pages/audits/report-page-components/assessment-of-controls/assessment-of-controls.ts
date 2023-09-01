@@ -7,8 +7,8 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -56,7 +56,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
 
       <etools-content-panel
         class="content-section clearfix"
-        .panelTitle="${this.getLabel('key_internal_controls', this.basePermissionPath)}"
+        .panelTitle="${this.getLabel('key_internal_controls', this.optionsData)}"
         list
       >
         <div class="header-content">
@@ -66,7 +66,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           </div>
         </div>
         <div slot="panel-btns">
-          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+          <div ?hidden="${!this._canBeChanged(this.optionsData)}">
             <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
@@ -81,7 +81,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
             <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-12">${item.audit_observation}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
                 </div>
@@ -134,15 +134,12 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                   <paper-textarea
                     class="w100 ${this._setRequired(
                       'key_internal_controls.recommendation',
-                      this.basePermissionPath
+                      this.optionsData
                     )} validate-input"
                     .value="${this.editedItem.recommendation}"
-                    label="${this.getLabel('key_internal_controls.recommendation', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText(
-                      'key_internal_controls.recommendation',
-                      this.basePermissionPath
-                    )}"
-                    ?required="${this._setRequired('key_internal_controls.recommendation', this.basePermissionPath)}"
+                    label="${this.getLabel('key_internal_controls.recommendation', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('key_internal_controls.recommendation', this.optionsData)}"
+                    ?required="${this._setRequired('key_internal_controls.recommendation', this.optionsData)}"
                     ?disabled="${this.requestInProcess}"
                     ?invalid="${this.errors.recommendation}"
                     .errorMessage="${this.errors.recommendation}"
@@ -160,15 +157,15 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                   <paper-textarea
                     class="w100 ${this._setRequired(
                       'key_internal_controls.audit_observation',
-                      this.basePermissionPath
+                      this.optionsData
                     )} validate-input"
                     .value="${this.editedItem.audit_observation}"
-                    label="${this.getLabel('key_internal_controls.audit_observation', this.basePermissionPath)}"
+                    label="${this.getLabel('key_internal_controls.audit_observation', this.optionsData)}"
                     placeholder="${this.getPlaceholderText(
                       'key_internal_controls.audit_observation',
-                      this.basePermissionPath
+                      this.optionsData
                     )}"
-                    ?required="${this._setRequired('key_internal_controls.audit_observation', this.basePermissionPath)}"
+                    ?required="${this._setRequired('key_internal_controls.audit_observation', this.optionsData)}"
                     ?disabled="${this.requestInProcess}"
                     ?invalid="${this.errors.audit_observation}"
                     .errorMessage="${this.errors.audit_observation}"
@@ -184,15 +181,12 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                 <div class="col col-12">
                   <!-- IP Response -->
                   <paper-textarea
-                    class="w100 ${this._setRequired('key_internal_controls.ip_response', this.basePermissionPath)}
+                    class="w100 ${this._setRequired('key_internal_controls.ip_response', this.optionsData)}
                                           validate-input"
                     .value="${this.editedItem.ip_response}"
-                    label="${this.getLabel('key_internal_controls.ip_response', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText(
-                      'key_internal_controls.ip_response',
-                      this.basePermissionPath
-                    )}"
-                    ?required="${this._setRequired('key_internal_controls.ip_response', this.basePermissionPath)}"
+                    label="${this.getLabel('key_internal_controls.ip_response', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('key_internal_controls.ip_response', this.optionsData)}"
+                    ?required="${this._setRequired('key_internal_controls.ip_response', this.optionsData)}"
                     ?disabled="${this.requestInProcess}"
                     ?invalid="${this.errors.ip_response}"
                     .errorMessage="${this.errors.ip_response}"

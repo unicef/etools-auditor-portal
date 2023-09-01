@@ -1,12 +1,12 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
 import '@polymer/paper-icon-button/paper-icon-button';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices} from '../../../mixins/permission-controller';
+import {getOptionsChoices} from '../../../mixins/permission-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import get from 'lodash-es/get';
@@ -28,7 +28,7 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
 
   render() {
     return html`
-    ${sharedStyles}
+      ${sharedStyles}
       <etools-data-table-row>
         <div slot="row-data" class="layout-horizontal editable-row">
           <span class="col-data col-8">${this.areaData?.header}</span>
@@ -53,9 +53,6 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   @property({type: Object})
   originalData!: GenericObject;
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   @property({type: Boolean})
   canBeChanged!: boolean;
 
@@ -71,7 +68,7 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('basePermissionPath')) {
+    if (changedProperties.has('optionsData')) {
       this.setRiskOptions();
     }
     if (changedProperties.has('area') || changedProperties.has('riskOptions')) {
@@ -80,7 +77,8 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   }
 
   setRiskOptions() {
-    const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
+    debugger;
+    const riskOptions = getOptionsChoices(this.optionsData, 'test_subject_areas.blueprints.risk.value') || [];
     this.riskOptions = riskOptions;
   }
 

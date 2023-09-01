@@ -1,6 +1,6 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -123,11 +123,11 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
             <div class="col col-12">
               <!-- Finding -->
               <paper-input
-                class="w100 validate-input ${this._setRequired('findings.finding', this.basePermissionPath)}"
+                class="w100 validate-input ${this._setRequired('findings.finding', this.optionsData)}"
                 .value="${this.editedItem.finding}"
-                label="${this.getLabel('findings.finding', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('findings.finding', this.basePermissionPath)}"
-                ?required="${this._setRequired('findings.finding', this.basePermissionPath)}"
+                label="${this.getLabel('findings.finding', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('findings.finding', this.optionsData)}"
+                ?required="${this._setRequired('findings.finding', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 maxlength="400"
                 ?invalid="${this.errors[0]?.finding}"
@@ -142,12 +142,12 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
             <div class="col col-12">
               <!-- Recommendation -->
               <paper-textarea
-                class="w100 validate-input ${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                class="w100 validate-input ${this._setRequired('findings.recommendation', this.optionsData)}"
                 .value="${this.editedItem.recommendation}"
                 allowed-pattern="[ds]"
-                label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('findings.recommendation', this.basePermissionPath)}"
-                ?required="${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                label="${this.getLabel('findings.recommendation', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('findings.recommendation', this.optionsData)}"
+                ?required="${this._setRequired('findings.recommendation', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors[0]?.recommendation}"
@@ -213,9 +213,6 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
 
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this finding?';
-
-  @property({type: String})
-  basePermissionPath = '';
 
   @property({type: Boolean})
   canBeChanged = false;

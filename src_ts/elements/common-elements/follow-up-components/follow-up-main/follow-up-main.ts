@@ -17,6 +17,7 @@ import '../../../pages/spot-checks/report-page-components/summary-findings-eleme
 import '../../../pages/audits/report-page-components/financial-findings/financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @LitElement
@@ -36,7 +37,7 @@ export class FollowUpMain extends LitElement {
       <follow-up-actions
         .engagementId="${this.engagement.id}"
         .partnerData="${this.engagement.partner}"
-        .baseEngagementPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </follow-up-actions>
 
@@ -46,7 +47,7 @@ export class FollowUpMain extends LitElement {
             .engagement="${this.engagement}"
             .originalData="${this.originalData}"
             .errorObject="${this.errorObject}"
-            .basePermissionPath="${this.permissionBase}"
+            .optionsData="${this.optionsData}"
           >
           </follow-up-financial-findings>`
         : ``}
@@ -57,7 +58,7 @@ export class FollowUpMain extends LitElement {
             .errorObject="${this.errorObject}"
             .originalData="${this.originalData.findings}"
             .priority="${this.priorities.high}"
-            .basePermissionPath="${this.permissionBase}"
+            .optionsData="${this.optionsData}"
           >
           </summary-findings-element>`
         : ``}
@@ -67,7 +68,7 @@ export class FollowUpMain extends LitElement {
             class="mb-24"
             .errorObject="${this.errorObject}"
             .dataItems="${this.engagement.financial_finding_set}"
-            .basePermissionPath="${this.permissionBase}"
+            .optionsData="${this.optionsData}"
           >
           </financial-findings>`
         : ``}
@@ -81,10 +82,13 @@ export class FollowUpMain extends LitElement {
   originalData!: GenericObject;
 
   @property({type: Object})
-  errorObject: GenericObject = {};
+  optionsData!: AnyObject;
 
-  @property({type: String})
-  permissionBase!: string | null;
+  @property({type: Object})
+  apOptionsData!: AnyObject;
+
+  @property({type: Object})
+  errorObject: GenericObject = {};
 
   @property({type: Object})
   priorities: GenericObject = {

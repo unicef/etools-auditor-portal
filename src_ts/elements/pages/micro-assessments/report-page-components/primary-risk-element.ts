@@ -1,5 +1,5 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -7,7 +7,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices, isRequired} from '../../../mixins/permission-controller';
+import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
@@ -17,6 +17,7 @@ import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import isEmpty from 'lodash-es/isEmpty';
+import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
 
 /**
  * @LitEelement
@@ -52,7 +53,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
             <etools-dropdown
               id="riskAssessmentInput"
               class="w100 validate-input required"
-              .selected="${this.primaryArea.risk.value.value}"
+              .selected="${this.primaryArea?.risk?.value?.value}"
               label="Risk Assessment"
               placeholder="Select Risk Assessment"
               .options="${this.riskOptions}"
@@ -64,8 +65,12 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
               .errorMessage="${this.errors?.children[0].blueprints[0].risk.value}"
               @focus="${this._resetFieldError}"
               trigger-value-change-event
-              @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                (this.primaryArea.risk.value.value = detail.selectedItem?.value)}"
+              @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                if (this.primaryArea && !this.primaryArea.risk?.value) {
+                  this.primaryArea.risk.value = {value: ''};
+                }
+                this.primaryArea.risk.value.value = detail.selectedItem?.value;
+              }}"
               hide-search
             >
             </etools-dropdown>
@@ -108,9 +113,6 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
     fields: ['overall_risk_assessment']
   };
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   @property({type: Object})
   riskData!: GenericObject;
 
@@ -126,18 +128,13 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
   @property({type: Boolean})
   dialogOpened!: boolean;
 
-  connectedCallback() {
-    super.connectedCallback();
-    this._populateRiskOptions();
-  }
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
     if (
       changedProperties.has('riskData') ||
       changedProperties.has('riskOptions') ||
-      changedProperties.has('basePermissionPath')
+      changedProperties.has('optionsData')
     ) {
       this._setValues(this.riskData);
     }
@@ -147,11 +144,11 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
   }
 
   _setValues(data) {
-    if (!this.basePermissionPath || !this.riskData) {
+    if (!this.optionsData || !this.riskData) {
       return;
     }
     this._populateRiskOptions();
-    this.isDisabled = this.isReadOnly('test_subject_areas', this.basePermissionPath);
+    this.isDisabled = this.isReadOnly('test_subject_areas', this.optionsData);
 
     if (!data) {
       return;
@@ -178,7 +175,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
 
   _populateRiskOptions() {
     if (!this.riskOptions) {
-      const riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
+      const riskOptions = getOptionsChoices(this.optionsData, 'overall_risk_assessment.blueprints.risk.value') || [];
       this.riskOptions = riskOptions;
     }
   }
@@ -189,10 +186,10 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       return false;
     }
-    if (!this.basePermissionPath || forSave) {
+    if (!this.optionsData || forSave) {
       return true;
     }
-    const required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
+    const required = isRequired('overall_risk_assessment.blueprints.risk', this.optionsData);
     if (!required) {
       return true;
     }

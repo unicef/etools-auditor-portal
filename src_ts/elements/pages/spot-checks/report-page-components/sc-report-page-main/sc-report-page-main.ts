@@ -28,11 +28,12 @@ export class ScReportPageMain extends LitElement {
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
         @data-changed="${({detail}) => {
-          this.engagement = detail;
-          fireEvent(this, 'data-changed', this.engagement);
+          // @dci @data-changed
+          // this.engagement = detail;
+          // fireEvent(this, 'data-changed', this.engagement);
         }}"
         audit-type="Audit"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </assign-engagement>
 
@@ -40,12 +41,13 @@ export class ScReportPageMain extends LitElement {
         id="overviewEngagement"
         .data="${this.engagement}"
         @data-changed="${({detail}) => {
-          this.engagement = detail;
-          fireEvent(this, 'data-changed', this.engagement);
+          // @dci @data-changed inifinite trigger
+          // this.engagement = detail;
+          // fireEvent(this, 'data-changed', this.engagement);
         }}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </overview-element>
 
@@ -55,7 +57,7 @@ export class ScReportPageMain extends LitElement {
         .errorObject="${this.errorObject}"
         .originalData="${this.originalData.findings}"
         .priority="${this.priorities.high}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </summary-findings-element>
 
@@ -65,7 +67,7 @@ export class ScReportPageMain extends LitElement {
         .errorObject="${this.errorObject}"
         .originalData="${this.originalData.findings}"
         .priority="${this.priorities.low}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </summary-findings-element>
 
@@ -74,7 +76,7 @@ export class ScReportPageMain extends LitElement {
         .errorObject="${this.errorObject}"
         .data="${this.engagement.internal_controls}"
         .originalData="${this.originalData?.internal_controls}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </internal-controls>
     `;
@@ -94,6 +96,9 @@ export class ScReportPageMain extends LitElement {
 
   @property({type: Object})
   engagement: GenericObject = {};
+
+  @property({type: Object})
+  optionsData: GenericObject = {};
 
   @property({type: Object})
   originalData: GenericObject = {};

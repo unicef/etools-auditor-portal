@@ -1,14 +1,14 @@
-import {property} from '@polymer/decorators';
-import {Constructor} from '../../../../types/global';
-import {PolymerElement} from '@polymer/polymer/polymer-element';
+import {LitElement, Constructor, property} from 'lit-element';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer';
+import {AppDrawerLayoutElement} from '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
+import {AppHeaderLayoutElement} from '@polymer/app-layout/app-header-layout/app-header-layout.js';
 
 /**
  * App menu functionality mixin
- * @polymer
+ * @LitElement
  * @mixinFunction
  */
-export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+export function AppMenuMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class AppMenuClass extends baseClass {
     @property({type: Boolean})
     smallMenu = false;
@@ -41,7 +41,7 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
     }
 
     private _initMenuSize(): void {
-      this.set('smallMenu', this._isSmallMenuActive());
+      this.smallMenu = this._isSmallMenuActive();
     }
 
     private _isSmallMenuActive(): boolean {
@@ -57,7 +57,7 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
 
     private _toggleSmallMenu(e: Event): void {
       e.stopImmediatePropagation();
-      this.set('smallMenu', !this.smallMenu);
+      this.smallMenu = !this.smallMenu;
       this._smallMenuValueChanged(this.smallMenu);
     }
 
@@ -73,22 +73,22 @@ export function AppMenuMixin<T extends Constructor<PolymerElement>>(baseClass: T
     }
 
     private _updateDrawerStyles(): void {
-      const drawerLayout = this.shadowRoot!.querySelector('#layout') as PolymerElement;
+      const drawerLayout: AppDrawerLayoutElement | null = this.shadowRoot!.querySelector('#layout');
       if (drawerLayout) {
         drawerLayout.updateStyles();
       }
-      const drawer = this.shadowRoot!.querySelector('#drawer') as PolymerElement;
+      const drawer: AppDrawerElement | null = this.shadowRoot!.querySelector('#drawer');
       if (drawer) {
         drawer.updateStyles();
       }
     }
 
     private _notifyLayoutResize(): void {
-      const layout = this.shadowRoot!.querySelector('#layout') as PolymerElement & {notifyResize(): void};
-      if (layout) {
-        layout.notifyResize();
+      const drawerLayout: AppDrawerLayoutElement | null = this.shadowRoot!.querySelector('#layout');
+      if (drawerLayout) {
+        drawerLayout.notifyResize();
       }
-      const headerLayout = this.shadowRoot!.querySelector('#appHeadLayout') as PolymerElement & {notifyResize(): void};
+      const headerLayout: AppHeaderLayoutElement | null = this.shadowRoot!.querySelector('#appHeadLayout');
       if (headerLayout) {
         headerLayout.notifyResize();
       }

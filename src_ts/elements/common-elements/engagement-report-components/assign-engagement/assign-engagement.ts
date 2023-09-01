@@ -12,14 +12,18 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {collectionExists} from '../../../mixins/permission-controller';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import DateMixin from '../../../mixins/date-mixin';
-import {getStaticData} from '../../../mixins/static-data-controller';
 import {validateRequiredFields} from '../../../utils/utils';
+import {RootState, store} from '../../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import cloneDeep from 'lodash-es/cloneDeep';
+import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 
 /**
  * @LitElement
@@ -29,7 +33,7 @@ import {validateRequiredFields} from '../../../utils/utils';
  */
 
 @customElement('assign-engagement')
-export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) {
+export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
   }
@@ -45,12 +49,12 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
             <!-- Date of Field Visit -->
             <datepicker-lite
               id="dateVisitInput"
-              class="w100 ${this._setRequired('date_of_field_visit', this.basePermissionPath)} validate-date"
+              class="w100 ${this._setRequired('date_of_field_visit', this.optionsData)} validate-date"
               .value="${this.data.date_of_field_visit}"
-              label="${this.getLabel('date_of_field_visit', this.basePermissionPath)}"
+              label="${this.getLabel('date_of_field_visit', this.optionsData)}"
               placeholder="&#8212;"
-              ?required="${this._setRequired('date_of_field_visit', this.basePermissionPath)}"
-              ?readonly="${this._isReadOnly('date_of_field_visit', 'true', this.falseValue, this.basePermissionPath)}"
+              ?required="${this._setRequired('date_of_field_visit', this.optionsData)}"
+              ?readonly="${this._isReadOnly('date_of_field_visit', 'true', this.falseValue, this.optionsData)}"
               ?invalid="${this._checkFieldInvalid(this.errors?.date_of_field_visit)}"
               .errorMessage="${this.errors?.date_of_field_visit}"
               @focus="${this._resetFieldError}"
@@ -71,14 +75,14 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
               id="draftReportToIpInput"
               class="$w100 {this._setRequired('date_of_draft_report_to_ip', this.basePermissionPath)} validate-date"
               .value="${this.data.date_of_draft_report_to_ip}"
-              label="${this.getLabel('date_of_draft_report_to_ip', this.basePermissionPath)}"
+              label="${this.getLabel('date_of_draft_report_to_ip', this.optionsData)}"
               placeholder="&#8212;"
-              ?required="${this._setRequired('date_of_draft_report_to_ip', this.basePermissionPath)}"
+              ?required="${this._setRequired('date_of_draft_report_to_ip', this.optionsData)}"
               ?readonly="${this._isReadOnly(
                 'date_of_draft_report_to_ip',
                 'true',
                 this.data.date_of_comments_by_ip,
-                this.basePermissionPath
+                this.optionsData
               )}"
               ?invalid="${this._checkFieldInvalid(this.errors?.date_of_draft_report_to_ip)}"
               .errorMessage="${this.errors?.date_of_draft_report_to_ip}"
@@ -98,16 +102,16 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
             <!-- Comments Received by IP -->
             <datepicker-lite
               id="commentsReceivedByIpInput"
-              class="w100 ${this._setRequired('date_of_comments_by_ip', this.basePermissionPath)} validate-date"
+              class="w100 ${this._setRequired('date_of_comments_by_ip', this.optionsData)} validate-date"
               .value="${this.data.date_of_comments_by_ip}"
-              label="${this.getLabel('date_of_comments_by_ip', this.basePermissionPath)}"
+              label="${this.getLabel('date_of_comments_by_ip', this.optionsData)}"
               placeholder="&#8212;"
-              ?required="${this._setRequired('date_of_comments_by_ip', this.basePermissionPath)}"
+              ?required="${this._setRequired('date_of_comments_by_ip', this.optionsData)}"
               ?readonly="${this._isReadOnly(
                 'date_of_comments_by_ip',
                 this.data?.date_of_draft_report_to_ip,
                 this.data?.date_of_draft_report_to_unicef,
-                this.basePermissionPath
+                this.optionsData
               )}"
               ?invalid="${this._checkFieldInvalid(this.errors?.date_of_comments_by_ip)}"
               .errorMessage="${this.errors?.date_of_comments_by_ip}"
@@ -130,16 +134,16 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
             <!-- Draft Report Issued to UNICEF -->
             <datepicker-lite
               id="draftReportUnicefInput"
-              class="w100 ${this._setRequired('date_of_draft_report_to_unicef', this.basePermissionPath)} validate-date"
+              class="w100 ${this._setRequired('date_of_draft_report_to_unicef', this.optionsData)} validate-date"
               .value="${this.data.date_of_draft_report_to_unicef}"
-              label="${this.getLabel('date_of_draft_report_to_unicef', this.basePermissionPath)}"
+              label="${this.getLabel('date_of_draft_report_to_unicef', this.optionsData)}"
               placeholder="&#8212;"
-              ?required="${this._setRequired('date_of_draft_report_to_unicef', this.basePermissionPath)}"
+              ?required="${this._setRequired('date_of_draft_report_to_unicef', this.optionsData)}"
               ?readonly="${this._isReadOnly(
                 'date_of_draft_report_to_unicef',
                 this.data.date_of_comments_by_ip,
                 this.data.date_of_comments_by_unicef,
-                this.basePermissionPath
+                this.optionsData
               )}"
               ?invalid="${this._checkFieldInvalid(this.errors?.date_of_draft_report_to_unicef)}"
               .errorMessage="${this.errors?.date_of_draft_report_to_unicef}"
@@ -160,16 +164,16 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
             <!-- Comments Received by UNICEF -->
             <datepicker-lite
               id="commentsReceivedUnicefInput"
-              class="w100 ${this._setRequired('date_of_comments_by_unicef', this.basePermissionPath)} validate-date"
+              class="w100 ${this._setRequired('date_of_comments_by_unicef', this.optionsData)} validate-date"
               .value="${this.data.date_of_comments_by_unicef}"
-              label="${this.getLabel('date_of_comments_by_unicef', this.basePermissionPath)}"
+              label="${this.getLabel('date_of_comments_by_unicef', this.optionsData)}"
               placeholder="&#8212;"
-              ?required="${this._setRequired('date_of_comments_by_unicef', this.basePermissionPath)}"
+              ?required="${this._setRequired('date_of_comments_by_unicef', this.optionsData)}"
               ?readonly="${this._isReadOnly(
                 'date_of_comments_by_unicef',
                 this.data.date_of_draft_report_to_unicef,
                 '',
-                this.basePermissionPath
+                this.optionsData
               )}"
               ?invalid="${this._checkFieldInvalid(this.errors?.date_of_comments_by_unicef)}"
               .errorMessage="${this.errors?.date_of_comments_by_unicef}"
@@ -186,20 +190,20 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
             </datepicker-lite>
           </div>
 
-          ${this.showCurrency(this.basePermissionPath)
+          ${this.showCurrency(this.optionsData)
             ? html`<div class="col col-4">
                 <!-- Currency of Report -->
                 <etools-dropdown
                   id="currency_of_report"
-                  class="w100 validate-input ${this._setRequired('currency_of_report', this.basePermissionPath)}"
+                  class="w100 validate-input ${this._setRequired('currency_of_report', this.optionsData)}"
                   .selected="${this.data.currency_of_report}"
                   .options="${this.currencies}"
                   option-label="label"
                   option-value="value"
-                  label="${this.getLabel('currency_of_report', this.basePermissionPath)}"
-                  placeholder="${this.getPlaceholderText('currency_of_report', this.basePermissionPath, 'dropdown')}"
-                  ?required="${this._setRequired('currency_of_report', this.basePermissionPath)}"
-                  ?readonly="${this.isReadOnly('currency_of_report', this.basePermissionPath)}"
+                  label="${this.getLabel('currency_of_report', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('currency_of_report', this.optionsData, 'dropdown')}"
+                  ?required="${this._setRequired('currency_of_report', this.optionsData)}"
+                  ?readonly="${this.isReadOnly('currency_of_report', this.optionsData)}"
                   ?invalid="${this._checkInvalid(this.errors?.currency_of_report)}"
                   .errorMessage="${this.errors?.currency_of_report}"
                   trigger-value-change-event
@@ -246,9 +250,14 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
     ]
   };
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.currencies = getStaticData('staticDropdown').currencies;
+  stateChanged(state: RootState) {
+    if (state.engagement?.data && !isJsonStrMatch(this.data, state.engagement.data)) {
+      this.data = cloneDeep(state.engagement.data);
+      this.optionsData = cloneDeep(state.engagement.options!);
+    }
+    if (state.commonData.loadedTimestamp) {
+      this.currencies = [...state.commonData.staticDropdown.currencies];
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -267,7 +276,7 @@ export class AssignEngagement extends DateMixin(CommonMethodsMixin(LitElement)) 
     this.data[field] = value;
     this.checkDateValues();
     this.requestUpdate();
-    fireEvent(this, 'data-changed', this.data);
+    store.dispatch(updateCurrentEngagement(this.data));
   }
 
   validate(escapeValidation) {

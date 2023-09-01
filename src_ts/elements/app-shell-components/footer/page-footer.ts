@@ -21,6 +21,7 @@ export class PageFooter extends LitElement {
         :host {
           display: flex;
           align-items: flex-end;
+          flex: 1 1 0.000000001px;
           padding: 18px 24px;
           width: 100%;
           min-height: 90px;

@@ -4,11 +4,12 @@ import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
-import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
-import {setStaticData, getStaticData} from './static-data-controller';
+import {readonlyPermission, isRequired, getOptionsChoices, isValidCollection, getCollection} from './permission-controller';
 import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
+import {AnyObject} from '@unicef-polymer/etools-types';
+import get from 'lodash-es/get';
 
 /**
  * @polymer
@@ -37,8 +38,11 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Boolean})
     confirmDialogOpened = false;
 
-    @property({type: String})
-    basePermissionPath!: string;
+    @property({type: Object})
+    engagementData!: AnyObject;
+
+    @property({type: Object})
+    optionsData!: AnyObject;
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -54,12 +58,12 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       event.target.invalid = false;
     }
 
-    isReadOnly(field, basePermissionPath, inProcess?) {
-      if (!basePermissionPath || inProcess) {
+    isReadOnly(field, permissions: AnyObject, inProcess?) {
+      if (!permissions || inProcess) {
         return true;
       }
 
-      let readOnly = readonlyPermission(`${basePermissionPath}.${field}`);
+      let readOnly = readonlyPermission(field, permissions);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -67,12 +71,12 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return readOnly;
     }
 
-    _setRequired(field, basePermissionPath) {
-      if (!basePermissionPath) {
+    _setRequired(field: string, permissions: AnyObject) {
+      if (!permissions) {
         return false;
       }
 
-      const required = isRequired(`${basePermissionPath}.${field}`);
+      const required = isRequired(field, permissions);
 
       return required ? 'required' : false;
     }
@@ -125,21 +129,28 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    getLabel(path, base) {
-      if (!base) {
+    getLabel(path: string, options: AnyObject) {
+      if (!options) {
         return '';
       }
-      return (
-        getFieldAttribute(`${base}.${path}`, 'label', 'POST') || getFieldAttribute(`${base}.${path}`, 'label', 'GET')
-      );
+      const actions = get(options, 'actions') || {};
+      let label = get(actions, `POST.${path}.label`) || get(actions, `GET.${path}.label`);
+
+      if (!label && path.includes('.')) {
+        const labelObj = getCollection(path, actions, 'GET');
+        if (labelObj) {
+          label = labelObj.label || '';
+        }
+      }
+      return label;
     }
 
-    getDisplayName(path, base, value) {
-      if (!base) {
+    getDisplayName(path: string, options: AnyObject, value: string) {
+      if (!options) {
         return '';
       }
 
-      const choices = this._getSavedChoices(`${base}.${path}`);
+      const choices = getOptionsChoices(options, path);
       if (!choices) {
         return '';
       }
@@ -150,19 +161,19 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return choice && choice.display_name ? choice.display_name : '';
     }
 
-    getMaxLength(path, base) {
-      if (!base) {
+    getMaxLength(path, options: AnyObject) {
+      if (!options) {
         return '';
       }
-      return getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
+      return get(options, `GET.${path}.max_length`);
     }
 
-    getPlaceholderText(path, base, datepicker?) {
-      if (readonlyPermission(`${base}.${path}`)) {
+    getPlaceholderText(path, options: AnyObject, datepicker?) {
+      if (readonlyPermission(path, options)) {
         return '–';
       }
 
-      const label = this.getLabel(path, base);
+      const label = this.getLabel(path, options);
       const prefix = datepicker ? 'Select' : 'Enter';
       return `${prefix} ${label}`;
     }
@@ -171,28 +182,12 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return '–';
     }
 
-    _getSavedChoices(path) {
-      if (!path) {
-        return;
-      }
-
-      let choices = getStaticData(`${path}_choices`);
-      if (!choices) {
-        choices = getChoices(path);
-      }
-
-      if (choices instanceof Array) {
-        setStaticData(`${path}_choices`, choices);
-        return choices;
-      }
-    }
-
     _setReadonlyFieldClass(data) {
       return !data || !data.id ? 'no-data-fetched' : '';
     }
 
-    _showPrefix(path, base, value, readonly) {
-      return (!readonlyPermission(`${base}.${path}`) && !readonly) || !!value;
+    _showPrefix(path: string, engagementOptions: AnyObject, value, readonly) {
+      return (!readonlyPermission(path, engagementOptions) && !readonly) || !!value;
     }
 
     getTooltipText(selectedValues, options, field) {

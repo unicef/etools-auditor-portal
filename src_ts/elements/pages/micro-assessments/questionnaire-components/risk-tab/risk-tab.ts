@@ -4,12 +4,12 @@ import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {riskTabStyles} from './risk-tab-styles';
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
-import {getChoices} from '../../../../mixins/permission-controller';
+import {getChoices, getOptionsChoices} from '../../../../mixins/permission-controller';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isNumber from 'lodash-es/isNumber';
@@ -226,15 +226,13 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
   @property({type: Array})
   riskOptions!: {value: string | number; display_name: string}[];
 
-  connectedCallback() {
-    super.connectedCallback();
-    const riskOptions = getChoices(`${this.basePermissionPath}.questionnaire.blueprints.risk.value`) || [];
-    this.riskOptions = riskOptions;
-  }
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
+    if (changedProperties.has('optionsData')) {
+      const riskOptions = getOptionsChoices(this.optionsData, 'questionnaire.blueprints.risk.value') || [];
+      this.riskOptions = riskOptions;
+    }
     if (
       changedProperties.has('disabled') ||
       changedProperties.has('completed') ||

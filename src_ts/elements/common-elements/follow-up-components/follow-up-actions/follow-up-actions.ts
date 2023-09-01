@@ -23,8 +23,8 @@ import each from 'lodash-es/each';
 
 import '../../../data-elements/get-action-points';
 import '../../../data-elements/update-action-points';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -33,22 +33,22 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
-import {getStaticData} from '../../../mixins/static-data-controller';
 import DateMixin from '../../../mixins/date-mixin';
 import {
   collectionExists,
-  addToCollection,
-  updateCollection,
-  getChoices,
   readonlyPermission,
   actionAllowed,
-  getHeadingLabel
+  getHeadingLabel,
+  getOptionsChoices
 } from '../../../mixins/permission-controller';
 import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
 import famEndpoints from '../../../config/endpoints';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import {RootState, store} from '../../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @LitElement
@@ -58,7 +58,7 @@ import {AnyObject} from '@unicef-polymer/etools-types';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('follow-up-actions')
-export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement))) {
+export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement)))) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
   }
@@ -133,7 +133,7 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
       </style>
 
       <get-action-points .engagementId="${this.engagementId}" @ap-loaded="${({detail}: CustomEvent) => {
-      if (detail.success) {
+      if (detail?.success) {
         this.dataItems = detail.data;
       }
     }}"></get-action-points>
@@ -164,28 +164,28 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
 
           <etools-data-table-header no-collapse no-title>
             <etools-data-table-column class="col-2">${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'reference_number',
               'Reference Number #'
             )}</etools-data-table-column>
             <etools-data-table-column class="col-3">${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'category',
               'Action Point Category'
             )}</etools-data-table-column>
             <etools-data-table-column class="col-3">Assignee (Section / Office)</etools-data-table-column>
             <etools-data-table-column class="col-1">${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'status',
               'Status'
             )}</etools-data-table-column>
             <etools-data-table-column class="col-2">${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'due_date',
               'Due Date'
             )}</etools-data-table-column>
             <etools-data-table-column class="col-1">${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'high_priority',
               'Priority'
             )}</etools-data-table-column>
@@ -200,8 +200,8 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
                       >${item.reference_number}
                     </a>
                   </span>
-                  <span class="col-data col-3">${item.ap_category.display_name}</span>
-                  <span class="col-data col-3">${item.computed_field}</span>
+                  <span class="col-data col-3">${item.ap_category?.display_name || '-'}</span>
+                  <span class="col-data col-3 truncate">${item.computed_field}</span>
                   <span class="col-data col-1">${item.status}</span>
                   <span class="col-data col-2">${this.prettyDate(String(item.due_date), '') || '-'}</span>
                   <span class="col-data col-1">${item.priority}</span>
@@ -604,11 +604,8 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
   @property({type: Boolean})
   copyDialog!: boolean;
 
-  @property({type: String})
-  editedApBase!: string;
-
-  @property({type: String})
-  baseEngagementPath!: string;
+  @property({type: Object})
+  editedApBase!: AnyObject;
 
   @property({type: Array})
   itemsToDisplay!: GenericObject[];
@@ -637,16 +634,16 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
   public connectedCallback() {
     super.connectedCallback();
 
-    this.users = getStaticData('users') || [];
-    this.offices = getStaticData('offices') || [];
-    this.sections = getStaticData('sections') || [];
-    this.partners = getStaticData('partners') || [];
-
-    if (!collectionExists('edited_ap_options')) {
-      addToCollection('edited_ap_options', {});
-    }
-
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  }
+
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp) {
+      this.users = [...state.commonData.users];
+      this.offices = [...state.commonData.offices];
+      this.sections = [...state.commonData.sections];
+      this.partners = [...state.commonData.partners];
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -659,8 +656,8 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
     // this._errorHandler(this.errorObject); // @dci  errorObject doesn't exist here
     // this._checkNonField(this.errorObject); // @dci  errorObject doesn't exist here
     // }
-    if (changedProperties.has('baseEngagementPath')) {
-      this.setPermissionPath(this.baseEngagementPath);
+    if (changedProperties.has('optionsData')) {
+      this.setPermissionPath(this.optionsData);
     }
     if (changedProperties.has('dataItems')) {
       this._addComputedField();
@@ -749,16 +746,20 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
       const assignedTo = get(item, 'assigned_to.name', '--');
       const section = get(item, 'section.name', '--');
       const office = get(item, 'office.name', '--');
-      item.computed_field = html`<b>${assignedTo}</b> <br />(${section} / ${office})`;
+      item.computed_field = html`<b>${assignedTo}</b> <br /><span class="truncate"
+          >(${section} / ${office})<span></span
+        ></span>`;
       item.ap_category = find(this.categories, (category) => category.value === item.category);
       return item;
     });
   }
 
-  setPermissionPath(basePath) {
-    this.basePermissionPath = basePath ? `${basePath}_ap` : '';
-    this.categories = getChoices(`${this.basePermissionPath}.category`) || [];
-    this.canBeChanged = !readonlyPermission(`${this.basePermissionPath}.POST`);
+  setPermissionPath(optionsData) {
+    if (!optionsData) {
+      return;
+    }
+    this.categories = getOptionsChoices(optionsData, 'category') || [];
+    this.canBeChanged = !readonlyPermission(optionsData);
   }
 
   _checkNonField(error) {
@@ -839,12 +840,12 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
       this.editedItem[field] = {id: null};
     });
-    this.editedApBase = this.basePermissionPath;
+    this.editedApBase = {...this.optionsData};
     this.openAddDialog();
   }
 
   _openEditDialog(index) {
-    this.editedApBase = '';
+    this.editedApBase = {};
     fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
     this._selectedAPIndex = index;
@@ -875,7 +876,7 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
     const data = cloneDeep(omit(this.dataItems[index], ['id']));
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
-    this.editedApBase = this.basePermissionPath;
+    this.editedApBase = this.optionsData;
 
     this.copyDialog = true;
     this.handleUsersNoLongerAssignedToCurrentCountry(
@@ -904,13 +905,12 @@ export class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateM
   _handleOptionResponse(detail) {
     fireEvent(this, 'global-loading', {type: 'get-ap-options'});
     if (detail && detail.actions) {
-      updateCollection('edited_ap_options', detail.actions);
+      this.editedApBase = detail.actions;
     }
-    this.editedApBase = 'edited_ap_options';
     const itemIndex = this._selectedAPIndex;
     this._selectedAPIndex = null;
-
-    if (collectionExists('edited_ap_options.PUT')) {
+    // @dci
+    if (get(this.editedApBase, 'PUT')) {
       this.openEditDialog(itemIndex);
     } else {
       this.dialogTitle = String(get(this, 'viewDialogTexts.title') || '');

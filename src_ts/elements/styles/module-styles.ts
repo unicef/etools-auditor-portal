@@ -213,6 +213,18 @@ export const moduleStyles = css`
     text-overflow: ellipsis;
     overflow: hidden;
   }
+  .col-data.truncate {
+    display: inline-block;
+    overflow: hidden;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    padding-right: 16px;
+    padding-left: 1px;
+    box-sizing: border-box;
+  }
+  .truncate {
+    white-space: nowrap;
+  }
 
   .f1 {
     flex: 1;

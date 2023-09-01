@@ -33,7 +33,7 @@ export class SaReportPageMain extends LitElement {
           fireEvent(this, 'data-changed', this.engagement);
         }}"
         audit-type="Special Audit"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </assign-engagement>
 
@@ -42,7 +42,7 @@ export class SaReportPageMain extends LitElement {
         class="mb-24"
         .errorObject="${this.errorObject}"
         .dataItems="${this.engagement.specific_procedures}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </specific-procedure>
 
@@ -51,7 +51,7 @@ export class SaReportPageMain extends LitElement {
         class="mb-24"
         .errorObject="${this.errorObject}"
         .dataItems="${this.engagement.other_recommendations}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.optionsData}"
       >
       </other-recommendations>
     `;
@@ -59,6 +59,9 @@ export class SaReportPageMain extends LitElement {
 
   @property({type: Object})
   engagement: GenericObject = {};
+
+  @property({type: Object})
+  optionsData: GenericObject = {};
 
   @property({type: Object})
   originalData: GenericObject = {};

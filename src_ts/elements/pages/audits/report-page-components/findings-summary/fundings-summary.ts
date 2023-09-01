@@ -4,8 +4,8 @@ import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/iron-icons/iron-icons';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -100,7 +100,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                 <span class="col-data col-1">${item.key_internal_weakness.high_risk_count}</span>
                 <span class="col-data col-1">${item.key_internal_weakness.medium_risk_count}</span>
                 <span class="col-data col-1">${item.key_internal_weakness.low_risk_count}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <!-- @dci  openEditDialog(index) -->
                 </div>
@@ -128,8 +128,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <paper-input
               class="validate-input"
               .value="${this.editedItem.partner.name}"
-              label="${this.getLabel('partner.name', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('partner.name', this.basePermissionPath)}"
+              label="${this.getLabel('partner.name', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('partner.name', this.optionsData)}"
               readonly
             >
             </paper-input>
@@ -139,12 +139,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Audited expenditure (USD) -->
             <etools-currency-amount-input
               id="audited-expenditure"
-              class="${this._setRequired('audited_expenditure', this.basePermissionPath)} validate-input"
+              class="${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
               .value="${this.editedItem.audited_expenditure}"
               currency="$"
-              label="${this.getLabel('audited_expenditure', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('audited_expenditure', this.basePermissionPath)}"
-              ?required="${this._setRequired('audited_expenditure', this.basePermissionPath)}"
+              label="${this.getLabel('audited_expenditure', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('audited_expenditure', this.optionsData)}"
+              ?required="${this._setRequired('audited_expenditure', this.optionsData)}"
               ?readonly="${this.requestInProcess}"
               ?invalid="${this.errors.audited_expenditure}"
               .errorMessage="${this.errors.audited_expenditure}"
@@ -162,12 +162,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Financial findings (USD) -->
             <etools-currency-amount-input
               id="financial-findings"
-              class="${this._setRequired('financial_findings', this.basePermissionPath)} validate-input"
+              class="${this._setRequired('financial_findings', this.optionsData)} validate-input"
               .value="${this.editedItem.financial_findings}"
               currency="$"
-              label="${this.getLabel('financial_findings', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('financial_findings', this.basePermissionPath)}"
-              ?required="${this._setRequired('financial_findings', this.basePermissionPath)}"
+              label="${this.getLabel('financial_findings', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('financial_findings', this.optionsData)}"
+              ?required="${this._setRequired('financial_findings', this.optionsData)}"
               ?readonly="${this.requestInProcess}"
               ?invalid="${this.errors.financial_findings}"
               .errorMessage="${this.errors.financial_findings}"
@@ -185,12 +185,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Audited expenditure (Local) -->
             <etools-currency-amount-input
               id="audited-expenditure-local"
-              class="validate-input ${this._setRequired('audited_expenditure_local', this.basePermissionPath)}"
+              class="validate-input ${this._setRequired('audited_expenditure_local', this.optionsData)}"
               .value="${this.editedItem.audited_expenditure_local}"
               .currency="${this.data.currency_of_report}"
-              label="${this.getLocalLabel('audited_expenditure_local', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('audited_expenditure_local', this.basePermissionPath)}"
-              ?required="${this._setRequired('audited_expenditure_local', this.basePermissionPath)}"
+              label="${this.getLocalLabel('audited_expenditure_local', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('audited_expenditure_local', this.optionsData)}"
+              ?required="${this._setRequired('audited_expenditure_local', this.optionsData)}"
               ?readonly="${this.requestInProcess}"
               ?invalid="${this.errors.audited_expenditure_local}"
               .errorMessage="${this.errors.audited_expenditure_local}"
@@ -206,12 +206,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Financial findings (Local) -->
             <etools-currency-amount-input
               id="financial-findings-local"
-              class="validate-input ${this._setRequired('financial_findings_local', this.basePermissionPath)}"
+              class="validate-input ${this._setRequired('financial_findings_local', this.optionsData)}"
               .value="${this.editedItem.financial_findings_local}"
               .currency="${this.data.currency_of_report}"
-              label="${this.getLocalLabel('financial_findings_local', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('financial_findings_local', this.basePermissionPath)}"
-              ?required="${this._setRequired('financial_findings_local', this.basePermissionPath)}"
+              label="${this.getLocalLabel('financial_findings_local', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('financial_findings_local', this.optionsData)}"
+              ?required="${this._setRequired('financial_findings_local', this.optionsData)}"
               ?readonly="${this.requestInProcess}"
               ?invalid="${this.errors.financial_findings_local}"
               .errorMessage="${this.errors.financial_findings_local}"
@@ -229,8 +229,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               class="validate-input"
               .value="${this.editedItem.percent_of_audited_expenditure}"
               currency=""
-              label="${this.getLabel('percent_of_audited_expenditure', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('percent_of_audited_expenditure', this.basePermissionPath)}"
+              label="${this.getLabel('percent_of_audited_expenditure', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('percent_of_audited_expenditure', this.optionsData)}"
               readonly
             >
             </etools-currency-amount-input>
@@ -240,14 +240,14 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Audit opinion -->
             <etools-dropdown
               id="auditOpinionDropDown"
-              class="validate-input ${this._setRequired('audit_opinion', this.basePermissionPath)}"
+              class="validate-input ${this._setRequired('audit_opinion', this.optionsData)}"
               .selected="${this.editedItem.audit_opinion}"
-              label="${this.getLabel('audit_opinion', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('audit_opinion', this.basePermissionPath)}"
+              label="${this.getLabel('audit_opinion', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('audit_opinion', this.optionsData)}"
               .options="${this.auditOpinions}"
               option-label="display_name"
               option-value="value"
-              ?required="${this._setRequired('audit_opinion', this.basePermissionPath)}"
+              ?required="${this._setRequired('audit_opinion', this.optionsData)}"
               ?disabled="${this.requestInProcess}"
               ?invalid="${this.errors.audit_opinion}"
               .errorMessage="${this.errors.audit_opinion}"
@@ -264,8 +264,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Number of financial findings -->
             <paper-input
               .value="${this.editedItem.number_of_financial_findings}"
-              label="${this.getLabel('number_of_financial_findings', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('number_of_financial_findings', this.basePermissionPath)}"
+              label="${this.getLabel('number_of_financial_findings', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('number_of_financial_findings', this.optionsData)}"
               readonly
             >
             </paper-input>
@@ -275,8 +275,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- High risk -->
             <paper-input
               .value="${this.editedItem.key_internal_weakness?.high_risk_count}"
-              label="${this.getLabel('key_internal_weakness.high_risk_count', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('key_internal_weakness.high_risk_count', this.basePermissionPath)}"
+              label="${this.getLabel('key_internal_weakness.high_risk_count', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('key_internal_weakness.high_risk_count', this.optionsData)}"
               readonly
             >
             </paper-input>
@@ -286,11 +286,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Medium risk -->
             <paper-input
               .value="${this.editedItem.key_internal_weakness?.medium_risk_count}"
-              label="${this.getLabel('key_internal_weakness.medium_risk_count', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText(
-                'key_internal_weakness.medium_risk_count',
-                this.basePermissionPath
-              )}"
+              label="${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('key_internal_weakness.medium_risk_count', this.optionsData)}"
               readonly
             >
             </paper-input>
@@ -300,8 +297,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Low risk -->
             <paper-input
               .value="${this.editedItem.key_internal_weakness?.low_risk_count}"
-              label="${this.getLabel('key_internal_weakness.low_risk_count', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('key_internal_weakness.low_risk_count', this.basePermissionPath)}"
+              label="${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('key_internal_weakness.low_risk_count', this.optionsData)}"
               readonly
             >
             </paper-input>
@@ -310,9 +307,6 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       </etools-dialog>
     `;
   }
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   @property({type: String})
   mainProperty = 'financial_findings';
@@ -486,7 +480,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
     if (this.showLocalCurrency) {
       headerColumns
         .filter((h) => h.path === 'financial_findings_local' || h.path === 'audited_expenditure_local')
-        .forEach((h) => (h.htmlLabel = this.getLocalLabel(h.path, this.basePermissionPath)));
+        .forEach((h) => (h.htmlLabel = this.getLocalLabel(h.path, this.optionsData)));
     }
     this.headerColumns = headerColumns.slice(0, -3).concat([groupColumn]);
   }

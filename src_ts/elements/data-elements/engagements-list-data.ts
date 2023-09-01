@@ -9,7 +9,6 @@ import {getEndpoint} from '../config/endpoints-controller';
 import {updateQueries, getQueriesString} from '../mixins/query-params-controller';
 import {GenericObject} from '../../types/global.js';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import {getUserData} from '../mixins/user-controller';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 
 /**
@@ -21,6 +20,9 @@ import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 export class EngagementListData extends LitElement {
   @property({type: Object})
   requestQueries!: GenericObject;
+
+  @property({type: Object})
+  user!: GenericObject;
 
   @property({type: Object})
   lastState: GenericObject = {};
@@ -39,7 +41,7 @@ export class EngagementListData extends LitElement {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('requestQueries')) {
+    if (changedProperties.has('requestQueries') || changedProperties.has('user')) {
       this.getEngagementsList();
     }
     if (changedProperties.has('reloadData')) {
@@ -70,9 +72,8 @@ export class EngagementListData extends LitElement {
   getEngagementsList(forceReload = false) {
     const reloadRequired = forceReload || this.reloadRequired() || this.requestQueries.reload;
     this.lastState = cloneDeep(this.requestQueries);
-    const user = getUserData();
 
-    if (!reloadRequired || !this.endpointName || !user.organization) {
+    if (!reloadRequired || !this.endpointName || !this.user || !this.user.organization) {
       // not reload the page
       return;
     }

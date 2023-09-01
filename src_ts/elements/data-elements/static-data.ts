@@ -7,11 +7,9 @@ import get from 'lodash-es/get';
 import each from 'lodash-es/each';
 import sortBy from 'lodash-es/sortBy';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import './user-data';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
 
-@customElement('static-data')
 export class StaticData extends LitElement {
   render() {
     return html` <user-data></user-data> `;

@@ -12,18 +12,23 @@ import {actionAllowed} from '../../mixins/permission-controller';
 import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
 import './engagements-list-view/engagements-list-view';
 import './new-engagement-view/new-engagement-view';
-import {pageLayoutStyles} from '../../styles/page-layout-styles-lit';
+import {pageLayoutStyles} from '../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../redux/store';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
+import get from 'lodash-es/get';
 
 /**
  * @customElement
  * @LitElement
  */
 @customElement('engagements-page-main')
-export class EngagementsPageMain extends LitElement {
+export class EngagementsPageMain extends connect(store)(LitElement) {
   static get styles() {
     return [pageLayoutStyles, moduleStyles];
   }
@@ -39,27 +44,13 @@ export class EngagementsPageMain extends LitElement {
         }
       </style>
 
-      <app-route
-        .route="${this.route}"
-        @route-changed="${this._routeChanged}"
-        pattern="/:view"
-        @data-changed="${this._routeDataChanged}"
-        .tail="${this.subroute}"
-        @tail-changed="${this._tailChanged}"
-      >
-      </app-route>
-
-      <iron-pages id="categoryPages" .selected="${this.routeData?.view}" attr-for-selected="name" role="main">
+      <iron-pages id="categoryPages" .selected="${this.activePage}" attr-for-selected="name" role="main">
         <engagements-list-view
           name="list"
           id="listPage"
-          .queryParams="${this.queryParams}"
-          .baseRoute="${this.baseRoute}"
           has-collapse
-          .requestQueries="${this.partnersListQueries}"
           .endpointName="${this.endpointName}"
           basePermissionPath="new_engagement"
-          ?reloadData="${this.reloadListData}"
         >
         </engagements-list-view>
 
@@ -67,15 +58,6 @@ export class EngagementsPageMain extends LitElement {
           ? html` <new-engagement-view
               name="new"
               id="creationPage"
-              .page="${this.routeData.view}"
-              .queryParams="${this.queryParams}"
-              .route="${this.subroute}"
-              @sub-route-changed="${({detail}: CustomEvent) => {
-                if (!isJsonStrMatch(this.subroute, detail.value)) {
-                  this.subroute = detail.value;
-                }
-              }}"
-              .requestQueries="${this.partnersListQueries}"
               basePermissionPath="new_engagement"
               .partner="${this.partnerDetails}"
               .endpointName="${this.endpointName}"
@@ -88,22 +70,7 @@ export class EngagementsPageMain extends LitElement {
   }
 
   @property({type: Object})
-  route: GenericObject = {};
-
-  @property({type: Object})
-  subroute!: GenericObject;
-
-  @property({type: Object})
-  routeData: GenericObject = {};
-
-  @property({type: Object})
   partnerDetails: GenericObject = {};
-
-  @property({type: Object})
-  queryParams!: GenericObject;
-
-  @property({type: String})
-  baseRoute!: string;
 
   @property({type: String})
   endpointName = 'engagementsList';
@@ -114,11 +81,11 @@ export class EngagementsPageMain extends LitElement {
   @property({type: String})
   lastView = '';
 
-  @property({type: Object})
-  lastParams!: GenericObject;
+  @property({type: String})
+  activePage!: string;
 
   @property({type: Object})
-  partnersListQueries!: GenericObject;
+  lastParams!: GenericObject;
 
   @property({type: Boolean})
   allowNew = false;
@@ -129,12 +96,15 @@ export class EngagementsPageMain extends LitElement {
   @property({type: Boolean})
   reloadListData = false;
 
+  @property({type: Object})
+  reduxRouteDetails?: EtoolsRouteDetails;
+
   connectedCallback() {
     super.connectedCallback();
     this.allowNew = actionAllowed('new_engagement', 'create');
     this._engagementStatusUpdated = this._engagementStatusUpdated.bind(this);
     document.addEventListener('global-loading', this._engagementStatusUpdated as any);
-    this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
+    // this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
   }
 
   disconnectedCallback() {
@@ -142,15 +112,16 @@ export class EngagementsPageMain extends LitElement {
     document.removeEventListener('', this._engagementStatusUpdated as any);
   }
 
-  updated(changedProperties: PropertyValues): void {
-    super.updated(changedProperties);
-
-    if (changedProperties.has('queryParams')) {
-      this._queryParamsChanged();
+  stateChanged(state: RootState) {
+    if (
+      pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'engagements') ||
+      isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)
+    ) {
+      return;
     }
-    if (changedProperties.has('routeData')) {
-      this._routeConfig(this.routeData.view);
-    }
+    this.reduxRouteDetails = state.app.routeDetails;
+    this.activePage = this.reduxRouteDetails.subRouteName!;
+    this._routeChanged(this.activePage);
   }
 
   _engagementStatusUpdated(e: CustomEvent) {
@@ -162,114 +133,77 @@ export class EngagementsPageMain extends LitElement {
     }
   }
 
-  _routeChanged({detail}: CustomEvent) {
-    if (detail.value.path && detail.value.prefix && !isJsonStrMatch(this.route, detail.value)) {
-      this.route = detail.value;
-    }
-  }
-
-  _routeDataChanged({detail}: CustomEvent) {
-    if (!isJsonStrMatch(this.routeData, detail.value)) {
-      this.routeData = detail.value;
-    }
-  }
-
-  _tailChanged({detail}: CustomEvent) {
-    if (!detail.value?.path) {
-      return;
-    }
-    if (!isJsonStrMatch(this.subroute, detail.value)) {
-      this.subroute = detail.value;
-    }
-  }
-
-  _routeConfig(view) {
-    if (!this.route || !~this.route.prefix?.indexOf('/engagements')) {
-      this.resetLastView();
-      return;
-    }
-
-    if (view === 'list') {
-      this._fireUpdateEngagementsFilters();
-      this.view = 'list';
-    } else if (view === 'new' && actionAllowed('new_engagement', 'create')) {
-      clearQueries();
-      this.view = 'new';
-    } else if (view === '' || isUndefined(view)) {
-      this.route = {...this.route, path: '/list'};
-    } else {
-      clearQueries();
-      fireEvent(this, '404');
-    }
-
-    if (view !== this.lastView) {
-      fireEvent(this, `close-toasts`);
-    }
-    this.lastView = view;
-  }
-
-  resetLastView() {
-    if (this.lastView) {
-      this.lastView = '';
-    }
-  }
-
-  _fireUpdateEngagementsFilters() {
-    document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-  }
-
-  _configListParams(noNotify = false) {
-    const queries = this.route.__queryParams || {};
-    const queriesUpdates: GenericObject = clone(queries);
-
-    if (!queries.page_size) {
-      queriesUpdates.page_size = '20';
-    }
-    if (!queries.ordering) {
-      queriesUpdates.ordering = 'reference_number';
-    }
-    if (!queries.page) {
-      queriesUpdates.page = '1';
-    }
-
-    const page = +queries.page;
-    if (
-      isNaN(page) ||
-      (this.lastParams &&
-        (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))
-    ) {
-      queriesUpdates.page = '1';
-    }
-
-    if (!this.lastParams || !isEqual(this.lastParams, queries)) {
-      this.lastParams = clone(queries);
-    }
-
-    updateQueries(queriesUpdates, null, noNotify);
-    return queriesUpdates;
-  }
-
-  _queryParamsChanged() {
-    if (!~this.route.prefix.indexOf('/engagements') || !this.routeData) {
-      return;
-    }
-
-    if (this.routeData.view === 'list') {
-      const queries = this._configListParams();
-      this._setEngagementsListQueries(queries);
-      if (this.hasEngagementUpdated) {
-        // force reload data for engagement list because we have an engagement changed
-        this.reloadListData = true;
-        this.hasEngagementUpdated = false;
-      }
-    } else if (!isNaN(+this.routeData.view)) {
+  _routeChanged(activePage) {
+    if (activePage !== 'list') {
       clearQueries();
     }
   }
 
-  _setEngagementsListQueries(queries) {
-    if (!isEmpty(queries) && (!this.partnersListQueries || !isEqual(this.partnersListQueries, queries))) {
-      this.partnersListQueries = queries;
-    }
-  }
+  // @dci DO WE NEED THIS ???
+  // _routeConfig(view) {
+  //   if (!this.route || !~this.route.prefix?.indexOf('/engagements')) {
+  //     this.resetLastView();
+  //     return;
+  //   }
+
+  //   if (view === 'list') {
+  //     this._fireUpdateEngagementsFilters();
+  //     this.view = 'list';
+  //   } else if (view === 'new' && actionAllowed('new_engagement', 'create')) {
+  //     clearQueries();
+  //     this.view = 'new';
+  //   } else if (view === '' || isUndefined(view)) {
+  //     this.route = {...this.route, path: '/list'};
+  //   } else {
+  //     clearQueries();
+  //     fireEvent(this, '404');
+  //   }
+
+  //   if (view !== this.lastView) {
+  //     fireEvent(this, `close-toasts`);
+  //   }
+  //   this.lastView = view;
+  // }
+
+  // resetLastView() {
+  //   if (this.lastView) {
+  //     this.lastView = '';
+  //   }
+  // }
+
+  // _fireUpdateEngagementsFilters() {
+  //   document.dispatchEvent(new CustomEvent('update-engagements-filters'));
+  // }
+
+  // @dci DO WE NEED THIS ???
+  // _configListParams(noNotify = false) {
+  //   const queries = this.reduxRouteDetails?.queryParams || {};
+  //   const queriesUpdates: GenericObject = clone(queries);
+
+  //   if (!queries.page_size) {
+  //     queriesUpdates.page_size = '10';
+  //   }
+  //   if (!queries.ordering) {
+  //     queriesUpdates.ordering = 'reference_number';
+  //   }
+  //   if (!queries.page) {
+  //     queriesUpdates.page = '1';
+  //   }
+
+  //   const page = +queries.page;
+  //   if (
+  //     isNaN(page) ||
+  //     (this.lastParams &&
+  //       (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))
+  //   ) {
+  //     queriesUpdates.page = '1';
+  //   }
+
+  //   if (!this.lastParams || !isEqual(this.lastParams, queries)) {
+  //     this.lastParams = clone(queries);
+  //   }
+
+  //   updateQueries(queriesUpdates, null, noNotify);
+  //   return queriesUpdates;
+  // }
 }

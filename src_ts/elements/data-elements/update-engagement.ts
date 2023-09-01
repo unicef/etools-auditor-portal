@@ -19,9 +19,6 @@ export class UpdateEngagement extends LitElement {
   @property({type: Object})
   engagement!: GenericObject;
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   @property({type: Boolean})
   quietAdding!: boolean;
 
@@ -110,9 +107,10 @@ export class UpdateEngagement extends LitElement {
     this.optionRequests = {};
     this.engagement = data;
 
-    this.basePermissionPath = '';
-    this.basePermissionPath = `engagement_${this.engagement.id}`;
-    fireEvent(this, 'base-permission-changed', this.basePermissionPath);
+    //this.basePermissionPath = '';
+    // this.basePermissionPath = `engagement_${this.engagement.id}`;
+    // @dci - need to update engagement Options ?
+    // fireEvent(this, 'base-permission-changed', this.basePermissionPath);
     fireEvent(this, 'engagement-updated', {success: true, data: data});
     fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     fireEvent(this, 'global-loading', {type: 'update-permissions'});
@@ -234,7 +232,7 @@ export class UpdateEngagement extends LitElement {
   }
 
   _handleOptionsError() {
-    this.basePermissionPath = 'not_found';
+    // this.basePermissionPath = 'not_found';
     this.finishResponse(this.lastData);
     fireEvent(this, 'toast', {text: 'Can not update permissions data. Please reload the page!'});
   }

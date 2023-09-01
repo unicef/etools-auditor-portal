@@ -1,20 +1,21 @@
 import {LitElement, PropertyValues, property} from 'lit-element';
-import isUndefined from 'lodash-es/isUndefined';
 import includes from 'lodash-es/includes';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isNil from 'lodash-es/isNil';
 import assign from 'lodash-es/assign';
-import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {Constructor, GenericObject} from '@unicef-polymer/etools-types';
+import {AnyObject, Constructor, EtoolsUser, GenericObject} from '@unicef-polymer/etools-types';
 import {getEndpoint} from '../config/endpoints-controller';
 import {getUserData} from './user-controller';
-import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
+import {isValidCollection, actionAllowed, getOptionsChoices} from './permission-controller';
 import {whichPageTrows} from './error-handler';
 import {clearQueries} from './query-params-controller';
-
-let currentEngagement: {details?: GenericObject; type?: string} = {};
+import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
+import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
+import get from 'lodash-es/get';
+import {RootState} from '../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 /**
  * @polymer
  * @mixinFunction
@@ -29,6 +30,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Object})
     routeData!: GenericObject;
 
+    @property({type: Object})
+    routeDetails?: EtoolsRouteDetails;
+
+    @property({type: Object})
+    user!: EtoolsUser;
+
     @property({type: Array})
     tabsList!: any[];
 
@@ -39,7 +46,19 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     originalData!: GenericObject;
 
     @property({type: Object})
-    currentEngagement!: GenericObject;
+    engagement!: AnyObject;
+
+    @property({type: Object})
+    engagementOptions!: AnyObject;
+
+    @property({type: Object})
+    apOptions!: AnyObject;
+
+    @property({type: Object})
+    attachmentOptions!: AnyObject;
+
+    @property({type: Object})
+    reportAttachmentOptions!: AnyObject;
 
     @property({type: String})
     permissionBase!: string | null;
@@ -77,9 +96,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Object})
     updatedEngagement!: GenericObject;
 
-    @property({type: Object})
-    engagement!: GenericObject;
-
     connectedCallback() {
       super.connectedCallback();
 
@@ -90,6 +106,33 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     disconnectedCallback() {
       super.disconnectedCallback();
       this.removeEventListener('action-activated', this._processAction as any);
+    }
+
+    setEngagementData(state: RootState) {
+      if (state.engagement?.data && !isJsonStrMatch(this.engagement, state.engagement.data)) {
+        this.engagement = cloneDeep(state.engagement.data);
+      }
+      if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
+        this.originalData = cloneDeep(state.engagement.originalData);
+      }
+      if (state.engagement?.options && !isJsonStrMatch(this.engagementOptions, state.engagement.options)) {
+        this.engagementOptions = cloneDeep(state.engagement.options!);
+      }
+      if (state.engagement?.apOptions && !isJsonStrMatch(this.apOptions, state.engagement.apOptions)) {
+        this.apOptions = cloneDeep(state.engagement.apOptions!);
+      }
+      if (
+        state.engagement?.attachmentOptions &&
+        !isJsonStrMatch(this.attachmentOptions, state.engagement.attachmentOptions)
+      ) {
+        this.attachmentOptions = cloneDeep(state.engagement.attachmentOptions);
+      }
+      if (
+        state.engagement?.reportAttachmentOptions &&
+        !isJsonStrMatch(this.reportAttachmentOptions, state.engagement.reportAttachmentOptions)
+      ) {
+        this.reportAttachmentOptions = cloneDeep(state.engagement.reportAttachmentOptions);
+      }
     }
 
     updated(changedProperties: PropertyValues): void {
@@ -103,56 +146,62 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _routeConfig(route) {
-      if (this.route && !~this.route.prefix.indexOf(this.engagementPrefix)) {
+    _resetDialogOpenedFlag(event) {
+      this[event.currentTarget.getAttribute('openFlag')] = false;
+    }
+
+    onRouteChanged(routeDetails: EtoolsRouteDetails, tab: string) {
+      // && !~route.prefix.indexOf(this.engagementPrefix)
+      // debugger;
+      if (!routeDetails) {
         return;
       }
       fireEvent(this, `close-toasts`);
       this.errorObject = {};
 
-      const id = this.routeData ? this.routeData.id : route.path.split('/')[1];
-      let tab = this.routeData ? this.routeData.tab : route.path.split('/')[2];
-      if (tab === '' || isUndefined(tab)) {
-        this.route = {...this.route, path: `/${id}/overview`};
-        tab = 'overview';
-      }
+      const id = routeDetails ? routeDetails.params?.id : '';
       if (!this.engagementId) {
         clearQueries();
       }
       if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
         fireEvent(this, '404');
       } else {
-        this.engagementId = +id;
+       //  this.engagementId = Number(id);
       }
     }
 
-    _checkAvailableTab(engagement, permissionBase, route) {
-      if (!route || !permissionBase || !engagement) {
+    _checkAvailableTab(engagement: AnyObject, options: AnyObject, tab) {
+      if (!tab || !options || !engagement) {
         return;
       }
-      const tab = route.path.split('/')[2];
       if (
-        (tab === 'report' && !this._showReportTabs(permissionBase, engagement)) ||
-        (tab === 'follow-up' && !this._showFollowUpTabs(permissionBase))
+        (tab === 'report' && !this._showReportTabs(options, engagement)) ||
+        (tab === 'follow-up' && !this._showFollowUpTabs(options))
       ) {
-        const id = route.path.split('/')[1];
-        this.route = {...this.route, path: `/${id}/overview`};
+        // debugger;
+        history.pushState(
+          window.history.state,
+          '',
+          `${ROOT_PATH}${this.routeDetails!.routeName}/${this.routeDetails!.params!.id}/overview`
+        );
+        window.dispatchEvent(new CustomEvent('popstate'));
       }
     }
 
+    // dci to be called...
     _infoLoaded() {
       // save data copy
       this.originalData = cloneDeep(this.engagement);
       this.engagement = {...this.engagement};
       this.timeStamp = String(new Date().getTime());
 
-      const tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
+      const tab = this.routeDetails ? this.routeDetails.subRouteName : '';
       if (!~this.tabsList.indexOf(tab)) {
-        this.routeData = {...this.routeData, tab: this.tabsList[0] || ''};
+        // dci this.routeData = {...this.routeData, tab: this.tabsList[0] || ''};
         return;
       }
 
-      this.tab = tab;
+      this.tab = tab!;
       // @ts-ignore Defined in derived class when needed
       if (this.infoLoaded) {
         // @ts-ignore Defined in derived class when needed
@@ -177,20 +226,35 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _tabChanged(tab) {
-      if (tab && this.routeData && this.routeData.tab !== tab) {
-        this.routeData = {...this.routeData, tab: tab};
-      }
+    _tabChanged(newTabName: string, oldTabName: string | undefined) {
+      // debugger;
+      // const newPath = this._geNewUrlPath(newTabName, newSubTab);
+      // history.pushState(window.history.state, '', newPath);
+      // window.dispatchEvent(new CustomEvent('popstate'));
+      const newPath = this.routeDetails?.path.replace(`/${oldTabName}`, `/${newTabName}`);
+      history.pushState(window.history.state, '', `${ROOT_PATH}${newPath}`);
+      window.dispatchEvent(new CustomEvent('popstate'));
     }
 
-    _setPermissionBase(id) {
-      if ((!id && id !== 0) || isNaN(+id)) {
-        this.permissionBase = null;
-      } else {
-        this.permissionBase = `engagement_${id}`;
+    //   _geNewUrlPath(newTabName: string, newSubTab: string) {
+    //   const stringParams: string = buildUrlQueryString(this.routeDetails!.queryParams || {});
+    //   let newPath = `interventions/${this.intervention!.id}/${newTabName}`;
+    //   if (newSubTab) {
+    //     newPath += `/${newSubTab}`;
+    //   } else {
+    //     this.activeSubTab = '';
+    //   }
+    //   newPath += stringParams !== '' ? `?${stringParams}` : '';
+
+    //   return newPath;
+    // }
+
+    setFileTypes(reportAttachments: AnyObject, attachmentOptions: AnyObject) {
+      if (!reportAttachments || !attachmentOptions) {
+        return;
       }
-      (this.reportFileTypes as any) = getChoices(`${this.permissionBase}.report_attachments.file_type`);
-      (this.engagementFileTypes as any) = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
+      this.reportFileTypes = getOptionsChoices(reportAttachments, 'file_type');
+      this.engagementFileTypes = getOptionsChoices(attachmentOptions, 'file_type');
     }
 
     _openCancelDialog() {
@@ -318,15 +382,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    persistCurrentEngagement(engagement, type) {
-      currentEngagement = {details: engagement, type};
-      this.currentEngagement = currentEngagement;
-    }
-
-    getCurrentEngagement() {
-      return currentEngagement;
-    }
-
     _prepareData(submit?: boolean, finalize?: boolean) {
       if (!this.engagement) {
         return Promise.reject(new Error('You need engagement object'));
@@ -418,14 +473,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return el;
     }
 
-    _attachmentsReadonly(base, type) {
-      let readOnly = readonlyPermission(`${base}.${type}`);
-      if (readOnly === null) {
-        readOnly = true;
-      }
-      return readOnly;
-    }
-
     _getBasicInfo(data) {
       data = data || {};
 
@@ -450,31 +497,30 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return [data, this.engagement.id];
     }
 
-    _showReportTabs(permissionBase, engagement) {
-      if (!permissionBase || !engagement) {
+    _showReportTabs(options: AnyObject, engagement: AnyObject) {
+      if (!options || !engagement) {
         return false;
       }
-      const userIsFocalPoint = find(getUserData().groups, {name: 'UNICEF Audit Focal Point'});
-      return this.hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
+      const userIsFocalPoint = this.user.groups.some((x) => x.name === 'UNICEF Audit Focal Point');
+      return this.hasReportAccess(options, engagement) || Boolean(userIsFocalPoint);
     }
 
-    hasReportAccess(permissionBase, engagement) {
+    hasReportAccess(options: AnyObject, engagement: AnyObject) {
       return (
-        actionAllowed(permissionBase, 'submit') ||
-        engagement.status === 'report_submitted' ||
-        engagement.status === 'final'
+        actionAllowed(options, 'submit') || engagement.status === 'report_submitted' || engagement.status === 'final'
       );
     }
 
-    _showQuestionnaire(permissionBase, engagement) {
-      if (!permissionBase || !engagement) {
+    _showQuestionnaire(options: AnyObject, engagement: AnyObject) {
+      if (!options || !engagement) {
         return false;
       }
-      return this.hasReportAccess(permissionBase, engagement);
+      return this.hasReportAccess(options, engagement);
     }
 
-    _showFollowUpTabs(permissionBase) {
-      const collection = getCollection(`${permissionBase}_ap`, 'GET');
+    _showFollowUpTabs(options: AnyObject) {
+      // debugger;
+      const collection = get(options, 'actions.GET');
       return isValidCollection(collection);
     }
 

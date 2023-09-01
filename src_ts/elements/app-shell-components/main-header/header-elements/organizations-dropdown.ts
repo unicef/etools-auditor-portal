@@ -1,5 +1,5 @@
 import {LitElement, html, customElement, property, query, PropertyValues} from 'lit-element';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import EtoolsPageRefreshMixinLit from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin-lit.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import famEndpoints from '../../../config/endpoints';
@@ -17,7 +17,7 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown'
 export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement) {
   render() {
     return html`
-    ${HeaderStyles}
+      ${HeaderStyles}
       <etools-dropdown
         id="organizationSelector"
         class="${this.checkMustSelectOrganization(this.user)}"

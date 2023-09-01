@@ -12,13 +12,14 @@ import each from 'lodash-es/each';
 
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
-import {getChoices} from '../../../mixins/permission-controller';
+import {getOptionsChoices} from '../../../mixins/permission-controller';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * @LitEelement
@@ -56,7 +57,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                 <etools-dropdown
                   id="test"
                   .selected="${this.engagement.audit_opinion}"
-                  label="${this.getLabel('audit_opinion', this.basePermissionPath)}"
+                  label="${this.getLabel('audit_opinion', this.optionsData)}"
                   placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                   .options="${this.auditOpinionChoices}"
                   option-label="display_name"
@@ -76,7 +77,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   <etools-currency-amount-input
                     .value="${this.engagement.audited_expenditure}"
                     currency="$"
-                    label="${this.getLabel('audited_expenditure', this.basePermissionPath)}"
+                    label="${this.getLabel('audited_expenditure', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
@@ -87,7 +88,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   <etools-currency-amount-input
                     .value="${this.engagement.financial_findings}"
                     currency="$"
-                    label="${this.getLabel('financial_findings', this.basePermissionPath)}"
+                    label="${this.getLabel('financial_findings', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
@@ -102,7 +103,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   <etools-currency-amount-input
                     .value="${this.engagement.total_amount_tested}"
                     currency="$"
-                    label="${this.getLabel('total_amount_tested', this.basePermissionPath)}"
+                    label="${this.getLabel('total_amount_tested', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
@@ -114,7 +115,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   <etools-currency-amount-input
                     .value="${this.engagement.total_amount_of_ineligible_expenditure}"
                     currency="$"
-                    label="${this.getLabel('total_amount_of_ineligible_expenditure', this.basePermissionPath)}"
+                    label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
@@ -126,18 +127,21 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           <div class="col col-4">
             <!--Amount refunded -->
             <etools-currency-amount-input
-              class="${this._setRequired('amount_refunded', this.basePermissionPath)}
+              class="${this._setRequired('amount_refunded', this.optionsData)}
                                     validate-input"
               .value="${this.engagement.amount_refunded}"
               currency="$"
-              label="${this.getLabel('amount_refunded', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('amount_refunded', this.basePermissionPath)}"
-              ?required="${this._setRequired('amount_refunded', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('amount_refunded', this.basePermissionPath)}"
+              label="${this.getLabel('amount_refunded', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('amount_refunded', this.optionsData)}"
+              ?required="${this._setRequired('amount_refunded', this.optionsData)}"
+              ?readonly="${this.isReadOnly('amount_refunded', this.optionsData)}"
               ?invalid="${this.errors?.amount_refunded}"
               .errorMessage="${this.errors?.amount_refunded}"
-              @value-changed="${({detail}: CustomEvent) =>
-                this.numberChanged(detail, 'amount_refunded', this.engagement)}"
+              @value-changed="${({detail}: CustomEvent) => {
+                console.log('amount_refunded', detail.value);
+                console.log('original value: ', this.engagement.amount_refunded);
+                this.numberChanged(detail, 'amount_refunded', this.engagement);
+              }}"
               @focus="${this._resetFieldError}"
             >
             </etools-currency-amount-input>
@@ -148,21 +152,21 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           <div class="col col-4">
             <!--Additional supporting documentation provided -->
             <etools-currency-amount-input
-              class="${this._setRequired('additional_supporting_documentation_provided', this.basePermissionPath)}
+              class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
                                         validate-input"
               .value="${this.engagement.additional_supporting_documentation_provided}"
               currency="$"
-              label="${this.getLabel('additional_supporting_documentation_provided', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText(
-                'additional_supporting_documentation_provided',
-                this.basePermissionPath
-              )}"
-              ?required="${this._setRequired('additional_supporting_documentation_provided', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('additional_supporting_documentation_provided', this.basePermissionPath)}"
+              label="${this.getLabel('additional_supporting_documentation_provided', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('additional_supporting_documentation_provided', this.optionsData)}"
+              ?required="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}"
+              ?readonly="${this.isReadOnly('additional_supporting_documentation_provided', this.optionsData)}"
               ?invalid="${this.errors?.additional_supporting_documentation_provided}"
               .errorMessage="${this.errors?.additional_supporting_documentation_provided}"
-              @value-changed="${({detail}: CustomEvent) =>
-                this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement)}"
+              @value-changed="${({detail}: CustomEvent) => {
+                console.log('additional_supporting_documentation_provided', detail.value);
+                console.log('original value: ', this.engagement.additional_supporting_documentation_provided);
+                this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
+              }}"
               @focus="${this._resetFieldError}"
             >
             </etools-currency-amount-input>
@@ -171,18 +175,21 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           <div class="col col-4">
             <!-- Justification provided and accepted -->
             <etools-currency-amount-input
-              class="${this._setRequired('justification_provided_and_accepted', this.basePermissionPath)}
+              class="${this._setRequired('justification_provided_and_accepted', this.optionsData)}
                                     validate-input"
               .value="${this.engagement.justification_provided_and_accepted}"
               currency="$"
-              label="${this.getLabel('justification_provided_and_accepted', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('justification_provided_and_accepted', this.basePermissionPath)}"
-              ?required="${this._setRequired('justification_provided_and_accepted', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('justification_provided_and_accepted', this.basePermissionPath)}"
+              label="${this.getLabel('justification_provided_and_accepted', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('justification_provided_and_accepted', this.optionsData)}"
+              ?required="${this._setRequired('justification_provided_and_accepted', this.optionsData)}"
+              ?readonly="${this.isReadOnly('justification_provided_and_accepted', this.optionsData)}"
               ?invalid="${this.errors?.justification_provided_and_accepted}"
               .errorMessage="${this.errors?.justification_provided_and_accepted}"
-              @value-changed="${({detail}: CustomEvent) =>
-                this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement)}"
+              @value-changed="${({detail}: CustomEvent) => {
+                console.log('justification_provided_and_accepted', detail.value);
+                console.log('original value: ', this.engagement.justification_provided_and_accepted);
+                this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
+              }}"
               @focus="${this._resetFieldError}"
             >
             </etools-currency-amount-input>
@@ -191,14 +198,14 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           <div class="col col-4">
             <!--Write off required -->
             <etools-currency-amount-input
-              class="${this._setRequired('write_off_required', this.basePermissionPath)}
+              class="${this._setRequired('write_off_required', this.optionsData)}
                                       validate-input"
               .value="${this.engagement.write_off_required}"
               currency="$"
-              label="${this.getLabel('write_off_required', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('write_off_required', this.basePermissionPath)}"
-              ?required="${this._setRequired('write_off_required', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('write_off_required', this.basePermissionPath)}"
+              label="${this.getLabel('write_off_required', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('write_off_required', this.optionsData)}"
+              ?required="${this._setRequired('write_off_required', this.optionsData)}"
+              ?readonly="${this.isReadOnly('write_off_required', this.optionsData)}"
               ?invalid="${this.errors?.write_off_required}"
               .errorMessage="${this.errors?.write_off_required}"
               @value-changed="${({detail}: CustomEvent) =>
@@ -220,7 +227,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                 this.engagement.justification_provided_and_accepted,
                 this.engagement.write_off_required
               )}"
-              label="${this.getLabel('pending_unsupported_amount', this.basePermissionPath)}"
+              label="${this.getLabel('pending_unsupported_amount', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
               readonly
             >
@@ -235,18 +242,15 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             <paper-textarea
               class="w100 validate-input ${this._setRequired(
                 'explanation_for_additional_information',
-                this.basePermissionPath
+                this.optionsData
               )}"
               .value="${this.engagement.explanation_for_additional_information}"
               allowed-pattern="[ds]"
-              label="${this.getLabel('explanation_for_additional_information', this.basePermissionPath)}"
+              label="${this.getLabel('explanation_for_additional_information', this.optionsData)}"
               always-float-label
-              placeholder="${this.getPlaceholderText(
-                'explanation_for_additional_information',
-                this.basePermissionPath
-              )}"
-              ?required="${this._setRequired('explanation_for_additional_information', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('explanation_for_additional_information', this.basePermissionPath)}"
+              placeholder="${this.getPlaceholderText('explanation_for_additional_information', this.optionsData)}"
+              ?required="${this._setRequired('explanation_for_additional_information', this.optionsData)}"
+              ?readonly="${this.isReadOnly('explanation_for_additional_information', this.optionsData)}"
               ?invalid="${this.errors?.explanation_for_additional_information}"
               .errorMessage="${this.errors?.explanation_for_additional_information}"
               @focus="${this._resetFieldError}"
@@ -276,18 +280,18 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
     super.updated(changedProperties);
 
     if (changedProperties.has('basePermissionPath') || changedProperties.has('engagement')) {
-      this.setAuditOpinionChoices(this.basePermissionPath);
+      this.setAuditOpinionChoices(this.optionsData);
     }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
     }
   }
 
-  setAuditOpinionChoices(basePermissionPath) {
-    if (!basePermissionPath) {
+  setAuditOpinionChoices(options: AnyObject) {
+    if (!options) {
       return [];
     }
-    this.auditOpinionChoices = getChoices(`${basePermissionPath}.audit_opinion`) || [];
+    this.auditOpinionChoices = getOptionsChoices(options, 'audit_opinion') || [];
   }
 
   getFindingsData() {

@@ -15,8 +15,8 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -58,11 +58,11 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
 
       <etools-content-panel
         class="content-section clearfix"
-        .panelTitle="${this.getLabel('specific_procedures', this.basePermissionPath)}"
+        .panelTitle="${this.getLabel('specific_procedures', this.optionsData)}"
         list
       >
         <div slot="panel-btns">
-          <div ?hidden="${!this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)}">
+          <div ?hidden="${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)}">
             <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
@@ -72,14 +72,14 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
           <etools-data-table-column class="col-2">Procedure</etools-data-table-column>
           <etools-data-table-column class="${this.withoutFindingColumn ? 'col-10' : 'col-5'}"
             >${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'specific_procedures.description',
               'Description'
             )}</etools-data-table-column
           >
           <etools-data-table-column class="col-5" ?hidden="${this.withoutFindingColumn}"
             >${getHeadingLabel(
-              this.basePermissionPath,
+              this.optionsData,
               'specific_procedures.finding',
               'Finding'
             )}</etools-data-table-column
@@ -93,11 +93,11 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                 <span class="col-data col-2">${getTableRowIndexText(index)}</span>
                 <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">${item.description}</span>
                 <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}">${item.finding}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button
                     icon="create"
                     ?hidden="${this._hideEditIcon(
-                      this.basePermissionPath,
+                      this.optionsData,
                       this.withoutFindingColumn,
                       this.readonlyTab
                     )}"
@@ -105,7 +105,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                   ></paper-icon-button>
                   <paper-icon-button
                     icon="delete"
-                    ?hidden="${!this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)}"
+                    ?hidden="${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)}"
                     @click="${() => this.openDeleteDialog(index)}"
                   ></paper-icon-button>
                 </div>
@@ -143,20 +143,20 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         @confirm-btn-clicked="${this._addItemFromDialog}"
       >
         <div class="container">
-          ${this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)
+          ${this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
             ? html`<div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Description -->
                   <paper-textarea
                     class="w100 validate-input ${this._setRequired(
                       'specific_procedures.description',
-                      this.basePermissionPath
+                      this.optionsData
                     )}"
                     .value="${this.editedItem?.description}"
                     allowed-pattern="[ds]"
-                    label="${this.getLabel('specific_procedures.description', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('specific_procedures.description', this.basePermissionPath)}"
-                    ?required="${this._setRequired('specific_procedures.description', this.basePermissionPath)}"
+                    label="${this.getLabel('specific_procedures.description', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('specific_procedures.description', this.optionsData)}"
+                    ?required="${this._setRequired('specific_procedures.description', this.optionsData)}"
                     ?readonly="${this.requestInProcess}"
                     max-rows="4"
                     ?invalid="${this._checkInvalid(this.errors[0]?.description)}"
@@ -169,20 +169,20 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                 </div>
               </div>`
             : ``}
-          ${!this.canAddSP(this.basePermissionPath, this.readonlyTab, this.withoutFindingColumn)
+          ${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
             ? html` <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Finding -->
                   <paper-textarea
                     class="w100 validate-input ${this._setRequired(
                       'specific_procedures.finding',
-                      this.basePermissionPath
+                      this.optionsData
                     )}"
                     .value="${this.editedItem?.finding}"
                     allowed-pattern="[ds]"
-                    label="${this.getLabel('specific_procedures.finding', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('specific_procedures.finding', this.basePermissionPath)}"
-                    ?required="${this._setRequired('specific_procedures.finding', this.basePermissionPath)}"
+                    label="${this.getLabel('specific_procedures.finding', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('specific_procedures.finding', this.optionsData)}"
+                    ?required="${this._setRequired('specific_procedures.finding', this.optionsData)}"
                     ?readonly="${this.requestInProcess}"
                     max-rows="4"
                     ?invalid="${this._checkInvalid(this.errors[0]?.finding)}"
@@ -264,8 +264,8 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   _checkNonField(error) {
     if (
       !error ||
-      (!this._canBeChanged(this.basePermissionPath) &&
-        this._hideEditIcon(this.basePermissionPath, this.withoutFindingColumn, this.readonlyTab))
+      (!this._canBeChanged(this.optionsData) &&
+        this._hideEditIcon(this.optionsData, this.withoutFindingColumn, this.readonlyTab))
     ) {
       return;
     }

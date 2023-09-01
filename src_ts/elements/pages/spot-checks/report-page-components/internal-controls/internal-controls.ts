@@ -2,8 +2,8 @@ import {LitElement, html, property, customElement, PropertyValues} from 'lit-ele
 import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -31,7 +31,7 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
 
       <etools-content-panel
         class="content-section clearfx"
-        .panelTitle="${this.getLabel('internal_controls', this.basePermissionPath)}"
+        .panelTitle="${this.getLabel('internal_controls', this.optionsData)}"
       >
         <div class="layout-horizontal">
           <div class="col col-12">
@@ -45,13 +45,13 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
         <div class="layout-horizontal">
           <div class="col col-12">
             <paper-textarea
-              class="w100 ${this._setRequired('internalControls', this.basePermissionPath)}"
+              class="w100 ${this._setRequired('internalControls', this.optionsData)}"
               .value="${this.data}"
               label="Document any changes identified"
               always-float-label
               placeholder="Enter comments"
-              ?required="${this._setRequired('internal_controls', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('internal_controls', this.basePermissionPath)}"
+              ?required="${this._setRequired('internal_controls', this.optionsData)}"
+              ?readonly="${this.isReadOnly('internal_controls', this.optionsData)}"
               ?invalid="${this._checkInvalid(this.errors?.internal_controls)}"
               .errorMessage="${this.errors?.internal_controls}"
               @value-changed="${({detail}: CustomEvent) => (this.data = detail.value)}"
@@ -72,9 +72,6 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
 
   @property({type: Object})
   errors!: GenericObject;
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   @property({type: Object})
   tabTexts: GenericObject = {

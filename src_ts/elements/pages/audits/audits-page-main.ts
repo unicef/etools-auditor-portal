@@ -10,9 +10,9 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
-import {mainPageStyles} from '../../styles/main-page-styles-lit';
+import {mainPageStyles} from '../../styles/main-page-styles';
 import '../../data-elements/engagement-info-data';
 import '../../data-elements/update-engagement';
 import '../../common-elements/pages-header-element/pages-header-element';
@@ -25,12 +25,17 @@ import '../../common-elements/status-tab-element/status-tab-element';
 import './report-page-components/audit-report-page-main/audit-report-page-main';
 import {GenericObject} from '../../../types/global';
 import EngagementMixin from '../../mixins/engagement-mixin';
+import {RootState, store} from '../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
 import {setStaticData, getStaticData} from '../../mixins/static-data-controller';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {getChoices} from '../../mixins/permission-controller';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
+import get from 'lodash-es/get';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @customElement
@@ -39,7 +44,7 @@ import isNull from 'lodash-es/isNull';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('audits-page-main')
-export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElement)) {
+export class AuditsPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -53,25 +58,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
         }
       </style>
 
-      <app-route
-        .route="${this.route}"
-        @route-changed="${({detail}: CustomEvent) => {
-          this.route = detail.value;
-        }}"
-        pattern="/:id/:tab"
-        @data-changed="${({detail}: CustomEvent) => (this.routeData = detail.value)}"
-      >
-      </app-route>
-
-      <engagement-info-data
-        engagementType="audits"
-        .engagementId="${this.engagementId}"
-        .engagementInfo="${this.engagement}"
-        @engagement-info-loaded="${(e: CustomEvent) => {
-          this.engagement = e.detail;
-        }}"
-      >
-      </engagement-info-data>
+      <engagement-info-data engagementType="audits" .engagementId="${this.engagementId}"></engagement-info-data>
 
       <update-engagement
         .updatedEngagementData="${this.updatedEngagement}"
@@ -107,17 +94,22 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                 role="tablist"
                 tabindex="0"
                 .selected="${this.tab}"
-                @selected-changed="${(e: CustomEvent) => (this.tab = e.detail.value)}"
+                @selected-changed="${(e: CustomEvent) => {
+                  if (this.tab !== e.detail.value) {
+                    this._tabChanged(e.detail.value, this.tab);
+                    this.tab = e.detail.value;
+                  }
+                }}"
                 id="pageTabs"
               >
                 <paper-tab name="overview">
                   <span class="tab-content">Engagement Overview</span>
                 </paper-tab>
 
-                ${this._showReportTabs(this.permissionBase, this.engagement)
+                ${this._showReportTabs(this.engagementOptions, this.engagement)
                   ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.permissionBase)
+                ${this._showFollowUpTabs(this.engagementOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
                 <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -145,7 +137,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                       @data-changed="${(e: CustomEvent) => (this.engagement = {...e.detail})}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </engagement-info-details>
 
@@ -154,20 +146,20 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                       id="partnerDetails"
                       .engagement="${this.engagement}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </partner-details-tab>
 
                     <engagement-staff-members-tab
                       id="staffMembers"
                       .engagement="${this.engagement}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                       .errorObject="${this.errorObject}"
                     >
                     </engagement-staff-members-tab>
                   </div>
 
-                  ${this._showReportTabs(this.permissionBase, this.engagement)
+                  ${this._showReportTabs(this.engagementOptions, this.engagement)
                     ? html`<div name="report">
                         <audit-report-page-main
                           id="report"
@@ -177,19 +169,19 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                             this.engagement = {...detail};
                           }}"
                           .errorObject="${this.errorObject}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.engagementOptions}"
                         >
                         </audit-report-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.permissionBase)
+                  ${this._showFollowUpTabs(this.engagementOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.engagementOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -198,6 +190,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                   <div name="attachments">
                     <file-attachments-tab
                       id="engagement_attachments"
+                      .optionsData="${this.attachmentOptions}"
                       .dataBasePath="${this.permissionBase}"
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
@@ -208,11 +201,11 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
                     >
                     </file-attachments-tab>
 
-                    ${this.hasReportAccess(this.permissionBase, this.engagement)
+                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
                       ? html`<file-attachments-tab
                           id="report_attachments"
                           is-report-tab="true"
-                          .dataBasePath="${this.permissionBase}"
+                          .optionsData="${this.reportAttachmentOptions}"
                           path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
@@ -227,7 +220,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .permissionBase="${this.permissionBase}">
+                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
                 </status-tab-element>
               </div>
             </div>
@@ -291,24 +284,37 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
     this.removeEventListener('engagement-updated', this._engagementUpdated);
   }
 
+  stateChanged(state: RootState) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'audits')) {
+      return;
+    }
+
+    if (state.user && state.user.data) {
+      this.user = state.user.data;
+    }
+    this.setEngagementData(state);
+
+    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.routeDetails = state.app.routeDetails;
+      this.engagementId = Number(this.routeDetails!.params!.id);
+      this.tab = this.routeDetails.subRouteName || 'overview';
+      this.onRouteChanged(this.routeDetails, this.tab);
+    }
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('route')) {
-      this._routeConfig(this.route);
+    if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
+      this.onEngagementLoaded();
     }
-    if (
-      changedProperties.has('engagement') ||
-      changedProperties.has('permissionBase') ||
-      changedProperties.has('route')
-    ) {
-      this._checkAvailableTab(this.engagement, this.permissionBase, this.route);
-    }
-    if (changedProperties.has('engagement')) {
-      this._setPermissionBase(this.engagement?.id);
-    }
-    if (changedProperties.has('tab')) {
-      this._tabChanged(this.tab);
+  }
+
+  onEngagementLoaded() {
+    // debugger;
+    if (this.engagementOptions && this.engagement) {
+      this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
+      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
   }
 
@@ -334,7 +340,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
     assign(data, followUpData);
 
     // Report Data
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    const hasReport = this.hasReportAccess(this.engagementOptions, this.engagement);
     if (!hasReport) {
       return data;
     }
@@ -376,6 +382,7 @@ export class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElemen
     return true;
   }
 
+  // @dci!!!
   infoLoaded() {
     if (getStaticData('audit_opinions')) {
       return;

@@ -7,14 +7,14 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import '../kicw-risk/kicw-risk';
-import {getChoices} from '../../../../mixins/permission-controller';
+import {getChoices, getOptionsChoices} from '../../../../mixins/permission-controller';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -87,7 +87,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
 
       <etools-content-panel
         class="content-section clearfix"
-        .panelTitle="${this.getLabel('key_internal_weakness', this.basePermissionPath)}"
+        .panelTitle="${this.getLabel('key_internal_weakness', this.optionsData)}"
         list
       >
         <div class="header-content">
@@ -107,7 +107,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-9">${item.header}</span>
                 <span class="col-data col-9">${item.risks.length}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="add-box" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                 </div>
               </div>
@@ -115,7 +115,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 <kicw-risk
                 .risksData="${item.risks}"
                 .blueprintId="${item.id}"
-                ?isEditable="${this._canBeChanged(this.basePermissionPath)}"
+                ?isEditable="${this._canBeChanged(this.optionsData)}"
               ></kicw-risk>
                 </div>
               </div>
@@ -157,7 +157,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 id="riskRatingInput"
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.value',
-                  this.basePermissionPath
+                  this.optionsData
                 )} validate-input"
                 .selected="${this.editedBlueprint?.risks[0]?.value}"
                 label="Risk rating"
@@ -165,10 +165,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 .options="${this.riskOptions}"
                 option-label="display_name"
                 option-value="value"
-                ?required="${this._setRequired(
-                  'key_internal_weakness.blueprints.risks.value',
-                  this.basePermissionPath
-                )}"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.value', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 ?invalid="${this.errors?.blueprints[0]?.risks.value}"
                 .errorMessage="${this.errors?.blueprints[0]?.risks.value}"
@@ -189,15 +186,12 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
               <paper-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
-                  this.basePermissionPath
+                  this.optionsData
                 )} validate-input w100"
                 .value="${this.editedBlueprint?.risks[0]?.extra.key_control_observation}"
                 label="Key control observation"
                 placeholder="Enter Observation"
-                ?required="${this._setRequired(
-                  'key_internal_weakness.blueprints.risks.extra',
-                  this.basePermissionPath
-                )}"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
@@ -217,15 +211,12 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
               <paper-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
-                  this.basePermissionPath
+                  this.optionsData
                 )} validate-input w100"
                 .value="${this.editedBlueprint?.risks[0]?.extra.recommendation}"
                 label="Recommendation"
                 placeholder="Enter Recommendation"
-                ?required="${this._setRequired(
-                  'key_internal_weakness.blueprints.risks.extra',
-                  this.basePermissionPath
-                )}"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
@@ -245,15 +236,12 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
               <paper-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
-                  this.basePermissionPath
+                  this.optionsData
                 )} validate-input w100"
                 .value="${this.editedBlueprint?.risks[0]?.extra.ip_response}"
                 label="IP Response"
                 placeholder="Enter Response"
-                ?required="${this._setRequired(
-                  'key_internal_weakness.blueprints.risks.extra',
-                  this.basePermissionPath
-                )}"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
@@ -349,13 +337,8 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   @property({type: Boolean})
   requestInProcess!: boolean;
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   connectedCallback() {
     super.connectedCallback();
-    const riskOptions = getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
-    this.riskOptions = riskOptions;
     this.editedBlueprint = cloneDeep(this.dataModel);
     this._initListeners();
   }
@@ -375,6 +358,9 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     if (changedProperties.has('errorObject')) {
       this._complexErrorHandler(this.errorObject?.key_internal_weakness);
     }
+    if (changedProperties.has('optionsData')) {
+      this.setRisk();
+    }
   }
 
   _initListeners() {
@@ -387,6 +373,11 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   disconnectedCallback() {
     super.disconnectedCallback();
     this._removeListeners();
+  }
+
+  setRisk() {
+    const riskOptions = getOptionsChoices(this.optionsData, 'key_internal_weakness.blueprints.risks.value') || [];
+    this.riskOptions = riskOptions;
   }
 
   _removeListeners() {
@@ -407,8 +398,8 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     return -1;
   }
 
-  _canBeChanged(basePermissionPath) {
-    return !this.isReadOnly('key_internal_weakness', basePermissionPath);
+  _canBeChanged(optionsData) {
+    return !this.isReadOnly('key_internal_weakness', optionsData);
   }
 
   openEditDialog(event) {

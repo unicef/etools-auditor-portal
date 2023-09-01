@@ -2,6 +2,7 @@ import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
 import {GenericObject} from '../../types/global';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 const _permissionCollection: {
   edited_ap_options?: {allowed_actions: []};
@@ -108,23 +109,23 @@ export function getFieldAttribute(path: string, attribute: string, actionType?: 
   return value === undefined ? null : value;
 }
 
-export function readonlyPermission(path) {
+export function readonlyPermission(path: string, optionsData: AnyObject) {
   // isReadonly
-  return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
+  return !get(optionsData, `POST.${path}`) && !get(optionsData, `PUT.${path}`);
 }
 
-export function getHeadingLabel(base, labelPath, defaultLabel) {
-  if (!base || !labelPath) {
+export function getHeadingLabel(options: AnyObject, labelPath, defaultLabel) {
+  if (!options || !labelPath) {
     return defaultLabel || '';
   }
 
-  const label = getFieldAttribute(`${base}.${labelPath}`, 'label', 'GET');
+  const label = get(options, `GET.${labelPath}.label`);
 
   return label && typeof label === 'string' ? label : defaultLabel || '';
 }
 
-export function isRequired(path) {
-  return getFieldAttribute(path, 'required', 'POST') || getFieldAttribute(path, 'required', 'PUT');
+export function isRequired(path: string, permissions: AnyObject) {
+  return get(permissions, `POST.${path}.required`) || get(permissions, `PUT.${path}.required`);
 }
 
 export function collectionExists(path, actionType?) {
@@ -138,11 +139,56 @@ export function collectionExists(path, actionType?) {
   return !!getCollection(path, actionType);
 }
 
+// @dci to be replaced with getOptionsChoices
 export function getChoices(path: string) {
   return getFieldAttribute(path, 'choices', 'GET') || getFieldAttribute(path, 'choices', 'POST');
 }
 
-export function getCollection(path: string, actionType?: string): any {
+export function getLabelFromOptions(optionsData, labelPath, defaultLabel) {
+  if (!optionsData || !labelPath) {
+    return defaultLabel || '';
+  }
+  const actions = get(optionsData, 'actions') || {};
+  let label = get(actions, `GET.${labelPath}`);
+  if (!label) {
+    label = getCollection(labelPath, actions, 'GET');
+  }
+  return label && typeof label === 'string' ? label : defaultLabel || '';
+}
+
+export function getOptionsChoices(optionsData: AnyObject, path: string) {
+  const actions = get(optionsData, 'actions') || optionsData;
+  let choices = get(actions, `GET.${path}.choices`) || get(actions, `POST.${path}.choices`);
+  if (!choices) {
+    choices = getCollection(`${path}.choices`, actions);
+  }
+  return choices || [];
+}
+
+export function getCollection(path: string, options: AnyObject, actionType?: string) {
+  const pathArr = path.split('.');
+
+  let value = options;
+  while (pathArr.length) {
+    const key = pathArr.shift()!;
+    if (value[key]) {
+      value = value[key];
+    } else {
+      const action = actionType
+        ? value[actionType]
+        : isValidCollection(value.GET) || isValidCollection(value.POST) || isValidCollection(value.PUT);
+
+      value = action || value.child || value.children;
+      pathArr.unshift(key);
+    }
+    if (!value) {
+      break;
+    }
+  }
+  return value;
+}
+
+export function getCollectionOld(path: string, actionType?: string): any {
   const pathArr = path.split('.');
 
   let value = _permissionCollection;
@@ -168,33 +214,27 @@ export function getCollection(path: string, actionType?: string): any {
   return value;
 }
 
-export function isValidCollection(collection) {
-  const testedCollection = omit(collection, 'allowed_actions');
-  const actions = get(collection, 'allowed_actions', []);
-  if (collection && (Object.keys(testedCollection).length || actions.length)) {
-    return collection;
+export function isValidCollection(options: AnyObject) {
+  const testedCollection = omit(options, 'allowed_actions');
+  const actions = get(options, 'allowed_actions', []);
+  if (options && (Object.keys(testedCollection).length || actions.length)) {
+    return options;
   } else {
     return false;
   }
 }
 
-export function actionAllowed(collection, action) {
-  if (!action || !collection) {
+export function actionAllowed(options: AnyObject, action: string) {
+  if (!action || !options) {
     return false;
   }
-  if (typeof collection !== 'string') {
-    throw new Error('collection argument must be a string');
-  }
-  if (typeof action !== 'string') {
-    throw new Error('action argument must be a string');
-  }
-  collection = _permissionCollection[collection];
 
-  let actions = collection && collection.allowed_actions;
+  let actions = options && options.allowed_actions;
 
   if (!actions || !actions.length) {
     return false;
   }
+  // @dci
   if (typeof actions[0] !== 'string') {
     actions = actions.map((action) => action.code);
   }
@@ -214,14 +254,10 @@ export function actionAllowed(collection, action) {
 //   return !(collection && collection.allowed_actions && collection.allowed_actions.length);
 // }
 
-export function getActions(collection) {
-  if (!collection) {
+export function getActions(options: AnyObject) {
+  if (!options) {
     return null;
   }
-  if (typeof collection !== 'string') {
-    throw new Error('Collection argument must be a string');
-  }
-  collection = _permissionCollection[collection];
 
-  return (collection && collection.allowed_actions) || null;
+  return (options && options.allowed_actions) || null;
 }

@@ -6,6 +6,7 @@ import each from 'lodash-es/each';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {readonlyPermission} from './permission-controller';
 import {refactorErrorObject} from './error-handler';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @polymer
@@ -67,9 +68,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     @property({type: String})
     cancelBtnText!: string;
-
-    @property({type: String})
-    basePermissionPath!: string;
 
     @property({type: Object})
     addDialogTexts!: GenericObject;
@@ -137,13 +135,14 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return [cloneDeep(this.editedItem)];
     }
 
-    _canBeChanged(basePath?) {
-      const path = basePath || this.basePermissionPath;
-      if (!path) {
-        return true;
-      }
+    _canBeChanged(options: AnyObject) {
+      // @dci
+      // const path = basePath || this.basePermissionPath;
+      // if (!path) {
+      //   return true;
+      // }
 
-      let readOnly = readonlyPermission(`${path}.${this.mainProperty}`);
+      let readOnly = readonlyPermission(this.mainProperty, options);
       if (readOnly === null) {
         readOnly = true;
       }

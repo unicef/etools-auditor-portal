@@ -19,14 +19,17 @@ import isEqual from 'lodash-es/isEqual';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {readonlyPermission} from '../../../mixins/permission-controller';
-import {getStaticData} from '../../../mixins/static-data-controller';
 
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '../../../data-elements/get-partner-data';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * main menu
@@ -34,14 +37,14 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
  * @customElement
  */
 @customElement('partner-details-tab')
-export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
+export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, tabLayoutStyles, tabInputsStyles];
   }
 
   render() {
     return html`
-    ${sharedStyles}
+      ${sharedStyles}
       <style>
         .partner-loading {
           position: absolute;
@@ -64,25 +67,25 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
         <div class="row-h group">
           <div class="input-container">
             <!-- Partner -->
-            ${this.isReadOnly('partner', this.basePermissionPath)
+            ${this.isReadOnly('partner', this.optionsData)
               ? html`<paper-input
-                  label="${this.getLabel('partner', this.basePermissionPath)}"
+                  label="${this.getLabel('partner', this.optionsData)}"
                   .value="${this.partner?.name}"
                   readonly
                 ></paper-input>`
               : html`<etools-dropdown
                   id="partner"
-                  class="${this._setRequired('partner', this.basePermissionPath)} ${this._setReadonlyClass(
+                  class="${this._setRequired('partner', this.optionsData)} ${this._setReadonlyClass(
                     this.requestInProcess,
-                    this.basePermissionPath
+                    this.optionsData
                   )}"
                   .selected="${this.engagement.partner?.id}"
-                  label="${this.getLabel('partner', this.basePermissionPath)}"
-                  placeholder="${this.getPlaceholderText('partner', this.basePermissionPath, 'dropdown')}"
+                  label="${this.getLabel('partner', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('partner', this.optionsData, 'dropdown')}"
                   .options="${this.partners}"
                   option-label="name"
                   option-value="id"
-                  ?required="${this._setRequired('partner', this.basePermissionPath)}"
+                  ?required="${this._setRequired('partner', this.optionsData)}"
                   ?invalid="${this.errors.partner}"
                   .errorMessage="${this.errors.partner}"
                   @focus="${this._resetFieldError}"
@@ -114,7 +117,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
             <paper-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this.partner?.phone_number}"
-              label="${this.getLabel('partner.phone_number', this.basePermissionPath)}"
+              label="${this.getLabel('partner.phone_number', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
@@ -126,7 +129,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
             <paper-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this.partner?.email}"
-              label="${this.getLabel('partner.email', this.basePermissionPath)}"
+              label="${this.getLabel('partner.email', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
@@ -137,18 +140,18 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
             <!-- Partner  Officers-->
             <etools-dropdown
               id="authorizedOfficer"
-              class="${this._setRequired('authorized_officers', this.basePermissionPath)} ${this._setPlaceholderColor(
+              class="${this._setRequired('authorized_officers', this.optionsData)} ${this._setPlaceholderColor(
                 this.partner
               )}"
               .selected="${this.authorizedOfficer?.id}"
-              label="${this.getLabel('authorized_officers', this.basePermissionPath)}"
+              label="${this.getLabel('authorized_officers', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               .options="${this.partner?.partnerOfficers}"
               option-label="fullName"
               option-value="id"
-              ?required="${this._setRequired('authorized_officers', this.basePermissionPath)}"
+              ?required="${this._setRequired('authorized_officers', this.optionsData)}"
               ?invalid="${this._checkInvalid(this.errors.authorized_officers)}"
-              ?readonly="${this.isOfficersReadonly(this.basePermissionPath, this.requestInProcess, this.partner)}"
+              ?readonly="${this.isOfficersReadonly(this.optionsData, this.requestInProcess, this.partner)}"
               .errorMessage="${this.errors.authorized_officers}"
               @focus="${this._resetFieldError}"
               dynamic-align
@@ -171,12 +174,12 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
                   id="activePd"
                   class="${this._setPlaceholderColor(this.partner)}"
                   .selectedValues="${this.activePdIds}"
-                  label="${this.getLabel('active_pd', this.basePermissionPath)}"
-                  placeholder="${this.activePdPlaceholder(this.basePermissionPath, this.partner)}"
+                  label="${this.getLabel('active_pd', this.optionsData)}"
+                  placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
                   .options="${this.partner?.interventions}"
                   option-label="number"
                   option-value="id"
-                  ?readonly="${this.isPdReadonly(this.basePermissionPath, this.requestInProcess, this.partner)}"
+                  ?readonly="${this.isPdReadonly(this.optionsData, this.requestInProcess, this.partner)}"
                   ?invalid="${this.errors.active_pd}"
                   .errorMessage="${this.errors.active_pd}"
                   @focus="${this._resetFieldError}"
@@ -229,24 +232,26 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
   authorizedOfficer: GenericObject | null = null;
 
   @property({type: Object})
-  engagement!: GenericObject;
+  engagement!: AnyObject;
 
-  @property({type: Object})
-  partnerId!: GenericObject | null;
+  @property({type: String})
+  partnerId!: string;
 
   connectedCallback() {
     super.connectedCallback();
-    this.partners = getStaticData('partners');
     this._initListeners();
+  }
+
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.partners, state.commonData.partners)) {
+      this.partners = [...state.commonData.partners];
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('basePermissionPath')) {
-      // @dci this._basePathChanged();
-    }
-    if (changedProperties.has('engagement') || changedProperties.has('basePermissionPath')) {
+    if (changedProperties.has('engagement') || changedProperties.has('optionsData')) {
       this._engagementChanged(this.engagement);
     }
     if (changedProperties.has('errorObject')) {
@@ -258,7 +263,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     if (
       changedProperties.has('engagement') ||
       changedProperties.has('partner') ||
-      changedProperties.has('basePermissionPath')
+      changedProperties.has('optionsData')
     ) {
       this.setOfficers(this.partner, this.engagement);
     }
@@ -289,7 +294,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
       engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;
     }
 
-    if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
+    if (this.isReadOnly('partner', this.optionsData) && engagementOfficer) {
       this.partner.partnerOfficers = [engagementOfficer];
       this.authorizedOfficer = engagementOfficer;
     } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
@@ -349,8 +354,8 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     this.errors = {};
   }
 
-  _setReadonlyClass(inProcess, basePermissionPath) {
-    return inProcess || this.isReadOnly('partner', basePermissionPath) ? 'readonly' : '';
+  _setReadonlyClass(inProcess, optionsData) {
+    return inProcess || this.isReadOnly('partner', optionsData) ? 'readonly' : '';
   }
 
   _showActivePd(partnerType, types) {
@@ -402,7 +407,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
       return;
     }
 
-    if (this.isReadOnly('partner', this.basePermissionPath)) {
+    if (this.isReadOnly('partner', this.optionsData)) {
       this.partner = this.engagement.partner;
       this.partner.interventions = this.engagement.active_pd;
       return;
@@ -455,7 +460,7 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
   }
 
   getAuthorizedOfficer() {
-    if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
+    if (this.isReadOnly('partner', this.optionsData) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
       return null;
     }
     const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
@@ -466,11 +471,11 @@ export class PartnerDetailsTab extends CommonMethodsMixin(LitElement) {
     return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
   }
 
-  activePdPlaceholder(basePermissionPath, partner) {
+  activePdPlaceholder(options: AnyObject, partner) {
     if (!partner || !partner.id) {
       return '–';
     }
-    return readonlyPermission(`${basePermissionPath}.active_pd`) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
+    return readonlyPermission('active_pd', options) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
     // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
   }
 

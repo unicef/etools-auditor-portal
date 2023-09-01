@@ -14,7 +14,7 @@ import isEmpty from 'lodash-es/isEmpty';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import DateMixin from '../../mixins/date-mixin';
@@ -88,7 +88,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
             <etools-dropdown
               class="validate-input"
               .selected="${this.selectedFiletype}"
-              label="${this.getLabel('file_type', this.basePermissionPath)}"
+              label="${this.getLabel('file_type', this.optionsData)}"
               placeholder="Select"
               .options="${this.fileTypes}"
               option-label="label"
@@ -145,9 +145,6 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
 
   @property({type: String})
   partnerName!: string;
-
-  @property({type: String})
-  dataBasePath!: string;
 
   @property({type: String})
   selectedFiletype = '';

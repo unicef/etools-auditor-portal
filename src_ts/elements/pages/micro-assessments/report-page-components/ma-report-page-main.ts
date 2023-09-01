@@ -5,7 +5,6 @@ import '../../../common-elements/engagement-report-components/assign-engagement/
 import './primary-risk-element';
 import './key-internal-controls-tab';
 import './control-findings-tab';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitEelement
@@ -19,14 +18,9 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
       <assign-engagement
         id="assignEngagement"
         .data="${this.engagement}"
-        .originalData="${this.originalData}"
+        .originalData="${this.engagementOptions}"
         .errorObject="${this.errorObject}"
-        @data-changed="${({detail}) => {
-          this.engagement = detail;
-          fireEvent(this, 'data-changed', this.engagement);
-        }}"
         audit-type="Micro Assessment"
-        .basePermissionPath="${this.permissionBase}"
       >
       </assign-engagement>
 
@@ -36,7 +30,7 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
             .riskData="${this.engagement.overall_risk_assessment}"
             .dialogOpened="${this.riskDialogOpened}"
             .errorObject="${this.errorObject}"
-            .basePermissionPath="${this.permissionBase}"
+            .optionsData="${this.engagementOptions}"
           >
           </primary-risk-element>`
         : ``}
@@ -46,7 +40,7 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
             .subjectAreas="${this.engagement.test_subject_areas}"
             .dialogOpened="${this.riskDialogOpened}"
             .errorObject="${this.errorObject}"
-            .basePermissionPath="${this.permissionBase}"
+            .optionsData="${this.engagementOptions}"
           >
           </key-internal-controls-tab>`
         : ``}
@@ -55,15 +49,12 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
         id="controlFindings"
         .dataItems="${this.engagement.findings}"
         .errorObject="${this.errorObject}"
-        .basePermissionPath="${this.permissionBase}"
+        .optionsData="${this.engagementOptions}"
         @data-changed="${({detail}) => (this.engagement = {...this.engagement, findings: detail})}"
       >
       </control-findings-tab>
     `;
   }
-
-  @property({type: Object})
-  engagement!: GenericObject;
 
   @property({type: Object})
   errorObject!: GenericObject;

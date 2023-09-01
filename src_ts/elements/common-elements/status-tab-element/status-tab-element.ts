@@ -8,6 +8,7 @@ import {GenericObject} from '../../../types/global';
 declare const dayjs: any;
 import '../insert-html/insert-html';
 import './action-buttons';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * main menu
@@ -190,9 +191,6 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
     `;
   }
 
-  @property({type: Object})
-  engagementData: GenericObject = {};
-
   @property({type: Array})
   actions = [];
 
@@ -201,9 +199,6 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
 
   @property({type: Boolean})
   cancelled = false;
-
-  @property({type: String, attribute: 'permission-base'})
-  permissionBase!: string;
 
   private statuses = [
     'partner_contacted',
@@ -232,8 +227,8 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('engagementData') || changedProperties.has('permissionBase')) {
-      this.onRequiredDataLoaded(this.engagementData, this.permissionBase);
+    if (changedProperties.has('engagementData') || changedProperties.has('optionsData')) {
+      this.onRequiredDataLoaded(this.engagementData, this.optionsData);
     }
   }
 
@@ -241,14 +236,14 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
     if (!engagementData || !permissionBase) {
       return;
     }
-
-    this.setActions(this.permissionBase);
+    // debugger;
+    this.setActions(this.optionsData);
     this.setStatusStates();
     this.checkCancelled(this.engagementData.status);
   }
 
-  setActions(permissionBase) {
-    const actions = permissionBase ? getActions(permissionBase) : [];
+  setActions(optionsData: AnyObject) {
+    const actions = optionsData ? getActions(optionsData) : [];
     this.actions = actions;
   }
 
@@ -259,7 +254,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
         this.statusStates[statusKey] = {};
       }
 
-      displayName = this.getDisplayName('status', this.permissionBase, statusKey);
+      displayName = this.getDisplayName('status', this.optionsData, statusKey);
       displayName = this._getStatusText(displayName);
 
       this.statusStates[statusKey].statusText = displayName;

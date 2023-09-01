@@ -24,14 +24,18 @@ import '../../data-elements/update-engagement';
 import '../../data-elements/engagement-info-data';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
-import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
-import {mainPageStyles} from '../../styles/main-page-styles-lit';
+import {mainPageStyles} from '../../styles/main-page-styles';
 import {GenericObject} from '../../../types/global';
-
+import {RootState, store} from '../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
 import isNull from 'lodash-es/isNull';
 import assign from 'lodash-es/assign';
 import sortBy from 'lodash-es/sortBy';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import get from 'lodash-es/get';
 
 /**
  * @customElement
@@ -40,12 +44,13 @@ import sortBy from 'lodash-es/sortBy';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('spot-checks-page-main')
-export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitElement)) {
+export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
 
   render() {
+
     return html`
       ${sharedStyles}
       <style>
@@ -53,26 +58,8 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
           margin-bottom: 0 !important;
         }
       </style>
-      <app-route
-        .route="${this.route}"
-        @route-changed="${({detail}: CustomEvent) => {
-          this.route = detail.value;
-        }}"
-        pattern="/:id/:tab"
-        @data-changed="${({detail}: CustomEvent) => {
-          this.routeData = detail.value;
-        }}"
-      >
-      </app-route>
 
-      <engagement-info-data
-        .engagementType="${this.pageType}"
-        .engagementId="${this.engagementId}"
-        .engagementInfo="${this.engagement}"
-        @engagement-info-loaded="${(e: CustomEvent) => {
-          this.engagement = e.detail;
-        }}"
-      >
+      <engagement-info-data .engagementType="${this.pageType}" .engagementId="${this.engagementId}">
       </engagement-info-data>
 
       <update-engagement
@@ -116,10 +103,10 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
                   <span class="tab-content">Engagement Overview</span>
                 </paper-tab>
 
-                ${this._showReportTabs(this.permissionBase, this.engagement)
+                ${this._showReportTabs(this.engagementOptions, this.engagement)
                   ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.permissionBase)
+                ${this._showFollowUpTabs(this.engagementOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
                 <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -144,10 +131,12 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
                     <engagement-info-details
                       id="engagementDetails"
                       .data="${this.engagement}"
-                      @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
+                      @data-changed="${(e: CustomEvent) => {
+                        this.engagement = e.detail;
+                      }}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                       .isStaffSc="${this.isStaffSc}"
                     >
                     </engagement-info-details>
@@ -157,41 +146,43 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
                       id="partnerDetails"
                       .engagement="${this.engagement}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </partner-details-tab>
 
                     <engagement-staff-members-tab
                       id="staffMembers"
                       .engagement="${this.engagement}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                       .errorObject="${this.errorObject}"
                       .pageType="${this.pageType}"
                     >
                     </engagement-staff-members-tab>
                   </div>
 
-                  ${this._showReportTabs(this.permissionBase, this.engagement)
+                  ${this._showReportTabs(this.engagementOptions, this.engagement)
                     ? html`<div name="report">
                         <sc-report-page-main
                           id="report"
                           .originalData="${this.originalData}"
-                          @data-changed="${({detail}) => (this.engagement = {...detail})}"
+                          @data-changed="${({detail}) => {
+                            this.engagement = detail;
+                          }}"
                           .engagement="${this.engagement}"
                           .errorObject="${this.errorObject}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.engagementOptions}"
                         >
                         </sc-report-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.permissionBase)
+                  ${this._showFollowUpTabs(this.engagementOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.engagementOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -200,7 +191,7 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
                   <div name="attachments">
                     <file-attachments-tab
                       id="engagement_attachments"
-                      .dataBasePath="${this.permissionBase}"
+                      .optionsData="${this.attachmentOptions}"
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
@@ -210,11 +201,11 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
                     >
                     </file-attachments-tab>
 
-                    ${this.hasReportAccess(this.permissionBase, this.engagement)
+                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
                       ? html`<file-attachments-tab
                           id="report_attachments"
                           is-report-tab="true"
-                          .dataBasePath="${this.permissionBase}"
+                          .optionsData="${this.reportAttachmentOptions}"
                           path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
@@ -229,7 +220,7 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .permissionBase="${this.permissionBase}">
+                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
                 </status-tab-element>
               </div>
             </div>
@@ -283,7 +274,7 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
   pageType = '';
 
   @property({type: Boolean})
-  isStaffSc = false;
+  isStaffSc!: boolean;
 
   connectedCallback() {
     super.connectedCallback();
@@ -297,34 +288,50 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
     this.removeEventListener('engagement-updated', this._engagementUpdated);
   }
 
+  stateChanged(state: RootState) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'spot-checks')) {
+      return;
+    }
+
+    if (state.user && state.user.data) {
+      this.user = state.user.data;
+    }
+    this.setEngagementData(state);
+
+    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.routeDetails = state.app.routeDetails;
+      this.pageType = this.routeDetails.routeName;
+      this.isStaffSc = this.pageType === 'staff-spot-checks';
+      this.engagementId = Number(this.routeDetails!.params!.id);
+      this.tab = this.routeDetails.subRouteName || 'overview';
+      // @dci called 2 for this page
+      // this.onRouteChanged(this.routeDetails, this.tab);
+    }
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('route')) {
-      this._routeConfig(this.route);
+    // if (changedProperties.has('isStaffSc')) {
+    //   this.pageType = this.isStaffSc ? 'staff-spot-checks' : 'spot-checks';
+    // }
+    if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
+      this.onEngagementLoaded();
     }
-    if (
-      changedProperties.has('engagement') ||
-      changedProperties.has('permissionBase') ||
-      changedProperties.has('route')
-    ) {
-      this._checkAvailableTab(this.engagement, this.permissionBase, this.route);
-    }
-    if (changedProperties.has('engagement')) {
-      this._setPermissionBase(this.engagement?.id);
-    }
-    if (changedProperties.has('tab')) {
-      this._tabChanged(this.tab);
-    }
-    if (changedProperties.has('isStaffSc')) {
-      this._setType(this.isStaffSc);
+  }
+
+  onEngagementLoaded() {
+    // debugger;
+    if (this.engagementOptions && this.engagement) {
+      this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
+      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
   }
 
   _setType(isStaffSc) {
-    const type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
-    this.engagementPrefix = `/${type}`;
-    this.pageType = type;
+    // const type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
+    // this.engagementPrefix = `/${type}`;
+    // this.pageType = type;
   }
 
   _validateEngagement() {
@@ -380,6 +387,7 @@ export class SpotChecksPageMain extends CommonMethodsMixin(EngagementMixin(LitEl
     return true;
   }
 
+  // @dci!!!!
   infoLoaded() {
     this.loadChoices('category_of_observation');
   }

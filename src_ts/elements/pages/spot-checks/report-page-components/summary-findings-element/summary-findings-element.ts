@@ -9,8 +9,8 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
-import {tabInputsStyles} from '../../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -29,6 +29,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isEqualWith from 'lodash-es/isEqualWith';
 import cloneWith from 'lodash-es/cloneWith';
 import {getHeadingLabel} from '../../../../mixins/permission-controller';
+import {getTableRowIndexText} from '../../../../utils/utils';
 
 /**
  * @LitEelement
@@ -77,7 +78,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         panel-title="Summary of ${this.priority?.display_name} Priority Findings and Recommendations"
       >
         <div slot="panel-btns">
-          <div ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+          <div ?hidden="${!this._canBeChanged(this.optionsData)}">
             <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
@@ -86,10 +87,10 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         <etools-data-table-header no-title>
           <etools-data-table-column class="col-3">Finding Number</etools-data-table-column>
           <etools-data-table-column class="col-6">
-            ${getHeadingLabel(this.basePermissionPath, 'findings.category_of_observation', 'Subject Area')}
+            ${getHeadingLabel(this.optionsData, 'findings.category_of_observation', 'Subject Area')}
           </etools-data-table-column>
           <etools-data-table-column class="col-3">
-            ${getHeadingLabel(this.basePermissionPath, 'findings.deadline_of_action', 'Deadline of Action')}
+            ${getHeadingLabel(this.optionsData, 'findings.deadline_of_action', 'Deadline of Action')}
           </etools-data-table-column>
         </etools-data-table-header>
 
@@ -97,10 +98,10 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           (item, index) => html`
             <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-3">${item.finding}</span>
+                <span class="col-data col-3">${getTableRowIndexText(index)}</span>
                 <span class="col-data col-6">${item.category_of_observation}</span>
                 <span class="col-data col-3">${item.deadline_of_action}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.basePermissionPath)}">
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
                 </div>
@@ -109,13 +110,13 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
               <div slot="row-data-details">
                 <div class="row-details-content col-12">
                   <span class="rdc-title">
-                    ${getHeadingLabel(this.basePermissionPath, 'findings.recommendation', 'Recommendation')}
+                    ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
                   </span>
                   <span>${item.recommendation}</span>
                 </div>
                 <div class="row-details-content col-12 mt-30">
                   <span class="rdc-title">
-                    ${getHeadingLabel(this.basePermissionPath, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
+                    ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
                   </span>
                   <span>${item.agreed_action_by_ip}</span>
                 </div>
@@ -158,14 +159,14 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
                 <!-- Category of Observation -->
                 <etools-dropdown
                   class="w100 validate-input"
-                  label="${this.getLabel('findings.category_of_observation', this.basePermissionPath)}"
-                  placeholder="${this.getPlaceholderText('findings.category_of_observation', this.basePermissionPath)}"
+                  label="${this.getLabel('findings.category_of_observation', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('findings.category_of_observation', this.optionsData)}"
                   .options="${this.categoryOfObservation}"
                   option-label="display_name"
                   option-value="value"
                   .selected="${this.editedItem?.category_of_observation}"
                   trigger-value-change-event
-                  ?required="${this._setRequired('findings.category_of_observation', this.basePermissionPath)}"
+                  ?required="${this._setRequired('findings.category_of_observation', this.optionsData)}"
                   ?disabled="${this.requestInProcess}"
                   ?invalid="${this.errors?.category_of_observation}"
                   .errorMessage="${this.errors?.category_of_observation}"
@@ -182,13 +183,13 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
               <div class="col col-12">
                 <!-- Recommendation -->
                 <paper-textarea
-                  class="${this._setRequired('findings.recommendation', this.basePermissionPath)} validate-input w100"
+                  class="${this._setRequired('findings.recommendation', this.optionsData)} validate-input w100"
                   .value="${this.editedItem?.recommendation}"
                   allowed-pattern="[\\d\\s]"
-                  label="${this.getLabel('findings.recommendation', this.basePermissionPath)}"
+                  label="${this.getLabel('findings.recommendation', this.optionsData)}"
                   always-float-label
-                  placeholder="${this.getPlaceholderText('findings.recommendation', this.basePermissionPath)}"
-                  ?required="${this._setRequired('findings.recommendation', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('findings.recommendation', this.optionsData)}"
+                  ?required="${this._setRequired('findings.recommendation', this.optionsData)}"
                   ?disabled="${this.requestInProcess}"
                   max-rows="4"
                   ?invalid="${this.errors?.recommendation}"
@@ -205,14 +206,14 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
               <div class="col col-12">
                 <!-- Agreed Action by IP -->
                 <paper-textarea
-                  class="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}
+                  class="${this._setRequired('findings.agreed_action_by_ip', this.optionsData)}
                                validate-input w100"
                   .value="${this.editedItem?.agreed_action_by_ip}"
                   allowed-pattern="[\\d\\s]"
-                  label="${this.getLabel('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                  label="${this.getLabel('findings.agreed_action_by_ip', this.optionsData)}"
                   always-float-label
-                  placeholder="${this.getPlaceholderText('findings.agreed_action_by_ip', this.basePermissionPath)}"
-                  ?required="${this._setRequired('findings.agreed_action_by_ip', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('findings.agreed_action_by_ip', this.optionsData)}"
+                  ?required="${this._setRequired('findings.agreed_action_by_ip', this.optionsData)}"
                   ?disabled="${this.requestInProcess}"
                   max-rows="4"
                   ?invalid="${this.errors?.agreed_action_by_ip}"
@@ -231,11 +232,11 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
                 <datepicker-lite
                   id="deadlineActionSelector"
                   selected-date-display-format="D MMM YYYY"
-                  placeholder="${this.getPlaceholderText('findings.deadline_of_action', this.basePermissionPath)}"
-                  label="${this.getLabel('findings.deadline_of_action', this.basePermissionPath)}"
+                  placeholder="${this.getPlaceholderText('findings.deadline_of_action', this.optionsData)}"
+                  label="${this.getLabel('findings.deadline_of_action', this.optionsData)}"
                   .value="${this.editedItem?.deadline_of_action}"
                   .errorMessage="${this.errors?.deadline_of_action}"
-                  ?required="${this._setRequired('findings.deadline_of_action', this.basePermissionPath)}"
+                  ?required="${this._setRequired('findings.deadline_of_action', this.optionsData)}"
                   ?readonly="${this.requestInProcess}"
                   fire-date-has-changed
                   property-name="deadline_of_action"

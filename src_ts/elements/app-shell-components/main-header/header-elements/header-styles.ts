@@ -65,6 +65,14 @@ export const HeaderStyles = html`
       }
     }
 
+    etools-dropdown,
+    etools-dropdown-multi {
+      --esmm-external-wrapper: {
+        width: auto;
+        max-width: 650px;
+      }
+    }
+
     @media (max-width: 768px) {
       etools-dropdown {
         min-width: 130px;

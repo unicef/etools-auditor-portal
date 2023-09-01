@@ -64,7 +64,6 @@ export function updateQueries(newQueries, path?, noNotify?) {
   });
 
   const queryString = buildQueryString(queries);
-
   window.history.replaceState({}, '', `${path}?${queryString}`);
   if (!noNotify) {
     window.dispatchEvent(new CustomEvent('location-changed'));

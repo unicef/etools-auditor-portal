@@ -22,7 +22,7 @@ import {getUserData} from '../../../mixins/user-controller';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import PaginationMixin from '@unicef-polymer/etools-modules-common/dist/mixins/pagination-mixin';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '../../../data-elements/get-staff-members-list';
@@ -30,6 +30,7 @@ import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler'
 import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
 import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * @LitElement
@@ -167,7 +168,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
       <etools-content-panel
         panel-title="${this._getTitle(
           'staff_members',
-          this.basePermissionPath,
+          this.optionsData,
           this.datalength,
           this.dataItems.length,
           this.listQueries?.search
@@ -324,9 +325,6 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   @property({type: Number})
   organizationId!: number;
 
-  @property({type: String})
-  basePermissionPath = '';
-
   @property({type: Boolean})
   showInactive!: boolean;
 
@@ -345,13 +343,13 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('basePermissionPath')) {
-      this.setPermission(this.basePermissionPath);
+    if (changedProperties.has('optionsData')) {
+      this.setPermission(this.optionsData);
     }
     if (changedProperties.has('errorObject')) {
       this._handleUpdateError(this.errorObject?.staff_members);
     }
-    if (changedProperties.has('engagement') || changedProperties.has('basePermissionPath')) {
+    if (changedProperties.has('engagement') || changedProperties.has('optionsData')) {
       this._organizationChanged(this.engagement.agreement?.auditor_firm?.id);
       this._selectedStaffsChanged(this.engagement.staff_members);
     }
@@ -363,11 +361,11 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
     }
   }
 
-  setPermission(basePermissionPath) {
-    if (!basePermissionPath) {
+  setPermission(optionsData: AnyObject) {
+    if (!optionsData) {
       return;
     }
-    this.showHasAccess = this._canBeChanged();
+    this.showHasAccess = this._canBeChanged(optionsData);
   }
 
   listLoadingStateChanged(event: CustomEvent): void {
@@ -412,7 +410,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   }
 
   _organizationChanged(id) {
-    if (!this._canBeChanged() || !this.basePermissionPath) {
+    if (!this._canBeChanged() || !this.optionsData) {
       return;
     }
     if (!id) {

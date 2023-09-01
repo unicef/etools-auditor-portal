@@ -4,7 +4,6 @@ import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
@@ -15,8 +14,8 @@ import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {tabInputsStyles} from '../../../styles/tab-inputs-styles-lit';
-import {tabLayoutStyles} from '../../../styles/tab-layout-styles-lit';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 
 import get from 'lodash-es/get';
@@ -24,8 +23,7 @@ import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
-import {getChoices, collectionExists} from '../../../mixins/permission-controller';
-import {getStaticData} from '../../../mixins/static-data-controller';
+import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import famEndpoints from '../../../config/endpoints';
@@ -34,13 +32,16 @@ import clone from 'lodash-es/clone';
 import {getUserData} from '../../../mixins/user-controller';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../../redux/store';
+import {CommonDataState} from '../../../../redux/reducers/common-data';
 
 /**
  * @customElement
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-info-details')
-export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(LitElement)) {
+export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
     return [tabInputsStyles, moduleStyles, tabLayoutStyles];
   }
@@ -151,13 +152,13 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
             <!-- Purchase Order -->
             <paper-input
               id="purchaseOrder"
-              class="w100 ${this._setRequired('agreement', this.basePermissionPath)}"
+              class="w100 ${this._setRequired('agreement', this.optionsData)}"
               field="agreement"
               .value="${this.data.agreement?.order_number}"
               allowed-pattern="[0-9]"
-              label="${this.getLabel('agreement.order_number', this.basePermissionPath)}"
-              placeholder="Enter ${this.getLabel('agreement.order_number', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('agreement', this.basePermissionPath)}"
+              label="${this.getLabel('agreement.order_number', this.optionsData)}"
+              placeholder="Enter ${this.getLabel('agreement.order_number', this.optionsData)}"
+              ?readonly="${this.isReadOnly('agreement', this.optionsData)}"
               maxlength="30"
               required
               ?invalid="${this._checkInvalid(this.errors.agreement)}"
@@ -181,25 +182,25 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
               id="auditorInput"
               class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
               .value="${this.data.agreement?.auditor_firm?.name}"
-              label="${this.getLabel('agreement.auditor_firm.name', this.basePermissionPath)}"
+              label="${this.getLabel('agreement.auditor_firm.name', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
             >
             </paper-input>
           </div>
 
-          <div class="input-container" ?hidden="${this._hideField('po_item', this.basePermissionPath)}">
+          <div class="input-container" ?hidden="${this._hideField('po_item', this.optionsData)}">
             <!-- PO Item Number -->
             <etools-dropdown
-              class="w100 validate-field ${this._setRequired('po_item', this.basePermissionPath)}"
+              class="w100 validate-field ${this._setRequired('po_item', this.optionsData)}"
               .selected="${this.data.po_item}"
-              label="${this.getLabel('po_item', this.basePermissionPath)}"
+              label="${this.getLabel('po_item', this.optionsData)}"
               placeholder="&#8212;"
               .options="${this._getPoItems(this.data.agreement)}"
               option-label="number"
               option-value="id"
-              ?required="${this._setRequired('po_item', this.basePermissionPath)}"
-              ?readonly="${this._isDataAgreementReadonly('po_item', this.basePermissionPath, this.data.agreement)}"
+              ?required="${this._setRequired('po_item', this.optionsData)}"
+              ?readonly="${this._isDataAgreementReadonly('po_item', this.optionsData, this.data.agreement)}"
               ?invalid="${this._checkInvalid(this.errors.po_item)}"
               .errorMessage="${this.errors.po_item}"
               @focus="${(event: any) => this._resetFieldError(event)}"
@@ -217,13 +218,13 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
               id="contractStartDateInput"
               class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
               .value="${this.data.agreement?.contract_start_date}"
-              label="${this.getLabel('agreement.contract_start_date', this.basePermissionPath)}"
+              label="${this.getLabel('agreement.contract_start_date', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
               selected-date-display-format="D MMM YYYY"
               ?hidden="${!this._showPrefix(
                 'contract_start_date',
-                this.basePermissionPath,
+                this.optionsData,
                 this.data.agreement?.contract_start_date,
                 'readonly'
               )}"
@@ -236,19 +237,12 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
             <!-- Contract Expiry Date -->
             <datepicker-lite
               id="contractEndDateInput"
-              class="w100 ${this._setRequired(
-                'related_agreement.contract_end_date',
-                this.basePermissionPath
-              )} validate-field"
+              class="w100 ${this._setRequired('related_agreement.contract_end_date', this.optionsData)} validate-field"
               .value="${this.data.agreement?.contract_end_date}"
-              label="${this.getLabel('agreement.contract_end_date', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText(
-                'agreement.contract_end_date',
-                this.basePermissionPath,
-                'datepicker'
-              )}"
-              ?required="${this._setRequired('related_agreement.contract_end_date', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('related_agreement.contract_end_date', this.basePermissionPath)}"
+              label="${this.getLabel('agreement.contract_end_date', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('agreement.contract_end_date', this.optionsData, 'datepicker')}"
+              ?required="${this._setRequired('related_agreement.contract_end_date', this.optionsData)}"
+              ?readonly="${this.isReadOnly('related_agreement.contract_end_date', this.optionsData)}"
               ?invalid="${this._checkInvalid(this.errors.contract_end_date)}"
               .errorMessage="${this.errors.contract_end_date}"
               @focus="${(event: any) => this._resetFieldError(event)}"
@@ -260,16 +254,16 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
             <etools-loading .active="${this.poUpdating}" no-overlay loading-text="" class="po-loading"></etools-loading>
           </div>
 
-          <div class="input-container" ?hidden="${this._hideField('partner_contacted_at', this.basePermissionPath)}">
+          <div class="input-container" ?hidden="${this._hideField('partner_contacted_at', this.optionsData)}">
             <!-- Date Partner Was Contacted -->
             <datepicker-lite
               id="contactedDateInput"
-              class="w100 ${this._setRequired('partner_contacted_at', this.basePermissionPath)} validate-field"
+              class="w100 ${this._setRequired('partner_contacted_at', this.optionsData)} validate-field"
               .value="${this.data.partner_contacted_at}"
-              label="${this.getLabel('partner_contacted_at', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('partner_contacted_at', this.basePermissionPath, 'datepicker')}"
-              ?required="${this._setRequired('partner_contacted_at', this.basePermissionPath)}"
-              ?readonly="${this.isReadOnly('partner_contacted_at', this.basePermissionPath)}"
+              label="${this.getLabel('partner_contacted_at', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('partner_contacted_at', this.optionsData, 'datepicker')}"
+              ?required="${this._setRequired('partner_contacted_at', this.optionsData)}"
+              ?readonly="${this.isReadOnly('partner_contacted_at', this.optionsData)}"
               ?invalid="${this._checkInvalid(this.errors.partner_contacted_at)}"
               .errorMessage="${this.errors.partner_contacted_at}"
               @focus="${(event: any) => this._resetFieldError(event)}"
@@ -285,21 +279,21 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
 
           <div class="input-container">
             <etools-info-tooltip
-              .hideTooltip="${this._hideTooltip(this.basePermissionPath, this.showInput, this.data.engagement_type)}"
+              .hideTooltip="${this._hideTooltip(this.optionsData, this.showInput, this.data.engagement_type)}"
             >
               <!-- Engagement Type -->
               <etools-dropdown
                 slot="field"
                 id="engagementType"
-                class="w100 ${this._setRequired('engagement_type', this.basePermissionPath)} validate-field"
+                class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
                 .selected="${this.data.engagement_type}"
-                label="${this.getLabel('engagement_type', this.basePermissionPath)}"
-                placeholder="${this.getPlaceholderText('engagement_type', this.basePermissionPath, 'dropdown')}"
+                label="${this.getLabel('engagement_type', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('engagement_type', this.optionsData, 'dropdown')}"
                 .options="${this.engagementTypes}"
                 option-label="label"
                 option-value="value"
-                ?required="${this._setRequired('engagement_type', this.basePermissionPath)}"
-                ?readonly="${this.isReadOnly('engagement_type', this.basePermissionPath)}"
+                ?required="${this._setRequired('engagement_type', this.optionsData)}"
+                ?readonly="${this.isReadOnly('engagement_type', this.optionsData)}"
                 ?invalid="${this._checkInvalid(this.errors.engagement_type)}"
                 .errorMessage="${this.errors.engagement_type}"
                 @focus="${(event: any) => this._resetFieldError(event)}"
@@ -320,25 +314,25 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
           </div>
 
           ${this.showInput
-            ? html`<div class="input-container" ?hidden="${this._hideField('start_date', this.basePermissionPath)}">
+            ? html`<div class="input-container" ?hidden="${this._hideField('start_date', this.optionsData)}">
                 <!-- Period Start Date -->
                 <datepicker-lite
                   id="periodStartDateInput"
                   class="w100 ${this._isAdditionalFieldRequired(
                     'start_date',
-                    this.basePermissionPath,
+                    this.optionsData,
                     this.data.engagement_type
                   )} validate-field"
                   .value="${this.data.start_date}"
-                  label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.basePermissionPath)}"
-                  placeholder="${this.getPlaceholderText('start_date', this.basePermissionPath, 'datepicker')}"
+                  label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
                   selected-date-display-format="D MMM YYYY"
                   ?required="${this._isAdditionalFieldRequired(
                     'start_date',
-                    this.basePermissionPath,
+                    this.optionsData,
                     this.data.engagement_type
                   )}"
-                  ?readonly="${this.isReadOnly('start_date', this.basePermissionPath)}"
+                  ?readonly="${this.isReadOnly('start_date', this.optionsData)}"
                   ?invalid="${this._checkInvalid(this.errors.start_date)}"
                   .errorMessage="${this.errors.start_date}"
                   @focus="${(event: any) => this._resetFieldError(event)}"
@@ -349,25 +343,25 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
               </div>`
             : ``}
           ${this.showInput
-            ? html` <div class="input-container" ?hidden="${this._hideField('end_date', this.basePermissionPath)}">
+            ? html` <div class="input-container" ?hidden="${this._hideField('end_date', this.optionsData)}">
                   <!-- Period End Date -->
                   <datepicker-lite
                     id="periodEndDateInput"
                     class="w100 ${this._isAdditionalFieldRequired(
                       'end_date',
-                      this.basePermissionPath,
+                      this.optionsData,
                       this.data.engagement_type
                     )} validate-field"
                     .value="${this.data.end_date}"
-                    label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('end_date', this.basePermissionPath, 'datepicker')}"
+                    label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
                     data-selector="periodEndDate"
                     ?required="${this._isAdditionalFieldRequired(
                       'end_date',
-                      this.basePermissionPath,
+                      this.optionsData,
                       this.data.engagement_type
                     )}"
-                    ?readonly="${this.isReadOnly('end_date', this.basePermissionPath)}"
+                    ?readonly="${this.isReadOnly('end_date', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors.end_date)}"
                     .errorMessage="${this.errors.end_date}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -377,26 +371,26 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
                   >
                   </datepicker-lite>
                 </div>
-                <div class="input-container" ?hidden="${this._hideField('total_value', this.basePermissionPath)}">
+                <div class="input-container" ?hidden="${this._hideField('total_value', this.optionsData)}">
                   <!-- Total Value of Selected FACE Forms -->
                   <etools-currency-amount-input
                     class="w100 validate-field
                                 ${this._isAdditionalFieldRequired(
                       'total_value',
-                      this.basePermissionPath,
+                      this.optionsData,
                       this.data.engagement_type
                     )}"
                     field="total_value"
                     .value="${this.data.total_value}"
                     currency="$"
-                    label="${this.getLabel('total_value', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('total_value', this.basePermissionPath)}"
+                    label="${this.getLabel('total_value', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
                     ?required="${this._isAdditionalFieldRequired(
                       'total_value',
-                      this.basePermissionPath,
+                      this.optionsData,
                       this.data.engagement_type
                     )}"
-                    ?readonly="${this.isReadOnly('total_value', this.basePermissionPath)}"
+                    ?readonly="${this.isReadOnly('total_value', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors.total_value)}"
                     .errorMessage="${this.errors.total_value}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -410,27 +404,27 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
                 <div class="input-container join-audit" style="width:16.66%">
                   <paper-checkbox
                     ?checked="${this.data.joint_audit}"
-                    ?disabled="${this.isReadOnly('joint_audit', this.basePermissionPath)}"
+                    ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
                     @checked-changed="${(e: CustomEvent) => {
                       this.data.joint_audit = e.detail.value;
                     }}"
                   >
-                    ${this.getLabel('joint_audit', this.basePermissionPath)}
+                    ${this.getLabel('joint_audit', this.optionsData)}
                   </paper-checkbox>
                 </div>
                 <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
                   <!-- Year of Audit -->
                   <etools-dropdown
                     id="yearOfAudit"
-                    class="w100 ${this._setRequired('year_of_audit', this.basePermissionPath)} validate-field"
+                    class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
                     .selected="${this.data.year_of_audit}"
                     label="Year of Audit"
-                    placeholder="${this.getPlaceholderText('year_of_audit', this.basePermissionPath, 'dropdown')}"
+                    placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
                     .options="${this.yearOfAuditOptions}"
                     option-label="label"
                     option-value="value"
                     ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
-                    ?readonly="${this.isReadOnly('year_of_audit', this.basePermissionPath)}"
+                    ?readonly="${this.isReadOnly('year_of_audit', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
                     .errorMessage="${this.errors.year_of_audit}"
                     @focus="${this._resetFieldError}"
@@ -444,18 +438,18 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
             : ``}
           ${this.showAdditionalInput
             ? html` <!-- Shared Audit with-->
-                <div class="input-container" ?hidden="${this._hideField('shared_ip_with', this.basePermissionPath)}">
+                <div class="input-container" ?hidden="${this._hideField('shared_ip_with', this.optionsData)}">
                   <etools-dropdown-multi
                     id="sharedWith"
-                    class="w100 validate-input ${this._setRequired('shared_ip_with', this.basePermissionPath)}"
-                    label="${this.getLabel('shared_ip_with', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('shared_ip_with', this.basePermissionPath)}"
+                    class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
+                    label="${this.getLabel('shared_ip_with', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
                     .options="${this.sharedIpWithOptions}"
                     option-label="display_name"
                     option-value="value"
                     .selectedValues="${this.data.shared_ip_with}"
-                    ?required="${this._setRequired('shared_ip_with', this.basePermissionPath)}"
-                    ?readonly="${this.isReadOnly('shared_ip_with', this.basePermissionPath)}"
+                    ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('shared_ip_with', this.optionsData)}"
                     ?invalid="${this.errors.shared_ip_with}"
                     .errorMessage="${this.errors.shared_ip_with}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -472,17 +466,17 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
             : ``}
           ${this.showInput
             ? html` <!-- Sections -->
-                <div class="input-container" ?hidden="${this._hideField('sections', this.basePermissionPath)}">
+                <div class="input-container" ?hidden="${this._hideField('sections', this.optionsData)}">
                   <etools-dropdown-multi
-                    class="w100 validate-input ${this._setRequired('sections', this.basePermissionPath)}"
-                    label="${this.getLabel('sections', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('sections', this.basePermissionPath)}"
+                    class="w100 validate-input ${this._setRequired('sections', this.optionsData)}"
+                    label="${this.getLabel('sections', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('sections', this.optionsData)}"
                     .options="${this.sectionOptions}"
                     option-label="name"
                     option-value="id"
                     .selectedValues="${this.sectionIDs}"
-                    ?required="${this._setRequired('sections', this.basePermissionPath)}"
-                    ?readonly="${this.isReadOnly('sections', this.basePermissionPath)}"
+                    ?required="${this._setRequired('sections', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('sections', this.optionsData)}"
                     ?invalid="${this.errors.sections}"
                     .errorMessage="${this.errors.sections}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -497,17 +491,17 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
                   </etools-dropdown-multi>
                 </div>
                 <!-- Offices -->
-                <div class="input-container" ?hidden="${this._hideField('offices', this.basePermissionPath)}">
+                <div class="input-container" ?hidden="${this._hideField('offices', this.optionsData)}">
                   <etools-dropdown-multi
-                    class="w100 validate-input ${this._setRequired('offices', this.basePermissionPath)}"
-                    label="${this.getLabel('offices', this.basePermissionPath)}"
-                    placeholder="${this.getPlaceholderText('offices', this.basePermissionPath)}"
+                    class="w100 validate-input ${this._setRequired('offices', this.optionsData)}"
+                    label="${this.getLabel('offices', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('offices', this.optionsData)}"
                     .options="${this.officeOptions}"
                     option-label="name"
                     option-value="id"
                     .selectedValues="${this.officeIDs}"
-                    ?required="${this._setRequired('offices', this.basePermissionPath)}"
-                    ?readonly="${this.isReadOnly('offices', this.basePermissionPath)}"
+                    ?required="${this._setRequired('offices', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('offices', this.optionsData)}"
                     ?invalid="${this.errors.offices}"
                     .errorMessage="${this.errors.offices}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -523,19 +517,19 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
                 </div>`
             : ``}
           <!-- Notified when completed -->
-          <div class="input-container" ?hidden="${this._hideField('users_notified', this.basePermissionPath)}">
+          <div class="input-container" ?hidden="${this._hideField('users_notified', this.optionsData)}">
             <etools-dropdown-multi
-              class="w100 validate-input ${this._setRequired('users_notified', this.basePermissionPath)}"
-              label="${this.getLabel('users_notified', this.basePermissionPath)}"
-              placeholder="${this.getPlaceholderText('users_notified', this.basePermissionPath)}"
+              class="w100 validate-input ${this._setRequired('users_notified', this.optionsData)}"
+              label="${this.getLabel('users_notified', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('users_notified', this.optionsData)}"
               .options="${this.usersNotifiedOptions}"
               load-data-method="${this.loadUsersDropdownOptions}"
               preserve-search-on-close
               option-label="name"
               option-value="id"
-              ?hidden="${this.isReadOnly('users_notified', this.basePermissionPath)}"
+              ?hidden="${this.isReadOnly('users_notified', this.optionsData)}"
               .selectedValues="${this.usersNotifiedIDs}"
-              ?required="${this._setRequired('users_notified', this.basePermissionPath)}"
+              ?required="${this._setRequired('users_notified', this.optionsData)}"
               ?invalid="${this.errors.users_notified}"
               .errorMessage="${this.errors.users_notified}"
               @focus="${(event: any) => this._resetFieldError(event)}"
@@ -546,10 +540,8 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
               }}"
             >
             </etools-dropdown-multi>
-            <div class="pad-lr" ?hidden="${!this.isReadOnly('users_notified', this.basePermissionPath)}">
-              <label for="notifiedLbl" class="paper-label"
-                >${this.getLabel('users_notified', this.basePermissionPath)}</label
-              >
+            <div class="pad-lr" ?hidden="${!this.isReadOnly('users_notified', this.optionsData)}">
+              <label for="notifiedLbl" class="paper-label">${this.getLabel('users_notified', this.optionsData)}</label>
               <div class="input-label" ?empty="${this._emptyArray(this.data.users_notified)}">
                 ${(this.data.users_notified || []).map(
                   (item, index) => html`
@@ -619,7 +611,7 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
   maxDate = new Date();
 
   @property({type: String})
-  contractExpiryDate!: string;
+  contractExpiryDate!: string | undefined;
 
   @property({type: Object})
   tabTexts = {
@@ -664,6 +656,9 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
   users!: GenericObject[];
 
   @property({type: Object})
+  reduxCommonData!: CommonDataState;
+
+  @property({type: Object})
   errorObject!: GenericObject;
 
   @property({type: Array})
@@ -684,6 +679,12 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
   }
 
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp) {
+      this.reduxCommonData = state.commonData;
+    }
+  }
+
   firstUpdated(changedProperties: PropertyValues): void {
     super.firstUpdated(changedProperties);
 
@@ -694,28 +695,19 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    // @dci
-    // 'updateStyles(poPermissionPath, poUpdating)',
-    // 'updateStyles(data.engagement_type)',
-
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
     }
     if (changedProperties.has('data')) {
-      this.updatePoBasePath(this.data.agreement.id);
       this._prepareData();
       this.onEngagementTypeChanged();
     }
-    if (changedProperties.has('basePermissionPath')) {
-      // @dci this._basePathChanged();
-      this._setEngagementTypes(this.basePermissionPath);
-      this._setSharedIpWith(this.basePermissionPath);
+    if (changedProperties.has('optionsData')) {
+      this._setEngagementTypes(this.optionsData);
+      this._setSharedIpWith(this.optionsData);
     }
     if (changedProperties.has('showInput') || changedProperties.has('showAdditionalInput')) {
       this._showJoinAudit(this.showInput, this.showAdditionalInput);
-    }
-    if (changedProperties.has('basePermissionPath')) {
-      this._setSharedIpWith(this.basePermissionPath);
     }
   }
 
@@ -803,17 +795,17 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
     const userIsFirmStaffAuditor = this.userIsFirmStaffAuditor();
 
     const savedSections = this.data.sections || [];
-    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : getStaticData('sections')) || [];
+    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData.sections) || [];
     const sectionIDs = savedSections.map((section) => section.id);
     this.sectionIDs = sectionIDs;
 
     const savedOffices = this.data.offices || [];
-    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : getStaticData('offices')) || [];
+    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData.offices) || [];
     const officeIDs = savedOffices.map((office) => office.id);
     this.officeIDs = officeIDs;
 
     if (!this.users) {
-      this.users = getStaticData('users') || [];
+      this.users =  this.reduxCommonData.users || [];
     }
     this.setUsersNotifiedOptionsAndIDs(true);
 
@@ -836,8 +828,8 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
     this.usersNotifiedOptions = [...this.users];
   }
 
-  _setSharedIpWith(basePermissionPath: string) {
-    const sharedIpWithOptions = getChoices(`${basePermissionPath}.shared_ip_with.child`);
+  _setSharedIpWith(optionsData: AnyObject) {
+    const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
     this.sharedIpWith = sharedIpWithOptions || [];
   }
 
@@ -1080,11 +1072,6 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
     this.showJoinAudit = showAdditionalInput && showInput;
   }
 
-  updatePoBasePath(id: any) {
-    const path = id ? `po_${id}` : '';
-    this.poPermissionPath = path;
-  }
-
   _setExpiryMinDate(minDate: any) {
     if (!minDate) {
       return false;
@@ -1093,12 +1080,12 @@ export class EngagementInfoDetails extends CommonMethodsMixin(ModelChangedMixin(
     return new Date(today.getDate() - 1);
   }
 
-  _hideTooltip(basePermissionPath: any, showInput: any, type: any) {
-    return this.isReadOnly('engagement_type', basePermissionPath) || this.isSpecialAudit(type) || !showInput;
+  _hideTooltip(options: AnyObject, showInput: any, type: any) {
+    return this.isReadOnly('engagement_type', options) || this.isSpecialAudit(type) || !showInput;
   }
 
-  _setEngagementTypes(basePermissionPath: any) {
-    const types = getChoices(`${basePermissionPath}.engagement_type`);
+  _setEngagementTypes(options: AnyObject) {
+    const types = getOptionsChoices(options, 'engagement_type');
     if (!types) {
       return;
     }

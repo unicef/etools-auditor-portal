@@ -1,3 +1,4 @@
+import {RouteDetails} from '@unicef-polymer/etools-types';
 import {GenericObject} from '../../types/global';
 
 export function setProperty(object: GenericObject, path = '', dataToSet: any): any | null {
@@ -33,4 +34,27 @@ export const validateRequiredFields = (element) => {
     }
   });
   return isValid;
+};
+
+export const getValueFromResponse = (response: {status: string; value?: any; reason?: any}, defaultValue: any = []) => {
+  return response.status === 'fulfilled' ? response.value : defaultValue;
+};
+
+export const pageIsNotCurrentlyActive = (routeName: string, pageName: string) => {
+  if (!routeName) {
+    return false;
+  }
+  return !(routeName === pageName);
+};
+
+export const commingFromDetailsToList = (
+  prevRouteDetails: RouteDetails | undefined,
+  routeDetails: RouteDetails | null
+) => {
+  return (
+    routeDetails &&
+    prevRouteDetails &&
+    prevRouteDetails.subRouteName !== 'list' &&
+    routeDetails?.subRouteName === 'list'
+  );
 };

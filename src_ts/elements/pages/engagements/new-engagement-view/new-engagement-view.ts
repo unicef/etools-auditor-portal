@@ -16,7 +16,7 @@ import '../../../mixins/permission-controller';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {mainPageStyles} from '../../../styles/main-page-styles-lit';
+import {mainPageStyles} from '../../../styles/main-page-styles';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import {FileAttachmentsTab} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
@@ -198,7 +198,7 @@ export class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMe
         <div id="sidebar">
           <status-tab-element
             .engagementData="${this.engagement}"
-            permission-base="new_engagement"
+            .optionsData="${this.engagementOptions}"
           ></status-tab-element>
         </div>
       </div>

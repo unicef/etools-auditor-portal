@@ -24,13 +24,17 @@ import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
-import {mainPageStyles} from '../../styles/main-page-styles-lit';
-
+import {mainPageStyles} from '../../styles/main-page-styles';
+import {RootState, store} from '../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
 import {GenericObject} from '../../../types/global';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import get from 'lodash-es/get';
 
 /**
  * @customElement
@@ -39,7 +43,7 @@ import {GenericObject} from '../../../types/global';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('special-audits-page-main')
-export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(LitElement)) {
+export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -52,24 +56,8 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
           margin-bottom: 0 !important;
         }
       </style>
-      <app-route
-        .route="${this.route}"
-        @route-changed="${({detail}: CustomEvent) => {
-          this.route = detail.value;
-        }}"
-        pattern="/:id/:tab"
-        @data-changed="${({detail}: CustomEvent) => (this.routeData = detail.value)}"
-      >
-      </app-route>
 
-      <engagement-info-data
-        engagementType="micro-assessments"
-        .engagementId="${this.engagementId}"
-        .engagementInfo="${this.engagement}"
-        @engagement-info-loaded="${(e: CustomEvent) => {
-          this.engagement = e.detail;
-        }}"
-      >
+      <engagement-info-data engagementType="special-audits" .engagementId="${this.engagementId}">
       </engagement-info-data>
 
       <update-engagement
@@ -106,17 +94,22 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                 role="tablist"
                 tabindex="0"
                 .selected="${this.tab}"
-                @selected-changed="${(e: CustomEvent) => (this.tab = e.detail.value)}"
+                @selected-changed="${(e: CustomEvent) => {
+                  if (this.tab !== e.detail.value) {
+                    this._tabChanged(e.detail.value, this.tab);
+                    this.tab = e.detail.value;
+                  }
+                }}"
                 id="pageTabs"
               >
                 <paper-tab name="overview">
                   <span class="tab-content">Engagement Overview</span>
                 </paper-tab>
 
-                ${this._showReportTabs(this.permissionBase, this.engagement)
+                ${this._showReportTabs(this.engagementOptions, this.engagement)
                   ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.permissionBase)
+                ${this._showFollowUpTabs(this.engagementOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
                 <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -144,7 +137,7 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                       @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </engagement-info-details>
 
@@ -153,7 +146,7 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                       id="partnerDetails"
                       .engagement="${this.engagement}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </partner-details-tab>
 
@@ -163,7 +156,7 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                       without-finding-column
                       .errorObject="${this.errorObject}"
                       .dataItems="${this.engagement.specific_procedures}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                       readonly-tab
                     >
                     </specific-procedure>
@@ -171,32 +164,32 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                     <engagement-staff-members-tab
                       id="staffMembers"
                       .engagement="${this.engagement}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                       .errorObject="${this.errorObject}"
                     >
                     </engagement-staff-members-tab>
                   </div>
 
-                  ${this._showReportTabs(this.permissionBase, this.engagement)
+                  ${this._showReportTabs(this.engagementOptions, this.engagement)
                     ? html`<div name="report">
                         <sa-report-page-main
                           id="report"
                           .originalData="${this.originalData}"
                           .engagement="${this.engagement}"
                           .errorObject="${this.errorObject}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.engagementOptions}"
                         >
                         </sa-report-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.permissionBase)
+                  ${this._showFollowUpTabs(this.engagementOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.apOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -205,7 +198,7 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                   <div name="attachments">
                     <file-attachments-tab
                       id="engagement_attachments"
-                      .dataBasePath="${this.permissionBase}"
+                      .optionsData="${this.attachmentOptions}"
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
@@ -215,11 +208,11 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
                     >
                     </file-attachments-tab>
 
-                    ${this.hasReportAccess(this.permissionBase, this.engagement)
+                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
                       ? html`<file-attachments-tab
                           id="report_attachments"
                           is-report-tab="true"
-                          .dataBasePath="${this.permissionBase}"
+                          .optionsData="${this.reportAttachmentOptions}"
                           path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
@@ -234,7 +227,7 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .permissionBase="${this.permissionBase}">
+                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
                 </status-tab-element>
               </div>
             </div>
@@ -296,24 +289,37 @@ export class SpecialAuditsPageMain extends CommonMethodsMixin(EngagementMixin(Li
     this.removeEventListener('engagement-updated', this._engagementUpdated);
   }
 
+  stateChanged(state: RootState) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'special-audits')) {
+      return;
+    }
+
+    if (state.user && state.user.data) {
+      this.user = state.user.data;
+    }
+    this.setEngagementData(state);
+
+    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.routeDetails = state.app.routeDetails;
+      this.engagementId = Number(this.routeDetails!.params!.id);
+      this.tab = this.routeDetails.subRouteName || 'overview';
+      this.onRouteChanged(this.routeDetails, this.tab);
+    }
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('route')) {
-      this._routeConfig(this.route);
+    if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
+      this.onEngagementLoaded();
     }
-    if (
-      changedProperties.has('engagement') ||
-      changedProperties.has('permissionBase') ||
-      changedProperties.has('route')
-    ) {
-      this._checkAvailableTab(this.engagement, this.permissionBase, this.route);
-    }
-    if (changedProperties.has('engagement')) {
-      this._setPermissionBase(this.engagement?.id);
-    }
-    if (changedProperties.has('tab')) {
-      this._tabChanged(this.tab);
+  }
+
+  onEngagementLoaded() {
+    // debugger;
+    if (this.engagementOptions && this.engagement) {
+      this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
+      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
   }
 

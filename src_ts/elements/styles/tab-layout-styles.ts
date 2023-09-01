@@ -1,12 +1,10 @@
-import {html} from 'lit-element';
+import {css} from 'lit-element';
 
 // language=HTML
-export const tabLayoutStyles = html`
-  <style>
-    :host {
-      position: relative;
-      display: block;
-      margin-bottom: 24px;
-    }
-  </style>
+export const tabLayoutStyles = css`
+  :host {
+    position: relative;
+    display: block;
+    margin-bottom: 24px;
+  }
 `;

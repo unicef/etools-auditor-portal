@@ -4,9 +4,9 @@ import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-tabs/paper-tab';
 import '@polymer/paper-tabs/paper-tabs';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
-import {mainPageStyles} from '../../styles/main-page-styles-lit';
+import {mainPageStyles} from '../../styles/main-page-styles';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '../../data-elements/engagement-info-data';
@@ -20,7 +20,6 @@ import '../../common-elements/engagement-overview-components/engagement-staff-me
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
-import {GenericObject} from '../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import assign from 'lodash-es/assign';
 import './questionnaire-components/questionnaire-page-main/questionnaire-page-main';
@@ -28,6 +27,13 @@ import '../../common-elements/status-tab-element/status-tab-element';
 import '@polymer/paper-input/paper-textarea';
 import './report-page-components/ma-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
+import {RootState, store} from '../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import get from 'lodash-es/get';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
 
 /**
  * @customElement
@@ -36,7 +42,7 @@ import '../../common-elements/file-attachments-tab/file-attachments-tab';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('micro-assessments-page-main')
-export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(LitElement)) {
+export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -49,24 +55,8 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
           margin-bottom: 0 !important;
         }
       </style>
-      <app-route
-        .route="${this.route}"
-        @route-changed="${({detail}: CustomEvent) => {
-          this.route = detail.value;
-        }}"
-        pattern="/:id/:tab"
-        @data-changed="${({detail}: CustomEvent) => (this.routeData = detail.value)}"
-      >
-      </app-route>
 
-      <engagement-info-data
-        engagementType="micro-assessments"
-        .engagementId="${this.engagementId}"
-        .engagementInfo="${this.engagement}"
-        @engagement-info-loaded="${(e: CustomEvent) => {
-          this.engagement = e.detail;
-        }}"
-      >
+      <engagement-info-data engagementType="micro-assessments" .engagementId="${this.engagementId}">
       </engagement-info-data>
 
       <update-engagement
@@ -102,23 +92,29 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                 attr-for-selected="name"
                 noink
                 bottom-item
+                selectable="paper-tab"
                 role="tablist"
                 tabindex="0"
                 .selected="${this.tab}"
-                @selected-changed="${(e: CustomEvent) => (this.tab = e.detail.value)}"
+                @selected-changed="${(e: CustomEvent) => {
+                  if (this.tab !== e.detail.value) {
+                    this._tabChanged(e.detail.value, this.tab);
+                    this.tab = e.detail.value;
+                  }
+                }}"
                 id="pageTabs"
               >
                 <paper-tab name="overview">
                   <span class="tab-content">Engagement Overview</span>
                 </paper-tab>
 
-                ${this._showReportTabs(this.permissionBase, this.engagement)
+                ${this._showReportTabs(this.engagementOptions, this.engagement)
                   ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
                   : ``}
-                ${this._showQuestionnaire(this.permissionBase, this.engagement)
+                ${this._showQuestionnaire(this.engagementOptions, this.engagement)
                   ? html` <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.permissionBase)
+                ${this._showFollowUpTabs(this.engagementOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
 
@@ -147,7 +143,7 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                       @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </engagement-info-details>
 
@@ -156,20 +152,20 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                       id="partnerDetails"
                       .engagement="${this.engagement}"
                       .errorObject="${this.errorObject}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                     >
                     </partner-details-tab>
 
                     <engagement-staff-members-tab
                       id="staffMembers"
                       .engagement="${this.engagement}"
-                      .basePermissionPath="${this.permissionBase}"
+                      .optionsData="${this.engagementOptions}"
                       .errorObject="${this.errorObject}"
                     >
                     </engagement-staff-members-tab>
                   </div>
 
-                  ${this._showReportTabs(this.permissionBase, this.engagement)
+                  ${this._showReportTabs(this.engagementOptions, this.engagement)
                     ? html`<div name="report">
                         <ma-report-page-main
                           id="report"
@@ -179,31 +175,31 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                             this.engagement = {...detail};
                           }}"
                           .errorObject="${this.errorObject}"
-                          .permissionBase="${this.permissionBase}"
+                          .engagementOptions="${this.engagementOptions}"
                         >
                         </ma-report-page-main>
                       </div>`
                     : ``}
-                  ${this._showQuestionnaire(this.permissionBase, this.engagement)
+                  ${this._showQuestionnaire(this.engagementOptions, this.engagement)
                     ? html`<div name="questionnaire">
                         <questionnaire-page-main
                           id="questionnaire"
                           .data="${this.engagement.questionnaire}"
                           .riskAssessment="${this.engagement?.questionnaire?.risk_rating}"
                           .errorObject="${this.errorObject}"
-                          .basePermissionPath="${this.permissionBase}"
+                          .optionsData="${this.engagementOptions}"
                         >
                         </questionnaire-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.permissionBase)
+                  ${this._showFollowUpTabs(this.engagementOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .permissionBase="${this.permissionBase}"
+                          .optionsData="${this.apOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -212,7 +208,7 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                   <div name="attachments">
                     <file-attachments-tab
                       id="engagement_attachments"
-                      .dataBasePath="${this.permissionBase}"
+                      .optionsData="${this.attachmentOptions}"
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
@@ -222,11 +218,11 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
                     >
                     </file-attachments-tab>
 
-                    ${this.hasReportAccess(this.permissionBase, this.engagement)
+                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
                       ? html`<file-attachments-tab
                           id="report_attachments"
                           is-report-tab="true"
-                          .dataBasePath="${this.permissionBase}"
+                          .optionsData="${this.reportAttachmentOptions}"
                           path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
@@ -241,7 +237,7 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .permissionBase="${this.permissionBase}">
+                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
                 </status-tab-element>
               </div>
             </div>
@@ -282,9 +278,6 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
     `;
   }
 
-  @property({type: Object})
-  engagement: GenericObject = {};
-
   @property({type: Array})
   otherActions = [];
 
@@ -294,32 +287,29 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
   @property({type: String})
   engagementPrefix = '/micro-assessments';
 
-  connectedCallback() {
-    super.connectedCallback();
+  stateChanged(state: RootState) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'micro-assessments')) {
+      return;
+    }
 
-    this.addEventListener('engagement-info-loaded', this._infoLoaded);
-    this.addEventListener('engagement-updated', this._engagementUpdated);
-    // this.addEventListener('main-action-activated', this._mainActionActivated);
+    if (state.user && state.user.data) {
+      this.user = state.user.data;
+    }
+    this.setEngagementData(state);
+
+    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.routeDetails = state.app.routeDetails;
+      this.engagementId = Number(this.routeDetails!.params!.id);
+      this.tab = this.routeDetails.subRouteName || 'overview';
+      this.onRouteChanged(this.routeDetails, this.tab);
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('route')) {
-      this._routeConfig(this.route);
-    }
-    if (
-      changedProperties.has('engagement') ||
-      changedProperties.has('permissionBase') ||
-      changedProperties.has('route')
-    ) {
-      this._checkAvailableTab(this.engagement, this.permissionBase, this.route);
-    }
-    if (changedProperties.has('engagement')) {
-      this._setPermissionBase(this.engagement.id);
-    }
-    if (changedProperties.has('tab')) {
-      this._tabChanged(this.tab);
+    if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
+      this.onEngagementLoaded();
     }
   }
 
@@ -343,6 +333,14 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
     return true;
   }
 
+  onEngagementLoaded() {
+    // debugger;
+    if (this.engagementOptions && this.engagement) {
+      this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
+      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
+    }
+  }
+
   customDataPrepare(data) {
     data = data || {};
     const questionnaireTab = this.getElement('#questionnaire');
@@ -352,7 +350,7 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
     } else {
       delete data.questionnaire;
     }
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    const hasReport = this.hasReportAccess(this.engagementOptions, this.engagement);
     const reportTab = hasReport ? this.getElement('#report') : null;
 
     const subjectAreas = reportTab && reportTab.getInternalControlsData();
@@ -379,7 +377,7 @@ export class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin
   }
 
   customBasicValidation() {
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    const hasReport = this.hasReportAccess(this.engagementOptions, this.engagement);
     if (!hasReport) {
       return true;
     }

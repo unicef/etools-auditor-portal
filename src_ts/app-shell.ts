@@ -1,5 +1,6 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {setPassiveTouchGestures, setRootPath} from '@polymer/polymer/lib/utils/settings.js';
+import '@webcomponents/shadycss/entrypoints/apply-shim.js';
+import {LitElement, PropertyValues, html, property} from 'lit-element';
+import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
 
 import '@polymer/app-route/app-route';
 import '@polymer/app-route/app-location.js';
@@ -13,10 +14,7 @@ import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
 import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
-import some from 'lodash-es/some';
-
 import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
-import '@unicef-polymer/etools-loading';
 
 import './elements/app-shell-components/sidebar-menu/app-menu.js';
 import './elements/app-shell-components/main-header/page-header.js';
@@ -24,49 +22,74 @@ import './elements/app-shell-components/footer/page-footer.js';
 
 import './elements/styles/app-theme.js';
 import './elements/data-elements/static-data';
-
-// Gesture events like tap and track generated from touch will not be
-// preventable, allowing for better scrolling performance.
-setPassiveTouchGestures(true);
-
-import {property} from '@polymer/decorators';
-import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin';
+import {
+  getPartners,
+  getUsers,
+  getStaffUsers,
+  getOffices,
+  getSections,
+  getStaticDropdownData,
+  getEngagementOptions,
+  getNewStaffSCOptions,
+  getFilterAuditors,
+  getFilterPartners
+} from './redux/actions/common-data';
+import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
-import {getUserData} from './elements/mixins/user-controller';
 import {GenericObject} from './types/global';
-import {getDomainByEnv} from './elements/config/config';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import {BASE_PATH} from './elements/config/config';
+import {BASE_PATH, BASE_URL} from './elements/config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '@unicef-polymer/etools-toasts/src/etools-toasts';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util.js';
+import './elements/utils/routes.js';
+import {store, RootState} from './redux/store';
+import {handleUrlChange} from './redux/actions/app.js';
+import {setStore} from '@unicef-polymer/etools-utils/dist/store.util';
+import {connect} from 'pwa-helpers/connect-mixin.js';
+import {installRouter} from 'pwa-helpers/router';
+import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces.js';
+import {getCurrentUser} from './elements/data-elements/user-data.js';
+import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types.js';
+import commonData, {CommonDataState} from './redux/reducers/common-data.js';
+import user from './redux/reducers/user.js';
+import engagement from './redux/reducers/engagement.js';
+import {SET_ALL_STATIC_DATA} from './redux/actions/actionsConstants.js';
+import {getValueFromResponse} from './elements/utils/utils.js';
+import {RouteDetails} from '@unicef-polymer/etools-types';
+setStore(store as any);
+store.addReducers({
+  user,
+  commonData,
+  engagement
+});
+
 declare const dayjs: any;
 declare const dayjs_plugin_utc: any;
-
 dayjs.extend(dayjs_plugin_utc);
-
-setRootPath(`${BASE_PATH}`);
-
 window.EtoolsLanguage = 'en';
 
 /**
  * @customElement
- * @polymer
+ * @LitElement
  */
-class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
-  public static get template() {
+class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
+  static get styles() {
+    return [gridLayoutStylesLit];
+  }
+
+  render() {
     // main template
     // language=HTML
     return html`
       ${appDrawerStyles}
-      <static-data></static-data>
-      <etools-piwik-analytics page="[[subroute.prefix]]" user="[[user]]" toast="[[_toast]]"></etools-piwik-analytics>
-
-      <app-location route="{{route}}" query-params="{{queryParams}}" url-space-regex="^[[rootPath]]"></app-location>
-
-      <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"> </app-route>
-
-      <etools-loading id="global-loading" absolute></etools-loading>
+      <etools-piwik-analytics
+        .page="${this.page}"
+        .user="${this.user}"
+        .toast="${this.currentToastMessage}"
+      ></etools-piwik-analytics>
 
       <etools-toasts></etools-toasts>
 
@@ -74,23 +97,22 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
         id="layout"
         responsive-width="1200px"
         fullbleed
-        narrow="{{narrow}}"
-        small-menu$="[[smallMenu]]"
+        .narrow="${this.narrow}"
+        ?small-menu="${this.smallMenu}"
       >
         <!-- Drawer content -->
         <app-drawer
           id="drawer"
           slot="drawer"
           transition-duration="350"
-          on-click="onDrawerClick"
-          swipe-open="[[narrow]]"
-          small-menu$="[[smallMenu]]"
+          @click="${this.onDrawerClick}"
+          ?swipe-open="${this.narrow}"
+          ?small-menu="${this.smallMenu}"
         >
           <app-menu
-            root-path="[[rootPath]]"
-            selected-page="[[page]]"
-            small-menu$="[[smallMenu]]"
-            show-ssc-page="[[_checkSSCPage(user)]]"
+            .selectedPage="${this.page}"
+            ?small-menu="${this.smallMenu}"
+            ?showSscPage="${this.showSscPage}"
           ></app-menu>
           <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
@@ -99,70 +121,32 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
           <iron-overlay-backdrop id="appHeaderOverlay"></iron-overlay-backdrop>
           <app-header slot="header" fixed shadow>
-            <page-header id="pageheader" user="[[user]]"></page-header>
+            <page-header id="pageheader" .user="${this.user}"></page-header>
           </app-header>
 
           <main role="main" class="main-content">
-            <iron-pages
-              id="pages"
-              selected="[[page]]"
-              attr-for-selected="name"
-              fallback-selection="not-found"
-              role="main"
-            >
-              <engagements-page-main
-                name="engagements"
-                id="engagements"
-                route="{{subroute}}"
-                base-route="[[page]]"
-                query-params="{{queryParams}}"
-              >
+              <engagements-page-main name="engagements" id="engagements"
+                ?hidden="${!this.isActivePage(this.page, 'engagements')}">
               </engagements-page-main>
 
-              <staff-sc-page-main
-                selected-page="[[page]]"
-                name="staff-sc"
-                id="staff-sc"
-                route="{{subroute}}"
-                base-route="[[page]]"
-                query-params="{{queryParams}}"
-              >
+              <staff-sc-page-main name="staff-sc" id="staff-sc"
+                ?hidden="${!this.isActivePage(this.page, 'staff-sc')}">
               </staff-sc-page-main>
 
-              <audits-page-main name="audits" id="audits" route="{{subroute}}" query-params="{{queryParams}}">
+              <audits-page-main name="audits" id="audits"
+                 ?hidden="${!this.isActivePage(this.page, 'audits')}">
               </audits-page-main>
 
-              <special-audits-page-main
-                name="special-audits"
-                id="special-audits"
-                route="{{subroute}}"
-                query-params="{{queryParams}}"
-              >
+              <special-audits-page-main name="special-audits" id="special-audits"
+                 ?hidden="${!this.isActivePage(this.page, 'special-audits')}">
               </special-audits-page-main>
 
-              <micro-assessments-page-main
-                name="micro-assessments"
-                id="micro-assessments"
-                route="{{subroute}}"
-                query-params="{{queryParams}}"
-              >
+              <micro-assessments-page-main name="micro-assessments" id="micro-assessments"
+                ?hidden="${!this.isActivePage(this.page, 'micro-assessments')}">
               </micro-assessments-page-main>
 
-              <spot-checks-page-main
-                name="spot-checks"
-                id="spot-checks"
-                route="{{subroute}}"
-                query-params="{{queryParams}}"
-              >
-              </spot-checks-page-main>
-
-              <spot-checks-page-main
-                name="staff-spot-checks"
-                id="staff-spot-checks"
-                route="{{subroute}}"
-                query-params="{{queryParams}}"
-                is-staff-sc
-              >
+              <spot-checks-page-main name="spot-checks" id="spot-checks"
+                 ?hidden="${!this.isActivePage(this.page, 'spot-checks|staff-spot-checks')}">
               </spot-checks-page-main>
 
               <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
@@ -174,60 +158,134 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     `;
   }
 
-  static get observers() {
-    return ['_routePageChanged(route.path)'];
-  }
-
-  @property({type: String, observer: '_pageChanged'})
+  @property({type: String})
   page = '';
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean, reflect: true})
   narrow = false;
 
-  @property({type: Object})
-  _toast: PolymerElement | null = null;
-
-  @property({type: Array})
-  _toastQueue = [];
+  @property({type: String})
+  currentToastMessage!: string;
 
   @property({type: Array})
   globalLoadingQueue: any[] = [];
 
   @property({type: Object})
-  user = {groups: []};
+  user!: EtoolsUser;
 
   @property({type: Object})
-  route!: GenericObject;
-
-  @property({type: Object})
-  routeData: GenericObject = {};
-
-  @property({type: Object})
-  queryParams!: GenericObject;
+  subroute!: GenericObject;
 
   @property({type: Boolean})
   initLoadingComplete!: boolean;
+
+  @property({type: Boolean})
+  showSscPage = false;
+
+  @property({type: Object})
+  reduxRouteDetails?: RouteDetails;
+
+  constructor() {
+    super();
+    // Gesture events like tap and track generated from touch will not be
+    // preventable, allowing for better scrolling performance.
+    setPassiveTouchGestures(true);
+  }
 
   public connectedCallback() {
     super.connectedCallback();
 
     this.checkAppVersion();
-    setTimeout(() => (window.EtoolsEsmmFitIntoEl = this._getContentContainer()), 100);
+    setTimeout(() => {
+      window.EtoolsEsmmFitIntoEl = this._getContentContainer();
+      this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl;
+    }, 100);
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    if (this.initLoadingComplete && this.route.path === `${BASE_PATH}`) {
-      this._setDefaultLandingPage();
-    }
+    // this.shadowRoot!.querySelector('#drawer')?.shadowRoot?.querySelector('#scrim')?.remove();
 
-    this.shadowRoot!.querySelector('#drawer')?.shadowRoot?.querySelector('#scrim')?.remove();
-
-    this.addEventListener('global-loading', this.handleLoading);
+    // this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('404', this._pageNotFound);
-    this.addEventListener('static-data-loaded', this._initialDataLoaded);
 
-    this.addEventListener('iron-overlay-opened', this._dialogOpening);
-    this.addEventListener('iron-overlay-closed', this._dialogClosing);
+    // this.addEventListener('iron-overlay-opened', this._dialogOpening);
+    // this.addEventListener('iron-overlay-closed', this._dialogClosing);
+    installRouter((location) =>
+      store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
+    );
+
+    this.loadinitialData();
+  }
+
+  loadinitialData() {
+    getCurrentUser().then((user?: EtoolsUser) => {
+      if (user) {
+        this.user = user;
+        // @ts-ignore
+        Promise.allSettled([
+          getPartners(),
+          getUsers(),
+          getSections(),
+          getOffices(),
+          getStaffUsers(),
+          getStaticDropdownData(),
+          getFilterAuditors(),
+          getFilterPartners(),
+          getEngagementOptions(),
+          getNewStaffSCOptions()
+        ]).then((response: any[]) => {
+          store.dispatch({
+            type: SET_ALL_STATIC_DATA,
+            staticData: this.formatResponse(response)
+          });
+        });
+        this._checkSSCPage(this.user);
+      }
+    });
+  }
+
+  private formatResponse(response: any[]) {
+    const data: Partial<CommonDataState> = {};
+    data.partners = getValueFromResponse(response[0]);
+    data.users = get(getValueFromResponse(response[1]), 'results') || [];
+    data.sections = getValueFromResponse(response[2]);
+    data.offices = getValueFromResponse(response[3]);
+    data.staffMembersUsers = getValueFromResponse(response[4]);
+    data.staticDropdown = getValueFromResponse(response[5]);
+    data.filterAuditors = getValueFromResponse(response[6]);
+    data.filterPartners = getValueFromResponse(response[7]);
+    data.new_engagementOptions = get(getValueFromResponse(response[8]), 'actions') || {};
+    data.new_staff_scOptions = get(getValueFromResponse(response[9]), 'actions') || {};
+    return data;
+  }
+
+  public stateChanged(state: RootState) {
+    if (state.app?.routeDetails && this.canAccessPage(state.app.routeDetails?.routeName)) {
+      this.page = state.app.routeDetails.routeName;
+      this.reduxRouteDetails = state.app.routeDetails;
+    } else {
+      this._pageNotFound();
+    }
+  }
+
+  canAccessPage(page: string) {
+    if (page === 'staff-sc' && !this.showSscPage) {
+      return false;
+    }
+    return true;
+  }
+
+  isActivePage(activeModule: string, expectedModule: string) {
+    const pagesToMatch = expectedModule.split('|');
+    return pagesToMatch.indexOf(activeModule) > -1;
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    // if (changedProperties.has('page')) {
+    //   this._pageChanged(this.page);
+    // }
   }
 
   protected _getContentContainer() {
@@ -288,25 +346,26 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
 
   allowPageChange() {
-    const urlSpaceRegex = new RegExp(`^${this.rootPath}`);
-    return urlSpaceRegex.test(this.route.path);
+    const urlSpaceRegex = new RegExp(`^${BASE_PATH}`);
+    return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 
-  _routePageChanged() {
-    if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
-      return;
-    }
-    this.page = this.routeData.page || 'engagements';
-    if (this.scroll) {
-      this.scroll(0, 0);
-    }
+  // dci
+  // _routePageChanged() {
+  //   if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
+  //     return;
+  //   }
+  //   this.page = this.routeData.page || 'engagements';
+  //   if (this.scroll) {
+  //     this.scroll(0, 0);
+  //   }
 
-    // Close a non-persistent drawer when the module & route are changed.
-    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
-    if (!appDrawer.persistent) {
-      appDrawer.close();
-    }
-  }
+  //   // Close a non-persistent drawer when the module & route are changed.
+  //   const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
+  //   if (!appDrawer.persistent) {
+  //     appDrawer.close();
+  //   }
+  // }
 
   onDrawerClick(e) {
     const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
@@ -314,53 +373,14 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
       appDrawer.close();
     }
   }
-
-  _pageChanged(page) {
-    if (!page) {
-      return;
-    }
-    if (page === 'staff-spot-checks') {
-      page = 'spot-checks';
-    }
-
-    if (this.shadowRoot!.querySelector(`#${page}`) instanceof PolymerElement) {
-      return;
-    }
-
-    fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
-
-    var resolvedPageUrl;
-    if (page === 'not-found') {
-      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/not-found-page-view/not-found-page-view.js`;
-    } else if (page === 'staff-sc' && !this._checkSSCPage(this.user)) {
-      this._pageNotFound();
-      return;
-    } else {
-      // eslint-disable-next-line
-      resolvedPageUrl = `${getDomainByEnv()}/src/elements/pages/${page}/${page}-page-main.js`;
-    }
-
-    import(resolvedPageUrl)
-      .then(() => {
-        if (!this.initLoadingComplete) {
-          this.initLoadingComplete = true;
-        }
-
-        fireEvent(this, 'global-loading', {type: 'initialisation'});
-
-        if (this.route.path === this.rootPath) {
-          this._setDefaultLandingPage();
-        }
-      })
-      .catch((_err) => {
-        EtoolsLogger.error(_err);
-        this._pageNotFound();
-      });
-  }
-
   _checkSSCPage(user) {
-    const groups = get(user, 'groups', []);
-    return some(groups, (group) => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User');
+    if (!user) {
+      return;
+    }
+    const groups = get(user, 'groups');
+    this.showSscPage = groups.some(
+      (group) => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User'
+    );
   }
 
   _pageNotFound(event?) {
@@ -370,43 +390,6 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
     fireEvent(this, 'toast', {text: message});
 
     fireEvent(this, 'global-loading', {type: 'initialisation'});
-  }
-
-  _initialDataLoaded() {
-    if (this.routeData) {
-      this.user = getUserData();
-      this.page = this.routeData.page || this._setDefaultLandingPage();
-    }
-  }
-
-  handleLoading(event) {
-    if (!event.detail || !event.detail.type) {
-      EtoolsLogger.error(JSON.stringify(event.detail), 'Bad details object');
-      return;
-    }
-    const loadingElement = this.shadowRoot!.querySelector('etools-loading#global-loading')! as any;
-
-    if (event.detail.active && loadingElement.active) {
-      this.globalLoadingQueue.push(event);
-    } else if (event.detail.active && typeof event.detail.message === 'string' && event.detail.message !== '') {
-      loadingElement.loadingText = event.detail.message;
-      loadingElement.active = true;
-    } else {
-      loadingElement.active = false;
-      this.globalLoadingQueue = this.globalLoadingQueue.filter((element) => {
-        return element.detail.type !== event.detail.type;
-      });
-      if (this.globalLoadingQueue.length) {
-        this.handleLoading(this.globalLoadingQueue.shift());
-      }
-    }
-  }
-
-  _setDefaultLandingPage() {
-    // _configPath
-    const path = `${this.rootPath}engagements/list`;
-    this.set('route.path', path);
-    return 'engagements';
   }
 
   checkAppVersion() {
