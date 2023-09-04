@@ -5,6 +5,8 @@ import '../../../common-elements/engagement-report-components/assign-engagement/
 import './primary-risk-element';
 import './key-internal-controls-tab';
 import './control-findings-tab';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @LitEelement

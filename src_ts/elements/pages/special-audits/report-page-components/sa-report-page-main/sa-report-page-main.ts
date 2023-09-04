@@ -28,10 +28,6 @@ export class SaReportPageMain extends LitElement {
         .data="${this.engagement}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
-        @data-changed="${({detail}) => {
-          this.engagement = detail;
-          fireEvent(this, 'data-changed', this.engagement);
-        }}"
         audit-type="Special Audit"
         .optionsData="${this.optionsData}"
       >

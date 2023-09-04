@@ -45,6 +45,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     engagement!: AnyObject;
 
     @property({type: Object})
+    engagementFromRedux!: AnyObject;
+
+    @property({type: Object})
+    engagementCopy!: AnyObject;
+
+    @property({type: Object})
     engagementOptions!: AnyObject;
 
     @property({type: Object})
@@ -102,8 +108,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     setEngagementData(state: RootState) {
-      if (state.engagement?.data && !isJsonStrMatch(this.engagement, state.engagement.data)) {
-        this.engagement = cloneDeep(state.engagement.data);
+      if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
+        this.engagementFromRedux = cloneDeep(state.engagement.data);
+        this.engagement = cloneDeep(this.engagementFromRedux);
       }
       if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
         this.originalData = cloneDeep(state.engagement.originalData);

@@ -44,7 +44,7 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
     case UPDATE_CURRENT_ENGAGEMENT:
       return {
         ...state,
-        data: action.payload
+        data: action.engagement
       };
     case RESET_CURRENT_ENGAGEMENT:
       return {

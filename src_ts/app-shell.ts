@@ -19,7 +19,6 @@ import './elements/app-shell-components/main-header/page-header.js';
 import './elements/app-shell-components/footer/page-footer.js';
 
 import './elements/styles/app-theme.js';
-import './elements/data-elements/static-data';
 import {
   getPartners,
   getUsers,

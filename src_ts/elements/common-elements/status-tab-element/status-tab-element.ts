@@ -9,6 +9,7 @@ declare const dayjs: any;
 import '../insert-html/insert-html';
 import './action-buttons';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import get from 'lodash-es/get';
 
 /**
  * main menu
@@ -242,14 +243,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
   }
 
   setActions(optionsData: AnyObject) {
-    const allowedActions: AnyObject[] = [];
-    if (isValidCollection(optionsData.actions?.PUT)) {
-      allowedActions.push({code: 'save', display_name: 'save'});
-    }
-    if (isValidCollection(optionsData.actions?.POST)) {
-      allowedActions.push({code: 'create', display_name: 'create'});
-    }
-    this.actions = allowedActions;
+    this.actions = get(optionsData, 'actions.allowed_actions') || [];
   }
 
   setStatusStates() {

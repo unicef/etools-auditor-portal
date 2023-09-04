@@ -220,7 +220,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
   }
 
   getRiskData() {
-    if (isEmpty(this.primaryArea.risk.value) || isEmpty(this.primaryArea.risk.value.value)) {
+    if (isEmpty(this.primaryArea.risk.value)) {
       return null;
     }
 
@@ -228,7 +228,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
       ? JSON.parse(this.primaryArea.risk.extra)
       : this.primaryArea.risk.extra;
 
-    let originalExtra = get(this, 'originalData.blueprints[0].risk.extra');
+    let originalExtra = get(this.originalData, 'blueprints[0].risk.extra');
     if (this.isJSONObj(originalExtra)) {
       originalExtra = JSON.parse(String(originalExtra));
     }

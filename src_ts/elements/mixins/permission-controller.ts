@@ -3,6 +3,7 @@ import get from 'lodash-es/get';
 import {GenericObject} from '../../types/global';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {isObject} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 const _permissionCollection: {
   edited_ap_options?: {allowed_actions: []};
@@ -35,7 +36,7 @@ export function addToCollection(collectionName, data, title?) {
   if (title) {
     _permissionCollection[collectionName].title = title;
   }
-  _manageActions(collectionName);
+  manageActions(collectionName);
 
   return true;
 }
@@ -54,28 +55,25 @@ export function updateCollection(collectionName, data, title?) {
   if (title) {
     _permissionCollection[collectionName].title = title;
   }
-  _manageActions(collectionName);
+  manageActions(collectionName);
   return true;
 }
 
-function _manageActions(collectionName) {
-  const collection = _permissionCollection[collectionName];
-  if (!collection) {
-    EtoolsLogger.warn(`Collection ${collectionName} does not exist!`);
-    return false;
+export function manageActions(permissions: AnyObject) {
+  if (!permissions) {
+    return;
   }
-
-  const allowed_actions = (collection.allowed_FSM_transitions as any) || [];
+  const allowed_actions = (permissions.allowed_FSM_transitions as any) || [];
 
   const actions: any[] = [];
-  if (isValidCollection(collection.PUT)) {
+  if (isValidCollection(permissions.PUT)) {
     actions.push(_createAction('save', allowed_actions[0]));
   }
-  if (isValidCollection(collection.POST)) {
+  if (isValidCollection(permissions.POST)) {
     actions.push(_createAction('create', allowed_actions[0]));
   }
 
-  collection.allowed_actions = actions.concat(allowed_actions);
+  permissions.allowed_actions = actions.concat(allowed_actions);
   return true;
 }
 
@@ -203,7 +201,7 @@ export function actionAllowed(options: AnyObject, action: string) {
     return false;
   }
 
-  let actions = options && options.allowed_actions;
+  let actions = options.actions && options.actions.allowed_actions;
 
   if (!actions || !actions.length) {
     return false;
