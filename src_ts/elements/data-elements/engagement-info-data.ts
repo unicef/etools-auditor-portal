@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import get from 'lodash-es/get';
 import EngagementMixin from '../mixins/engagement-mixin';
 import {
   getActionPointOptions,

@@ -40,16 +40,13 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
 import {RouteDetails, RouteQueryParams} from '@unicef-polymer/etools-types/dist/router.types';
 import {buildUrlQueryString, cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
-import {isJsonStrMatch, isObject} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {connect} from 'pwa-helpers/connect-mixin';
 import pick from 'lodash-es/pick';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
-import get from 'lodash-es/get';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
-import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
-import omit from 'lodash-es/omit';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
+import {CommonDataState} from '../../../../redux/reducers/common-data';
 
 /**
  * @customElement
@@ -85,7 +82,7 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
         hide-print-button
         .exportLinks="${this.exportLinks}"
         .link="${this.newBtnLink}"
-        .hideAddButton="${this._hideAddButton()}"
+        .hideAddButton="${this.hideAddButton}"
         .btnText="${this.addBtnText}"
         page-title="Engagements"
       >
@@ -109,9 +106,6 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
       </section>
     `;
   }
-
-  @property({type: String})
-  basePermissionPath = '';
 
   @property({type: Boolean})
   hideAddButton!: boolean;
@@ -183,18 +177,8 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
   @property({type: String})
   addBtnText = 'Add New Engagement';
 
-  private _isStaffSc = false;
-  @property({type: Boolean})
-  get isStaffSc() {
-    return this._isStaffSc;
-  }
-
-  set isStaffSc(isStaffSc: boolean) {
-    if (this._isStaffSc !== isStaffSc) {
-      this._isStaffSc = isStaffSc;
-      this.setReferenceNumberLink(this._isStaffSc);
-    }
-  }
+  @property({type: Boolean, attribute: 'is-staff-sc'})
+  isStaffSc!: boolean;
 
   @property({type: Array})
   exportLinks: any[] = [];
@@ -203,7 +187,7 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
   endpointName = '';
 
   @property({type: Object})
-  prevQueryStringObj: GenericObject = {page_size: 10, page: 1, ordering: 'reference_number'};
+  prevQueryStringObj: GenericObject = {ordering: 'reference_number', page_size: 10, page: 1};
 
   private routeDetails!: RouteDetails | null;
 
@@ -227,17 +211,17 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
       return; // Avoid code execution while on a different page
     }
 
-    const stateRouteDetails = get(state, 'app.routeDetails');
-    if (!isJsonStrMatch(stateRouteDetails, this.routeDetails)) {
-      this.routeDetails = cloneDeep(stateRouteDetails);
-      this.isStaffSc = this.routeDetails?.routeName === 'staff-sc';
-      if (this.hadToinitializeUrlWithPrevQueryString(stateRouteDetails)) {
+    if (!isJsonStrMatch(state.app.routeDetails, this.routeDetails)) {
+      this.routeDetails = cloneDeep(state.app.routeDetails);
+      this.isStaffSc = this.routeDetails!.routeName === 'staff-sc';
+      if (this.hadToinitializeUrlWithPrevQueryString(this.routeDetails)) {
         return;
       }
+      this.setReferenceNumberLink(this.isStaffSc);
       this.initializePaginatorFromUrl(this.routeDetails?.queryParams);
       this.getListData();
     }
-
+    this.checkAddButtonVisibility(state.commonData);
     this.initFiltersForDisplay(state);
   }
 
@@ -352,7 +336,6 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
       return;
     }
     this.setHeadersText(optionsData);
-    debugger;
     this.columnValuesFromOptions = {
       engagementTypes: getOptionsChoices(optionsData, 'engagement_type'),
       status: getOptionsChoices(optionsData, 'status'),
@@ -380,8 +363,8 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
 
   setReferenceNumberLink(isStaffSc: boolean) {
     this.listColumns[0].link_tmpl = isStaffSc
-      ? `${ROOT_PATH}:engagement_type/:id/overview`
-      : `${ROOT_PATH}:staff-spot-checks/:id/overview`;
+      ? `${ROOT_PATH}staff-spot-checks/:id/overview`
+      : `${ROOT_PATH}:engagement_link/:id/overview`;
   }
 
   populateFilterOptionsFromCommonData(state: RootState, filters: EtoolsFilter[]) {
@@ -443,9 +426,17 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
     this.updateCurrentParams({...e.detail, page: 1}, true);
   }
 
-  _hideAddButton() {
-    return this.isReadOnly('partner', this.isStaffSc ? 'new_staff_sc' : 'new_engagement');
-    // this.hideAddButton = aa;
+  checkAddButtonVisibility(commonData: CommonDataState) {
+    if (
+      typeof this.hideAddButton === 'undefined' &&
+      typeof this.isStaffSc !== 'undefined' &&
+      commonData.loadedTimestamp
+    ) {
+      this.hideAddButton = this.isReadOnly(
+        'partner',
+        this.isStaffSc ? commonData.new_staff_scOptions : commonData.new_engagementOptions
+      );
+    }
   }
 
   onDataLoaded(data: GenericObject) {

@@ -44,7 +44,8 @@ export const pageIsNotCurrentlyActive = (routeName: string, pageName: string) =>
   if (!routeName) {
     return false;
   }
-  return !(routeName === pageName);
+  const arrPageName = pageName.split('|');
+  return !arrPageName.includes(routeName);
 };
 
 export const commingFromDetailsToList = (

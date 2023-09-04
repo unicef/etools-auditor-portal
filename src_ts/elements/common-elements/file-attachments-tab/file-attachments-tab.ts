@@ -424,7 +424,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     super.updated(changedProperties);
 
     if (changedProperties.has('optionsData')) {
-      this._setBasePath(this.optionsData);
+      this._onPermissionsLoaded(this.optionsData);
     }
     if (changedProperties.has('engagement')) {
       this._handleLinksInDetailsView(this.engagement);
@@ -488,11 +488,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       .catch(this.filesTabErrorHandler.bind(this));
   }
 
-  _setBasePath(optionsData: AnyObject) {
-    this._handleLinksInDetailsView(optionsData);
-    // const base = engagementOptions && pathPostfix ? `${dataBase}_${pathPostfix}` : '';
-    // this.basePermissionPath = base;
-    // @dci
+  _onPermissionsLoaded(optionsData: AnyObject) {
     if (optionsData) {
       const title = get(optionsData, 'name');
       this.tabTitle = title;
@@ -502,7 +498,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _handleLinksInDetailsView(engagement: AnyObject) {
-    const isEngagementDetailsView = !engagement.id;
+    const isEngagementDetailsView = engagement.id;
     if (isEngagementDetailsView && !this.isReportTab) {
       this._handleLinksForEngagement();
     }

@@ -2,8 +2,6 @@ import '@webcomponents/shadycss/entrypoints/apply-shim.js';
 import {LitElement, PropertyValues, html, property} from 'lit-element';
 import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
 
-import '@polymer/app-route/app-route';
-import '@polymer/app-route/app-location.js';
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header-layout/app-header-layout.js';
@@ -198,7 +196,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     this.checkAppVersion();
     setTimeout(() => {
       window.EtoolsEsmmFitIntoEl = this._getContentContainer();
-      this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl;
+      this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl as any;
     }, 100);
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
@@ -208,8 +206,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     // this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('404', this._pageNotFound);
 
-    // this.addEventListener('iron-overlay-opened', this._dialogOpening);
-    // this.addEventListener('iron-overlay-closed', this._dialogClosing);
+    this.addEventListener('iron-overlay-opened', this._dialogOpening);
+    this.addEventListener('iron-overlay-closed', this._dialogClosing);
     installRouter((location) =>
       store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
     );
@@ -254,8 +252,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     data.staticDropdown = getValueFromResponse(response[5]);
     data.filterAuditors = getValueFromResponse(response[6]);
     data.filterPartners = getValueFromResponse(response[7]);
-    data.new_engagementOptions = get(getValueFromResponse(response[8]), 'actions') || {};
-    data.new_staff_scOptions = get(getValueFromResponse(response[9]), 'actions') || {};
+    data.new_engagementOptions = getValueFromResponse(response[8]);
+    data.new_staff_scOptions = getValueFromResponse(response[9]);
     return data;
   }
 

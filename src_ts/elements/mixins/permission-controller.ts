@@ -110,8 +110,7 @@ export function getFieldAttribute(path: string, attribute: string, actionType?: 
 }
 
 export function readonlyPermission(path: string, optionsData: AnyObject) {
-  // isReadonly
-  return !get(optionsData, `POST.${path}`) && !get(optionsData, `PUT.${path}`);
+  return !collectionExists(path, optionsData, 'POST') && !collectionExists(path, optionsData, 'PUT');
 }
 
 export function getHeadingLabel(options: AnyObject, labelPath, defaultLabel) {
@@ -125,18 +124,19 @@ export function getHeadingLabel(options: AnyObject, labelPath, defaultLabel) {
 }
 
 export function isRequired(path: string, permissions: AnyObject) {
-  return get(permissions, `POST.${path}.required`) || get(permissions, `PUT.${path}.required`);
+  return (
+    getCollection(`${path}.required`, permissions, 'POST') || getCollection(`${path}.required`, permissions, 'PUT')
+  );
 }
 
-export function collectionExists(path, actionType?) {
+export function collectionExists(path: string, optionsData: AnyObject, actionType?: string) {
   if (!path) {
     throw new Error('path argument must be provided');
   }
   if (typeof path !== 'string') {
     throw new Error('path argument must be a string');
   }
-
-  return !!getCollection(path, actionType);
+  return !!getCollection(path, optionsData, actionType);
 }
 
 // @dci to be replaced with getOptionsChoices
@@ -158,7 +158,7 @@ export function getLabelFromOptions(optionsData, labelPath, defaultLabel) {
 
 export function getOptionsChoices(optionsData: AnyObject, path: string) {
   const actions = get(optionsData, 'actions') || optionsData;
-  let choices = get(actions, `GET.${path}.choices`) || get(actions, `POST.${path}.choices`);
+  let choices = get(actions, `actions.GET.${path}.choices`) || get(actions, `actions.POST.${path}.choices`);
   if (!choices) {
     choices = getCollection(`${path}.choices`, actions);
   }
@@ -168,7 +168,7 @@ export function getOptionsChoices(optionsData: AnyObject, path: string) {
 export function getCollection(path: string, options: AnyObject, actionType?: string) {
   const pathArr = path.split('.');
 
-  let value = options;
+  let value = get(options, 'actions') || options || {};
   while (pathArr.length) {
     const key = pathArr.shift()!;
     if (value[key]) {
@@ -185,32 +185,6 @@ export function getCollection(path: string, options: AnyObject, actionType?: str
       break;
     }
   }
-  return value;
-}
-
-export function getCollectionOld(path: string, actionType?: string): any {
-  const pathArr = path.split('.');
-
-  let value = _permissionCollection;
-
-  while (pathArr.length) {
-    const key = pathArr.shift()!;
-    if (value[key]) {
-      value = value[key];
-    } else {
-      const action = actionType
-        ? value[actionType]
-        : isValidCollection(value.POST) || isValidCollection(value.PUT) || isValidCollection(value.GET);
-
-      value = action || value.child || value.children;
-      pathArr.unshift(key);
-    }
-
-    if (!value) {
-      break;
-    }
-  }
-
   return value;
 }
 

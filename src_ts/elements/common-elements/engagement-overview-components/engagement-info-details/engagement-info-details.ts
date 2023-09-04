@@ -29,12 +29,13 @@ import '../../../data-elements/update-agreement-data';
 import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
-import {getUserData} from '../../../mixins/user-controller';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
@@ -661,6 +662,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Object})
   errorObject!: GenericObject;
 
+  @property({type: Object})
+  user!: GenericObject;
+
   @property({type: Array})
   usersNotifiedOptions: GenericObject[] = [];
 
@@ -682,6 +686,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   stateChanged(state: RootState) {
     if (state.commonData.loadedTimestamp) {
       this.reduxCommonData = state.commonData;
+    }
+    if (state.user?.data && !isJsonStrMatch(this.user, state.user.data)) {
+      this.user = cloneDeep(state.user.data);
     }
   }
 
@@ -766,14 +773,14 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
     this.populateDropdownsAndSetSelectedValues();
 
-    const poItemId = this.data.po_item.id;
-    if (poItemId && this.data.po_item !== poItemId) {
-      this.data = {...this.data, po_item: poItemId};
+    const poItemId = get(this.data, 'po_item.id');
+    if (poItemId && poItemId !== this.data.po_item) {
+      this.data.po_item = poItemId;
       fireEvent(this, 'engagement-changed', this.data);
     }
   }
 
-  getStartEndDateLabel(engType, field, basePermissionPath) {
+  getStartEndDateLabel(engType: string, field: string, options: AnyObject) {
     if (['sa', 'audit'].includes(engType)) {
       if (field === 'start_date') {
         return 'Start date of first reporting FACE';
@@ -782,17 +789,12 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       }
     }
 
-    return this.getLabel(field, basePermissionPath);
-  }
-
-  userIsFirmStaffAuditor() {
-    const userData = getUserData();
-    return userData && !userData.is_unicef_user;
+    return this.getLabel(field, options);
   }
 
   populateDropdownsAndSetSelectedValues() {
     // For firm staff auditors certain endpoints return 403
-    const userIsFirmStaffAuditor = this.userIsFirmStaffAuditor();
+    const userIsFirmStaffAuditor = this.user.is_unicef_user;
 
     const savedSections = this.data.sections || [];
     this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData.sections) || [];
@@ -805,7 +807,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     this.officeIDs = officeIDs;
 
     if (!this.users) {
-      this.users =  this.reduxCommonData.users || [];
+      this.users = this.reduxCommonData.users || [];
     }
     this.setUsersNotifiedOptionsAndIDs(true);
 
@@ -1103,11 +1105,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return value.label || '';
   }
 
-  _isAdditionalFieldRequired(field: any, basePath: any, type: any) {
+  _isAdditionalFieldRequired(field: any, options: AnyObject, type: any) {
     if (this.isSpecialAudit(type)) {
       return false;
     }
-    return this._setRequired(field, basePath);
+    return this._setRequired(field, options);
   }
 
   _getPoItems(agreement: any) {
@@ -1127,21 +1129,22 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return poItems;
   }
 
-  _isDataAgreementReadonly(field: any, basePermissionPath: any, agreement: any) {
+  _isDataAgreementReadonly(field: string, permissions: AnyObject, agreement: any) {
     if (!agreement) {
       return false;
     }
-    return this.isReadOnly(field, basePermissionPath) || !agreement.order_number;
+    return this.isReadOnly(field, permissions) || !agreement.order_number;
   }
 
-  _hideField(fieldName: any, basePermissionPath: any) {
-    if (!fieldName || !basePermissionPath) {
+  _hideField(fieldName: any, optionsData: AnyObject) {
+    if (!fieldName || !optionsData) {
       return false;
     }
 
-    const path = `${basePermissionPath}.${fieldName}`;
     const collectionNotExists =
-      !collectionExists(path, 'POST') && !collectionExists(path, 'PUT') && !collectionExists(path, 'GET');
+      !collectionExists(fieldName, optionsData, 'POST') &&
+      !collectionExists(fieldName, optionsData, 'PUT') &&
+      !collectionExists(fieldName, optionsData, 'GET');
 
     return collectionNotExists;
   }

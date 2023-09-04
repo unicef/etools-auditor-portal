@@ -1,5 +1,4 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/app-route/app-route';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-tabs/paper-tab';
 import '@polymer/paper-tabs/paper-tabs';
@@ -30,8 +29,6 @@ import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import {RootState, store} from '../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
-import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import get from 'lodash-es/get';
 import {pageIsNotCurrentlyActive} from '../../utils/utils';
 
@@ -334,7 +331,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
   }
 
   onEngagementLoaded() {
-    // debugger;
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
       this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);

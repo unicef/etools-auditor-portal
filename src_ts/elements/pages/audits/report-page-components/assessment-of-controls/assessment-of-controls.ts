@@ -251,9 +251,6 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this assessment?';
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 

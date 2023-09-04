@@ -1,5 +1,10 @@
 import {Reducer} from 'redux';
-import {RESET_CURRENT_ENGAGEMENT, SET_CURRENT_ENGAGEMENT, UPDATE_CURRENT_ENGAGEMENT} from '../actions/actionsConstants';
+import {
+  RESET_CURRENT_ENGAGEMENT,
+  SET_CURRENT_ENGAGEMENT,
+  SET_ENGAGEMENT_ERROR,
+  UPDATE_CURRENT_ENGAGEMENT
+} from '../actions/actionsConstants';
 import {RootAction} from '../store';
 import {AnyObject} from '@unicef-polymer/etools-types';
 
@@ -10,6 +15,7 @@ export interface EngagementState {
   attachmentOptions: AnyObject | null;
   reportAttachmentOptions: AnyObject | null;
   apOptions: AnyObject | null;
+  errorObject: AnyObject | null;
 }
 
 const INITIAL_ENGAGEMENT_DATA: EngagementState = {
@@ -18,7 +24,8 @@ const INITIAL_ENGAGEMENT_DATA: EngagementState = {
   options: null,
   attachmentOptions: null,
   reportAttachmentOptions: null,
-  apOptions: null
+  apOptions: null,
+  errorObject: null
 };
 
 const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGEMENT_DATA, action) => {
@@ -31,7 +38,8 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
         options: action.payload.options,
         attachmentOptions: action.payload.attachmentOptions,
         reportAttachmentOptions: action.payload.reportAttachmentOptions,
-        apOptions: action.payload.apOptions
+        apOptions: action.payload.apOptions,
+        errorObject: null
       };
     case UPDATE_CURRENT_ENGAGEMENT:
       return {
@@ -46,9 +54,14 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
         options: null,
         attachmentOptions: null,
         reportAttachmentOptions: null,
-        apOptions: null
+        apOptions: null,
+        errorObject: null
       };
-      break;
+    case SET_ENGAGEMENT_ERROR:
+      return {
+        ...state,
+        errorObject: action.payload
+      };
     default:
       return state;
   }

@@ -2,7 +2,7 @@ import {Action, ActionCreator} from 'redux';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {getEndpoint} from '../../elements/config/endpoints-controller';
 import {AnyObject} from '@unicef-polymer/etools-types';
-import {RESET_CURRENT_ENGAGEMENT, SET_CURRENT_ENGAGEMENT, UPDATE_CURRENT_ENGAGEMENT} from './actionsConstants';
+import {RESET_CURRENT_ENGAGEMENT, SET_CURRENT_ENGAGEMENT, SET_ENGAGEMENT_ERROR, UPDATE_CURRENT_ENGAGEMENT} from './actionsConstants';
 
 export interface EngagementActionSetData extends Action<'SET_CURRENT_ENGAGEMENT'> {
   payload: AnyObject;
@@ -37,6 +37,10 @@ export const updateCurrentEngagement = (engagement: AnyObject | null) => {
 
 export const resetCurrentEngagement = () => {
   return {type: RESET_CURRENT_ENGAGEMENT};
+};
+
+export const setEngagementError = (errorObject: AnyObject | null) => {
+  return {type: SET_ENGAGEMENT_ERROR, payload: errorObject};
 };
 
 export const getEngagementOptions = (id: number, type: string) => {

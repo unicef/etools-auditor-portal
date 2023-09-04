@@ -12,7 +12,6 @@ import {AssignEngagement} from '../../../../common-elements/engagement-report-co
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
 import {InternalControls} from '../internal-controls/internal-controls';
 import {OverviewElement} from '../overview-element/overview-element';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitElement

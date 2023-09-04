@@ -34,13 +34,7 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import DateMixin from '../../../mixins/date-mixin';
-import {
-  collectionExists,
-  readonlyPermission,
-  actionAllowed,
-  getHeadingLabel,
-  getOptionsChoices
-} from '../../../mixins/permission-controller';
+import {actionAllowed, getHeadingLabel, getOptionsChoices} from '../../../mixins/permission-controller';
 import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
@@ -48,7 +42,6 @@ import famEndpoints from '../../../config/endpoints';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {RootState, store} from '../../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @LitElement
@@ -759,7 +752,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       return;
     }
     this.categories = getOptionsChoices(optionsData, 'category') || [];
-    this.canBeChanged = !readonlyPermission(optionsData);
+    this.canBeChanged = !!get(optionsData, 'actions.POST');
   }
 
   _checkNonField(error) {

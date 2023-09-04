@@ -7,7 +7,6 @@ import isObject from 'lodash-es/isObject';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AnyObject, Constructor, EtoolsUser, GenericObject} from '@unicef-polymer/etools-types';
 import {getEndpoint} from '../config/endpoints-controller';
-import {getUserData} from './user-controller';
 import {isValidCollection, actionAllowed, getOptionsChoices} from './permission-controller';
 import {whichPageTrows} from './error-handler';
 import {clearQueries} from './query-params-controller';
@@ -26,9 +25,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class EngagementMixinLitClass extends baseClass {
     @property({type: Number})
     engagementId!: number | null;
-
-    @property({type: Object})
-    routeData!: GenericObject;
 
     @property({type: Object})
     routeDetails?: EtoolsRouteDetails;
@@ -67,16 +63,13 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     timeStamp!: string;
 
     @property({type: Object})
-    errorObject: GenericObject = {};
+    errorObject: AnyObject = {};
 
     @property({type: Boolean})
     dialogOpened = false;
 
     @property({type: String})
     tab!: string;
-
-    @property({type: Object})
-    route!: GenericObject;
 
     @property({type: Array})
     reportFileTypes!: any[];
@@ -133,6 +126,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       ) {
         this.reportAttachmentOptions = cloneDeep(state.engagement.reportAttachmentOptions);
       }
+      if (!isJsonStrMatch(this.errorObject, state.engagement.errorObject)) {
+        this.errorObject = state.engagement.errorObject || {};
+      }
     }
 
     updated(changedProperties: PropertyValues): void {
@@ -151,8 +147,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     onRouteChanged(routeDetails: EtoolsRouteDetails, tab: string) {
-      // && !~route.prefix.indexOf(this.engagementPrefix)
-      // debugger;
       if (!routeDetails) {
         return;
       }
@@ -178,7 +172,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         (tab === 'report' && !this._showReportTabs(options, engagement)) ||
         (tab === 'follow-up' && !this._showFollowUpTabs(options))
       ) {
-        // debugger;
         history.pushState(
           window.history.state,
           '',
@@ -220,14 +213,13 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
 
       if (!isNil(success) && data && data.status === 'final') {
-        if (getUserData().is_unicef_user) {
+        if (this.user && this.user.is_unicef_user) {
           this.tab = 'follow-up';
         }
       }
     }
 
     _tabChanged(newTabName: string, oldTabName: string | undefined) {
-      // debugger;
       // const newPath = this._geNewUrlPath(newTabName, newSubTab);
       // history.pushState(window.history.state, '', newPath);
       // window.dispatchEvent(new CustomEvent('popstate'));
@@ -519,7 +511,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _showFollowUpTabs(options: AnyObject) {
-      // debugger;
       const collection = get(options, 'actions.GET');
       return isValidCollection(collection);
     }
@@ -529,7 +520,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _errorOccurred(errorObj) {
-      if (!errorObj || !isObject(errorObj)) {
+      if (!errorObj || !isObject(errorObj) || !Object.keys(errorObj).length) {
         return;
       }
       const page = whichPageTrows(errorObj);

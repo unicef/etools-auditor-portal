@@ -1,6 +1,4 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/app-route/app-route';
-import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/app-layout/app-layout';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
@@ -50,7 +48,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   }
 
   render() {
-
     return html`
       ${sharedStyles}
       <style>
@@ -289,7 +286,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   }
 
   stateChanged(state: RootState) {
-    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'spot-checks')) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'spot-checks|staff-spot-checks')) {
       return;
     }
 
@@ -300,9 +297,9 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
 
     if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
       this.routeDetails = state.app.routeDetails;
-      this.pageType = this.routeDetails.routeName;
-      this.isStaffSc = this.pageType === 'staff-spot-checks';
-      this.engagementId = Number(this.routeDetails!.params!.id);
+      this.isStaffSc = this.routeDetails.routeName === 'staff-spot-checks';
+      this.pageType = this.isStaffSc ? 'staff-spot-checks' : 'spot-checks';
+      this.engagementId = Number(this.routeDetails.params!.id);
       this.tab = this.routeDetails.subRouteName || 'overview';
       // @dci called 2 for this page
       // this.onRouteChanged(this.routeDetails, this.tab);
@@ -312,26 +309,16 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    // if (changedProperties.has('isStaffSc')) {
-    //   this.pageType = this.isStaffSc ? 'staff-spot-checks' : 'spot-checks';
-    // }
     if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
       this.onEngagementLoaded();
     }
   }
 
   onEngagementLoaded() {
-    // debugger;
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
       this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
-  }
-
-  _setType(isStaffSc) {
-    // const type = isStaffSc ? 'staff-spot-checks' : 'spot-checks';
-    // this.engagementPrefix = `/${type}`;
-    // this.pageType = type;
   }
 
   _validateEngagement() {

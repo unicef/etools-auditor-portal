@@ -136,12 +136,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _canBeChanged(options: AnyObject) {
-      // @dci
-      // const path = basePath || this.basePermissionPath;
-      // if (!path) {
-      //   return true;
-      // }
-
       let readOnly = readonlyPermission(this.mainProperty, options);
       if (readOnly === null) {
         readOnly = true;

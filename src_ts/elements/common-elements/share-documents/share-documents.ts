@@ -2,8 +2,6 @@ import {LitElement, html, customElement, property, PropertyValues} from 'lit-ele
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
 import {PaperCheckboxElement} from '@polymer/paper-checkbox/paper-checkbox';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
 import {GenericObject} from '../../../types/global';

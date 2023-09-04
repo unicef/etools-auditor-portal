@@ -247,7 +247,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
   }
 
   dataItemsChanged() {
-    this.canBeChanged = this._canBeChanged(this.basePermissionPath);
+    this.canBeChanged = this._canBeChanged(this.optionsData);
 
     if (!this.originalDataItems) {
       this.originalDataItems = this.dataItems;

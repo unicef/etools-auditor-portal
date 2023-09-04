@@ -1,21 +1,14 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
+import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/iron-pages/iron-pages';
-import '@polymer/app-route/app-route';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
 import '../engagements/engagements-list-view/engagements-list-view';
 import '../engagements/new-engagement-view/new-engagement-view';
-import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
-import {actionAllowed} from '../../mixins/permission-controller';
+import {clearQueries} from '../../mixins/query-params-controller';
+import {isValidCollection} from '../../mixins/permission-controller';
 import {getEndpoint} from '../../config/endpoints-controller';
 
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
-import isUndefined from 'lodash-es/isUndefined';
-import isEqual from 'lodash-es/isEqual';
-import clone from 'lodash-es/clone';
-import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../types/global';
 import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
@@ -47,35 +40,32 @@ export class StaffScPageMain extends connect(store)(LitElement) {
         }
       </style>
 
-      <iron-pages id="categoryPages" selected="${this.activePage}" attr-for-selected="name" role="main">
-        <engagements-list-view
-          name="list"
-          id="listPage"
-          has-collapse
-          .endpointName="${this.endpointName}"
-          basePermissionPath="new_engagement"
-          add-btn-text="Add New Staff Spot Checks"
-          .newBtnLink="${this.newBtnLink}"
-          is-staff-sc
-        >
-        </engagements-list-view>
+      <engagements-list-view
+        name="list"
+        id="listPage"
+        has-collapse
+        ?hidden="${!this.isActivePage(this.activePath, 'list')}"
+        .endpointName="${this.endpointName}"
+        add-btn-text="Add New Staff Spot Checks"
+        .newBtnLink="${this.newBtnLink}"
+        is-staff-sc
+      >
+      </engagements-list-view>
 
-        ${this.allowNew
-          ? html` <new-engagement-view
-              name="new"
-              id="creationPage"
-              basePermissionPath="new_staff_sc"
-              .auditFirm="${this.auditFirm}"
-              page-title="Add New Staff Spot Check"
-              isStaffSc
-              .requestQueries="${this.partnersListQueries}"
-              basePermissionPath="new_engagement"
-              .partner="${this.partnerDetails}"
-              .endpointName="${this.endpointName}"
-            >
-            </new-engagement-view>`
-          : ''}
-      </iron-pages>
+      ${this.allowNew
+        ? html` <new-engagement-view
+            name="new"
+            id="creationPage"
+            ?hidden="${!this.isActivePage(this.activePath, 'new')}"
+            .auditFirm="${this.auditFirm}"
+            page-title="Add New Staff Spot Check"
+            isStaffSc
+            .requestQueries="${this.partnersListQueries}"
+            .partner="${this.partnerDetails}"
+            .endpointName="${this.endpointName}"
+          >
+          </new-engagement-view>`
+        : ''}
     `;
   }
 
@@ -95,13 +85,7 @@ export class StaffScPageMain extends connect(store)(LitElement) {
   partnersListQueries!: GenericObject;
 
   @property({type: String})
-  activePage!: string;
-
-  @property({type: String})
-  view!: string;
-
-  @property({type: String})
-  lastView!: string | null;
+  activePath!: string;
 
   @property({type: Object})
   lastParams!: GenericObject;
@@ -110,15 +94,14 @@ export class StaffScPageMain extends connect(store)(LitElement) {
   auditFirm: GenericObject = {};
 
   @property({type: Boolean})
-  allowNew = false;
+  allowNew!: boolean;
 
   @property({type: Object})
   reduxRouteDetails?: EtoolsRouteDetails;
 
   connectedCallback() {
     super.connectedCallback();
-    this.allowNew = actionAllowed('new_staff_sc', 'create');
-    // this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
+
     sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     })
@@ -131,21 +114,27 @@ export class StaffScPageMain extends connect(store)(LitElement) {
   }
 
   stateChanged(state: RootState) {
-    if (
-      pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'staff-sc') ||
-      isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)
-    ) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'staff-sc')) {
       return;
     }
-    this.reduxRouteDetails = state.app.routeDetails;
-    this.activePage = this.reduxRouteDetails.subRouteName!;
-    this._routeChanged(this.activePage);
+    if (typeof this.allowNew === 'undefined' && state.commonData.loadedTimestamp) {
+      this.allowNew = !!isValidCollection(state.commonData.new_staff_scOptions.actions?.POST);
+    }
+    if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
+      this.reduxRouteDetails = state.app.routeDetails;
+      this.activePath = this.reduxRouteDetails.path;
+      this._routeChanged(this.activePath);
+    }
   }
 
   _routeChanged(activePage) {
     if (activePage !== 'list') {
       clearQueries();
     }
+  }
+
+  isActivePage(activePath: string, expected: string) {
+    return activePath.indexOf(expected) > -1;
   }
   // @dci - do we need these ??
   // _routeConfig(view) {

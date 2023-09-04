@@ -1,6 +1,7 @@
 import {Reducer} from 'redux';
 import {SET_ALL_STATIC_DATA, UPDATE_STATIC_DATA} from '../actions/actionsConstants';
 import {RootAction} from '../store';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 export interface CommonDataState {
   users: [];
@@ -26,8 +27,8 @@ export interface CommonDataState {
   };
   filterAuditors: [];
   filterPartners: [];
-  new_engagementOptions: object;
-  new_staff_scOptions: object;
+  new_engagementOptions: AnyObject;
+  new_staff_scOptions: AnyObject;
   loadedTimestamp: number;
 }
 

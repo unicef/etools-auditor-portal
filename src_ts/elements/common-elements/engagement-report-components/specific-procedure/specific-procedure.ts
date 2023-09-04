@@ -3,8 +3,6 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
 
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
@@ -24,6 +22,7 @@ import '@polymer/paper-input/paper-textarea';
 import {checkNonField} from '../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../utils/utils';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @polymer
@@ -276,12 +275,12 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     }
   }
 
-  _hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab) {
-    return withoutFindingColumn || readonlyTab || !this._canBeChanged(basePermissionPath);
+  _hideEditIcon(permissions: AnyObject, withoutFindingColumn, readonlyTab) {
+    return withoutFindingColumn || readonlyTab || !this._canBeChanged(permissions);
   }
 
-  canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn) {
-    return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
+  canAddSP(permissions: AnyObject, readonlyTab, withoutFindingColumn) {
+    return this._canBeChanged(permissions) && !readonlyTab && withoutFindingColumn;
   }
 
   _removeItem(event) {

@@ -19,7 +19,7 @@ export function getStaffCollectionName(organisationId: number): string {
 @customElement('get-staff-members-list')
 export class GetStaffMembersList extends LitElement {
   @property({type: Number})
-  organisationId!: number;
+  organizationId!: number;
 
   @property({type: Object})
   queries!: GenericObject;
@@ -30,19 +30,19 @@ export class GetStaffMembersList extends LitElement {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('organisationId') || changedProperties.has('queries')) {
-      this._startRequest(this.organisationId, this.queries);
+    if (changedProperties.has('organizationId') || changedProperties.has('queries')) {
+      this._startRequest(this.organizationId, this.queries);
     }
   }
 
-  _startRequest(organisationId, listQueries) {
-    if (!organisationId || !listQueries) {
+  _startRequest(organizationId, listQueries) {
+    if (!organizationId || isNaN(parseInt(organizationId)) || !listQueries) {
       return;
     }
 
     fireEvent(this, 'loading-state-changed', {state: true});
 
-    Promise.all([this.getDataRequest(organisationId, listQueries), this.getOptionsRequest(organisationId, listQueries)])
+    Promise.all([this.getDataRequest(organizationId, listQueries), this.getOptionsRequest(organizationId, listQueries)])
       .then(([data]) => fireEvent(this, 'data-loaded', data))
       .catch((error) => {
         const responseData = error?.request?.detail?.request?.xhr;

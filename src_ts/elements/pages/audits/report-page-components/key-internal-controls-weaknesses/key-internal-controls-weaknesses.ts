@@ -14,7 +14,7 @@ import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/st
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import '../kicw-risk/kicw-risk';
-import {getChoices, getOptionsChoices} from '../../../../mixins/permission-controller';
+import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';

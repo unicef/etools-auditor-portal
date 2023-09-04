@@ -1,6 +1,4 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-pages/iron-pages';
@@ -191,7 +189,6 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                     <file-attachments-tab
                       id="engagement_attachments"
                       .optionsData="${this.attachmentOptions}"
-                      .dataBasePath="${this.permissionBase}"
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
@@ -311,7 +308,6 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
   }
 
   onEngagementLoaded() {
-    // debugger;
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
       this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);

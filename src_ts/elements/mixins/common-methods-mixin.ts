@@ -4,7 +4,7 @@ import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
-import {readonlyPermission, isRequired, getOptionsChoices, isValidCollection, getCollection} from './permission-controller';
+import {readonlyPermission, isRequired, getOptionsChoices, getCollection} from './permission-controller';
 import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
@@ -58,7 +58,7 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       event.target.invalid = false;
     }
 
-    isReadOnly(field, permissions: AnyObject, inProcess?) {
+    isReadOnly(field: string, permissions: AnyObject, inProcess?: boolean) {
       if (!permissions || inProcess) {
         return true;
       }

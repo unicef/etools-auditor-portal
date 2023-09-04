@@ -3,7 +3,6 @@ import {GenericObject} from '../../../../types/global';
 
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/paper-input/paper-input.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';

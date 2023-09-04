@@ -35,7 +35,7 @@ const DEMO_DOMAIN = 'etools-demo';
 const LOCAL_DOMAIN = 'localhost';
 
 export const BASE_PATH = '/ap/';
-export const BASE_URL = '/ap/';
+export const BASE_URL = '/' + getBasePath().replace(window.location.origin, '').slice(1, -1) + '/';
 
 export const isProductionServer = () => {
   const location = window.location.href;
@@ -57,12 +57,6 @@ export const checkEnvironment = () => {
     return 'LOCAL';
   }
   return null;
-};
-
-export const resetOldUserData = () => {
-  localStorage.removeItem('userId');
-  (etoolsCustomDexieDb as any).listsExpireMapTable.clear();
-  (etoolsCustomDexieDb as any).partners.clear();
 };
 
 function getBasePath() {

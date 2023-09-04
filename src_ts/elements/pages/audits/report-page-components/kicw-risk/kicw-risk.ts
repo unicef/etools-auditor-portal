@@ -1,6 +1,4 @@
 import {LitElement, html, property, customElement} from 'lit-element';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@polymer/polymer/lib/elements/dom-if';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/paper-icon-button/paper-icon-button';
 

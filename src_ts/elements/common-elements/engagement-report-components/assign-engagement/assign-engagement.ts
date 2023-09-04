@@ -24,6 +24,7 @@ import {connect} from 'pwa-helpers/connect-mixin';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @LitElement
@@ -73,7 +74,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
             <!-- Draft Report Issued to IP -->
             <datepicker-lite
               id="draftReportToIpInput"
-              class="$w100 {this._setRequired('date_of_draft_report_to_ip', this.basePermissionPath)} validate-date"
+              class="w100 ${this._setRequired('date_of_draft_report_to_ip', this.optionsData)} validate-date"
               .value="${this.data.date_of_draft_report_to_ip}"
               label="${this.getLabel('date_of_draft_report_to_ip', this.optionsData)}"
               placeholder="&#8212;"
@@ -268,8 +269,8 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     }
   }
 
-  _isReadOnly(field, prevDate, nextDate, basePermissionPath) {
-    return this.isReadOnly(field, basePermissionPath) || !(prevDate && !nextDate);
+  _isReadOnly(field, prevDate, nextDate, permissions: AnyObject) {
+    return this.isReadOnly(field, permissions) || !(prevDate && !nextDate);
   }
 
   onDataChanged(field, value) {
@@ -345,8 +346,8 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     return !!error;
   }
 
-  showCurrency(basePath) {
-    return basePath && collectionExists(`${basePath}.currency_of_report`, 'GET');
+  showCurrency(options: AnyObject) {
+    return options && collectionExists('currency_of_report', options, 'GET');
   }
 
   _checkInvalid(value) {

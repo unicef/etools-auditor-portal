@@ -1,4 +1,4 @@
-import {LitElement, html, customElement} from 'lit-element';
+import {LitElement, html} from 'lit-element';
 import famEndpoints from '../config/endpoints';
 import {getEndpoint} from '../config/endpoints-controller';
 import {addToCollection, getChoices, isValidCollection} from '../mixins/permission-controller';

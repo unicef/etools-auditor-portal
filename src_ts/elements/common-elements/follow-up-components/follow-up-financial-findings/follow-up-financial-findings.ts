@@ -279,7 +279,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('basePermissionPath') || changedProperties.has('engagement')) {
+    if (changedProperties.has('optionsData')) {
       this.setAuditOpinionChoices(this.optionsData);
     }
     if (changedProperties.has('errorObject')) {

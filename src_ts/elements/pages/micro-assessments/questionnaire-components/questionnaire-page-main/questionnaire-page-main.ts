@@ -20,7 +20,6 @@ import {checkNonField} from '../../../../mixins/error-handler';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 import get from 'lodash-es/get';
-import {AnyAction} from 'redux';
 import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**

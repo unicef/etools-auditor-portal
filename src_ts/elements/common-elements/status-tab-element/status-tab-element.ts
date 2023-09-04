@@ -2,7 +2,7 @@ import {LitElement, html, PropertyValues, property, customElement} from 'lit-ele
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';
-import {getActions} from '../../mixins/permission-controller';
+import {isValidCollection} from '../../mixins/permission-controller';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 declare const dayjs: any;
@@ -192,7 +192,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
   }
 
   @property({type: Array})
-  actions = [];
+  actions: AnyObject[] = [];
 
   @property({type: Object})
   statusStates: GenericObject = {};
@@ -232,19 +232,24 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
     }
   }
 
-  onRequiredDataLoaded(engagementData, permissionBase) {
-    if (!engagementData || !permissionBase) {
+  onRequiredDataLoaded(engagementData, optionsData) {
+    if (!engagementData || !optionsData) {
       return;
     }
-    // debugger;
-    this.setActions(this.optionsData);
+    this.setActions(optionsData);
     this.setStatusStates();
-    this.checkCancelled(this.engagementData.status);
+    this.checkCancelled(engagementData.status);
   }
 
   setActions(optionsData: AnyObject) {
-    const actions = optionsData ? getActions(optionsData) : [];
-    this.actions = actions;
+    const allowedActions: AnyObject[] = [];
+    if (isValidCollection(optionsData.actions?.PUT)) {
+      allowedActions.push({code: 'save', display_name: 'save'});
+    }
+    if (isValidCollection(optionsData.actions?.POST)) {
+      allowedActions.push({code: 'create', display_name: 'create'});
+    }
+    this.actions = allowedActions;
   }
 
   setStatusStates() {

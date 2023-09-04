@@ -1,5 +1,4 @@
 import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/app-route/app-route';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/paper-tabs/paper-tab';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
@@ -316,7 +315,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   }
 
   onEngagementLoaded() {
-    // debugger;
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
       this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);

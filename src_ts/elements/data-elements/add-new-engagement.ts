@@ -3,6 +3,8 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {GenericObject} from '../../types/global.js';
+import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
+import {setEngagementError} from '../../redux/actions/engagement';
 
 @customElement('add-new-engagement')
 export class AddNewEngagement extends LitElement {
@@ -38,7 +40,7 @@ export class AddNewEngagement extends LitElement {
     }
 
     if (status === 400) {
-      this.errorObject = response;
+      getStore().dispatch(setEngagementError(response));
     } else if (status === 413) {
       this.errorObject = {};
       fireEvent(this, 'toast', {

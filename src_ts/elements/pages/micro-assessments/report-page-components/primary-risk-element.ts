@@ -17,7 +17,6 @@ import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
 import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import isEmpty from 'lodash-es/isEmpty';
-import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
 
 /**
  * @LitEelement

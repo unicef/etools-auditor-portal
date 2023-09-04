@@ -4,7 +4,6 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/polymer/lib/elements/dom-if';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
@@ -25,7 +24,6 @@ import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '../../../data-elements/get-partner-data';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
@@ -413,7 +411,6 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
       return;
     } else {
       this.engagement.partner = selectedPartner;
-      fireEvent(this, 'engagement-changed', this.engagement);
     }
 
     this.requestInProcess = true;
@@ -467,25 +464,25 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
   }
 
-  isPdReadonly(basePermissionPath, requestInProcess, partner) {
-    return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
+  isPdReadonly(permissions: AnyObject, requestInProcess, partner) {
+    return this.isReadOnly('active_pd', permissions, requestInProcess) || !partner.id;
   }
 
-  activePdPlaceholder(options: AnyObject, partner) {
+  activePdPlaceholder(permissions: AnyObject, partner) {
     if (!partner || !partner.id) {
       return '–';
     }
-    return readonlyPermission('active_pd', options) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
-    // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
+    return readonlyPermission('active_pd', permissions) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
+    // return this.getPlaceholderText('active_pd', permissions, 'selector');
   }
 
   _setPlaceholderColor(partner) {
     return !partner || !partner.id ? 'no-data-fetched' : '';
   }
 
-  isOfficersReadonly(basePermissionPath, requestInProcess, partner) {
+  isOfficersReadonly(permissions: AnyObject, requestInProcess, partner) {
     return (
-      this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
+      this.isReadOnly('authorized_officers', permissions, requestInProcess) ||
       !partner ||
       !partner.partnerOfficers ||
       !partner.partnerOfficers.length ||

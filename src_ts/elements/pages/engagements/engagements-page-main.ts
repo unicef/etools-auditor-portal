@@ -1,15 +1,8 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/polymer/lib/elements/dom-if';
+import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/iron-pages/iron-pages';
-import '@polymer/app-route/app-route';
-import isEqual from 'lodash-es/isEqual';
-import clone from 'lodash-es/clone';
-import isEmpty from 'lodash-es/isEmpty';
-import isUndefined from 'lodash-es/isUndefined';
 import {GenericObject} from '../../../types/global';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {actionAllowed} from '../../mixins/permission-controller';
-import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
+import {isValidCollection} from '../../mixins/permission-controller';
+import {clearQueries} from '../../mixins/query-params-controller';
 import './engagements-list-view/engagements-list-view';
 import './new-engagement-view/new-engagement-view';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
@@ -18,7 +11,6 @@ import {moduleStyles} from '../../styles/module-styles';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../redux/store';
-import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
 import {pageIsNotCurrentlyActive} from '../../utils/utils';
 import get from 'lodash-es/get';
@@ -44,28 +36,26 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
         }
       </style>
 
-      <iron-pages id="categoryPages" .selected="${this.activePage}" attr-for-selected="name" role="main">
-        <engagements-list-view
-          name="list"
-          id="listPage"
-          has-collapse
-          .endpointName="${this.endpointName}"
-          basePermissionPath="new_engagement"
-        >
-        </engagements-list-view>
+      <engagements-list-view
+        name="list"
+        id="listPage"
+        ?hidden="${!this.isActivePage(this.activePath, 'list')}"
+        has-collapse
+        .endpointName="${this.endpointName}"
+      >
+      </engagements-list-view>
 
-        ${this.allowNew
-          ? html` <new-engagement-view
-              name="new"
-              id="creationPage"
-              basePermissionPath="new_engagement"
-              .partner="${this.partnerDetails}"
-              .endpointName="${this.endpointName}"
-              page-title="Add New Engagement"
-            >
-            </new-engagement-view>`
-          : ''}
-      </iron-pages>
+      ${this.allowNew
+        ? html` <new-engagement-view
+            name="new"
+            id="creationPage"
+            ?hidden="${!this.isActivePage(this.activePath, 'new')}"
+            .partner="${this.partnerDetails}"
+            .endpointName="${this.endpointName}"
+            page-title="Add New Engagement"
+          >
+          </new-engagement-view>`
+        : ''}
     `;
   }
 
@@ -76,19 +66,13 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
   endpointName = 'engagementsList';
 
   @property({type: String})
-  view = 'list';
-
-  @property({type: String})
-  lastView = '';
-
-  @property({type: String})
-  activePage!: string;
+  activePath!: string;
 
   @property({type: Object})
   lastParams!: GenericObject;
 
   @property({type: Boolean})
-  allowNew = false;
+  allowNew!: boolean;
 
   @property({type: Boolean})
   hasEngagementUpdated = false;
@@ -96,12 +80,15 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
   @property({type: Boolean})
   reloadListData = false;
 
+  @property({type: Boolean})
+  hideAddButton!: boolean;
+
   @property({type: Object})
   reduxRouteDetails?: EtoolsRouteDetails;
 
   connectedCallback() {
     super.connectedCallback();
-    this.allowNew = actionAllowed('new_engagement', 'create');
+
     this._engagementStatusUpdated = this._engagementStatusUpdated.bind(this);
     document.addEventListener('global-loading', this._engagementStatusUpdated as any);
     // this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
@@ -113,15 +100,17 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
   }
 
   stateChanged(state: RootState) {
-    if (
-      pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'engagements') ||
-      isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)
-    ) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'engagements')) {
       return;
     }
-    this.reduxRouteDetails = state.app.routeDetails;
-    this.activePage = this.reduxRouteDetails.subRouteName!;
-    this._routeChanged(this.activePage);
+    if (typeof this.allowNew === 'undefined' && state.commonData.loadedTimestamp) {
+      this.allowNew = !!isValidCollection(state.commonData.new_engagementOptions.actions?.POST);
+    }
+    if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
+      this.reduxRouteDetails = state.app.routeDetails;
+      this.activePath = this.reduxRouteDetails.path;
+      this._routeChanged(this.activePath);
+    }
   }
 
   _engagementStatusUpdated(e: CustomEvent) {
@@ -133,10 +122,14 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
     }
   }
 
-  _routeChanged(activePage) {
-    if (activePage !== 'list') {
+  _routeChanged(activePath) {
+    if (!activePath.includes('list')) {
       clearQueries();
     }
+  }
+
+  isActivePage(activePath: string, expected: string) {
+    return activePath.indexOf(expected) > -1;
   }
 
   // @dci DO WE NEED THIS ???

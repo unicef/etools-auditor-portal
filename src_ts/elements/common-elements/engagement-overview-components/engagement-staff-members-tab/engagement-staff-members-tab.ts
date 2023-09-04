@@ -155,7 +155,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
 
       <!--requests-->
       <get-staff-members-list
-        .organisationId="${this.organizationId}"
+        .organizationId="${this.organizationId}"
         .queries="${this.listQueries}"
         .pageType="${this.pageType}"
         @data-loaded="${this.listLoaded}"
@@ -316,7 +316,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this Audit Staff Team Member?';
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'save-with-button'})
   saveWithButton = false;
 
   @property({type: Object})
@@ -410,7 +410,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   }
 
   _organizationChanged(id) {
-    if (!this._canBeChanged() || !this.optionsData) {
+    if (!this.optionsData || !this._canBeChanged(this.optionsData)) {
       return;
     }
     if (!id) {
@@ -444,7 +444,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
     if (!data) {
       return;
     }
-    if (!this._canBeChanged()) {
+    if (!this._canBeChanged(this.optionsData)) {
       this.dataItems = cloneDeep(data);
       return;
     }
@@ -526,7 +526,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   }
 
   getTabData() {
-    if (!this._canBeChanged()) {
+    if (!this._canBeChanged(this.optionsData)) {
       return null;
     }
     const staffs: any[] = [];

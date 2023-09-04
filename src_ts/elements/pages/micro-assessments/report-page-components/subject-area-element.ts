@@ -77,7 +77,6 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   }
 
   setRiskOptions() {
-    debugger;
     const riskOptions = getOptionsChoices(this.optionsData, 'test_subject_areas.blueprints.risk.value') || [];
     this.riskOptions = riskOptions;
   }
