@@ -127,7 +127,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           openFlag="dialogOpened"
           @close="${this._resetDialogOpenedFlag}"
         >
-          <div class="row-h">
+          <div class="container">
             <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Recommendation -->

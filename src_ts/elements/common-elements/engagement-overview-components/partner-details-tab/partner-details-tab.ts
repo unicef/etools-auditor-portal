@@ -233,7 +233,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   engagement!: AnyObject;
 
   @property({type: String})
-  partnerId!: string;
+  partnerId!: string | null;
 
   connectedCallback() {
     super.connectedCallback();

@@ -274,10 +274,11 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
   }
 
   onDataChanged(field, value) {
-    this.data[field] = value;
-    this.checkDateValues();
-    this.requestUpdate();
-    store.dispatch(updateCurrentEngagement(this.data));
+    if (this.data[field] !== value) {
+      this.data[field] = value;
+      this.checkDateValues();
+      store.dispatch(updateCurrentEngagement(this.data));
+    }
   }
 
   validate(escapeValidation) {

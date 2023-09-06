@@ -36,18 +36,15 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import {BASE_PATH, BASE_URL} from './elements/config/config';
-import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import {BASE_PATH} from './elements/config/config';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '@unicef-polymer/etools-toasts/src/etools-toasts';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util.js';
 import './elements/utils/routes.js';
 import {store, RootState} from './redux/store';
 import {handleUrlChange} from './redux/actions/app.js';
 import {setStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {connect} from 'pwa-helpers/connect-mixin.js';
 import {installRouter} from 'pwa-helpers/router';
-import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces.js';
 import {getCurrentUser} from './elements/data-elements/user-data.js';
 import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types.js';
 import commonData, {CommonDataState} from './redux/reducers/common-data.js';
@@ -56,6 +53,7 @@ import engagement from './redux/reducers/engagement.js';
 import {SET_ALL_STATIC_DATA} from './redux/actions/actionsConstants.js';
 import {getValueFromResponse} from './elements/utils/utils.js';
 import {RouteDetails} from '@unicef-polymer/etools-types';
+import {addAllowedActions} from './elements/mixins/permission-controller.js';
 setStore(store as any);
 store.addReducers({
   user,
@@ -251,8 +249,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     data.staticDropdown = getValueFromResponse(response[5]);
     data.filterAuditors = getValueFromResponse(response[6]);
     data.filterPartners = getValueFromResponse(response[7]);
-    data.new_engagementOptions = getValueFromResponse(response[8]);
-    data.new_staff_scOptions = getValueFromResponse(response[9]);
+    data.new_engagementOptions = addAllowedActions(getValueFromResponse(response[8]));
+    data.new_staff_scOptions = addAllowedActions(getValueFromResponse(response[9]));
     return data;
   }
 

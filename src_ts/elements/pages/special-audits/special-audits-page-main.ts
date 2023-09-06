@@ -108,7 +108,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                 ${this._showReportTabs(this.engagementOptions, this.engagement)
                   ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.engagementOptions)
+                ${this._showFollowUpTabs(this.apOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
                 <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -133,7 +133,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                     <engagement-info-details
                       id="engagementDetails"
                       .data="${this.engagement}"
-                      @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
                       .optionsData="${this.engagementOptions}"
@@ -181,7 +180,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                         </sa-report-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.engagementOptions)
+                  ${this._showFollowUpTabs(this.apOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
@@ -278,13 +277,11 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
   }
 
@@ -317,7 +314,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
-      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
   }
 

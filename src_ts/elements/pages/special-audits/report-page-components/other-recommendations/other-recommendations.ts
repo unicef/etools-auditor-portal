@@ -18,6 +18,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../../types/global';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../../mixins/permission-controller';
+import {getTableRowIndexText} from '../../../../utils/utils';
 
 /**
  * @polymer
@@ -78,7 +79,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
           (item, index) => html`
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-3">${item.finding}</span>
+                <span class="col-data col-3">${getTableRowIndexText(index)}</span>
                 <span class="col-data col-9">${item.description}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
@@ -124,7 +125,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
               class="${this._setRequired(
                 'other_recommendations.description',
                 this.optionsData
-              )} fixed-width validate-input"
+              )} fixed-width validate-input w100"
               .value="${this.editedItem.description}"
               allowed-pattern="[\\d\\s]"
               label="${this.getLabel('other_recommendations.description', this.optionsData)}"

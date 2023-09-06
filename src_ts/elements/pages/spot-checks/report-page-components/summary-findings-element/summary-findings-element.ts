@@ -19,7 +19,6 @@ import DateMixin from '../../../../mixins/date-mixin';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
-import {getStaticData} from '../../../../mixins/static-data-controller';
 import {GenericObject} from '../../../../../types/global';
 
 import find from 'lodash-es/find';
@@ -28,8 +27,9 @@ import isObject from 'lodash-es/isObject';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqualWith from 'lodash-es/isEqualWith';
 import cloneWith from 'lodash-es/cloneWith';
-import {getHeadingLabel} from '../../../../mixins/permission-controller';
+import {getHeadingLabel, getOptionsChoices} from '../../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../../utils/utils';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
  * @LitEelement
@@ -328,7 +328,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     super.connectedCallback();
     this.addEventListener('dialog-confirmed', this._addItemFromDialog);
     this.addEventListener('delete-confirmed', this.removeItem);
-    this.categoryOfObservation = getStaticData('category_of_observation');
     this.errors.deadline_of_action = false;
   }
 
@@ -350,6 +349,13 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     if (changedProperties.has('errorObject')) {
       this._complexErrorHandler(this.errorObject.findings);
     }
+    if (changedProperties.has('optionsData')) {
+      this.setCategoryOfObservation(this.optionsData);
+    }
+  }
+
+  setCategoryOfObservation(options: AnyObject) {
+    this.categoryOfObservation = options ? getOptionsChoices(options, 'findings.category_of_observation') : [];
   }
 
   setErrorBaseText(priority) {

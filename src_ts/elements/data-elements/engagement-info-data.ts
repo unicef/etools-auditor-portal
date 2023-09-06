@@ -12,7 +12,7 @@ import {
 import {store} from '../../redux/store';
 import {EngagementState} from '../../redux/reducers/engagement';
 import {getValueFromResponse} from '../utils/utils';
-import {manageActions} from '../../elements/mixins/permission-controller';
+import {addAllowedActions} from '../../elements/mixins/permission-controller';
 
 /**
  * main menu
@@ -55,9 +55,7 @@ export class EngagementInfoData extends EngagementMixin(LitElement) {
   private formatResponse(response: any[]) {
     const resp: Partial<EngagementState> = {};
     resp.data = getValueFromResponse(response[0]);
-    const options = getValueFromResponse(response[1]) || {};
-    manageActions(options.actions);
-    resp.options = options;
+    resp.options = addAllowedActions(getValueFromResponse(response[1]) || {});
     resp.attachmentOptions = getValueFromResponse(response[2]) || {};
     resp.reportAttachmentOptions = getValueFromResponse(response[3]) || {};
     resp.apOptions = getValueFromResponse(response[4]) || {};

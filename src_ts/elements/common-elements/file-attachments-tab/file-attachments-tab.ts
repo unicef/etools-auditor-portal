@@ -35,7 +35,7 @@ import {getEndpoint} from '../../config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
-import {getHeadingLabel, getOptionsChoices} from '../../mixins/permission-controller';
+import {getHeadingLabel, getOptionsChoices, isValidCollection} from '../../mixins/permission-controller';
 import famEndpoints from '../../config/endpoints';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocuments} from '../share-documents/share-documents';
@@ -493,8 +493,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       const title = get(optionsData, 'name');
       this.tabTitle = title;
       this.fileTypes = getOptionsChoices(optionsData, 'file_type');
+      this.setReadOnly();
     }
-    this.setReadOnly();
   }
 
   _handleLinksInDetailsView(engagement: AnyObject) {
@@ -505,12 +505,15 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   setReadOnly() {
-    this.isTabReadonly = !this.optionsData || (!get(this.optionsData, 'POST') && !get(this.optionsData, 'PUT'));
+    this.isTabReadonly =
+      !this.optionsData ||
+      (!isValidCollection(get(this.optionsData, 'actions.POST')) &&
+        !isValidCollection(get(this.optionsData, 'actions.PUT')));
     this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
   showFileTypes(options: AnyObject) {
-    return !!options && get(options, 'GET.file_type');
+    return !!options && !!get(options, 'actions.GET.file_type');
   }
 
   _resetDialog(dialogOpened) {

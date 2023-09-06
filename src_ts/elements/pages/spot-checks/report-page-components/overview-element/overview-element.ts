@@ -14,9 +14,7 @@ import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../../types/global';
-
 import pickBy from 'lodash-es/pickBy';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @polymer
@@ -153,11 +151,6 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
     }
-
-    if (changedProperties.has('data')) {
-      // @dci - need to passUp changed data, this create template json error
-      this.onDataChanged(changedProperties.get('data'));
-    }
   }
 
   getOverviewData() {
@@ -171,11 +164,5 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
 
   _checkInvalid(value) {
     return !!value;
-  }
-
-  onDataChanged(data) {
-    if (data) {
-      fireEvent(this, 'data-changed', data);
-    }
   }
 }

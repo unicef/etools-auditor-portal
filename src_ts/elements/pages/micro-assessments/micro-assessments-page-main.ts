@@ -64,6 +64,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
         @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail)}"
         .engagement="${this.engagement}"
         @engagement-updated="${(e: CustomEvent) => {
+          debugger;
           this.engagement = {...e.detail.data};
         }}"
         .errorObject="${this.errorObject}"
@@ -96,7 +97,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
                 @selected-changed="${(e: CustomEvent) => {
                   if (this.tab !== e.detail.value) {
                     this._tabChanged(e.detail.value, this.tab);
-                    this.tab = e.detail.value;
                   }
                 }}"
                 id="pageTabs"
@@ -111,7 +111,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
                 ${this._showQuestionnaire(this.engagementOptions, this.engagement)
                   ? html` <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.engagementOptions)
+                ${this._showFollowUpTabs(this.apOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
 
@@ -137,7 +137,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
                     <engagement-info-details
                       id="engagementDetails"
                       .data="${this.engagement}"
-                      @data-changed="${(e: CustomEvent) => (this.engagement = e.detail)}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
                       .optionsData="${this.engagementOptions}"
@@ -168,9 +167,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
                           id="report"
                           .originalData="${this.originalData}"
                           .engagement="${this.engagement}"
-                          @data-changed="${({detail}) => {
-                            this.engagement = {...detail};
-                          }}"
                           .errorObject="${this.errorObject}"
                           .engagementOptions="${this.engagementOptions}"
                         >
@@ -189,7 +185,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
                         </questionnaire-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.engagementOptions)
+                  ${this._showFollowUpTabs(this.apOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
@@ -333,7 +329,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
-      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
   }
 

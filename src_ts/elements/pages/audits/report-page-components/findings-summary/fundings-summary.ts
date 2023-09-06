@@ -14,7 +14,6 @@ import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
 
-import {getStaticData} from '../../../../mixins/static-data-controller';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 
@@ -31,6 +30,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import {getOptionsChoices} from '../../../../mixins/permission-controller';
 
 /**
  * @customElement
@@ -65,8 +65,11 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         .wrap {
           flex-wrap: wrap;
         }
+        .layout-horizontal {
+          flex-flow: wrap;
+        }
         .col:not(:first-of-type) {
-          padding-inline-start: none;
+          padding-inline-start: 0px !important;
         }
       </style>
 
@@ -122,11 +125,11 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-        <div class="row-h flex-c wrap">
+        <div class="layout-horizontal">
           <div class="col col-4">
             <!-- Implementing partner name -->
             <paper-input
-              class="validate-input"
+              class="w100 validate-input"
               .value="${this.editedItem.partner.name}"
               label="${this.getLabel('partner.name', this.optionsData)}"
               placeholder="${this.getPlaceholderText('partner.name', this.optionsData)}"
@@ -251,7 +254,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               ?disabled="${this.requestInProcess}"
               ?invalid="${this.errors.audit_opinion}"
               .errorMessage="${this.errors.audit_opinion}"
-              @value-changed="${({detail}: CustomEvent) =>
+              trigger-value-change-event
+              @etools-selected-item-changed="${({detail}: CustomEvent) =>
                 this.selectedItemChanged(detail, 'audit_opinion', 'value', this.editedItem)}"
               @focus="${this._resetFieldError}"
               @tap="${this._resetFieldError}"
@@ -431,7 +435,6 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
 
   connectedCallback() {
     super.connectedCallback();
-    this.auditOpinions = getStaticData('audit_opinions') || [];
     this.setColumnsAndHeaders();
   }
 
@@ -446,10 +449,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
     }
     if (changedProperties.has('data')) {
       this._setDataItems();
-      this.currencyChanged();
-    }
-    if (changedProperties.has('data') || changedProperties.has('auditOpinions')) {
       this._setAuditOpinion(this.data.audit_opinion, this.auditOpinions);
+      this.currencyChanged();
     }
   }
 
@@ -487,6 +488,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
 
   _setDataItems() {
     this.setShowLocalCurrency();
+    this.auditOpinions = getOptionsChoices(this.optionsData, 'audit_opinion');
     if (this.data.percent_of_audited_expenditure) {
       this.data.percent_of_audited_expenditure = Number(this.data.percent_of_audited_expenditure).toFixed(2);
     }

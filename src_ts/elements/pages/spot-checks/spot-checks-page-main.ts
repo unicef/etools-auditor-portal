@@ -13,10 +13,8 @@ import '../../common-elements/engagement-overview-components/partner-details-tab
 import './report-page-components/sc-report-page-main/sc-report-page-main';
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 
-import {setStaticData, getStaticData} from '../../mixins/static-data-controller';
 import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
-import {getChoices} from '../../mixins/permission-controller';
 
 import '../../data-elements/update-engagement';
 import '../../data-elements/engagement-info-data';
@@ -30,7 +28,6 @@ import {RootState, store} from '../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import isNull from 'lodash-es/isNull';
 import assign from 'lodash-es/assign';
-import sortBy from 'lodash-es/sortBy';
 import {pageIsNotCurrentlyActive} from '../../utils/utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import get from 'lodash-es/get';
@@ -103,7 +100,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                 ${this._showReportTabs(this.engagementOptions, this.engagement)
                   ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
                   : ``}
-                ${this._showFollowUpTabs(this.engagementOptions)
+                ${this._showFollowUpTabs(this.apOptions)
                   ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
                   : ``}
                 <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
@@ -128,9 +125,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                     <engagement-info-details
                       id="engagementDetails"
                       .data="${this.engagement}"
-                      @data-changed="${(e: CustomEvent) => {
-                        this.engagement = e.detail;
-                      }}"
                       .originalData="${this.originalData}"
                       .errorObject="${this.errorObject}"
                       .optionsData="${this.engagementOptions}"
@@ -162,9 +156,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                         <sc-report-page-main
                           id="report"
                           .originalData="${this.originalData}"
-                          @data-changed="${({detail}) => {
-                            this.engagement = detail;
-                          }}"
                           .engagement="${this.engagement}"
                           .errorObject="${this.errorObject}"
                           .optionsData="${this.engagementOptions}"
@@ -172,14 +163,14 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                         </sc-report-page-main>
                       </div>`
                     : ``}
-                  ${this._showFollowUpTabs(this.engagementOptions)
+                  ${this._showFollowUpTabs(this.apOptions)
                     ? html`<div name="follow-up">
                         <follow-up-main
                           id="follow-up"
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .optionsData="${this.engagementOptions}"
+                          .optionsData="${this.apOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -275,13 +266,11 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('engagement-info-loaded', this._infoLoaded);
     this.addEventListener('engagement-updated', this._engagementUpdated);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('engagement-info-loaded', this._infoLoaded);
     this.removeEventListener('engagement-updated', this._engagementUpdated);
   }
 
@@ -317,7 +306,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement) {
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
-      this._checkAvailableTab(this.engagement, this.engagementOptions, this.routeDetails?.subRouteName);
     }
   }
 
@@ -372,22 +360,5 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       return false;
     }
     return true;
-  }
-
-  // @dci!!!!
-  infoLoaded() {
-    this.loadChoices('category_of_observation');
-  }
-
-  loadChoices(property) {
-    if (getStaticData(property)) {
-      return;
-    }
-    const choices = getChoices(`engagement_${this.engagement.id}.findings.${property}`);
-    if (!choices) {
-      return;
-    }
-    const sortedChoices = sortBy(choices, ['display_name']);
-    setStaticData(property, sortedChoices);
   }
 }

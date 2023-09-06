@@ -752,7 +752,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       return;
     }
     this.categories = getOptionsChoices(optionsData, 'category') || [];
-    this.canBeChanged = !!get(optionsData, 'actions.POST');
+    this.canBeChanged = !!get(optionsData, 'actions.POST') && !!get(optionsData, 'actions.PUT');
   }
 
   _checkNonField(error) {

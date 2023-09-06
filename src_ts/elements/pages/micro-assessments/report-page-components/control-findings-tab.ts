@@ -7,7 +7,6 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-textarea';
@@ -251,9 +250,6 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
 
     if (!this.originalDataItems) {
       this.originalDataItems = this.dataItems;
-    }
-    if (!isJsonStrMatch(this.originalDataItems, this.dataItems)) {
-      fireEvent(this, 'data-changed', this.dataItems);
     }
   }
 }

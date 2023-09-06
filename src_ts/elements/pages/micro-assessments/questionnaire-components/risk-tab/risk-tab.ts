@@ -255,12 +255,12 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     return this.riskRatingOptions[rating] || rating;
   }
 
-  isReadonly(blueprintIndex: number, categoryIndex: number, currentRequests: GenericObject) {
+  isReadonly(blueprintIndex: number, categoryIndex: number | null, currentRequests: GenericObject) {
     const path = this.createPath(blueprintIndex, categoryIndex);
     return Object.hasOwnProperty.call(currentRequests, path);
   }
 
-  createPath(blueprintIndex: number, categoryIndex?: number): string {
+  createPath(blueprintIndex: number, categoryIndex?: number | null): string {
     return `children.${this.index}${
       typeof categoryIndex === 'number' ? `.children.${categoryIndex}` : ''
     }.blueprints.${blueprintIndex}.risk.value`;

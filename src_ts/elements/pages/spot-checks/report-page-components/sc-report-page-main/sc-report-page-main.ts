@@ -34,11 +34,6 @@ export class ScReportPageMain extends LitElement {
       <overview-element
         id="overviewEngagement"
         .data="${this.engagement}"
-        @data-changed="${({detail}) => {
-          // @dci @data-changed inifinite trigger
-          // this.engagement = detail;
-          // fireEvent(this, 'data-changed', this.engagement);
-        }}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
         .optionsData="${this.optionsData}"

@@ -10,7 +10,6 @@ import '../other-recommendations/other-recommendations';
 // eslint-disable-next-line
 import {OtherRecommendations} from '../other-recommendations/other-recommendations';
 import {GenericObject} from '@unicef-polymer/etools-types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 @customElement('sa-report-page-main')
 export class SaReportPageMain extends LitElement {

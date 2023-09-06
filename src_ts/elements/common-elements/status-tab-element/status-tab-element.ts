@@ -2,7 +2,6 @@ import {LitElement, html, PropertyValues, property, customElement} from 'lit-ele
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';
-import {isValidCollection} from '../../mixins/permission-controller';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
 declare const dayjs: any;
