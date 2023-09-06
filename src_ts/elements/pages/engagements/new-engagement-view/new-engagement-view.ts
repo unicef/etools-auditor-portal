@@ -1,11 +1,10 @@
-import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
+import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import assign from 'lodash-es/assign';
-import LastCreatedMixin from '../../../mixins/last-created-mixin';
 import EngagementMixin from '../../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {clearQueries} from '../../../mixins/query-params-controller';
@@ -33,6 +32,8 @@ import {RootState, store} from '../../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {RouteDetails} from '@unicef-polymer/etools-types';
+import {setEngagementData} from '../../../../redux/actions/engagement';
 /**
  * @customElement
  * @LitElement
@@ -42,9 +43,7 @@ import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
  */
 
 @customElement('new-engagement-view')
-export class NewEngagementView extends connect(store)(
-  EngagementMixin(LastCreatedMixin(CommonMethodsMixin(LitElement)))
-) {
+export class NewEngagementView extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, gridLayoutStylesLit, mainPageStyles];
   }
@@ -131,11 +130,6 @@ export class NewEngagementView extends connect(store)(
               <engagement-info-details
                 .errorObject="${this.errorObject}"
                 .data="${this.engagement}"
-                @engagement-changed="${(e: CustomEvent) => {
-                  if (!isJsonStrMatch(this.engagement, e.detail)) {
-                    this.engagement = {...e.detail};
-                  }
-                }}"
                 id="engagementDetails"
                 .optionsData="${this.engagementOptions}"
                 ?isStaffSc="${this.isStaffSc}"
@@ -203,9 +197,6 @@ export class NewEngagementView extends connect(store)(
   newEngagementData!: GenericObject;
 
   @property({type: Object})
-  requestQueries!: GenericObject;
-
-  @property({type: Object})
   engagement: GenericObject = {
     id: null,
     status: '',
@@ -213,7 +204,7 @@ export class NewEngagementView extends connect(store)(
     engagement_type: '',
     engagement_type_details: {},
     engagement_attachments: [],
-    agreement: {},
+    agreement: {order_number: undefined},
     date_of_field_visit: null,
     date_of_draft_report_to_ip: null,
     date_of_comments_by_ip: null,
@@ -233,7 +224,10 @@ export class NewEngagementView extends connect(store)(
   @property({type: Object})
   queryParams: GenericObject = {};
 
-  @property({type: String})
+  @property({type: Object})
+  prevRouteDetails!: RouteDetails;
+
+  @property({type: String, attribute: 'page-title'})
   pageTitle = '';
 
   @property({type: Boolean})
@@ -255,24 +249,27 @@ export class NewEngagementView extends connect(store)(
   }
 
   stateChanged(state: RootState) {
-    if (!get(state, 'app.routeDetails') || !state.app.routeDetails.path.includes('new')) {
+    if (!get(state, 'app.routeDetails.path') || !state.app.routeDetails.path.includes('new')) {
+      this.prevRouteDetails = state.app.routeDetails;
       return;
     }
+    this.initializeEngagementOnFirstAccess(state.app.routeDetails);
 
-    if (state.user && state.user.data) {
+    if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
       this.user = state.user.data;
     }
-    // this.setEngagementData(state);
-
+    if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
+      this.engagementFromRedux = cloneDeep(state.engagement.data);
+      this.engagement = cloneDeep(this.engagementFromRedux);
+    }
     if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
       this.routeDetails = state.app.routeDetails;
-      this.isStaffSc = this.routeDetails?.routeName === 'staff-sc';
       this.tab = this.routeDetails.subRouteName || 'overview';
       // this.onRouteChanged(this.routeDetails, this.tab);
     }
     const optionsToUse = this.isStaffSc
-      ? get(state, 'commonData.new_staff_scOptions')
-      : get(state, 'commonData.new_engagementOptions');
+      ? state.commonData?.new_staff_scOptions
+      : state.commonData?.new_engagementOptions;
     if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.engagementOptions, optionsToUse)) {
       this.engagementOptions = cloneDeep(optionsToUse);
     }
@@ -281,11 +278,13 @@ export class NewEngagementView extends connect(store)(
     }
   }
 
-  updated(changedProperties: PropertyValues): void {
-    super.updated(changedProperties);
-
-    if (changedProperties.has('isStaffSc') || changedProperties.has('auditFirm')) {
-      this._pageChanged(this.isStaffSc, this.auditFirm);
+  initializeEngagementOnFirstAccess(currentRouteDetails: RouteDetails) {
+    this.isStaffSc = currentRouteDetails.routeName === 'staff-sc';
+    const isFirstAcess = !this.prevRouteDetails?.path.includes('new') && currentRouteDetails?.path?.includes('new');
+    this.prevRouteDetails = currentRouteDetails;
+    if (isFirstAcess) {
+      this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
+      store.dispatch(setEngagementData(this.engagement));
     }
   }
 
@@ -320,7 +319,6 @@ export class NewEngagementView extends connect(store)(
     if (event.detail.success && event.detail.data) {
       // save response data before redirecting
       const engagement = event.detail.data;
-      this._setLastEngagementData(engagement);
       this.engagement.id = engagement.id;
 
       this._finishEngagementCreation();
@@ -328,8 +326,6 @@ export class NewEngagementView extends connect(store)(
   }
 
   _finishEngagementCreation() {
-    this.reloadEngagementsList();
-
     // redirect
     const engagementType = this.engagement.engagement_type;
     const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[String(engagementType)];
@@ -344,11 +340,7 @@ export class NewEngagementView extends connect(store)(
     fireEvent(this, 'global-loading', {type: 'create-engagement'});
   }
 
-  reloadEngagementsList() {
-    this.requestQueries = {...this.requestQueries, reload: true};
-  }
-
-  _pageChanged(isStaffSc, auditFirm) {
+  setDefaultEngagement(isStaffSc, auditFirm) {
     this.engagement = {
       id: null,
       status: '',
@@ -356,7 +348,7 @@ export class NewEngagementView extends connect(store)(
       engagement_type: '',
       engagement_type_details: {},
       engagement_attachments: [],
-      agreement: {},
+      agreement: {order_number: undefined},
       date_of_field_visit: null,
       date_of_draft_report_to_ip: null,
       date_of_comments_by_ip: null,
@@ -373,8 +365,8 @@ export class NewEngagementView extends connect(store)(
     (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab).resetData();
     const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetails;
     engagementDetails.resetValidationErrors();
-    engagementDetails.resetAgreement();
-    engagementDetails.resetType();
+    //     engagementDetails.resetAgreement();
+    // engagementDetails.resetType();
     (this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTab).resetValidationErrors();
 
     if (isStaffSc) {

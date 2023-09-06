@@ -20,7 +20,6 @@ import {moduleStyles} from '../../../styles/module-styles';
 
 import get from 'lodash-es/get';
 import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
@@ -36,6 +35,7 @@ import {RootState, store} from '../../../../redux/store';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 
 /**
  * @customElement
@@ -705,9 +705,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
     }
-    if (changedProperties.has('data')) {
+    if (changedProperties.has('data') && !isJsonStrMatch(this.data, changedProperties.get('data'))) {
       this._prepareData();
-      this.onEngagementTypeChanged();
     }
     if (changedProperties.has('optionsData')) {
       this._setEngagementTypes(this.optionsData);
@@ -770,13 +769,12 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   _prepareData() {
     // reset orderNumber
     this.orderNumber = null;
-
     this.populateDropdownsAndSetSelectedValues();
 
     const poItemId = get(this.data, 'po_item.id');
     if (poItemId && poItemId !== this.data.po_item) {
       this.data.po_item = poItemId;
-      fireEvent(this, 'engagement-changed', this.data);
+      store.dispatch(updateCurrentEngagement(this.data));
     }
   }
 
@@ -920,7 +918,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   _agreementLoaded(event: CustomEvent) {
     if (event.detail?.success) {
       this.data = {...this.data, agreement: event.detail.agreement};
-      fireEvent(this, 'engagement-changed', this.data);
+      store.dispatch(updateCurrentEngagement(this.data));
     } else if (event.detail?.errors) {
       this.errors = event.detail.errors;
     }
@@ -935,11 +933,13 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   resetAgreement() {
-    this.data.agreement.order_number = this.data && this.data.agreement && this.data.agreement.order_number;
-    // @dci
-    fireEvent(this, 'engagement-changed', this.data);
     this.contractExpiryDate = undefined;
     this.orderNumber = null;
+    const agreementNewValue = {order_number: this.data && this.data.agreement && this.data.agreement.order_number};
+    if (!isJsonStrMatch(agreementNewValue, this.data.agreement)) {
+      this.data.agreement = {order_number: this.data && this.data.agreement && this.data.agreement.order_number};
+      store.dispatch(updateCurrentEngagement(this.data));
+    }
   }
 
   _validatePurchaseOrder(orderInput: any) {
@@ -971,10 +971,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return !po || `${po}`.length === 10;
   }
 
-  resetType() {
-    const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
-    etoolsDropdownEl.selected = null;
-  }
+  // resetType() {
+  //   const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
+  //   etoolsDropdownEl.selected = null;
+  // }
 
   getEngagementData() {
     const data: any = {};
@@ -1066,8 +1066,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (!this.data?.agreement?.id) {
       return;
     }
-    const selectedDate = event.detail.date;
-    this.contractExpiryDate = selectedDate;
+    this.contractExpiryDate = event.detail.date;
   }
 
   _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
