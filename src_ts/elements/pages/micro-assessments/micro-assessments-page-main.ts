@@ -8,7 +8,6 @@ import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '../../data-elements/engagement-info-data';
 import '../../data-elements/update-engagement';
 import '../../common-elements/pages-header-element/pages-header-element';
 import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';

@@ -13,7 +13,6 @@ import '../../common-elements/engagement-overview-components/partner-details-tab
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import '../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 import '../../data-elements/update-engagement';
-import '../../data-elements/engagement-info-data';
 // eslint-disable-next-line
 import './report-page-components/sa-report-page-main/sa-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';

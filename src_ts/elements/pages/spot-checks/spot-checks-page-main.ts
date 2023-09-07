@@ -17,7 +17,6 @@ import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import '../../data-elements/update-engagement';
-import '../../data-elements/engagement-info-data';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';

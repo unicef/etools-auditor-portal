@@ -11,7 +11,6 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
-import '../../data-elements/engagement-info-data';
 import '../../data-elements/update-engagement';
 import '../../common-elements/pages-header-element/pages-header-element';
 import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
