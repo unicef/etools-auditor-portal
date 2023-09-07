@@ -1,7 +1,6 @@
 import {LitElement, PropertyValues, property} from 'lit-element';
 import includes from 'lodash-es/includes';
 import cloneDeep from 'lodash-es/cloneDeep';
-import isNil from 'lodash-es/isNil';
 import assign from 'lodash-es/assign';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -11,10 +10,10 @@ import {isValidCollection, actionAllowed, getOptionsChoices} from './permission-
 import {whichPageTrows} from './error-handler';
 import {clearQueries} from './query-params-controller';
 import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
-import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
 import get from 'lodash-es/get';
 import {RootState} from '../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 /**
  * @polymer
  * @mixinFunction
@@ -110,6 +109,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     setEngagementData(state: RootState) {
       if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
         this.engagementFromRedux = cloneDeep(state.engagement.data);
+        this.checkRedirectToFollowUpTab();
         this.engagement = cloneDeep(this.engagementFromRedux);
       }
       if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
@@ -136,6 +136,8 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!isJsonStrMatch(this.errorObject, state.engagement.errorObject)) {
         this.errorObject = state.engagement.errorObject || {};
       }
+
+      this._checkAvailableTab(this.engagement, this.engagementOptions, this.apOptions, this.tab);
     }
 
     updated(changedProperties: PropertyValues): void {
@@ -146,6 +148,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
       if (changedProperties.has('dialogOpened')) {
         this.resetInputDialog(this.dialogOpened);
+      }
+    }
+
+    checkRedirectToFollowUpTab() {
+      if (this.engagement?.id && this.engagementFromRedux.status === 'final' && this.user?.is_unicef_user) {
+        this.tab = 'follow-up';
       }
     }
 
@@ -167,62 +175,20 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
         fireEvent(this, '404');
       } else {
-       //  this.engagementId = Number(id);
+        //  this.engagementId = Number(id);
       }
     }
 
-    _checkAvailableTab(engagement: AnyObject, options: AnyObject, tab) {
-      if (!tab || !options || !engagement) {
+    _checkAvailableTab(engagement: AnyObject, options: AnyObject, apOptions: AnyObject, tab: string) {
+      if (!engagement || !options || !apOptions || !tab) {
         return;
       }
       if (
         (tab === 'report' && !this._showReportTabs(options, engagement)) ||
-        (tab === 'follow-up' && !this._showFollowUpTabs(options))
+        (tab === 'follow-up' && !this._showFollowUpTabs(apOptions))
       ) {
-        history.pushState(
-          window.history.state,
-          '',
-          `${ROOT_PATH}${this.routeDetails!.routeName}/${this.routeDetails!.params!.id}/overview`
-        );
-        window.dispatchEvent(new CustomEvent('popstate'));
-      }
-    }
-
-    // dci to be called...
-    _infoLoaded() {
-      // save data copy
-      this.originalData = cloneDeep(this.engagement);
-      this.engagement = {...this.engagement};
-      this.timeStamp = String(new Date().getTime());
-
-      const tab = this.routeDetails ? this.routeDetails.subRouteName : '';
-      if (!~this.tabsList.indexOf(tab)) {
-        // dci this.routeData = {...this.routeData, tab: this.tabsList[0] || ''};
-        return;
-      }
-
-      this.tab = tab!;
-      // @ts-ignore Defined in derived class when needed
-      if (this.infoLoaded) {
-        // @ts-ignore Defined in derived class when needed
-        this.infoLoaded();
-      }
-    }
-
-    _engagementUpdated(event) {
-      if (!event || !event.detail) {
-        return;
-      }
-      const data = event.detail.data;
-      const success = event.detail.success;
-      if (data) {
-        this.originalData = cloneDeep(this.engagement);
-      }
-
-      if (!isNil(success) && data && data.status === 'final') {
-        if (this.user && this.user.is_unicef_user) {
-          this.tab = 'follow-up';
-        }
+        this._tabChanged('overview', tab);
+        // EtoolsRouter.updateAppLocation(`${this.routeDetails!.routeName}/${this.routeDetails!.params!.id}/overview`);
       }
     }
 
@@ -230,9 +196,13 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       // const newPath = this._geNewUrlPath(newTabName, newSubTab);
       // history.pushState(window.history.state, '', newPath);
       // window.dispatchEvent(new CustomEvent('popstate'));
-      const newPath = this.routeDetails?.path.replace(`/${oldTabName}`, `/${newTabName}`);
-      history.pushState(window.history.state, '', `${ROOT_PATH}${newPath}`);
-      window.dispatchEvent(new CustomEvent('popstate'));
+      this.tab = newTabName;
+      const newPath = this.routeDetails!.path.replace(`/${oldTabName}`, `/${newTabName}`);
+      EtoolsRouter.updateAppLocation(newPath);
+
+      // const newPath = this.routeDetails?.path.replace(`/${oldTabName}`, `/${newTabName}`);
+      // history.pushState(window.history.state, '', `${ROOT_PATH}${newPath}`);
+      // window.dispatchEvent(new CustomEvent('popstate'));
     }
 
     //   _geNewUrlPath(newTabName: string, newSubTab: string) {

@@ -65,10 +65,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
               @focus="${this._resetFieldError}"
               trigger-value-change-event
               @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                if (this.primaryArea && !this.primaryArea.risk?.value) {
-                  this.primaryArea.risk.value = {value: ''};
-                }
-                this.primaryArea.risk.value.value = detail.selectedItem?.value;
+                this.primaryArea.risk.value = detail.selectedItem?.value ? {value: detail.selectedItem.value} : null;
               }}"
               hide-search
             >

@@ -29,7 +29,6 @@ import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import clone from 'lodash-es/clone';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
 import {CommonDataState} from '../../../../redux/reducers/common-data';

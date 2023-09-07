@@ -498,7 +498,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _handleLinksInDetailsView(engagement: AnyObject) {
-    const isEngagementDetailsView = engagement.id;
+    const isEngagementDetailsView = engagement?.id;
     if (isEngagementDetailsView && !this.isReportTab) {
       this._handleLinksForEngagement();
     }
@@ -533,16 +533,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
     const type = this.fileTypes.find((type) => parseInt(type.value, 10) === parseInt(fileType, 10));
     return type || null;
-  }
-
-  _openFileChooser() {
-    const elem = this.shadowRoot!.querySelector('#fileInput');
-    if (elem && document.createEvent) {
-      const evt = document.createEvent('MouseEvents');
-      evt.initEvent('click', true, false);
-      elem.dispatchEvent(evt);
-      this.errors = {...this.errors, file_type: ''};
-    }
   }
 
   _onUploadStarted() {

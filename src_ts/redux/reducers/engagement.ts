@@ -3,7 +3,8 @@ import {
   RESET_CURRENT_ENGAGEMENT,
   SET_CURRENT_ENGAGEMENT,
   SET_ENGAGEMENT_ERROR,
-  UPDATE_CURRENT_ENGAGEMENT
+  UPDATE_CURRENT_ENGAGEMENT,
+  UPDATE_ENGAGEMENT_ALL_OPTIONS
 } from '../actions/actionsConstants';
 import {RootAction} from '../store';
 import {AnyObject} from '@unicef-polymer/etools-types';
@@ -45,6 +46,14 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
       return {
         ...state,
         data: action.engagement
+      };
+    case UPDATE_ENGAGEMENT_ALL_OPTIONS:
+      return {
+        ...state,
+        options: action.payload.options,
+        attachmentOptions: action.payload.attachmentOptions,
+        reportAttachmentOptions: action.payload.reportAttachmentOptions,
+        apOptions: action.payload.apOptions
       };
     case RESET_CURRENT_ENGAGEMENT:
       return {

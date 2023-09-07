@@ -490,7 +490,7 @@ export class EngagementsListView extends connect(store)(CommonMethodsMixin(LitEl
 
   _setExportLinks() {
     const endpoint = getEndpoint(this.endpointName);
-    const queryString = buildQueryString(this.queryParams);
+    const queryString = buildQueryString(this.routeDetails?.queryParams);
     const exportLinks = endpoint ? [{name: 'Export Engagements', url: `${endpoint.url}csv/?${queryString}`}] : [];
     this.exportLinks = exportLinks;
   }

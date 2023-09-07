@@ -62,15 +62,11 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
       <update-engagement
         .updatedEngagementData="${this.updatedEngagement}"
         .quietAdding="${this.quietAdding}"
-        @quiet-adding-changed="${(e: CustomEvent) => (this.quietAdding = e.detail)}"
+        @quiet-adding-changed="${(e: CustomEvent) => (this.quietAdding = e.detail === 'true')}"
         .forceOptionsUpdate="${this.forceOptionsUpdate}"
-        @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail)}"
-        .engagement="${this.engagement}"
-        @engagement-updated="${(e: CustomEvent) => (this.engagement = e.detail.data)}"
+        @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail === 'true')}"
         .errorObject="${this.errorObject}"
         @error-changed="${(e: CustomEvent) => (this.errorObject = e.detail)}"
-        .basePermissionPath="${this.permissionBase}"
-        @base-permission-changed="${(e: CustomEvent) => (this.permissionBase = e.detail)}"
       >
       </update-engagement>
 
@@ -274,16 +270,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
 
   @property({type: String})
   engagementPrefix = '/special-audits';
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('engagement-updated', this._engagementUpdated);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.removeEventListener('engagement-updated', this._engagementUpdated);
-  }
 
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'special-audits')) {

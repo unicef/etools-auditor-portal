@@ -18,9 +18,10 @@ import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
-import {getStaticData} from '../../mixins/static-data-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
+import get from 'lodash-es/get';
 
 /**
  * @LitElement
@@ -164,7 +165,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
 
     if (changedProperties.has('partnerName')) {
       this._handlePartnerChanged(this.partnerName);
-      this._setFileTypesFromStatic();
+      this._getFileTypesFromRedux();
     }
     if (changedProperties.has('selectedFiletype')) {
       this._filterByFileType(this.selectedFiletype);
@@ -194,9 +195,9 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching documents for ${partner}: ${err}`}));
   }
 
-  _setFileTypesFromStatic() {
-    const fileTypes = getStaticData('staticDropdown')
-      .attachment_types.filter((val) => !isEmpty(val))
+  _getFileTypesFromRedux() {
+    const fileTypes = (get(getStore().getState(), 'commonData.staticDropdown.attachment_types') || [])
+      .filter((val) => !isEmpty(val))
       .map((typeStr) => ({label: typeStr, value: typeStr}));
     this.fileTypes = uniqBy(fileTypes, 'label');
   }

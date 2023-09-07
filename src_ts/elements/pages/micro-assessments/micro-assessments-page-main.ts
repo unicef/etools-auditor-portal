@@ -39,7 +39,7 @@ import {pageIsNotCurrentlyActive} from '../../utils/utils';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('micro-assessments-page-main')
-export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(LitElement)) {
+export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
     return [moduleStyles, mainPageStyles, tabInputsStyles];
   }
@@ -59,18 +59,11 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Lit
       <update-engagement
         .updatedEngagementData="${this.updatedEngagement}"
         .quietAdding="${this.quietAdding}"
-        @quiet-adding-changed="${(e: CustomEvent) => (this.quietAdding = e.detail)}"
+        @quiet-adding-changed="${(e: CustomEvent) => (this.quietAdding = e.detail === 'true')}"
         .forceOptionsUpdate="${this.forceOptionsUpdate}"
-        @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail)}"
-        .engagement="${this.engagement}"
-        @engagement-updated="${(e: CustomEvent) => {
-          debugger;
-          this.engagement = {...e.detail.data};
-        }}"
+        @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail === 'true')}"
         .errorObject="${this.errorObject}"
         @error-changed="${(e: CustomEvent) => (this.errorObject = e.detail)}"
-        .basePermissionPath="${this.permissionBase}"
-        @base-permission-changed="${(e: CustomEvent) => (this.permissionBase = e.detail)}"
       >
       </update-engagement>
 

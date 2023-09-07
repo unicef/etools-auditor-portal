@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {getEndpoint} from '../config/endpoints-controller';
-import {collectionExists, addToCollection} from '../mixins/permission-controller';
 import {getUserData} from '../mixins/user-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
@@ -42,7 +41,7 @@ export class GetStaffMembersList extends LitElement {
 
     fireEvent(this, 'loading-state-changed', {state: true});
 
-    Promise.all([this.getDataRequest(organizationId, listQueries), this.getOptionsRequest(organizationId, listQueries)])
+    Promise.all([this.getDataRequest(organizationId, listQueries)])
       .then(([data]) => fireEvent(this, 'data-loaded', data))
       .catch((error) => {
         const responseData = error?.request?.detail?.request?.xhr;
@@ -72,26 +71,5 @@ export class GetStaffMembersList extends LitElement {
       ? `user__profile__countries_available__name=${profile.country.name}`
       : '';
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
-  }
-
-  private async getOptionsRequest(organisationId, params): Promise<void> {
-    const collectionName: string = getStaffCollectionName(organisationId);
-    if (collectionExists(collectionName)) {
-      return Promise.resolve();
-    }
-    const options = {
-      method: 'OPTIONS',
-      endpoint: getEndpoint('staffMembers', {id: organisationId}),
-      params
-    };
-    try {
-      const {actions} = await sendRequest(options);
-      if (!actions) {
-        throw new Error();
-      }
-      addToCollection(collectionName, actions);
-    } catch (e) {
-      EtoolsLogger.error('Can not load permissions for engagement');
-    }
   }
 }
