@@ -42,7 +42,7 @@ export const getValueFromResponse = (response: {status: string; value?: any; rea
 
 export const pageIsNotCurrentlyActive = (routeName: string, pageName: string) => {
   if (!routeName) {
-    return false;
+    return true;
   }
   const arrPageName = pageName.split('|');
   return !arrPageName.includes(routeName);

@@ -1,19 +1,27 @@
 import {LitElement, PropertyValues, property} from 'lit-element';
-import includes from 'lodash-es/includes';
 import cloneDeep from 'lodash-es/cloneDeep';
 import assign from 'lodash-es/assign';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AnyObject, Constructor, EtoolsUser, GenericObject} from '@unicef-polymer/etools-types';
 import {getEndpoint} from '../config/endpoints-controller';
-import {isValidCollection, actionAllowed, getOptionsChoices} from './permission-controller';
+import {isValidCollection, actionAllowed, getOptionsChoices, addAllowedActions} from './permission-controller';
 import {whichPageTrows} from './error-handler';
-import {clearQueries} from './query-params-controller';
 import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
 import get from 'lodash-es/get';
-import {RootState} from '../../redux/store';
+import {RootState, store} from '../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {
+  getActionPointOptions,
+  getEngagementAttachmentOptions,
+  getEngagementData,
+  getEngagementOptions,
+  getEngagementReportAttachmentsOptions,
+  setEngagementData
+} from '../../redux/actions/engagement';
+import {EngagementState} from '../../redux/reducers/engagement';
+import {getValueFromResponse} from '../utils/utils';
 /**
  * @polymer
  * @mixinFunction
@@ -61,12 +69,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Object})
     reportAttachmentOptions!: AnyObject;
 
-    @property({type: String})
-    permissionBase!: string | null;
-
-    @property({type: String})
-    timeStamp!: string;
-
     @property({type: Object})
     errorObject: AnyObject = {};
 
@@ -106,7 +108,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.removeEventListener('action-activated', this._processAction as any);
     }
 
-    setEngagementData(state: RootState) {
+    setEngagementDataFromRedux(state: RootState) {
       if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
         this.engagementFromRedux = cloneDeep(state.engagement.data);
         this.checkRedirectToFollowUpTab();
@@ -151,6 +153,49 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
+    loadEngagementData(id: number | null, engagementType) {
+      if (!id || isNaN(id) || !engagementType) {
+        return;
+      }
+      fireEvent(this, 'global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
+      Promise.allSettled([
+        getEngagementData(id, engagementType),
+        getEngagementOptions(id, engagementType),
+        getEngagementAttachmentOptions(id),
+        getEngagementReportAttachmentsOptions(id),
+        getActionPointOptions(id)
+      ]).then((response: any[]) => {
+        store.dispatch(setEngagementData(this.formatResponse(response)));
+        fireEvent(this, 'global-loading', {active: false});
+      });
+    }
+
+    formatResponse(response: any[]) {
+      const resp: Partial<EngagementState> = {};
+      resp.data = getValueFromResponse(response[0]);
+      resp.options = addAllowedActions(getValueFromResponse(response[1]) || {});
+      resp.attachmentOptions = getValueFromResponse(response[2]) || {};
+      resp.reportAttachmentOptions = getValueFromResponse(response[3]) || {};
+      resp.apOptions = getValueFromResponse(response[4]) || {};
+      return resp;
+    }
+
+    engagementIsLoaded() {
+      return Object.keys(this.engagement).length;
+    }
+
+    resetEngagementDataIfNeeded() {
+      if (this.engagementId || Object.keys(this.engagement).length) {
+        this.engagement = {};
+        this.engagementId = null;
+        this.engagementOptions = {};
+        this.attachmentOptions = {};
+        this.reportAttachmentOptions = {};
+        this.apOptions = {};
+        this.errorObject = {};
+      }
+    }
+
     checkRedirectToFollowUpTab() {
       if (this.engagement?.id && this.engagementFromRedux.status === 'final' && this.user?.is_unicef_user) {
         this.tab = 'follow-up';
@@ -161,22 +206,27 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this[event.currentTarget.getAttribute('openFlag')] = false;
     }
 
-    onRouteChanged(routeDetails: EtoolsRouteDetails, tab: string) {
-      if (!routeDetails) {
+    onDetailPageRouteChanged(stateRouteDetails: EtoolsRouteDetails) {
+      if (!stateRouteDetails) {
         return;
       }
-      fireEvent(this, `close-toasts`);
-      this.errorObject = {};
 
-      const id = routeDetails ? routeDetails.params?.id : '';
-      if (!this.engagementId) {
-        clearQueries();
-      }
-      if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
-        fireEvent(this, '404');
+      this.routeDetails = stateRouteDetails;
+      const id = Number(this.routeDetails.params?.id);
+      if (!isNaN(id)) {
+        if (!this.engagementId || this.engagementId !== id) {
+          this.loadEngagementData(id, this.engagementPrefix);
+        }
+        this.engagementId = id;
       } else {
-        //  this.engagementId = Number(id);
+        fireEvent(this, '404');
       }
+      this.tab = this.routeDetails.subRouteName || 'overview';
+      fireEvent(this, `close-toasts`);
+
+      // if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
+      //   fireEvent(this, '404');
+      // }
     }
 
     _checkAvailableTab(engagement: AnyObject, options: AnyObject, apOptions: AnyObject, tab: string) {

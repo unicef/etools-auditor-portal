@@ -58,21 +58,13 @@ export class GetPartnerData extends LitElement {
         return partnerOfficer;
       });
       this.lastLoadedPartner.partnerOfficers = prefixedPartnerOfficers;
+      this.cachedPartners.push(clone(this.lastLoadedPartner));
       this.finishRequest(clone(this.lastLoadedPartner));
     }
   }
 
   finishRequest(partner: GenericObject) {
     fireEvent(this, 'partner-loaded', partner);
-  }
-
-  _handleOfficersError() {
-    EtoolsLogger.error('Can not load partner officers!');
-    this.finishRequest(clone(this.lastLoadedPartner));
-  }
-
-  _handleError() {
-    fireEvent(this, 'partner-loaded');
   }
 
   _partnerIdChanged(partnerId) {
@@ -95,5 +87,14 @@ export class GetPartnerData extends LitElement {
       .catch(() => {
         this._handleError();
       });
+  }
+
+  _handleOfficersError() {
+    EtoolsLogger.error('Can not load partner officers!');
+    this.finishRequest(clone(this.lastLoadedPartner));
+  }
+
+  _handleError() {
+    fireEvent(this, 'partner-loaded');
   }
 }

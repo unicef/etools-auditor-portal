@@ -45,6 +45,9 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   }
 
   render() {
+    if (!this.engagementIsLoaded()) {
+      return html``;
+    }
     return html`
       ${sharedStyles}
       <style>
@@ -52,9 +55,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
           margin-bottom: 0 !important;
         }
       </style>
-
-      <engagement-info-data engagementType="micro-assessments" .engagementId="${this.engagementId}">
-      </engagement-info-data>
 
       <update-engagement
         .updatedEngagementData="${this.updatedEngagement}"
@@ -198,7 +198,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
-                      .timeStamp="${this.timeStamp}"
                       error-property="engagement_attachments"
                       endpoint-name="attachments"
                     >
@@ -212,7 +211,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                           path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
-                          .timeStamp="${this.timeStamp}"
                           error-property="report_attachments"
                           endpoint-name="reportAttachments"
                         >
@@ -271,23 +269,21 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   tabsList = ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
 
   @property({type: String})
-  engagementPrefix = '/micro-assessments';
+  engagementPrefix = 'micro-assessments';
 
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'micro-assessments')) {
+      this.resetEngagementDataIfNeeded();
       return;
     }
 
     if (state.user && state.user.data) {
       this.user = state.user.data;
     }
-    this.setEngagementData(state);
+    this.setEngagementDataFromRedux(state);
 
-    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
-      this.routeDetails = state.app.routeDetails;
-      this.engagementId = Number(this.routeDetails!.params!.id);
-      this.tab = this.routeDetails.subRouteName || 'overview';
-      this.onRouteChanged(this.routeDetails, this.tab);
+    if (state.app.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.onDetailPageRouteChanged(state.app.routeDetails);
     }
   }
 

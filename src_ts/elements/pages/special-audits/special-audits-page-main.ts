@@ -48,6 +48,10 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   }
 
   render() {
+    if (!this.engagementIsLoaded()) {
+      return html``;
+    }
+
     return html`
       ${sharedStyles}
       <style>
@@ -55,9 +59,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
           margin-bottom: 0 !important;
         }
       </style>
-
-      <engagement-info-data engagementType="special-audits" .engagementId="${this.engagementId}">
-      </engagement-info-data>
 
       <update-engagement
         .updatedEngagementData="${this.updatedEngagement}"
@@ -196,7 +197,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                       path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
-                      .timeStamp="${this.timeStamp}"
                       error-property="engagement_attachments"
                       endpoint-name="attachments"
                     >
@@ -210,7 +210,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                           path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
-                          .timeStamp="${this.timeStamp}"
                           error-property="report_attachments"
                           endpoint-name="reportAttachments"
                         >
@@ -269,23 +268,21 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   tabsList: string[] = ['overview', 'report', 'attachments', 'follow-up'];
 
   @property({type: String})
-  engagementPrefix = '/special-audits';
+  engagementPrefix = 'special-audits';
 
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'special-audits')) {
+      this.resetEngagementDataIfNeeded();
       return;
     }
 
     if (state.user && state.user.data) {
       this.user = state.user.data;
     }
-    this.setEngagementData(state);
+    this.setEngagementDataFromRedux(state);
 
-    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
-      this.routeDetails = state.app.routeDetails;
-      this.engagementId = Number(this.routeDetails!.params!.id);
-      this.tab = this.routeDetails.subRouteName || 'overview';
-      this.onRouteChanged(this.routeDetails, this.tab);
+    if (state.app.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.onDetailPageRouteChanged(state.app.routeDetails);
     }
   }
 

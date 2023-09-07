@@ -76,13 +76,9 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
               'Description'
             )}</etools-data-table-column
           >
-          <etools-data-table-column class="col-5" ?hidden="${this.withoutFindingColumn}"
-            >${getHeadingLabel(
-              this.optionsData,
-              'specific_procedures.finding',
-              'Finding'
-            )}</etools-data-table-column
-          >
+          <etools-data-table-column class="col-5" ?hidden="${this.withoutFindingColumn}">
+            ${getHeadingLabel(this.optionsData, 'specific_procedures.finding', 'Finding')}
+          </etools-data-table-column>
         </etools-data-table-header>
 
         ${(this.dataItems || []).map(
@@ -95,11 +91,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button
                     icon="create"
-                    ?hidden="${this._hideEditIcon(
-                      this.optionsData,
-                      this.withoutFindingColumn,
-                      this.readonlyTab
-                    )}"
+                    ?hidden="${this._hideEditIcon(this.optionsData, this.withoutFindingColumn, this.readonlyTab)}"
                     @click="${() => this.openEditDialog(index)}"
                   ></paper-icon-button>
                   <paper-icon-button
@@ -173,10 +165,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                 <div class="col col-12">
                   <!-- Finding -->
                   <paper-textarea
-                    class="w100 validate-input ${this._setRequired(
-                      'specific_procedures.finding',
-                      this.optionsData
-                    )}"
+                    class="w100 validate-input ${this._setRequired('specific_procedures.finding', this.optionsData)}"
                     .value="${this.editedItem?.finding}"
                     allowed-pattern="[ds]"
                     label="${this.getLabel('specific_procedures.finding', this.optionsData)}"

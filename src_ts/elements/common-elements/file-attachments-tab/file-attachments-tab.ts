@@ -309,9 +309,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   @property({type: String})
   linkToDeleteId = '';
 
-  @property({type: String})
-  timeStamp = '';
-
   @property({type: Number})
   baseId = 0;
 

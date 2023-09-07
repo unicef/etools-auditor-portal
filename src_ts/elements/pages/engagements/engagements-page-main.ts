@@ -104,7 +104,7 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
       return;
     }
     if (typeof this.allowNew === 'undefined' && state.commonData.loadedTimestamp) {
-      this.allowNew = !!isValidCollection(state.commonData.new_engagementOptions.actions?.POST);
+      this.allowNew = !!isValidCollection(state.commonData.new_engagementOptions?.actions?.POST);
     }
     if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
       this.reduxRouteDetails = state.app.routeDetails;

@@ -645,10 +645,6 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     if (changedProperties.has('dialogOpened')) {
       this._resetDialog(this.dialogOpened);
     }
-    // if (changedProperties.has('errorObject')) {
-    // this._errorHandler(this.errorObject); // @dci  errorObject doesn't exist here
-    // this._checkNonField(this.errorObject); // @dci  errorObject doesn't exist here
-    // }
     if (changedProperties.has('optionsData')) {
       this.setPermissionPath(this.optionsData);
     }

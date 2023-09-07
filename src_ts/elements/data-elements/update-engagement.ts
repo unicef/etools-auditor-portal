@@ -56,7 +56,6 @@ export class UpdateEngagement extends LitElement {
   }
 
   _handleResponse(data) {
-
     getStore().dispatch(updateCurrentEngagement(data));
     if (this.requestOptions.method === 'POST' || this.forceOptionsUpdate) {
       this.lastData = data;

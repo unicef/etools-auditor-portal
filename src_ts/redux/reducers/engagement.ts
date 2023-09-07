@@ -20,13 +20,13 @@ export interface EngagementState {
 }
 
 const INITIAL_ENGAGEMENT_DATA: EngagementState = {
-  data: null,
-  originalData: null,
-  options: null,
-  attachmentOptions: null,
-  reportAttachmentOptions: null,
-  apOptions: null,
-  errorObject: null
+  data: {},
+  originalData: {},
+  options: {},
+  attachmentOptions: {},
+  reportAttachmentOptions: {},
+  apOptions: {},
+  errorObject: {}
 };
 
 const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGEMENT_DATA, action) => {
@@ -58,13 +58,13 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
     case RESET_CURRENT_ENGAGEMENT:
       return {
         ...state,
-        data: null,
-        originalData: null,
-        options: null,
-        attachmentOptions: null,
-        reportAttachmentOptions: null,
-        apOptions: null,
-        errorObject: null
+        data: {},
+        originalData: {},
+        options: {},
+        attachmentOptions: {},
+        reportAttachmentOptions: {},
+        apOptions: {},
+        errorObject: {}
       };
     case SET_ENGAGEMENT_ERROR:
       return {
