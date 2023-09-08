@@ -142,6 +142,9 @@ export const moduleStyles = css`
     width: 45px;
     height: 45px;
   }
+  .pl-30 {
+    padding-left: 30px;
+  }
 
   div[slot='panel-btns'] {
     position: absolute;

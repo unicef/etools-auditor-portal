@@ -84,6 +84,15 @@ export class KicwRisk extends LitElement {
           </etools-data-table-row>
         `
       )}
+      <etools-data-table-row no-collapse ?hidden="${this.risksData?.length}">
+        <div slot="row-data" class="layout-horizontal editable-row">
+          <span class="col-data col-1">–</span>
+          <span class="col-data col-2">–</span>
+          <span class="col-data col-3">–</span>
+          <span class="col-data col-3">–</span>
+          <span class="col-data col-5">–</span>
+        </div>
+      </etools-data-table-row>
     `;
   }
 

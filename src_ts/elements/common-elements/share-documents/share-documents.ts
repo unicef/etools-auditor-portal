@@ -134,6 +134,14 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
                   </etools-data-table-row>`
                 )}`
           }
+          <etools-data-table-row no-collapse ?hidden="${this.attachmentsList?.length}">
+            <div slot="row-data" class="layout-horizontal editable-row">
+              <span class="col-data col-3">–</span>
+              <span class="col-data col-3">–</span>
+              <span class="col-data col-4">–</span>
+              <span class="col-data col-2">–</span>
+            </div>
+          </etools-data-table-row>
         </div>
       </div>
     `;

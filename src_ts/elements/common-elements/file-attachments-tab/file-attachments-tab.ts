@@ -191,6 +191,14 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         <div class="row-v" ?hidden="${!this._isNewEngagement()}">
           You can add attachments after you create the engagement.
         </div>
+        <etools-data-table-row no-collapse ?hidden="${this._isNewEngagement() || this.dataItems?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row">
+            <span class="col-data col-2">–</span>
+            <span class="col-data col-2">–</span>
+            <span class="col-data col-5">–</span>
+            <span class="col-data col-3 center-align">–</span>
+          </div>
+        </etools-data-table-row>
       </etools-content-panel>
 
       <etools-dialog

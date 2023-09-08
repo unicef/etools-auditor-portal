@@ -141,6 +141,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             </etools-data-table-row>
           `
         )}
+        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+            <span class="col-data col-2">–</span>
+            <span class="col-data col-4">–</span>
+            <span class="col-data col-3">–</span>
+            <span class="col-data col-1">–</span>
+          </div>
+        </etools-data-table-row>
 
         <etools-dialog
           theme="confirmation"

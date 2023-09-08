@@ -89,6 +89,12 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
             </etools-data-table-row>
           `
         )}
+        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row">
+            <span class="col-data col-3">–</span>
+            <span class="col-data col-9">–</span>
+          </div>
+        </etools-data-table-row>
       </etools-content-panel>
 
       <etools-dialog

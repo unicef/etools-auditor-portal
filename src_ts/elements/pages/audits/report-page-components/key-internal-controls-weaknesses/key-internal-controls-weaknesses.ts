@@ -106,7 +106,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
             <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-9">${item.header}</span>
-                <span class="col-data col-9">${item.risks.length}</span>
+                <span class="col-data col-3">${item.risks.length}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="add-box" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                 </div>
@@ -122,6 +122,12 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
             </etools-data-table-row>
           `
         )}
+        <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.blueprints?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+            <span class="col-data col-9">–</span>
+            <span class="col-data col-3">–</span>
+          </div>
+        </etools-data-table-row>
 
         <etools-dialog
           theme="confirmation"

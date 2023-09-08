@@ -99,6 +99,12 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
             </etools-data-table-row>
           `
         )}
+          <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+            <div slot="row-data" class="layout-horizontal editable-row pl-30">
+              <span class="col-data col-12">–</span>
+            </div>
+          </etools-data-table-row>
+        </div>
 
         <etools-dialog
           theme="confirmation"

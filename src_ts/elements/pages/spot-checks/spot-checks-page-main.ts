@@ -86,7 +86,11 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                 role="tablist"
                 tabindex="0"
                 .selected="${this.tab}"
-                @selected-changed="${(e: CustomEvent) => (this.tab = e.detail.value)}"
+                @selected-changed="${(e: CustomEvent) => {
+                  if (this.tab !== e.detail.value) {
+                    this._tabChanged(e.detail.value, this.tab);
+                  }
+                }}"
                 id="pageTabs"
               >
                 <paper-tab name="overview">
@@ -271,10 +275,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       this.user = state.user.data;
     }
     this.setEngagementDataFromRedux(state);
-
-    if (state.app.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
-      this.onDetailPageRouteChanged(state.app.routeDetails);
-    }
 
     if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
       this.isStaffSc = state.app.routeDetails.routeName === 'staff-spot-checks';

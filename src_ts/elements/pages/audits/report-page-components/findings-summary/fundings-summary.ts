@@ -111,6 +111,21 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             </etools-data-table-row>
           `
         )}
+        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row">
+            <span class="col-data col-2">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-1">–</span>
+          </div>
+        </etools-data-table-row>
       </etools-content-panel>
 
       <etools-dialog

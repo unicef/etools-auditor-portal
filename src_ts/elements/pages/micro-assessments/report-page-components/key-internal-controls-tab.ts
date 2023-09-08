@@ -66,6 +66,12 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
                 </subject-area-element>
               `
             )}
+            <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.children?.length}">
+              <div slot="row-data" class="layout-horizontal editable-row pl-30">
+                <span class="col-data col-8">–</span>
+                <span class="col-data col-4">–</span>
+              </div>
+            </etools-data-table-row>
 
       </etools-content-panel>
 
