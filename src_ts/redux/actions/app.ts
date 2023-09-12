@@ -73,7 +73,6 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any
     return;
   }
   const page = getPage(routeDetails.routeName);
-  console.log(`loadPageComponents... page:${page},  routeName: ${routeDetails.routeName}`);
   if (page) {
     import(`${window.location.origin}/ap/src/elements/pages/${page}/${page}-page-main.js`).then().catch(() => {
       EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));

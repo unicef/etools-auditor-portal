@@ -3,9 +3,8 @@ import '@polymer/iron-pages/iron-pages';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
-import '../engagements/engagements-list-view/engagements-list-view';
+import '../engagements/engagements-list-view/staff-sc-list-view';
 import '../engagements/new-engagement-view/new-engagement-view';
-import {clearQueries} from '../../mixins/query-params-controller';
 import {isValidCollection} from '../../mixins/permission-controller';
 import {getEndpoint} from '../../config/endpoints-controller';
 
@@ -40,7 +39,7 @@ export class StaffScPageMain extends connect(store)(LitElement) {
         }
       </style>
 
-      <engagements-list-view
+      <staff-sc-list-view
         name="list"
         id="listPage"
         has-collapse
@@ -50,7 +49,7 @@ export class StaffScPageMain extends connect(store)(LitElement) {
         .newBtnLink="${this.newBtnLink}"
         is-staff-sc
       >
-      </engagements-list-view>
+      </staff-sc-list-view>
 
       ${this.allowNew
         ? html` <new-engagement-view
@@ -123,13 +122,6 @@ export class StaffScPageMain extends connect(store)(LitElement) {
     if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
       this.reduxRouteDetails = state.app.routeDetails;
       this.activePath = this.reduxRouteDetails.path;
-      this._routeChanged(this.activePath);
-    }
-  }
-
-  _routeChanged(activePage) {
-    if (activePage !== 'list') {
-      clearQueries();
     }
   }
 

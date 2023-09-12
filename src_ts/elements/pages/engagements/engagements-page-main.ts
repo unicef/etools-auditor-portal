@@ -2,7 +2,6 @@ import {LitElement, html, property, customElement} from 'lit-element';
 import '@polymer/iron-pages/iron-pages';
 import {GenericObject} from '../../../types/global';
 import {isValidCollection} from '../../mixins/permission-controller';
-import {clearQueries} from '../../mixins/query-params-controller';
 import './engagements-list-view/engagements-list-view';
 import './new-engagement-view/new-engagement-view';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
@@ -109,7 +108,6 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
     if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
       this.reduxRouteDetails = state.app.routeDetails;
       this.activePath = this.reduxRouteDetails.path;
-      this._routeChanged(this.activePath);
     }
   }
 
@@ -119,12 +117,6 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
       if (type === 'update-engagement' || type === 'finalize-engagement' || type === 'submit-engagement') {
         this.hasEngagementUpdated = true;
       }
-    }
-  }
-
-  _routeChanged(activePath) {
-    if (!activePath.includes('list')) {
-      clearQueries();
     }
   }
 

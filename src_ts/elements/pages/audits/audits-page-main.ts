@@ -45,7 +45,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
   }
 
   render() {
-    if (!this.engagementIsLoaded()) {
+    if (!this.engagementIsLoaded(this.engagement)) {
       return html``;
     }
 

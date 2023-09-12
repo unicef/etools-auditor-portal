@@ -1,24 +1,24 @@
 import {customElement} from 'lit-element';
-import '@unicef-polymer/etools-filters/src/etools-filters';
 import {EtoolsFilter} from '@unicef-polymer/etools-filters/src/etools-filters';
 import {
   updateFilterSelectionOptions,
   setselectedValueTypeByFilterKey
 } from '@unicef-polymer/etools-filters/src/filters';
 import {
-  EngagementFilterKeys,
-  getEngagementFilters,
-  EngagementSelectedValueTypeByFilterKey
-} from '../engagement-filters';
+  StaffScFilterKeys,
+  getStaffScFilters,
+  StaffScSelectedValueTypeByFilterKey
+} from '../../staff-sc/staff-sc-filters';
+
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
 import {ListViewBase} from './list-view-base';
+import {connect} from 'pwa-helpers/connect-mixin';
 
 /**
  * @customElement
  */
-@customElement('engagements-list-view')
+@customElement('staff-sc-list-view')
 export class EngagementsListView extends connect(store)(ListViewBase) {
   connectedCallback() {
     /**
@@ -29,38 +29,33 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
       active: false,
       loadingSource: 'engagements-list'
     });
-    this.isStaffSc = false;
+    this.isStaffSc = true;
     this.prevQueryStringObj = {ordering: 'reference_number', page_size: 10, page: 1};
     super.connectedCallback();
   }
 
   stateChanged(state: RootState): void {
-    if (state.app?.routeDetails?.routeName !== 'engagements') {
+    if (state.app?.routeDetails?.routeName !== 'staff-sc') {
       return;
     }
     this.baseStateChanged(state);
   }
 
   getFilters() {
-    return JSON.parse(JSON.stringify(getEngagementFilters()));
+    return JSON.parse(JSON.stringify(getStaffScFilters()));
   }
 
   populateFilterOptionsFromCommonData(state: RootState, filters: EtoolsFilter[]) {
-    updateFilterSelectionOptions(filters, EngagementFilterKeys.partner__in, state.commonData.filterPartners || []);
+    updateFilterSelectionOptions(filters, StaffScFilterKeys.partner__in, state.commonData.filterPartners || []);
+    updateFilterSelectionOptions(filters, StaffScFilterKeys.status__in, this.columnValuesFromOptions.status || []);
     updateFilterSelectionOptions(
       filters,
-      EngagementFilterKeys.agreement__auditor_firm__in,
-      state.commonData.filterAuditors || []
-    );
-    updateFilterSelectionOptions(filters, EngagementFilterKeys.status__in, this.columnValuesFromOptions.status || []);
-    updateFilterSelectionOptions(
-      filters,
-      EngagementFilterKeys.engagement_type__in,
-      this.columnValuesFromOptions.engagementTypes || []
+      StaffScFilterKeys.staff_members__user__in,
+      state.commonData.staffMembersUsers || []
     );
   }
 
   setValueTypeByFilterKey() {
-    setselectedValueTypeByFilterKey(EngagementSelectedValueTypeByFilterKey);
+    setselectedValueTypeByFilterKey(StaffScSelectedValueTypeByFilterKey);
   }
 }

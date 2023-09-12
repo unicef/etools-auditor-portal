@@ -196,7 +196,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   }
 
   @property({type: Array})
-  dataItems!: GenericObject[];
+  dataItems: GenericObject[] = [];
 
   @property({type: String})
   mainProperty = 'specific_procedures';
@@ -240,7 +240,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   @property({type: Boolean, attribute: 'save-with-button'})
   saveWithButton = false;
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'readonly-tab'})
   readonlyTab = false;
 
   updated(changedProperties: PropertyValues): void {

@@ -54,14 +54,14 @@ export class AppMenu extends MatomoMixin(LitElement) {
 
       <div class="nav-menu">
         <iron-selector .selected="${this.selectedOption}" attr-for-selected="menu-name" role="navigation">
-          <a class="nav-menu-item" menu-name="engagements" href="${BASE_PATH}engagements/list?reload=true">
+          <a class="nav-menu-item" menu-name="engagements" href="${BASE_PATH}engagements/list">
             <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
             <div class="name">Engagements</div>
           </a>
           <paper-tooltip for="iconEngagements" position="right"> Engagements </paper-tooltip>
 
           ${this.showSscPage
-            ? html`<a class="nav-menu-item" menu-name="staff-sc" href="${BASE_PATH}staff-sc/list?reload=true">
+            ? html`<a class="nav-menu-item" menu-name="staff-sc" href="${BASE_PATH}staff-sc/list">
                   <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
                   <div class="name">Staff Spot Checks</div>
                 </a>

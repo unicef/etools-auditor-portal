@@ -47,7 +47,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   }
 
   render() {
-    if (!this.engagementIsLoaded()) {
+    if (!this.engagementIsLoaded(this.engagement)) {
       return html``;
     }
 

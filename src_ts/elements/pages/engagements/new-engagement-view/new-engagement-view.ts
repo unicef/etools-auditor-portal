@@ -243,11 +243,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     sa: 'special-audits'
   };
 
-  connectedCallback() {
-    super.connectedCallback();
-    clearQueries();
-  }
-
   stateChanged(state: RootState) {
     if (!get(state, 'app.routeDetails.path') || !state.app.routeDetails.path.includes('new')) {
       this.prevRouteDetails = state.app.routeDetails;
@@ -283,6 +278,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     const isFirstAcess = !this.prevRouteDetails?.path.includes('new') && currentRouteDetails?.path?.includes('new');
     this.prevRouteDetails = currentRouteDetails;
     if (isFirstAcess) {
+      clearQueries();
       this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
       store.dispatch(setEngagementData(this.engagement));
     }

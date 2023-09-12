@@ -180,12 +180,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return resp;
     }
 
-    engagementIsLoaded() {
-      return Object.keys(this.engagement).length;
+    engagementIsLoaded(engagement) {
+      return engagement && Object.keys(engagement).length;
     }
 
     resetEngagementDataIfNeeded() {
-      if (this.engagementId || Object.keys(this.engagement).length) {
+      if (this.engagementId || (this.engagement && Object.keys(this.engagement).length)) {
         this.engagement = {};
         this.engagementId = null;
         this.engagementOptions = {};

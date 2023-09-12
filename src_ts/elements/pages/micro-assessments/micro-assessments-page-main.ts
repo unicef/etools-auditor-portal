@@ -43,7 +43,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   }
 
   render() {
-    if (!this.engagementIsLoaded()) {
+    if (!this.engagementIsLoaded(this.engagement)) {
       return html``;
     }
     return html`

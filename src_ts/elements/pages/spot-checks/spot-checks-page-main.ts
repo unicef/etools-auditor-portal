@@ -44,7 +44,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   }
 
   render() {
-    if (!this.engagementIsLoaded()) {
+    if (!this.engagementIsLoaded(this.engagement)) {
       return html``;
     }
 
