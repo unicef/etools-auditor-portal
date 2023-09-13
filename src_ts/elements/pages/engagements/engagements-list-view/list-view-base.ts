@@ -70,7 +70,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         .link="${this.newBtnLink}"
         .hideAddButton="${this.hideAddButton}"
         .btnText="${this.addBtnText}"
-        page-title="Engagements"
+        page-title=""
       >
       </pages-header-element>
 

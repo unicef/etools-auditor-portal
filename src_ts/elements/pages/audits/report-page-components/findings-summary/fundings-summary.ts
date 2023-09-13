@@ -145,7 +145,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             <!-- Implementing partner name -->
             <paper-input
               class="w100 validate-input"
-              .value="${this.editedItem.partner.name}"
+              .value="${this.editedItem.partner?.name}"
               label="${this.getLabel('partner.name', this.optionsData)}"
               placeholder="${this.getPlaceholderText('partner.name', this.optionsData)}"
               readonly
@@ -508,9 +508,6 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       this.data.percent_of_audited_expenditure = Number(this.data.percent_of_audited_expenditure).toFixed(2);
     }
     this.dataItems = [this.data];
-    this.itemModel.audit_opinion = this.data.audit_opinion;
-    this.itemModel.partner.name = this.data.partner && this.data.partner.name;
-    // @dci - need to trigger update???
   }
 
   getFindingsSummaryData() {

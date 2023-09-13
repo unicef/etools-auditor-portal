@@ -175,12 +175,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     openEditDialog(index) {
-      // @dci
-      // let index = (event as GenericObject).itemIndex; // TODO is event.itemIndex ever valid?
-      // if (isNaN(index) || !~index) {
-      //   index = this._getIndex(event);
-      // }
-
       this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
       this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
       this.cancelBtnText = (this.editDialogTexts && this.editDialogTexts.cancelBtn) || 'Cancel';

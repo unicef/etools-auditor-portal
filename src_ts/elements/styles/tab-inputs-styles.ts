@@ -78,6 +78,7 @@ export const tabInputsStyles = css`
 
   .static-text {
     padding: 8px 12px;
+    font-size: 14px;
   }
 
   etools-dialog paper-textarea {
@@ -225,7 +226,7 @@ export const tabInputsStyles = css`
     padding: 0 8%;
   }
 
-  .repeatable-item-container .form-title {
+  .form-title {
     position: relative;
     line-height: 40px;
     color: var(--primary-color);
@@ -235,7 +236,7 @@ export const tabInputsStyles = css`
     padding: 0 !important;
   }
 
-  .repeatable-item-container .form-title .text {
+  .form-title .text {
     background-color: var(--gray-06);
     border-radius: 3px;
     padding: 9px 24px;

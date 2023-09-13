@@ -225,50 +225,52 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
-        ${this.showFileTypes(this.optionsData)
-          ? html` <div class="layout-horizontal row-padding-v">
-              <div class="col col-6">
-                <etools-dropdown
-                  id="fileType"
-                  class="validate-input ${this._setRequired('file_type', this.optionsData)}"
-                  .selected="${this.editedItem.file_type}"
-                  label="${this.getLabel('file_type', this.optionsData)}"
-                  placeholder="${this.getPlaceholderText('file_type', this.optionsData)}"
-                  .options="${this.fileTypes || []}"
-                  option-label="display_name"
-                  option-value="value"
-                  ?required="${this._setRequired('file_type', this.optionsData)}"
-                  ?disabled="${this.requestInProcess}"
-                  ?invalid="${this.errors.file_type}"
-                  .errorMessage="${this.errors.file_type}"
-                  trigger-value-change-event
-                  @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                    this.editedItem.file_type = detail.selectedItem ? detail.selectedItem.value : null;
-                  }}"
-                  @focus="${this._resetFieldError}"
-                  hide-search
-                  disable-on-focus-handling
-                >
-                </etools-dropdown>
-              </div>
-            </div>`
-          : ``}
+        <div class="container">
+          ${this.showFileTypes(this.optionsData)
+            ? html` <div class="layout-horizontal row-padding-v">
+                <div class="col col-6">
+                  <etools-dropdown
+                    id="fileType"
+                    class="validate-input ${this._setRequired('file_type', this.optionsData)}"
+                    .selected="${this.editedItem.file_type}"
+                    label="${this.getLabel('file_type', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('file_type', this.optionsData)}"
+                    .options="${this.fileTypes || []}"
+                    option-label="display_name"
+                    option-value="value"
+                    ?required="${this._setRequired('file_type', this.optionsData)}"
+                    ?disabled="${this.requestInProcess}"
+                    ?invalid="${this.errors.file_type}"
+                    .errorMessage="${this.errors.file_type}"
+                    trigger-value-change-event
+                    @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                      this.editedItem.file_type = detail.selectedItem ? detail.selectedItem.value : null;
+                    }}"
+                    @focus="${this._resetFieldError}"
+                    hide-search
+                    disable-on-focus-handling
+                  >
+                  </etools-dropdown>
+                </div>
+              </div>`
+            : ``}
 
-        <div class="layout-horizontal row-padding-v">
-          <etools-upload
-            label="${this.uploadLabel}"
-            .fileUrl="${this.editedItem.attachment}"
-            .uploadEndpoint="${this.uploadEndpoint}"
-            @upload-started="${this._onUploadStarted}"
-            @upload-finished="${this._attachmentUploadFinished}"
-            ?invalid="${this.errors.file}"
-            .errorMessage="${this.errors.file}"
-            .showDeleteBtn="${this.showDeleteBtn}"
-            .currentAttachmentId="${this.editedItem.id}"
-            required
-          >
-            <!-- Here editedItem.id is the same as the uploaded attachment id -->
-          </etools-upload>
+          <div class="layout-horizontal row-padding-v">
+            <etools-upload
+              label="${this.uploadLabel}"
+              .fileUrl="${this.editedItem.attachment}"
+              .uploadEndpoint="${this.uploadEndpoint}"
+              @upload-started="${this._onUploadStarted}"
+              @upload-finished="${this._attachmentUploadFinished}"
+              ?invalid="${this.errors.file}"
+              .errorMessage="${this.errors.file}"
+              .showDeleteBtn="${this.showDeleteBtn}"
+              .currentAttachmentId="${this.editedItem.id}"
+              required
+            >
+              <!-- Here editedItem.id is the same as the uploaded attachment id -->
+            </etools-upload>
+          </div>
         </div>
       </etools-dialog>
 
@@ -469,13 +471,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _setLinksEndpoint() {
-    // @dci
-    // const currEngagement = this.engagement;
-    // if (!currEngagement || !Object.keys(currEngagement).length) {
-    //   return;
-    // }
-    // const {details: engagement, type: engagementType} = currEngagement;
-    // this.engagement = {...engagement};
     this.auditLinksOptions = getEndpoint('auditLinks', {
       type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[this.engagement.engagementType!],
       id: this.engagement!.id

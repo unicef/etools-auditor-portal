@@ -34,7 +34,7 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
         .panelTitle="${this.getLabel('internal_controls', this.optionsData)}"
       >
         <div class="layout-horizontal">
-          <div class="col col-12">
+          <div class="static-text">
             Inquire of IP management whether there have been any changes to internal controls since the prior micro
             assessment from the current programme cycle.<br />
             Inquire whether the high priority recommendations from the micro assessment and previous assurance

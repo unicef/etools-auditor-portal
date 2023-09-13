@@ -73,10 +73,23 @@ export const HeaderStyles = html`
       }
     }
 
-    @media (max-width: 768px) {
-      etools-dropdown {
-        min-width: 130px;
+    @media (max-width: 940px) {
+      .envWarning {
+        display: none;
+      }
+      countries-dropdown,
+      organizations-dropdown {
         width: 130px;
+      }
+    }
+    @media (max-width: 785px) {
+      #app-logo {
+        height: 16px !important;
+        margin: 0 2px !important;
+      }
+      countries-dropdown,
+      organizations-dropdown {
+        width: 90px;
       }
     }
   </style>

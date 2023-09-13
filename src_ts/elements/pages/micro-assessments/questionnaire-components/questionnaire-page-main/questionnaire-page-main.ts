@@ -37,11 +37,10 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        etools-content-panel.totals {
+        etools-content-panel.totals::part(ecp-header) {
           margin-bottom: 24px;
-
-          --ecp-header-height: 51px;
-          --ecp-header-bg: var(--module-warning);
+          height: 51px;
+          background-color: var(--module-warning) !important;
         }
         .result-element {
           position: relative;
@@ -136,7 +135,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       >
         <div class="container">
           <div class="layout-horizontal">
-            <div class="col-12">
+            <div class="form-title">
               <div class="text" id="questionHeader">
                 ${html`${this.editedItem?.header}`}
               </div>

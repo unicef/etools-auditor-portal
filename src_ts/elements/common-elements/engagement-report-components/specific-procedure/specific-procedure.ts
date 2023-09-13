@@ -204,27 +204,6 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   @property({type: Object})
   itemModel: GenericObject = {description: '', finding: ''};
 
-  @property({type: Array})
-  columns = [
-    {
-      size: 20,
-      name: 'finding',
-      label: 'Procedure'
-    },
-    {
-      size: 40,
-      label: 'Description',
-      labelPath: 'specific_procedures.description',
-      path: 'description'
-    },
-    {
-      size: 40,
-      label: 'Finding',
-      labelPath: 'specific_procedures.finding',
-      path: 'finding'
-    }
-  ];
-
   @property({type: Object})
   addDialogTexts: GenericObject = {title: 'Add New Procedure'};
 
@@ -253,7 +232,6 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
       this._errorHandler(this.errorObject?.specific_procedures);
       this._checkNonField(this.errorObject?.specific_procedures);
     }
-    // @dci '_manageColumns(withoutFindingColumn, columns)'
   }
 
   _checkNonField(error) {

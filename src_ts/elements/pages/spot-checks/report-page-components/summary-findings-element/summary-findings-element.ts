@@ -70,11 +70,20 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         .mt-30 {
           margin-top: 30px;
         }
+        etools-content-panel.high::part(ecp-header) {
+          background-color: var(--module-warning) !important;
+        }
+        etools-dropdown,
+        etools-dropdown-multi {
+          --esmm-external-wrapper: {
+            max-width: 100%;
+          }
+        }
       </style>
 
       <etools-content-panel
         list
-        class="content-section clearfix"
+        class="content-section clearfix ${this.itemModel?.priority || ''}"
         panel-title="Summary of ${this.priority?.display_name} Priority Findings and Recommendations"
       >
         <div slot="panel-btns">
@@ -94,37 +103,44 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           </etools-data-table-column>
         </etools-data-table-header>
 
-        ${(this.dataItems || []).map(
-          (item, index) => html`
-            <etools-data-table-row>
-              <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-3">${getTableRowIndexText(index)}</span>
-                <span class="col-data col-6">${item.category_of_observation}</span>
-                <span class="col-data col-3">${item.deadline_of_action}</span>
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
-                </div>
-              </div>
+        ${(this.dataItems || []).map((item, index) =>
+          this._showFindings(item)
+            ? html`
+                <etools-data-table-row>
+                  <div slot="row-data" class="layout-horizontal editable-row">
+                    <span class="col-data col-3">${getTableRowIndexText(index)}</span>
+                    <span class="col-data col-6"
+                      >${this.getCategoryDisplayName(item.category_of_observation, '--')}</span
+                    >
+                    <span class="col-data col-3">${item.deadline_of_action}</span>
+                    <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                      <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                      <paper-icon-button
+                        icon="delete"
+                        @click="${() => this.openDeleteDialog(index)}"
+                      ></paper-icon-button>
+                    </div>
+                  </div>
 
-              <div slot="row-data-details">
-                <div class="row-details-content col-12">
-                  <span class="rdc-title">
-                    ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
-                  </span>
-                  <span>${item.recommendation}</span>
-                </div>
-                <div class="row-details-content col-12 mt-30">
-                  <span class="rdc-title">
-                    ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
-                  </span>
-                  <span>${item.agreed_action_by_ip}</span>
-                </div>
-              </div>
-            </etools-data-table-row>
-          `
+                  <div slot="row-data-details">
+                    <div class="row-details-content col-12">
+                      <span class="rdc-title">
+                        ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
+                      </span>
+                      <span>${item.recommendation}</span>
+                    </div>
+                    <div class="row-details-content col-12 mt-30">
+                      <span class="rdc-title">
+                        ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
+                      </span>
+                      <span>${item.agreed_action_by_ip}</span>
+                    </div>
+                  </div>
+                </etools-data-table-row>
+              `
+            : ``
         )}
-        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+        <etools-data-table-row no-collapse ?hidden="${(this.dataItems || []).some((item) => this._showFindings(item))}">
           <div slot="row-data" class="layout-horizontal editable-row pl-30">
             <span class="col-data col-3">–</span>
             <span class="col-data col-6">–</span>
@@ -377,21 +393,8 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     return categoryOfObservation ? categoryOfObservation.display_name : emptyValue || '';
   }
 
-  _getLength(dataItems) {
-    if (!dataItems) {
-      return;
-    }
-    return dataItems.filter((item) => {
-      return item.priority === this.priority.value;
-    }).length;
-  }
-
   _setPriority(itemModel, priority) {
     itemModel.priority = priority.value;
-    if (priority.value === 'high') {
-      // @dci
-      // this.updateStyles({'--ecp-header-bg': 'var(--module-warning)'});
-    }
   }
 
   _showFindings(item) {
@@ -448,6 +451,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       }
       return item;
     });
+    data.priority = this.priority.value;
     return [data];
   }
 

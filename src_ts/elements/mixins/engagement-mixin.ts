@@ -222,11 +222,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         fireEvent(this, '404');
       }
       this.tab = this.routeDetails.subRouteName || 'overview';
-      fireEvent(this, `close-toasts`);
-
-      // if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
-      //   fireEvent(this, '404');
-      // }
     }
 
     _checkAvailableTab(engagement: AnyObject, options: AnyObject, apOptions: AnyObject, tab: string) {

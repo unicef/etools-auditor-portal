@@ -132,10 +132,10 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                   <span>${item.recommendation}</span>
                 </div>
                 <div class="row-details-content col-12">
-                  <span class="rdc-title"
-                    >${getHeadingLabel(this.optionsData, 'financial_finding_set.ip_comments', 'IP comments')}</span
-                    <span>${item.ip_comments}</span>
-                  >
+                  <span class="rdc-title">
+                    ${getHeadingLabel(this.optionsData, 'financial_finding_set.ip_comments', 'IP comments')}
+                  </span>
+                  <span>${item.ip_comments}</span>
                 </div>
               </div>
             </etools-data-table-row>

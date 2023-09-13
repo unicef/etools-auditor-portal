@@ -52,6 +52,9 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
         .mt-30 {
           margin-top: 30px
         }
+        .pr-55 {
+          padding-inline-end: 55px !important;
+        }
       </style>
 
       <etools-content-panel
@@ -80,7 +83,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           (item, index) => html`
             <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-12">${item.audit_observation}</span>
+                <span class="col-data col-12 truncate pr-55">${item.audit_observation}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                   <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>

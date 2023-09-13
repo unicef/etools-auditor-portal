@@ -33,6 +33,23 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
         etools-dropdown {
           --esmm-dropdown-menu-position: absolute !important;
         }
+        etools-data-table-row::part(edt-list-row-wrapper) {
+          height: auto !important;
+          min-height: 40px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+        }
+        etools-data-table-row *[slot='row-data'] {
+          margin-top: 0px !important;
+          margin-bottom: 0px !important;
+        }
+        .question {
+          width: calc(100% - 190px);
+          padding-right: 10px;
+        }
+        .w100 {
+          padding-right: 5px;
+        }
       </style>
       <div class="tab-container">
         <etools-content-panel
@@ -43,19 +60,19 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
           .open="${this.opened}"
         >
           <etools-data-table-header no-title>
-            <etools-data-table-column class="col-10">Question</etools-data-table-column>
-            <etools-data-table-column class="col-2">Risk Assessment</etools-data-table-column>
+            <etools-data-table-column class="question">Question</etools-data-table-column>
+            <etools-data-table-column class="w150px">Risk Assessment</etools-data-table-column>
           </etools-data-table-header>
           ${(this.questionnaire?.blueprints || []).map(
             (item, index) => html`
               <etools-data-table-row>
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="col-data col-10">${item.header}</span>
-                  <span class="col-data col-2">
+                  <span class="question">${item.header}</span>
+                  <span class="w150px">
                     ${this.editMode
                       ? html` <etools-dropdown
                           id="riskOptions1"
-                          class="required validate-input"
+                          class="required validate-input w100"
                           .selected="${item.risk?.value}"
                           placeholder="&#8212;"
                           .options="${this.riskOptions}"
@@ -98,12 +115,12 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                 (item, blueprintIndex) => html`
                   <etools-data-table-row>
                     <div slot="row-data" class="layout-horizontal editable-row">
-                      <span class="col-data col-10">${item.header}</span>
-                      <span class="col-data col-2">
+                      <span class="question">${item.header}</span>
+                      <span class="w150px">
                         ${this.editMode
                           ? html` <etools-dropdown
                               id="riskOptions2"
-                              class="required validate-input"
+                              class="required validate-input w100"
                               .selected="${item.risk?.value}"
                               placeholder="&#8212;"
                               .options="${this.riskOptions}"

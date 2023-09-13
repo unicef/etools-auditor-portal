@@ -88,6 +88,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
       >
+      <div class="container">
          <div class="layout-horizontal">
             <div class="col col-6">
                 <!-- Risk Assessment -->
@@ -149,6 +150,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
             </div>
           </div>
         </div>
+      </div>
       </etools-dialog>
     `;
   }
