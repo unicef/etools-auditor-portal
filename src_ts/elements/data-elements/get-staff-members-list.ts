@@ -1,11 +1,14 @@
 import {LitElement, PropertyValues, property, customElement} from 'lit-element';
 import {getEndpoint} from '../config/endpoints-controller';
-import {getUserData} from '../mixins/user-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../redux/store';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 export function getStaffCollectionName(organisationId: number): string {
   return `staff_members_${organisationId}`;
@@ -16,7 +19,7 @@ export function getStaffCollectionName(organisationId: number): string {
  * @LitElement
  */
 @customElement('get-staff-members-list')
-export class GetStaffMembersList extends LitElement {
+export class GetStaffMembersList extends connect(store)(LitElement) {
   @property({type: Number})
   organizationId!: number;
 
@@ -25,6 +28,15 @@ export class GetStaffMembersList extends LitElement {
 
   @property({type: String})
   pageType = '';
+
+  @property({type: Object})
+  user!: EtoolsUser;
+
+  stateChanged(state: RootState) {
+    if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
+      this.user = state.user.data;
+    }
+  }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
@@ -66,9 +78,9 @@ export class GetStaffMembersList extends LitElement {
         queries.push(`${key}=${value}`);
       }
     });
-    const profile = getUserData() as any;
+
     const countryFilter = this.pageType.includes('staff')
-      ? `user__profile__countries_available__name=${profile.country.name}`
+      ? `user__profile__countries_available__name=${this.user.country.name}`
       : '';
     return `?ordering=-id&${countryFilter}&${queries.join('&')}`;
   }

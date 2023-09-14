@@ -14,11 +14,17 @@
   "extraDependencies": [
     "manifest.json",
     "version.json",
+    "upgrade-browser.html",
     "node_modules/@webcomponents/webcomponentsjs/**",
+    "node_modules/@webcomponents/shadycss/apply-shim.min.js",
     "node_modules/web-animations-js/web-animations-next-lite.min.js",
     "node_modules/dayjs/dayjs.min.js",
     "node_modules/dayjs/plugin/utc.js"
   ],
+  "lint": {
+    "rules": ["polymer-3"],
+    "ignoreWarnings": ["could-not-resolve-reference", "non-literal-import"]
+  },
   "builds": [
     {
       "name": "esm-bundled",
@@ -34,17 +40,8 @@
       },
       "bundle": true,
       "addServiceWorker": true
-    },
-    {
-      "name": "es6-bundled",
-      "preset": "es6-bundled",
-      "addServiceWorker": true
     }
   ],
   "moduleResolution": "node",
-  "npm": true,
-  "lint": {
-    "rules": ["polymer-3"],
-    "ignoreWarnings": ["databinding-calls-must-be-functions"]
-  }
+  "npm": true
 }

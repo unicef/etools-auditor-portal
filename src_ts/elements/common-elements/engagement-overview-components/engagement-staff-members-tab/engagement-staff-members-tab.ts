@@ -18,7 +18,6 @@ import isString from 'lodash-es/isString';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../types/global';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
-import {getUserData} from '../../../mixins/user-controller';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import PaginationMixin from '@unicef-polymer/etools-modules-common/dist/mixins/pagination-mixin';
@@ -30,7 +29,10 @@ import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler'
 import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
 import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
-import {AnyObject} from '@unicef-polymer/etools-types';
+import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @LitElement
@@ -39,7 +41,9 @@ import {AnyObject} from '@unicef-polymer/etools-types';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-staff-members-tab')
-export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixin(CommonMethodsMixin(LitElement))) {
+export class EngagementStaffMembersTab extends connect(store)(
+  PaginationMixin(TableElementsMixin(CommonMethodsMixin(LitElement)))
+) {
   static get styles() {
     return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
   }
@@ -205,7 +209,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
             <div class="add-button-container">
               <a
                 class="white"
-                href="${this._getAMPLink(this.engagement.agreement?.auditor_firm?.organization_id)}"
+                href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
                 <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
@@ -334,10 +338,19 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
   @property({type: String})
   searchString = '';
 
+  @property({type: Object})
+  user!: EtoolsUser;
+
   connectedCallback() {
     super.connectedCallback();
 
     this._searchChanged = debounce(this._searchChanged.bind(this), 400) as any;
+  }
+
+  stateChanged(state: RootState) {
+    if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
+      this.user = state.user.data;
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -419,10 +432,12 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
     this.organizationId = +id;
   }
 
-  _getAMPLink(organizationId: number) {
-    const user = getUserData();
+  _getAMPLink(user: EtoolsUser, organizationId: number) {
+    if (!user) {
+      return '';
+    }
     let url = `/amp/users/`;
-    if (user && user.is_unicef_user) {
+    if (this.user && this.user.is_unicef_user) {
       url += `list?organization_type=audit&organization_id=${organizationId}`;
     }
     return url;
@@ -467,7 +482,7 @@ export class EngagementStaffMembersTab extends PaginationMixin(TableElementsMixi
     }
     item.hasAccess = event.target.checked;
 
-    const me = getUserData() || {};
+    const me = this.user || {};
     const updateOptions = get(item, 'user.email') === me.email;
 
     this.manageEngagementStaff(item);
