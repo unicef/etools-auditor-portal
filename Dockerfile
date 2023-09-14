@@ -25,7 +25,7 @@ RUN apk add --update bash
 
 WORKDIR /code
 RUN npm install express@4.17.1
-RUN npm install browser-capabilities@1.1.3
+RUN npm install browser-capabilities@1.1.x
 COPY --from=fam_builder /code/express.js /code/express.js
 COPY --from=fam_builder /code/build /code/build
 EXPOSE 8080
