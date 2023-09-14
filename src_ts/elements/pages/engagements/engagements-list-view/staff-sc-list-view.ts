@@ -31,6 +31,7 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
     });
     this.isStaffSc = true;
     this.prevQueryStringObj = {ordering: 'reference_number', page_size: 10, page: 1};
+    this.addBtnText = 'Add New Staff Spot Checks';
     super.connectedCallback();
   }
 

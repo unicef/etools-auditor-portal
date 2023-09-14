@@ -286,46 +286,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   @property({type: Object})
   itemModel: GenericObject = {};
 
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 25,
-      name: 'finding',
-      label: 'Finding Number'
-    },
-    {
-      size: 50,
-      label: 'Subject Area',
-      labelPath: 'findings.category_of_observation',
-      custom: true,
-      property: 'category_of_observation',
-      doNotHide: false
-    },
-    {
-      size: 25,
-      name: 'date',
-      label: 'Deadline of Action',
-      labelPath: 'findings.deadline_of_action',
-      path: 'deadline_of_action'
-    }
-  ];
-
-  @property({type: Array})
-  details: GenericObject[] = [
-    {
-      label: 'Recommendation',
-      labelPath: 'findings.recommendation',
-      path: 'recommendation',
-      size: 100
-    },
-    {
-      label: 'Agreed Action by IP',
-      labelPath: 'findings.agreed_action_by_ip',
-      path: 'agreed_action_by_ip',
-      size: 100
-    }
-  ];
-
   @property({type: Object})
   addDialogTexts: GenericObject = {title: 'Add New Finding'};
 

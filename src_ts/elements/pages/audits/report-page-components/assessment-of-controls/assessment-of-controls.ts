@@ -224,29 +224,6 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
   @property({type: Object})
   errorObject!: GenericObject;
 
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      label: 'Audit Observation',
-      path: 'audit_observation',
-      size: 100
-    }
-  ];
-
-  @property({type: Array})
-  details: GenericObject[] = [
-    {
-      label: 'Recommendation',
-      path: 'recommendation',
-      size: 100
-    },
-    {
-      label: 'IP response',
-      path: 'ip_response',
-      size: 100
-    }
-  ];
-
   @property({type: Object})
   addDialogTexts: GenericObject = {
     title: 'Add New Assessment of Key Internal Controls'

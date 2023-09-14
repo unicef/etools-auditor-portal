@@ -184,8 +184,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     openDeleteDialog(index) {
-      // const index = this._getIndex(event);
-      // @dci
       this._setDialogData(index);
 
       this.confirmDialogOpened = true;

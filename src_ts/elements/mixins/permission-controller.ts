@@ -66,11 +66,19 @@ export function getLabelFromOptions(optionsData, labelPath, defaultLabel) {
     return defaultLabel || '';
   }
   const actions = get(optionsData, 'actions') || {};
-  let label = get(actions, `GET.${labelPath}`);
-  if (!label) {
-    label = getCollection(labelPath, actions, 'GET');
+  let labelFound = get(actions, `GET.${labelPath}`);
+  if (!labelFound) {
+    labelFound = getCollection(labelPath, actions, 'GET');
   }
-  return label && typeof label === 'string' ? label : defaultLabel || '';
+  if (labelFound) {
+    if (typeof labelFound === 'string') {
+      return labelFound;
+    }
+    if (labelFound.label) {
+      return labelFound.label;
+    }
+  }
+  return defaultLabel || '';
 }
 
 export function getOptionsChoices(optionsData: AnyObject, path: string) {
@@ -125,7 +133,6 @@ export function actionAllowed(options: AnyObject, action: string) {
   if (!actions || !actions.length) {
     return false;
   }
-  // @dci
   if (typeof actions[0] !== 'string') {
     actions = actions.map((action) => action.code);
   }

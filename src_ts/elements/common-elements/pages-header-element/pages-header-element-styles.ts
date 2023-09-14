@@ -78,6 +78,7 @@ export const pagesHeaderElementStyles = css`
   }
 
   .side-heading .add-btn {
+    font-size: 14px;
     margin: 11px 4px 12px 18px;
     background-color: var(--primary-color);
   }

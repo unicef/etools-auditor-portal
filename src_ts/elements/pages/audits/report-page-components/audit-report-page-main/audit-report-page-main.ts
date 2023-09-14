@@ -4,8 +4,8 @@ import {GenericObject} from '../../../../../types/global';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 // eslint-disable-next-line
 import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
-import '../findings-summary/fundings-summary';
-import {FindingsSummary} from '../findings-summary/fundings-summary';
+import '../findings-summary/findings-summary';
+import {FindingsSummary} from '../findings-summary/findings-summary';
 import '../financial-findings/financial-findings';
 import {FinancialFindings} from '../financial-findings/financial-findings';
 import '../assessment-of-controls/assessment-of-controls';

@@ -44,11 +44,14 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
           margin-bottom: 0px !important;
         }
         .question {
-          width: calc(100% - 190px);
+          width: calc(100% - 160px);
           padding-right: 10px;
         }
         .w100 {
           padding-right: 5px;
+        }
+        .w160px {
+          margin-right: 25px;
         }
       </style>
       <div class="tab-container">
@@ -61,14 +64,14 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
         >
           <etools-data-table-header no-title>
             <etools-data-table-column class="question">Question</etools-data-table-column>
-            <etools-data-table-column class="w150px">Risk Assessment</etools-data-table-column>
+            <etools-data-table-column class="w160px">Risk Assessment</etools-data-table-column>
           </etools-data-table-header>
           ${(this.questionnaire?.blueprints || []).map(
             (item, index) => html`
               <etools-data-table-row>
                 <div slot="row-data" class="layout-horizontal editable-row">
                   <span class="question">${item.header}</span>
-                  <span class="w150px">
+                  <span class="w160px">
                     ${this.editMode
                       ? html` <etools-dropdown
                           id="riskOptions1"
@@ -116,7 +119,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                   <etools-data-table-row>
                     <div slot="row-data" class="layout-horizontal editable-row">
                       <span class="question">${item.header}</span>
-                      <span class="w150px">
+                      <span class="w160px">
                         ${this.editMode
                           ? html` <etools-dropdown
                               id="riskOptions2"

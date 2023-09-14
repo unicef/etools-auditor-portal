@@ -161,21 +161,6 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
   @property({type: Object})
   itemModel: GenericObject = {description: ''};
 
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 25,
-      name: 'finding',
-      label: 'Recommendation Number'
-    },
-    {
-      size: 75,
-      label: 'Description',
-      labelPath: 'other_recommendations.description',
-      path: 'description'
-    }
-  ];
-
   @property({type: Object})
   addDialogTexts: GenericObject = {title: 'Add New Recommendation'};
 
@@ -198,7 +183,6 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
       this._errorHandler(this.errorObject?.other_recommendations);
       this._checkNonField(this.errorObject?.other_recommendations);
     }
-    // @dci '_manageColumns(withoutFindingColumn, columns)'
   }
 
   _checkNonField(error) {

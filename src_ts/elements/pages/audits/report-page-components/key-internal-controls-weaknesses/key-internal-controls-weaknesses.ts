@@ -279,20 +279,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   };
 
   @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 70,
-      label: 'Subject area',
-      path: 'header'
-    },
-    {
-      size: 30,
-      label: 'Risks Count',
-      path: 'risks.length'
-    }
-  ];
-
-  @property({type: Array})
   details: any[] = [true];
 
   @property({type: String})

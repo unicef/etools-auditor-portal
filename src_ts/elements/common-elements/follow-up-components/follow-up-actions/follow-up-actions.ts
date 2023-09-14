@@ -156,28 +156,28 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
             </div>
 
           <etools-data-table-header no-collapse no-title>
-            <etools-data-table-column class="col-2">${getHeadingLabel(
+            <etools-data-table-column class="col-2" field="reference_number" sortable>${getHeadingLabel(
               this.optionsData,
               'reference_number',
               'Reference Number #'
             )}</etools-data-table-column>
-            <etools-data-table-column class="col-3">${getHeadingLabel(
+            <etools-data-table-column class="col-3" field="ap_category.display_name" sortable>${getHeadingLabel(
               this.optionsData,
               'category',
               'Action Point Category'
             )}</etools-data-table-column>
             <etools-data-table-column class="col-3">Assignee (Section / Office)</etools-data-table-column>
-            <etools-data-table-column class="col-1">${getHeadingLabel(
+            <etools-data-table-column class="col-1" field="status" sortable>${getHeadingLabel(
               this.optionsData,
               'status',
               'Status'
             )}</etools-data-table-column>
-            <etools-data-table-column class="col-2">${getHeadingLabel(
+            <etools-data-table-column class="col-2" field="due_date" sortable>${getHeadingLabel(
               this.optionsData,
               'due_date',
               'Due Date'
             )}</etools-data-table-column>
-            <etools-data-table-column class="col-1">${getHeadingLabel(
+            <etools-data-table-column class="col-1" field="priority" sortable>${getHeadingLabel(
               this.optionsData,
               'high_priority',
               'Priority'
@@ -239,13 +239,13 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                 ? html`<div class="copy-warning">It is required to change at least one of the fields below.</div>`
                 : ``
             }
-
-                    <div class="layout-horizontal row-padding">
+                  <div class="container">
+                    <div class="layout-horizontal">
                         <div class="col col-6">
                             <!-- Partner -->
                             <etools-dropdown
                                     class="${this._setRequired('partner', this.editedApBase)} validate-input fua-person"
-                                    .selected="${this.selectedPartnerId}"
+                                    .selected="${this.editedItem.partner?.id}"
                                     label="${this.getLabel('partner', this.editedApBase)}"
                                     placeholder="${this.getPlaceholderText('partner', this.editedApBase, 'select')}"
                                     .options="${this.partners}"
@@ -293,9 +293,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                             </etools-dropdown>
                         </div>
                     </div>
-                </div>
-
-                    <div class="layout-horizontal row-padding">
+                    <div class="layout-horizontal">
                         <div class="col col-6">
                             <!-- Category -->
                             <etools-dropdown
@@ -321,7 +319,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                         </div>
                     </div>
 
-                    <div class="layout-horizontal row-padding">
+                    <div class="layout-horizontal">
                         <div class="col col-12">
                             <!-- Description -->
                             <paper-textarea
@@ -346,7 +344,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                         </div>
                     </div>
 
-                    <div class="layout-horizontal row-padding">
+                    <div class="layout-horizontal">
                         <div class="col col-6">
                             <!-- Assigned To -->
 
@@ -407,7 +405,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                         </div>
                     </div>
 
-                    <div class="layout-horizontal row-padding">
+                    <div class="layout-horizontal">
                         <div class="col col-6">
                             <!-- Offices -->
 
@@ -456,7 +454,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                         </div>
                     </div>
 
-                    <div class="layout-horizontal row-padding">
+                    <div class="layout-horizontal">
                         <!-- High Priority -->
                         <div class="col col-12 checkbox-container">
                             <paper-checkbox
@@ -482,6 +480,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                     </a>
                 </paper-button>
             </div>
+          </div>
         </etools-dialog>
             `;
   }
@@ -507,62 +506,6 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     'due_date',
     'high_priority',
     'intervention'
-  ];
-
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 18,
-      label: 'Reference Number #',
-      name: 'reference_number',
-      link: '*ap_link*',
-      ordered: 'desc',
-      path: 'reference_number',
-      target: '_blank',
-      class: 'with-icon',
-      orderBy: 'id'
-    },
-    {
-      size: 32,
-      label: 'Action Point Category',
-      labelPath: 'category',
-      path: 'ap_category.display_name',
-      name: 'category'
-    },
-    {
-      size: 20,
-      label: 'Assignee (Section / Office)',
-      htmlLabel: 'Assignee<br/>(Section / Office)',
-      path: 'computed_field',
-      html: true,
-      class: 'no-order'
-    },
-    {
-      size: 10,
-      label: 'Status',
-      labelPath: 'status',
-      align: 'center',
-      property: 'status',
-      path: 'status',
-      class: 'caps',
-      name: 'status'
-    },
-    {
-      size: 10,
-      label: 'Due Date',
-      labelPath: 'due_date',
-      path: 'due_date',
-      name: 'date',
-      align: 'center'
-    },
-    {
-      size: 10,
-      label: 'Priority',
-      labelPath: 'high_priority',
-      path: 'priority',
-      align: 'center',
-      name: 'high_priority'
-    }
   ];
 
   @property({type: Object})
@@ -638,6 +581,12 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     super.connectedCallback();
 
     this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+    this.addEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
   }
 
   stateChanged(state: RootState) {
@@ -667,8 +616,6 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     if (changedProperties.has('copyDialog') || changedProperties.has('editedItem')) {
       this._checkNotTouched(this.copyDialog, this.editedItem);
     }
-
-    // @dci _orderChanged(orderBy, columns, dataItems.*)
   }
 
   _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
@@ -712,31 +659,9 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     this.selectedPartnerId = aux;
   }
 
-  _orderChanged(newOrder, columns) {
-    if (!newOrder || !(columns instanceof Array)) {
-      return false;
-    }
-
-    let direction = 'asc';
-    let name = newOrder;
-    let orderBy;
-
-    if (name.startsWith('-')) {
-      direction = 'desc';
-      name = name.slice(1);
-    }
-
-    columns.forEach((column, index) => {
-      if (column.name === name) {
-        this.columns[index].ordered = direction;
-        orderBy = column.orderBy || name;
-      } else {
-        this.columns[index].ordered = false;
-      }
-    });
-
-    const sorted = sortBy(this.dataItems, (item) => item[orderBy]);
-    this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
+  _sortOrderChanged(e: CustomEvent) {
+    const sorted = sortBy(this.dataItems, (item) => item[e.detail.field]);
+    this.itemsToDisplay = e.detail.direction === 'asc' ? sorted : sorted.reverse();
   }
 
   _addComputedField() {
@@ -813,11 +738,9 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     if (apData) {
       const method = apData.id ? 'PATCH' : 'POST';
       this.requestData = {method, apData};
+    } else {
+      this._apRequestCompleted({detail: {success: true}});
     }
-    // @dci ? trying to signal that it's Ok without making the request ???
-    // else {
-    //   this._requestCompleted({detail: {success: true}});
-    // }
   }
 
   _apRequestCompleted(event) {
@@ -828,7 +751,9 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     this.requestInProcess = false;
     if (detail && detail.success) {
       this.dialogOpened = false;
-      this.dataItems = [...event.detail.data];
+      if (event.detail.data) {
+        this.dataItems = [...event.detail.data];
+      }
     } else {
       this.errors = event.detail.errors;
     }
@@ -903,13 +828,12 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
 
   _handleOptionResponse(detail) {
     fireEvent(this, 'global-loading', {type: 'get-ap-options'});
-    if (detail && detail.actions) {
-      this.editedApBase = detail.actions;
+    if (detail) {
+      this.editedApBase = detail;
     }
     const itemIndex = this._selectedAPIndex;
     this._selectedAPIndex = null;
-    // @dci
-    if (get(this.editedApBase, 'PUT')) {
+    if (get(this.editedApBase, 'actions.PUT')) {
       this.openEditDialog(itemIndex);
     } else {
       this.dialogTitle = String(get(this, 'viewDialogTexts.title') || '');

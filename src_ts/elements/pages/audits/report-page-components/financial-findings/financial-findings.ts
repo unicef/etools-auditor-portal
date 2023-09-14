@@ -330,39 +330,6 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   };
 
   @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 20,
-      name: 'finding',
-      label: 'Finding Number'
-    },
-    {
-      size: 40,
-      label: 'Title (Category)',
-      labelPath: 'financial_finding_set.title',
-      property: 'title',
-      custom: true,
-      doNotHide: false
-    },
-    {
-      size: 20,
-      name: 'currency',
-      label: 'Amount (local)',
-      labelPath: 'financial_finding_set.local_amount',
-      path: 'local_amount',
-      align: 'right'
-    },
-    {
-      size: 20,
-      name: 'currency',
-      label: 'Amount USD',
-      labelPath: 'financial_finding_set.amount',
-      path: 'amount',
-      align: 'right'
-    }
-  ];
-
-  @property({type: Array})
   details: GenericObject[] = [
     {
       size: 100,

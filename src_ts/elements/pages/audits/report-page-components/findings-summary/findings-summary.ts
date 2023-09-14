@@ -105,7 +105,6 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                 <span class="col-data col-1">${item.key_internal_weakness.low_risk_count}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <!-- @dci  openEditDialog(index) -->
                 </div>
               </div>
             </etools-data-table-row>
