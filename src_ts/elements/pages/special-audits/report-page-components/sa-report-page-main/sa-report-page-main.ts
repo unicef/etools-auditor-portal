@@ -64,9 +64,6 @@ export class SaReportPageMain extends LitElement {
   @property({type: Object})
   errorObject: GenericObject = {};
 
-  @property({type: String})
-  permissionBase!: string;
-
   validate(forSave) {
     const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).validate(forSave);
 

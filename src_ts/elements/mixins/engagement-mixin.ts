@@ -193,6 +193,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.reportAttachmentOptions = {};
         this.apOptions = {};
         this.errorObject = {};
+        this.routeDetails = undefined;
       }
     }
 

@@ -1,7 +1,7 @@
 import {RouteDetails} from '@unicef-polymer/etools-types';
-import {GenericObject} from '../../types/global';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
-export function setProperty(object: GenericObject, path = '', dataToSet: any): any | null {
+export function setProperty(object: AnyObject, path = '', dataToSet: any): any | null {
   const pathArray = path.split('.');
   let data = object;
   while (pathArray.length) {
@@ -21,9 +21,9 @@ export function getTableRowIndexText(index) {
   return `000${index + 1}`;
 }
 
-export function getProperty(object: GenericObject, path: string): any | null {
+export function getProperty(object: AnyObject, path: string): any | null {
   const pathArray = path.split('.');
-  return pathArray.reduce((data: GenericObject | null, field: string) => (data && data[field]) || null, object);
+  return pathArray.reduce((data: AnyObject | null, field: string) => (data && data[field]) || null, object);
 }
 
 export const validateRequiredFields = (element) => {
@@ -58,4 +58,12 @@ export const commingFromDetailsToList = (
     prevRouteDetails.subRouteName !== 'list' &&
     routeDetails?.subRouteName === 'list'
   );
+};
+
+export const setUsersFullName = (users: AnyObject[]) => {
+  (users || []).forEach(
+    (user) =>
+      (user.full_name = user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : 'Unnamed User')
+  );
+  return users;
 };

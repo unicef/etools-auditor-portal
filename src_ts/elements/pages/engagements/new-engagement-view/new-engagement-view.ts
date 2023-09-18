@@ -173,7 +173,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
                 .baseId="${this.engagement.id}"
                 .optionsData="${this.attachmentOptions}"
                 error-property="engagement_attachments"
-                path-postfix="attachments"
               >
               </file-attachments-tab>
             </div>

@@ -35,7 +35,7 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
   }
 
   stateChanged(state: RootState): void {
-    if (state.app?.routeDetails?.routeName !== 'engagements') {
+    if (!state.app?.routeDetails?.path.includes('engagements/list')) {
       return;
     }
     this.baseStateChanged(state);

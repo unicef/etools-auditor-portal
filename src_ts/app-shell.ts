@@ -1,5 +1,5 @@
 import '@webcomponents/shadycss/entrypoints/apply-shim.js';
-import {LitElement, PropertyValues, html, property} from 'lit-element';
+import {LitElement, html, property} from 'lit-element';
 import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
 
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
@@ -51,9 +51,11 @@ import commonData, {CommonDataState} from './redux/reducers/common-data.js';
 import user from './redux/reducers/user.js';
 import engagement from './redux/reducers/engagement.js';
 import {SET_ALL_STATIC_DATA} from './redux/actions/actionsConstants.js';
-import {getValueFromResponse} from './elements/utils/utils.js';
+import {getValueFromResponse, setUsersFullName} from './elements/utils/utils.js';
 import {RouteDetails} from '@unicef-polymer/etools-types';
 import {addAllowedActions} from './elements/mixins/permission-controller.js';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util.js';
+import cloneDeep from 'lodash-es/cloneDeep.js';
 setStore(store as any);
 store.addReducers({
   user,
@@ -175,7 +177,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   initLoadingComplete!: boolean;
 
   @property({type: Boolean})
-  showSscPage = false;
+  showSscPage!: boolean;
 
   @property({type: Object})
   reduxRouteDetails?: RouteDetails;
@@ -198,9 +200,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
 
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
 
-    // this.shadowRoot!.querySelector('#drawer')?.shadowRoot?.querySelector('#scrim')?.remove();
-
-    // this.addEventListener('global-loading', this.handleLoading);
     this.addEventListener('404', this._pageNotFound);
 
     this.addEventListener('iron-overlay-opened', this._dialogOpening);
@@ -215,7 +214,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   loadinitialData() {
     getCurrentUser().then((user?: EtoolsUser) => {
       if (user) {
-        this.user = user;
         // @ts-ignore
         Promise.allSettled([
           getPartners(),
@@ -234,7 +232,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
             staticData: this.formatResponse(response)
           });
         });
-        this._checkSSCPage(this.user);
       }
     });
   }
@@ -245,7 +242,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     data.users = get(getValueFromResponse(response[1]), 'results') || [];
     data.sections = getValueFromResponse(response[2]);
     data.offices = getValueFromResponse(response[3]);
-    data.staffMembersUsers = getValueFromResponse(response[4]);
+    data.staffMembersUsers = setUsersFullName(getValueFromResponse(response[4]));
     data.staticDropdown = getValueFromResponse(response[5]);
     data.filterAuditors = getValueFromResponse(response[6]);
     data.filterPartners = getValueFromResponse(response[7]);
@@ -255,11 +252,20 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   }
 
   public stateChanged(state: RootState) {
-    if (state.app?.routeDetails && this.canAccessPage(state.app.routeDetails?.routeName)) {
-      this.page = state.app.routeDetails.routeName;
-      this.reduxRouteDetails = state.app.routeDetails;
-    } else {
-      this._pageNotFound();
+    if (!state.app.routeDetails?.routeName || !state.user?.data) {
+      return;
+    }
+    if (!isJsonStrMatch(this.user, state.user.data)) {
+      this.user = state.user.data;
+      this._checkSSCPage(this.user);
+    }
+    if (!isJsonStrMatch(this.reduxRouteDetails, state.app.routeDetails)) {
+      if (this.canAccessPage(state.app.routeDetails.routeName)) {
+        this.page = state.app.routeDetails.routeName;
+        this.reduxRouteDetails = cloneDeep(state.app.routeDetails);
+      } else {
+        this._pageNotFound();
+      }
     }
   }
 
@@ -273,14 +279,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   isActivePage(activeModule: string, expectedModule: string) {
     const pagesToMatch = expectedModule.split('|');
     return pagesToMatch.indexOf(activeModule) > -1;
-  }
-
-  updated(changedProperties: PropertyValues): void {
-    super.updated(changedProperties);
-
-    // if (changedProperties.has('page')) {
-    //   this._pageChanged(this.page);
-    // }
   }
 
   protected _getContentContainer() {
@@ -345,23 +343,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 
-  // dci
-  // _routePageChanged() {
-  //   if (!this.initLoadingComplete || !this.routeData.page || !this.allowPageChange()) {
-  //     return;
-  //   }
-  //   this.page = this.routeData.page || 'engagements';
-  //   if (this.scroll) {
-  //     this.scroll(0, 0);
-  //   }
-
-  //   // Close a non-persistent drawer when the module & route are changed.
-  //   const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
-  //   if (!appDrawer.persistent) {
-  //     appDrawer.close();
-  //   }
-  // }
-
   onDrawerClick(e) {
     const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
     if (e.target === appDrawer && appDrawer.opened) {
@@ -372,8 +353,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     if (!user) {
       return;
     }
-    const groups = get(user, 'groups');
-    this.showSscPage = groups.some(
+    this.showSscPage = (user.groups || []).some(
       (group) => group.name === 'UNICEF Audit Focal Point' || group.name === 'UNICEF User'
     );
   }

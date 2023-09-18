@@ -8,7 +8,7 @@ export interface CommonDataState {
   offices: [];
   partners: [];
   sections: [];
-  staffMembersUsers: [];
+  staffMembersUsers: AnyObject[];
   staticDropdown: {
     cso_types: [];
     agency_choices: [];

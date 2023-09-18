@@ -180,7 +180,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                     <file-attachments-tab
                       id="engagement_attachments"
                       .optionsData="${this.attachmentOptions}"
-                      path-postfix="attachments"
                       .baseId="${this.engagement.id}"
                       .errorObject="${this.errorObject}"
                       error-property="engagement_attachments"
@@ -193,7 +192,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                           id="report_attachments"
                           is-report-tab="true"
                           .optionsData="${this.reportAttachmentOptions}"
-                          path-postfix="report_attachments"
                           .baseId="${this.engagement.id}"
                           .errorObject="${this.errorObject}"
                           error-property="report_attachments"
