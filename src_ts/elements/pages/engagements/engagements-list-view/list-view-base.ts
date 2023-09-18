@@ -443,13 +443,16 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         font-size: 11px;
         color: var(--dark-secondary-text-color);
       }
+      td[data-label='Reference Number'],
       td[data-label='Engagement Type'] {
         width: 15%;
       }
       td[data-label='Audit Firm'],
-      td[data-label='Name'],
+      td[data-label='Name'] {
+        width: 21%;
+      }
       td[data-label='Status'] {
-        width: 22%;
+        width: 28%;
       }
     </style>`;
   }
