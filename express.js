@@ -5,7 +5,7 @@ const UAParser = require('ua-parser-js').UAParser; // eslint-disable-line
 const app = express();
 const basedir = __dirname + '/build/'; // eslint-disable-line
 
-function getSourcesPath(request) {
+function getSourcesPath(request, filePath = '') {
   const userAgent = request.headers['user-agent'];
   const clientCapabilities = browserCapabilities.browserCapabilities(userAgent);
   const browserName = new UAParser(userAgent).getBrowser().name || '';
