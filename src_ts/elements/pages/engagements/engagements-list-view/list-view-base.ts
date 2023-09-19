@@ -61,6 +61,9 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         pages-header-element {
           box-shadow: 1px -3px 9px 0 #000000;
         }
+        section {
+          position: relative;
+        }
       </style>
 
       <pages-header-element
@@ -85,6 +88,10 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
       </section>
 
       <section class="elevation page-content no-padding" elevation="1">
+        <etools-loading
+          ?active="${this.listLoadingActive}"
+          loading-text="Loading of engagements list..."
+        ></etools-loading>
         <etools-table
           .caption="${this.tableTitle}"
           .columns="${this.listColumns}"
@@ -101,6 +108,9 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
 
   @property({type: Boolean})
   hideAddButton!: boolean;
+
+  @property({type: Boolean})
+  listLoadingActive!: boolean;
 
   @property({type: Object})
   columnValuesFromOptions!: GenericObject;
@@ -187,10 +197,6 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
 
   connectedCallback() {
     super.connectedCallback();
-    fireEvent(this, 'global-loading', {
-      active: false,
-      loadingSource: 'main-page'
-    });
     this.getListData = debounce(this.getListData.bind(this), 400) as any;
   }
 
@@ -242,12 +248,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   }
 
   getListData() {
-    fireEvent(this, 'global-loading', {
-      type: 'engagements-list',
-      active: true,
-      message: 'Loading of engagements list...'
-    });
-
+    this.listLoadingActive = true;
     const endpoint = getEndpoint(this.endpointName);
     endpoint.url += `?${buildUrlQueryString(this.routeDetails!.queryParams! || {})}`;
     sendRequest({
@@ -261,11 +262,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         this.onDataLoadError(err);
       })
       .finally(() => {
-        fireEvent(this, 'global-loading', {
-          type: 'engagements-list',
-          active: false,
-          message: 'Loading of engagements list...'
-        });
+        this.listLoadingActive = false;
       });
   }
 

@@ -17,6 +17,7 @@ import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {EtoolsRedirectPath} from '@unicef-polymer/etools-utils/dist/enums/router.enum';
 import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
 import {resetCurrentEngagement} from './engagement';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 export interface AppActionUpdateDrawerState extends Action<'UPDATE_DRAWER_STATE'> {
   opened: boolean;
@@ -74,9 +75,18 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any
   }
   const page = getPage(routeDetails.routeName);
   if (page) {
-    import(`${window.location.origin}/ap/src/elements/pages/${page}/${page}-page-main.js`).then().catch(() => {
-      EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
-    });
+    const appShell = document.body.querySelector('app-shell');
+    import(`${window.location.origin}/ap/src/elements/pages/${page}/${page}-page-main.js`)
+      .then()
+      .catch(() => {
+        EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+      })
+      .finally(() =>
+        fireEvent(appShell, 'global-loading', {
+          active: false,
+          loadingSource: 'initialisation'
+        })
+      );
   }
   if (!page || routeDetails.routeName == 'not-found') {
     import(`${window.location.origin}/src/elements/pages/not-found-page-view/not-found-page-view.js`);

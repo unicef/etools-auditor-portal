@@ -198,7 +198,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
       this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl as any;
     }, 100);
 
-    fireEvent(this, 'global-loading', {message: 'Loading...', active: true, type: 'initialisation'});
+    fireEvent(this, 'global-loading', {message: 'Loading...', active: true, loadingSource: 'initialisation'});
 
     this.addEventListener('404', this._pageNotFound);
 
@@ -363,8 +363,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     const message = event && event.detail && event.detail.message ? `${event.detail.message}` : 'Oops you hit a 404!';
 
     fireEvent(this, 'toast', {text: message});
-
-    fireEvent(this, 'global-loading', {type: 'initialisation'});
   }
 
   checkAppVersion() {

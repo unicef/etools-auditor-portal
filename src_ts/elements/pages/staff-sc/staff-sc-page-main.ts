@@ -100,7 +100,6 @@ export class StaffScPageMain extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-
     sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     })
