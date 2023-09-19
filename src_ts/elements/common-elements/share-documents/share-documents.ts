@@ -123,9 +123,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
                       <span class="col-data col-3">${item.file_type}</span>
                       <span class="col-data col-4 wrap-text">
                         <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
-                        <a href="${item.file_link}" class="truncate" title="${item.filename}" target="_blank"
-                          >${item.filename}
-                        </a>
+                        <a href="${item.file_link}" title="${item.filename}" target="_blank">${item.filename} </a>
                       </span>
                       <span class="col-data col-2">
                         <span>${this.prettyDate(String(item.created), '') || '-'}</span>

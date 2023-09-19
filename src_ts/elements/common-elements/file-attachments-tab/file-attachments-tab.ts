@@ -43,7 +43,6 @@ import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
-
 /**
  * @customElement
  * @LitElement
@@ -77,7 +76,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         }
       </style>
       <get-attachments
-        .baseId="${this.baseId}"
+        .baseId="${this.engagement?.id}"
         .attachments="${this.dataItems}"
         @attachments-loaded="${(e) => {
           this.dataItems = e.detail;
@@ -87,7 +86,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       </get-attachments>
 
       <update-attachments
-        .baseId="${this.baseId}"
+        .baseId="${this.engagement?.id}"
         .attachments="${this.dataItems}"
         .requestData="${this.requestData}"
         .endpointName="${this.endpointName}"
@@ -287,7 +286,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         Are you sure you want to delete the shared document?
       </etools-dialog>
 
-      ${this._isUnicefUser
+      ${this.isUnicefUser
         ? html` <etools-dialog
             no-padding
             keep-dialog-open
@@ -306,6 +305,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
               id="shareDocuments"
               .partnerName="${this.engagement?.partner?.name}"
               .shareParams="${this.shareParams}"
+              .optionsData="${this.optionsData}"
               @share-params-changed="${({detail}) => {
                 this.shareParams = detail;
               }}"
@@ -319,9 +319,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   @property({type: String})
   linkToDeleteId = '';
 
-  @property({type: Number})
-  baseId = 0;
-
   @property({type: Object})
   itemModel: GenericObject = {
     attachment: null,
@@ -334,15 +331,12 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     'micro-assessments': 'micro-assessment',
     'spot-checks': 'spot-check',
     'staff-spot-checks': 'spot-check',
-    audits: 'audit',
+    audit: 'audit',
     'special-audits': 'special-audit'
   };
 
   @property({type: Array})
   dataItems: any[] = [];
-
-  @property({type: Object})
-  engagement: GenericObject = {};
 
   @property({type: Object})
   addDialogTexts: GenericObject = {
@@ -358,6 +352,9 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   @property({type: String})
   uploadLabel = 'Upload File';
+
+  @property({type: Boolean})
+  isUnicefUser!: boolean;
 
   @property({type: Boolean})
   shareDialogOpened = false;
@@ -385,9 +382,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   @property({type: Boolean})
   _hideShare = false;
-
-  @property({type: Boolean})
-  _isUnicefUser = false;
 
   @property({type: String, reflect: true, attribute: 'endpoint-name'})
   endpointName!: string;
@@ -442,11 +436,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (changedProperties.has('errorObject')) {
       this.filesTabErrorHandler(this.errorObject);
     }
-    if (changedProperties.has('_isUnicefUser') || changedProperties.has('baseId')) {
-      this._shouldHideShare(this._isUnicefUser, this.baseId);
-    }
-    if (changedProperties.has('user')) {
-      this._setIsUnicefUser();
+    if (changedProperties.has('isUnicefUser') || changedProperties.has('engagement')) {
+      this._shouldHideShare(this.isUnicefUser, this.engagement?.id);
     }
   }
 
@@ -458,13 +449,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     return requestInProcess;
   }
 
-  _setIsUnicefUser() {
-    if (!this.user) {
-      return;
-    }
-    this._isUnicefUser = Boolean(this.user.groups.find(({name}) => name === 'UNICEF User'));
-  }
-
   _handleLinksForEngagement() {
     this._setLinksEndpoint();
     this._getLinkedAttachments();
@@ -472,7 +456,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   _setLinksEndpoint() {
     this.auditLinksOptions = getEndpoint('auditLinks', {
-      type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[this.engagement.engagementType!],
+      type: this.ENGAGEMENT_TYPE_ENDPOINT_MAP[this.engagement.engagement_type!],
       id: this.engagement!.id
     });
   }
@@ -498,6 +482,9 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _handleLinksInDetailsView(engagement: AnyObject) {
+    if (!engagement) {
+      return;
+    }
     const isEngagementDetailsView = engagement?.id;
     if (isEngagementDetailsView && !this.isReportTab) {
       this._handleLinksForEngagement();
@@ -584,7 +571,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (this.deleteCanceled(event)) {
       return;
     }
-    if (!this.baseId) {
+    if (!this.engagement?.id) {
       return;
     }
     this.requestInProcess = true;
@@ -842,12 +829,12 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       .catch((err) => this.filesTabErrorHandler(err));
   }
 
-  _shouldHideShare(isUnicefUser, _baseId) {
+  _shouldHideShare(isUnicefUser, _engagementId) {
     this._hideShare = this.isReportTab || !isUnicefUser || this._isNewEngagement();
   }
 
   _isNewEngagement() {
-    return !this.baseId;
+    return !this.engagement?.id;
   }
 
   _showEmptyRow(length1, length2) {

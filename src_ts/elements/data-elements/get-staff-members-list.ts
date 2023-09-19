@@ -10,10 +10,6 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
-export function getStaffCollectionName(organisationId: number): string {
-  return `staff_members_${organisationId}`;
-}
-
 /**
  * @customElement
  * @LitElement

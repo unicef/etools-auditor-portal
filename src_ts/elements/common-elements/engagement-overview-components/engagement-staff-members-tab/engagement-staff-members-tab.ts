@@ -26,7 +26,6 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '../../../data-elements/get-staff-members-list';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
-import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
 import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
 import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
@@ -295,9 +294,6 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Boolean})
   showHasAccess = false;
 
-  @property({type: String})
-  staffsBase = '';
-
   @property({type: Array})
   dataItems: any[] = [];
 
@@ -387,8 +383,6 @@ export class EngagementStaffMembersTab extends connect(store)(
 
   listLoaded(event: CustomEvent): void {
     const data = event.detail;
-    this.staffsBase = getStaffCollectionName(this.organizationId);
-
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
@@ -550,7 +544,7 @@ export class EngagementStaffMembersTab extends connect(store)(
     });
 
     let dataChanged = false;
-    if (this.engagement.staff_members.length !== staffs.length) {
+    if ((this.engagement.staff_members?.length || 0) !== staffs.length) {
       dataChanged = true;
     } else {
       each(this.engagement.staff_members, (staff) => {

@@ -180,8 +180,9 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                     <file-attachments-tab
                       id="engagement_attachments"
                       .optionsData="${this.attachmentOptions}"
-                      .baseId="${this.engagement.id}"
+                      .engagement="${this.engagement}"
                       .errorObject="${this.errorObject}"
+                      .isUnicefUser="${this.user?.is_unicef_user}"
                       error-property="engagement_attachments"
                       endpoint-name="attachments"
                     >
@@ -192,7 +193,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                           id="report_attachments"
                           is-report-tab="true"
                           .optionsData="${this.reportAttachmentOptions}"
-                          .baseId="${this.engagement.id}"
+                          .engagement="${this.engagement}"
                           .errorObject="${this.errorObject}"
                           error-property="report_attachments"
                           endpoint-name="reportAttachments"
@@ -269,9 +270,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       return;
     }
 
-    if (state.user && state.user.data) {
-      this.user = state.user.data;
-    }
     this.setEngagementDataFromRedux(state);
 
     if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {

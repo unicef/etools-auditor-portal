@@ -83,7 +83,7 @@ export function getLabelFromOptions(optionsData, labelPath, defaultLabel) {
 
 export function getOptionsChoices(optionsData: AnyObject, path: string) {
   const actions = get(optionsData, 'actions') || optionsData;
-  let choices = get(actions, `actions.GET.${path}.choices`) || get(actions, `actions.POST.${path}.choices`);
+  let choices = get(actions, `GET.${path}.choices`) || get(actions, `POST.${path}.choices`);
   if (!choices) {
     choices = getCollection(`${path}.choices`, actions);
   }

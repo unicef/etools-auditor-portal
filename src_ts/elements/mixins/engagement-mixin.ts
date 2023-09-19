@@ -109,6 +109,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     setEngagementDataFromRedux(state: RootState) {
+      if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
+        this.user = state.user.data;
+      }
       if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
         this.engagementFromRedux = cloneDeep(state.engagement.data);
         this.checkRedirectToFollowUpTab();

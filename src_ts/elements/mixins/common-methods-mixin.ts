@@ -137,7 +137,7 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       let label = get(actions, `POST.${path}.label`) || get(actions, `GET.${path}.label`);
 
       if (!label && path.includes('.')) {
-        const labelObj = getCollection(path, actions, 'GET');
+        const labelObj = getCollection(path, actions, 'GET') || getCollection(path, actions, 'POST');
         if (labelObj) {
           label = labelObj.label || '';
         }

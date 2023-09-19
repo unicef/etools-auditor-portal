@@ -170,7 +170,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
             <div name="attachments">
               <file-attachments-tab
                 id="engagement_attachments"
-                .baseId="${this.engagement.id}"
+                .engagement="${this.engagement}"
                 .optionsData="${this.attachmentOptions}"
                 error-property="engagement_attachments"
               >
@@ -357,12 +357,19 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       shared_ip_with: []
     };
 
-    (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab).resetData();
+    const engagementAttachments = this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab;
+    if (engagementAttachments) {
+      engagementAttachments.resetData();
+    }
     const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetails;
-    engagementDetails.resetValidationErrors();
-    //     engagementDetails.resetAgreement();
-    // engagementDetails.resetType();
-    (this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTab).resetValidationErrors();
+    if (engagementDetails) {
+      engagementDetails.resetValidationErrors();
+      engagementDetails.resetAgreement();
+    }
+    const partnerDetails = this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTab;
+    if (partnerDetails) {
+      partnerDetails.resetValidationErrors();
+    }
 
     if (isStaffSc) {
       this.engagement.agreement.auditor_firm = auditFirm;

@@ -195,9 +195,6 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     `;
   }
 
-  @property({type: Array})
-  dataItems: GenericObject[] = [];
-
   @property({type: String})
   mainProperty = 'specific_procedures';
 

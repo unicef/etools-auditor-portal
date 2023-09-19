@@ -622,9 +622,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Array})
   sharedIpWithOptions: [] = [];
 
-  @property({type: Array})
-  sharedIpWith: any[] = [];
-
   @property({type: Boolean})
   showJoinAudit = false;
 
@@ -729,6 +726,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   onEngagementTypeChanged() {
     this._setShowInput(this.data.engagement_type);
     this._setAdditionalInput(this.data.engagement_type);
+    store.dispatch(updateCurrentEngagement(this.data));
   }
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
@@ -829,7 +827,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
   _setSharedIpWith(optionsData: AnyObject) {
     const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
-    this.sharedIpWith = sharedIpWithOptions || [];
+    this.sharedIpWithOptions = sharedIpWithOptions || [];
   }
 
   validate() {

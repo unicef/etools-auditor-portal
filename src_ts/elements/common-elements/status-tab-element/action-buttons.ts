@@ -27,7 +27,7 @@ export class ActionButtons extends LitElement {
       <paper-button
         class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
         raised
-        @tap="${this._btnClicked}"
+        @click="${this._btnClicked}"
       >
         <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
         ${this._showOtherActions(this.actions.length)
