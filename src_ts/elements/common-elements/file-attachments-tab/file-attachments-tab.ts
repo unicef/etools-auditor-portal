@@ -163,7 +163,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         ${this.isReportTab
           ? ``
           : this.linkedAttachments.map(
-              (item, index) => html` <etools-data-table-row no-collapse>
+              (item, _index) => html` <etools-data-table-row no-collapse>
                 <div slot="row-data" class="layout-horizontal editable-row">
                   <span class="col-data col-2">${this.prettyDate(String(item.created), '') || '-'}</span>
                   <span class="col-data col-2">${item.file_type}</span>
@@ -177,9 +177,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                     <span>PMP</span>
                   </span>
                   <div class="hover-block" ?hidden="${this.isTabReadonly}">
-                    <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
                     <paper-icon-button
-                      icon="delete"
+                      icon="cancel"
                       @click="${() => this._openDeleteLinkDialog(item.id)}"
                     ></paper-icon-button>
                   </div>
