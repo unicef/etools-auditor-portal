@@ -701,7 +701,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
     }
-    if (changedProperties.has('data') && !isJsonStrMatch(this.data, changedProperties.get('data'))) {
+    if (
+      (changedProperties.has('data') && !isJsonStrMatch(this.data, changedProperties.get('data'))) ||
+      changedProperties.has('user')
+    ) {
       this._prepareData();
     }
     if (changedProperties.has('optionsData')) {
@@ -765,6 +768,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
   _prepareData() {
     // reset orderNumber
+    if (!this.user || !this.data) {
+      return;
+    }
     this.orderNumber = null;
     this.populateDropdownsAndSetSelectedValues();
 
@@ -789,7 +795,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
   populateDropdownsAndSetSelectedValues() {
     // For firm staff auditors certain endpoints return 403
-    const userIsFirmStaffAuditor = this.user.is_unicef_user;
+    const userIsFirmStaffAuditor = !this.user.is_unicef_user;
 
     const savedSections = this.data.sections || [];
     this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData.sections) || [];
@@ -967,11 +973,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   _validatePOLength(po: any) {
     return !po || `${po}`.length === 10;
   }
-
-  // resetType() {
-  //   const etoolsDropdownEl = this.shadowRoot!.querySelector('#engagementType') as EtoolsDropdownEl;
-  //   etoolsDropdownEl.selected = null;
-  // }
 
   getEngagementData() {
     const data: any = {};
