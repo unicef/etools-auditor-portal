@@ -68,7 +68,7 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
             <paper-button
               class="add-btn"
               raised
-              ?hidden="${this.hideAddButton}"
+              ?hidden="${this.hideAddButton || typeof this.hideAddButton === 'undefined'}"
               tracker="Add New Engagement"
               @tap="${this.addNewTap}"
             >
