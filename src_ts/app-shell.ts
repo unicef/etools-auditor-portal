@@ -47,6 +47,8 @@ dayjs.extend(dayjs_plugin_utc);
 
 setRootPath(`/${BASE_PATH}/`);
 
+window.EtoolsLanguage = 'en';
+
 /**
  * @customElement
  * @polymer
@@ -192,7 +194,7 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   globalLoadingQueue: any[] = [];
 
   @property({type: Object})
-  user = {};
+  user = {groups: []};
 
   @property({type: Object})
   route!: GenericObject;
@@ -262,7 +264,8 @@ class AppShell extends LoadingMixin(AppMenuMixin(PolymerElement)) {
   }
   _dialogClosing(event) {
     // chrome
-    if (event.path && event.path[0] && event.path[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
+    const paths = event.composedPath() || [];
+    if (paths.length && paths[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
       return;
     }
     // edge

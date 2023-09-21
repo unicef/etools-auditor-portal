@@ -6,7 +6,8 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-app-selector';
 import '@unicef-polymer/etools-profile-dropdown';
-import './countries-dropdown/countries-dropdown';
+import './header-elements/countries-dropdown';
+import './header-elements/organizations-dropdown';
 import './support-btn';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {isProductionServer, checkEnvironment} from '../../config/config';
@@ -99,6 +100,8 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
             countries="[[user.countries_available]]"
             country-id="[[user.country.id]]"
           ></countries-dropdown>
+
+          <organizations-dropdown user="[[user]]"></organizations-dropdown>
 
           <support-btn title="Support"></support-btn>
 

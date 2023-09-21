@@ -29,7 +29,8 @@ export function getUserData() {
 
 function _setGroups(user) {
   if (!user.groups.length) {
-    throw new Error('Can not find user group!');
+    _groups = [];
+    // @dci throw new Error('Can not find user group!');
   }
   if (_groups !== undefined) {
     _groups = user.groups.map((group) => {

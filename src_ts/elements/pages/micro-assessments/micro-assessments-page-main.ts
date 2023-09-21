@@ -159,7 +159,7 @@ class MicroAssessmentsPageMain extends EngagementMixin(CommonMethodsMixin(Polyme
                   <questionnaire-page-main
                     id="questionnaire"
                     data="[[engagement.questionnaire]]"
-                    risk-assessment="[[engagement.overall_risk_assessment.blueprints.0.risk.value_display]]"
+                    risk-assessment="[[engagement.questionnaire.risk_rating]]"
                     error-object="{{errorObject}}"
                     base-permission-path="{{permissionBase}}"
                   >

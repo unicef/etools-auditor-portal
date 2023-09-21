@@ -438,6 +438,7 @@ class ListElement extends LocalizationMixin(PolymerElement) {
     } else if (item.name === 'finding' || item.name === 'autoNumber') {
       value = this._refactorFindingNumber();
     }
+
     // if (typeof value === 'string') { value = value.trim(); }
     if (bool) {
       value = !!value;
@@ -476,6 +477,10 @@ class ListElement extends LocalizationMixin(PolymerElement) {
   _refactorPercents(value) {
     const regexp = /[\d]+.[\d]{2}/;
     return regexp.test(value) ? `${value}%` : null;
+  }
+
+  _refactorBoolean(value) {
+    return value ? `&#10003;` : '–';
   }
 
   _refactorFindingNumber() {
