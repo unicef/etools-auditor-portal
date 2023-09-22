@@ -21,6 +21,7 @@ import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 import get from 'lodash-es/get';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import {cloneDeep} from 'lodash-es';
 
 /**
  * @LitEelement
@@ -127,7 +128,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         .opened="${this.dialogOpened}"
         dialog-title="Edit Question"
         ok-btn-text="Save"
-        ?showSpinner="${this.requestInProcess}"
+        ?show-spinner="${this.requestInProcess}"
         ?disable-confirm-btn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._addItemFromDialog}"
         openFlag="dialogOpened"
@@ -360,10 +361,9 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
 
     this.tabId = event.detail.tabId;
     this.categoryId = event.detail.childId;
-    this.editedItem = item;
+    this.editedItem = cloneDeep(item);
     this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
     this.originalRiskValue = item.risk ? item.risk.value : '';
-    // this.$.questionHeader.innerHTML = item.header;
     this.dialogOpened = true;
   }
 
@@ -377,8 +377,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     }
     this.editedItem.risk.value = selectedItem.value;
     this.editedItem.risk.display_name = selectedItem.display_name;
-
-    this.editedItem = {...this.editedItem};
   }
 
   _riskValueChanged(event) {
@@ -493,6 +491,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       return;
     }
 
+    this.editedItem = {};
     this.riskAssessmentDropdown.invalid = false;
     this.riskAssessmentDropdown.selected = null;
 

@@ -82,7 +82,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         .opened="${this.dialogOpened}"
         .dialogTitle="Edit Subject Area - ${this.editedArea?.blueprints[0]?.header}"
         ok-btn-text="Save"
-        ?showSpinner="${this.requestInProcess}"
+        ?show-spinner="${this.requestInProcess}"
         ?disableConfirmBtn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._saveEditedArea}"
         openFlag="dialogOpened"

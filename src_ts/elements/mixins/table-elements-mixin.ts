@@ -81,6 +81,9 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Boolean})
     deleteDialog!: boolean;
 
+    @property({type: Boolean})
+    dataIsInitialized = false;
+
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
@@ -95,7 +98,10 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _dataItemsChanged(data) {
-      this.originalTableData = cloneDeep(data);
+      if (!this.dataIsInitialized) {
+        this.dataIsInitialized = true;
+        this.originalTableData = cloneDeep(data || []);
+      }
       if (this.dialogOpened) {
         this.requestInProcess = false;
         this.dialogOpened = false;
@@ -236,6 +242,9 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _updateDataItemsWithoutSave() {
       const item = cloneDeep(this.editedItem);
+      if (!this.dataItems) {
+        this.dataItems = [];
+      }
       if (!this.addDialog && !isNaN(this.editedIndex)) {
         // if is edit popup
         this.dataItems.splice(this.editedIndex, 1, item);
@@ -243,6 +252,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         // if is creation popup
         this.dataItems.push(item);
       }
+      fireEvent(this, 'data-items-changed', this.dataItems);
     }
 
     resetDialog(opened?: boolean) {
@@ -275,6 +285,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this._triggerSaveEngagement();
       } else {
         this.dataItems.splice(this.editedIndex, 1);
+        fireEvent(this, 'data-items-changed', this.dataItems);
         this.resetDialog();
         this.confirmDialogOpened = false;
       }

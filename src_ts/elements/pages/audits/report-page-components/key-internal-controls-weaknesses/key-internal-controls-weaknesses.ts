@@ -150,7 +150,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
           ?opened="${this.dialogOpened}"
           .dialogTitle="${this.dialogTexts.dialogTitle}"
           .okBtnText="${this.dialogTexts.confirmBtn}"
-          ?showSpinner="${this.requestInProcess}"
+          ?show-spinner="${this.requestInProcess}"
           ?disable-confirm-btn="${this.requestInProcess}"
           @confirm-btn-clicked="${this._saveEditedArea}"
           openFlag="dialogOpened"

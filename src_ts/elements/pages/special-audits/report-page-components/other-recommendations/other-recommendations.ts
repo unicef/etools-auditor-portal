@@ -118,7 +118,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
         .opened="${this.dialogOpened}"
         .dialogTitle="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
-        ?showSpinner="${this.requestInProcess}"
+        ?show-spinner="${this.requestInProcess}"
         ?disable-confirm-btn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._addItemFromDialog}"
         openFlag="dialogOpened"

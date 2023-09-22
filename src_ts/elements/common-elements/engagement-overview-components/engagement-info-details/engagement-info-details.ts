@@ -33,8 +33,8 @@ import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 /**
  * @customElement
@@ -299,8 +299,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 @focus="${(event: any) => this._resetFieldError(event)}"
                 trigger-value-change-event
                 @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
-                  this.onEngagementTypeChanged();
+                  if (detail.selectedItem) {
+                    this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
+                    this.onEngagementTypeChanged();
+                  }
                 }}"
                 hide-search
               >
@@ -457,8 +459,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      const newIds = detail.selectedItems.map((i: any) => i.value);
-                      this.data.shared_ip_with = newIds;
+                      this.selectedItemsChanged(detail, 'shared_ip_with', 'value', this.data);
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -474,7 +475,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.sectionOptions}"
                     option-label="name"
                     option-value="id"
-                    .selectedValues="${this.sectionIDs}"
+                    .selectedValues="${cloneDeep(this.sectionIDs)}"
                     ?required="${this._setRequired('sections', this.optionsData)}"
                     ?readonly="${this.isReadOnly('sections', this.optionsData)}"
                     ?invalid="${this.errors.sections}"
@@ -484,8 +485,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      const newIds = detail.selectedItems.map((i: any) => i.id);
-                      this.sectionIDs = newIds;
+                      this.selectedItemsChanged(detail, 'sectionIDs', 'id', this);
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -499,7 +499,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.officeOptions}"
                     option-label="name"
                     option-value="id"
-                    .selectedValues="${this.officeIDs}"
+                    .selectedValues="${cloneDeep(this.officeIDs)}"
                     ?required="${this._setRequired('offices', this.optionsData)}"
                     ?readonly="${this.isReadOnly('offices', this.optionsData)}"
                     ?invalid="${this.errors.offices}"
@@ -509,8 +509,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      const newIds = detail.selectedItems.map((i: any) => i.id);
-                      this.officeIDs = newIds;
+                      this.selectedItemsChanged(detail, 'officeIDs', 'id', this);
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -528,15 +527,14 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               option-label="name"
               option-value="id"
               ?hidden="${this.isReadOnly('users_notified', this.optionsData)}"
-              .selectedValues="${this.usersNotifiedIDs}"
+              .selectedValues="${cloneDeep(this.usersNotifiedIDs)}"
               ?required="${this._setRequired('users_notified', this.optionsData)}"
               ?invalid="${this.errors.users_notified}"
               .errorMessage="${this.errors.users_notified}"
               @focus="${(event: any) => this._resetFieldError(event)}"
               trigger-value-change-event
               @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                const newIds = detail.selectedItems.map((i: any) => i.id);
-                this.usersNotifiedIDs = newIds;
+                this.selectedItemsChanged(detail, 'usersNotifiedIDs', 'id', this);
               }}"
             >
             </etools-dropdown-multi>

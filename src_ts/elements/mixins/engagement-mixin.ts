@@ -78,6 +78,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: String})
     tab!: string;
 
+    @property({type: Boolean})
+    isTabValidated = false;
+
     @property({type: Array})
     reportFileTypes!: any[];
 
@@ -229,43 +232,23 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _checkAvailableTab(engagement: AnyObject, options: AnyObject, apOptions: AnyObject, tab: string) {
-      if (!engagement || !options || !apOptions || !tab) {
+      if (!tab || this.isTabValidated || !engagement || !options || !apOptions) {
         return;
       }
+      this.isTabValidated = true;
       if (
         (tab === 'report' && !this._showReportTabs(options, engagement)) ||
         (tab === 'follow-up' && !this._showFollowUpTabs(apOptions))
       ) {
         this._tabChanged('overview', tab);
-        // EtoolsRouter.updateAppLocation(`${this.routeDetails!.routeName}/${this.routeDetails!.params!.id}/overview`);
       }
     }
 
     _tabChanged(newTabName: string, oldTabName: string | undefined) {
-      // const newPath = this._geNewUrlPath(newTabName, newSubTab);
-      // history.pushState(window.history.state, '', newPath);
-      // window.dispatchEvent(new CustomEvent('popstate'));
       this.tab = newTabName;
       const newPath = this.routeDetails!.path.replace(`/${oldTabName}`, `/${newTabName}`);
       EtoolsRouter.updateAppLocation(newPath);
-
-      // const newPath = this.routeDetails?.path.replace(`/${oldTabName}`, `/${newTabName}`);
-      // history.pushState(window.history.state, '', `${ROOT_PATH}${newPath}`);
-      // window.dispatchEvent(new CustomEvent('popstate'));
     }
-
-    //   _geNewUrlPath(newTabName: string, newSubTab: string) {
-    //   const stringParams: string = buildUrlQueryString(this.routeDetails!.queryParams || {});
-    //   let newPath = `interventions/${this.intervention!.id}/${newTabName}`;
-    //   if (newSubTab) {
-    //     newPath += `/${newSubTab}`;
-    //   } else {
-    //     this.activeSubTab = '';
-    //   }
-    //   newPath += stringParams !== '' ? `?${stringParams}` : '';
-
-    //   return newPath;
-    // }
 
     setFileTypes(reportAttachments: AnyObject, attachmentOptions: AnyObject) {
       if (!reportAttachments || !attachmentOptions) {

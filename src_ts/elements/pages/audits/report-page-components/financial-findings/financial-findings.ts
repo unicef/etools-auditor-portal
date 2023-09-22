@@ -171,7 +171,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           keep-dialog-open
           .dialogTitle="${this.dialogTitle}"
           ok-btn-text="Add"
-          ?showSpinner="${this.requestInProcess}"
+          ?show-spinner="${this.requestInProcess}"
           ?disable-confirm-btn="${this.requestInProcess}"
           @confirm-btn-clicked="${this._addItemFromDialog}"
           openFlag="dialogOpened"

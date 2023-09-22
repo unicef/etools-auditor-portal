@@ -170,7 +170,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           keep-dialog-open
           .opened="${this.dialogOpened}"
           .okBtnText="${this.confirmBtnText}"
-          ?showSpinner="${this.requestInProcess}"
+          ?show-spinner="${this.requestInProcess}"
           ?disable-confirm-btn="${this.requestInProcess}"
           @confirm-btn-clicked="${this._addItemFromDialog}"
           openFlag="dialogOpened"

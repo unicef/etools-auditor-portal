@@ -31,7 +31,7 @@ export class ActionButtons extends LitElement {
       >
         <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
         ${this._showOtherActions(this.actions.length)
-          ? html`<paper-menu-button class="option-button" dynamic-align opened="${this.statusBtnMenuOpened}">
+          ? html`<paper-menu-button class="option-button" dynamic-align ?opened="${this.statusBtnMenuOpened}">
               <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
               <div slot="dropdown-content">
                 ${(this.actions || [])
