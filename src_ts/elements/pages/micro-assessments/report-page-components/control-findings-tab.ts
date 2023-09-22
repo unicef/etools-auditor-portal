@@ -116,7 +116,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         .deleteDialog="${this.deleteDialog}"
         .dialogTitle="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
-        ?showSpinner="${this.requestInProcess}"
+        ?show-spinner="${this.requestInProcess}"
         ?disableConfirmBtn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._addItemFromDialog}"
         openFlag="dialogOpened"

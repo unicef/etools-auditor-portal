@@ -136,7 +136,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         @close="${this._resetDialogOpenedFlag}"
         .dialogTitle="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
-        ?showSpinner="${this.requestInProcess}"
+        ?show-spinner="${this.requestInProcess}"
         ?disable-confirm-btn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._addItemFromDialog}"
       >

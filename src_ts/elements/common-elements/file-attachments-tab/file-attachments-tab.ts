@@ -217,7 +217,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         .opened="${this.dialogOpened}"
         dialog-title="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
-        ?showSpinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
+        ?show-spinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
         ?disableConfirmBtn="${this.requestInProcess}"
         @confirm-btn-clicked="${this._saveAttachment}"
         openFlag="dialogOpened"
@@ -297,7 +297,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
             @confirm-btn-clicked="${this._SendShareRequest}"
             openFlag="shareDialogOpened"
             @close="${this._resetDialogOpenedFlag}"
-            ?showSpinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
+            ?show-spinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
             ?disableConfirmBtn="${this.requestInProcess || !this.shareParams?.attachments?.length}"
           >
             <share-documents

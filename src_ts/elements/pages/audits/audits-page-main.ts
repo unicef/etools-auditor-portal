@@ -31,6 +31,7 @@ import isNull from 'lodash-es/isNull';
 import {pageIsNotCurrentlyActive} from '../../utils/utils';
 import get from 'lodash-es/get';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @customElement
@@ -170,7 +171,8 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .optionsData="${this.apOptions}"
+                          .optionsData="${this.engagementOptions}"
+                          .apOptionsData="${this.apOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -290,6 +292,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
     const reportValid = this.getElement('#report').validate();
     if (!reportValid) {
       this.tab = 'report';
+      fireEvent(this, 'toast', {text: 'Fill report before submiting!'});
       return false;
     }
     return true;

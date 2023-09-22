@@ -183,7 +183,8 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                           .originalData="${this.originalData}"
                           .errorObject="${this.errorObject}"
                           .engagement="${this.engagement}"
-                          .optionsData="${this.apOptions}"
+                          .optionsData="${this.engagementOptions}"
+                          .apOptionsData="${this.apOptions}"
                         >
                         </follow-up-main>
                       </div>`
@@ -299,6 +300,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
     }
     if (!reportValid) {
       this.tab = 'report';
+      fireEvent(this, 'toast', {text: 'Fill report before submiting!'});
       return false;
     }
     if (!questionnaireValid) {

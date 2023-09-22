@@ -28,6 +28,7 @@ import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 
 /**
  * main menu
@@ -229,8 +230,20 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   @property({type: Object})
   authorizedOfficer: GenericObject | null = null;
 
+  _engagement!: AnyObject;
+
+  set engagement(engagement: AnyObject) {
+    const isInitialSet = !this._engagement;
+    this._engagement = engagement;
+    if (isInitialSet) {
+      this._engagementChanged(this.engagement);
+    }
+  }
+
   @property({type: Object})
-  engagement!: AnyObject;
+  get engagement() {
+    return this._engagement;
+  }
 
   @property({type: String})
   partnerId!: string | null;
@@ -249,21 +262,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('engagement') || changedProperties.has('optionsData')) {
-      this._engagementChanged(this.engagement);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
-    }
-    if (changedProperties.has('engagement') || changedProperties.has('partner') || changedProperties.has('partnerId')) {
-      this._setActivePd(this.engagement, this.partner?.interventions);
-    }
-    if (
-      changedProperties.has('engagement') ||
-      changedProperties.has('partner') ||
-      changedProperties.has('optionsData')
-    ) {
-      this.setOfficers(this.partner, this.engagement);
     }
   }
 
@@ -275,6 +275,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     if (event.detail) {
       this.partner = event.detail;
     }
+    this.setOfficers(this.partner, this.engagement);
+    this._setActivePd(this.engagement, this.partner?.interventions);
     this.partnerId = null;
     this.errors = {};
     this.requestInProcess = false;
@@ -361,7 +363,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   }
 
   _setActivePd(engagement, partnerInterv) {
-    if (!partnerInterv || !engagement) {
+    if (!engagement || !partnerInterv) {
       this.activePdIds = [];
       return;
     }
@@ -411,6 +413,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
       return;
     } else {
       this.engagement.partner = selectedPartner;
+      store.dispatch(updateCurrentEngagement(this.engagement));
     }
 
     this.requestInProcess = true;
@@ -425,6 +428,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
+    this._setActivePd(this.engagement, this.partner?.interventions);
+    this.setOfficers(this.partner, this.engagement);
   }
 
   getPartnerData() {

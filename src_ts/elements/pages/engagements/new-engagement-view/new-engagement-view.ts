@@ -33,7 +33,7 @@ import {connect} from 'pwa-helpers/connect-mixin';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {RouteDetails} from '@unicef-polymer/etools-types';
-import {setEngagementData} from '../../../../redux/actions/engagement';
+import {setEngagementData, updateCurrentEngagement} from '../../../../redux/actions/engagement';
 /**
  * @customElement
  * @LitElement
@@ -144,18 +144,21 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
               >
               </partner-details-tab>
 
-              ${this.isSpecialAudit(this.engagement?.engagement_type)
-                ? html` <specific-procedure
-                    id="specificProcedures"
-                    class="mb-15"
-                    without-finding-column
-                    .errorObject="${this.errorObject}"
-                    save-with-button
-                    .dataItems="${this.engagement.specific_procedures}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </specific-procedure>`
-                : ``}
+              <specific-procedure
+                id="specificProcedures"
+                ?hidden="${!this.isSpecialAudit(this.engagement?.engagement_type)}"
+                class="mb-15"
+                without-finding-column
+                .errorObject="${this.errorObject}"
+                save-with-button
+                .dataItems="${this.engagement.specific_procedures}"
+                .optionsData="${this.engagementOptions}"
+                @data-items-changed="${({detail}) => {
+                  this.engagement.specific_procedures = detail || [];
+                  store.dispatch(updateCurrentEngagement(this.engagement));
+                }}"
+              >
+              </specific-procedure>
 
               <engagement-staff-members-tab
                 id="staffMembers"
@@ -297,7 +300,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     if (!this.isSpecialAudit(this.engagement.engagement_type)) {
       return data;
     }
-
     const specificProcedures = this.getElement('#specificProcedures');
     const specificProceduresData = specificProcedures && specificProcedures.getTabData();
     if (specificProceduresData) {

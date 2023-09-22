@@ -36,7 +36,7 @@ export class FollowUpMain extends LitElement {
       <follow-up-actions
         .engagementId="${this.engagement.id}"
         .partnerData="${this.engagement.partner}"
-        .optionsData="${this.optionsData}"
+        .optionsData="${this.apOptionsData}"
       >
       </follow-up-actions>
 
@@ -57,7 +57,7 @@ export class FollowUpMain extends LitElement {
             .errorObject="${this.errorObject}"
             .originalData="${this.originalData.findings}"
             .priority="${this.priorities.high}"
-            .optionsData="${this.optionsData}"
+            .optionsData="${this.apOptionsData}"
           >
           </summary-findings-element>`
         : ``}
@@ -67,7 +67,7 @@ export class FollowUpMain extends LitElement {
             class="mb-24"
             .errorObject="${this.errorObject}"
             .dataItems="${this.engagement.financial_finding_set}"
-            .optionsData="${this.optionsData}"
+            .optionsData="${this.apOptionsData}"
           >
           </financial-findings>`
         : ``}
