@@ -39,8 +39,8 @@ export function getHeadingLabel(options: AnyObject, labelPath, defaultLabel) {
   if (!options || !labelPath) {
     return defaultLabel || '';
   }
-
-  const label = get(options, `GET.${labelPath}.label`);
+  const actions = options.actions ? options.actions : options;
+  const label = get(actions, `GET.${labelPath}.label`);
 
   return label && typeof label === 'string' ? label : defaultLabel || '';
 }
@@ -96,7 +96,7 @@ export function getCollection(path: string, options: AnyObject, actionType?: str
   let value = get(options, 'actions') || options || {};
   while (pathArr.length) {
     const key = pathArr.shift()!;
-    if (value[key]) {
+    if (typeof value[key] !== 'undefined') {
       value = value[key];
     } else {
       const action = actionType

@@ -449,7 +449,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.sharedIpWithOptions}"
                     option-label="display_name"
                     option-value="value"
-                    .selectedValues="${this.data.shared_ip_with}"
+                    .selectedValues="${this.data.shared_ip_with || []}"
                     ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
                     ?readonly="${this.isReadOnly('shared_ip_with', this.optionsData)}"
                     ?invalid="${this.errors.shared_ip_with}"

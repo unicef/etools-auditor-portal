@@ -250,7 +250,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       this.prevRouteDetails = state.app.routeDetails;
       return;
     }
-    this.initializeEngagementOnFirstAccess(state.app.routeDetails);
+    this.initializeOnFirstAccess(state.app.routeDetails);
 
     if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
       this.user = state.user.data;
@@ -275,14 +275,13 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     }
   }
 
-  initializeEngagementOnFirstAccess(currentRouteDetails: RouteDetails) {
+  initializeOnFirstAccess(currentRouteDetails: RouteDetails) {
     this.isStaffSc = currentRouteDetails.routeName === 'staff-sc';
     const isFirstAcess = !this.prevRouteDetails?.path.includes('new') && currentRouteDetails?.path?.includes('new');
     this.prevRouteDetails = currentRouteDetails;
     if (isFirstAcess) {
       clearQueries();
       this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
-      store.dispatch(setEngagementData(this.engagement));
     }
   }
 
@@ -345,7 +344,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       engagement_type: '',
       engagement_type_details: {},
       engagement_attachments: [],
-      agreement: {order_number: undefined},
+      agreement: {order_number: ''},
       date_of_field_visit: null,
       date_of_draft_report_to_ip: null,
       date_of_comments_by_ip: null,
@@ -356,8 +355,11 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       users_notified: [],
       offices: [],
       sections: [],
-      shared_ip_with: []
+      shared_ip_with: [],
+      partner: {}
     };
+
+    store.dispatch(setEngagementData(this.engagement));
 
     const engagementAttachments = this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab;
     if (engagementAttachments) {
@@ -366,7 +368,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetails;
     if (engagementDetails) {
       engagementDetails.resetValidationErrors();
-      engagementDetails.resetAgreement();
+      // engagementDetails.resetAgreement();
     }
     const partnerDetails = this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTab;
     if (partnerDetails) {
