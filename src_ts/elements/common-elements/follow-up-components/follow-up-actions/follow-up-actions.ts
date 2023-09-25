@@ -34,7 +34,12 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import DateMixin from '../../../mixins/date-mixin';
-import {actionAllowed, getHeadingLabel, getOptionsChoices} from '../../../mixins/permission-controller';
+import {
+  actionAllowed,
+  getHeadingLabel,
+  getOptionsChoices,
+  readonlyPermission
+} from '../../../mixins/permission-controller';
 import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import clone from 'lodash-es/clone';
@@ -123,6 +128,10 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         datepicker-lite::part(dp-calendar) {
           position: fixed;
         }
+        .launch-icon {
+          --iron-icon-height: 16px;
+          --iron-icon-width: 16px;
+          }
       </style>
 
       <get-action-points .engagementId="${this.engagementId}" @ap-loaded="${({detail}: CustomEvent) => {
@@ -189,8 +198,8 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
               <etools-data-table-row no-collapse>
                 <div slot="row-data" class="layout-horizontal editable-row">
                   <span class="col-data col-2">
-                    <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank"
-                      >${item.reference_number}
+                    <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">
+                      ${item.reference_number} <iron-icon class="launch-icon" icon="launch"></iron-icon>
                     </a>
                   </span>
                   <span class="col-data col-3">${item.ap_category?.display_name || '-'}</span>
@@ -245,7 +254,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                             <!-- Partner -->
                             <etools-dropdown
                                     class="${this._setRequired('partner', this.editedApBase)} validate-input fua-person"
-                                    .selected="${this.editedItem.partner?.id}"
+                                    .selected="${this.selectedPartnerIdAux}"
                                     label="${this.getLabel('partner', this.editedApBase)}"
                                     placeholder="${this.getPlaceholderText('partner', this.editedApBase, 'select')}"
                                     .options="${this.partners}"
@@ -285,10 +294,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                                     .errorMessage="${this.errors.intervention}"
                                     trigger-value-change-event
                                     @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                                      (this.editedItem = {
-                                        ...this.editedItem,
-                                        intervention: {id: detail.selectedItem?.id}
-                                      })}"
+                                      (this.editedItem.intervention = {id: detail.selectedItem?.id})}"
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
@@ -571,6 +577,9 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   @property({type: Number})
   selectedPartnerId!: number | null;
 
+  @property({type: Number})
+  selectedPartnerIdAux!: number | null;
+
   @property({type: Object})
   fullPartner!: any;
 
@@ -652,11 +661,8 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     }
     this.copyDialog = false;
     this.originalEditedObj = {};
+    this.selectedPartnerIdAux = null;
     this.resetDialog(dialogOpened);
-    // For consecutive dialog open
-    const aux = this.selectedPartnerId;
-    this.selectedPartnerId = null;
-    this.selectedPartnerId = aux;
   }
 
   _sortOrderChanged(e: CustomEvent) {
@@ -683,7 +689,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       return;
     }
     this.categories = getOptionsChoices(optionsData, 'category') || [];
-    this.canBeChanged = !!get(optionsData, 'actions.POST') && !!get(optionsData, 'actions.PUT');
+    this.canBeChanged = !readonlyPermission('POST', this.optionsData);
   }
 
   _checkNonField(error) {
@@ -765,6 +771,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       this.editedItem[field] = {id: null};
     });
     this.editedApBase = {...this.optionsData};
+    this.selectedPartnerIdAux = this.selectedPartnerId;
     this.openAddDialog();
   }
 
@@ -773,6 +780,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
     this._selectedAPIndex = index;
+    this.selectedPartnerIdAux = this.selectedPartnerId;
 
     const id = get(this, `dataItems.${index}.id`);
     const apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url;
@@ -801,7 +809,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
     this.editedApBase = this.optionsData;
-
+    this.selectedPartnerIdAux = this.selectedPartnerId;
     this.copyDialog = true;
     this.handleUsersNoLongerAssignedToCurrentCountry(
       this.users,
