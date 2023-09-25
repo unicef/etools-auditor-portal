@@ -146,7 +146,9 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
                  ?hidden="${!this.isActivePage(this.page, 'spot-checks|staff-spot-checks')}">
               </spot-checks-page-main>
 
-              <not-found-page-view name="not-found" id="not-found"></not-found-page-view>
+              <not-found-page-view name="not-found" id="not-found"
+               ?hidden="${!this.isActivePage(this.page, 'not-found')}">
+              </not-found-page-view>
             </iron-pages>
           </main>
           <page-footer></page-footer>
