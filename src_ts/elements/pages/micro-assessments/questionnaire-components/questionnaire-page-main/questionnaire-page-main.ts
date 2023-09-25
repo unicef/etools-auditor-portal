@@ -21,7 +21,7 @@ import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 import get from 'lodash-es/get';
 import {AnyObject} from '@unicef-polymer/etools-types';
-import {cloneDeep} from 'lodash-es';
+import cloneDeep from 'lodash-es';
 
 /**
  * @LitEelement
