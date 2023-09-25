@@ -89,7 +89,7 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any
       );
   }
   if (!page || routeDetails.routeName == 'not-found') {
-    import(`${window.location.origin}/src/elements/pages/not-found-page-view/not-found-page-view.js`);
+    import(`${window.location.origin}/ap/src/elements/pages/not-found-page-view/not-found-page-view.js`);
   }
 };
 
