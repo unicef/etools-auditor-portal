@@ -330,11 +330,13 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   @property({type: Object})
   ENGAGEMENT_TYPE_ENDPOINT_MAP: GenericObject = {
     'micro-assessments': 'micro-assessment',
+    ma: 'micro-assessment',
     'spot-checks': 'spot-check',
     'staff-spot-checks': 'spot-check',
     sc: 'spot-check',
     audit: 'audit',
-    'special-audits': 'special-audit'
+    'special-audits': 'special-audit',
+    sa: 'special-audit'
   };
 
   @property({type: Array})
