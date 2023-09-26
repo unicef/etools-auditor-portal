@@ -39,7 +39,6 @@ import {getHeadingLabel, getOptionsChoices, isValidCollection} from '../../mixin
 import famEndpoints from '../../config/endpoints';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
 import {ShareDocuments} from '../share-documents/share-documents';
-import {EtoolsUpload} from '@unicef-polymer/etools-upload/etools-upload';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
@@ -189,7 +188,10 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         <div class="row-v" ?hidden="${!this._isNewEngagement()}">
           You can add attachments after you create the engagement.
         </div>
-        <etools-data-table-row no-collapse ?hidden="${this._isNewEngagement() || this.dataItems?.length}">
+        <etools-data-table-row
+          no-collapse
+          ?hidden="${this._isNewEngagement() || this.dataItems?.length || this.linkedAttachments?.length}"
+        >
           <div slot="row-data" class="layout-horizontal editable-row">
             <span class="col-data col-2">–</span>
             <span class="col-data col-2">–</span>
@@ -330,6 +332,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     'micro-assessments': 'micro-assessment',
     'spot-checks': 'spot-check',
     'staff-spot-checks': 'spot-check',
+    sc: 'spot-check',
     audit: 'audit',
     'special-audits': 'special-audit'
   };
@@ -506,8 +509,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (!dialogOpened) {
       this.originalEditedObj = null;
     }
-    const etoolUpload = this.shadowRoot!.querySelector('etools-upload') as EtoolsUpload;
-    etoolUpload.invalid = false;
+    this.errors = {};
     this.resetDialog(dialogOpened);
   }
 
@@ -638,11 +640,11 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     });
 
     if (alreadySelectedIndex !== -1) {
-      this.errors = {...this.errors, file_type: 'File already selected'};
+      this.errors = {...this.errors, file: 'File already selected'};
       return true;
     }
 
-    this.errors = {...this.errors, file_type: ''};
+    this.errors = {...this.errors, file: ''};
     return false;
   }
 
@@ -656,7 +658,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     }
 
     if (this.addDialog && !this.editedItem.attachment) {
-      this.errors = {...this.errors, file_type: 'File is not selected'};
+      this.errors.file = 'File is not selected';
+      this.errors = {...this.errors};
       valid = false;
     }
 

@@ -117,7 +117,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
       if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
         this.engagementFromRedux = cloneDeep(state.engagement.data);
-        this.checkRedirectToFollowUpTab();
+        this.redirectToFollowUpTabIfStatusChangeToFinal(this.engagement, this.engagementFromRedux);
         this.engagement = cloneDeep(this.engagementFromRedux);
       }
       if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
@@ -203,9 +203,18 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    checkRedirectToFollowUpTab() {
-      if (this.engagement?.id && this.engagementFromRedux.status === 'final' && this.user?.is_unicef_user) {
-        this.tab = 'follow-up';
+    redirectToFollowUpTabIfStatusChangeToFinal(prevEngagement: AnyObject, currentEngagement: AnyObject) {
+      if (
+        prevEngagement?.id &&
+        currentEngagement?.id &&
+        prevEngagement.id === currentEngagement.id &&
+        prevEngagement.status !== 'final' &&
+        currentEngagement.status === 'final' &&
+        this.user?.is_unicef_user
+      ) {
+        setTimeout(() => {
+          this.tab = 'follow-up';
+        }, 500);
       }
     }
 

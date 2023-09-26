@@ -31,17 +31,13 @@ export class ActionButtons extends LitElement {
       >
         <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
         ${this._showOtherActions(this.actions.length)
-          ? html`<paper-menu-button class="option-button" dynamic-align ?opened="${this.statusBtnMenuOpened}">
+          ? html`<paper-menu-button class="option-button" dynamic-align close-on-activate>
               <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
               <div slot="dropdown-content">
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
                   .map(
-                    (item: any) => html`<div
-                      class="other-options"
-                      @click="${this.closeMenu}"
-                      action-code="${this._setActionCode(item)}"
-                    >
+                    (item: any) => html`<div class="other-options" action-code="${this._setActionCode(item)}">
                       <iron-icon icon="${this._setIcon(item, this.icons)}" class="option-icon"></iron-icon>
                       <span>${this._setButtonText(item)}</span>
                     </div>`
@@ -99,6 +95,7 @@ export class ActionButtons extends LitElement {
 
   closeMenu() {
     this.statusBtnMenuOpened = false;
+    this.requestUpdate();
   }
 
   _setButtonText(item) {

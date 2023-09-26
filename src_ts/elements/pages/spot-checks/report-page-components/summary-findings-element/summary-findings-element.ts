@@ -391,7 +391,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           (changedObj.agreed_action_by_ip && changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip)
         );
       };
-      if (!isEqualWith(dataItem, this.originalData[index], compareItems)) {
+      if (!isEqualWith(dataItem, this.originalData[index] || {}, compareItems)) {
         data.push(dataItem);
       }
     });
