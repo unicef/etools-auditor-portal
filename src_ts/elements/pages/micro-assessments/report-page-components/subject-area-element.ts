@@ -40,7 +40,7 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
         <div slot="row-data-details">
           <div class="row-details-content col-12">
             <span class="rdc-title">Brief Justification for Rating (main internal control gaps)</span>
-            <span>${this.areaData?.risk.extra.comments || 'None'}</span>
+            <span>${this.areaData?.risk.extra.comments || '–'}</span>
           </div>
         </div>
       </etools-data-table-row>

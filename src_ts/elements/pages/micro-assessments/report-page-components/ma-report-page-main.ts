@@ -21,6 +21,7 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
         .originalData="${this.engagementOptions}"
         .errorObject="${this.errorObject}"
         audit-type="Micro Assessment"
+        .optionsData="${this.engagementOptions}"
       >
       </assign-engagement>
 
