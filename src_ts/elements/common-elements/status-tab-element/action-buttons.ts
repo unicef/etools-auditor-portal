@@ -125,6 +125,11 @@ export class ActionButtons extends LitElement {
       : target && target.getAttribute('action-code');
 
     if (action) {
+      const paperMenuBtn = this.shadowRoot!.querySelector('paper-button')!.querySelector('paper-menu-button');
+      if (paperMenuBtn && paperMenuBtn.opened) {
+        paperMenuBtn.close();
+      }
+
       if (action === 'submit') {
         this.showSubmitConfirmation();
       } else {
