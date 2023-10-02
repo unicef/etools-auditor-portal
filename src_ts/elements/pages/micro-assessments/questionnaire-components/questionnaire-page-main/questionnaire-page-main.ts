@@ -403,7 +403,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       this.resetDialog();
       return;
     }
-
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }

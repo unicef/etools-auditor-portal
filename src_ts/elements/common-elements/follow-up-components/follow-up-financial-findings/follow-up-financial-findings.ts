@@ -138,8 +138,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?invalid="${this.errors?.amount_refunded}"
               .errorMessage="${this.errors?.amount_refunded}"
               @value-changed="${({detail}: CustomEvent) => {
-                console.log('amount_refunded', detail.value);
-                console.log('original value: ', this.engagement.amount_refunded);
                 this.numberChanged(detail, 'amount_refunded', this.engagement);
               }}"
               @focus="${this._resetFieldError}"
@@ -163,8 +161,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?invalid="${this.errors?.additional_supporting_documentation_provided}"
               .errorMessage="${this.errors?.additional_supporting_documentation_provided}"
               @value-changed="${({detail}: CustomEvent) => {
-                console.log('additional_supporting_documentation_provided', detail.value);
-                console.log('original value: ', this.engagement.additional_supporting_documentation_provided);
                 this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
               }}"
               @focus="${this._resetFieldError}"
@@ -186,8 +182,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?invalid="${this.errors?.justification_provided_and_accepted}"
               .errorMessage="${this.errors?.justification_provided_and_accepted}"
               @value-changed="${({detail}: CustomEvent) => {
-                console.log('justification_provided_and_accepted', detail.value);
-                console.log('original value: ', this.engagement.justification_provided_and_accepted);
                 this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
               }}"
               @focus="${this._resetFieldError}"
