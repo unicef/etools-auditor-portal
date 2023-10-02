@@ -228,6 +228,9 @@ export const moduleStyles = css`
   .truncate {
     white-space: nowrap;
   }
+  .caps::first-letter {
+    text-transform: uppercase;
+  }
 
   .f1 {
     flex: 1;

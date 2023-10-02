@@ -176,12 +176,12 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
               'Action Point Category'
             )}</etools-data-table-column>
             <etools-data-table-column class="col-3">Assignee (Section / Office)</etools-data-table-column>
-            <etools-data-table-column class="col-1" field="status" sortable>${getHeadingLabel(
+            <etools-data-table-column class="col-2" field="status" sortable>${getHeadingLabel(
               this.optionsData,
               'status',
               'Status'
             )}</etools-data-table-column>
-            <etools-data-table-column class="col-2" field="due_date" sortable>${getHeadingLabel(
+            <etools-data-table-column class="col-1" field="due_date" sortable>${getHeadingLabel(
               this.optionsData,
               'due_date',
               'Due Date'
@@ -197,16 +197,16 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
             (item, index) => html`
               <etools-data-table-row no-collapse>
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="col-data col-2">
+                  <span class="col-data col-2 truncate">
                     <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">
                       ${item.reference_number} <iron-icon class="launch-icon" icon="launch"></iron-icon>
                     </a>
                   </span>
-                  <span class="col-data col-3">${item.ap_category?.display_name || '-'}</span>
+                  <span class="col-data col-3 truncate">${item.ap_category?.display_name || '-'}</span>
                   <span class="col-data col-3 truncate">${item.computed_field}</span>
-                  <span class="col-data col-1">${item.status}</span>
-                  <span class="col-data col-2">${this.prettyDate(String(item.due_date), '') || '-'}</span>
-                  <span class="col-data col-1">${item.priority}</span>
+                  <span class="col-data col-2 truncate caps">${item.status}</span>
+                  <span class="col-data col-1 truncate">${this.prettyDate(String(item.due_date), '') || '-'}</span>
+                  <span class="col-data col-1 truncate caps">${item.priority}</span>
                   <div class="hover-block">
                     <paper-icon-button
                       icon="content-copy"
@@ -294,7 +294,9 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                                     .errorMessage="${this.errors.intervention}"
                                     trigger-value-change-event
                                     @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                                      (this.editedItem.intervention = {id: detail.selectedItem?.id})}"
+                                      (this.editedItem.intervention = detail.selectedItem?.id
+                                        ? {id: detail.selectedItem?.id}
+                                        : null)}"
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>

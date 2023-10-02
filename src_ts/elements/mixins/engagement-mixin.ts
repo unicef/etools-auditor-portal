@@ -96,19 +96,24 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Boolean})
     quietAdding!: boolean;
 
+    @property({type: Boolean})
+    selectFollowUpTab = false;
+
     @property({type: Object})
-    updatedEngagement!: GenericObject;
+    updatedEngagement: GenericObject | undefined;
 
     connectedCallback() {
       super.connectedCallback();
 
       this._processAction = this._processAction.bind(this);
       this.addEventListener('action-activated', this._processAction as any);
+      this.addEventListener('global-loading', this._engagementStatusUpdated as any);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
       this.removeEventListener('action-activated', this._processAction as any);
+      this.removeEventListener('', this._engagementStatusUpdated as any);
     }
 
     setEngagementDataFromRedux(state: RootState) {
@@ -117,7 +122,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
       if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
         this.engagementFromRedux = cloneDeep(state.engagement.data);
-        this.redirectToFollowUpTabIfStatusChangeToFinal(this.engagement, this.engagementFromRedux);
         this.engagement = cloneDeep(this.engagementFromRedux);
       }
       if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
@@ -192,6 +196,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     resetEngagementDataIfNeeded() {
       if (this.engagementId || (this.engagement && Object.keys(this.engagement).length)) {
+        this.updatedEngagement = undefined;
         this.engagement = {};
         this.engagementId = null;
         this.engagementOptions = {};
@@ -203,23 +208,17 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    redirectToFollowUpTabIfStatusChangeToFinal(prevEngagement: AnyObject, currentEngagement: AnyObject) {
-      if (
-        prevEngagement?.id &&
-        currentEngagement?.id &&
-        prevEngagement.id === currentEngagement.id &&
-        prevEngagement.status !== 'final' &&
-        currentEngagement.status === 'final' &&
-        this.user?.is_unicef_user
-      ) {
-        setTimeout(() => {
-          this.tab = 'follow-up';
-        }, 500);
-      }
-    }
-
     _resetDialogOpenedFlag(event) {
       this[event.currentTarget.getAttribute('openFlag')] = false;
+    }
+
+    _engagementStatusUpdated(e: CustomEvent) {
+      if (e.detail && e.detail.saved && e.detail.type) {
+        const type = e.detail.type;
+        if (type === 'finalize-engagement') {
+          this.selectFollowUpTab = true;
+        }
+      }
     }
 
     onDetailPageRouteChanged(stateRouteDetails: EtoolsRouteDetails) {
@@ -529,8 +528,14 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _showFollowUpTabs(options: AnyObject) {
-      const collection = get(options, 'actions.GET');
-      return isValidCollection(collection);
+      const showFollowUp = isValidCollection(get(options, 'actions.GET'));
+      if (showFollowUp && this.selectFollowUpTab) {
+        setTimeout(() => {
+          this.selectFollowUpTab = false;
+          this.tab = 'follow-up';
+        }, 300);
+      }
+      return showFollowUp;
     }
 
     _showCancellationReason(engagement) {

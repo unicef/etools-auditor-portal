@@ -85,19 +85,6 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
   @property({type: Object})
   reduxRouteDetails?: EtoolsRouteDetails;
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    this._engagementStatusUpdated = this._engagementStatusUpdated.bind(this);
-    document.addEventListener('global-loading', this._engagementStatusUpdated as any);
-    // this._fireUpdateEngagementsFilters = debounce(this._fireUpdateEngagementsFilters.bind(this), 100) as any;
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener('', this._engagementStatusUpdated as any);
-  }
-
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'engagements')) {
       return;
@@ -108,15 +95,6 @@ export class EngagementsPageMain extends connect(store)(LitElement) {
     if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
       this.reduxRouteDetails = state.app.routeDetails;
       this.activePath = this.reduxRouteDetails.path;
-    }
-  }
-
-  _engagementStatusUpdated(e: CustomEvent) {
-    if (e.detail && e.detail.saved && e.detail.type) {
-      const type = e.detail.type;
-      if (type === 'update-engagement' || type === 'finalize-engagement' || type === 'submit-engagement') {
-        this.hasEngagementUpdated = true;
-      }
     }
   }
 
