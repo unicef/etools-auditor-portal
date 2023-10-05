@@ -103,42 +103,36 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           </etools-data-table-column>
         </etools-data-table-header>
 
-        ${(this.dataItems || []).map((item, index) =>
-          this._showFindings(item)
-            ? html`
-                <etools-data-table-row>
-                  <div slot="row-data" class="layout-horizontal editable-row">
-                    <span class="col-data col-3">${getTableRowIndexText(index)}</span>
-                    <span class="col-data col-6"
-                      >${this.getCategoryDisplayName(item.category_of_observation, '--')}</span
-                    >
-                    <span class="col-data col-3">${item.deadline_of_action}</span>
-                    <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                      <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                      <paper-icon-button
-                        icon="delete"
-                        @click="${() => this.openDeleteDialog(index)}"
-                      ></paper-icon-button>
-                    </div>
+        ${(this.dataItems || []).map(
+          (item, index) =>
+            html`
+              <etools-data-table-row>
+                <div slot="row-data" class="layout-horizontal editable-row">
+                  <span class="col-data col-3">${getTableRowIndexText(index)}</span>
+                  <span class="col-data col-6">${this.getCategoryDisplayName(item.category_of_observation, '--')}</span>
+                  <span class="col-data col-3">${item.deadline_of_action}</span>
+                  <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                    <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                    <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
                   </div>
+                </div>
 
-                  <div slot="row-data-details">
-                    <div class="row-details-content col-12">
-                      <span class="rdc-title">
-                        ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
-                      </span>
-                      <span>${item.recommendation}</span>
-                    </div>
-                    <div class="row-details-content col-12 mt-30">
-                      <span class="rdc-title">
-                        ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
-                      </span>
-                      <span>${item.agreed_action_by_ip}</span>
-                    </div>
+                <div slot="row-data-details">
+                  <div class="row-details-content col-12">
+                    <span class="rdc-title">
+                      ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
+                    </span>
+                    <span>${item.recommendation}</span>
                   </div>
-                </etools-data-table-row>
-              `
-            : ``
+                  <div class="row-details-content col-12 mt-30">
+                    <span class="rdc-title">
+                      ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
+                    </span>
+                    <span>${item.agreed_action_by_ip}</span>
+                  </div>
+                </div>
+              </etools-data-table-row>
+            `
         )}
         <etools-data-table-row no-collapse ?hidden="${(this.dataItems || []).some((item) => this._showFindings(item))}">
           <div slot="row-data" class="layout-horizontal editable-row pl-30">
