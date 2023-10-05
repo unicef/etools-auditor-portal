@@ -774,6 +774,13 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   _SendShareRequest() {
     const {attachments} = this.shareParams;
+    if (!(attachments || []).length) {
+      fireEvent(this, 'toast', {
+        text: 'Please select Documents to be shared.'
+      });
+      return;
+    }
+
     const options = Object.assign(
       {endpoint: this.auditLinksOptions},
       {

@@ -43,7 +43,9 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
                   ${this.exportLinks?.map(
                     (item) =>
                       html`
-                        <paper-item tracker="Export ${item.name}" @tap="${this.exportData}">${item.name}</paper-item>
+                        <paper-item tracker="Export ${item.name}" url="${item.url}" @tap="${this.exportData}">
+                          ${item.name}</paper-item
+                        >
                       `
                   )}
                 </paper-listbox>
@@ -135,8 +137,8 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
       throw new Error('Can not find export link!');
     }
     this.trackAnalytics(e);
-    const url = e && e.model && e.model.item ? e.model.item.url : this.exportLinks[0].url;
-    window.open(url, '_blank');
+    const url = e?.target?.getAttribute('url');
+    window.open(url || this.exportLinks[0].url, '_blank');
   }
 
   _isDropDown(exportLinks) {

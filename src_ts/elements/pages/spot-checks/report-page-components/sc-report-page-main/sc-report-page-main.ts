@@ -42,9 +42,9 @@ export class ScReportPageMain extends LitElement {
 
       <summary-findings-element
         id="findingsHighPriority"
-        .dataItems="${this.engagement.findings}"
+        .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.high.value)}"
         .errorObject="${this.errorObject}"
-        .originalData="${this.originalData.findings}"
+        .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.high.value)}"
         .priority="${this.priorities.high}"
         .optionsData="${this.optionsData}"
       >
@@ -52,9 +52,9 @@ export class ScReportPageMain extends LitElement {
 
       <summary-findings-element
         id="findingsLowPriority"
-        .dataItems="${this.engagement.findings}"
+        .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.low.value)}"
         .errorObject="${this.errorObject}"
-        .originalData="${this.originalData.findings}"
+        .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.low.value)}"
         .priority="${this.priorities.low}"
         .optionsData="${this.optionsData}"
       >
@@ -117,6 +117,10 @@ export class ScReportPageMain extends LitElement {
       this.shadowRoot!.querySelector('#internalControls') as InternalControls
     ).getInternalControlsData();
     return !isNull(internalControlsData) ? internalControlsData : null;
+  }
+
+  getFindingsDataFiltered(findings: any[], priority: string) {
+    return (findings || []).filter((item) => item.priority === priority);
   }
 
   getAssignVisitData() {
