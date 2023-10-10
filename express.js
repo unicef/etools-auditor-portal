@@ -19,12 +19,12 @@ app.use('/ap/', (req, res, next) => {
 });
 
 app.get(/.*service-worker\.js/, function(req, res) {
-  res.sendFile(getSourcesPath(req) + 'service-worker.js');
+  res.sendFile(getSourcesPath(req, 'service-worker.js'));
 });
 
 app.use((req, res) => {
   // handles app access using a different state path than index (otherwise it will not return any file)
-  res.sendFile(getSourcesPath(req) + 'index.html');
+  res.sendFile(getSourcesPath(req, 'index.html'));
 });
 
 app.listen(8080);

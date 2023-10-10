@@ -46,6 +46,19 @@ export function getStaffScFilters() {
       disabled: false
     },
     {
+      filterName: 'Status',
+      filterKey: StaffScFilterKeys.status__in,
+      type: EtoolsFilterTypes.DropdownMulti,
+      selectionOptions: [],
+      optionValue: 'value',
+      optionLabel: 'display_name',
+      selectedValue: [],
+      selected: false,
+      minWidth: '300px',
+      hideSearch: true,
+      disabled: false
+    },
+    {
       filterName: 'Unicef User',
       filterKey: StaffScFilterKeys.staff_members__user__in,
       type: EtoolsFilterTypes.DropdownMulti,

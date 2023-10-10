@@ -538,6 +538,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       const uploadResponse = e.detail.success;
       this.editedItem.attachment = uploadResponse.id;
       this.editedItem.filename = uploadResponse.filename;
+    } else if (e.detail.error && e.detail.error.error) {
+      fireEvent(this, 'toast', {text: e.detail.error.error.message});
     }
   }
 
