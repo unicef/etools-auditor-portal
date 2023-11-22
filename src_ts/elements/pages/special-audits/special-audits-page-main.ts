@@ -22,7 +22,6 @@ import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
 import {RootState, store} from '../../../redux/store';
@@ -34,6 +33,7 @@ import {pageIsNotCurrentlyActive} from '../../utils/utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import get from 'lodash-es/get';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 /**
  * @customElement

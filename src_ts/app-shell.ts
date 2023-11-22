@@ -29,7 +29,8 @@ import {
   getEngagementOptions,
   getNewStaffSCOptions,
   getFilterAuditors,
-  getFilterPartners
+  getFilterPartners,
+  getNewAttachOptions
 } from './redux/actions/common-data';
 import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -227,7 +228,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
           getFilterAuditors(),
           getFilterPartners(),
           getEngagementOptions(),
-          getNewStaffSCOptions()
+          getNewStaffSCOptions(),
+          getNewAttachOptions()
         ]).then((response: any[]) => {
           store.dispatch({
             type: SET_ALL_STATIC_DATA,
@@ -250,6 +252,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     data.filterPartners = getValueFromResponse(response[7]);
     data.new_engagementOptions = addAllowedActions(getValueFromResponse(response[8]));
     data.new_staff_scOptions = addAllowedActions(getValueFromResponse(response[9]));
+    data.new_attachOptions = addAllowedActions(getValueFromResponse(response[10]));
     return data;
   }
 
@@ -263,6 +266,11 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     }
     if (!isJsonStrMatch(this.reduxRouteDetails, state.app.routeDetails)) {
       if (this.canAccessPage(state.app.routeDetails.routeName)) {
+        if(state.app.routeDetails.path.includes('/new'))
+        fireEvent(this, 'global-loading', {
+          active: true,
+          loadingSource: state.app.routeDetails.routeName
+        });
         this.page = state.app.routeDetails.routeName;
         this.reduxRouteDetails = cloneDeep(state.app.routeDetails);
       } else {

@@ -194,7 +194,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   saveWithButton!: boolean;
 
   @property({type: Object})
-  editedArea!: GenericObject;
+  editedArea!: GenericObject | null;
 
   @property({type: Object})
   subjectAreas!: GenericObject;
@@ -209,7 +209,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   editedAreaIndex!: number;
 
   @property({type: Object})
-  originalEditedObj!: GenericObject;
+  originalEditedObj!: GenericObject | null;
 
   @property({type: Boolean})
   canBeChanged = false;
@@ -264,7 +264,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     if (!this.dialogOpened) {
       return null;
     }
-    const blueprint = pick(this.editedArea.blueprints[0], ['id', 'risk']);
+    const blueprint = pick(this.editedArea?.blueprints[0], ['id', 'risk']);
     blueprint.risk = {
       value: blueprint.risk.value.value,
       extra: {comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''}
@@ -272,7 +272,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
     return [
       {
-        id: this.editedArea.id,
+        id: this.editedArea?.id,
         blueprints: [blueprint]
       }
     ];
@@ -327,8 +327,8 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     const data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
 
-    if (this.editedArea.blueprints[0] && !this.editedArea.blueprints[0].risk.value) {
-      this.editedArea.blueprints[0].risk.value = {value: -1, display_name: ''};
+    if (this.editedArea!.blueprints[0] && !this.editedArea!.blueprints[0].risk.value) {
+      this.editedArea!.blueprints[0].risk.value = {value: -1, display_name: ''};
     }
 
     this.originalEditedObj = cloneDeep(this.editedArea);
@@ -354,7 +354,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     }
 
     const data = cloneDeep(this.editedArea);
-    data.changed = true;
+    data!.changed = true;
     this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
     this.dialogOpened = false;
   }
@@ -363,6 +363,8 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     if (opened) {
       return;
     }
+    this.editedArea = null;
+    this.originalEditedObj = null;
     const elements = this.shadowRoot!.querySelectorAll('.validate-input');
 
     Array.prototype.forEach.call(elements, (element) => {

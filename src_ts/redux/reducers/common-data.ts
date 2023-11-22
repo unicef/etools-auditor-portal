@@ -29,6 +29,7 @@ export interface CommonDataState {
   filterPartners: [];
   new_engagementOptions: AnyObject;
   new_staff_scOptions: AnyObject;
+  new_attachOptions: AnyObject;
   loadedTimestamp: number;
 }
 
@@ -58,6 +59,7 @@ const INITIAL_COMMON_DATA: CommonDataState = {
   filterPartners: [],
   new_engagementOptions: {},
   new_staff_scOptions: {},
+  new_attachOptions: {},
   loadedTimestamp: 0
 };
 
@@ -76,6 +78,7 @@ const commonData: Reducer<CommonDataState, RootAction> = (state = INITIAL_COMMON
         filterPartners: action.staticData.filterPartners,
         new_engagementOptions: action.staticData.new_engagementOptions,
         new_staff_scOptions: action.staticData.new_staff_scOptions,
+        new_attachOptions: action.staticData.new_attachOptions,
         loadedTimestamp: new Date().getTime()
       };
     case UPDATE_STATIC_DATA:

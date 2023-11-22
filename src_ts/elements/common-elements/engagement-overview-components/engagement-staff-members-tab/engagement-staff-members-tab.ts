@@ -270,6 +270,21 @@ export class EngagementStaffMembersTab extends connect(store)(
                 </div>
               </etools-data-table-row>`
             )}
+          <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+            <div slot="row-data" class="layout-horizontal editable-row">
+              ${
+                this.showHasAccess
+                  ? html`<etools-data-table-column class="col-1">–</etools-data-table-column>`
+                  : ``
+              }
+              <span class="col-data col-2">–</span>
+              <span class="${this.showHasAccess ? 'col-2' : 'col-3'}">–</span>
+              <span class="col-data col-2">–</span>
+              <span class="col-data col-2">–</span>
+              <span class="col-data col-2">–</span>
+              <span class="col-1 center-align">–</span>
+            </div>
+          </etools-data-table-row>
         ${
           this._showPagination(this.datalength)
             ? html`<etools-data-table-footer

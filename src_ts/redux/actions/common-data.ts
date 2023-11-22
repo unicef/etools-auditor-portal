@@ -78,11 +78,11 @@ export const getNewStaffSCOptions = () => {
   return sendRequest(options);
 };
 
-export const getAtmOptions = () => {
+export const getNewAttachOptions = () => {
   const options = {
     endpoint: getEndpoint('attachments', {id: 'new'}),
     csrf: true,
     method: 'OPTIONS'
   };
-  sendRequest(options);
+  return sendRequest(options);
 };

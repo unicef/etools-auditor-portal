@@ -5,10 +5,17 @@ export const mainPageStyles = css`
     position: relative;
     display: block;
 
-    --paper-tab-content-unselected: {
-      color: var(--gray-light);
-    }
     --ecp-header-bg: var(--primary-color);
+  }
+
+  paper-tabs {
+      --paper-tab-content-unselected: {
+      color: var(--gray-mid);
+    };
+  }
+
+  paper-tab.iron-selected {
+    color: var(--primary-color);
   }
 
   .view-container {
@@ -37,7 +44,6 @@ export const mainPageStyles = css`
   }
 
   .tab-selector paper-tabs {
-    color: var(--primary-color);
     font-size: 14px;
     font-weight: bold;
   }
