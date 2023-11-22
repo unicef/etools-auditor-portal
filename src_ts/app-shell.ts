@@ -266,11 +266,11 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     }
     if (!isJsonStrMatch(this.reduxRouteDetails, state.app.routeDetails)) {
       if (this.canAccessPage(state.app.routeDetails.routeName)) {
-        if(state.app.routeDetails.path.includes('/new'))
-        fireEvent(this, 'global-loading', {
-          active: true,
-          loadingSource: state.app.routeDetails.routeName
-        });
+        if (state.app.routeDetails.path.includes('/new'))
+          fireEvent(this, 'global-loading', {
+            active: true,
+            loadingSource: state.app.routeDetails.routeName
+          });
         this.page = state.app.routeDetails.routeName;
         this.reduxRouteDetails = cloneDeep(state.app.routeDetails);
       } else {

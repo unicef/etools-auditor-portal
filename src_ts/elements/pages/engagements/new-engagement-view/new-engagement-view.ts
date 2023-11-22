@@ -246,7 +246,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       return;
     }
 
-    if(this.initializeOnFirstAccess(state.app.routeDetails)) {
+    if (this.initializeOnFirstAccess(state.app.routeDetails)) {
       return;
     }
     if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
@@ -267,7 +267,10 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.engagementOptions, optionsToUse)) {
       this.engagementOptions = cloneDeep(optionsToUse);
     }
-    if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.attachmentOptions, state.commonData?.new_attachOptions)) {
+    if (
+      state.commonData.loadedTimestamp &&
+      !isJsonStrMatch(this.attachmentOptions, state.commonData?.new_attachOptions)
+    ) {
       this.attachmentOptions = cloneDeep(state.commonData?.new_attachOptions);
     }
     if (!isJsonStrMatch(this.errorObject, state.engagement.errorObject)) {

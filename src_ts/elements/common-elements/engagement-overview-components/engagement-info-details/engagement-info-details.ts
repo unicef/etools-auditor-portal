@@ -299,10 +299,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 @focus="${(event: any) => this._resetFieldError(event)}"
                 trigger-value-change-event
                 @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                    this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
-                    if (detail.selectedItem) {
-                      this.onEngagementTypeChanged();
-                    }
+                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
+                  if (detail.selectedItem) {
+                    this.onEngagementTypeChanged();
+                  }
                 }}"
                 hide-search
               >

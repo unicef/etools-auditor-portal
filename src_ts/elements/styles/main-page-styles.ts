@@ -9,9 +9,9 @@ export const mainPageStyles = css`
   }
 
   paper-tabs {
-      --paper-tab-content-unselected: {
+    --paper-tab-content-unselected: {
       color: var(--gray-mid);
-    };
+    }
   }
 
   paper-tab.iron-selected {
