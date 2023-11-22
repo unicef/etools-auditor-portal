@@ -1128,7 +1128,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (!agreement) {
       return false;
     }
-    return this.isReadOnly(field, permissions) || !agreement.order_number;
+    return this.isReadOnly(field, permissions) || !agreement.id;
   }
 
   _hideField(fieldName: any, optionsData: AnyObject) {
