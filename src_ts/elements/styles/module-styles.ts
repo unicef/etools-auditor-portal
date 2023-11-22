@@ -58,14 +58,10 @@ export const moduleStyles = css`
 
   paper-tab {
     --paper-tab-content: {
-      color: var(--primary-color);
       text-transform: none;
       font-size: 14px;
       font-weight: 500;
       width: 140px;
-    }
-    --paper-tab-content-unselected: {
-      color: var(--gray-mid);
     }
   }
 

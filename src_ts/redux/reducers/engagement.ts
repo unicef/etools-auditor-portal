@@ -35,7 +35,7 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
       return {
         ...state,
         data: action.payload.data,
-        originalData: {...action.payload.data},
+        originalData: action.payload.data,
         options: action.payload.options,
         attachmentOptions: action.payload.attachmentOptions,
         reportAttachmentOptions: action.payload.reportAttachmentOptions,

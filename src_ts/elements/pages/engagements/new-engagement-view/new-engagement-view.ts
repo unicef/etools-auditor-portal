@@ -34,6 +34,7 @@ import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {RouteDetails} from '@unicef-polymer/etools-types';
 import {setEngagementData, updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 /**
  * @customElement
  * @LitElement
@@ -45,7 +46,7 @@ import {setEngagementData, updateCurrentEngagement} from '../../../../redux/acti
 @customElement('new-engagement-view')
 export class NewEngagementView extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, gridLayoutStylesLit, mainPageStyles];
+    return [moduleStyles, gridLayoutStylesLit, mainPageStyles, tabInputsStyles];
   }
 
   render() {
@@ -55,11 +56,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
         :host {
           position: relative;
           display: block;
-
-          --paper-tab-content-unselected: {
-            color: var(--gray-light);
-          }
-
           --ecp-header-bg: var(--primary-color);
         }
 
@@ -81,7 +77,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
         }
 
         .tab-selector paper-tabs {
-          color: var(--primary-color);
           font-size: 14px;
           font-weight: bold;
           text-transform: uppercase;
@@ -203,7 +198,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     id: null,
     status: '',
     staff_members: [],
-    engagement_type: '',
+    engagement_type: null,
     engagement_type_details: {},
     engagement_attachments: [],
     agreement: {order_number: undefined},
@@ -250,8 +245,10 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       this.prevRouteDetails = state.app.routeDetails;
       return;
     }
-    this.initializeOnFirstAccess(state.app.routeDetails);
 
+    if (this.initializeOnFirstAccess(state.app.routeDetails)) {
+      return;
+    }
     if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
       this.user = state.user.data;
     }
@@ -270,6 +267,12 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.engagementOptions, optionsToUse)) {
       this.engagementOptions = cloneDeep(optionsToUse);
     }
+    if (
+      state.commonData.loadedTimestamp &&
+      !isJsonStrMatch(this.attachmentOptions, state.commonData?.new_attachOptions)
+    ) {
+      this.attachmentOptions = cloneDeep(state.commonData?.new_attachOptions);
+    }
     if (!isJsonStrMatch(this.errorObject, state.engagement.errorObject)) {
       this.errorObject = state.engagement.errorObject || {};
     }
@@ -281,8 +284,14 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     this.prevRouteDetails = currentRouteDetails;
     if (isFirstAcess) {
       clearQueries();
-      this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
+      setTimeout(() => {
+        console.log('setDefaultEngagement...');
+        this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
+      });
+
+      return true;
     }
+    return false;
   }
 
   _saveNewEngagement() {
@@ -337,11 +346,11 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   }
 
   setDefaultEngagement(isStaffSc, auditFirm) {
-    this.engagement = {
+    const engagement: GenericObject<any> = {
       id: null,
       status: '',
       staff_members: [],
-      engagement_type: '',
+      engagement_type: null,
       engagement_type_details: {},
       engagement_attachments: [],
       agreement: {order_number: ''},
@@ -359,7 +368,16 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       partner: {}
     };
 
-    store.dispatch(setEngagementData(this.engagement));
+    if (isStaffSc) {
+      engagement.agreement.auditor_firm = auditFirm;
+      engagement.engagement_type = 'sc';
+      engagement.engagement_type_details = {value: 'sc', label: 'Spot Check'};
+    }
+
+    this.engagement = cloneDeep(engagement);
+    const engData = {data: engagement, options: {}, attachmentOptions: {}, reportAttachmentOptions: {}, apOptions: {}};
+
+    store.dispatch(setEngagementData(engData));
 
     const engagementAttachments = this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab;
     if (engagementAttachments) {
@@ -375,11 +393,15 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       partnerDetails.resetValidationErrors();
     }
 
-    if (isStaffSc) {
-      this.engagement.agreement.auditor_firm = auditFirm;
-      this.engagement.engagement_type = 'sc';
-      this.engagement.engagement_type_details = {value: 'sc', label: 'Spot Check'};
-      this.engagement = {...this.engagement};
-    }
+    this.stopLoading(isStaffSc);
+  }
+
+  stopLoading(isStaffSc: boolean) {
+    setTimeout(() => {
+      fireEvent(this, 'global-loading', {
+        active: false,
+        loadingSource: isStaffSc ? 'staff-sc' : 'engagements'
+      });
+    }, 200);
   }
 }
