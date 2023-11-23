@@ -1,4 +1,5 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';

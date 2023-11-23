@@ -1,4 +1,5 @@
-import {LitElement, html, customElement, property} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 // eslint-disable-next-line
 import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';

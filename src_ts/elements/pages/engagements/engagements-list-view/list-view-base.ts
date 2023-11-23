@@ -1,4 +1,5 @@
-import {LitElement, html, property, PropertyValues} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {buildQueryString, updateQueries} from '../../../mixins/query-params-controller';

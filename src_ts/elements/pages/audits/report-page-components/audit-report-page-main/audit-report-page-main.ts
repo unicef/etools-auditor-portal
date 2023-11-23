@@ -1,4 +1,5 @@
-import {LitElement, html, property, customElement} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {GenericObject} from '../../../../../types/global';
 
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';

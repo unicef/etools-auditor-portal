@@ -1,4 +1,5 @@
-import {LitElement, property, customElement, PropertyValues} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import findIndex from 'lodash-es/findIndex';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';

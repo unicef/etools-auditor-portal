@@ -1,4 +1,5 @@
-import {LitElement, Constructor, property} from 'lit-element';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
 import clone from 'lodash-es/clone';
 import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
@@ -8,7 +9,7 @@ import {readonlyPermission, isRequired, getOptionsChoices, getCollection} from '
 import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
-import {AnyObject} from '@unicef-polymer/etools-types';
+import {AnyObject, Constructor} from '@unicef-polymer/etools-types';
 import get from 'lodash-es/get';
 
 /**

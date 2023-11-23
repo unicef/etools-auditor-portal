@@ -1,4 +1,4 @@
-import {LitElement} from 'lit-element';
+import {LitElement} from 'lit';
 import {Constructor} from '@unicef-polymer/etools-types';
 
 declare const dayjs: any;

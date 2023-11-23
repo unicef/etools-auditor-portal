@@ -1,6 +1,6 @@
-import {LitElement, html, customElement, property, query, PropertyValues} from 'lit-element';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property, query} from 'lit/decorators.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import EtoolsPageRefreshMixinLit from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin-lit.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
@@ -14,7 +14,7 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown'
  * @appliesMixin EtoolsPageRefreshMixin
  */
 @customElement('organizations-dropdown')
-export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement) {
+export class OrganizationsDropdown extends LitElement {
   render() {
     return html`
       ${HeaderStyles}
@@ -114,9 +114,10 @@ export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement)
   }
 
   _handleResponse() {
-    this.refreshInProgress = true;
-    this.clearDexieDbs();
-    this.refreshInProgress = false;
+    // @dci check below, these were from EtoolsPageRefreshMixinLit (removed)
+    // this.refreshInProgress = true;
+    // this.clearDexieDbs();
+    // this.refreshInProgress = false;
     window.location.href = `${window.location.origin}${BASE_PATH}`;
   }
 }

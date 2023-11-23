@@ -1,4 +1,5 @@
-import {LitElement, html, property, customElement, PropertyValues, query} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property, query} from 'lit/decorators.js';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';

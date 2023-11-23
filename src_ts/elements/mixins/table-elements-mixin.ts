@@ -1,4 +1,5 @@
-import {LitElement, PropertyValues, property} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 import {Constructor, GenericObject} from '@unicef-polymer/etools-types';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';

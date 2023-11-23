@@ -1,4 +1,5 @@
-import {LitElement, html, property, customElement} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-pages/iron-pages';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';

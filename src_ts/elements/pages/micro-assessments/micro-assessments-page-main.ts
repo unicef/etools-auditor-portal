@@ -1,4 +1,5 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-tabs/paper-tab';
 import '@polymer/paper-tabs/paper-tabs';

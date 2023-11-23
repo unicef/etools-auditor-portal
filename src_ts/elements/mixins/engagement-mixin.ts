@@ -1,4 +1,5 @@
-import {LitElement, PropertyValues, property} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 import cloneDeep from 'lodash-es/cloneDeep';
 import assign from 'lodash-es/assign';
 import isObject from 'lodash-es/isObject';

@@ -1,4 +1,4 @@
-import {customElement} from 'lit-element';
+import {customElement} from 'lit/decorators.js';
 import {EtoolsFilter} from '@unicef-polymer/etools-filters/src/etools-filters';
 import {
   updateFilterSelectionOptions,

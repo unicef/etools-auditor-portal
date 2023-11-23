@@ -1,4 +1,5 @@
-import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';

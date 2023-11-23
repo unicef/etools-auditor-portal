@@ -1,4 +1,5 @@
-import {LitElement, html, customElement, property, PropertyValues} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';

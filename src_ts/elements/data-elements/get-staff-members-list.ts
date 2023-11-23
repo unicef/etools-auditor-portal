@@ -1,4 +1,5 @@
-import {LitElement, PropertyValues, property, customElement} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';

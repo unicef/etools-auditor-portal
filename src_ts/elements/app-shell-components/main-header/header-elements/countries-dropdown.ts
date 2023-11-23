@@ -1,4 +1,5 @@
-import {LitElement, html, customElement, property} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import famEndpoints from '../../../config/endpoints';

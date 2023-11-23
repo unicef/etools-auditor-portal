@@ -1,4 +1,5 @@
-import {LitElement, property, customElement, PropertyValues} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';

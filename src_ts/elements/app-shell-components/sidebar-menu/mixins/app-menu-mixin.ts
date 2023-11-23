@@ -1,4 +1,6 @@
-import {LitElement, Constructor, property} from 'lit-element';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
+import {Constructor} from '@unicef-polymer/etools-types';
 import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer';
 import {AppDrawerLayoutElement} from '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
 import {AppHeaderLayoutElement} from '@polymer/app-layout/app-header-layout/app-header-layout.js';
