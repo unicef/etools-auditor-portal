@@ -1,6 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
@@ -98,10 +98,10 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                   </span>
 
                   <div class="hover-block" ?hidden="${!this.editMode}">
-                    <paper-icon-button
-                      icon="create"
+                    <etools-icon-button
+                      name="create"
                       @click="${(e: CustomEvent) => this.openEditDialog(e, item)}"
-                    ></paper-icon-button>
+                    ></etools-icon-button>
                   </div>
                 </div>
                 <div slot="row-data-details">
@@ -147,11 +147,11 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                       </span>
 
                       <div class="hover-block" ?hidden="${!this.editMode}">
-                        <paper-icon-button
-                          icon="create"
+                        <etools-icon-button
+                          name="create"
                           category-id="${category.id}"
                           @click="${(e: CustomEvent) => this.openEditDialog(e, item)}"
-                        ></paper-icon-button>
+                        ></etools-icon-button>
                       </div>
                     </div>
                     <div slot="row-data-details">

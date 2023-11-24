@@ -80,7 +80,7 @@ export const navMenuStyles = html`
       display: block;
     }
 
-    .menu-header paper-icon-button {
+    .menu-header etools-icon-button {
       --paper-icon-button: {
         width: 24px;
         height: 24px;
@@ -161,22 +161,22 @@ export const navMenuStyles = html`
       color: var(--primary-text-color);
     }
 
-    .nav-menu-item iron-icon {
+    .nav-menu-item etools-icon {
       margin: 0 16px;
       color: var(--dark-icon-color);
     }
 
-    :host([small-menu]) .nav-menu-item iron-icon {
+    :host([small-menu]) .nav-menu-item etools-icon {
       margin: 0;
     }
 
     .nav-menu-item.iron-selected .name,
-    .nav-menu-item.iron-selected iron-icon {
+    .nav-menu-item.iron-selected etools-icon {
       color: var(--primary-color);
     }
 
     .nav-menu-item.lighter-item .name,
-    .nav-menu-item.lighter-item iron-icon {
+    .nav-menu-item.lighter-item etools-icon {
       color: var(--secondary-text-color);
     }
 

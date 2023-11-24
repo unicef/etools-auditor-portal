@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -78,8 +78,8 @@ export class KicwRisk extends LitElement {
               <span class="col-data col-3 truncate">${item.extra.recommendation}</span>
               <span class="col-data col-3 truncate">${item.extra.ip_response}</span>
               <div class="hover-block" ?hidden="${!this.isEditable}">
-                <paper-icon-button icon="create" @click="${() => this.editRisk(index)}"></paper-icon-button>
-                <paper-icon-button icon="delete" @click="${() => this.removeRisk(index)}"></paper-icon-button>
+                <etools-icon-button name="create" @click="${() => this.editRisk(index)}"></etools-icon-button>
+                <etools-icon-button name="delete" @click="${() => this.removeRisk(index)}"></etools-icon-button>
               </div>
             </div>
           </etools-data-table-row>

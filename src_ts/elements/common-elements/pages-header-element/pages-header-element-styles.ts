@@ -24,7 +24,7 @@ export const pagesHeaderElementStyles = css`
     padding: 12px 9px;
   }
 
-  .export-buttons > paper-button {
+  .export-buttons > etools-button {
     height: 36px;
   }
 
@@ -60,11 +60,11 @@ export const pagesHeaderElementStyles = css`
     font-size: 14px;
   }
 
-  .side-heading .grey-buttons iron-icon {
+  .side-heading .grey-buttons etools-icon {
     margin-right: 8px;
   }
 
-  .side-heading paper-button.add-btn {
+  .side-heading etools-button.add-btn {
     background-color: var(--primary-color);
     color: white;
     height: 36px;
@@ -73,7 +73,7 @@ export const pagesHeaderElementStyles = css`
     padding-right: 15px;
   }
 
-  .side-heading paper-button.add-btn span {
+  .side-heading etools-button.add-btn span {
     margin-left: 4px;
   }
 

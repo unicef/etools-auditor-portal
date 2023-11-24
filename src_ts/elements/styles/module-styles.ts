@@ -160,7 +160,7 @@ export const moduleStyles = css`
     padding: 4px 0px;
   }
 
-  .wrap-text iron-icon {
+  .wrap-text etools-icon {
     flex-shrink: 0;
     width: 16px;
   }

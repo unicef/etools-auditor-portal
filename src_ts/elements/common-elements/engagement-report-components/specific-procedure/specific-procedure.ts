@@ -2,7 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-input-container.js';
 
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
@@ -48,7 +48,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
         }
-        :host paper-icon-button[hidden] {
+        :host etools-icon-button[hidden] {
           display: none !important;
         }
         etools-content-panel::part(ecp-content) {
@@ -63,7 +63,8 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
       >
         <div slot="panel-btns">
           <div ?hidden="${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)}">
-            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
+            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+            </etools-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -90,16 +91,16 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                 <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">${item.description}</span>
                 <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}">${item.finding}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button
-                    icon="create"
+                  <etools-icon-button
+                    name="create"
                     ?hidden="${this._hideEditIcon(this.optionsData, this.withoutFindingColumn, this.readonlyTab)}"
                     @click="${() => this.openEditDialog(index)}"
-                  ></paper-icon-button>
-                  <paper-icon-button
-                    icon="delete"
+                  ></etools-icon-button>
+                  <etools-icon-button
+                    name="delete"
                     ?hidden="${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)}"
                     @click="${() => this.openDeleteDialog(index)}"
-                  ></paper-icon-button>
+                  ></etools-icon-button>
                 </div>
               </div>
             </etools-data-table-row>

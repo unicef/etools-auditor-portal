@@ -5,7 +5,7 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@polymer/paper-input/paper-input';
@@ -61,7 +61,8 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
       <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
         <div slot="panel-btns">
           <div ?hidden="${!this.canBeChanged}">
-            <paper-icon-button class="panel-button" @tap="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
+            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+            </etools-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -75,8 +76,8 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-12">${item.finding}</span>
                 <div class="hover-block" ?hidden="${!this.canBeChanged}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
               </div>
               <div slot="row-data-details">

@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-app-selector';
 import '@unicef-polymer/etools-profile-dropdown';
@@ -84,7 +84,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
       <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
         <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
         <div class="titlebar layout-horizontal align-items-center">
-          <paper-icon-button id="menuButton" icon="menu" @click="${this.menuBtnClicked}"></paper-icon-button>
+          <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
           <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" />
           <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
@@ -104,14 +104,14 @@ export class PageHeader extends MatomoMixin(LitElement) {
           <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">
           </etools-profile-dropdown>
 
-          <paper-icon-button
+          <etools-icon-button
             title="Refresh"
             id="pageRefresh"
-            icon="refresh"
+            name="refresh"
             tracker="Refresh"
             @click="${this.refreshBtnclicked}"
           >
-          </paper-icon-button>
+          </etools-icon-button>
         </div>
       </app-toolbar>
     `;

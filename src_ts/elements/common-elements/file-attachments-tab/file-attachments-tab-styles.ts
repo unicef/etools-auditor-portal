@@ -89,7 +89,7 @@ export const fileAttachmentsTabStyles = html`
       cursor: pointer;
     }
 
-    .delete-icon iron-icon {
+    .delete-icon etools-icon {
       --iron-icon-width: 20px;
       --iron-icon-height: 20px;
       --iron-icon-fill-color: var(--gray-50);
@@ -103,7 +103,7 @@ export const fileAttachmentsTabStyles = html`
     .attachment {
       margin-inline-end: 8px;
     }
-    iron-icon {
+    etools-icon {
       color: var(--dark-icon-color);
     }
     icons-actions {
@@ -124,7 +124,7 @@ export const fileAttachmentsTabStyles = html`
     etools-data-table-header {
       --list-header-wrapper-column-height: 48px;
     }
-    paper-icon-button[icon='add-box'] {
+    etools-icon-button[name='add-box'] {
       color: var(--primary-text-color);
       margin-inline-start: 20px;
     }

@@ -1,6 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-textarea';
 
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
@@ -109,7 +109,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 <span class="col-data col-9">${item.header}</span>
                 <span class="col-data col-3">${item.risks.length}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button icon="add-box" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="add-box" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                 </div>
               </div>
               <div slot="row-data-details">

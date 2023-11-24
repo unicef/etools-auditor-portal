@@ -20,17 +20,17 @@ export const StatusTabElementStyles = css`
     text-align: center;
     box-sizing: border-box;
   }
-  .status-buttons paper-button {
+  .status-buttons etools-button {
     height: 35px;
     color: #ffffff;
     background-color: var(--primary-color);
   }
 
-  .status-buttons paper-button.with-actions {
+  .status-buttons etools-button.with-actions {
     padding-right: 0;
   }
 
-  .status-buttons paper-button span {
+  .status-buttons etools-button span {
     padding: 0 29px;
   }
 
@@ -97,7 +97,7 @@ export const StatusTabElementStyles = css`
     flex-direction: column;
     justify-content: center;
   }
-  .status-container iron-icon {
+  .status-container etools-icon {
     display: inline-block !important;
   }
 
@@ -113,7 +113,7 @@ export const StatusTabElementStyles = css`
     display: block;
   }
 
-  .status-container .status-icon .icon-wrapper iron-icon {
+  .status-container .status-icon .icon-wrapper etools-icon {
     --iron-icon-height: 16px;
     --iron-icon-width: 16px;
     width: 16px;
@@ -158,8 +158,8 @@ export const StatusTabElementStyles = css`
   .status-container.completed .status-icon .icon-wrapper {
     background: var(--module-success);
   }
-  .status-container.active .status-icon .icon-wrapper iron-icon,
-  .status-container.completed .status-icon .icon-wrapper iron-icon {
+  .status-container.active .status-icon .icon-wrapper etools-icon,
+  .status-container.completed .status-icon .icon-wrapper etools-icon {
     --iron-icon-height: 100%;
     --iron-icon-width: 100%;
   }
@@ -172,13 +172,13 @@ export const StatusTabElementStyles = css`
     color: inherit;
     font-weight: bold;
   }
-  .status-container.pending iron-icon {
+  .status-container.pending etools-icon {
     display: none !important;
   }
   .status-container.active.first .status-icon .icon-wrapper {
     background-color: var(--primary-color);
   }
-  .status-container.active.first iron-icon {
+  .status-container.active.first etools-icon {
     display: none !important;
   }
   .status-container.active.first .status-icon .icon-wrapper .status-nr {
@@ -187,7 +187,7 @@ export const StatusTabElementStyles = css`
   .status-container.cancelled .status-icon .icon-wrapper {
     background: transparent;
   }
-  .status-container.cancelled .status-icon .icon-wrapper iron-icon {
+  .status-container.cancelled .status-icon .icon-wrapper etools-icon {
     width: 25px;
     height: 25px;
     color: var(--gray-darkest);

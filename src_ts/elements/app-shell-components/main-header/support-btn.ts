@@ -1,6 +1,6 @@
 import {LitElement, html} from 'lit';
 import {customElement} from 'lit/decorators.js';
-import '@polymer/iron-icons/communication-icons';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 
 /**
@@ -19,10 +19,10 @@ export class SupportBtn extends MatomoMixin(LitElement) {
           font-size: 16px;
           cursor: pointer;
         }
-        paper-button {
+        etools-button {
           text-transform: capitalize;
         }
-        iron-icon {
+        etools-icon {
           margin-right: 4px;
         }
       </style>
@@ -31,11 +31,11 @@ export class SupportBtn extends MatomoMixin(LitElement) {
         href="https://unicef.service-now.com/cc?id=sc_cat_item&sys_id=c8e43760db622450f65a2aea4b9619ad&sysparm_category=99c51053db0a6f40f65a2aea4b9619af"
         target="_blank"
       >
-        <!--    the paper-button fixes the cursor pointer issue when hovering over the icon label    -->
-        <paper-button @tap="${this.trackAnalytics}" tracker="Support">
-          <iron-icon icon="communication:textsms"></iron-icon>
+        <!--    the etools-button fixes the cursor pointer issue when hovering over the icon label    -->
+        <etools-button @click="${this.trackAnalytics}" tracker="Support">
+          <etools-icon name="textsms"></etools-icon>
           Support
-        </paper-button>
+        </etools-button>
       </a>
     `;
   }

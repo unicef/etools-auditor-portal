@@ -1,9 +1,9 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/iron-icons/iron-icons.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-input-container.js';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
@@ -229,7 +229,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 this.data.agreement?.contract_start_date,
                 'readonly'
               )}"
-              icon="date-range"
+              name="date-range"
             >
             </datepicker-lite>
           </div>

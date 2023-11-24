@@ -116,7 +116,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                     ${this._showCancellationReason(this.engagement)
                       ? html`<etools-content-panel class="cancellation-tab" panel-title="">
                           <div slot="panel-btns" class="bookmark">
-                            <iron-icon icon="bookmark"></iron-icon>
+                            <etools-icon name="bookmark"></etools-icon>
                           </div>
 
                           <div class="cancellation-title">Cancellation Note</div>

@@ -121,7 +121,7 @@ export const mainPageStyles = css`
     opacity: 1;
   }
 
-  div[slot='panel-btns'].bookmark iron-icon {
+  div[slot='panel-btns'].bookmark etools-icon {
     width: 70px !important;
     height: 70px !important;
   }

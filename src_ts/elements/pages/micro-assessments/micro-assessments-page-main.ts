@@ -118,7 +118,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                     ${this._showCancellationReason(this.engagement)
                       ? html`<etools-content-panel class="cancellation-tab" panel-title="">
                           <div slot="panel-btns" class="bookmark">
-                            <iron-icon icon="bookmark"></iron-icon>
+                            <etools-icon name="bookmark"></etools-icon>
                           </div>
 
                           <div class="cancellation-title">Cancellation Note</div>

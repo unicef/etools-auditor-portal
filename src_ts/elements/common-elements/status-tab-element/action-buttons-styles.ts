@@ -11,7 +11,7 @@ export const ActionButtonsStyles = html`
     .main-action.text {
       font-weight: 500;
     }
-    paper-button {
+    etools-button {
       --paper-button_-_color: #fff;
       height: 34px;
       color: #fff;
@@ -19,10 +19,10 @@ export const ActionButtonsStyles = html`
       margin: 0;
       width: 100%;
     }
-    paper-button span {
+    etools-button span {
       padding: 0 29px;
     }
-    paper-button.with-menu {
+    etools-button.with-menu {
       padding-right: calc(0.57em + 41px);
     }
     paper-menu-button {
@@ -34,7 +34,7 @@ export const ActionButtonsStyles = html`
       height: 34px;
       overflow: hidden;
     }
-    paper-menu-button paper-icon-button {
+    paper-menu-button etools-icon-button {
       top: -2px;
     }
     .dropdown-content {

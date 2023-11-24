@@ -2,8 +2,8 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-tooltip/paper-tooltip';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/iron-icons/iron-icons';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
@@ -105,7 +105,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                 <span class="col-data col-1">${item.key_internal_weakness.medium_risk_count}</span>
                 <span class="col-data col-1">${item.key_internal_weakness.low_risk_count}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                 </div>
               </div>
             </etools-data-table-row>
@@ -273,7 +273,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               @etools-selected-item-changed="${({detail}: CustomEvent) =>
                 this.selectedItemChanged(detail, 'audit_opinion', 'value', this.editedItem)}"
               @focus="${this._resetFieldError}"
-              @tap="${this._resetFieldError}"
+              @click="${this._resetFieldError}"
               hide-search
             >
             </etools-dropdown>
