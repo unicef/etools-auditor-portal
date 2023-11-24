@@ -636,7 +636,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
     const endpoint = clone(famEndpoints.users);
     endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
-    sendRequest({
+    return sendRequest({
       method: 'GET',
       endpoint: {
         url: endpoint.url

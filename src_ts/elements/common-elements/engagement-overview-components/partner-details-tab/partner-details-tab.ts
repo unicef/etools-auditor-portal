@@ -315,7 +315,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
 
   validateActivePd() {
     // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
-    const activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
+    const activePdInput = this.shadowRoot?.querySelector('#activePd') as EtoolsDropdownMultiEl;
     const partnerType = this.engagement.partner?.partner_type;
     const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
 
@@ -329,7 +329,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   }
 
   validatePartner() {
-    const partnerEl = this.shadowRoot!.querySelector('#partner') as EtoolsDropdownEl;
+    const partnerEl = this.shadowRoot?.querySelector('#partner') as EtoolsDropdownEl;
     if (!partnerEl || !partnerEl.required) {
       if (partnerEl) {
         partnerEl.invalid = false;
