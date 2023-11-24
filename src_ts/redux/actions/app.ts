@@ -45,52 +45,78 @@ export const updateStoreRouteDetails: ActionCreator<AppActionUpdateRouteDetails>
   };
 };
 
-const getPage = (routeName: string) => {
-  if (routeName.includes('engagements')) {
-    return 'engagements';
-  }
-  if (routeName.includes('staff-sc')) {
-    return 'staff-sc';
-  }
-  if (routeName.includes('special-audits')) {
-    return 'special-audits';
-  }
-  if (routeName.includes('audits')) {
-    return 'audits';
-  }
-  if (routeName.includes('micro-assessments')) {
-    return 'micro-assessments';
-  }
-  if (routeName.includes('spot-checks') || routeName.includes('staff-spot-checks')) {
-    return 'spot-checks';
-  }
-  return '';
-};
-
 const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any, _getState: any) => {
   if (!routeDetails) {
     // invalid route => redirect to 404 page
     EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
     return;
   }
-  const page = getPage(routeDetails.routeName);
-  if (page) {
-    const appShell = document.body.querySelector('app-shell');
-    import(`${window.location.origin}/ap/src/elements/pages/${page}/${page}-page-main.js`)
-      .then()
-      .catch((err) => {
-        console.log(err);
-        EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
-      })
-      .finally(() =>
-        fireEvent(appShell, 'global-loading', {
-          active: false,
-          loadingSource: 'initialisation'
+  const appShell = document.body.querySelector('app-shell');
+  switch (routeDetails.routeName) {
+    case 'engagements':
+      import(`../../elements/pages/engagements/engagements-page-main.js`)
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
         })
-      );
-  }
-  if (!page || routeDetails.routeName == 'not-found') {
-    import(`${window.location.origin}/ap/src/elements/pages/not-found-page-view/not-found-page-view.js`);
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
+    case 'staff-sc':
+      import(`../../elements/pages/staff-sc/staff-sc-page-main.js`)
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+        })
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
+    case 'special-audits':
+      import(`../../elements/pages/special-audits/special-audits-page-main.js`)
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+        })
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
+    case 'audits':
+      import('../../elements/pages/audits/audits-page-main.js')
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+        })
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
+    case 'micro-assessments':
+      import(`../../elements/pages/micro-assessments/micro-assessments-page-main.js`)
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+        })
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
+    case 'spot-checks':
+      import(`../../elements/pages/spot-checks/spot-checks-page-main.js`)
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+        })
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
+    default:
+    case 'not-found':
+      import(`../../elements/pages/not-found-page-view/not-found-page-view.js`)
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+        })
+        .finally(() => fireEvent(appShell, 'global-loading', {active: false, loadingSource: 'initialisation'}));
+      break;
   }
 };
 
