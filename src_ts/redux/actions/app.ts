@@ -74,23 +74,50 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any
     return;
   }
   const page = getPage(routeDetails.routeName);
+
+  let imported: Promise<any> | undefined;
+  const appShell = document.body.querySelector('app-shell');
+
   if (page) {
-    const appShell = document.body.querySelector('app-shell');
-    import(`${window.location.origin}/ap/src/elements/pages/${page}/${page}-page-main.js`)
-      .then()
-      .catch((err) => {
-        console.log(err);
-        EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
-      })
-      .finally(() =>
-        fireEvent(appShell, 'global-loading', {
-          active: false,
-          loadingSource: 'initialisation'
+    switch (page) {
+      case 'engagements':
+        imported = import(`../../elements/pages/engagements/engagements-page-main.js`);
+        break;
+      case 'micro-assessments':
+        imported = import(`../../elements/pages/micro-assessments/micro-assessments-page-main.js`);
+        break;
+      case 'spot-checks':
+        imported = import(`../../elements/pages/spot-checks/spot-checks-page-main.js`);
+        break;
+      case 'audits':
+        imported = import(`../../elements/pages/audits/audits-page-main.js`);
+        break;
+      case 'special-audits':
+        imported = import(`../../elements/pages/special-audits/special-audits-page-main.js`);
+        break;
+      case 'staff-sc':
+        imported = import(`../../elements/pages/staff-sc/staff-sc-page-main.js`);
+        break;
+    }
+
+    if (imported) {
+      imported
+        .then()
+        .catch((err) => {
+          console.log(err);
+          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
         })
-      );
+        .finally(() =>
+          fireEvent(appShell, 'global-loading', {
+            active: false,
+            loadingSource: 'initialisation'
+          })
+        );
+    }
   }
+
   if (!page || routeDetails.routeName == 'not-found') {
-    import(`${window.location.origin}/ap/src/elements/pages/not-found-page-view/not-found-page-view.js`);
+    import(`../../elements/pages/not-found-page-view/not-found-page-view.js`);
   }
 };
 
