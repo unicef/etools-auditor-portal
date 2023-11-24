@@ -45,79 +45,55 @@ export const updateStoreRouteDetails: ActionCreator<AppActionUpdateRouteDetails>
   };
 };
 
-const getPage = (routeName: string) => {
-  if (routeName.includes('engagements')) {
-    return 'engagements';
-  }
-  if (routeName.includes('staff-sc')) {
-    return 'staff-sc';
-  }
-  if (routeName.includes('special-audits')) {
-    return 'special-audits';
-  }
-  if (routeName.includes('audits')) {
-    return 'audits';
-  }
-  if (routeName.includes('micro-assessments')) {
-    return 'micro-assessments';
-  }
-  if (routeName.includes('spot-checks') || routeName.includes('staff-spot-checks')) {
-    return 'spot-checks';
-  }
-  return '';
-};
-
 const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any, _getState: any) => {
   if (!routeDetails) {
     // invalid route => redirect to 404 page
     EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
     return;
   }
-  const page = getPage(routeDetails.routeName);
 
   let imported: Promise<any> | undefined;
   const appShell = document.body.querySelector('app-shell');
 
-  if (page) {
-    switch (page) {
-      case 'engagements':
-        imported = import(`../../elements/pages/engagements/engagements-page-main.js`);
-        break;
-      case 'micro-assessments':
-        imported = import(`../../elements/pages/micro-assessments/micro-assessments-page-main.js`);
-        break;
-      case 'spot-checks':
-        imported = import(`../../elements/pages/spot-checks/spot-checks-page-main.js`);
-        break;
-      case 'audits':
-        imported = import(`../../elements/pages/audits/audits-page-main.js`);
-        break;
-      case 'special-audits':
-        imported = import(`../../elements/pages/special-audits/special-audits-page-main.js`);
-        break;
-      case 'staff-sc':
-        imported = import(`../../elements/pages/staff-sc/staff-sc-page-main.js`);
-        break;
-    }
-
-    if (imported) {
-      imported
-        .then()
-        .catch((err) => {
-          console.log(err);
-          EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
-        })
-        .finally(() =>
-          fireEvent(appShell, 'global-loading', {
-            active: false,
-            loadingSource: 'initialisation'
-          })
-        );
-    }
+  switch (routeDetails.routeName) {
+    case 'engagements':
+      imported = import(`../../elements/pages/engagements/engagements-page-main.js`);
+      break;
+    case 'micro-assessments':
+      imported = import(`../../elements/pages/micro-assessments/micro-assessments-page-main.js`);
+      break;
+    case 'spot-checks':
+    case 'staff-spot-checks':
+      imported = import(`../../elements/pages/spot-checks/spot-checks-page-main.js`);
+      break;
+    case 'audits':
+      imported = import(`../../elements/pages/audits/audits-page-main.js`);
+      break;
+    case 'special-audits':
+      imported = import(`../../elements/pages/special-audits/special-audits-page-main.js`);
+      break;
+    case 'staff-sc':
+      imported = import(`../../elements/pages/staff-sc/staff-sc-page-main.js`);
+      break;
+    case 'not-found':
+    default:
+      imported = import(`../../elements/pages/not-found-page-view/not-found-page-view.js`);
+      break;
   }
 
-  if (!page || routeDetails.routeName == 'not-found') {
-    import(`../../elements/pages/not-found-page-view/not-found-page-view.js`);
+  if (imported) {
+    imported
+      .then()
+      .catch((err) => {
+        console.log(err);
+        EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+      })
+      .finally(() =>
+        fireEvent(appShell, 'global-loading', {
+          active: false,
+          loadingSource: 'initialisation'
+        })
+      );
   }
 };
 
