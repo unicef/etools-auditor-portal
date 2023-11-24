@@ -5,7 +5,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@polymer/paper-input/paper-textarea.js';
-import '@polymer/paper-button/paper-button.js';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
 import '@polymer/paper-tooltip/paper-tooltip';
@@ -80,12 +80,12 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         div.action-complete {
           padding: 10px 0 9px 20px;
         }
-        div.action-complete paper-button {
+        div.action-complete etools-button {
           height: 38px;
           font-weight: 500;
           padding-right: 0;
         }
-        div.action-complete iron-icon {
+        div.action-complete etools-icon {
           width: 20px;
           color: var(--gray-mid);
           margin-left: 5px;
@@ -113,7 +113,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
           padding-inline-start: 14px;
           padding-top: 14px;
         }
-        .input-container paper-button {
+        .input-container etools-button {
           height: 34px;
           color: rgba(0, 0, 0, .54);
           font-weight: 500;
@@ -156,11 +156,11 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
             <div slot="panel-btns">
                 <div ?hidden="${!this.canBeChanged}">
-                    <paper-icon-button
+                    <etools-icon-button
                             class="panel-button"
-                            @tap="${this._openAddDialog}"
-                            icon="add-box">
-                    </paper-icon-button>
+                            @click="${this._openAddDialog}"
+                            name="add-box">
+                    </etools-icon-button>
                     <paper-tooltip offset="0">Add</paper-tooltip>
                 </div>
             </div>
@@ -200,7 +200,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                 <div slot="row-data" class="layout-horizontal editable-row">
                   <span class="col-data col-2 truncate">
                     <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">
-                      ${item.reference_number} <iron-icon class="launch-icon" icon="launch"></iron-icon>
+                      ${item.reference_number} <etools-icon class="launch-icon" name="launch"></etools-icon>
                     </a>
                   </span>
                   <span class="col-data col-3 truncate">${item.ap_category?.display_name || '-'}</span>
@@ -209,15 +209,15 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                   <span class="col-data col-1 truncate">${this.prettyDate(String(item.due_date), '') || '-'}</span>
                   <span class="col-data col-1 truncate caps">${item.priority}</span>
                   <div class="hover-block">
-                    <paper-icon-button
-                      icon="content-copy"
+                    <etools-icon-button
+                      name="content-copy"
                       @click="${() => this._openCopyDialog(index)}"
-                    ></paper-icon-button>
-                    <paper-icon-button
-                      icon="create"
+                    ></etools-icon-button>
+                    <etools-icon-button
+                      name="create"
                       ?hidden="${!this.canBeEdited(item.status)}"
                       @click="${() => this._openEditDialog(index)}"
-                    ></paper-icon-button>
+                    ></etools-icon-button>
                   </div>
                 </div>
               </etools-data-table-row>
@@ -483,11 +483,14 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
             </div>
 
             <div class="action-complete" ?hidden="${!this._allowComplete(this.editedApBase)}">
-                <paper-button>
+                <etools-button
+                  variant="text"
+                  class="neutral"
+                >
                     <a href="${this.editedItem.url}" target="_blank">Go To action points to complete
-                        <iron-icon icon="icons:launch"></iron-icon>
+                        <etools-icon name="launch"></etools-icon>
                     </a>
-                </paper-button>
+                </etools-button>
             </div>
           </div>
         </etools-dialog>

@@ -1,8 +1,8 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-menu-button/paper-menu-button';
-import '@polymer/paper-button/paper-button';
-import '@polymer/iron-icons/iron-icons';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
@@ -32,19 +32,19 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
               <paper-menu-button
                 id="dropdown"
                 ?hidden="${!this._isDropDown(this.exportLinks)}"
-                @tap="${this._toggleOpened}"
+                @click="${this._toggleOpened}"
                 horizontal-align="right"
               >
-                <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
-                  <iron-icon icon="file-download"></iron-icon>
+                <etools-button class="neutral" variant="text" slot="dropdown-trigger" class="dropdown-trigger">
+                  <etools-icon name="file-download"></etools-icon>
                   Export
-                </paper-button>
+                </etools-button>
 
                 <paper-listbox id="dropdownMenu" slot="dropdown-content" class="dropdown-content" class="mw-150">
                   ${this.exportLinks?.map(
                     (item) =>
                       html`
-                        <paper-item tracker="Export ${item.name}" url="${item.url}" @tap="${this.exportData}">
+                        <paper-item tracker="Export ${item.name}" url="${item.url}" @click="${this.exportData}">
                           ${item.name}</paper-item
                         >
                       `
@@ -52,33 +52,35 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
                 </paper-listbox>
               </paper-menu-button>
 
-              <paper-button
-                class="grey-buttons"
+              <etools-button
+                class="neutral"
+                variant="text"
                 ?hidden="${this._isDropDown(this.exportLinks)}"
                 tracker="Export"
-                @tap="${this.exportData}"
+                @click="${this.exportData}"
               >
-                <iron-icon icon="file-download"></iron-icon>
+                <etools-icon name="file-download"></etools-icon>
                 Export
-              </paper-button>
+              </etools-button>
             </div>
 
-            <paper-button ?hidden="${this.hidePrintButton}" class="grey-buttons" on-click="print">
-              <iron-icon icon="print"></iron-icon>
+            <etools-button ?hidden="${this.hidePrintButton}" class="neutral" variant="text" on-click="print">
+              <etools-icon name="print"></etools-icon>
               Print
-            </paper-button>
+            </etools-button>
 
-            <paper-button
+            <etools-button
               class="add-btn"
+              variant="primary"
               raised
               ?hidden="${this.hideAddButton || typeof this.hideAddButton === 'undefined'}"
               tracker="Add New Engagement"
-              @tap="${this.addNewTap}"
+              @click="${this.addNewTap}"
             >
               <a href="${this.link}" class="btn-link" ?hidden="${!this._showLink(this.link)}"></a>
-              <iron-icon icon="add"></iron-icon>
+              <etools-icon name="add"></etools-icon>
               <span>${this.btnText}</span>
-            </paper-button>
+            </etools-button>
           </div>
         </div>
 

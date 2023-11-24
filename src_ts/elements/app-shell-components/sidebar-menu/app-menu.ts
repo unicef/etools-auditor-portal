@@ -1,9 +1,7 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/iron-icons/av-icons.js';
-import '@polymer/iron-icons/maps-icons.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/paper-ripple/paper-ripple.js';
@@ -33,22 +31,18 @@ export class AppMenu extends MatomoMixin(LitElement) {
         </span>
 
         <span class="ripple-wrapper main">
-          <iron-icon
-            id="menu-header-top-icon"
-            icon="fam-main-icon:fam-icon"
-            @click="${this._toggleSmallMenu}"
-          ></iron-icon>
+          <etools-icon id="menu-header-top-icon" name="fam-icon" @click="${this._toggleSmallMenu}"></etools-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
         <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
 
         <span class="chev-right">
-          <iron-icon id="expand-menu" icon="chevron-right" @click="${this._toggleSmallMenu}"></iron-icon>
+          <etools-icon id="expand-menu" name="chevron-right" @click="${this._toggleSmallMenu}"></etools-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
 
         <span class="ripple-wrapper">
-          <iron-icon id="minimize-menu" icon="chevron-left" @click="${this._toggleSmallMenu}"></iron-icon>
+          <etools-icon id="minimize-menu" name="chevron-left" @click="${this._toggleSmallMenu}"></etools-icon>
           <paper-ripple class="circle" center></paper-ripple>
         </span>
       </div>
@@ -56,14 +50,14 @@ export class AppMenu extends MatomoMixin(LitElement) {
       <div class="nav-menu">
         <iron-selector .selected="${this.selectedOption}" attr-for-selected="menu-name" role="navigation">
           <a class="nav-menu-item" menu-name="engagements" href="${BASE_PATH}engagements/list">
-            <iron-icon id="iconEngagements" icon="av:playlist-add-check"></iron-icon>
+            <etools-icon id="iconEngagements" name="av:playlist-add-check"></etools-icon>
             <div class="name">Engagements</div>
           </a>
           <paper-tooltip for="iconEngagements" position="right"> Engagements </paper-tooltip>
 
           ${this.showSscPage
             ? html`<a class="nav-menu-item" menu-name="staff-sc" href="${BASE_PATH}staff-sc/list">
-                  <iron-icon id="iconStaffSpotCk" icon="av:recent-actors"></iron-icon>
+                  <etools-icon id="iconStaffSpotCk" name="av:recent-actors"></etools-icon>
                   <div class="name">Staff Spot Checks</div>
                 </a>
                 <paper-tooltip for="iconStaffSpotCk" position="right"> Staff Spot Checks </paper-tooltip>`
@@ -77,10 +71,10 @@ export class AppMenu extends MatomoMixin(LitElement) {
           class="nav-menu-item lighter-item no-transform"
           href="${this.etoolsNowLink}"
           target="_blank"
-          @tap="${this.trackAnalytics}"
+          @click="${this.trackAnalytics}"
           tracker="Implementation Intelligence"
         >
-          <iron-icon id="power-bi-icon" icon="ap-icons:power-bi"></iron-icon>
+          <etools-icon id="power-bi-icon" name="ap-icons:power-bi"></etools-icon>
           <div class="name">Implementation Intelligence</div>
         </a>
         <paper-tooltip for="power-bi-icon" position="right"> Implementation Intelligence </paper-tooltip>
@@ -89,10 +83,10 @@ export class AppMenu extends MatomoMixin(LitElement) {
           class="nav-menu-item lighter-item"
           href="http://etools.zendesk.com"
           target="_blank"
-          @tap="${this.trackAnalytics}"
+          @click="${this.trackAnalytics}"
           tracker="Knowledge base"
         >
-          <iron-icon id="knoledge-icon" icon="maps:local-library"></iron-icon>
+          <etools-icon id="knoledge-icon" name="maps:local-library"></etools-icon>
           <div class="name">Knowledge base</div>
         </a>
         <paper-tooltip for="knoledge-icon" position="right"> Knowledge base </paper-tooltip>
@@ -101,10 +95,10 @@ export class AppMenu extends MatomoMixin(LitElement) {
           class="nav-menu-item lighter-item"
           href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"
           target="_blank"
-          @tap="${this.trackAnalytics}"
+          @click="${this.trackAnalytics}"
           tracker="Discussion"
         >
-          <iron-icon id="discussion-icon" icon="icons:question-answer"></iron-icon>
+          <etools-icon id="discussion-icon" name="icons:question-answer"></etools-icon>
           <div class="name">Discussion</div>
         </a>
         <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
@@ -113,10 +107,10 @@ export class AppMenu extends MatomoMixin(LitElement) {
           class="nav-menu-item lighter-item last-one"
           href="https://etools.unicef.org/landing"
           target="_blank"
-          @tap="${this.trackAnalytics}"
+          @click="${this.trackAnalytics}"
           tracker="Information"
         >
-          <iron-icon id="information-icon" icon="icons:info"></iron-icon>
+          <etools-icon id="information-icon" name="icons:info"></etools-icon>
           <div class="name">Information</div>
         </a>
         <paper-tooltip for="information-icon" position="right"> Information </paper-tooltip>

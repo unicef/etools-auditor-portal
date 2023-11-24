@@ -1,9 +1,9 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/iron-icons/iron-icons.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-input-container.js';
 import '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
@@ -92,7 +92,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         .search-input-container .search-input:not(.empty) {
           width: 100% !important;
         }
-        .search-input-container .search-input iron-icon {
+        .search-input-container .search-input etools-icon {
           top: -1px;
           color: #fff;
         }
@@ -112,7 +112,7 @@ export class EngagementStaffMembersTab extends connect(store)(
           margin-bottom: 0;
           padding: 12px 0;
         }
-        .editable-row paper-icon-button {
+        .editable-row etools-icon-button {
           --iron-icon-fill-color: var(--gray-mid);
         }
         etools-loading {
@@ -193,7 +193,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                   }
                 }}"
               >
-                <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
+                <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
               </paper-input>
               <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
             </div>
@@ -211,7 +211,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                 href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
-                <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
+                <etools-icon id="information-icon" name="icons:open-in-new"></etools-icon>
               </a>
               <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
             </div>
@@ -265,7 +265,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                   <span class="col-data col-2 wrap-text">${item.user.profile.phone_number || '–'}</span>
                   <span class="col-data col-2 wrap-text">${item.user.email}</span>
                   <span class="col-data col-1 wrap-text center-align"
-                    >${this.computeStaffMembActiveColumn(item) || html`<iron-icon icon="check"></iron-icon>`}</span
+                    >${this.computeStaffMembActiveColumn(item) || html`<etools-icon name="check"></etools-icon>`}</span
                   >
                 </div>
               </etools-data-table-row>`

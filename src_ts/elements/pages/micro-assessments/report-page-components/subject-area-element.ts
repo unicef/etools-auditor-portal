@@ -5,7 +5,7 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-data-table/etools-data-table.js';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getOptionsChoices} from '../../../mixins/permission-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -35,7 +35,7 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
           <span class="col-data col-8">${this.areaData?.header}</span>
           <span class="col-data col-4">${this.areaData?.risk.value_display}</span>
           <div class="hover-block" ?hidden="${!this.canBeChanged}">
-            <paper-icon-button icon="create" @click="${this.openEditDialog}"></paper-icon-button>
+            <etools-icon-button name="create" @click="${this.openEditDialog}"></etools-icon-button>
           </div>
         </div>
         <div slot="row-data-details">

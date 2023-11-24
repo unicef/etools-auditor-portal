@@ -1,8 +1,8 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-textarea.js';
-import '@polymer/iron-icons/iron-icons.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
@@ -60,7 +60,8 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
       >
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.optionsData)}">
-            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
+            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+            </etools-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -83,8 +84,8 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
                 <span class="col-data col-3">${getTableRowIndexText(index)}</span>
                 <span class="col-data col-9">${item.description}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
               </div>
             </etools-data-table-row>

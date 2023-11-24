@@ -1,10 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/iron-icons/iron-icons';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-input/paper-input';
-import '@polymer/paper-button/paper-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-dialog/etools-dialog';
@@ -65,10 +65,10 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         ${dataTableStylesLit} .padd-top {
           padding-top: 26px;
         }
-        paper-icon-button {
+        etools-icon-button {
           --iron-icon-fill-color: #ffffff;
         }
-        paper-icon-button[icon='add-box'] {
+        etools-icon-button[name='add-box'] {
           margin-inline-start: 0px;
         }
         etools-data-table-row::part(edt-list-row-wrapper) {
@@ -102,18 +102,18 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         <div slot="panel-btns">
           <div class="layout-horizontal">
             <div ?hidden="${this._hideShare}">
-              <paper-icon-button
+              <etools-icon-button
                 id="share-icon"
                 class="panel-button"
-                @tap="${this._openShareDialog}"
-                icon="open-in-browser"
+                @click="${this._openShareDialog}"
+                name="open-in-browser"
               >
-              </paper-icon-button>
+              </etools-icon-button>
               <paper-tooltip for="share-icon" offset="0">Share Documents</paper-tooltip>
             </div>
             <div ?hidden="${this.hideAddAttachments}">
-              <paper-icon-button id="add-icon" class="panel-button" @tap="${this._openAddDialog}" icon="add-box">
-              </paper-icon-button>
+              <etools-icon-button id="add-icon" class="panel-button" @click="${this._openAddDialog}" name="add-box">
+              </etools-icon-button>
               <paper-tooltip for="add-icon" offset="0">Add</paper-tooltip>
             </div>
           </div>
@@ -140,7 +140,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                 <span class="col-data col-2">${this.prettyDate(String(item.created), '') || '-'}</span>
                 <span class="col-data col-2">${this._getAttachmentType(item)}</span>
                 <span class="col-data col-5 wrap-text">
-                  <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                  <etools-icon name="attachment" class="download-icon"> </etools-icon>
                   <a
                     href="${item.attachment}"
                     class="truncate"
@@ -153,8 +153,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                   <span>FAM</span>
                 </span>
                 <div class="hover-block" ?hidden="${this.isTabReadonly}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
               </div>
             </etools-data-table-row>
@@ -168,7 +168,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                   <span class="col-data col-2">${this.prettyDate(String(item.created), '') || '-'}</span>
                   <span class="col-data col-2">${item.file_type}</span>
                   <span class="col-data col-5 wrap-text">
-                    <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                    <etools-icon name="icons:attachment" class="download-icon"> </etools-icon>
                     <a href="${item.url}" class="truncate" title="${item.filename}" target="_blank"
                       >${item.filename}
                     </a>
@@ -177,10 +177,10 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                     <span>PMP</span>
                   </span>
                   <div class="hover-block" ?hidden="${this.isTabReadonly}">
-                    <paper-icon-button
-                      icon="cancel"
+                    <etools-icon-button
+                      name="cancel"
                       @click="${() => this._openDeleteLinkDialog(item.id)}"
-                    ></paper-icon-button>
+                    ></etools-icon-button>
                   </div>
                 </div>
               </etools-data-table-row>`

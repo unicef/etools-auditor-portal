@@ -5,7 +5,7 @@ export const tabInputsStyles = css`
     display: none !important;
   }
 
-  paper-icon-button[hidden] {
+  etools-icon-button[hidden] {
     display: inline-block !important;
     visibility: hidden;
   }
@@ -430,7 +430,7 @@ export const tabInputsStyles = css`
   .editable-row:hover .hover-block {
     background-color: transparent;
   }
-  .editable-row .hover-block paper-icon-button {
+  .editable-row .hover-block etools-icon-button {
     --iron-icon-fill-color: var(--gray-mid);
   }
   .editable-row {

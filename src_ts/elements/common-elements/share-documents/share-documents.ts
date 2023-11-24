@@ -118,12 +118,12 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
                   (item) => html` <etools-data-table-row no-collapse>
                     <div slot="row-data" class="layout-horizontal row-data">
                       <span class="col-data col-3">
-                        <paper-checkbox @tap="${(e) => this._toggleChecked(e, item.id)}"></paper-checkbox>
+                        <paper-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></paper-checkbox>
                         <span class="pd"> ${this._getReferenceNumber(item.agreement_reference_number)} </span>
                       </span>
                       <span class="col-data col-3">${item.file_type}</span>
                       <span class="col-data col-4 wrap-text">
-                        <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                        <etools-icon name="attachment" class="download-icon"> </etools-icon>
                         <a href="${item.file_link}" title="${item.filename}" target="_blank">${item.filename} </a>
                       </span>
                       <span class="col-data col-2">

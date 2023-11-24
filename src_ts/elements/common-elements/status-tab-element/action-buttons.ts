@@ -1,9 +1,9 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-button/paper-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@polymer/paper-menu-button/paper-menu-button';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -25,7 +25,7 @@ export class ActionButtons extends LitElement {
   render() {
     return html`
       ${ActionButtonsStyles}
-      <paper-button
+      <etools-button
         class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
         raised
         @click="${this._btnClicked}"
@@ -33,20 +33,20 @@ export class ActionButtons extends LitElement {
         <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
         ${this._showOtherActions(this.actions.length)
           ? html`<paper-menu-button class="option-button" dynamic-align close-on-activate>
-              <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
+              <etools-icon-button slot="dropdown-trigger" class="option-button" name="expand-more"></etools-icon-button>
               <div slot="dropdown-content">
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
                   .map(
                     (item: any) => html`<div class="other-options" action-code="${this._setActionCode(item)}">
-                      <iron-icon icon="${this._setIcon(item, this.icons)}" class="option-icon"></iron-icon>
+                      <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
                       <span>${this._setButtonText(item)}</span>
                     </div>`
                   )}
               </div>
             </paper-menu-button>`
           : ``}
-      </paper-button>
+      </etools-button>
     `;
   }
 
@@ -126,7 +126,7 @@ export class ActionButtons extends LitElement {
       : target && target.getAttribute('action-code');
 
     if (action) {
-      const paperMenuBtn = this.shadowRoot!.querySelector('paper-button')!.querySelector('paper-menu-button');
+      const paperMenuBtn = this.shadowRoot!.querySelector('etools-button')!.querySelector('paper-menu-button');
       if (paperMenuBtn && paperMenuBtn.opened) {
         paperMenuBtn.close();
       }

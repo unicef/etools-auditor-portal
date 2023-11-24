@@ -1,7 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-input/paper-textarea';
 
@@ -72,7 +72,8 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       >
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.optionsData)}">
-            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
+            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+            </etools-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -111,8 +112,8 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 <span class="col-data col-3">${item.local_amount}</span>
                 <span class="col-data col-1">${item.amount}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
               </div>
               <div slot="row-data-details">

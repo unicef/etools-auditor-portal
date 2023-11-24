@@ -1,9 +1,9 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-textarea';
-import '@polymer/iron-icons/iron-icons';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
@@ -89,7 +89,8 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       >
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.optionsData)}">
-            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
+            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+            </etools-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -113,8 +114,11 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
                   <span class="col-data col-6">${this.getCategoryDisplayName(item.category_of_observation, '--')}</span>
                   <span class="col-data col-3">${item.deadline_of_action}</span>
                   <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                    <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                    <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                    <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                    <etools-icon-button
+                      name="delete"
+                      @click="${() => this.openDeleteDialog(index)}"
+                    ></etools-icon-button>
                   </div>
                 </div>
 

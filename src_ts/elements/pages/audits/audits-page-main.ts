@@ -1,7 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tabs/paper-tabs';
-import '@polymer/iron-icons/iron-icons';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-input/paper-textarea';
 
@@ -118,7 +118,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                     ${this._showCancellationReason(this.engagement)
                       ? html`<etools-content-panel class="cancellation-tab" panel-title="">
                           <div slot="panel-btns" class="bookmark">
-                            <iron-icon icon="bookmark"></iron-icon>
+                            <etools-icon name="bookmark"></etools-icon>
                           </div>
 
                           <div class="cancellation-title">Cancellation Note</div>
