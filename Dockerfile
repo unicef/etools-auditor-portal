@@ -1,4 +1,4 @@
-FROM node:14.21-alpine3.16  as fam_builder
+FROM node:14.21-alpine3.16  as builder
 RUN apk update
 RUN apk add --update bash
 
