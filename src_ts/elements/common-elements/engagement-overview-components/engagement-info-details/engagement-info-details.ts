@@ -9,7 +9,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 
