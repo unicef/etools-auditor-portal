@@ -1,8 +1,8 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 import isEmpty from 'lodash-es/isEmpty';
 import pickBy from 'lodash-es/pickBy';

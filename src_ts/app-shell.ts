@@ -10,7 +10,7 @@ import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
-import {createDynamicDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
+import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
 import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';

@@ -4,10 +4,9 @@ import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/paper-ripple/paper-ripple.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {apIcons, famIcon} from '../../styles/ap-icons';
+import {apIcons} from '../../styles/ap-icons';
 import {BASE_PATH} from '../../config/config';
 
 /**
@@ -21,8 +20,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
     // main template
     // language=HTML
     return html`
-      ${navMenuStyles} ${apIcons} ${famIcon}
-
+      ${navMenuStyles} ${apIcons}
       <div class="menu-header">
         <span id="app-name">
           FINANCIAL <br />
@@ -31,19 +29,16 @@ export class AppMenu extends MatomoMixin(LitElement) {
         </span>
 
         <span class="ripple-wrapper main">
-          <etools-icon id="menu-header-top-icon" name="fam-icon" @click="${this._toggleSmallMenu}"></etools-icon>
-          <paper-ripple class="circle" center></paper-ripple>
+          <etools-icon id="menu-header-top-icon" name="ap-icons:fam-icon" @click="${this._toggleSmallMenu}"></etools-icon>
         </span>
         <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
 
         <span class="chev-right">
           <etools-icon id="expand-menu" name="chevron-right" @click="${this._toggleSmallMenu}"></etools-icon>
-          <paper-ripple class="circle" center></paper-ripple>
         </span>
 
         <span class="ripple-wrapper">
           <etools-icon id="minimize-menu" name="chevron-left" @click="${this._toggleSmallMenu}"></etools-icon>
-          <paper-ripple class="circle" center></paper-ripple>
         </span>
       </div>
 

@@ -1,13 +1,13 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import '@polymer/paper-input/paper-textarea.js';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@polymer/paper-tooltip/paper-tooltip';
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
@@ -466,17 +466,17 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                     <div class="layout-horizontal">
                         <!-- High Priority -->
                         <div class="col col-12 checkbox-container">
-                            <paper-checkbox
+                            <etools-checkbox
                                     ?checked="${this.editedItem.high_priority}"
                                     ?disabled="${this.isReadOnly(
                                       'high_priority',
                                       this.editedApBase,
                                       this.requestInProcess
                                     )}"
-                                    @checked-changed="${({detail}: CustomEvent) =>
-                                      (this.editedItem.high_priority = detail.value)}">
+                                    @sl-changed="${(e: any) =>
+                                      (this.editedItem.high_priority = e.target.checked)}">
                                     This action point is high priority
-                            </paper-checkbox>
+                            </etools-checkbox>
                         </div>
                     </div>
                 </div>

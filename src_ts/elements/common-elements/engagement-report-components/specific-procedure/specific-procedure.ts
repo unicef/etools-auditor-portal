@@ -5,8 +5,8 @@ import '@polymer/paper-input/paper-input.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-input-container.js';
 
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 
 import {GenericObject} from '../../../../types/global';
 import isString from 'lodash-es/isString';

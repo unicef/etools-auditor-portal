@@ -8,7 +8,7 @@ import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
-import {ConfigObj, createDynamicDialog, removeDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
+import {createDynamicDialog, removeDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import EtoolsDialog from '@unicef-polymer/etools-dialog';
 
 /**
@@ -82,7 +82,7 @@ export class ActionButtons extends LitElement {
     const dialogContent = document.createElement('span');
     dialogContent.innerText = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
                                You will not be able to make any further changes to the report.`;
-    const dialogConfig: ConfigObj = {
+    const dialogConfig = {
       title: 'Submit',
       size: 'md',
       okBtnText: 'Yes',

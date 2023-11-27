@@ -1,14 +1,10 @@
 import {customElement} from 'lit/decorators.js';
-import '@unicef-polymer/etools-filters/src/etools-filters';
-import {EtoolsFilter} from '@unicef-polymer/etools-filters/src/etools-filters';
-import {
-  updateFilterSelectionOptions,
-  setselectedValueTypeByFilterKey
-} from '@unicef-polymer/etools-filters/src/filters';
+import '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
+import {EtoolsFilter} from '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 import {
   EngagementFilterKeys,
   getEngagementFilters,
-  EngagementSelectedValueTypeByFilterKey
+  EngagementsFiltersHelper
 } from '../engagement-filters';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
@@ -46,21 +42,17 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
   }
 
   populateFilterOptionsFromCommonData(state: RootState, filters: EtoolsFilter[]) {
-    updateFilterSelectionOptions(filters, EngagementFilterKeys.partner__in, state.commonData.filterPartners || []);
-    updateFilterSelectionOptions(
+    EngagementsFiltersHelper.updateFilterSelectionOptions(filters, EngagementFilterKeys.partner__in, state.commonData.filterPartners || []);
+    EngagementsFiltersHelper.updateFilterSelectionOptions(
       filters,
       EngagementFilterKeys.agreement__auditor_firm__in,
       state.commonData.filterAuditors || []
     );
-    updateFilterSelectionOptions(filters, EngagementFilterKeys.status__in, this.columnValuesFromOptions.status || []);
-    updateFilterSelectionOptions(
+    EngagementsFiltersHelper.updateFilterSelectionOptions(filters, EngagementFilterKeys.status__in, this.columnValuesFromOptions.status || []);
+    EngagementsFiltersHelper.updateFilterSelectionOptions(
       filters,
       EngagementFilterKeys.engagement_type__in,
       this.columnValuesFromOptions.engagementTypes || []
     );
-  }
-
-  setValueTypeByFilterKey() {
-    setselectedValueTypeByFilterKey(EngagementSelectedValueTypeByFilterKey);
   }
 }

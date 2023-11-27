@@ -10,10 +10,10 @@ import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';

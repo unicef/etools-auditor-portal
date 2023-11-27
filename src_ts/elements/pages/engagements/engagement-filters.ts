@@ -1,5 +1,6 @@
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
-import {EtoolsFilterTypes} from '@unicef-polymer/etools-filters/src/etools-filters';
+import {FiltersHelper} from '@unicef-polymer/etools-unicef/src/etools-filters/filters-helper.class';
+import {EtoolsFilterTypes} from '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 
 export enum EngagementFilterKeys {
   search = 'search',
@@ -15,7 +16,7 @@ export enum EngagementFilterKeys {
   date_of_draft_report_to_ip__gte = 'date_of_draft_report_to_ip__gte'
 }
 
-export const EngagementSelectedValueTypeByFilterKey: AnyObject = {
+export const selectedValueTypeByFilterKey: AnyObject = {
   [EngagementFilterKeys.search]: 'string',
   [EngagementFilterKeys.agreement__auditor_firm__in]: 'Array',
   [EngagementFilterKeys.engagement_type__in]: 'Array',
@@ -28,6 +29,8 @@ export const EngagementSelectedValueTypeByFilterKey: AnyObject = {
   [EngagementFilterKeys.date_of_draft_report_to_ip__lte]: 'string',
   [EngagementFilterKeys.date_of_draft_report_to_ip__gte]: 'string'
 };
+
+export const EngagementsFiltersHelper = new FiltersHelper(selectedValueTypeByFilterKey);
 
 export function getEngagementFilters() {
   return [

@@ -5,8 +5,8 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/iron-pages/iron-pages';
 import '@polymer/paper-input/paper-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';

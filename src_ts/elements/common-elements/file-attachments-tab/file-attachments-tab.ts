@@ -6,9 +6,9 @@ import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-input/paper-input';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-upload/etools-upload';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -20,8 +20,8 @@ import {fileAttachmentsTabStyles} from './file-attachments-tab-styles';
 import '../../data-elements/get-attachments';
 import '../../data-elements/update-attachments';
 import '../share-documents/share-documents';
-import '@unicef-polymer/etools-data-table/etools-data-table.js';
-import {dataTableStylesLit} from '@unicef-polymer/etools-data-table/data-table-styles-lit';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import DateMixin from '../../mixins/date-mixin';
 
 import EngagementMixin from '../../mixins/engagement-mixin';
@@ -38,7 +38,7 @@ import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {getHeadingLabel, getOptionsChoices, isValidCollection} from '../../mixins/permission-controller';
 import famEndpoints from '../../config/endpoints';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';;
 import {ShareDocuments} from '../share-documents/share-documents';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';

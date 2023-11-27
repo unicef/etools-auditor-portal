@@ -5,10 +5,11 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {KeyInternalControlsTabStyles} from './key-internal-controls-tab-styles';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-data-table/etools-data-table';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import '@polymer/paper-input/paper-textarea';
 import './subject-area-element';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -18,7 +19,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import pick from 'lodash-es/pick';
 import {GenericObject} from '../../../../types/global';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import isObject from 'lodash-es/isObject';
 
 /**
@@ -36,6 +37,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
+        ${dataTableStylesLit}
         etools-dropdown#riskAssessmentInput {
           --paper-listbox: {
             max-height: 140px;

@@ -4,7 +4,8 @@ import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import '@unicef-polymer/etools-data-table/etools-data-table.js';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getOptionsChoices} from '../../../mixins/permission-controller';
@@ -30,6 +31,7 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   render() {
     return html`
       ${sharedStyles}
+      <style>${dataTableStylesLit}</style>
       <etools-data-table-row>
         <div slot="row-data" class="layout-horizontal editable-row">
           <span class="col-data col-8">${this.areaData?.header}</span>

@@ -3,11 +3,13 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-input/paper-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -39,6 +41,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     return html`
       ${sharedStyles}
       <style>
+        ${dataTableStylesLit}
         :host {
           position: relative;
           display: block;

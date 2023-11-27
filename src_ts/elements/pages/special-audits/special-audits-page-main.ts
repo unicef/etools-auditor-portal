@@ -2,8 +2,8 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/paper-tabs/paper-tab';
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '../../app-shell-components/main-header/page-header';
 import '../../common-elements/status-tab-element/status-tab-element';
 // eslint-disable-next-line

@@ -2,8 +2,10 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {riskTabStyles} from './risk-tab-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -31,6 +33,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
+        ${dataTableStylesLit}
         etools-dropdown {
           --esmm-dropdown-menu-position: absolute !important;
         }
