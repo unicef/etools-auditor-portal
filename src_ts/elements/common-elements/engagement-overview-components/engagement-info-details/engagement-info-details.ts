@@ -5,12 +5,13 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
@@ -403,15 +404,15 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
           ${this.showJoinAudit
             ? html` <!-- Joint Audit -->
                 <div class="input-container join-audit" style="width:16.66%">
-                  <paper-checkbox
+                  <etools-checkbox
                     ?checked="${this.data.joint_audit}"
                     ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
-                    @checked-changed="${(e: CustomEvent) => {
-                      this.data.joint_audit = e.detail.value;
+                    @sl-changed="${(e: any) => {
+                      this.data.joint_audit = e.target.checked;
                     }}"
                   >
                     ${this.getLabel('joint_audit', this.optionsData)}
-                  </paper-checkbox>
+                  </etools-checkbox>
                 </div>
                 <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
                   <!-- Year of Audit -->

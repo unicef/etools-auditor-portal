@@ -3,11 +3,13 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -39,7 +41,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
           margin: 20px 0;
@@ -190,7 +192,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
 
           <div class="layout-horizontal">
             <div class="col col-12">
-              <paper-textarea
+              <etools-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
                   this.optionsData
@@ -209,13 +211,13 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 }}"
                 @focus="${this._resetFieldError}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
-              <paper-textarea
+              <etools-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
                   this.optionsData
@@ -234,13 +236,13 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                   this.editedBlueprint = {...this.editedBlueprint};
                 }}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
-              <paper-textarea
+              <etools-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
                   this.optionsData
@@ -259,7 +261,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                   this.editedBlueprint = {...this.editedBlueprint};
                 }}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
         </etools-dialog>

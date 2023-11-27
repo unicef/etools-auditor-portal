@@ -5,11 +5,13 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -43,7 +45,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     return html`
       ${sharedStyles}
       <style>
-        .repeatable-item-container[without-line] {
+        ${dataTableStylesLit} .repeatable-item-container[without-line] {
           min-width: 0 !important;
           margin-bottom: 0 !important;
         }
@@ -247,7 +249,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Description -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.description', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.description}"
@@ -262,14 +264,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'description', this.editedItem)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Recommendation -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.recommendation', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.recommendation}"
@@ -285,14 +287,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @value-changed="${({detail}: CustomEvent) =>
                   this.valueChanged(detail, 'recommendation', this.editedItem)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- IP comments -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.ip_comments}"
@@ -307,7 +309,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'ip_comments', this.editedItem)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
         </etools-dialog>

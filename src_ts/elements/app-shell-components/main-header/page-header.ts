@@ -4,7 +4,7 @@ import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-app-selector';
-import '@unicef-polymer/etools-profile-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';

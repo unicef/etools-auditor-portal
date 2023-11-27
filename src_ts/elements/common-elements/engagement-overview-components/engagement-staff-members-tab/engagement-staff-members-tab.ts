@@ -4,12 +4,10 @@ import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-toggle-button/paper-toggle-button.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-
+import '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -25,8 +23,9 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '../../../data-elements/get-staff-members-list';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
-import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
-import '@unicef-polymer/etools-data-table/etools-data-table.js';
+import SlSwitch from '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
@@ -48,6 +47,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   render() {
     return html`
       <style>
+        ${dataTableStylesLit}
         :host {
           position: relative;
           display: block;
@@ -100,7 +100,7 @@ export class EngagementStaffMembersTab extends connect(store)(
           margin-bottom: -7px;
           padding-bottom: 0;
         }
-        .checkbox {
+        .etools-checkbox {
           margin-left: 15px;
         }
         etools-content-panel::part(ecp-content) {
@@ -196,14 +196,14 @@ export class EngagementStaffMembersTab extends connect(store)(
               </etools-input>
               <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
             </div>
-            <paper-toggle-button
+            <sl-switch
               class="white"
               id="toggleActive"
               ?checked="${this.showInactive}"
-              @change="${this.onShowInactiveChanged}"
+              @sl-change="${this.onShowInactiveChanged}"
             >
               Show Inactive
-            </paper-toggle-button>
+            </sl-switch>
             <div class="add-button-container">
               <a
                 class="white"
@@ -243,7 +243,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                 <div slot="row-data" class="layout-horizontal editable-row">
                   ${this.showHasAccess
                     ? html` <span class="col-data col-1" ?hidden="${!this.showHasAccess}">
-                        <paper-checkbox
+                        <etools-checkbox
                           class="checkbox"
                           ?checked="${item.hasAccess}"
                           ?disabled="${this._isCheckboxReadonly(
@@ -253,7 +253,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                           )}"
                           @click="${(e) => this._isActive(e, item)}"
                         >
-                        </paper-checkbox>
+                        </etools-checkbox>
                       </span>`
                     : ``}
                   <span class="col-data col-2 wrap-text">${item.user.profile.job_title || '–'}</span>
@@ -419,7 +419,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   onShowInactiveChanged(e: CustomEvent) {
-    this.showInactive = Boolean((e.target as PaperToggleButtonElement).checked);
+    this.showInactive = Boolean((e.target as SlSwitch).checked);
   }
 
   _isVisible(active: boolean, showInactive: boolean) {

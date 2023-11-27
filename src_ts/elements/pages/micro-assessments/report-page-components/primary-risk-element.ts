@@ -4,8 +4,8 @@ import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
@@ -15,7 +15,7 @@ import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import find from 'lodash-es/find';
 import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import {EtoolsTextarea} from '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import isEmpty from 'lodash-es/isEmpty';
 
@@ -77,7 +77,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
         <div class="layout-horizontal">
           <div class="col col-12">
             <!-- Brief Justification -->
-            <paper-textarea
+            <etools-textarea
               id="briefJustification"
               class="w100 validate-input required"
               .value="${this.primaryArea.risk.extra.comments}"
@@ -91,7 +91,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
               @focus="${this._resetFieldError}"
               @value-changed="${({detail}: CustomEvent) => (this.primaryArea.risk.extra.comments = detail.value)}"
             >
-            </paper-textarea>
+            </etools-textarea>
           </div>
         </div>
       </etools-content-panel>

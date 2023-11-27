@@ -1,13 +1,15 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
-import '@unicef-polymer/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -31,7 +33,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
         }
@@ -146,7 +148,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Recommendation -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 validate-input ${this._setRequired('findings.recommendation', this.optionsData)}"
                 .value="${this.editedItem.recommendation}"
                 allowed-pattern="[ds]"
@@ -160,7 +162,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => (this.editedItem.recommendation = detail.value)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
         </div>

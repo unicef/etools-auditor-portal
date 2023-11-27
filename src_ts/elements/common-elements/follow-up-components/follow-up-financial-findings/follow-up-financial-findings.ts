@@ -3,9 +3,9 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import pickBy from 'lodash-es/pickBy';
 import each from 'lodash-es/each';
@@ -233,7 +233,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
         <div class="layout-horizontal">
           <div class="col col-12">
             <!-- explanation_for_additional_information -->
-            <paper-textarea
+            <etools-textarea
               class="w100 validate-input ${this._setRequired(
                 'explanation_for_additional_information',
                 this.optionsData
@@ -251,7 +251,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               @value-changed="${({detail}: CustomEvent) =>
                 this.valueChanged(detail, 'explanation_for_additional_information', this.engagement)}"
             >
-            </paper-textarea>
+            </etools-textarea>
           </div>
         </div>
       </etools-content-panel>

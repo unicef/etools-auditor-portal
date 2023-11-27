@@ -7,8 +7,8 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '../../data-elements/update-engagement';
 import '../../common-elements/pages-header-element/pages-header-element';
 import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
@@ -240,7 +240,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -250,7 +250,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>

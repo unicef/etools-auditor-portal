@@ -1,5 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';

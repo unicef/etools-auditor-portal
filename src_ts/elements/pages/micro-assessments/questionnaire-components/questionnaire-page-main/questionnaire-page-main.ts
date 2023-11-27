@@ -1,8 +1,8 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
@@ -12,7 +12,7 @@ import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {EtoolsTextarea} from '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import {GenericObject} from '../../../../../types/global';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
@@ -171,7 +171,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
           <div class="layout-horizontal">
             <div class="col col-12">
                 <!-- Comments -->
-                <paper-textarea
+                <etools-textarea
                   id="riskAssessmentComments"
                   class="w100 validate-input"
                   .value="${this.editedItem?.risk?.extra?.comments}"
@@ -194,7 +194,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
                     this.editedItem.risk.extra.comments = detail.value;
                   }}}"
                 >
-                </paper-textarea>
+                </etools-textarea>
               </div>
             </div>
 

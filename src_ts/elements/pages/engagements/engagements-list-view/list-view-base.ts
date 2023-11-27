@@ -12,15 +12,15 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
-import '@unicef-polymer/etools-table/etools-table';
+import '@unicef-polymer/etools-unicef/src/etools-table/etools-table';
 import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
 import {
   EtoolsPaginator,
   defaultPaginator,
   getPaginatorWithBackend
-} from '@unicef-polymer/etools-table/pagination/etools-pagination';
-import '@unicef-polymer/etools-filters/src/etools-filters';
-import {EtoolsFilter} from '@unicef-polymer/etools-filters/src/etools-filters';
+} from '@unicef-polymer/etools-unicef/src/etools-table/pagination/etools-pagination';
+import '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
+import {EtoolsFilter} from '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 import {getLabelFromOptions, getOptionsChoices} from '../../../mixins/permission-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
@@ -33,7 +33,7 @@ import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {sendRequest} from '@unicef-polymer/etools-ajax';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
-import {updateFiltersSelectedValues} from '@unicef-polymer/etools-filters/src/filters';
+import {updateFiltersSelectedValues} from '@unicef-polymer/etools-unicef/src/etools-filters/filters';
 import omit from 'lodash-es/omit';
 
 /**

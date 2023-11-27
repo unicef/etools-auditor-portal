@@ -5,8 +5,8 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/iron-pages/iron-pages';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
@@ -228,7 +228,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -238,7 +238,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>

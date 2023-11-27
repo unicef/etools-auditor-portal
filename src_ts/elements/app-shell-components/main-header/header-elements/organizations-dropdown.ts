@@ -1,12 +1,12 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {BASE_PATH} from '../../../config/config';
 import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 /**
  * @polymer

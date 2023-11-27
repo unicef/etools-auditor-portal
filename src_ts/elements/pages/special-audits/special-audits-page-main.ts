@@ -2,8 +2,8 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/paper-tabs/paper-tab';
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '../../app-shell-components/main-header/page-header';
 import '../../common-elements/status-tab-element/status-tab-element';
 // eslint-disable-next-line
@@ -241,7 +241,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -251,7 +251,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>
