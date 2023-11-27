@@ -40,7 +40,7 @@ import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
 import {BASE_PATH} from './elements/config/config';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import '@unicef-polymer/etools-toasts/src/etools-toasts';
+import '@unicef-polymer/etools-unicef/src/etools-toasts/etools-toasts';
 import './elements/utils/routes.js';
 import {store, RootState} from './redux/store';
 import {handleUrlChange} from './redux/actions/app.js';
