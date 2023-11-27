@@ -3,12 +3,11 @@ import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
 import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
 
-import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
-import '@polymer/app-layout/app-drawer/app-drawer.js';
-import '@polymer/app-layout/app-header-layout/app-header-layout.js';
-import '@polymer/app-layout/app-header/app-header.js';
-import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer-layout';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header-layout';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
 import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import '@polymer/iron-pages/iron-pages';
@@ -34,7 +33,7 @@ import {
 } from './redux/actions/common-data';
 import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
+import {AppDrawer} from '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
 import {BASE_PATH} from './elements/config/config';
@@ -117,7 +116,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
           id="drawer"
           slot="drawer"
           transition-duration="350"
-          @click="${this.onDrawerClick}"
+          @app-drawer-transitioned="${this.onDrawerToggle}"
+          ?opened="${this.drawerOpened}"
           ?swipe-open="${this.narrow}"
           ?small-menu="${this.smallMenu}"
         >
@@ -126,12 +126,10 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
             ?small-menu="${this.smallMenu}"
             ?showSscPage="${this.showSscPage}"
           ></app-menu>
-          <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
 
         <!-- Main content -->
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
-          <iron-overlay-backdrop id="appHeaderOverlay"></iron-overlay-backdrop>
           <app-header slot="header" fixed shadow>
             <page-header id="pageheader" .user="${this.user}"></page-header>
           </app-header>
@@ -371,7 +369,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   }
 
   onDrawerClick(e) {
-    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
+    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawer;
     if (e.target === appDrawer && appDrawer.opened) {
       appDrawer.close();
     }
