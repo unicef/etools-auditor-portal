@@ -29,7 +29,11 @@ export class AppMenu extends MatomoMixin(LitElement) {
         </span>
 
         <span class="ripple-wrapper main">
-          <etools-icon id="menu-header-top-icon" name="ap-icons:fam-icon" @click="${this._toggleSmallMenu}"></etools-icon>
+          <etools-icon
+            id="menu-header-top-icon"
+            name="ap-icons:fam-icon"
+            @click="${this._toggleSmallMenu}"
+          ></etools-icon>
         </span>
         <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
 

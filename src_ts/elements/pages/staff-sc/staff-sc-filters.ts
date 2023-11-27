@@ -24,7 +24,7 @@ export const selectedValueTypeByFilterKey: AnyObject = {
   [StaffScFilterKeys.date_of_draft_report_to_ip__gte]: 'string'
 };
 
-export const  StaffScFiltersHelper = new FiltersHelper(selectedValueTypeByFilterKey);
+export const StaffScFiltersHelper = new FiltersHelper(selectedValueTypeByFilterKey);
 
 export function getStaffScFilters() {
   return [

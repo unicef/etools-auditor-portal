@@ -53,8 +53,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
-        :host {
+        ${dataTableStylesLit} :host {
           .repeatable-item-container[without-line] {
             min-width: 0 !important;
             margin-bottom: 0 !important;

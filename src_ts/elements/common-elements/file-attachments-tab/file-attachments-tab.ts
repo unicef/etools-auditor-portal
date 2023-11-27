@@ -38,7 +38,7 @@ import pickBy from 'lodash-es/pickBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {getHeadingLabel, getOptionsChoices, isValidCollection} from '../../mixins/permission-controller';
 import famEndpoints from '../../config/endpoints';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';;
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {ShareDocuments} from '../share-documents/share-documents';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';

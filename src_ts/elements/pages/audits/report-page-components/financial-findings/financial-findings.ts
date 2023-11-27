@@ -45,8 +45,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
-        .repeatable-item-container[without-line] {
+        ${dataTableStylesLit} .repeatable-item-container[without-line] {
           min-width: 0 !important;
           margin-bottom: 0 !important;
         }

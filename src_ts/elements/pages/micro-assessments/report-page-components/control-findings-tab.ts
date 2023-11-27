@@ -33,8 +33,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
         }

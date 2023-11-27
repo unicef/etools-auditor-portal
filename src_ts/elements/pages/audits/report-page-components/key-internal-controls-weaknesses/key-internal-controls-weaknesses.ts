@@ -41,8 +41,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
           margin: 20px 0;

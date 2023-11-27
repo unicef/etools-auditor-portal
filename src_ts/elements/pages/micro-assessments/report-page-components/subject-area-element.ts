@@ -31,7 +31,9 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   render() {
     return html`
       ${sharedStyles}
-      <style>${dataTableStylesLit}</style>
+      <style>
+        ${dataTableStylesLit}
+      </style>
       <etools-data-table-row>
         <div slot="row-data" class="layout-horizontal editable-row">
           <span class="col-data col-8">${this.areaData?.header}</span>

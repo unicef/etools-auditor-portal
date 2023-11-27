@@ -473,8 +473,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                                       this.editedApBase,
                                       this.requestInProcess
                                     )}"
-                                    @sl-changed="${(e: any) =>
-                                      (this.editedItem.high_priority = e.target.checked)}">
+                                    @sl-changed="${(e: any) => (this.editedItem.high_priority = e.target.checked)}">
                                     This action point is high priority
                             </etools-checkbox>
                         </div>
