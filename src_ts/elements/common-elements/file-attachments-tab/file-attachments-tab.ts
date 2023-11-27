@@ -168,7 +168,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                   <span class="col-data col-2">${this.prettyDate(String(item.created), '') || '-'}</span>
                   <span class="col-data col-2">${item.file_type}</span>
                   <span class="col-data col-5 wrap-text">
-                    <etools-icon name="icons:attachment" class="download-icon"> </etools-icon>
+                    <etools-icon name="attachment" class="download-icon"> </etools-icon>
                     <a href="${item.url}" class="truncate" title="${item.filename}" target="_blank"
                       >${item.filename}
                     </a>

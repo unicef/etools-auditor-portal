@@ -33,7 +33,7 @@ export class SupportBtn extends MatomoMixin(LitElement) {
       >
         <!--    the etools-button fixes the cursor pointer issue when hovering over the icon label    -->
         <etools-button @click="${this.trackAnalytics}" tracker="Support">
-          <etools-icon name="textsms"></etools-icon>
+          <etools-icon name="communication:textsms"></etools-icon>
           Support
         </etools-button>
       </a>

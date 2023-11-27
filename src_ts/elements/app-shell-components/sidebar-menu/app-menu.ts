@@ -29,11 +29,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
         </span>
 
         <span class="ripple-wrapper main">
-          <etools-icon
-            id="menu-header-top-icon"
-            name="ap-icons:fam-icon"
-            @click="${this._toggleSmallMenu}"
-          ></etools-icon>
+          <etools-icon id="menu-header-top-icon" name="fam-icon" @click="${this._toggleSmallMenu}"></etools-icon>
         </span>
         <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
 
@@ -73,7 +69,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Implementation Intelligence"
         >
-          <etools-icon id="power-bi-icon" name="ap-icons:power-bi"></etools-icon>
+          <etools-icon id="power-bi-icon" name="power-bi"></etools-icon>
           <div class="name">Implementation Intelligence</div>
         </a>
         <paper-tooltip for="power-bi-icon" position="right"> Implementation Intelligence </paper-tooltip>
@@ -97,7 +93,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Discussion"
         >
-          <etools-icon id="discussion-icon" name="icons:question-answer"></etools-icon>
+          <etools-icon id="discussion-icon" name="question-answer"></etools-icon>
           <div class="name">Discussion</div>
         </a>
         <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
@@ -109,7 +105,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Information"
         >
-          <etools-icon id="information-icon" name="icons:info"></etools-icon>
+          <etools-icon id="information-icon" name="info"></etools-icon>
           <div class="name">Information</div>
         </a>
         <paper-tooltip for="information-icon" position="right"> Information </paper-tooltip>
