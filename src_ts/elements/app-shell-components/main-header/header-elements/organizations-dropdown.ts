@@ -47,17 +47,6 @@ export class OrganizationsDropdown extends LitElement {
 
   @query('#organizationSelector') organizationSelectorDropdown!: EtoolsDropdownEl;
 
-  public connectedCallback() {
-    super.connectedCallback();
-
-    setTimeout(() => {
-      const fitInto = document.querySelector('app-shell')!.shadowRoot!.querySelector('#appHeadLayout');
-      if (fitInto && this.organizationSelectorDropdown) {
-        this.organizationSelectorDropdown.fitInto = fitInto;
-      }
-    }, 500);
-  }
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
