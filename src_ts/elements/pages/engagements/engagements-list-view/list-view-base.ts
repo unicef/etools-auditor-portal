@@ -54,7 +54,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
           display: block;
         }
 
-        paper-input.vendor-number-input {
+        etools-input.vendor-number-input {
           max-width: 45%;
           margin-top: 6px !important;
         }

@@ -4,7 +4,7 @@ import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-dialog/etools-dialog.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/paper-input/paper-textarea.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-dropdown/etools-dropdown.js';

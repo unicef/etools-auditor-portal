@@ -9,7 +9,7 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-data-table/etools-data-table';
 import '@unicef-polymer/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import './subject-area-element';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';

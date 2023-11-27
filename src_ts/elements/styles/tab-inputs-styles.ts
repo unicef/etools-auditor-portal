@@ -94,7 +94,7 @@ export const tabInputsStyles = css`
 
   etools-dropdown,
   etools-dropdown-multi,
-  paper-input,
+  etools-input,
   paper-textarea,
   paper-dropdown-menu,
   datepicker-lite,
@@ -180,7 +180,7 @@ export const tabInputsStyles = css`
     }
   }
 
-  paper-input[required]:not([disabled]),
+  etools-input[required]:not([disabled]),
   paper-input.required:not([disabled]),
   paper-input-container[required]:not([disabled]),
   paper-input-container.required:not([disabled]),

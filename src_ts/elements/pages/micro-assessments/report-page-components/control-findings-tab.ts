@@ -8,8 +8,8 @@ import '@unicef-polymer/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@polymer/paper-input/paper-input';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -127,7 +127,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Finding -->
-              <paper-input
+              <etools-input
                 class="w100 validate-input ${this._setRequired('findings.finding', this.optionsData)}"
                 .value="${this.editedItem.finding}"
                 label="${this.getLabel('findings.finding', this.optionsData)}"
@@ -140,7 +140,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => (this.editedItem.finding = detail.value)}"
               >
-              </paper-input>
+              </etools-input>
             </div>
           </div>
           <div class="layout-horizontal">

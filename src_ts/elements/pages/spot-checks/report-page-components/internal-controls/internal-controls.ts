@@ -1,6 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-content-panel/etools-content-panel';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';

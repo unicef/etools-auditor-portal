@@ -1,7 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-textarea.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';

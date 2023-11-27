@@ -1,6 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-input/paper-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
@@ -143,14 +143,14 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         <div class="layout-horizontal">
           <div class="col col-4">
             <!-- Implementing partner name -->
-            <paper-input
+            <etools-input
               class="w100 validate-input"
               .value="${this.editedItem.partner?.name}"
               label="${this.getLabel('partner.name', this.optionsData)}"
               placeholder="${this.getPlaceholderText('partner.name', this.optionsData)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="col col-4">
@@ -281,46 +281,46 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
 
           <div class="col col-4">
             <!-- Number of financial findings -->
-            <paper-input
+            <etools-input
               .value="${this.editedItem.number_of_financial_findings}"
               label="${this.getLabel('number_of_financial_findings', this.optionsData)}"
               placeholder="${this.getPlaceholderText('number_of_financial_findings', this.optionsData)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="col col-4">
             <!-- High risk -->
-            <paper-input
+            <etools-input
               .value="${this.editedItem.key_internal_weakness?.high_risk_count}"
               label="${this.getLabel('key_internal_weakness.high_risk_count', this.optionsData)}"
               placeholder="${this.getPlaceholderText('key_internal_weakness.high_risk_count', this.optionsData)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="col col-4">
             <!-- Medium risk -->
-            <paper-input
+            <etools-input
               .value="${this.editedItem.key_internal_weakness?.medium_risk_count}"
               label="${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}"
               placeholder="${this.getPlaceholderText('key_internal_weakness.medium_risk_count', this.optionsData)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="col col-4">
             <!-- Low risk -->
-            <paper-input
+            <etools-input
               .value="${this.editedItem.key_internal_weakness?.low_risk_count}"
               label="${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}"
               placeholder="${this.getPlaceholderText('key_internal_weakness.low_risk_count', this.optionsData)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
         </div>
       </etools-dialog>
