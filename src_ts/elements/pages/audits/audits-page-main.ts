@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tabs/paper-tabs';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/iron-pages/iron-pages';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -228,7 +228,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -238,7 +238,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>

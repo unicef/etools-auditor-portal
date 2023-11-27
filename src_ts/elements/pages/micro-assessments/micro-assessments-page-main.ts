@@ -22,7 +22,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import assign from 'lodash-es/assign';
 import './questionnaire-components/questionnaire-page-main/questionnaire-page-main';
 import '../../common-elements/status-tab-element/status-tab-element';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import './report-page-components/ma-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import {RootState, store} from '../../../redux/store';
@@ -240,7 +240,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -250,7 +250,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>

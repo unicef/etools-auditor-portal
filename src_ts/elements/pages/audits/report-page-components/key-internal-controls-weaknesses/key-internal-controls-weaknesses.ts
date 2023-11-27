@@ -1,7 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -192,7 +192,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
 
           <div class="layout-horizontal">
             <div class="col col-12">
-              <paper-textarea
+              <etools-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
                   this.optionsData
@@ -211,13 +211,13 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 }}"
                 @focus="${this._resetFieldError}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
-              <paper-textarea
+              <etools-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
                   this.optionsData
@@ -236,13 +236,13 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                   this.editedBlueprint = {...this.editedBlueprint};
                 }}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
-              <paper-textarea
+              <etools-textarea
                 class="${this._setRequired(
                   'key_internal_weakness.blueprints.risks.extra',
                   this.optionsData
@@ -261,7 +261,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                   this.editedBlueprint = {...this.editedBlueprint};
                 }}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
         </etools-dialog>

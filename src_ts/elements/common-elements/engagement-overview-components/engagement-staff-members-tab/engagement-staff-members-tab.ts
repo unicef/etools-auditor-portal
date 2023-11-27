@@ -2,15 +2,12 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import '@polymer/paper-input/paper-input.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-input-container.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
-
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -130,10 +127,10 @@ export class EngagementStaffMembersTab extends connect(store)(
             display: none;
           }
         }
-        paper-input.search-input.filled {
+        etools-input.search-input.filled {
           --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
         }
-        paper-input.email {
+        etools-input.email {
           --paper-input-error_-_position: position: relative !important;
           --paper-input-error_-_white-space: normal;
         }
@@ -183,7 +180,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         <div slot="panel-btns">
           <div class="panel-btns-container">
             <div class="search-input-container" ?hidden="${!this._showPagination(this.datalength)}">
-              <paper-input
+              <etools-input
                 id="searchInput"
                 class="search-input  ${this._getSearchInputClass(this.searchString)}"
                 placeholder="Search"
@@ -196,7 +193,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                 }}"
               >
                 <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
-              </paper-input>
+              </etools-input>
               <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
             </div>
             <sl-switch

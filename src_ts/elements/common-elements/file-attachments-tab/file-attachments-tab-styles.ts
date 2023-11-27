@@ -45,7 +45,7 @@ export const fileAttachmentsTabStyles = html`
       }
     }
 
-    paper-input {
+    etools-input {
       --paper-input-container-underline: {
         border-bottom: 1px solid var(--gray-20) !important;
       }

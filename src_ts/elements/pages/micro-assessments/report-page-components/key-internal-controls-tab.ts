@@ -10,7 +10,7 @@ import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import './subject-area-element';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
@@ -127,7 +127,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
             <div class="layout-horizontal">
               <div class="col col-12">
                 <!-- Brief Justification -->
-                <paper-textarea
+                <etools-textarea
                   id="briefJustification"
                   class="validate-input required w100"
                   .value="${this.editedArea?.blueprints[0]?.risk?.extra?.comments}"
@@ -148,7 +148,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
                     }
                   }}"
                 >
-                </paper-textarea>
+                </etools-textarea>
               </div>
             </div>
           </div>

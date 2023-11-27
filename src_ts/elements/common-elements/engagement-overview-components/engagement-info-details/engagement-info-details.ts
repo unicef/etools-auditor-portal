@@ -2,11 +2,9 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import '@polymer/paper-input/paper-input.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-input-container.js';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
@@ -21,7 +19,7 @@ import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 
 import get from 'lodash-es/get';
-import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
@@ -152,7 +150,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
         <div class="row-h group  float">
           <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Purchase Order -->
-            <paper-input
+            <etools-input
               id="purchaseOrder"
               class="w100 ${this._setRequired('agreement', this.optionsData)}"
               field="agreement"
@@ -172,7 +170,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 this.valueChanged(detail, 'order_number', this.data.agreement);
               }}"
             >
-            </paper-input>
+            </etools-input>
 
             <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="po-loading">
             </etools-loading>
@@ -180,7 +178,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
           <div class="input-container">
             <!-- Auditor -->
-            <paper-input
+            <etools-input
               id="auditorInput"
               class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
               .value="${this.data.agreement?.auditor_firm?.name}"
@@ -188,7 +186,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container" ?hidden="${this._hideField('po_item', this.optionsData)}">
@@ -691,7 +689,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   firstUpdated(changedProperties: PropertyValues): void {
     super.firstUpdated(changedProperties);
 
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
     purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
   }
 
@@ -837,7 +835,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   validate() {
-    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
     const orderValid = orderField && orderField.validate();
 
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
@@ -851,10 +849,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       }
     });
 
-    const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as PaperInputElement;
-    const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as PaperInputElement;
-    const startValue = periodStart ? Date.parse(periodStart.value!) : 0;
-    const endValue = periodEnd ? Date.parse(periodEnd.value!) : 0;
+    const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as EtoolsInput;
+    const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as EtoolsInput;
+    const startValue = periodStart ? Date.parse(periodStart.value! as string) : 0;
+    const endValue = periodEnd ? Date.parse(periodEnd.value! as string) : 0;
 
     if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
       periodEnd.errorMessage = 'This date should be after Period Start Date';
@@ -927,7 +925,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
     this.requestInProcess = false;
 
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
     purchaseOrderEl.validate();
   }
 

@@ -13,7 +13,7 @@ import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
-import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
+import {EtoolsTextarea} from '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import {GenericObject} from '../../../../../types/global';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import '../risk-tab/risk-tab';
@@ -171,7 +171,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
           <div class="layout-horizontal">
             <div class="col col-12">
                 <!-- Comments -->
-                <paper-textarea
+                <etools-textarea
                   id="riskAssessmentComments"
                   class="w100 validate-input"
                   .value="${this.editedItem?.risk?.extra?.comments}"
@@ -194,7 +194,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
                     this.editedItem.risk.extra.comments = detail.value;
                   }}}"
                 >
-                </paper-textarea>
+                </etools-textarea>
               </div>
             </div>
 
@@ -410,9 +410,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
 
   validate() {
     const riskValid = this.riskAssessmentDropdown.validate();
-    const commentsValid = (
-      this.shadowRoot!.querySelector('#riskAssessmentComments') as PaperTextareaElement
-    ).validate();
+    const commentsValid = (this.shadowRoot!.querySelector('#riskAssessmentComments') as EtoolsTextarea).validate();
 
     return riskValid && commentsValid;
   }
@@ -495,7 +493,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     this.riskAssessmentDropdown.invalid = false;
     this.riskAssessmentDropdown.selected = null;
 
-    const riskAssessmentComments = this.shadowRoot!.querySelector('#riskAssessmentComments') as PaperTextareaElement;
+    const riskAssessmentComments = this.shadowRoot!.querySelector('#riskAssessmentComments') as EtoolsTextarea;
     riskAssessmentComments.invalid = false;
     riskAssessmentComments.value = '';
   }

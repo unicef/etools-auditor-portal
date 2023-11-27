@@ -81,7 +81,7 @@ export const tabInputsStyles = css`
     font-size: 14px;
   }
 
-  etools-dialog paper-textarea {
+  etools-dialog etools-textarea {
     --paper-input-container-input: {
       display: block;
     }
@@ -94,8 +94,8 @@ export const tabInputsStyles = css`
 
   etools-dropdown,
   etools-dropdown-multi,
-  paper-input,
-  paper-textarea,
+  etools-input,
+  etools-textarea,
   paper-dropdown-menu,
   datepicker-lite,
   etools-currency-amount-input {
@@ -151,7 +151,7 @@ export const tabInputsStyles = css`
     }
   }
 
-  paper-textarea {
+  etools-textarea {
     --paper-input-container-input: {
       white-space: normal;
       display: block !important;
@@ -180,7 +180,7 @@ export const tabInputsStyles = css`
     }
   }
 
-  paper-input[required]:not([disabled]),
+  etools-input[required]:not([disabled]),
   paper-input.required:not([disabled]),
   paper-input-container[required]:not([disabled]),
   paper-input-container.required:not([disabled]),
@@ -189,7 +189,7 @@ export const tabInputsStyles = css`
   etools-dropdown-multi[required]:not([disabled]),
   etools-upload[required]:not([disabled]),
   etools-currency-amount-input[required]:not([disabled]),
-  paper-textarea[required]:not([disabled]) {
+  etools-textarea[required]:not([disabled]) {
     --paper-input-container-label: {
       @apply --required-star-style;
     }
@@ -363,7 +363,7 @@ export const tabInputsStyles = css`
   etools-dropdown-multi[disabled],
   etools-currency-amount-input[disabled],
   etools-dropdown[disabled],
-  paper-textarea[disabled],
+  etools-textarea[disabled],
   paper-dropdown-menu[disabled],
   paper-input[disabled],
   datepicker-lite[disabled] {
@@ -386,7 +386,7 @@ export const tabInputsStyles = css`
   etools-dropdown-multi[readonly],
   etools-currency-amount-input[readonly],
   etools-dropdown[readonly],
-  paper-textarea[readonly],
+  etools-textarea[readonly],
   paper-dropdown-menu[readonly],
   paper-input[readonly],
   datepicker-lite[readonly] {

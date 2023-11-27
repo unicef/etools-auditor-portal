@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -146,7 +146,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
             <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Recommendation -->
-                  <paper-textarea
+                  <etools-textarea
                     class="w100 ${this._setRequired(
                       'key_internal_controls.recommendation',
                       this.optionsData
@@ -162,14 +162,14 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                     @value-changed="${({detail}: CustomEvent) =>
                       this.valueChanged(detail, 'recommendation', this.editedItem)}""
                   >
-                  </paper-textarea>
+                  </etools-textarea>
                 </div>
               </div>
 
               <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Audit Observation -->
-                  <paper-textarea
+                  <etools-textarea
                     class="w100 ${this._setRequired(
                       'key_internal_controls.audit_observation',
                       this.optionsData
@@ -188,14 +188,14 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                     @value-changed="${({detail}: CustomEvent) =>
                       this.valueChanged(detail, 'audit_observation', this.editedItem)}""
                   >
-                  </paper-textarea>
+                  </etools-textarea>
                 </div>
               </div>
 
                <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- IP Response -->
-                  <paper-textarea
+                  <etools-textarea
                     class="w100 ${this._setRequired('key_internal_controls.ip_response', this.optionsData)}
                                           validate-input"
                     .value="${this.editedItem.ip_response}"
@@ -209,7 +209,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
                     @value-changed="${({detail}: CustomEvent) =>
                       this.valueChanged(detail, 'ip_response', this.editedItem)}""
                   >
-                  </paper-textarea>
+                  </etools-textarea>
                 </div>
               </div>
             </div>

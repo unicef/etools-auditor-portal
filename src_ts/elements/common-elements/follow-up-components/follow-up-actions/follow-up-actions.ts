@@ -4,7 +4,7 @@ import '@unicef-polymer/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
-import '@polymer/paper-input/paper-textarea.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
@@ -331,7 +331,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                     <div class="layout-horizontal">
                         <div class="col col-12">
                             <!-- Description -->
-                            <paper-textarea
+                            <etools-textarea
                                     class="w100 validate-input ${this._setRequired('description', this.editedApBase)}"
                                     .value="${this.editedItem.description}"
                                     allowed-pattern="[\d\s]"
@@ -349,7 +349,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                                     @value-changed="${({detail}: CustomEvent) =>
                                       (this.editedItem.description = detail.value)}"
                                     @focus="${this._resetFieldError}">
-                            </paper-textarea>
+                            </etools-textarea>
                         </div>
                     </div>
 

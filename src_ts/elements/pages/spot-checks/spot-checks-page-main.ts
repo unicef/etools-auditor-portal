@@ -228,7 +228,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -238,7 +238,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>

@@ -1,11 +1,9 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/paper-input/paper-input.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-input-container.js';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
@@ -67,11 +65,11 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
           <div class="input-container">
             <!-- Partner -->
             ${this.isReadOnly('partner', this.optionsData)
-              ? html`<paper-input
+              ? html`<etools-input
                   label="${this.getLabel('partner', this.optionsData)}"
                   .value="${this.partner?.name}"
                   readonly
-                ></paper-input>`
+                ></etools-input>`
               : html`<etools-dropdown
                   id="partner"
                   class="${this._setRequired('partner', this.optionsData)} ${this._setReadonlyClass(
@@ -99,40 +97,40 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
           </div>
           <div class="input-container input-container-m">
             <!-- Partner Address -->
-            <paper-input
+            <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this._setPartnerAddress(this.partner)}"
               label="Partner Address"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
         </div>
 
         <div class="row-h group">
           <div class="input-container">
             <!-- Partner Phone Number -->
-            <paper-input
+            <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this.partner?.phone_number}"
               label="${this.getLabel('partner.phone_number', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container">
             <!-- Partner E-mail Address -->
-            <paper-input
+            <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this.partner?.email}"
               label="${this.getLabel('partner.email', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container">

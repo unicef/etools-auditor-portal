@@ -13,7 +13,7 @@ import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
-import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
+import {LoadingMixin} from '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading-mixin';
 
 import './elements/app-shell-components/sidebar-menu/app-menu.js';
 import './elements/app-shell-components/main-header/page-header.js';

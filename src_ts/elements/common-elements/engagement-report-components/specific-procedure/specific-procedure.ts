@@ -1,13 +1,10 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/paper-input/paper-input.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-input-container.js';
-
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
-
 import {GenericObject} from '../../../../types/global';
 import isString from 'lodash-es/isString';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -19,7 +16,7 @@ import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import {checkNonField} from '../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../utils/utils';
@@ -147,7 +144,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
             ? html`<div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Description -->
-                  <paper-textarea
+                  <etools-textarea
                     class="w100 validate-input ${this._setRequired(
                       'specific_procedures.description',
                       this.optionsData
@@ -165,7 +162,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                       (this.editedItem = {...this.editedItem, description: detail.value})}"
                     @focus="${this._resetFieldError}"
                   >
-                  </paper-textarea>
+                  </etools-textarea>
                 </div>
               </div>`
             : ``}
@@ -173,7 +170,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
             ? html` <div class="layout-horizontal">
                 <div class="col col-12">
                   <!-- Finding -->
-                  <paper-textarea
+                  <etools-textarea
                     class="w100 validate-input ${this._setRequired('specific_procedures.finding', this.optionsData)}"
                     .value="${this.editedItem?.finding}"
                     allowed-pattern="[ds]"
@@ -188,7 +185,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
                       (this.editedItem = {...this.editedItem, finding: detail.value})}"
                     @focus="${this._resetFieldError}"
                   >
-                  </paper-textarea>
+                  </etools-textarea>
                 </div>
               </div>`
             : ``}

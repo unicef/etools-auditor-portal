@@ -1,6 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
@@ -45,7 +45,7 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
 
         <div class="layout-horizontal">
           <div class="col col-12">
-            <paper-textarea
+            <etools-textarea
               class="w100 ${this._setRequired('internalControls', this.optionsData)}"
               .value="${this.data}"
               label="Document any changes identified"
@@ -58,7 +58,7 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
               @value-changed="${({detail}: CustomEvent) => (this.data = detail.value)}"
               @focus="${this._resetFieldError}"
             >
-            </paper-textarea>
+            </etools-textarea>
           </div>
         </div>
       </etools-content-panel>

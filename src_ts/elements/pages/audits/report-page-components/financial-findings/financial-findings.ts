@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@polymer/paper-tooltip/paper-tooltip';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -249,7 +249,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Description -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.description', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.description}"
@@ -264,14 +264,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'description', this.editedItem)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- Recommendation -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.recommendation', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.recommendation}"
@@ -287,14 +287,14 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @value-changed="${({detail}: CustomEvent) =>
                   this.valueChanged(detail, 'recommendation', this.editedItem)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
 
           <div class="layout-horizontal">
             <div class="col col-12">
               <!-- IP comments -->
-              <paper-textarea
+              <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}
                             fixed-width validate-input"
                 .value="${this.editedItem.ip_comments}"
@@ -309,7 +309,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'ip_comments', this.editedItem)}"
               >
-              </paper-textarea>
+              </etools-textarea>
             </div>
           </div>
         </etools-dialog>

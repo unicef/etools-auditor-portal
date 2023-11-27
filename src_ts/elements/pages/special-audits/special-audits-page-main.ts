@@ -241,7 +241,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                 <div class="repeatable-item-content">
                   <div class="row-h group">
                     <div class="input-container input-container-l">
-                      <paper-textarea
+                      <etools-textarea
                         id="cancellationReasonInput"
                         class="required"
                         label="Cancellation Reason"
@@ -251,7 +251,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                         error-message="This field is required."
                         @focus="${this._resetFieldError}"
                       >
-                      </paper-textarea>
+                      </etools-textarea>
                     </div>
                   </div>
                 </div>

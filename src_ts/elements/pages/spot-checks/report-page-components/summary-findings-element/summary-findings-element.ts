@@ -1,8 +1,8 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-input/paper-input';
-import '@polymer/paper-input/paper-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
@@ -206,7 +206,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
             <div class="layout-horizontal">
               <div class="col col-12">
                 <!-- Recommendation -->
-                <paper-textarea
+                <etools-textarea
                   class="${this._setRequired('findings.recommendation', this.optionsData)} validate-input w100"
                   .value="${this.editedItem?.recommendation}"
                   allowed-pattern="[\\d\\s]"
@@ -222,14 +222,14 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
                   @value-changed="${({detail}: CustomEvent) =>
                     this.valueChanged(detail, 'recommendation', this.editedItem)}"
                 >
-                </paper-textarea>
+                </etools-textarea>
               </div>
             </div>
 
             <div class="layout-horizontal">
               <div class="col col-12">
                 <!-- Agreed Action by IP -->
-                <paper-textarea
+                <etools-textarea
                   class="${this._setRequired('findings.agreed_action_by_ip', this.optionsData)}
                                validate-input w100"
                   .value="${this.editedItem?.agreed_action_by_ip}"
@@ -246,7 +246,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
                   @value-changed="${({detail}: CustomEvent) =>
                     this.valueChanged(detail, 'agreed_action_by_ip', this.editedItem)}"
                 >
-                </paper-textarea>
+                </etools-textarea>
               </div>
             </div>
 
