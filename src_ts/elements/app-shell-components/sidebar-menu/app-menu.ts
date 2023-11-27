@@ -6,7 +6,6 @@ import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {apIcons} from '../../styles/ap-icons';
 import {BASE_PATH} from '../../config/config';
 
 /**
@@ -20,7 +19,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
     // main template
     // language=HTML
     return html`
-      ${navMenuStyles} ${apIcons}
+      ${navMenuStyles}
       <div class="menu-header">
         <span id="app-name">
           FINANCIAL <br />

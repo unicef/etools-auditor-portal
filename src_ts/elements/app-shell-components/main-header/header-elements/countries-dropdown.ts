@@ -1,7 +1,6 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {GenericObject} from '../../../../types/global';
@@ -44,15 +43,6 @@ export class CountriesDropdown extends LitElement {
 
   @property({type: Object})
   currentCountry!: GenericObject;
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    setTimeout(() => {
-      const fitInto = document.querySelector('app-shell')!.shadowRoot!.querySelector('#appHeadLayout');
-      (this.shadowRoot?.querySelector('#countrySelector') as EtoolsDropdownEl).fitInto = fitInto;
-    }, 0);
-  }
 
   _countrySelected(e) {
     if (!e.detail.selectedItem) {

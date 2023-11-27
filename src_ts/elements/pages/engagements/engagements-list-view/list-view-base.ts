@@ -13,7 +13,7 @@ import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
 import '@unicef-polymer/etools-unicef/src/etools-table/etools-table';
-import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
+import {EtoolsTableColumnType} from '@unicef-polymer/etools-unicef/src/etools-table/etools-table.js';
 import {
   EtoolsPaginator,
   defaultPaginator,
