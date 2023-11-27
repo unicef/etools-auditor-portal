@@ -6,11 +6,11 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 import '@polymer/paper-input/paper-input-container.js';
 
 import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
-import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 
 import findIndex from 'lodash-es/findIndex';
 import get from 'lodash-es/get';

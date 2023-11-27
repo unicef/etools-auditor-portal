@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@polymer/app-layout/app-layout';
 import '@polymer/paper-tabs/paper-tabs';
 import '@polymer/iron-pages/iron-pages';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '../../common-elements/pages-header-element/pages-header-element';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/status-tab-element/status-tab-element';

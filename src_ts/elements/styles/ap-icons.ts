@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const apIcons = {
   powerBi: `<path
         clip-path="url(#SVGID_2_)"

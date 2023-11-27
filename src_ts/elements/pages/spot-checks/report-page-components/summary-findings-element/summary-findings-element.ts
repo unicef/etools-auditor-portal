@@ -6,10 +6,12 @@ import '@polymer/paper-input/paper-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -51,7 +53,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           .repeatable-item-container[without-line] {
             min-width: 0 !important;
             margin-bottom: 0 !important;

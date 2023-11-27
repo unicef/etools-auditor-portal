@@ -5,11 +5,13 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 import '@polymer/paper-tooltip/paper-tooltip';
 import '@polymer/paper-input/paper-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -43,7 +45,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     return html`
       ${sharedStyles}
       <style>
-        .repeatable-item-container[without-line] {
+        ${dataTableStylesLit} .repeatable-item-container[without-line] {
           min-width: 0 !important;
           margin-bottom: 0 !important;
         }

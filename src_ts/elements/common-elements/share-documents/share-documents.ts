@@ -1,10 +1,11 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {PaperCheckboxElement} from '@polymer/paper-checkbox/paper-checkbox';
-import '@unicef-polymer/etools-data-table/etools-data-table.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsCheckbox} from '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {GenericObject} from '../../../types/global';
 import clone from 'lodash-es/clone';
 import remove from 'lodash-es/remove';
@@ -39,6 +40,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
     return html`
       ${sharedStyles}
       <style>
+        ${dataTableStylesLit}
         :host {
           overflow: hidden;
         }
@@ -65,7 +67,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
           text-overflow: ellipsis;
           padding-right: 10px;
         }
-        .row-data > paper-checkbox {
+        .row-data > etools-checkbox {
           padding-right: 14px;
         }
         a {
@@ -118,7 +120,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
                   (item) => html` <etools-data-table-row no-collapse>
                     <div slot="row-data" class="layout-horizontal row-data">
                       <span class="col-data col-3">
-                        <paper-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></paper-checkbox>
+                        <etools-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></etools-checkbox>
                         <span class="pd"> ${this._getReferenceNumber(item.agreement_reference_number)} </span>
                       </span>
                       <span class="col-data col-3">${item.file_type}</span>
@@ -214,7 +216,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
   }
 
   _toggleChecked(e, id) {
-    const isChecked = (e.target as PaperCheckboxElement).checked;
+    const isChecked = (e.target as EtoolsCheckbox).checked;
     if (isChecked) {
       this.selectedAttachments.push({attachment: id});
     } else {

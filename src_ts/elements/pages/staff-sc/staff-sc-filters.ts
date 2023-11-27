@@ -1,5 +1,6 @@
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
-import {EtoolsFilterTypes} from '@unicef-polymer/etools-filters/src/etools-filters';
+import {FiltersHelper} from '@unicef-polymer/etools-unicef/src/etools-filters/filters-helper.class';
+import {EtoolsFilterTypes} from '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 
 export enum StaffScFilterKeys {
   search = 'search',
@@ -12,7 +13,7 @@ export enum StaffScFilterKeys {
   date_of_draft_report_to_ip__gte = 'date_of_draft_report_to_ip__gte'
 }
 
-export const StaffScSelectedValueTypeByFilterKey: AnyObject = {
+export const selectedValueTypeByFilterKey: AnyObject = {
   [StaffScFilterKeys.search]: 'string',
   [StaffScFilterKeys.partner__in]: 'Array',
   [StaffScFilterKeys.status__in]: 'Array',
@@ -22,6 +23,8 @@ export const StaffScSelectedValueTypeByFilterKey: AnyObject = {
   [StaffScFilterKeys.date_of_draft_report_to_ip__lte]: 'string',
   [StaffScFilterKeys.date_of_draft_report_to_ip__gte]: 'string'
 };
+
+export const StaffScFiltersHelper = new FiltersHelper(selectedValueTypeByFilterKey);
 
 export function getStaffScFilters() {
   return [
