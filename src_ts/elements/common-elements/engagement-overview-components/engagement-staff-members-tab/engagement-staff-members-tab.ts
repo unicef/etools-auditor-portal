@@ -210,7 +210,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                 href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
-                <etools-icon id="information-icon" name="icons:open-in-new"></etools-icon>
+                <etools-icon id="information-icon" name="open-in-new"></etools-icon>
               </a>
               <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
             </div>

@@ -1,8 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/app-layout/app-toolbar/app-toolbar.js';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
 import '@unicef-polymer/etools-app-selector';
 import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
 import './header-elements/countries-dropdown';
@@ -82,7 +81,6 @@ export class PageHeader extends MatomoMixin(LitElement) {
       </style>
 
       <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
-        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
         <div class="titlebar layout-horizontal align-items-center">
           <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
