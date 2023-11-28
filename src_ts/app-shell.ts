@@ -10,7 +10,6 @@ import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
 import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
-import '@polymer/iron-pages/iron-pages';
 import get from 'lodash-es/get';
 import {LoadingMixin} from '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading-mixin';
 
@@ -135,34 +134,46 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
           </app-header>
 
           <main role="main" class="main-content">
-              <engagements-page-main name="engagements" id="engagements"
-                ?hidden="${!this.isActivePage(this.page, 'engagements')}">
-              </engagements-page-main>
+            <engagements-page-main
+              name="engagements"
+              id="engagements"
+              ?hidden="${!this.isActivePage(this.page, 'engagements')}"
+            >
+            </engagements-page-main>
 
-              <staff-sc-page-main name="staff-sc" id="staff-sc"
-                ?hidden="${!this.isActivePage(this.page, 'staff-sc')}">
-              </staff-sc-page-main>
+            <staff-sc-page-main name="staff-sc" id="staff-sc" ?hidden="${!this.isActivePage(this.page, 'staff-sc')}">
+            </staff-sc-page-main>
 
-              <audits-page-main name="audits" id="audits"
-                 ?hidden="${!this.isActivePage(this.page, 'audits')}">
-              </audits-page-main>
+            <audits-page-main name="audits" id="audits" ?hidden="${!this.isActivePage(this.page, 'audits')}">
+            </audits-page-main>
 
-              <special-audits-page-main name="special-audits" id="special-audits"
-                 ?hidden="${!this.isActivePage(this.page, 'special-audits')}">
-              </special-audits-page-main>
+            <special-audits-page-main
+              name="special-audits"
+              id="special-audits"
+              ?hidden="${!this.isActivePage(this.page, 'special-audits')}"
+            >
+            </special-audits-page-main>
 
-              <micro-assessments-page-main name="micro-assessments" id="micro-assessments"
-                ?hidden="${!this.isActivePage(this.page, 'micro-assessments')}">
-              </micro-assessments-page-main>
+            <micro-assessments-page-main
+              name="micro-assessments"
+              id="micro-assessments"
+              ?hidden="${!this.isActivePage(this.page, 'micro-assessments')}"
+            >
+            </micro-assessments-page-main>
 
-              <spot-checks-page-main name="spot-checks" id="spot-checks"
-                 ?hidden="${!this.isActivePage(this.page, 'spot-checks|staff-spot-checks')}">
-              </spot-checks-page-main>
+            <spot-checks-page-main
+              name="spot-checks"
+              id="spot-checks"
+              ?hidden="${!this.isActivePage(this.page, 'spot-checks|staff-spot-checks')}"
+            >
+            </spot-checks-page-main>
 
-              <not-found-page-view name="not-found" id="not-found"
-               ?hidden="${!this.isActivePage(this.page, 'not-found')}">
-              </not-found-page-view>
-            </iron-pages>
+            <not-found-page-view
+              name="not-found"
+              id="not-found"
+              ?hidden="${!this.isActivePage(this.page, 'not-found')}"
+            >
+            </not-found-page-view>
           </main>
           <page-footer></page-footer>
         </app-header-layout>

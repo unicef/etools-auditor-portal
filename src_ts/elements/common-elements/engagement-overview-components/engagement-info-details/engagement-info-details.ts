@@ -26,7 +26,7 @@ import {collectionExists, getOptionsChoices} from '../../../mixins/permission-co
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import famEndpoints from '../../../config/endpoints';
-import {sendRequest} from '@unicef-polymer/etools-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import clone from 'lodash-es/clone';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {connect} from 'pwa-helpers/connect-mixin';

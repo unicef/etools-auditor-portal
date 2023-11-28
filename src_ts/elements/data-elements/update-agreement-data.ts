@@ -2,7 +2,7 @@ import {LitElement, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**

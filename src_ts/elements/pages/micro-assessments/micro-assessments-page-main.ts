@@ -1,8 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-pages/iron-pages';
-import '@polymer/paper-tabs/paper-tab';
-import '@polymer/paper-tabs/paper-tabs';
+import '@unicef-polymer/etools-modules-common/dist/layout/etools-tabs';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
@@ -29,7 +27,8 @@ import {RootState, store} from '../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import get from 'lodash-es/get';
-import {pageIsNotCurrentlyActive} from '../../utils/utils';
+import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
  * @customElement
@@ -78,145 +77,124 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
             </pages-header-element>
 
             <div class="tab-selector">
-              <paper-tabs
-                attr-for-selected="name"
-                noink
-                bottom-item
-                selectable="paper-tab"
-                role="tablist"
-                tabindex="0"
-                .selected="${this.tab}"
-                @selected-changed="${(e: CustomEvent) => {
-                  if (this.tab !== e.detail.value) {
-                    this._tabChanged(e.detail.value, this.tab);
+              <etools-tabs-lit
+                border-bottom
+                .tabs="${this.tabsList}"
+                .activeTab="${this.tab}"
+                @sl-tab-show="${(e: CustomEvent) => {
+                  if (this.tab !== e.detail.name) {
+                    this._tabChanged(e.detail.name, this.tab);
+                    this.tab = e.detail.name;
                   }
                 }}"
                 id="pageTabs"
-              >
-                <paper-tab name="overview">
-                  <span class="tab-content">Engagement Overview</span>
-                </paper-tab>
-
-                ${this._showReportTabs(this.engagementOptions, this.engagement)
-                  ? html`<paper-tab name="report"><span class="tab-content">Report</span></paper-tab>`
-                  : ``}
-                ${this._showQuestionnaire(this.engagementOptions, this.engagement)
-                  ? html` <paper-tab name="questionnaire"><span class="tab-content">Questionnaire</span></paper-tab>`
-                  : ``}
-                ${this._showFollowUpTabs(this.apOptions)
-                  ? html`<paper-tab name="follow-up"><span class="tab-content">Follow-Up</span></paper-tab>`
-                  : ``}
-
-                <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-              </paper-tabs>
+              ></etools-tabs-lit>
             </div>
 
             <div class="view-container">
               <div id="pageContent">
-                <iron-pages id="info-tabs" .selected="${this.tab}" attr-for-selected="name">
-                  <div name="overview">
-                    ${this._showCancellationReason(this.engagement)
-                      ? html`<etools-content-panel class="cancellation-tab" panel-title="">
-                          <div slot="panel-btns" class="bookmark">
-                            <etools-icon name="bookmark"></etools-icon>
-                          </div>
+                <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+                  ${this._showCancellationReason(this.engagement)
+                    ? html`<etools-content-panel class="cancellation-tab" panel-title="">
+                        <div slot="panel-btns" class="bookmark">
+                          <etools-icon name="bookmark"></etools-icon>
+                        </div>
 
-                          <div class="cancellation-title">Cancellation Note</div>
-                          <div class="cancellation-text">${this.engagement.cancel_comment}</div>
-                        </etools-content-panel>`
-                      : ``}
-
-                    <engagement-info-details
-                      id="engagementDetails"
-                      .data="${this.engagement}"
-                      .originalData="${this.originalData}"
-                      .errorObject="${this.errorObject}"
-                      .optionsData="${this.engagementOptions}"
-                    >
-                    </engagement-info-details>
-
-                    <partner-details-tab
-                      .originalData="${this.originalData}"
-                      id="partnerDetails"
-                      .engagement="${this.engagement}"
-                      .errorObject="${this.errorObject}"
-                      .optionsData="${this.engagementOptions}"
-                    >
-                    </partner-details-tab>
-
-                    <engagement-staff-members-tab
-                      id="staffMembers"
-                      .engagement="${this.engagement}"
-                      .optionsData="${this.engagementOptions}"
-                      .errorObject="${this.errorObject}"
-                    >
-                    </engagement-staff-members-tab>
-                  </div>
-
-                  ${this._showReportTabs(this.engagementOptions, this.engagement)
-                    ? html`<div name="report">
-                        <ma-report-page-main
-                          id="report"
-                          .originalData="${this.originalData}"
-                          .engagement="${this.engagement}"
-                          .errorObject="${this.errorObject}"
-                          .engagementOptions="${this.engagementOptions}"
-                        >
-                        </ma-report-page-main>
-                      </div>`
-                    : ``}
-                  ${this._showQuestionnaire(this.engagementOptions, this.engagement)
-                    ? html`<div name="questionnaire">
-                        <questionnaire-page-main
-                          id="questionnaire"
-                          .data="${this.engagement.questionnaire}"
-                          .riskAssessment="${this.engagement?.questionnaire?.risk_rating}"
-                          .errorObject="${this.errorObject}"
-                          .optionsData="${this.engagementOptions}"
-                        >
-                        </questionnaire-page-main>
-                      </div>`
-                    : ``}
-                  ${this._showFollowUpTabs(this.apOptions)
-                    ? html`<div name="follow-up">
-                        <follow-up-main
-                          id="follow-up"
-                          .originalData="${this.originalData}"
-                          .errorObject="${this.errorObject}"
-                          .engagement="${this.engagement}"
-                          .optionsData="${this.engagementOptions}"
-                          .apOptionsData="${this.apOptions}"
-                        >
-                        </follow-up-main>
-                      </div>`
+                        <div class="cancellation-title">Cancellation Note</div>
+                        <div class="cancellation-text">${this.engagement.cancel_comment}</div>
+                      </etools-content-panel>`
                     : ``}
 
-                  <div name="attachments">
-                    <file-attachments-tab
-                      id="engagement_attachments"
-                      .optionsData="${this.attachmentOptions}"
-                      .engagement="${this.engagement}"
-                      .errorObject="${this.errorObject}"
-                      .isUnicefUser="${this.user?.is_unicef_user}"
-                      error-property="engagement_attachments"
-                      endpoint-name="attachments"
-                    >
-                    </file-attachments-tab>
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </engagement-info-details>
 
-                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
-                      ? html`<file-attachments-tab
-                          id="report_attachments"
-                          is-report-tab="true"
-                          .optionsData="${this.reportAttachmentOptions}"
-                          .engagement="${this.engagement}"
-                          .errorObject="${this.errorObject}"
-                          error-property="report_attachments"
-                          endpoint-name="reportAttachments"
-                        >
-                        </file-attachments-tab>`
-                      : ``}
-                  </div>
-                </iron-pages>
+                  <partner-details-tab
+                    .originalData="${this.originalData}"
+                    id="partnerDetails"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </partner-details-tab>
+
+                  <engagement-staff-members-tab
+                    id="staffMembers"
+                    .engagement="${this.engagement}"
+                    .optionsData="${this.engagementOptions}"
+                    .errorObject="${this.errorObject}"
+                  >
+                  </engagement-staff-members-tab>
+                </div>
+
+                ${this._showReportTabs(this.engagementOptions, this.engagement)
+                  ? html`<div name="report" ?hidden="${!isActiveTab(this.tab, 'report')}">
+                      <ma-report-page-main
+                        id="report"
+                        .originalData="${this.originalData}"
+                        .engagement="${this.engagement}"
+                        .errorObject="${this.errorObject}"
+                        .engagementOptions="${this.engagementOptions}"
+                      >
+                      </ma-report-page-main>
+                    </div>`
+                  : ``}
+                ${this._showQuestionnaire(this.engagementOptions, this.engagement)
+                  ? html`<div name="questionnaire" ?hidden="${!isActiveTab(this.tab, 'questionnaire')}">
+                      <questionnaire-page-main
+                        id="questionnaire"
+                        .data="${this.engagement.questionnaire}"
+                        .riskAssessment="${this.engagement?.questionnaire?.risk_rating}"
+                        .errorObject="${this.errorObject}"
+                        .optionsData="${this.engagementOptions}"
+                      >
+                      </questionnaire-page-main>
+                    </div>`
+                  : ``}
+                ${this._showFollowUpTabs(this.apOptions)
+                  ? html`<div name="follow-up" ?hidden="${!isActiveTab(this.tab, 'follow-up')}">
+                      <follow-up-main
+                        id="follow-up"
+                        .originalData="${this.originalData}"
+                        .errorObject="${this.errorObject}"
+                        .engagement="${this.engagement}"
+                        .optionsData="${this.engagementOptions}"
+                        .apOptionsData="${this.apOptions}"
+                      >
+                      </follow-up-main>
+                    </div>`
+                  : ``}
+
+                <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
+                  <file-attachments-tab
+                    id="engagement_attachments"
+                    .optionsData="${this.attachmentOptions}"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .isUnicefUser="${this.user?.is_unicef_user}"
+                    error-property="engagement_attachments"
+                    endpoint-name="attachments"
+                  >
+                  </file-attachments-tab>
+
+                  ${this.hasReportAccess(this.engagementOptions, this.engagement)
+                    ? html`<file-attachments-tab
+                        id="report_attachments"
+                        is-report-tab="true"
+                        .optionsData="${this.reportAttachmentOptions}"
+                        .engagement="${this.engagement}"
+                        .errorObject="${this.errorObject}"
+                        error-property="report_attachments"
+                        endpoint-name="reportAttachments"
+                      >
+                      </file-attachments-tab>`
+                    : ``}
+                </div>
               </div>
 
               <div id="sidebar">
@@ -265,11 +243,25 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   otherActions = [];
 
   @property({type: Array})
-  tabsList = ['overview', 'report', 'questionnaire', 'attachments', 'follow-up'];
+  tabsList: AnyObject[] = [];
 
   @property({type: String})
   engagementPrefix = 'micro-assessments';
 
+  constructor() {
+    super();
+    this.tabsList = [
+      {tab: 'overview', tabLabel: 'Engagement Overview'},
+      {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
+      {
+        tab: 'questionnaire',
+        hidden: !this._showQuestionnaire(this.engagementOptions, this.engagement),
+        tabLabel: 'Questionnaire'
+      },
+      {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
+      {tab: 'attachments', tabLabel: 'Attachments'}
+    ];
+  }
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'micro-assessments')) {
       this.resetEngagementDataIfNeeded();

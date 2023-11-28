@@ -5,7 +5,7 @@ import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../config/config';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {DexieRefresh} from '@unicef-polymer/etools-utils/dist/singleton/dexie-refresh';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
