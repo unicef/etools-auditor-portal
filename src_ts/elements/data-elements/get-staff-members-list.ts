@@ -6,7 +6,7 @@ import each from 'lodash-es/each';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../redux/store';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';

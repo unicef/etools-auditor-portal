@@ -30,7 +30,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import {connect} from 'pwa-helpers/connect-mixin';
 import pick from 'lodash-es/pick';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
-import {sendRequest} from '@unicef-polymer/etools-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {updateFiltersSelectedValues} from '@unicef-polymer/etools-unicef/src/etools-filters/filters';

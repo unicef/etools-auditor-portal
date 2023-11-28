@@ -4,7 +4,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
 import {addAllowedActions} from '../mixins/permission-controller';
 import {GenericObject} from '@unicef-polymer/etools-types';
-import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {RequestConfig, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {
   getActionPointOptions,
@@ -37,7 +37,7 @@ export class UpdateEngagement extends LitElement {
   forceOptionsUpdate!: boolean;
 
   @property({type: Object})
-  requestOptions!: EtoolsRequestConfig;
+  requestOptions!: RequestConfig;
 
   @property({type: Object})
   postData!: GenericObject;
