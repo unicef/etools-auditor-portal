@@ -1,9 +1,10 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
-import '@polymer/paper-menu-button/paper-menu-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button-group';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -25,10 +26,12 @@ export class ActionButtons extends LitElement {
   render() {
     return html`
       ${ActionButtonsStyles}
-      <etools-button
-        class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
-        raised
-        @click="${this._btnClicked}"
+      <etools-button-group>
+        <etools-button
+         id="primary"
+         variant="primary"
+          class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
+          @click="${this._btnClicked}"
       >
         <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
         ${this._showOtherActions(this.actions.length)

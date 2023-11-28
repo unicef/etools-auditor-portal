@@ -13,7 +13,11 @@ export const navMenuStyles = html`
       height: 100%;
       overflow-y: var(--side-bar-scrolling);
       overflow-x: hidden;
-      border-right: 1px solid var(--dark-divider-color);
+      border-right: 1px solid var(--light-divider-color);
+    }
+
+    .chev-right {
+      position: relative;
     }
 
     :host([small-menu]) {
@@ -21,9 +25,6 @@ export const navMenuStyles = html`
     }
 
     @media (max-height: 600px) {
-      paper-tooltip {
-        display: none;
-      }
       :host([small-menu]) {
         overflow-x: hidden;
       }
@@ -67,7 +68,6 @@ export const navMenuStyles = html`
     :host([small-menu]) #app-name,
     :host #menu-header-top-icon,
     :host([small-menu]) .nav-menu-item .name,
-    :host(:not([small-menu])) paper-tooltip,
     :host(:not([small-menu])) #expand-menu,
     :host([small-menu]) .section-title span,
     :host([small-menu]) #minimize-menu,
@@ -81,11 +81,8 @@ export const navMenuStyles = html`
     }
 
     .menu-header etools-icon-button {
-      --paper-icon-button: {
-        width: 24px;
-        height: 24px;
-        padding: 0;
-      }
+      --etools-icon-font-size: 24px;
+      padding: 0;
     }
 
     #menu-header-top-icon,
@@ -94,13 +91,8 @@ export const navMenuStyles = html`
       cursor: pointer;
     }
 
-    .chev-right {
-      position: relative;
-    }
-
     #menu-header-top-icon {
-      --iron-icon-height: 36px;
-      --iron-icon-width: 36px;
+      --etools-icon-font-size: 36px;
     }
 
     .divider {
@@ -117,7 +109,7 @@ export const navMenuStyles = html`
     }
 
     .nav-menu,
-    .nav-menu iron-selector[role='navigation'] {
+    .nav-menu .menu-selector[role='navigation'] {
       flex: 1;
     }
 
@@ -148,30 +140,31 @@ export const navMenuStyles = html`
       height: 0;
     }
 
-    .nav-menu-item.iron-selected {
+    .nav-menu-item.selected {
       background-color: var(--secondary-background-color);
     }
 
-    .nav-menu-item.iron-selected:active {
+    .nav-menu-item.selected:active {
       background-color: var(--dark-divider-color);
     }
 
     .nav-menu-item .name {
-      margin-left: 16px;
+      margin-inline-start: 16px;
       color: var(--primary-text-color);
     }
 
     .nav-menu-item etools-icon {
       margin: 0 16px;
       color: var(--dark-icon-color);
+      --etools-icon-font-size: 24px;
     }
 
     :host([small-menu]) .nav-menu-item etools-icon {
       margin: 0;
     }
 
-    .nav-menu-item.iron-selected .name,
-    .nav-menu-item.iron-selected etools-icon {
+    .nav-menu-item.selected .name,
+    .nav-menu-item.selected etools-icon {
       color: var(--primary-color);
     }
 

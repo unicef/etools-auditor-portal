@@ -6,9 +6,8 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
-import '@polymer/paper-tooltip/paper-tooltip.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
-import '@polymer/paper-tooltip/paper-tooltip';
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
 import find from 'lodash-es/find';
@@ -156,12 +155,13 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
             <div slot="panel-btns">
                 <div ?hidden="${!this.canBeChanged}">
+                  <sl-tooltip content="Add">
                     <etools-icon-button
                             class="panel-button"
                             @click="${this._openAddDialog}"
                             name="add-box">
                     </etools-icon-button>
-                    <paper-tooltip offset="0">Add</paper-tooltip>
+                  </sl-tooltip>
                 </div>
             </div>
 

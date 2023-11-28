@@ -1,4 +1,3 @@
-import '@webcomponents/shadycss/entrypoints/apply-shim.js';
 import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
 import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
