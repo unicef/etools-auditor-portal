@@ -12,7 +12,7 @@ import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/st
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
@@ -29,7 +29,7 @@ import toNumber from 'lodash-es/toNumber';
 import values from 'lodash-es/values';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
-import {EtoolsCurrencyAmountInput} from '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
 
@@ -155,7 +155,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
 
           <div class="col col-4">
             <!-- Audited expenditure (USD) -->
-            <etools-currency-amount-input
+            <etools-currency
               id="audited-expenditure"
               class="${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
               .value="${this.editedItem.audited_expenditure}"
@@ -173,12 +173,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               @blur="${this.customValidation}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4">
             <!-- Financial findings (USD) -->
-            <etools-currency-amount-input
+            <etools-currency
               id="financial-findings"
               class="${this._setRequired('financial_findings', this.optionsData)} validate-input"
               .value="${this.editedItem.financial_findings}"
@@ -196,12 +196,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               @blur="${this.customValidation}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4" ?hidden="${!this.showLocalCurrency}">
             <!-- Audited expenditure (Local) -->
-            <etools-currency-amount-input
+            <etools-currency
               id="audited-expenditure-local"
               class="validate-input ${this._setRequired('audited_expenditure_local', this.optionsData)}"
               .value="${this.editedItem.audited_expenditure_local}"
@@ -217,12 +217,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               @blur="${this.customValidation}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4" ?hidden="${!this.showLocalCurrency}">
             <!-- Financial findings (Local) -->
-            <etools-currency-amount-input
+            <etools-currency
               id="financial-findings-local"
               class="validate-input ${this._setRequired('financial_findings_local', this.optionsData)}"
               .value="${this.editedItem.financial_findings_local}"
@@ -238,12 +238,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               @blur="${this.customValidation}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4">
             <!-- % of audited expenditure -->
-            <etools-currency-amount-input
+            <etools-currency
               class="validate-input"
               .value="${this.editedItem.percent_of_audited_expenditure}"
               currency=""
@@ -251,7 +251,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               placeholder="${this.getPlaceholderText('percent_of_audited_expenditure', this.optionsData)}"
               readonly
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4">
@@ -583,9 +583,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
   }
 
   customValidation() {
-    const ffElement = this.shadowRoot!.querySelector('#financial-findings') as unknown as EtoolsCurrencyAmountInput;
+    const ffElement = this.shadowRoot!.querySelector('#financial-findings') as unknown as EtoolsCurrency;
     const ffNumber = ffElement && toNumber(ffElement.value);
-    const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrencyAmountInput;
+    const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrency;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
     if (aeNumber < ffNumber) {

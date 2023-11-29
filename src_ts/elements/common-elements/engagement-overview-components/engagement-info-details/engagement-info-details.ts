@@ -10,7 +10,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.
 import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
@@ -375,7 +375,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 </div>
                 <div class="input-container" ?hidden="${this._hideField('total_value', this.optionsData)}">
                   <!-- Total Value of Selected FACE Forms -->
-                  <etools-currency-amount-input
+                  <etools-currency
                     class="w100 validate-field
                                 ${this._isAdditionalFieldRequired(
                       'total_value',
@@ -398,7 +398,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     @focus="${(event: any) => this._resetFieldError(event)}"
                     @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
                   >
-                  </etools-currency-amount-input>
+                  </etools-currency>
                 </div>`
             : ``}
           ${this.showJoinAudit
