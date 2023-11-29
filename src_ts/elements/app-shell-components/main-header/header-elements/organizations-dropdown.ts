@@ -19,6 +19,7 @@ export class OrganizationsDropdown extends LitElement {
     return html`
       ${HeaderStyles}
       <etools-dropdown
+        transparent
         id="organizationSelector"
         class="${this.checkMustSelectOrganization(this.user)}"
         .selected="${this.currentOrganizationId}"

@@ -30,8 +30,9 @@ export class PageHeader extends MatomoMixin(LitElement) {
     return html`
       ${HeaderStyles}
       <style>
-        app-toolbar {
-          padding: 0 16px 0 0;
+         app-toolbar {
+          padding-inline-end: 16px;
+          padding-inline-start: 0px;
           height: 60px;
           background-color: ${this.headerColor};
         }
@@ -40,16 +41,23 @@ export class PageHeader extends MatomoMixin(LitElement) {
           color: var(--header-color);
         }
 
-        support-btn,
-        #pageRefresh {
+        countries-dropdown {
+          --countries-dropdown-color: var(--light-secondary-text-color);
+        }
+
+        etools-profile-dropdown,
+        #refresh {
           color: var(--light-secondary-text-color);
-          margin-left: 8px;
         }
 
         #menuButton {
           display: block;
           color: var(--light-secondary-text-color);
         }
+
+        #pageRefresh::part(base) {
+          color: var(--light-secondary-text-color);
+         }
 
         .titlebar {
           flex: 1;
@@ -59,7 +67,14 @@ export class PageHeader extends MatomoMixin(LitElement) {
 
         .titlebar img {
           width: 34px;
-          margin: 0 8px 0 24px;
+          margin-inline-end: 8px;
+          margin-inline-start: 12px;
+        }
+
+        .content-align {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
         }
 
         #app-logo {
@@ -67,15 +82,99 @@ export class PageHeader extends MatomoMixin(LitElement) {
           width: auto;
         }
 
+        .dropdowns {
+          padding-top: 3px;
+          display: flex;
+          margin-inline-end: 5px;
+        }
+
+        .header {
+          flex-wrap: wrap;
+          height: 100%;
+          justify-content: space-between;
+        }
+
+        .nav-menu-button {
+          min-width: 70px;
+        }
+
+        .header__item {
+          display: flex;
+          align-items: center;
+        }
+
+        .header__right-group {
+          justify-content: space-evenly;
+        }
+
         .envWarning {
           color: var(--nonprod-text-warn-color);
           font-weight: 700;
           font-size: 18px;
+          line-height: 20px;
         }
 
-        @media (min-width: 1200px) {
+        etools-profile-dropdown {
+          margin-inline-start: 16px;
+        }
+
+        support-btn {
+          color: var(--header-color);
+          margin-left: 10px;
+        }
+
+        @media (min-width: 850px) {
           #menuButton {
             display: none;
+          }
+        }
+        @media (max-width: 920px) {
+          .envWarning {
+            font-size: 14px;
+            line-height: 16px;
+          }
+          .titlebar img {
+            margin-inline-end: 8px;
+            margin-inline-start: 12px;
+          }
+        }
+        @media (max-width: 768px) {
+          #app-logo {
+            width: 90px;
+          }
+          .envLong {
+            display: none;
+          }
+          etools-app-selector {
+            width: 42px;
+          }
+          .titlebar img {
+            margin-inline-end: 8px;
+            margin-inline-start: 12px;
+          }
+
+          etools-profile-dropdown {
+            margin-inline-start: 0px;
+            width: 40px;
+          }
+        }
+        @media (max-width: 576px) {
+          etools-app-selector {
+            --app-selector-button-padding: 18px 8px;
+          }
+          #app-logo {
+            display: none;
+          }
+          .envWarning {
+            font-size: 10px;
+            margin-inline-start: 2px;
+          }
+          #refresh {
+            width: 24px;
+            padding: 0px;
+          }
+          app-toolbar {
+            padding-inline-end: 4px;
           }
         }
       </style>
@@ -88,14 +187,16 @@ export class PageHeader extends MatomoMixin(LitElement) {
           <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
         </div>
         <div class="layout-horizontal align-items-center">
-          <countries-dropdown
-            id="countries"
-            .countries="${this.user?.countries_available}"
-            .currentCountry="${this.user?.country}"
-          >
-          </countries-dropdown>
+         <div class="dropdowns">
+            <countries-dropdown
+              id="countries"
+              .countries="${this.user?.countries_available}"
+              .currentCountry="${this.user?.country}"
+            >
+            </countries-dropdown>
 
-          <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+            <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+          </div>
 
           <support-btn title="Support"></support-btn>
 
