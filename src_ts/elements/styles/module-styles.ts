@@ -138,6 +138,13 @@ export const moduleStyles = css`
     width: 45px;
     height: 45px;
   }
+
+  etools-content-panel div[slot="panel-btns"] .panel-button{
+    color: #ffffff;
+  }
+  etools-content-panel div[slot='panel-btns'] {
+    position: relative;
+  }
   .pl-30 {
     padding-left: 30px;
   }

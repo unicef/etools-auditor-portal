@@ -124,8 +124,10 @@ export const fileAttachmentsTabStyles = html`
     etools-data-table-header {
       --list-header-wrapper-column-height: 48px;
     }
+    etools-content-panel div[slot="panel-btns"] .panel-button{
+      color: #ffffff;
+    }
     etools-icon-button[name='add-box'] {
-      color: var(--primary-text-color);
       margin-inline-start: 20px;
     }
   </style>
