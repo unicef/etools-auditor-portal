@@ -20,7 +20,7 @@ export class CountriesDropdown extends LitElement {
   render() {
     return html`
       ${HeaderStyles}
-       <style>
+      <style>
         *[hidden] {
           display: none !important;
         }

@@ -30,7 +30,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
     return html`
       ${HeaderStyles}
       <style>
-         app-toolbar {
+        app-toolbar {
           padding-inline-end: 16px;
           padding-inline-start: 0px;
           height: 60px;
@@ -57,7 +57,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
 
         #pageRefresh::part(base) {
           color: var(--light-secondary-text-color);
-         }
+        }
 
         .titlebar {
           flex: 1;
@@ -187,7 +187,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
         </div>
         <div class="layout-horizontal align-items-center">
-         <div class="dropdowns">
+          <div class="dropdowns">
             <countries-dropdown
               id="countries"
               .countries="${this.user?.countries_available}"

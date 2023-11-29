@@ -139,7 +139,7 @@ export const moduleStyles = css`
     height: 45px;
   }
 
-  etools-content-panel div[slot="panel-btns"] .panel-button{
+  etools-content-panel div[slot='panel-btns'] .panel-button {
     color: #ffffff;
   }
   etools-content-panel div[slot='panel-btns'] {
