@@ -27,29 +27,30 @@ export class ActionButtons extends LitElement {
     return html`
       ${ActionButtonsStyles}
       <etools-button-group>
-        <etools-button
-         id="primary"
-         variant="primary"
-          class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
-          @click="${this._btnClicked}"
-      >
-        <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
+        <etools-button id="primary" variant="primary" @click="${this._handlePrimaryClick}">
+          ${this._setButtonText(this.actions[0])}
+        </etools-button>
         ${this._showOtherActions(this.actions.length)
-          ? html`<paper-menu-button class="option-button" dynamic-align close-on-activate>
-              <etools-icon-button slot="dropdown-trigger" class="option-button" name="expand-more"></etools-icon-button>
-              <div slot="dropdown-content">
+          ? html`<sl-dropdown
+              id="splitBtn"
+              placement="bottom-end"
+              @click="${(event: MouseEvent) => event.stopImmediatePropagation()}"
+            >
+              <etools-button slot="trigger" variant="primary" caret></etools-button>
+              <sl-menu>
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
                   .map(
-                    (item: any) => html`<div class="other-options" action-code="${this._setActionCode(item)}">
+                    (item: any) => html`<sl-menu-item
+                      @click="${() => this._handleSecondaryClick(item)}">
                       <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
                       <span>${this._setButtonText(item)}</span>
-                    </div>`
+                    </sl-menu-item>`
                   )}
-              </div>
-            </paper-menu-button>`
+              </sl-menu>
+            </sl-dropdown>`
           : ``}
-      </etools-button>
+      </etools-button-group>
     `;
   }
 
@@ -115,25 +116,18 @@ export class ActionButtons extends LitElement {
     return text.toUpperCase();
   }
 
-  _btnClicked(event) {
-    if (!event || !event.target) {
-      return;
+  _handlePrimaryClick() {
+    const action = this.actions[0].code || this.actions[0];
+    if (action === 'submit') {
+      this.showSubmitConfirmation();
+    } else {
+      this.fireActionActivated(action);
     }
-    const target = event.target.classList.contains('other-options')
-      ? event.target
-      : event.target.parentElement || event.target;
-    const isMainAction = event.target.classList.contains('main-action');
+  }
 
-    const action = isMainAction
-      ? this.actions[0].code || this.actions[0]
-      : target && target.getAttribute('action-code');
-
+  _handleSecondaryClick(item: any) {
+    const action = item.code;
     if (action) {
-      const paperMenuBtn = this.shadowRoot!.querySelector('etools-button')!.querySelector('paper-menu-button');
-      if (paperMenuBtn && paperMenuBtn.opened) {
-        paperMenuBtn.close();
-      }
-
       if (action === 'submit') {
         this.showSubmitConfirmation();
       } else {
@@ -174,9 +168,5 @@ export class ActionButtons extends LitElement {
       return '';
     }
     return icons[item.code || item] || '';
-  }
-
-  _setActionCode(item) {
-    return item && (item.code || item);
   }
 }

@@ -41,7 +41,7 @@ import {
   readonlyPermission
 } from '../../../mixins/permission-controller';
 import {checkNonField} from '../../../mixins/error-handler';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import clone from 'lodash-es/clone';
 import famEndpoints from '../../../config/endpoints';
 import {AnyObject} from '@unicef-polymer/etools-types';
@@ -236,7 +236,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
 
         <etools-dialog no-padding keep-dialog-open size="md"
                 ?opened="${this.dialogOpened}"
-                .dialogTitle="${this.dialogTitle}"
+                dialog-title="${this.dialogTitle}"
                 .okBtnText="${this.confirmBtnText}"
                 .hideConfirmBtn="${!this.confirmBtnText}"
                 ?show-spinner="${this.requestInProcess}"

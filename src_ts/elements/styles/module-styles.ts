@@ -52,7 +52,7 @@ export const moduleStyles = css`
   }
 
   /* TABS */
-  paper-tabs {
+  etools-tabs-lit {
     --paper-tabs-selection-bar-color: var(--primary-color);
   }
 

@@ -21,7 +21,7 @@ import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import get from 'lodash-es/get';
 

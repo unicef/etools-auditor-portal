@@ -83,7 +83,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         keep-dialog-open
         size="md"
         .opened="${this.dialogOpened}"
-        .dialogTitle="Edit Subject Area - ${this.editedArea?.blueprints[0]?.header}"
+        dialog-title="Edit Subject Area - ${this.editedArea?.blueprints[0]?.header}"
         ok-btn-text="Save"
         ?show-spinner="${this.requestInProcess}"
         ?disableConfirmBtn="${this.requestInProcess}"

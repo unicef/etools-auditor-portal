@@ -103,6 +103,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         theme="confirmation"
         size="md"
         keep-dialog-open
+        dialogTitle=""
         ?opened="${this.confirmDialogOpened}"
         @confirm-btn-clicked="${this.removeItem}"
         ok-btn-text="Delete"
@@ -118,7 +119,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         size="md"
         ?opened="${this.dialogOpened}"
         .deleteDialog="${this.deleteDialog}"
-        .dialogTitle="${this.dialogTitle}"
+        dialog-title="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
         ?show-spinner="${this.requestInProcess}"
         ?disableConfirmBtn="${this.requestInProcess}"

@@ -67,3 +67,7 @@ export const setUsersFullName = (users: AnyObject[]) => {
   );
   return users;
 };
+
+export const isActiveTab = (tab: string, expectedTab: string): boolean => {
+  return tab === expectedTab;
+};

@@ -135,7 +135,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         keep-dialog-open
         .opened="${this.dialogOpened}"
         @confirm-btn-clicked="${this._addItemFromDialog}"
-        .dialogTitle="${this.dialogTitle}"
+        dialog-title="${this.dialogTitle}"
         ok-btn-text="Save"
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"

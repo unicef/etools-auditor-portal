@@ -154,6 +154,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           theme="confirmation"
           id="delete-summary-findings"
           size="md"
+          dialogTitle=""
           .opened="${this.confirmDialogOpened}"
           keep-dialog-open
           @confirm-btn-clicked="${this.removeItem}"
@@ -168,7 +169,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           size="md"
           no-padding
           id="summary-findings"
-          .dialogTitle="${this.dialogTitle}"
+          dialog-title="${this.dialogTitle}"
           keep-dialog-open
           .opened="${this.dialogOpened}"
           .okBtnText="${this.confirmBtnText}"

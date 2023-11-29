@@ -8,7 +8,7 @@ export const mainPageStyles = css`
     --ecp-header-bg: var(--primary-color);
   }
 
-  paper-tabs {
+  etools-tabs-lit {
     --paper-tab-content-unselected: {
       color: var(--gray-mid);
     }
@@ -43,12 +43,12 @@ export const mainPageStyles = css`
     box-shadow: 1px -3px 9px 0 #000000;
   }
 
-  .tab-selector paper-tabs {
+  .tab-selector etools-tabs-lit {
     font-size: 14px;
     font-weight: bold;
   }
 
-  .tab-selector paper-tabs span {
+  .tab-selector etools-tabs-lit span {
     text-transform: uppercase;
   }
 

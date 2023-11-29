@@ -62,7 +62,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     originalTableData!: [];
 
     @property({type: String})
-    dialogTitle!: string;
+    dialogTitle = '';
 
     @property({type: String})
     confirmBtnText!: string;

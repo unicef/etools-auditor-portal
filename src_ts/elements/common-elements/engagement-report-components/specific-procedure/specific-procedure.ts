@@ -117,6 +117,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         theme="confirmation"
         size="md"
         .opened="${this.confirmDialogOpened}"
+        dialog-title=""
         openFlag="confirmDialogOpened"
         @close="${(e: CustomEvent) => {
           this._resetDialogOpenedFlag(e);
@@ -134,7 +135,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         .opened="${this.dialogOpened}"
         openFlag="dialogOpened"
         @close="${this._resetDialogOpenedFlag}"
-        .dialogTitle="${this.dialogTitle}"
+        dialog-title="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
         ?show-spinner="${this.requestInProcess}"
         ?disable-confirm-btn="${this.requestInProcess}"

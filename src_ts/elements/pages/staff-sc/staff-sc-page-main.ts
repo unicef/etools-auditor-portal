@@ -1,6 +1,5 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/iron-pages/iron-pages';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
@@ -12,7 +11,7 @@ import {getEndpoint} from '../../config/endpoints-controller';
 import {GenericObject} from '../../../types/global';
 import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../redux/store';

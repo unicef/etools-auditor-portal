@@ -26,11 +26,15 @@ export class AppMenu extends MatomoMixin(LitElement) {
           MODULE
         </span>
 
-      <sl-tooltip content="FINANCIAL ASSURANCE MODULE" placement="right">
-        <span class="ripple-wrapper main">
-          <etools-icon id="menu-header-top-icon" name="apIcons:famIcon" @click="${this._toggleSmallMenu}"></etools-icon>
-        </span>
-      </sl-tooltip>
+        <sl-tooltip content="FINANCIAL ASSURANCE MODULE" placement="right">
+          <span class="ripple-wrapper main">
+            <etools-icon
+              id="menu-header-top-icon"
+              name="apIcons:famIcon"
+              @click="${this._toggleSmallMenu}"
+            ></etools-icon>
+          </span>
+        </sl-tooltip>
 
         <span class="chev-right">
           <etools-icon id="expand-menu" name="chevron-right" @click="${this._toggleSmallMenu}"></etools-icon>
@@ -43,32 +47,28 @@ export class AppMenu extends MatomoMixin(LitElement) {
 
       <div class="nav-menu">
         <div class="menu-selector" role="navigation">
-          <a class="nav-menu-item ${this.getItemClass(this.selectedOption, 'engagements')}"
+          <a
+            class="nav-menu-item ${this.getItemClass(this.selectedOption, 'engagements')}"
             menu-name="engagements"
-            href="${BASE_PATH}engagements/list">
-            <sl-tooltip
-              placement="right"
-              ?disabled="${!this.smallMenu}"
-              content="Engagements"
-            >
+            href="${BASE_PATH}engagements/list"
+          >
+            <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Engagements">
               <etools-icon id="iconEngagements" name="av:playlist-add-check"></etools-icon>
             </sl-tooltip>
             <div class="name">Engagements</div>
           </a>
 
           ${this.showSscPage
-            ? html`<a class="nav-menu-item ${this.getItemClass(this.selectedOption, 'staff-sc')}"
-                  menu-name="staff-sc"
-                  href="${BASE_PATH}staff-sc/list">
-                  <sl-tooltip
-                    placement="right"
-                    ?disabled="${!this.smallMenu}"
-                    content="Staff Spot Checks"
-                  >
-                    <etools-icon id="iconStaffSpotCk" name="av:recent-actors"></etools-icon>
-                  </sl-tooltip>
-                  <div class="name">Staff Spot Checks</div>
-                </a>`
+            ? html`<a
+                class="nav-menu-item ${this.getItemClass(this.selectedOption, 'staff-sc')}"
+                menu-name="staff-sc"
+                href="${BASE_PATH}staff-sc/list"
+              >
+                <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Staff Spot Checks">
+                  <etools-icon id="iconStaffSpotCk" name="av:recent-actors"></etools-icon>
+                </sl-tooltip>
+                <div class="name">Staff Spot Checks</div>
+              </a>`
             : ``}
         </div>
         <div class="nav-menu-item section-title">
@@ -82,11 +82,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Implementation Intelligence"
         >
-          <sl-tooltip
-            placement="right"
-            ?disabled="${!this.smallMenu}"
-            content="Implementation Intelligence"
-          >
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Implementation Intelligence">
             <etools-icon id="power-bi-icon" name="power-bi"></etools-icon>
           </sl-tooltip>
           <div class="name">Implementation Intelligence</div>
@@ -99,11 +95,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Knowledge base"
         >
-          <sl-tooltip
-            placement="right"
-            ?disabled="${!this.smallMenu}"
-            content="Knowledge base"
-          >
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Knowledge base">
             <etools-icon id="knoledge-icon" name="maps:local-library"></etools-icon>
           </sl-tooltip>
           <div class="name">Knowledge base</div>
@@ -116,11 +108,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Discussion"
         >
-          <sl-tooltip
-            placement="right"
-            ?disabled="${!this.smallMenu}"
-            content="Discussion"
-          >
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Discussion">
             <etools-icon id="discussion-icon" name="question-answer"></etools-icon>
           </sl-tooltip>
           <div class="name">Discussion</div>
@@ -133,11 +121,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Information"
         >
-          <sl-tooltip
-            placement="right"
-            ?disabled="${!this.smallMenu}"
-            content="Information"
-          >
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Information">
             <etools-icon id="information-icon" name="info"></etools-icon>
           </sl-tooltip>
           <div class="name">Information</div>

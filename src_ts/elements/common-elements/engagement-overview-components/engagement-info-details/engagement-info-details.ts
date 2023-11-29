@@ -7,7 +7,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
-import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-info-tooltip/etools-info-tooltip';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
@@ -26,7 +26,7 @@ import {collectionExists, getOptionsChoices} from '../../../mixins/permission-co
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import famEndpoints from '../../../config/endpoints';
-import {sendRequest} from '@unicef-polymer/etools-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import clone from 'lodash-es/clone';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {connect} from 'pwa-helpers/connect-mixin';

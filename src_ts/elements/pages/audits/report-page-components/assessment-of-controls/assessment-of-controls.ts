@@ -120,6 +120,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           theme="confirmation"
           size="md"
           keep-dialog-open
+          dialogTitle=""
           .opened="${this.confirmDialogOpened}"
           ?disable-confirm-btn="${this.requestInProcess}"
           @confirm-btn-clicked="${this.removeItem}"
@@ -135,7 +136,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           keep-dialog-open
           size="md"
           .opened="${this.dialogOpened}"
-          .dialogTitle="${this.dialogTitle}"
+          dialog-title="${this.dialogTitle}"
           .okBtnText="${this.confirmBtnText}"
           ?show-spinner="${this.requestInProcess}"
           ?disable-confirm-btn="${this.requestInProcess}"

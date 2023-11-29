@@ -1,6 +1,6 @@
 import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
 import famEndpoints from '../config/endpoints.js';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {store} from '../../redux/store';
 import {updateUserData} from '../../redux/actions/user';
 

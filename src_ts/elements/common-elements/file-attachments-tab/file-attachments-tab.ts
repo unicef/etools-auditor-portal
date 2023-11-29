@@ -41,7 +41,7 @@ import famEndpoints from '../../config/endpoints';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {ShareDocuments} from '../share-documents/share-documents';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
-import {EtoolsRequestEndpoint, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {RequestEndpoint, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
 /**
  * @customElement
@@ -370,7 +370,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   shareParams: GenericObject = {};
 
   @property({type: Object})
-  auditLinksOptions: EtoolsRequestEndpoint = {url: ''};
+  auditLinksOptions: RequestEndpoint = {url: ''};
 
   @property({type: Array})
   linkedAttachments: any[] = [];

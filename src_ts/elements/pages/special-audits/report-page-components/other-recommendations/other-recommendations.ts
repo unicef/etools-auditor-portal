@@ -104,6 +104,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
         theme="confirmation"
         size="md"
         keep-dialog-open
+        dialogTitle=""
         .opened="${this.confirmDialogOpened}"
         @confirm-btn-clicked="${this.removeItem}"
         ?disable-confirm-btn="${this.requestInProcess}"
@@ -119,7 +120,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
         keep-dialog-open
         size="md"
         .opened="${this.dialogOpened}"
-        .dialogTitle="${this.dialogTitle}"
+        dialog-title="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
         ?show-spinner="${this.requestInProcess}"
         ?disable-confirm-btn="${this.requestInProcess}"
