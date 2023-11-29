@@ -8,37 +8,15 @@ export const HeaderStyles = html`
 
     :host {
       display: block;
+      --sl-spacing-small: 0;
     }
 
     :host(:hover) {
       cursor: pointer;
     }
 
-    :host([dir='rtl']) etools-dropdown {
-      --paper-input-container-shared-input-style_-_max-width: 75px;
-    }
-
-    etools-dropdown {
-      --paper-listbox: {
-        max-height: 600px;
-      }
-      --esmm-icons: {
-        color: var(--light-secondary-text-color);
-        cursor: pointer;
-      }
-      --paper-input-container-underline: {
-        display: none;
-      }
-      --paper-input-container-underline-focus: {
-        display: none;
-      }
-      --paper-input-container-shared-input-style: {
-        color: var(--light-secondary-text-color);
-        cursor: pointer;
-        font-size: 16px;
-        text-align: right;
-        width: 100%;
-      }
+    etools-dropdown::part(display-input) {
+      text-align: end;
     }
 
     countries-dropdown[dir='rtl'] {
@@ -46,51 +24,40 @@ export const HeaderStyles = html`
     }
 
     organizations-dropdown {
-      --countries-dropdown-color: var(--light-secondary-text-color);
-      width: 165px;
+      width: 180px;
     }
 
     countries-dropdown {
       width: 160px;
     }
 
+    #languageSelector {
+      width: 120px;
+    }
+
     .w100 {
       width: 100%;
     }
 
-    etools-dropdown.warning {
-      --paper-input-container: {
-        padding-left: 3px;
-        box-sizing: border-box;
-        box-shadow: inset 0px 0px 0px 1.5px red;
-      }
+    etools-dropdown.warning::part(combobox) {
+      outline: 1.5px solid red !important;
+      padding: 4px;
     }
 
-    etools-dropdown,
-    etools-dropdown-multi {
-      --esmm-external-wrapper: {
-        width: auto;
-        max-width: 650px;
-      }
+    etools-dropdown::part(display-input)::placeholder {
+      color: var(--sl-input-color);
+      opacity: 1;
     }
 
-    @media (max-width: 940px) {
-      .envWarning {
-        display: none;
-      }
-      countries-dropdown,
-      organizations-dropdown {
+    etools-dropdown::part(display-input)::-ms-input-placeholder {
+      /* Edge 12-18 */
+      color: var(--sl-input-color);
+    }
+
+    @media (max-width: 768px) {
+      etools-dropdown {
+        min-width: 130px;
         width: 130px;
-      }
-    }
-    @media (max-width: 785px) {
-      #app-logo {
-        height: 16px !important;
-        margin: 0 2px !important;
-      }
-      countries-dropdown,
-      organizations-dropdown {
-        width: 90px;
       }
     }
   </style>
