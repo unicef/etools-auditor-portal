@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@unicef-polymer/etools-app-selector';
+import '@unicef-polymer/etools-unicef/src/etools-app-selector/etools-app-selector';
 import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';

@@ -2,7 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import '@polymer/paper-tooltip/paper-tooltip';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 
@@ -102,19 +102,21 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         <div slot="panel-btns">
           <div class="layout-horizontal">
             <div ?hidden="${this._hideShare}">
-              <etools-icon-button
-                id="share-icon"
-                class="panel-button"
-                @click="${this._openShareDialog}"
-                name="open-in-browser"
-              >
-              </etools-icon-button>
-              <paper-tooltip for="share-icon" offset="0">Share Documents</paper-tooltip>
+              <sl-tooltip content="Share Documents">
+                <etools-icon-button
+                  id="share-icon"
+                  class="panel-button"
+                  @click="${this._openShareDialog}"
+                  name="open-in-browser"
+                >
+                </etools-icon-button>
+              </sl-tooltip>
             </div>
             <div ?hidden="${this.hideAddAttachments}">
-              <etools-icon-button id="add-icon" class="panel-button" @click="${this._openAddDialog}" name="add-box">
-              </etools-icon-button>
-              <paper-tooltip for="add-icon" offset="0">Add</paper-tooltip>
+              <sl-tooltip content="Add">
+                <etools-icon-button id="add-icon" class="panel-button" @click="${this._openAddDialog}" name="add-box">
+                </etools-icon-button>
+              </sl-tooltip>
             </div>
           </div>
         </div>

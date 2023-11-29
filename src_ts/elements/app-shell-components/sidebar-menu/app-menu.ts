@@ -2,8 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import '@polymer/iron-selector/iron-selector.js';
-import '@polymer/paper-tooltip/paper-tooltip.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {BASE_PATH} from '../../config/config';
@@ -27,10 +26,15 @@ export class AppMenu extends MatomoMixin(LitElement) {
           MODULE
         </span>
 
-        <span class="ripple-wrapper main">
-          <etools-icon id="menu-header-top-icon" name="famIcon" @click="${this._toggleSmallMenu}"></etools-icon>
-        </span>
-        <paper-tooltip for="menu-header-top-icon" position="right"> FINANCIAL ASSURANCE MODULE </paper-tooltip>
+        <sl-tooltip content="FINANCIAL ASSURANCE MODULE" placement="right">
+          <span class="ripple-wrapper main">
+            <etools-icon
+              id="menu-header-top-icon"
+              name="apIcons:famIcon"
+              @click="${this._toggleSmallMenu}"
+            ></etools-icon>
+          </span>
+        </sl-tooltip>
 
         <span class="chev-right">
           <etools-icon id="expand-menu" name="chevron-right" @click="${this._toggleSmallMenu}"></etools-icon>
@@ -42,21 +46,31 @@ export class AppMenu extends MatomoMixin(LitElement) {
       </div>
 
       <div class="nav-menu">
-        <iron-selector .selected="${this.selectedOption}" attr-for-selected="menu-name" role="navigation">
-          <a class="nav-menu-item" menu-name="engagements" href="${BASE_PATH}engagements/list">
-            <etools-icon id="iconEngagements" name="av:playlist-add-check"></etools-icon>
+        <div class="menu-selector" role="navigation">
+          <a
+            class="nav-menu-item ${this.getItemClass(this.selectedOption, 'engagements')}"
+            menu-name="engagements"
+            href="${BASE_PATH}engagements/list"
+          >
+            <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Engagements">
+              <etools-icon id="iconEngagements" name="av:playlist-add-check"></etools-icon>
+            </sl-tooltip>
             <div class="name">Engagements</div>
           </a>
-          <paper-tooltip for="iconEngagements" position="right"> Engagements </paper-tooltip>
 
           ${this.showSscPage
-            ? html`<a class="nav-menu-item" menu-name="staff-sc" href="${BASE_PATH}staff-sc/list">
+            ? html`<a
+                class="nav-menu-item ${this.getItemClass(this.selectedOption, 'staff-sc')}"
+                menu-name="staff-sc"
+                href="${BASE_PATH}staff-sc/list"
+              >
+                <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Staff Spot Checks">
                   <etools-icon id="iconStaffSpotCk" name="av:recent-actors"></etools-icon>
-                  <div class="name">Staff Spot Checks</div>
-                </a>
-                <paper-tooltip for="iconStaffSpotCk" position="right"> Staff Spot Checks </paper-tooltip>`
+                </sl-tooltip>
+                <div class="name">Staff Spot Checks</div>
+              </a>`
             : ``}
-        </iron-selector>
+        </div>
         <div class="nav-menu-item section-title">
           <span>eTools Community Channels</span>
         </div>
@@ -68,10 +82,11 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Implementation Intelligence"
         >
-          <etools-icon id="power-bi-icon" name="power-bi"></etools-icon>
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Implementation Intelligence">
+            <etools-icon id="power-bi-icon" name="power-bi"></etools-icon>
+          </sl-tooltip>
           <div class="name">Implementation Intelligence</div>
         </a>
-        <paper-tooltip for="power-bi-icon" position="right"> Implementation Intelligence </paper-tooltip>
 
         <a
           class="nav-menu-item lighter-item"
@@ -80,10 +95,11 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Knowledge base"
         >
-          <etools-icon id="knoledge-icon" name="maps:local-library"></etools-icon>
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Knowledge base">
+            <etools-icon id="knoledge-icon" name="maps:local-library"></etools-icon>
+          </sl-tooltip>
           <div class="name">Knowledge base</div>
         </a>
-        <paper-tooltip for="knoledge-icon" position="right"> Knowledge base </paper-tooltip>
 
         <a
           class="nav-menu-item lighter-item"
@@ -92,10 +108,11 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Discussion"
         >
-          <etools-icon id="discussion-icon" name="question-answer"></etools-icon>
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Discussion">
+            <etools-icon id="discussion-icon" name="question-answer"></etools-icon>
+          </sl-tooltip>
           <div class="name">Discussion</div>
         </a>
-        <paper-tooltip for="discussion-icon" position="right"> Discussion </paper-tooltip>
 
         <a
           class="nav-menu-item lighter-item last-one"
@@ -104,10 +121,11 @@ export class AppMenu extends MatomoMixin(LitElement) {
           @click="${this.trackAnalytics}"
           tracker="Information"
         >
-          <etools-icon id="information-icon" name="info"></etools-icon>
+          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Information">
+            <etools-icon id="information-icon" name="info"></etools-icon>
+          </sl-tooltip>
           <div class="name">Information</div>
         </a>
-        <paper-tooltip for="information-icon" position="right"> Information </paper-tooltip>
       </div>
     `;
   }
@@ -151,6 +169,10 @@ export class AppMenu extends MatomoMixin(LitElement) {
 
   _smallMenuChanged() {
     setTimeout(() => fireEvent(this, 'resize-main-layout'));
+  }
+
+  getItemClass(selectedValue: string, itemValue: string) {
+    return selectedValue === itemValue ? 'selected' : '';
   }
 
   _getSelectedMenu(page: string) {

@@ -151,7 +151,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
           keep-dialog-open
           size="md"
           ?opened="${this.dialogOpened}"
-          .dialogTitle="${this.dialogTexts.dialogTitle}"
+          dialog-title="${this.dialogTexts.dialogTitle || ''}"
           .okBtnText="${this.dialogTexts.confirmBtn}"
           ?show-spinner="${this.requestInProcess}"
           ?disable-confirm-btn="${this.requestInProcess}"

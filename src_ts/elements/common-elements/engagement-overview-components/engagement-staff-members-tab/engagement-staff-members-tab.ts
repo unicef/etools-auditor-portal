@@ -1,6 +1,6 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@polymer/paper-tooltip/paper-tooltip.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
@@ -192,9 +192,10 @@ export class EngagementStaffMembersTab extends connect(store)(
                   }
                 }}"
               >
-                <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
+                <sl-tooltip content="Search">
+                  <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
+                </sl-tooltip>
               </etools-input>
-              <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
             </div>
             <sl-switch
               class="white"
@@ -210,9 +211,10 @@ export class EngagementStaffMembersTab extends connect(store)(
                 href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
+               <sl-tooltip content="Access Management Portal">
                 <etools-icon id="information-icon" name="open-in-new"></etools-icon>
+               </sl-tooltip>
               </a>
-              <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
             </div>
           </div>
         </div>

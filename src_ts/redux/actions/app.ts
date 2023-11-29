@@ -54,7 +54,6 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any
 
   let imported: Promise<any> | undefined;
   const appShell = document.body.querySelector('app-shell');
-
   switch (routeDetails.routeName) {
     case 'engagements':
       imported = import(`../../elements/pages/engagements/engagements-page-main.js`);

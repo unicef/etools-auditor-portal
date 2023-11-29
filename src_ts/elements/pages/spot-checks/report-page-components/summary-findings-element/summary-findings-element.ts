@@ -4,7 +4,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
-import '@polymer/paper-tooltip/paper-tooltip';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -91,9 +91,10 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       >
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.optionsData)}">
-            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
-            </etools-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+              </etools-icon-button>
+            </sl-tooltip>
           </div>
         </div>
 
@@ -153,6 +154,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           theme="confirmation"
           id="delete-summary-findings"
           size="md"
+          dialogTitle=""
           .opened="${this.confirmDialogOpened}"
           keep-dialog-open
           @confirm-btn-clicked="${this.removeItem}"
@@ -167,7 +169,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           size="md"
           no-padding
           id="summary-findings"
-          .dialogTitle="${this.dialogTitle}"
+          dialog-title="${this.dialogTitle}"
           keep-dialog-open
           .opened="${this.dialogOpened}"
           .okBtnText="${this.confirmBtnText}"
