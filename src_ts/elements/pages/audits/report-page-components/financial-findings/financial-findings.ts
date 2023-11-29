@@ -2,7 +2,7 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@polymer/paper-tooltip/paper-tooltip';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
@@ -74,9 +74,10 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       >
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.optionsData)}">
-            <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
-            </etools-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+              </etools-icon-button>
+            </sl-tooltip>
           </div>
         </div>
 
@@ -158,6 +159,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           theme="confirmation"
           size="md"
           keep-dialog-open
+          dialogTitle=""
           ?opened="${this.confirmDialogOpened}"
           @confirm-btn-clicked="${this.removeItem}"
           ok-btn-text="Delete"
@@ -173,7 +175,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           size="md"
           ?opened="${this.dialogOpened}"
           keep-dialog-open
-          .dialogTitle="${this.dialogTitle}"
+          dialog-title="${this.dialogTitle}"
           ok-btn-text="Add"
           ?show-spinner="${this.requestInProcess}"
           ?disable-confirm-btn="${this.requestInProcess}"
