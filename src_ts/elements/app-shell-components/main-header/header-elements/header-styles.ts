@@ -46,6 +46,7 @@ export const HeaderStyles = html`
     }
 
     organizations-dropdown {
+      --countries-dropdown-color: var(--light-secondary-text-color);
       width: 165px;
     }
 

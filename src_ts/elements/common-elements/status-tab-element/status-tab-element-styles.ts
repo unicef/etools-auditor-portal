@@ -114,10 +114,6 @@ export const StatusTabElementStyles = css`
   }
 
   .status-container .status-icon .icon-wrapper etools-icon {
-    --iron-icon-height: 16px;
-    --iron-icon-width: 16px;
-    width: 16px;
-    height: 16px;
     color: #fff;
   }
 
