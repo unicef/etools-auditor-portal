@@ -4,7 +4,9 @@
   --sl-font-sans: Roboto, Noto, sans-serif;
   --sl-font-serif: Roboto, Noto, sans-serif;
   --primary-color: #0099ff;
+  --primary-text-color: rgba(0, 0, 0, 0.87);
   --secondary-text-color: rgba(0, 0, 0, 0.54);
+  --default-btn-bg-color: rgba(0, 0, 0, 0.45);
   --primary-background-color: #ffffff;
   --secondary-background-color: #eeeeee;
   --ternary-background-color: var(--paper-indigo-800);
@@ -62,7 +64,7 @@
   --esmm-external-wrapper: {
     width: 100%;
     margin: 0;
-  }
+  };
 
   /* sl-tooltip styles */
   --sl-tooltip-background-color: rgba(97, 97, 97, 0.9);
@@ -80,7 +82,7 @@
 
   --paper-input-prefix: {
     color: var(--secondary-text-color);
-  }
+  };
 
   --required-star-style: {
     background: url('./assets/images/required.svg') no-repeat 99% 20%/8px;

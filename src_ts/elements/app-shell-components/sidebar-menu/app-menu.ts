@@ -28,20 +28,15 @@ export class AppMenu extends MatomoMixin(LitElement) {
 
         <sl-tooltip content="FINANCIAL ASSURANCE MODULE" placement="right">
           <span class="ripple-wrapper main">
-            <etools-icon
-              id="menu-header-top-icon"
-              name="apIcons:famIcon"
-              @click="${this._toggleSmallMenu}"
-            ></etools-icon>
+            <etools-icon id="menu-header-top-icon" name="fam-icon" @click="${this._toggleSmallMenu}"></etools-icon>
           </span>
         </sl-tooltip>
-
         <span class="chev-right">
           <etools-icon id="expand-menu" name="chevron-right" @click="${this._toggleSmallMenu}"></etools-icon>
         </span>
 
         <span class="ripple-wrapper">
-          <etools-icon id="minimize-menu" name="chevron-left" @click="${this._toggleSmallMenu}"></etools-icon>
+          <etools-icon size="36" id="minimize-menu" name="chevron-left" @click="${this._toggleSmallMenu}"></etools-icon>
         </span>
       </div>
 
