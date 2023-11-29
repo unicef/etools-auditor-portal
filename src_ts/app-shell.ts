@@ -54,20 +54,10 @@ import {RouteDetails} from '@unicef-polymer/etools-types';
 import {addAllowedActions} from './elements/mixins/permission-controller.js';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util.js';
 import cloneDeep from 'lodash-es/cloneDeep.js';
+import {setBasePath} from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import {EtoolsIconSet, initializeIcons} from '@unicef-polymer/etools-unicef/src/etools-icons/etools-icons';
 import {apIcons} from './elements/styles/ap-icons';
 
-initializeIcons(
-  [
-    EtoolsIconSet.communication,
-    EtoolsIconSet.device,
-    EtoolsIconSet.social,
-    EtoolsIconSet.av,
-    EtoolsIconSet.image,
-    EtoolsIconSet.maps
-  ],
-  apIcons
-);
 setStore(store as any);
 store.addReducers({
   user,
@@ -80,6 +70,18 @@ declare const dayjs_plugin_utc: any;
 dayjs.extend(dayjs_plugin_utc);
 window.EtoolsLanguage = 'en';
 
+setBasePath('/ap/');
+initializeIcons(
+  [
+    EtoolsIconSet.communication,
+    EtoolsIconSet.device,
+    EtoolsIconSet.social,
+    EtoolsIconSet.av,
+    EtoolsIconSet.image,
+    EtoolsIconSet.maps
+  ],
+  apIcons
+);
 /**
  * @customElement
  * @LitElement
