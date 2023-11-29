@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 
 import DateMixin from '../../../../mixins/date-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
@@ -67,7 +67,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
 
           <div class="input-container">
             <!-- Total Value of Selected FACE Forms -->
-            <etools-currency-amount-input
+            <etools-currency
               .value="${this.data?.total_value}"
               currency="$"
               label="${this.getLabel('total_value', this.optionsData)}"
@@ -75,13 +75,13 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               readonly
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
         <div class="row-h group">
           <div class="input-container">
-            <etools-currency-amount-input
+            <etools-currency
               class="${this._setRequired('total_amount_tested', this.optionsData)}"
               .value="${this.data?.total_amount_tested}"
               currency="$"
@@ -95,11 +95,11 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                 this.numberChanged(detail, 'total_amount_tested', this.data)}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="input-container">
-            <etools-currency-amount-input
+            <etools-currency
               class="${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
               .value="${this.data?.total_amount_of_ineligible_expenditure}"
               currency="$"
@@ -113,7 +113,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                 this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data)}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
       </etools-content-panel>

@@ -29,7 +29,6 @@
   "dependencies": {
     "@polymer/polymer": "^3.5.1",
     "@types/lodash-es": "^4.17.7",
-    "@unicef-polymer/etools-currency-amount-input": "^4.0.4",
     "@unicef-polymer/etools-modules-common": "^5.0.0-rc.29",
     "@unicef-polymer/etools-piwik-analytics": "4.0.1-rc.3",
     "@unicef-polymer/etools-types": "^1.11.16",

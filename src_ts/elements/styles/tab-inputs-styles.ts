@@ -98,7 +98,7 @@ export const tabInputsStyles = css`
   etools-textarea,
   paper-dropdown-menu,
   datepicker-lite,
-  etools-currency-amount-input {
+  etools-currency {
     box-sizing: border-box;
     padding: 0 12px;
     outline: none !important;
@@ -163,7 +163,7 @@ export const tabInputsStyles = css`
     }
   }
 
-  etools-currency-amount-input {
+  etools-currency {
     --etools-currency-container-label: {
       color: var(--gray-50);
     }
@@ -188,7 +188,7 @@ export const tabInputsStyles = css`
   etools-dropdown[required]:not([disabled]),
   etools-dropdown-multi[required]:not([disabled]),
   etools-upload[required]:not([disabled]),
-  etools-currency-amount-input[required]:not([disabled]),
+  etools-currency[required]:not([disabled]),
   etools-textarea[required]:not([disabled]) {
     --paper-input-container-label: {
       @apply --required-star-style;
@@ -341,7 +341,7 @@ export const tabInputsStyles = css`
     font-size: 13px;
   }
 
-  etools-currency-amount-input {
+  etools-currency {
     padding: 0 12px;
     box-sizing: border-box;
   }
@@ -354,14 +354,14 @@ export const tabInputsStyles = css`
     padding-left: 12px;
   }
 
-  etools-currency-amount-input {
+  etools-currency {
     --etools-currency-container-input: {
       line-height: 0;
     }
   }
 
   etools-dropdown-multi[disabled],
-  etools-currency-amount-input[disabled],
+  etools-currency[disabled],
   etools-dropdown[disabled],
   etools-textarea[disabled],
   paper-dropdown-menu[disabled],
@@ -384,7 +384,7 @@ export const tabInputsStyles = css`
   }
 
   etools-dropdown-multi[readonly],
-  etools-currency-amount-input[readonly],
+  etools-currency[readonly],
   etools-dropdown[readonly],
   etools-textarea[readonly],
   paper-dropdown-menu[readonly],

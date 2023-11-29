@@ -8,7 +8,7 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
@@ -212,7 +212,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           <div class="layout-horizontal">
             <div class="col col-6">
               <!-- Amount (local) -->
-              <etools-currency-amount-input
+              <etools-currency
                 class="${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.local_amount}"
                 currency=""
@@ -226,12 +226,12 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @value-changed="${({detail}: CustomEvent) =>
                   this.numberChanged(detail, 'local_amount', this.editedItem)}"
               >
-              </etools-currency-amount-input>
+              </etools-currency>
             </div>
 
             <div class="col col-6">
               <!-- Amount USD -->
-              <etools-currency-amount-input
+              <etools-currency
                 class="${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.amount}"
                 currency="$"
@@ -244,7 +244,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'amount', this.editedItem)}"
               >
-              </etools-currency-amount-input>
+              </etools-currency>
             </div>
           </div>
 
