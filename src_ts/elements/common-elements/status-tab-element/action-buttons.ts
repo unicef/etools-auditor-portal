@@ -41,8 +41,7 @@ export class ActionButtons extends LitElement {
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
                   .map(
-                    (item: any) => html`<sl-menu-item
-                      @click="${() => this._handleSecondaryClick(item)}">
+                    (item: any) => html`<sl-menu-item @click="${() => this._handleSecondaryClick(item)}">
                       <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
                       <span>${this._setButtonText(item)}</span>
                     </sl-menu-item>`
