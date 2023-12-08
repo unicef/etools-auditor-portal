@@ -380,7 +380,6 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       }
     }).then(({confirmed}) => {
       if (confirmed) {
-        debugger;
         this.removeItem();
       }
     });
