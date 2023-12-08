@@ -134,7 +134,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
           </div>
         </etools-data-table-row>
 
-
         <etools-dialog
           no-padding
           keep-dialog-open

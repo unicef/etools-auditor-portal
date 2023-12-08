@@ -184,7 +184,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
   }
 
   openConfirmDeleteDialog() {
-      openDialog({
+    openDialog({
       dialog: 'are-you-sure',
       dialogData: {
         content: this.deleteTitle,

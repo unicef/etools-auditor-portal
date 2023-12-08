@@ -428,7 +428,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         confirmBtnText: this.confirmBtnText
       }
     }).then(({confirmed, response}) => {
-      if(confirmed && response) {
+      if (confirmed && response) {
         this.requestData = clone(response);
       }
     });

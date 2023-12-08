@@ -333,7 +333,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   }
 
   openConfirmDeleteDialog() {
-      openDialog({
+    openDialog({
       dialog: 'are-you-sure',
       dialogData: {
         content: this.deleteTitle,

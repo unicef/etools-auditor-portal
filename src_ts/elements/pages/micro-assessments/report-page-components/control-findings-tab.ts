@@ -223,7 +223,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
   }
 
   openConfirmDeleteDialog() {
-      openDialog({
+    openDialog({
       dialog: 'are-you-sure',
       dialogData: {
         content: this.deleteTitle,
