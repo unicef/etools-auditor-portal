@@ -31,6 +31,7 @@ export class KicwRisk extends LitElement {
           position: relative;
           display: block;
           background: transparent;
+          width: 100%;
         }
         .hover-icons {
           background-color: #eee;

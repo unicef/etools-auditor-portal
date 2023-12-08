@@ -46,6 +46,9 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
           margin-top: 0px !important;
           margin-bottom: 0px !important;
         }
+        etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
+        }
         .question {
           width: calc(100% - 160px);
           padding-right: 10px;
@@ -204,34 +207,6 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     high: 'High',
     moderate: 'Moderate'
   };
-
-  @property({type: Array})
-  columns = [
-    {
-      size: 100,
-      class: 'pr-45',
-      label: 'Question',
-      name: 'header',
-      html: true
-    },
-    {
-      size: '160px',
-      label: 'Risk Assessment',
-      name: 'value',
-      property: 'risk.value',
-      custom: true,
-      doNotHide: true
-    }
-  ];
-
-  @property({type: Array})
-  details = [
-    {
-      label: 'Comments',
-      path: 'risk.extra.comments',
-      size: 100
-    }
-  ];
 
   @property({type: Array})
   categoryHeader = [

@@ -22,6 +22,8 @@ import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {checkNonField} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
@@ -58,6 +60,9 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
         }
         .pr-55 {
           padding-inline-end: 55px !important;
+        }
+        etools-data-table-row *[slot="row-data-details"]{
+          flex-direction: column;
         }
       </style>
 
@@ -115,21 +120,6 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
             </div>
           </etools-data-table-row>
         </div>
-
-        <etools-dialog
-          theme="confirmation"
-          size="md"
-          keep-dialog-open
-          dialogTitle=""
-          .opened="${this.confirmDialogOpened}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          @confirm-btn-clicked="${this.removeItem}"
-          ok-btn-text="Delete"
-          openFlag="confirmDialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          ${this.deleteTitle}
-        </etools-dialog>
 
         <etools-dialog
           no-padding
@@ -245,19 +235,41 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this assessment?';
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
     }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject.key_internal_controls);
       this._checkNonField(this.errorObject.key_internal_controls);
     }
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+    });
   }
 
   _checkNonField(error) {

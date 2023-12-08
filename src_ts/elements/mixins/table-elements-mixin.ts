@@ -44,9 +44,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     requestInProcess = false;
 
     @property({type: Boolean})
-    confirmDialogOpened = false;
-
-    @property({type: Boolean})
     addDialog = false;
 
     @property({type: Boolean})
@@ -107,14 +104,10 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.requestInProcess = false;
         this.dialogOpened = false;
       }
-      if (this.confirmDialogOpened) {
-        this.requestInProcess = false;
-        this.confirmDialogOpened = false;
-      }
     }
 
     getTabData() {
-      if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
+      if (this.dialogOpened && !this.saveWithButton) {
         return this.getCurrentData();
       }
       if (!this.originalTableData || !this.dataItems) {
@@ -136,7 +129,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     getCurrentData() {
-      if (!this.dialogOpened && !this.confirmDialogOpened) {
+      if (!this.dialogOpened) {
         return null;
       }
       return [cloneDeep(this.editedItem)];
@@ -169,6 +162,21 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return valid;
     }
 
+    _getFileData(fileData?) {
+      if (!fileData && !this.editedItem) {
+        return {};
+      }
+      const {id, attachment, file_type} = fileData || this.editedItem;
+      const data: GenericObject = {attachment};
+
+      if (id) {
+        data.id = id;
+      }
+      data.file_type = file_type;
+
+      return data;
+    }
+
     _resetFieldError(e: Event) {
       (e.target! as any).invalid = false;
     }
@@ -179,6 +187,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.cancelBtnText = (this.addDialogTexts && this.addDialogTexts.cancelBtn) || 'Cancel';
       this.addDialog = true;
       this.dialogOpened = true;
+      fireEvent(this, 'show-add-dialog');
     }
 
     openEditDialog(index) {
@@ -188,12 +197,12 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
       this._setDialogData(index);
       this.dialogOpened = true;
+      fireEvent(this, 'show-edit-dialog');
     }
 
     openDeleteDialog(index) {
       this._setDialogData(index);
-
-      this.confirmDialogOpened = true;
+      fireEvent(this, 'show-confirm-dialog');
     }
 
     _setDialogData(index) {
@@ -288,16 +297,11 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.dataItems.splice(this.editedIndex, 1);
         fireEvent(this, 'data-items-changed', this.dataItems);
         this.resetDialog();
-        this.confirmDialogOpened = false;
       }
     }
 
     _showItems(item) {
       return item && !item._delete;
-    }
-
-    _openDeleteConfirmation() {
-      this.confirmDialogOpened = true;
     }
 
     _errorHandler(errorData) {

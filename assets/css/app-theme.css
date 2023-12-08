@@ -11,7 +11,8 @@
   --secondary-background-color: #eeeeee;
   --ternary-background-color: var(--paper-indigo-800);
   --accent-color: var(--paper-light-blue-a200);
-  --error-color: var(--paper-deep-orange-a700);
+  --error-color: #ea4022;
+  --error-color-darker: #c1351d;
   --dark-primary-text-color: rgba(0, 0, 0, 0.87);
   --light-primary-text-color: rgba(255, 255, 255, 1);
   --dark-secondary-text-color: rgba(0, 0, 0, 0.54);
@@ -23,7 +24,7 @@
   --dark-disabled-icon-color: rgba(0, 0, 0, 0.38);
   --light-disabled-icon-color: rgba(255, 255, 255, 0.5);
   --dark-divider-color: rgba(0, 0, 0, 0.12);
-  --light-divider-color: rgba(255, 255, 255, 0.12);
+  --light-divider-color: rgba(0, 0, 0, 0.12);
   --dark-hover-color: rgba(0, 0, 0, 0.01);
   --light-hover-color: rgba(255, 255, 255, 0.01);
   --dark-ink-color: rgba(0, 0, 0, 0.3);
@@ -57,6 +58,7 @@
   --sl-color-neutral-600: var(--default-btn-bg-color);
   --sl-color-neutral-500: var(--default-btn-bg-hover-color);
   --sl-color-danger-600: var(--error-color);
+  --sl-color-danger-500: var(--error-color-darker);
 
   --esmm-external-wrapper: {
     width: 100%;

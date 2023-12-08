@@ -24,6 +24,11 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        etools-button[variant='primary']::part(suffix) {
+          width: 8px;
+        }
+      </style>
       <div class="header-wrapper">
         <div class="side-heading horizontal layout center">
           <span class="flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
@@ -63,16 +68,15 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
             </etools-button>
 
             <etools-button
-              class="add-btn"
               variant="primary"
-              raised
               ?hidden="${this.hideAddButton || typeof this.hideAddButton === 'undefined'}"
               tracker="Add New Engagement"
-              @click="${this.addNewTap}"
+              @click="${this.trackAnalytics}"
+              tracker="Agreements export"
+              href="${this.link}"
             >
-              <a href="${this.link}" class="btn-link" ?hidden="${!this._showLink(this.link)}"></a>
-              <etools-icon name="add"></etools-icon>
-              <span>${this.btnText}</span>
+              <etools-icon slot="prefix" name="add"></etools-icon>
+              ${this.btnText}
             </etools-button>
           </div>
         </div>
@@ -108,10 +112,6 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
 
   @property({type: Array})
   exportLinks: GenericObject[] = [];
-
-  addNewTap(e) {
-    this.trackAnalytics(e);
-  }
 
   _showLink(link) {
     return !!link;

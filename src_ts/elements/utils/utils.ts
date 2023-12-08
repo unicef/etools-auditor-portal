@@ -71,3 +71,11 @@ export const setUsersFullName = (users: AnyObject[]) => {
 export const isActiveTab = (tab: string, expectedTab: string): boolean => {
   return tab === expectedTab;
 };
+
+export const _showDialogSpinner = (requestInProcess: boolean, uploadInProgress: boolean) => {
+  // When the upload is in progress do not show the dialog spinner
+  if (uploadInProgress) {
+    return false;
+  }
+  return requestInProcess;
+};

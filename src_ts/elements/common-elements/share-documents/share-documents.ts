@@ -17,13 +17,13 @@ import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../redux/store';
 import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
-import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
-import get from 'lodash-es/get';
 
 /**
  * @LitElement
@@ -32,7 +32,7 @@ import get from 'lodash-es/get';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('share-documents')
-export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement))) {
+export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement)))) {
   static get styles() {
     return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
   }
@@ -74,6 +74,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
           padding-left: 5px;
           color: #09f;
           text-decoration: none;
+          line-height: 15px;
         }
         .repeatable-item-container.list-items {
           padding: 0;
@@ -174,10 +175,18 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
 
     if (changedProperties.has('partnerName')) {
       this._handlePartnerChanged(this.partnerName);
-      this._getFileTypesFromRedux();
     }
     if (changedProperties.has('selectedFiletype')) {
       this._filterByFileType(this.selectedFiletype);
+    }
+  }
+
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp && !this.fileTypes) {
+      const fileTypes = (state.commonData.staticDropdown.attachment_types || [])
+        .filter((val) => !isEmpty(val))
+        .map((typeStr) => ({label: typeStr, value: typeStr}));
+      this.fileTypes = uniqBy(fileTypes, 'label');
     }
   }
 
@@ -202,13 +211,6 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
         this.originalList = resp;
       })
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching documents for ${partner}: ${err}`}));
-  }
-
-  _getFileTypesFromRedux() {
-    const fileTypes = (get(getStore().getState(), 'commonData.staticDropdown.attachment_types') || [])
-      .filter((val) => !isEmpty(val))
-      .map((typeStr) => ({label: typeStr, value: typeStr}));
-    this.fileTypes = uniqBy(fileTypes, 'label');
   }
 
   _getReferenceNumber(refNumber) {

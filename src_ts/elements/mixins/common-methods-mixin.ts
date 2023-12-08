@@ -36,9 +36,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: String})
     errorBaseText!: string;
 
-    @property({type: Boolean})
-    confirmDialogOpened = false;
-
     @property({type: Object})
     engagementData!: AnyObject;
 
@@ -124,10 +121,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.requestInProcess = false;
         this.dialogOpened = false;
       }
-      if (this.confirmDialogOpened) {
-        this.requestInProcess = false;
-        this.confirmDialogOpened = false;
-      }
     }
 
     getLabel(path: string, options: AnyObject) {
@@ -212,6 +205,16 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     isAuditOrSpecialAudit(type: string) {
       return ['audit', 'sa'].includes(type);
+    }
+
+    getFileNameFromURL(url: string) {
+      if (!url) {
+        return '';
+      }
+      const urlSplit = url.split('?');
+      if (urlSplit.length) {
+        return urlSplit.shift()!.split('/').pop();
+      }
     }
 
     isJSONObj(str) {
