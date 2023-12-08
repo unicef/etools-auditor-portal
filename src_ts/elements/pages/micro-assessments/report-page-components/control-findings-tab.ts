@@ -17,6 +17,8 @@ import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {checkNonField} from '../../../mixins/error-handler';
 import {GenericObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @LitEelement
@@ -58,6 +60,9 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
+        etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
+        }
       </style>
 
       <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
@@ -98,20 +103,6 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           </div>
         </etools-data-table-row>
       </etools-content-panel>
-
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        dialogTitle=""
-        ?opened="${this.confirmDialogOpened}"
-        @confirm-btn-clicked="${this.removeItem}"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-        ${this.deleteTitle}
-      </etools-dialog>
 
       <etools-dialog
         no-padding
@@ -187,26 +178,6 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
     recommendation: ''
   };
 
-  @property({type: Array})
-  columns = [
-    {
-      size: 100,
-      label: 'Description of Finding',
-      labelPath: 'findings.finding',
-      path: 'finding'
-    }
-  ];
-
-  @property({type: Array})
-  details = [
-    {
-      label: 'Recommendation and IP Management Response',
-      labelPath: 'findings.recommendation',
-      path: 'recommendation',
-      size: 100
-    }
-  ];
-
   @property({type: Object})
   addDialogTexts = {
     title: 'Add New Finding'
@@ -226,6 +197,16 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
   @property({type: Boolean})
   canBeChanged = false;
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -235,13 +216,25 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
     }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
-    }
     if (changedProperties.has('dataItems')) {
       this._errorHandler(this.errorObject?.findings);
       this._checkNonField(this.errorObject?.findings);
     }
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+    });
   }
 
   _checkNonField(error) {

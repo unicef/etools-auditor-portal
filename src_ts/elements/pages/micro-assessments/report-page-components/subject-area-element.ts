@@ -32,7 +32,9 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
+        ${dataTableStylesLit} etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
+        }
       </style>
       <etools-data-table-row>
         <div slot="row-data" class="layout-horizontal editable-row">

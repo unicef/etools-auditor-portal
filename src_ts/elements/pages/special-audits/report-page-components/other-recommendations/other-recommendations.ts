@@ -20,6 +20,8 @@ import {GenericObject} from '../../../../../types/global';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../../utils/utils';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -101,21 +103,6 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
       </etools-content-panel>
 
       <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        dialogTitle=""
-        .opened="${this.confirmDialogOpened}"
-        @confirm-btn-clicked="${this.removeItem}"
-        ?disable-confirm-btn="${this.requestInProcess}"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-        ${this.deleteTitle}
-      </etools-dialog>
-
-      <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
@@ -174,19 +161,41 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this Recommendation?';
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
     }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject?.other_recommendations);
       this._checkNonField(this.errorObject?.other_recommendations);
     }
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+    });
   }
 
   _checkNonField(error) {

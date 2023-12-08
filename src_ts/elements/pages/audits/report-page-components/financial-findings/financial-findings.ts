@@ -28,6 +28,8 @@ import sortBy from 'lodash-es/sortBy';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {getTableRowIndexText} from '../../../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
@@ -61,6 +63,9 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           --paper-listbox: {
             max-height: 340px;
           }
+        }
+        etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
         }
         .row-details-content.col-12 {
           margin-bottom: 30px;
@@ -156,20 +161,6 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
         </etools-data-table-row>
 
         <etools-dialog
-          theme="confirmation"
-          size="md"
-          keep-dialog-open
-          dialogTitle=""
-          ?opened="${this.confirmDialogOpened}"
-          @confirm-btn-clicked="${this.removeItem}"
-          ok-btn-text="Delete"
-          openFlag="confirmDialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          ${this.deleteTitle}
-        </etools-dialog>
-
-        <etools-dialog
           id="financial-findings"
           no-padding
           size="md"
@@ -188,7 +179,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
               <!-- Title -->
               <etools-dropdown
                 id="titleOptionsDropDown"
-                class="${this._setRequired('financial_finding_set.title', this.optionsData)} validate-input"
+                class="w100 ${this._setRequired('financial_finding_set.title', this.optionsData)} validate-input"
                 label="${this.getLabel('financial_finding_set.title', this.optionsData)}"
                 placeholder="${this.getPlaceholderText('financial_finding_set.title', this.optionsData)}"
                 .options="${this.titleOptions}"
@@ -213,7 +204,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-6">
               <!-- Amount (local) -->
               <etools-currency
-                class="${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
+                class="w100 ${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.local_amount}"
                 currency=""
                 label="${this.getLabel('financial_finding_set.local_amount', this.optionsData)}"
@@ -232,7 +223,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             <div class="col col-6">
               <!-- Amount USD -->
               <etools-currency
-                class="${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
+                class="w100 ${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.amount}"
                 currency="$"
                 label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
@@ -335,28 +326,6 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     ip_comments: ''
   };
 
-  @property({type: Array})
-  details: GenericObject[] = [
-    {
-      size: 100,
-      label: 'Description',
-      labelPath: 'financial_finding_set.description',
-      path: 'description'
-    },
-    {
-      size: 100,
-      label: 'Recommendation',
-      labelPath: 'financial_finding_set.recommendation',
-      path: 'recommendation'
-    },
-    {
-      size: 100,
-      label: 'IP comments',
-      labelPath: 'financial_finding_set.ip_comments',
-      path: 'ip_comments'
-    }
-  ];
-
   @property({type: Object})
   addDialogTexts: GenericObject = {
     title: 'Add New Finding'
@@ -376,14 +345,21 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   @property({type: Array})
   titleOptions: any[] = [];
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
-    }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
     }
     if (changedProperties.has('errorObject')) {
       this._checkNonField(this.errorObject.financial_finding_set);
@@ -392,6 +368,21 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     if (changedProperties.has('optionsData')) {
       this.setChoices(this.optionsData);
     }
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+    });
   }
 
   setChoices(options: AnyObject) {

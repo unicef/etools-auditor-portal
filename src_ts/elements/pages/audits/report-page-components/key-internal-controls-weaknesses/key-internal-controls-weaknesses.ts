@@ -25,6 +25,8 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
 import isEqual from 'lodash-es/isEqual';
 import isNil from 'lodash-es/isNil';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
@@ -133,20 +135,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
         </etools-data-table-row>
 
         <etools-dialog
-          theme="confirmation"
-          size="md"
-          keep-dialog-open
-          ?opened="${this.confirmDialogOpened}"
-          @confirm-btn-clicked="${this._deleteArea}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          ok-btn-text="Delete"
-          openFlag="confirmDialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          ${this.dialogTexts?.dialogTitle}
-        </etools-dialog>
-
-        <etools-dialog
           no-padding
           keep-dialog-open
           size="md"
@@ -181,8 +169,10 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 @focus="${this._resetFieldError}"
                 trigger-value-change-event
                 @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                  this.editedBlueprint.risks[0].value = detail.selectedItem?.value;
-                  this.editedBlueprint = {...this.editedBlueprint};
+                  if (detail.selectedItem) {
+                    this.editedBlueprint.risks[0].value = detail.selectedItem.value;
+                    this.editedBlueprint = {...this.editedBlueprint};
+                  }
                 }}"
                 hide-search
               >
@@ -257,7 +247,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
                 .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => {
-                  this.editedBlueprint.risks[0].extra.ip_response = detail.value;
+                  this.editedBlueprint.risks[0].extra.ip_response = detail?.value;
                   this.editedBlueprint = {...this.editedBlueprint};
                 }}"
               >
@@ -327,9 +317,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   dialogOpened!: boolean;
 
   @property({type: Boolean})
-  confirmDialogOpened!: boolean;
-
-  @property({type: Boolean})
   requestInProcess!: boolean;
 
   connectedCallback() {
@@ -338,14 +325,16 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     this._initListeners();
   }
 
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._removeListeners();
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
-    }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
     }
     if (changedProperties.has('subjectAreas')) {
       this._dataChanged();
@@ -363,11 +352,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     this.addEventListener('kicw-risk-edit', this.openEditDialog as any);
     this.openDeleteDialog = this.openDeleteDialog.bind(this);
     this.addEventListener('kicw-risk-delete', this.openDeleteDialog as any);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeListeners();
   }
 
   setRisk() {
@@ -423,8 +407,20 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     }
     const data = event.detail;
     this.dialogTexts = this.deleteDialogTexts;
-    this.editedBlueprint = data.blueprint;
-    this.confirmDialogOpened = true;
+    this.editedBlueprint = cloneDeep(data.blueprint);
+
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.dialogTexts?.dialogTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._deleteArea();
+      }
+    });
   }
 
   _saveEditedArea() {
@@ -451,7 +447,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   }
 
   getKeyInternalWeaknessData() {
-    if (!this.dialogOpened && !this.confirmDialogOpened) {
+    if (!this.dialogOpened) {
       return null;
     }
     const blueprint = cloneDeep(this.editedBlueprint);
@@ -469,6 +465,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     if (opened) {
       return;
     }
+    this.editedBlueprint = {risks: []};
     const elements = this.shadowRoot!.querySelectorAll('.validate-input');
     elements.forEach((element: any) => {
       element.invalid = false;

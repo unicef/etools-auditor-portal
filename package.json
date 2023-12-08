@@ -24,15 +24,17 @@
     "rd:init": "relative-deps init",
     "rd:add": "relative-deps add",
     "rd:reload": "relative-deps",
-    "rd:watch": "chokidar \"../../etools-polymer/**/*.js\" \"../../etools-polymer/**/**/*.js\" -c 'npm run rd:reload' --silent"
+    "rd:watch": "chokidar \"../../etools-polymer/**/*.js\" \"../../etools-polymer/**/**/*.js\" -c 'npm run rd:reload' --silent",
+    "prepare": "relative-deps"
   },
   "dependencies": {
     "@types/lodash-es": "^4.17.7",
-    "@unicef-polymer/etools-modules-common": "^5.0.0-rc.29",
+    "@unicef-polymer/etools-dialog": "^8.0.0-rc.7",
+    "@unicef-polymer/etools-modules-common": "^5.0.0-rc.30",
     "@unicef-polymer/etools-piwik-analytics": "4.0.1-rc.3",
     "@unicef-polymer/etools-types": "^1.11.16",
-    "@unicef-polymer/etools-unicef": "^1.0.0-rc.38",
-    "@unicef-polymer/etools-utils": "^2.0.0-rc.3",
+    "@unicef-polymer/etools-unicef": "^1.0.0-rc.39",
+    "@unicef-polymer/etools-utils": "^2.0.0-rc.4",
     "@webcomponents/shadycss": "^1.11.2",
     "@webcomponents/webcomponentsjs": "^2.8.0",
     "chokidar-cli": "^3.0.0",
@@ -102,5 +104,8 @@
     "minimatch": ">=3.1.2",
     "semver-regex": ">=3.1.4"
   },
-  "relativeDependencies": {}
+  "relativeDependencies": {
+    "@unicef-polymer/etools-dialog": "../../etools-polymer/etools-dialog",
+    "@unicef-polymer/etools-unicef": "../../etools-polymer/etools-unicef"
+  }
 }

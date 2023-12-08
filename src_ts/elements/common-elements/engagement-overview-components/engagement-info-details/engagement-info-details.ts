@@ -796,17 +796,17 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     const userIsFirmStaffAuditor = !this.user.is_unicef_user;
 
     const savedSections = this.data.sections || [];
-    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData.sections) || [];
+    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData?.sections) || [];
     const sectionIDs = savedSections.map((section) => section.id);
     this.sectionIDs = sectionIDs;
 
     const savedOffices = this.data.offices || [];
-    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData.offices) || [];
+    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData?.offices) || [];
     const officeIDs = savedOffices.map((office) => office.id);
     this.officeIDs = officeIDs;
 
     if (!this.users) {
-      this.users = this.reduxCommonData.users || [];
+      this.users = this.reduxCommonData?.users || [];
     }
     this.setUsersNotifiedOptionsAndIDs(true);
 

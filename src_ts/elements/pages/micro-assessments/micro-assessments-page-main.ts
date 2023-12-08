@@ -248,20 +248,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   @property({type: String})
   engagementPrefix = 'micro-assessments';
 
-  constructor() {
-    super();
-    this.tabsList = [
-      {tab: 'overview', tabLabel: 'Engagement Overview'},
-      {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
-      {
-        tab: 'questionnaire',
-        hidden: !this._showQuestionnaire(this.engagementOptions, this.engagement),
-        tabLabel: 'Questionnaire'
-      },
-      {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
-      {tab: 'attachments', tabLabel: 'Attachments'}
-    ];
-  }
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'micro-assessments')) {
       this.resetEngagementDataIfNeeded();
@@ -278,7 +264,11 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
+    if (
+      changedProperties.has('engagementOptions') ||
+      changedProperties.has('engagement') ||
+      changedProperties.has('user')
+    ) {
       this.onEngagementLoaded();
     }
   }
@@ -305,7 +295,18 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   }
 
   onEngagementLoaded() {
-    if (this.engagementOptions && this.engagement) {
+    if (this.engagementOptions && this.engagement && this.user) {
+      this.tabsList = [
+        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
+        {
+          tab: 'questionnaire',
+          hidden: !this._showQuestionnaire(this.engagementOptions, this.engagement),
+          tabLabel: 'Questionnaire'
+        },
+        {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
+        {tab: 'attachments', tabLabel: 'Attachments'}
+      ];
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
     }
   }

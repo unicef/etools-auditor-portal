@@ -144,15 +144,6 @@ export class EngagementStaffMembersTab extends connect(store)(
           justify-content: flex-end;
           column-gap: 30px;
         }
-        paper-toggle-button.white {
-          --paper-toggle-button-label-color: #ffffff;
-          --paper-toggle-button-checked-bar-color: #ffffff !important;
-          --paper-toggle-button-checked-button-color: #ffffff;
-          --paper-toggle-button-checked-ink-color: #ffffff;
-          --paper-toggle-button-unchecked-button-color: #bfbfbf;
-          --paper-toggle-button-unchecked-bar-color: #bfbfbf !important;
-          --paper-toggle-button-unchecked-ink-color: #bfbfbf;
-        }
       </style>
 
       <!--requests-->

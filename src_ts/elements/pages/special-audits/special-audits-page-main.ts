@@ -254,15 +254,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   @property({type: String})
   engagementPrefix = 'special-audits';
 
-  constructor() {
-    super();
-    this.tabsList = [
-      {tab: 'overview', tabLabel: 'Engagement Overview'},
-      {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
-      {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
-      {tab: 'attachments', tabLabel: 'Attachments'}
-    ];
-  }
   stateChanged(state: RootState) {
     if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'special-audits')) {
       this.resetEngagementDataIfNeeded();
@@ -279,13 +270,23 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('engagementOptions') || changedProperties.has('engagement')) {
+    if (
+      changedProperties.has('engagementOptions') ||
+      changedProperties.has('engagement') ||
+      changedProperties.has('user')
+    ) {
       this.onEngagementLoaded();
     }
   }
 
   onEngagementLoaded() {
-    if (this.engagementOptions && this.engagement) {
+    if (this.engagementOptions && this.engagement && this.user) {
+      this.tabsList = [
+        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
+        {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
+        {tab: 'attachments', tabLabel: 'Attachments'}
+      ];
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
     }
   }

@@ -74,30 +74,6 @@ export const moduleStyles = css`
     padding: 16px 16px;
   }
 
-  /* PAPER-TOGGLE-BUTTON */
-  paper-toggle-button {
-    --paper-toggle-button-checked-button-color: var(--primary-color);
-    --paper-toggle-button-checked-bar-color: rgba(0, 174, 239, 0.5);
-    --paper-toggle-button-unchecked-button-color: rgba(241, 241, 241, 1);
-    --paper-toggle-button-unchecked-bar-color: rgba(31, 31, 31, 0.26);
-  }
-
-  /* CHECKBOX */
-  paper-checkbox {
-    --paper-checkbox-unchecked-color: var(--gray-mid);
-    --paper-checkbox-checked-color: var(--primary-color);
-    --paper-checkbox-label: {
-      color: var(--gray-dark);
-      font-size: 16px;
-    }
-    --paper-checkbox-margin: 0;
-  }
-
-  paper-radio-button {
-    --paper-radio-button-unchecked-color: var(--gray-mid);
-    --paper-radio-button-checked-color: var(--primary-color);
-  }
-
   etools-dropdown,
   etools-dropdown-multi {
     padding: 0 12px;

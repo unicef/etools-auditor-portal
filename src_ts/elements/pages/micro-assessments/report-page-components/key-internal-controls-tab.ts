@@ -159,29 +159,6 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   }
 
   @property({type: Array})
-  columns = [
-    {
-      size: 70,
-      label: 'Subject area',
-      path: 'header'
-    },
-    {
-      size: 30,
-      label: 'Risk Assessment',
-      path: 'risk.value.display_name'
-    }
-  ];
-
-  @property({type: Array})
-  details = [
-    {
-      label: 'Brief Justification for Rating (main internal control gaps)',
-      path: 'risk.extra.comments',
-      size: 100
-    }
-  ];
-
-  @property({type: Array})
   riskOptions!: any[];
 
   @property({type: Boolean})

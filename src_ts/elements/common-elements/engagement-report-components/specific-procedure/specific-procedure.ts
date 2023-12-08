@@ -21,6 +21,8 @@ import {checkNonField} from '../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -114,21 +116,6 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
       </etools-content-panel>
 
       <etools-dialog
-        theme="confirmation"
-        size="md"
-        .opened="${this.confirmDialogOpened}"
-        dialog-title=""
-        openFlag="confirmDialogOpened"
-        @close="${(e: CustomEvent) => {
-          this._resetDialogOpenedFlag(e);
-          this._removeItem(e);
-        }}"
-        ok-btn-text="Delete"
-      >
-        ${this.deleteTitle}
-      </etools-dialog>
-
-      <etools-dialog
         no-padding
         keep-dialog-open
         size="md"
@@ -220,6 +207,16 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   @property({type: Boolean, attribute: 'readonly-tab'})
   readonlyTab = false;
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -255,12 +252,19 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     return this._canBeChanged(permissions) && !readonlyTab && withoutFindingColumn;
   }
 
-  _removeItem(event) {
-    this.confirmDialogOpened = false;
-    if (this.deleteCanceled(event)) {
-      return;
-    }
-    this.removeItem();
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+    });
   }
 
   _checkInvalid(value) {

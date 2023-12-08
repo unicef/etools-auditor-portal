@@ -72,6 +72,11 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         .col:not(:first-of-type) {
           padding-inline-start: 0px !important;
         }
+        etools-input::part(readonly-input) {
+          text-wrap: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       </style>
 
       <etools-content-panel list panel-title="Summary of Audit Findings">

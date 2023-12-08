@@ -229,8 +229,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
 
     this.addEventListener('404', this._pageNotFound);
 
-    this.addEventListener('iron-overlay-opened', this._dialogOpening);
-    this.addEventListener('iron-overlay-closed', this._dialogClosing);
     installRouter((location) =>
       store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
     );
@@ -326,53 +324,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     }
     // @ts-ignore
     return appHeadLayout.shadowRoot.querySelector('#contentContainer');
-  }
-
-  _dialogOpening(event) {
-    const dialogOverlay = document.querySelector('iron-overlay-backdrop.opened');
-    if (!dialogOverlay) {
-      return;
-    }
-
-    dialogOverlay.classList.remove('opened');
-
-    const zIndex = (dialogOverlay as any).style.zIndex;
-    const targetShadowRoot = event.target.shadowRoot;
-    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
-    const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
-    const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
-
-    drawerOverlay.style.zIndex = zIndex;
-    appHeaderOverlay.style.zIndex = zIndex;
-    toolBarOverlay.style.zIndex = zIndex;
-
-    drawerOverlay.classList.add('opened');
-    appHeaderOverlay.classList.add('opened');
-    toolBarOverlay.classList.add('opened');
-  }
-  _dialogClosing(event) {
-    // chrome
-    const paths = event.composedPath() || [];
-    if (paths.length && paths[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
-      return;
-    }
-    // edge
-    if (event.__target && event.__target.is && event.__target.is.toLowerCase().indexOf('dropdown') > -1) {
-      return;
-    }
-
-    const targetShadowRoot = event.target.shadowRoot;
-    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
-    const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
-    const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
-
-    drawerOverlay.style.zIndex = '';
-    appHeaderOverlay.style.zIndex = '';
-    toolBarOverlay.style.zIndex = '';
-
-    drawerOverlay.classList.remove('opened');
-    appHeaderOverlay.classList.remove('opened');
-    toolBarOverlay.classList.remove('opened');
   }
 
   allowPageChange() {

@@ -33,6 +33,8 @@ import cloneWith from 'lodash-es/cloneWith';
 import {getHeadingLabel, getOptionsChoices} from '../../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @LitEelement
@@ -81,6 +83,9 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           --esmm-external-wrapper: {
             max-width: 100%;
           }
+        }
+        etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
         }
       </style>
 
@@ -149,21 +154,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
             <span class="col-data col-3">–</span>
           </div>
         </etools-data-table-row>
-
-        <etools-dialog
-          theme="confirmation"
-          id="delete-summary-findings"
-          size="md"
-          dialogTitle=""
-          .opened="${this.confirmDialogOpened}"
-          keep-dialog-open
-          @confirm-btn-clicked="${this.removeItem}"
-          ok-btn-text="Delete"
-          openFlag="confirmDialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          Are you sure you want to delete this attachment?
-        </etools-dialog>
 
         <etools-dialog
           size="md"
@@ -313,8 +303,13 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener('dialog-confirmed', this._addItemFromDialog);
-    this.addEventListener('delete-confirmed', this.removeItem);
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
     this.errors.deadline_of_action = false;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -322,9 +317,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
 
     if (changedProperties.has('dialogOpened')) {
       this.resetDialog(this.dialogOpened);
-    }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
     }
     if (changedProperties.has('itemModel') || changedProperties.has('priority')) {
       this._setPriority(this.itemModel, this.priority);
@@ -338,6 +330,21 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     if (changedProperties.has('optionsData')) {
       this.setCategoryOfObservation(this.optionsData);
     }
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+    });
   }
 
   setCategoryOfObservation(options: AnyObject) {
@@ -365,7 +372,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   }
 
   getFindingsData() {
-    if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
+    if (this.dialogOpened && !this.saveWithButton) {
       return this.getCurrentData();
     }
     const data: any[] = [];
@@ -402,7 +409,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   }
 
   getCurrentData() {
-    if (!this.dialogOpened && !this.confirmDialogOpened) {
+    if (!this.dialogOpened) {
       return null;
     }
     if (!this.validate()) {

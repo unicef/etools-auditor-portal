@@ -34,15 +34,16 @@ import clone from 'lodash-es/clone';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../../config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
-import pickBy from 'lodash-es/pickBy';
-import isEmpty from 'lodash-es/isEmpty';
 import {getHeadingLabel, getOptionsChoices, isValidCollection} from '../../mixins/permission-controller';
-import famEndpoints from '../../config/endpoints';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {ShareDocuments} from '../share-documents/share-documents';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {RequestEndpoint, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {_showDialogSpinner} from '../../utils/utils';
+import './file-attachment-doc.js';
+
 /**
  * @customElement
  * @LitElement
@@ -204,97 +205,12 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         </etools-data-table-row>
       </etools-content-panel>
 
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        .opened="${this.confirmDialogOpened}"
-        @close="${this._deleteAttachment}"
-        ok-btn-text="Delete"
-      >
-        Are you sure you want to delete this attachment?
-      </etools-dialog>
-
-      <etools-dialog
-        id="attachDoc"
-        no-padding
-        keep-dialog-open
-        size="md"
-        .opened="${this.dialogOpened}"
-        dialog-title="${this.dialogTitle}"
-        .okBtnText="${this.confirmBtnText}"
-        ?show-spinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
-        ?disableConfirmBtn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._saveAttachment}"
-        openFlag="dialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-        <div class="container">
-          ${this.showFileTypes(this.optionsData)
-            ? html` <div class="layout-horizontal row-padding-v">
-                <div class="col col-6">
-                  <etools-dropdown
-                    id="fileType"
-                    class="validate-input ${this._setRequired('file_type', this.optionsData)}"
-                    .selected="${this.editedItem.file_type}"
-                    label="${this.getLabel('file_type', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('file_type', this.optionsData)}"
-                    .options="${this.fileTypes || []}"
-                    option-label="display_name"
-                    option-value="value"
-                    ?required="${this._setRequired('file_type', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.file_type}"
-                    .errorMessage="${this.errors.file_type}"
-                    trigger-value-change-event
-                    @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                      this.editedItem.file_type = detail.selectedItem ? detail.selectedItem.value : null;
-                    }}"
-                    @focus="${this._resetFieldError}"
-                    hide-search
-                    disable-on-focus-handling
-                  >
-                  </etools-dropdown>
-                </div>
-              </div>`
-            : ``}
-
-          <div class="layout-horizontal row-padding-v">
-            <etools-upload
-              label="${this.uploadLabel}"
-              .fileUrl="${this.editedItem.attachment}"
-              .uploadEndpoint="${this.uploadEndpoint}"
-              @upload-started="${this._onUploadStarted}"
-              @upload-finished="${this._attachmentUploadFinished}"
-              ?invalid="${this.errors.file}"
-              .errorMessage="${this.errors.file}"
-              .showDeleteBtn="${this.showDeleteBtn}"
-              .currentAttachmentId="${this.editedItem.id}"
-              required
-            >
-              <!-- Here editedItem.id is the same as the uploaded attachment id -->
-            </etools-upload>
-          </div>
-        </div>
-      </etools-dialog>
-
-      <etools-dialog
-        id="deleteLinks"
-        theme="confirmation"
-        size="md"
-        link-id="${this.linkToDeleteId}"
-        .opened="${this.deleteLinkOpened}"
-        @close="${this._removeLink}"
-        ok-btn-text="Delete"
-        cancel-btn-text="Cancel"
-      >
-        Are you sure you want to delete the shared document?
-      </etools-dialog>
-
       ${this.isUnicefUser
         ? html` <etools-dialog
             no-padding
             keep-dialog-open
             size="lg"
+            attach-to-body
             .opened="${this.shareDialogOpened}"
             dialog-title="Share Documents"
             id="share-documents"
@@ -302,7 +218,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
             @confirm-btn-clicked="${this._SendShareRequest}"
             openFlag="shareDialogOpened"
             @close="${this._resetDialogOpenedFlag}"
-            ?show-spinner="${this._showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
+            ?show-spinner="${_showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
             ?disableConfirmBtn="${this.requestInProcess || !this.shareParams?.attachments?.length}"
           >
             <share-documents
@@ -357,9 +273,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     confirmBtn: 'Edit'
   };
 
-  @property({type: String})
-  uploadLabel = 'Upload File';
-
   @property({type: Boolean})
   isUnicefUser!: boolean;
 
@@ -399,20 +312,11 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   @property({type: Object})
   requestData!: GenericObject;
 
-  @property({type: String})
-  uploadEndpoint: string = famEndpoints.attachmentsUpload.url;
-
-  @property({type: Boolean})
-  showDeleteBtn = false;
-
   @property({type: Boolean})
   isTabReadonly = true;
 
   @property({type: Boolean})
   hideAddAttachments = true;
-
-  @property({type: Boolean})
-  deleteLinkOpened = false;
 
   @property({type: Boolean})
   uploadInProgress = false;
@@ -421,11 +325,17 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     super.connectedCallback();
     this._requestCompleted = this._requestCompleted.bind(this);
     this.addEventListener('attachments-request-completed', this._requestCompleted as any);
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('attachments-request-completed', this._requestCompleted as any);
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -446,14 +356,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (changedProperties.has('isUnicefUser') || changedProperties.has('engagement')) {
       this._shouldHideShare(this.isUnicefUser, this.engagement?.id);
     }
-  }
-
-  _showDialogSpinner(requestInProcess: boolean, uploadInProgress: boolean) {
-    // When the upload is in progress do not show the dialog spinner
-    if (uploadInProgress) {
-      return false;
-    }
-    return requestInProcess;
   }
 
   _handleLinksForEngagement() {
@@ -506,10 +408,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
-  showFileTypes(options: AnyObject) {
-    return !!options && !!get(options, 'actions.GET.file_type');
-  }
-
   _resetDialog(dialogOpened) {
     if (!dialogOpened) {
       this.originalEditedObj = null;
@@ -518,67 +416,40 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     this.resetDialog(dialogOpened);
   }
 
-  _getFileType(fileType) {
-    const length = get(this, 'fileTypes.length');
-    if (!length) {
-      return;
-    }
-
-    const type = this.fileTypes.find((type) => parseInt(type.value, 10) === parseInt(fileType, 10));
-    return type || null;
+  openAddEditAttachDialog() {
+    openDialog({
+      dialog: 'file-attachment-doc',
+      dialogData: {
+        fileTypes: this.fileTypes,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        originalEditedObj: this.originalEditedObj,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    }).then(({confirmed, response}) => {
+      if (confirmed && response) {
+        this.requestData = clone(response);
+      }
+    });
   }
 
-  _onUploadStarted() {
-    this.requestInProcess = true;
-    this.uploadInProgress = true;
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: 'Are you sure you want to delete this attachment?',
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._deleteAttachment();
+      }
+    });
   }
 
-  _attachmentUploadFinished(e) {
-    this.requestInProcess = false;
-    this.uploadInProgress = false;
-
-    if (e.detail.success) {
-      const uploadResponse = e.detail.success;
-      this.editedItem.attachment = uploadResponse.id;
-      this.editedItem.filename = uploadResponse.filename;
-    } else if (e.detail.error && e.detail.error.error) {
-      fireEvent(this, 'toast', {text: e.detail.error.error.message});
-    }
-  }
-
-  getFileNameFromURL(url: string) {
-    if (!url) {
-      return '';
-    }
-    const urlSplit = url.split('?');
-    if (urlSplit.length) {
-      return urlSplit.shift()!.split('/').pop();
-    }
-  }
-
-  _saveAttachment() {
-    if (!this.validate()) {
-      return;
-    }
-
-    this.requestInProcess = true;
-
-    let attachmentData = this._getFileData();
-    const method = attachmentData.id ? 'PATCH' : 'POST';
-
-    attachmentData = method === 'PATCH' ? this._getChanges(attachmentData) : attachmentData;
-    if (!attachmentData) {
-      this._requestCompleted(null, {success: true});
-      return;
-    }
-    this.requestData = {method, attachmentData};
-  }
-
-  _deleteAttachment(event) {
-    this.confirmDialogOpened = false;
-    if (this.deleteCanceled(event)) {
-      return;
-    }
+  _deleteAttachment() {
     if (!this.engagement?.id) {
       return;
     }
@@ -588,40 +459,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       method: 'DELETE',
       attachmentData: {id: this.editedItem.id}
     };
-  }
-
-  _getChanges(attachmentData) {
-    const original = this.originalEditedObj && this._getFileData(this.originalEditedObj);
-    if (!original) {
-      return attachmentData;
-    }
-
-    const data = pickBy(attachmentData, (value, key) => original[key] !== value);
-    if (data.attachment && this._fileAlreadySelected()) {
-      delete data.attachment;
-    }
-
-    if (isEmpty(data)) {
-      return null;
-    } else {
-      data.id = attachmentData.id;
-      return data;
-    }
-  }
-
-  _getFileData(fileData?) {
-    if (!this.dialogOpened && !fileData && !this.editedItem) {
-      return {};
-    }
-    const {id, attachment, file_type} = fileData || this.editedItem;
-    const data: GenericObject = {attachment};
-
-    if (id) {
-      data.id = id;
-    }
-    data.file_type = file_type;
-
-    return data;
   }
 
   _getAttachmentType(attachment) {
@@ -635,65 +472,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (detail?.success) {
       this.dialogOpened = false;
     }
-  }
-
-  _fileAlreadySelected() {
-    if (!this.dataItems) {
-      return false;
-    }
-
-    const alreadySelectedIndex = this.dataItems.findIndex((item) => {
-      return this.getFileNameFromURL(item.attachment) === this.editedItem.filename;
-    });
-
-    if (alreadySelectedIndex !== -1) {
-      this.errors = {...this.errors, file: 'File already selected'};
-      return true;
-    }
-
-    this.errors = {...this.errors, file: ''};
-    return false;
-  }
-
-  validate() {
-    let valid = true;
-
-    valid = this._validateFileType();
-
-    if (this.addDialog && this._fileAlreadySelected()) {
-      valid = false;
-    }
-
-    if (this.addDialog && !this.editedItem.attachment) {
-      this.errors.file = 'File is not selected';
-      this.errors = {...this.errors};
-      valid = false;
-    }
-
-    return valid;
-  }
-
-  _validateFileType() {
-    let valid = true;
-    const dropdown = this.shadowRoot!.querySelector('#fileType') as EtoolsDropdownEl;
-
-    const fileTypeRequired = dropdown.required;
-
-    if (fileTypeRequired) {
-      if (!this.fileTypes || !this.fileTypes.length) {
-        this.errors = {...this.errors, file_type: 'File types are not defined'};
-        valid = false;
-      } else {
-        this.errors.file_type = false;
-      }
-
-      if (!dropdown.validate()) {
-        this.errors = {...this.errors, file_type: 'This field is required'};
-        valid = false;
-      }
-    }
-
-    return valid;
   }
 
   _openAddDialog() {
@@ -772,9 +550,9 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _openShareDialog() {
-    this.shareDialogOpened = true;
     const shareModal = this.shadowRoot!.querySelector('#shareDocuments') as ShareDocuments;
     shareModal.updateShareParams();
+    this.shareDialogOpened = true;
   }
 
   _SendShareRequest() {
@@ -825,18 +603,25 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     this._getLinkedAttachments(); // refresh the list
   }
 
-  _openDeleteLinkDialog(id) {
+  async _openDeleteLinkDialog(id) {
     this.linkToDeleteId = id;
-    this.deleteLinkOpened = true;
+
+    const confirmed = await openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: 'Are you sure you want to delete the shared document?',
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      return confirmed;
+    });
+    if (confirmed) {
+      this._removeLink(id);
+    }
   }
 
-  _removeLink(event) {
-    this.deleteLinkOpened = false;
-    if (this.deleteCanceled(event)) {
-      return;
-    }
-    const id = event.currentTarget.getAttribute('link-id');
-
+  _removeLink(id) {
     sendRequest({
       method: 'DELETE',
       endpoint: getEndpoint('linkAttachment', {id})
