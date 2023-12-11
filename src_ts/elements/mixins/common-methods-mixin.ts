@@ -11,6 +11,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
 import {AnyObject, Constructor} from '@unicef-polymer/etools-types';
 import get from 'lodash-es/get';
+import {getBodyDialog} from '../utils/utils';
 
 /**
  * @polymer
@@ -41,6 +42,9 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     @property({type: Object})
     optionsData!: AnyObject;
+
+    @property({type: String})
+    dialogKey = '';
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -90,9 +94,37 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
+      if (this.dialogKey) {
+        const dialogEl = getBodyDialog(this.dialogKey);
+        if (dialogEl) {
+          (dialogEl as any).requestInProcess = false;
+        }
+      }
       this.errors = clone(refactorErrorObject(errorData));
       if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
+      }
+    }
+
+    closeDialogLoading(dialogKey = this.dialogKey) {
+      if (!dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(dialogKey);
+      if (dialogEl) {
+        (dialogEl as any).requestInProcess = false;
+      }
+    }
+
+    closeEditDialog(dialogKey = this.dialogKey) {
+      if (!dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(dialogKey);
+      if (dialogEl) {
+        (dialogEl as any)._onClose();
       }
     }
 
@@ -113,13 +145,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
       if (nonField) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${nonField}`});
-      }
-    }
-
-    _dataChanged() {
-      if (this.dialogOpened) {
-        this.requestInProcess = false;
-        this.dialogOpened = false;
       }
     }
 

@@ -1,5 +1,6 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import './control-findings-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
@@ -19,6 +20,8 @@ import {checkNonField} from '../../../mixins/error-handler';
 import {GenericObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util.js';
+import {getBodyDialog} from '../../../utils/utils';
 
 /**
  * @LitEelement
@@ -103,63 +106,6 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           </div>
         </etools-data-table-row>
       </etools-content-panel>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        ?opened="${this.dialogOpened}"
-        .deleteDialog="${this.deleteDialog}"
-        dialog-title="${this.dialogTitle}"
-        .okBtnText="${this.confirmBtnText}"
-        ?show-spinner="${this.requestInProcess}"
-        ?disableConfirmBtn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._addItemFromDialog}"
-        openFlag="dialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-        <div class="container">
-          <div class="layout-horizontal">
-            <div class="col col-12">
-              <!-- Finding -->
-              <etools-input
-                class="w100 validate-input ${this._setRequired('findings.finding', this.optionsData)}"
-                .value="${this.editedItem.finding}"
-                label="${this.getLabel('findings.finding', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('findings.finding', this.optionsData)}"
-                ?required="${this._setRequired('findings.finding', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
-                maxlength="400"
-                ?invalid="${this.errors[0]?.finding}"
-                .errorMessage="${this.errors[0]?.finding}"
-                @focus="${this._resetFieldError}"
-                @value-changed="${({detail}: CustomEvent) => (this.editedItem.finding = detail.value)}"
-              >
-              </etools-input>
-            </div>
-          </div>
-          <div class="layout-horizontal">
-            <div class="col col-12">
-              <!-- Recommendation -->
-              <etools-textarea
-                class="w100 validate-input ${this._setRequired('findings.recommendation', this.optionsData)}"
-                .value="${this.editedItem.recommendation}"
-                allowed-pattern="[ds]"
-                label="${this.getLabel('findings.recommendation', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('findings.recommendation', this.optionsData)}"
-                ?required="${this._setRequired('findings.recommendation', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
-                max-rows="4"
-                ?invalid="${this.errors[0]?.recommendation}"
-                .errorMessage="${this.errors[0]?.recommendation}"
-                @focus="${this._resetFieldError}"
-                @value-changed="${({detail}: CustomEvent) => (this.editedItem.recommendation = detail.value)}"
-              >
-              </etools-textarea>
-            </div>
-          </div>
-        </div>
-      </etools-dialog>
     `;
   }
 
@@ -197,14 +143,20 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
   @property({type: Boolean})
   canBeChanged = false;
 
+  readonly dialogKey = 'control-findings-tab-dialog';
+
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -213,13 +165,27 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
     if (changedProperties.has('dataItems')) {
       this.dataItemsChanged();
     }
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('dataItems')) {
       this._errorHandler(this.errorObject?.findings);
       this._checkNonField(this.errorObject?.findings);
     }
+  }
+
+  openAddEditAttachDialog() {
+    openDialog({
+      dialog: 'control-findings-tab-dialog',
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    }).then(({confirmed, response}) => {
+      if (confirmed) {
+        this.dataItems = cloneDeep(response);
+      }
+    });
   }
 
   openConfirmDeleteDialog() {
@@ -253,6 +219,11 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
 
     if (!this.originalDataItems) {
       this.originalDataItems = this.dataItems;
+    }
+
+    const dialogEl = getBodyDialog(this.dialogKey);
+    if (dialogEl) {
+      (dialogEl as any)._onClose();
     }
   }
 }

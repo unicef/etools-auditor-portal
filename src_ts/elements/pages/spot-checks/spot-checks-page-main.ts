@@ -11,6 +11,7 @@ import '../../common-elements/engagement-overview-components/engagement-info-det
 import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import './report-page-components/sc-report-page-main/sc-report-page-main';
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
+import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 
 import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
@@ -31,6 +32,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import get from 'lodash-es/get';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
@@ -195,38 +197,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                 </status-tab-element>
               </div>
             </div>
-
-            <etools-dialog
-              no-padding
-              keep-dialog-open
-              size="md"
-              .opened="${this.dialogOpened}"
-              dialog-title="Cancellation of Engagement"
-              ok-btn-text="Continue"
-              @confirm-btn-clicked="${this._cancelEngagement}"
-              openFlag="dialogOpened"
-              @close="${this._resetDialogOpenedFlag}"
-            >
-              <div class="row-h repeatable-item-container" without-line>
-                <div class="repeatable-item-content">
-                  <div class="row-h group">
-                    <div class="input-container input-container-l">
-                      <etools-textarea
-                        id="cancellationReasonInput"
-                        class="required"
-                        label="Cancellation Reason"
-                        placeholder="Enter reason of cancellation"
-                        required
-                        max-rows="4"
-                        error-message="This field is required."
-                        @focus="${this._resetFieldError}"
-                      >
-                      </etools-textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </etools-dialog>
           `
         : ``}
     `;
@@ -341,5 +311,15 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       return false;
     }
     return true;
+  }
+
+  _openCancelDialog() {
+    openDialog({
+      dialog: 'engagement-cancel-dialog'
+    }).then(({confirmed, response}) => {
+      if (confirmed) {
+        this._cancelEngagement(response);
+      }
+    });
   }
 }

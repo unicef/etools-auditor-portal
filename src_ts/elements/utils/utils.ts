@@ -79,3 +79,7 @@ export const _showDialogSpinner = (requestInProcess: boolean, uploadInProgress: 
   }
   return requestInProcess;
 };
+
+export const getBodyDialog = (dialogKey: string) => {
+  return document.body.querySelector(dialogKey);
+};

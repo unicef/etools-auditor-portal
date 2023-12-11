@@ -210,6 +210,9 @@ export const moduleStyles = css`
   .caps::first-letter {
     text-transform: uppercase;
   }
+  .editable-row:hover .hover-block {
+    background-color: transparent;
+  }
 
   .f1 {
     flex: 1;

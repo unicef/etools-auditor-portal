@@ -3,8 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
-
+import './assessment-of-controls-dialog.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
@@ -120,92 +119,6 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
             </div>
           </etools-data-table-row>
         </div>
-
-        <etools-dialog
-          no-padding
-          keep-dialog-open
-          size="md"
-          .opened="${this.dialogOpened}"
-          dialog-title="${this.dialogTitle}"
-          .okBtnText="${this.confirmBtnText}"
-          ?show-spinner="${this.requestInProcess}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          @confirm-btn-clicked="${this._addItemFromDialog}"
-          openFlag="dialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          <div class="container">
-            <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- Recommendation -->
-                  <etools-textarea
-                    class="w100 ${this._setRequired(
-                      'key_internal_controls.recommendation',
-                      this.optionsData
-                    )} validate-input"
-                    .value="${this.editedItem.recommendation}"
-                    label="${this.getLabel('key_internal_controls.recommendation', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('key_internal_controls.recommendation', this.optionsData)}"
-                    ?required="${this._setRequired('key_internal_controls.recommendation', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.recommendation}"
-                    .errorMessage="${this.errors.recommendation}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'recommendation', this.editedItem)}""
-                  >
-                  </etools-textarea>
-                </div>
-              </div>
-
-              <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- Audit Observation -->
-                  <etools-textarea
-                    class="w100 ${this._setRequired(
-                      'key_internal_controls.audit_observation',
-                      this.optionsData
-                    )} validate-input"
-                    .value="${this.editedItem.audit_observation}"
-                    label="${this.getLabel('key_internal_controls.audit_observation', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText(
-                      'key_internal_controls.audit_observation',
-                      this.optionsData
-                    )}"
-                    ?required="${this._setRequired('key_internal_controls.audit_observation', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.audit_observation}"
-                    .errorMessage="${this.errors.audit_observation}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'audit_observation', this.editedItem)}""
-                  >
-                  </etools-textarea>
-                </div>
-              </div>
-
-               <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- IP Response -->
-                  <etools-textarea
-                    class="w100 ${this._setRequired('key_internal_controls.ip_response', this.optionsData)}
-                                          validate-input"
-                    .value="${this.editedItem.ip_response}"
-                    label="${this.getLabel('key_internal_controls.ip_response', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('key_internal_controls.ip_response', this.optionsData)}"
-                    ?required="${this._setRequired('key_internal_controls.ip_response', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.ip_response}"
-                    .errorMessage="${this.errors.ip_response}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'ip_response', this.editedItem)}""
-                  >
-                  </etools-textarea>
-                </div>
-              </div>
-            </div>
-        </etools-dialog>
       </etools-content-panel>
     `;
   }
@@ -237,24 +150,47 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
 
   connectedCallback() {
     super.connectedCallback();
+    this.dialogKey = 'assessment-of-controls-dialog';
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject.key_internal_controls);
       this._checkNonField(this.errorObject.key_internal_controls);
     }
+  }
+
+  openAddEditAttachDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        editedIndex: this.editedIndex,
+        dataItems: this.dataItems,
+        originalEditedObj: this.originalEditedObj,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    });
+    // .then(({confirmed, response}) => {
+    //   if (confirmed) {
+    //     this.dataItems = cloneDeep(response);
+    //   }
+    // });
   }
 
   openConfirmDeleteDialog() {

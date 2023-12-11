@@ -1,11 +1,10 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import './other-recommendations-dialog';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
@@ -101,45 +100,6 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
           </div>
         </etools-data-table-row>
       </etools-content-panel>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        .opened="${this.dialogOpened}"
-        dialog-title="${this.dialogTitle}"
-        .okBtnText="${this.confirmBtnText}"
-        ?show-spinner="${this.requestInProcess}"
-        ?disable-confirm-btn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._addItemFromDialog}"
-        openFlag="dialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <!-- Description -->
-            <etools-textarea
-              class="${this._setRequired(
-                'other_recommendations.description',
-                this.optionsData
-              )} fixed-width validate-input w100"
-              .value="${this.editedItem.description}"
-              allowed-pattern="[\\d\\s]"
-              label="${this.getLabel('other_recommendations.description', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('other_recommendations.description', this.optionsData)}"
-              ?required="${this._setRequired('other_recommendations.description', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this._checkInvalid(this.errors[0]?.description)}"
-              .errorMessage="${this.errors[0]?.description}"
-              @value-changed="${({detail}: CustomEvent) =>
-                (this.editedItem = {...this.editedItem, description: detail.value})}"
-            >
-              @focus="${this._resetFieldError}" >
-            </etools-textarea>
-          </div>
-        </div>
-      </etools-dialog>
     `;
   }
 
@@ -163,24 +123,40 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
 
   connectedCallback() {
     super.connectedCallback();
+    this.dialogKey = 'other-recommendations-dialog';
+
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject?.other_recommendations);
       this._checkNonField(this.errorObject?.other_recommendations);
     }
+  }
+
+  openAddEditDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    });
   }
 
   openConfirmDeleteDialog() {
@@ -207,9 +183,5 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
     if (nonField) {
       fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
     }
-  }
-
-  _checkInvalid(value) {
-    return !!value;
   }
 }
