@@ -40,7 +40,6 @@ import {RequestEndpoint, sendRequest} from '@unicef-polymer/etools-utils/dist/et
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
-import {_showDialogSpinner} from '../../utils/utils';
 import './file-attachment-doc-dialog.js';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
@@ -296,6 +295,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   connectedCallback() {
     super.connectedCallback();
+    this.dialogKey = 'file-attachment-doc-dialog';
     this._requestCompleted = this._requestCompleted.bind(this);
     this.addEventListener('attachments-request-completed', this._requestCompleted as any);
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
@@ -389,7 +389,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   openAddEditAttachDialog() {
     openDialog({
-      dialog: 'file-attachment-doc-dialog',
+      dialog: this.dialogKey,
       dialogData: {
         fileTypes: this.fileTypes,
         optionsData: this.optionsData,

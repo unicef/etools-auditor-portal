@@ -22,7 +22,6 @@ import EngagementMixin from '../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
 import {GenericObject} from '../../../types/global';
-import {_showDialogSpinner} from '../../utils/utils';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {ShareDocuments} from '../share-documents/share-documents';
 
