@@ -159,9 +159,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (changedProperties.has('errorObject')) {
         this._errorOccurred(this.errorObject);
       }
-      if (changedProperties.has('dialogOpened')) {
-        this.resetInputDialog(this.dialogOpened);
-      }
     }
 
     loadEngagementData(id: number | null, engagementType) {
@@ -268,15 +265,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _openCancelDialog() {
-      this.dialogOpened = true;
-    }
-
-    resetInputDialog(opened) {
-      const input = this.getElement('#cancellationReasonInput');
-      if (!opened && input) {
-        input.value = '';
-        this._resetFieldError({target: input});
-      }
+      // overridden in the classes
     }
 
     _resetFieldError(event) {
@@ -352,28 +341,16 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       });
     }
 
-    _cancelEngagement() {
-      if (!this.dialogOpened) {
-        return;
-      }
-      const input = this.getElement('#cancellationReasonInput');
-
-      if (!input) {
-        throw new Error('Can not find input!');
-      }
-      if (!input.validate()) {
-        return;
-      }
-
+    _cancelEngagement(cancelComment: string) {
       const type = this.getLongEngType(this.engagement.engagement_type);
 
       this.updatedEngagement = {
         engagement_type: type,
         id: this.engagement.id,
-        data: {cancel_comment: input.value},
+        data: {cancel_comment: cancelComment},
         cancel: 'cancel/'
       };
-      this.dialogOpened = false;
+
       if (this.tab === 'report') {
         this.tab = 'overview';
       }

@@ -3,8 +3,8 @@ import {customElement, property} from 'lit/decorators.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
-import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import './specific-procedure-dialog.js';
 import {GenericObject} from '../../../../types/global';
 import isString from 'lodash-es/isString';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -16,7 +16,6 @@ import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import {checkNonField} from '../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../utils/utils';
@@ -114,72 +113,6 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
           </div>
         </etools-data-table-row>
       </etools-content-panel>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        .opened="${this.dialogOpened}"
-        openFlag="dialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-        dialog-title="${this.dialogTitle}"
-        .okBtnText="${this.confirmBtnText}"
-        ?show-spinner="${this.requestInProcess}"
-        ?disable-confirm-btn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._addItemFromDialog}"
-      >
-        <div class="container">
-          ${this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
-            ? html`<div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- Description -->
-                  <etools-textarea
-                    class="w100 validate-input ${this._setRequired(
-                      'specific_procedures.description',
-                      this.optionsData
-                    )}"
-                    .value="${this.editedItem?.description}"
-                    allowed-pattern="[ds]"
-                    label="${this.getLabel('specific_procedures.description', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('specific_procedures.description', this.optionsData)}"
-                    ?required="${this._setRequired('specific_procedures.description', this.optionsData)}"
-                    ?readonly="${this.requestInProcess}"
-                    max-rows="4"
-                    ?invalid="${this._checkInvalid(this.errors[0]?.description)}"
-                    .errorMessage="${this.errors[0]?.description}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      (this.editedItem = {...this.editedItem, description: detail.value})}"
-                    @focus="${this._resetFieldError}"
-                  >
-                  </etools-textarea>
-                </div>
-              </div>`
-            : ``}
-          ${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
-            ? html` <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- Finding -->
-                  <etools-textarea
-                    class="w100 validate-input ${this._setRequired('specific_procedures.finding', this.optionsData)}"
-                    .value="${this.editedItem?.finding}"
-                    allowed-pattern="[ds]"
-                    label="${this.getLabel('specific_procedures.finding', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('specific_procedures.finding', this.optionsData)}"
-                    ?required="${this._setRequired('specific_procedures.finding', this.optionsData)}"
-                    ?readonly="${this.requestInProcess}"
-                    max-rows="4"
-                    ?invalid="${this._checkInvalid(this.errors[0]?.finding)}"
-                    .errorMessage="${this.errors[0]?.finding}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      (this.editedItem = {...this.editedItem, finding: detail.value})}"
-                    @focus="${this._resetFieldError}"
-                  >
-                  </etools-textarea>
-                </div>
-              </div>`
-            : ``}
-        </div>
-      </etools-dialog>
     `;
   }
 
@@ -209,20 +142,22 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
 
   connectedCallback() {
     super.connectedCallback();
+    this.dialogKey = 'specific-procedure-dialog';
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject?.specific_procedures);
       this._checkNonField(this.errorObject?.specific_procedures);
@@ -250,6 +185,22 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
 
   canAddSP(permissions: AnyObject, readonlyTab, withoutFindingColumn) {
     return this._canBeChanged(permissions) && !readonlyTab && withoutFindingColumn;
+  }
+
+  openAddEditAttachDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        withoutFindingColumn: this.withoutFindingColumn,
+        readonlyTab: this.readonlyTab,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        originalEditedObj: this.originalEditedObj,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    });
   }
 
   openConfirmDeleteDialog() {

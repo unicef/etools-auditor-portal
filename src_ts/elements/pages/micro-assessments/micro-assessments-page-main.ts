@@ -23,12 +23,14 @@ import '../../common-elements/status-tab-element/status-tab-element';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import './report-page-components/ma-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
+import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 import {RootState, store} from '../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import get from 'lodash-es/get';
 import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
@@ -202,38 +204,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                 </status-tab-element>
               </div>
             </div>
-
-            <etools-dialog
-              no-padding
-              keep-dialog-open
-              size="md"
-              .opened="${this.dialogOpened}"
-              dialog-title="Cancellation of Engagement"
-              ok-btn-text="Continue"
-              @confirm-btn-clicked="${this._cancelEngagement}"
-              openFlag="dialogOpened"
-              @close="${this._resetDialogOpenedFlag}"
-            >
-              <div class="row-h repeatable-item-container" without-line>
-                <div class="repeatable-item-content">
-                  <div class="row-h group">
-                    <div class="input-container input-container-l">
-                      <etools-textarea
-                        id="cancellationReasonInput"
-                        class="required"
-                        label="Cancellation Reason"
-                        placeholder="Enter reason of cancellation"
-                        required
-                        max-rows="4"
-                        error-message="This field is required."
-                        @focus="${this._resetFieldError}"
-                      >
-                      </etools-textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </etools-dialog>
           `
         : ``}
     `;
@@ -275,7 +245,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
 
   _validateEngagement() {
     const basicInfoValid = this._validateBasicInfo();
-    const questionnaireValid = this.getElement('#questionnaire').validateComplited();
+    const questionnaireValid = this.getElement('#questionnaire').validateCompleted();
     const reportValid = this.getElement('#report').validate();
 
     if (!basicInfoValid) {
@@ -309,6 +279,16 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
       ];
       this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
     }
+  }
+
+  _openCancelDialog() {
+    openDialog({
+      dialog: 'engagement-cancel-dialog'
+    }).then(({confirmed, response}) => {
+      if (confirmed) {
+        this._cancelEngagement(response);
+      }
+    });
   }
 
   customDataPrepare(data) {

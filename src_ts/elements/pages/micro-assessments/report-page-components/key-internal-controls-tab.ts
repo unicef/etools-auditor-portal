@@ -12,15 +12,14 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import './subject-area-element';
+import './key-internal-controls-dialog';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
-import isEqual from 'lodash-es/isEqual';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import pick from 'lodash-es/pick';
 import {GenericObject} from '../../../../types/global';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
-import isObject from 'lodash-es/isObject';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @LitEelement
@@ -37,8 +36,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
-        etools-dropdown#riskAssessmentInput {
+        ${dataTableStylesLit} etools-dropdown#riskAssessmentInput {
           --paper-listbox: {
             max-height: 140px;
           }
@@ -51,110 +49,30 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         }
       </style>
       <etools-content-panel .panelTitle="${this.subjectAreas.header}" list>
+        <etools-data-table-header no-title>
+          <etools-data-table-column class="col-8">Subject area</etools-data-table-column>
+          <etools-data-table-column class="col-4">Risk Assessment</etools-data-table-column>
+        </etools-data-table-header>
 
-         <etools-data-table-header no-title>
-            <etools-data-table-column class="col-8">Subject area</etools-data-table-column>
-            <etools-data-table-column class="col-4">Risk Assessment</etools-data-table-column>
-          </etools-data-table-header>
-
-            ${(this.subjectAreas?.children || []).map(
-              (item, index) => html`
-                <subject-area-element
-                  class="area-element"
-                  .optionsData="${this.optionsData}"
-                  .area="${item}"
-                  .index="${index}"
-                  .canBeChanged="${this.canBeChanged}"
-                >
-                </subject-area-element>
-              `
-            )}
-            <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.children?.length}">
-              <div slot="row-data" class="layout-horizontal editable-row pl-30">
-                <span class="col-data col-8">–</span>
-                <span class="col-data col-4">–</span>
-              </div>
-            </etools-data-table-row>
-
-      </etools-content-panel>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        .opened="${this.dialogOpened}"
-        dialog-title="Edit Subject Area - ${this.editedArea?.blueprints[0]?.header}"
-        ok-btn-text="Save"
-        ?show-spinner="${this.requestInProcess}"
-        ?disableConfirmBtn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._saveEditedArea}"
-        openFlag="dialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-      <div class="container">
-         <div class="layout-horizontal">
-            <div class="col col-6">
-                <!-- Risk Assessment -->
-                <etools-dropdown
-                  id="riskAssessmentInput"
-                  class="validate-input required"
-                  .selected="${this.editedArea?.blueprints[0]?.risk?.value?.value}"
-                  label="Risk Assessment"
-                  placeholder="Select Risk Assessment"
-                  .options="${this.riskOptions}"
-                  option-label="display_name"
-                  option-value="value"
-                  required
-                  ?disabled="${this.requestInProcess}"
-                  ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.value}"
-                  .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk?.value}"
-                  @focus="${this._resetFieldError}"
-                  trigger-value-change-event
-                  @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                    if (this.editedArea?.blueprints[0]) {
-                      if (!isObject(this.editedArea.blueprints[0].risk.value)) {
-                        this.editedArea.blueprints[0].risk.value = {};
-                      }
-                      this.editedArea.blueprints[0].risk.value.value = detail.selectedItem?.value;
-                    }
-                  }}"
-                  hide-search
-                >
-                </etools-dropdown>
-              </div>
-            </div>
-
-            <div class="layout-horizontal">
-              <div class="col col-12">
-                <!-- Brief Justification -->
-                <etools-textarea
-                  id="briefJustification"
-                  class="validate-input required w100"
-                  .value="${this.editedArea?.blueprints[0]?.risk?.extra?.comments}"
-                  label="Brief Justification for Rating (main internal control gaps)"
-                  placeholder="Enter Brief Justification"
-                  required
-                  ?disabled="${this.requestInProcess}"
-                  max-rows="4"
-                  .errorMessage="${this.errors?.children[0]?.blueprints[0].risk?.extra}"
-                  ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.extra}"
-                  @focus="${this._resetFieldError}"
-                  @value-changed="${({detail}: CustomEvent) => {
-                    if (this.editedArea?.blueprints[0]) {
-                      if (!isObject(this.editedArea.blueprints[0].risk.extra)) {
-                        this.editedArea.blueprints[0].risk.extra = {};
-                      }
-                      this.editedArea.blueprints[0].risk.extra.comments = detail.value;
-                    }
-                  }}"
-                >
-                </etools-textarea>
-              </div>
-            </div>
+        ${(this.subjectAreas?.children || []).map(
+          (item, index) => html`
+            <subject-area-element
+              class="area-element"
+              .optionsData="${this.optionsData}"
+              .area="${item}"
+              .index="${index}"
+              .canBeChanged="${this.canBeChanged}"
+            >
+            </subject-area-element>
+          `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.children?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+            <span class="col-data col-8">–</span>
+            <span class="col-data col-4">–</span>
           </div>
-        </div>
-      </div>
-      </etools-dialog>
+        </etools-data-table-row>
+      </etools-content-panel>
     `;
   }
 
@@ -196,17 +114,14 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
+    this.dialogKey = 'key-internal-controls-dialog';
     this.addEventListener('open-edit-dialog', this.openEditDialog);
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('subjectAreas')) {
-      this._dataChanged();
       this.dataChanged();
     }
     if (changedProperties.has('errorObject')) {
@@ -221,6 +136,8 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
   dataChanged() {
     this.originalSubjectAreas = cloneDeep(this.subjectAreas);
+    this.requestInProcess = false;
+    this.closeEditDialog();
   }
 
   getRiskData() {
@@ -258,29 +175,6 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     ];
   }
 
-  validateEditFields() {
-    const valueValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
-    const extraValid = (this.shadowRoot!.querySelector('#briefJustification') as EtoolsDropdownEl).validate();
-
-    const errors = {
-      children: [
-        {
-          blueprints: [
-            {
-              risk: {
-                value: !valueValid ? 'Please, select Risk Assessment' : false,
-                extra: !extraValid ? 'Please, enter Brief Justification' : false
-              }
-            }
-          ]
-        }
-      ]
-    };
-    this.errors = errors;
-
-    return valueValid && extraValid;
-  }
-
   validate(forSave) {
     if (!this.optionsData || forSave) {
       return true;
@@ -313,26 +207,28 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
     this.originalEditedObj = cloneDeep(this.editedArea);
     this.editedAreaIndex = index;
+
     this.dialogOpened = true;
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedArea: this.editedArea,
+        riskOptions: this.riskOptions
+      }
+    }).then(() => {
+      this.dialogOpened = false;
+    });
   }
 
   _saveEditedArea() {
-    if (!this.validateEditFields()) {
-      return;
-    }
-
-    if (isEqual(this.originalEditedObj, this.editedArea)) {
-      this.dialogOpened = false;
-      this.resetDialog(this.dialogOpened);
-      return;
-    }
-
-    if (this.dialogOpened && !this.saveWithButton) {
-      this.requestInProcess = true;
-      fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
-      return;
-    }
-
+    // @dci  if (this.dialogOpened && !this.saveWithButton) {
+    this.requestInProcess = true;
+    fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
+    return;
+    // }
+    // @dci ? was ever getting here ???
     const data = cloneDeep(this.editedArea);
     data!.changed = true;
     this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);

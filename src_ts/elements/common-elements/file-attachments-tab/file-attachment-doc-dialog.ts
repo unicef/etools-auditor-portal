@@ -20,8 +20,8 @@ import isEmpty from 'lodash-es/isEmpty';
 import pickBy from 'lodash-es/pickBy';
 import famEndpoints from '../../config/endpoints';
 
-@customElement('file-attachment-doc')
-export class FileAttachmentDoc extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
+@customElement('file-attachment-doc-dialog')
+export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
   static get styles() {
     return [moduleStyles, tabLayoutStyles, tabInputsStyles, gridLayoutStylesLit];
   }

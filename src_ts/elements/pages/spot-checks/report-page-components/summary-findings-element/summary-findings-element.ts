@@ -10,6 +10,7 @@ import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-pa
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import './summary-findings-dialog';
 
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
@@ -154,115 +155,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
             <span class="col-data col-3">–</span>
           </div>
         </etools-data-table-row>
-
-        <etools-dialog
-          size="md"
-          no-padding
-          id="summary-findings"
-          dialog-title="${this.dialogTitle}"
-          keep-dialog-open
-          .opened="${this.dialogOpened}"
-          .okBtnText="${this.confirmBtnText}"
-          ?show-spinner="${this.requestInProcess}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          @confirm-btn-clicked="${this._addItemFromDialog}"
-          openFlag="dialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          <div class="container">
-            <div class="layout-horizontal">
-              <div class="col col-12">
-                <!-- Category of Observation -->
-                <etools-dropdown
-                  class="w100 validate-input"
-                  label="${this.getLabel('findings.category_of_observation', this.optionsData)}"
-                  placeholder="${this.getPlaceholderText('findings.category_of_observation', this.optionsData)}"
-                  .options="${this.categoryOfObservation}"
-                  option-label="display_name"
-                  option-value="value"
-                  .selected="${this.editedItem?.category_of_observation}"
-                  trigger-value-change-event
-                  ?required="${this._setRequired('findings.category_of_observation', this.optionsData)}"
-                  ?disabled="${this.requestInProcess}"
-                  ?invalid="${this.errors?.category_of_observation}"
-                  .errorMessage="${this.errors?.category_of_observation}"
-                  @focus="${this._resetFieldError}"
-                  @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                    this.selectedItemChanged(detail, 'category_of_observation', 'value', 'editedItem')}"
-                  hide-search
-                >
-                </etools-dropdown>
-              </div>
-            </div>
-
-            <div class="layout-horizontal">
-              <div class="col col-12">
-                <!-- Recommendation -->
-                <etools-textarea
-                  class="${this._setRequired('findings.recommendation', this.optionsData)} validate-input w100"
-                  .value="${this.editedItem?.recommendation}"
-                  allowed-pattern="[\\d\\s]"
-                  label="${this.getLabel('findings.recommendation', this.optionsData)}"
-                  always-float-label
-                  placeholder="${this.getPlaceholderText('findings.recommendation', this.optionsData)}"
-                  ?required="${this._setRequired('findings.recommendation', this.optionsData)}"
-                  ?disabled="${this.requestInProcess}"
-                  max-rows="4"
-                  ?invalid="${this.errors?.recommendation}"
-                  .errorMessage="${this.errors?.recommendation}"
-                  @focus="${this._resetFieldError}"
-                  @value-changed="${({detail}: CustomEvent) =>
-                    this.valueChanged(detail, 'recommendation', this.editedItem)}"
-                >
-                </etools-textarea>
-              </div>
-            </div>
-
-            <div class="layout-horizontal">
-              <div class="col col-12">
-                <!-- Agreed Action by IP -->
-                <etools-textarea
-                  class="${this._setRequired('findings.agreed_action_by_ip', this.optionsData)}
-                               validate-input w100"
-                  .value="${this.editedItem?.agreed_action_by_ip}"
-                  allowed-pattern="[\\d\\s]"
-                  label="${this.getLabel('findings.agreed_action_by_ip', this.optionsData)}"
-                  always-float-label
-                  placeholder="${this.getPlaceholderText('findings.agreed_action_by_ip', this.optionsData)}"
-                  ?required="${this._setRequired('findings.agreed_action_by_ip', this.optionsData)}"
-                  ?disabled="${this.requestInProcess}"
-                  max-rows="4"
-                  ?invalid="${this.errors?.agreed_action_by_ip}"
-                  .errorMessage="${this.errors?.agreed_action_by_ip}"
-                  @focus="${this._resetFieldError}"
-                  @value-changed="${({detail}: CustomEvent) =>
-                    this.valueChanged(detail, 'agreed_action_by_ip', this.editedItem)}"
-                >
-                </etools-textarea>
-              </div>
-            </div>
-
-            <div class="layout-horizontal">
-              <div class="col col-6">
-                <!-- Deadline of Action -->
-                <datepicker-lite
-                  id="deadlineActionSelector"
-                  selected-date-display-format="D MMM YYYY"
-                  placeholder="${this.getPlaceholderText('findings.deadline_of_action', this.optionsData)}"
-                  label="${this.getLabel('findings.deadline_of_action', this.optionsData)}"
-                  .value="${this.editedItem?.deadline_of_action}"
-                  .errorMessage="${this.errors?.deadline_of_action}"
-                  ?required="${this._setRequired('findings.deadline_of_action', this.optionsData)}"
-                  ?readonly="${this.requestInProcess}"
-                  fire-date-has-changed
-                  property-name="deadline_of_action"
-                  @date-has-changed="${this.deadlineDateHasChanged}"
-                >
-                </datepicker-lite>
-              </div>
-            </div>
-          </div>
-        </etools-dialog>
       </etools-content-panel>
     `;
   }
@@ -302,22 +194,24 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
 
   connectedCallback() {
     super.connectedCallback();
+    this.dialogKey = 'summary-findings-dialog';
     this.addEventListener('dialog-confirmed', this._addItemFromDialog);
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
     this.errors.deadline_of_action = false;
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('itemModel') || changedProperties.has('priority')) {
       this._setPriority(this.itemModel, this.priority);
     }
@@ -330,6 +224,20 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     if (changedProperties.has('optionsData')) {
       this.setCategoryOfObservation(this.optionsData);
     }
+  }
+
+  openAddEditDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText,
+        categoryOfObservation: this.categoryOfObservation
+      }
+    });
   }
 
   openConfirmDeleteDialog() {
@@ -423,9 +331,5 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     });
     data.priority = this.priority.value;
     return [data];
-  }
-
-  deadlineDateHasChanged(e: CustomEvent) {
-    this.editedItem.deadline_of_action = e.detail.date;
   }
 }

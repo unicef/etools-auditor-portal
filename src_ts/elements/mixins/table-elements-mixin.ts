@@ -8,6 +8,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {readonlyPermission} from './permission-controller';
 import {refactorErrorObject} from './error-handler';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {getBodyDialog} from '../utils/utils';
 
 /**
  * @polymer
@@ -82,6 +83,9 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Boolean})
     dataIsInitialized = false;
 
+    @property({type: String})
+    dialogKey = '';
+
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
@@ -100,10 +104,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.dataIsInitialized = true;
         this.originalTableData = cloneDeep(data || []);
       }
-      if (this.dialogOpened) {
-        this.requestInProcess = false;
-        this.dialogOpened = false;
-      }
+      this.closeEditDialog();
     }
 
     getTabData() {
@@ -185,6 +186,8 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.dialogTitle = (this.addDialogTexts && this.addDialogTexts.title) || 'Add New Item';
       this.confirmBtnText = (this.addDialogTexts && this.addDialogTexts.confirmBtn) || 'Add';
       this.cancelBtnText = (this.addDialogTexts && this.addDialogTexts.cancelBtn) || 'Cancel';
+      this.editedItem = {};
+      this.editedIndex = NaN;
       this.addDialog = true;
       this.dialogOpened = true;
       fireEvent(this, 'show-add-dialog');
@@ -227,13 +230,13 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
 
       if (!this.addDialog && isEqual(this.originalEditedObj, this.editedItem)) {
-        this.dialogOpened = false;
-        this.resetDialog();
+        this.closeEditDialog();
+        // @dci this.resetDialog();
         return;
       }
 
       // Perform save on confirm btn clicked in dialog
-      if (!this.saveWithButton && this.dialogOpened) {
+      if (!this.saveWithButton) {
         this._triggerSaveEngagement();
         return;
       }
@@ -241,8 +244,19 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       // Perform save outside dialog (by clicking the Save btn in the status component)
       this._updateDataItemsWithoutSave();
 
-      this.dialogOpened = false;
-      this.resetDialog();
+      this.closeEditDialog();
+      // @dcithis.resetDialog();
+    }
+
+    closeEditDialog() {
+      if (!this.dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(this.dialogKey);
+      if (dialogEl) {
+        (dialogEl as any)._onClose();
+      }
     }
 
     _triggerSaveEngagement() {

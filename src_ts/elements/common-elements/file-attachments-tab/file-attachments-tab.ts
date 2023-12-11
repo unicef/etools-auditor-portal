@@ -19,7 +19,7 @@ import {moduleStyles} from '../../styles/module-styles';
 import {fileAttachmentsTabStyles} from './file-attachments-tab-styles';
 import '../../data-elements/get-attachments';
 import '../../data-elements/update-attachments';
-import '../share-documents/share-documents';
+import './share-documents-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import DateMixin from '../../mixins/date-mixin';
@@ -35,14 +35,14 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../../config/endpoints-controller';
 import uniqBy from 'lodash-es/uniqBy';
 import {getHeadingLabel, getOptionsChoices, isValidCollection} from '../../mixins/permission-controller';
-import {ShareDocuments} from '../share-documents/share-documents';
 import {checkNonField, refactorErrorObject} from '../../mixins/error-handler';
 import {RequestEndpoint, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types/dist/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {_showDialogSpinner} from '../../utils/utils';
-import './file-attachment-doc.js';
+import './file-attachment-doc-dialog.js';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
@@ -204,35 +204,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
           </div>
         </etools-data-table-row>
       </etools-content-panel>
-
-      ${this.isUnicefUser
-        ? html` <etools-dialog
-            no-padding
-            keep-dialog-open
-            size="lg"
-            attach-to-body
-            .opened="${this.shareDialogOpened}"
-            dialog-title="Share Documents"
-            id="share-documents"
-            ok-btn-text="Share"
-            @confirm-btn-clicked="${this._SendShareRequest}"
-            openFlag="shareDialogOpened"
-            @close="${this._resetDialogOpenedFlag}"
-            ?show-spinner="${_showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"
-            ?disableConfirmBtn="${this.requestInProcess || !this.shareParams?.attachments?.length}"
-          >
-            <share-documents
-              id="shareDocuments"
-              .partnerName="${this.engagement?.partner?.name}"
-              .shareParams="${this.shareParams}"
-              .optionsData="${this.optionsData}"
-              @share-params-changed="${({detail}) => {
-                this.shareParams = detail;
-              }}"
-            >
-            </share-documents>
-          </etools-dialog>`
-        : ``}
     `;
   }
 
@@ -321,6 +292,8 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   @property({type: Boolean})
   uploadInProgress = false;
 
+  readonly sharedDialogKey = 'share-documents-dialog';
+
   connectedCallback() {
     super.connectedCallback();
     this._requestCompleted = this._requestCompleted.bind(this);
@@ -347,9 +320,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (changedProperties.has('engagement')) {
       this._handleLinksInDetailsView(this.engagement);
     }
-    if (changedProperties.has('dialogOpened')) {
-      this._resetDialog(this.dialogOpened);
-    }
+
     if (changedProperties.has('errorObject')) {
       this.filesTabErrorHandler(this.errorObject);
     }
@@ -418,7 +389,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
   openAddEditAttachDialog() {
     openDialog({
-      dialog: 'file-attachment-doc',
+      dialog: 'file-attachment-doc-dialog',
       dialogData: {
         fileTypes: this.fileTypes,
         optionsData: this.optionsData,
@@ -550,12 +521,20 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   _openShareDialog() {
-    const shareModal = this.shadowRoot!.querySelector('#shareDocuments') as ShareDocuments;
-    shareModal.updateShareParams();
     this.shareDialogOpened = true;
+    openDialog({
+      dialog: this.sharedDialogKey,
+      dialogData: {
+        opener: this,
+        partnerName: this.engagement?.partner?.name,
+        shareParams: this.shareParams,
+        optionsData: this.optionsData
+      }
+    });
   }
 
-  _SendShareRequest() {
+  _saveSharedDocsRequest(shareParams: GenericObject) {
+    this.shareParams = cloneDeep(shareParams);
     const {attachments} = this.shareParams;
     if (!(attachments || []).length) {
       fireEvent(this, 'toast', {
@@ -581,12 +560,14 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
         this.requestInProcess = false;
         this.shareDialogOpened = false;
+        this.closeEditDialog(this.sharedDialogKey);
         this._getLinkedAttachments(); // refresh the list
       })
       .catch(this._handleShareError.bind(this));
   }
 
   _handleShareError(err) {
+    this.closeDialogLoading(this.sharedDialogKey);
     const nonField = checkNonField(err);
     let message;
     if (nonField) {
