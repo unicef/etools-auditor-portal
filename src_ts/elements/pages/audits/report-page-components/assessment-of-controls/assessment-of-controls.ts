@@ -151,16 +151,16 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
   connectedCallback() {
     super.connectedCallback();
     this.dialogKey = 'assessment-of-controls-dialog';
-    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
-    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
-    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
-    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -172,7 +172,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
     }
   }
 
-  openAddEditAttachDialog() {
+  openAddEditDialog() {
     openDialog({
       dialog: this.dialogKey,
       dialogData: {
@@ -205,6 +205,9 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
       if (confirmed) {
         this.removeItem();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 

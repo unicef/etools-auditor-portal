@@ -18,41 +18,7 @@ export const fileAttachmentsTabStyles = html`
     }
 
     #fileType {
-      --paper-listbox: {
-        max-height: 600px;
-        -ms-overflow-style: auto;
-      }
       margin-top: 2px;
-    }
-
-    paper-input-container {
-      margin: 0 12px;
-      --paper-input-container-focus-color: var(--primary-color);
-      --paper-input-container: {
-        color: var(--gray-50) !important;
-        font-size: 13px;
-        opacity: 1 !important;
-      }
-      --paper-input-container-underline: {
-        display: none !important;
-      }
-      --paper-input-container-underline-focus: {
-        display: none;
-      }
-      --paper-input-container-underline-disabled: {
-        display: block !important;
-        border-bottom: 1px dashed var(--gray-20) !important;
-      }
-    }
-
-    etools-input {
-      --paper-input-container-underline: {
-        border-bottom: 1px solid var(--gray-20) !important;
-      }
-      --paper-input-container-underline-disabled: {
-        display: block !important;
-        border-bottom: 1px dashed var(--gray-20) !important;
-      }
     }
 
     etools-content-panel::part(ecp-content) {

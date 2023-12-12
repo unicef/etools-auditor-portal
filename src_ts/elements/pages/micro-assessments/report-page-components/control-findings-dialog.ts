@@ -108,6 +108,7 @@ export class ControlFindingsTabDialog extends CommonMethodsMixin(TableElementsMi
     if (!this.validate()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addItemFromDialog();
   }
 

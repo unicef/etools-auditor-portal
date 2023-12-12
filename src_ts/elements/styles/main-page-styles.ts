@@ -8,16 +8,6 @@ export const mainPageStyles = css`
     --ecp-header-bg: var(--primary-color);
   }
 
-  etools-tabs-lit {
-    --paper-tab-content-unselected: {
-      color: var(--gray-mid);
-    }
-  }
-
-  paper-tab.iron-selected {
-    color: var(--primary-color);
-  }
-
   .view-container {
     position: relative;
     width: 100%;
@@ -124,12 +114,5 @@ export const mainPageStyles = css`
   div[slot='panel-btns'].bookmark etools-icon {
     width: 70px !important;
     height: 70px !important;
-  }
-
-  paper-tab {
-    margin-right: 10px;
-    --paper-tab-content: {
-      width: auto;
-    }
   }
 `;

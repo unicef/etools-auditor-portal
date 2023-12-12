@@ -51,11 +51,6 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-        etools-dropdown#auditOpinionDropDown {
-          --paper-listbox: {
-            max-height: 140px;
-          }
-        }
         .row-h {
           margin-bottom: 0;
         }
@@ -325,7 +320,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         currency: this.data.currency_of_report,
         showLocalCurrency: this.showLocalCurrency
       }
-    });
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
   _setDataItems() {
@@ -349,7 +344,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       return key !== 'partner' && key !== 'opinion';
     });
 
-    if (this.dialogOpened) {
+    if (this.isAddDialogOpen) {
       data = pick(this.editedItem, itemModelKeys);
     } else {
       data = pick(this.originalData && this.originalData[0], itemModelKeys);
@@ -395,7 +390,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
     });
     const findingsSummaryErrors = pick(refactoredData, itemModelKeys);
 
-    if (!this.dialogOpened && values(findingsSummaryErrors).length) {
+    if (!this.isAddDialogOpen && values(findingsSummaryErrors).length) {
       fireEvent(this, 'toast', {text: 'Please fill in the Summary of Audit Findings.'});
     } else {
       this.errors = refactoredData;

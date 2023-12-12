@@ -156,7 +156,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
         dialogTitle: this.dialogTitle,
         confirmBtnText: this.confirmBtnText
       }
-    });
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
   openConfirmDeleteDialog() {
@@ -171,6 +171,9 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
       if (confirmed) {
         this.removeItem();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 

@@ -195,7 +195,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   connectedCallback() {
     super.connectedCallback();
     this.dialogKey = 'summary-findings-dialog';
-    this.addEventListener('dialog-confirmed', this._addItemFromDialog);
+
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
     this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
     this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
@@ -205,8 +205,8 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
-    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
-    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -237,7 +237,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         confirmBtnText: this.confirmBtnText,
         categoryOfObservation: this.categoryOfObservation
       }
-    });
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
   openConfirmDeleteDialog() {
@@ -252,6 +252,9 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       if (confirmed) {
         this.removeItem();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 
@@ -280,7 +283,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   }
 
   getFindingsData() {
-    if (this.dialogOpened && !this.saveWithButton) {
+    if ((this.isAddDialogOpen || this.isConfirmDialogOpen) && !this.saveWithButton) {
       return this.getCurrentData();
     }
     const data: any[] = [];
@@ -317,7 +320,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   }
 
   getCurrentData() {
-    if (!this.dialogOpened) {
+    if (!this.isAddDialogOpen && !this.isConfirmDialogOpen) {
       return null;
     }
     if (!this.validate()) {

@@ -59,6 +59,7 @@ export class EngagementCancelDialog extends CommonMethodsMixin(LitElement) {
     if (!input || !input.validate()) {
       return;
     }
+    this.requestInProcess = true;
     fireEvent(this, 'dialog-closed', {confirmed: true, response: input.value});
   }
 

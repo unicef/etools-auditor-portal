@@ -131,6 +131,7 @@ export class AssessmentOfControlsDialog extends CommonMethodsMixin(TableElements
     if (!this.validate()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addItemFromDialog();
   }
 

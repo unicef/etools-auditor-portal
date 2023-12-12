@@ -37,7 +37,7 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
         .okBtnText="${this.confirmBtnText}"
         ?show-spinner="${this.requestInProcess}"
         ?disable-confirm-btn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._addItemFromDialog}"
+        @confirm-btn-clicked="${this.onSave}"
       >
         <div class="container">
           ${this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
@@ -58,8 +58,7 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
                     max-rows="4"
                     ?invalid="${this._checkInvalid(this.errors[0]?.description)}"
                     .errorMessage="${this.errors[0]?.description}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      (this.editedItem = {...this.editedItem, description: detail.value})}"
+                    @value-changed="${({detail}: CustomEvent) => (this.editedItem.description = detail.value)}"
                     @focus="${this._resetFieldError}"
                   >
                   </etools-textarea>
@@ -81,8 +80,7 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
                     max-rows="4"
                     ?invalid="${this._checkInvalid(this.errors[0]?.finding)}"
                     .errorMessage="${this.errors[0]?.finding}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      (this.editedItem = {...this.editedItem, finding: detail.value})}"
+                    @value-changed="${({detail}: CustomEvent) => (this.editedItem.finding = detail.value)}"
                     @focus="${this._resetFieldError}"
                   >
                   </etools-textarea>
@@ -93,6 +91,9 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
       </etools-dialog>
     `;
   }
+
+  @property({type: String})
+  mainProperty = 'specific_procedures';
 
   @property({type: Boolean})
   withoutFindingColumn = false;
@@ -119,6 +120,7 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
     if (!this.validate()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addItemFromDialog();
   }
 

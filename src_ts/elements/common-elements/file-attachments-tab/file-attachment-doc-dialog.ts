@@ -146,11 +146,11 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
 
     valid = this._validateFileType();
 
-    if (this.addDialog && this._fileAlreadySelected()) {
+    if (this._fileAlreadySelected()) {
       valid = false;
     }
 
-    if (this.addDialog && !this.editedItem.attachment) {
+    if (!this.editedItem.attachment) {
       this.errors.file = 'File is not selected';
       this.errors = {...this.errors};
       valid = false;

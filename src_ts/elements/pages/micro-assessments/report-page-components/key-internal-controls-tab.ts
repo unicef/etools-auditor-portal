@@ -36,12 +36,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit} etools-dropdown#riskAssessmentInput {
-          --paper-listbox: {
-            max-height: 140px;
-          }
-        }
-        .input-container {
+        ${dataTableStylesLit} .input-container {
           padding-top: 2px;
         }
         .editable-row:hover .hover-block {
@@ -222,30 +217,14 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     });
   }
 
-  _saveEditedArea() {
-    // @dci  if (this.dialogOpened && !this.saveWithButton) {
+  _saveEditedArea(editedArea: GenericObject) {
+    this.editedArea = cloneDeep(editedArea);
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
-    return;
-    // }
     // @dci ? was ever getting here ???
-    const data = cloneDeep(this.editedArea);
-    data!.changed = true;
-    this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
-    this.dialogOpened = false;
-  }
-
-  resetDialog(opened) {
-    if (opened) {
-      return;
-    }
-    this.editedArea = null;
-    this.originalEditedObj = null;
-    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-
-    Array.prototype.forEach.call(elements, (element) => {
-      element.invalid = false;
-      element.value = '';
-    });
+    // const data = cloneDeep(this.editedArea);
+    // data!.changed = true;
+    // this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
+    // this.dialogOpened = false;
   }
 }

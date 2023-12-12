@@ -33,10 +33,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit} etools-dropdown {
-          --esmm-dropdown-menu-position: absolute !important;
-        }
-        etools-data-table-row::part(edt-list-row-wrapper) {
+        ${dataTableStylesLit} etools-data-table-row::part(edt-list-row-wrapper) {
           height: auto !important;
           min-height: 40px;
           padding-top: 5px;

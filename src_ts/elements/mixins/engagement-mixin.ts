@@ -206,10 +206,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _resetDialogOpenedFlag(event) {
-      this[event.currentTarget.getAttribute('openFlag')] = false;
-    }
-
     _engagementStatusUpdated(e: CustomEvent) {
       if (e.detail && e.detail.saved && e.detail.type) {
         const type = e.detail.type;

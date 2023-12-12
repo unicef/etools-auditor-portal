@@ -41,12 +41,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           margin-bottom: 24px;
           display: block;
         }
-        etools-input {
-          --paper-input-prefix: {
-            margin-right: 5px;
-            color: var(--gray-mid);
-          }
-        }
       </style>
 
       <etools-content-panel panel-title="Financial Findings">

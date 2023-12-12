@@ -60,11 +60,6 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-        etools-dropdown#titleOptionsDropDown {
-          --paper-listbox: {
-            max-height: 340px;
-          }
-        }
         etools-data-table-row *[slot='row-data-details'] {
           flex-direction: column;
         }
@@ -217,9 +212,6 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._checkNonField(this.errorObject.financial_finding_set);
       this._errorHandler(this.errorObject.financial_finding_set);
@@ -239,7 +231,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
         dialogTitle: this.dialogTitle,
         titleOptions: this.titleOptions
       }
-    });
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
   openConfirmDeleteDialog() {
@@ -254,6 +246,9 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       if (confirmed) {
         this.removeItem();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 

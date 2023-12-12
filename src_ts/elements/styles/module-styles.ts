@@ -40,7 +40,6 @@ export const moduleStyles = css`
     --module-submitted: rgba(206, 188, 6, 0.6);
     --module-sent: rgba(30, 134, 191, 0.45);
     --module-completed: rgba(141, 198, 63, 1);
-    --paper-button_-_color: #fff;
   }
 
   *[hidden] {
@@ -52,24 +51,6 @@ export const moduleStyles = css`
   }
 
   /* TABS */
-  etools-tabs-lit {
-    --paper-tabs-selection-bar-color: var(--primary-color);
-  }
-
-  paper-tab {
-    --paper-tab-content: {
-      text-transform: none;
-      font-size: 14px;
-      font-weight: 500;
-      width: 140px;
-    }
-  }
-
-  etools-dialog::part(ed-scrollable) {
-    max-height: 50vh !important;
-    --etools-dialog-content_-_max-height: 50vh !important;
-  }
-
   .container {
     padding: 16px 16px;
   }
@@ -90,11 +71,6 @@ export const moduleStyles = css`
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 100%;
-  }
-  datepicker-lite {
-    --paper-input-prefix: {
-      color: var(--gray-mid);
-    }
   }
   etools-content-panel {
     position: relative;
@@ -170,9 +146,6 @@ export const moduleStyles = css`
   }
   .row-details-content {
     font-size: 14px;
-  }
-  datepicker-lite {
-    --paper-input-container_-_width: 100%;
   }
 
   div[slot='panel-btns'] .panel-button {

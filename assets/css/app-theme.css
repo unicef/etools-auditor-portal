@@ -77,12 +77,6 @@
   --etools-loading-border-color: rgba(255, 255, 255, 0.12);
   --etools-loading-shadow-color: #333333;
 
-  --esmm-dropdown-menu-position: fixed;
-
-  --paper-input-prefix: {
-    color: var(--secondary-text-color);
-  };
-
   --required-star-style: {
     background: url('./assets/images/required.svg') no-repeat 99% 20%/8px;
     width: auto !important;

@@ -264,6 +264,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     if (!this.validate() || !this.customValidation()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addItemFromDialog();
   }
 
