@@ -970,7 +970,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       data.partner_contacted_at = this.data.partner_contacted_at;
     }
 
-    if ((!originalAgreementId && agreementId) || (originalAgreementId !== agreementId)) {
+    if ((!originalAgreementId && agreementId) || originalAgreementId !== agreementId) {
       data.agreement = this.data.agreement.id;
     }
 

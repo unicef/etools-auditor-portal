@@ -36,8 +36,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        ${dataTableStylesLit}
-        .input-container {
+        ${dataTableStylesLit} .input-container {
           padding-top: 2px;
         }
         .editable-row:hover .hover-block {
