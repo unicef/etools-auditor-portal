@@ -181,20 +181,6 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
     this.opener!.triggerSaveFromDialog(this.getDataFromDialog());
   }
 
-  resetDialog(opened?) {
-    if (opened) {
-      return;
-    }
-
-    this.editedItem = {};
-    this.riskAssessmentDropdown.invalid = false;
-    this.riskAssessmentDropdown.selected = null;
-
-    const riskAssessmentComments = this.shadowRoot!.querySelector('#riskAssessmentComments') as EtoolsTextarea;
-    riskAssessmentComments.invalid = false;
-    riskAssessmentComments.value = '';
-  }
-
   getDataFromDialog() {
     const blueprintRisk = {
       value: this.riskAssessmentDropdown.selected,

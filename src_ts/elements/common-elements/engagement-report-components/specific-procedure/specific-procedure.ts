@@ -144,15 +144,15 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     super.connectedCallback();
     this.dialogKey = 'specific-procedure-dialog';
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
-    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
-    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
-    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
-    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -187,7 +187,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     return this._canBeChanged(permissions) && !readonlyTab && withoutFindingColumn;
   }
 
-  openAddEditAttachDialog() {
+  openAddEditDialog() {
     openDialog({
       dialog: this.dialogKey,
       dialogData: {
@@ -200,7 +200,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         dialogTitle: this.dialogTitle,
         confirmBtnText: this.confirmBtnText
       }
-    });
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
   openConfirmDeleteDialog() {
@@ -215,6 +215,9 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
       if (confirmed) {
         this.removeItem();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 

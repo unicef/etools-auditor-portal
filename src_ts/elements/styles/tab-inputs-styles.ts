@@ -81,94 +81,6 @@ export const tabInputsStyles = css`
     font-size: 14px;
   }
 
-  etools-dialog etools-textarea {
-    --paper-input-container-input: {
-      display: block;
-    }
-    --iron-autogrow-textarea: {
-      overflow: auto;
-      padding: 0;
-      max-height: 96px;
-    }
-  }
-
-  etools-dropdown,
-  etools-dropdown-multi,
-  etools-input,
-  etools-textarea,
-  paper-dropdown-menu,
-  datepicker-lite,
-  etools-currency {
-    box-sizing: border-box;
-    padding: 0 12px;
-    outline: none !important;
-
-    --paper-input-container-input-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
-
-    --paper-input-container-underline: {
-      border-bottom: 1px solid var(--gray-mid, rgba(0, 0, 0, 0.54));
-    }
-
-    --paper-input-container-input: {
-      font-size: 15px;
-      box-sizing: border-box;
-    }
-
-    --paper-input-container-label: {
-      color: var(--gray-50);
-    }
-    --paper-input-container-label-floating: {
-      color: var(--gray-50);
-    }
-    --paper-input-container-invalid-color: var(--module-error);
-
-    --paper-input-container-disabled: {
-      color: var(--gray-light);
-      opacity: 1;
-    }
-    --paper-input-char-counter: {
-      color: var(--gray-light);
-    }
-
-    --paper-input-prefix: {
-      margin-right: 10px;
-      color: var(--gray-mid);
-    }
-
-    --paper-input-error: {
-      overflow: hidden;
-    }
-
-    --etools-currency-container-label-floating: {
-      -webkit-transform: none;
-      -moz-transform: none;
-      -ms-transform: none;
-      -o-transform: none;
-      transform: none;
-      top: -21px;
-      width: 100%;
-      font-size: 12px;
-    }
-  }
-
-  etools-textarea {
-    --paper-input-container-input: {
-      white-space: normal;
-      display: block !important;
-    }
-
-    --iron-autogrow-textarea: {
-      overflow: hidden;
-      padding: 0;
-    }
-  }
-
-  etools-currency {
-    --etools-currency-container-label: {
-      color: var(--gray-50);
-    }
-  }
-
   :host > * {
     --required-star-style: {
       background: url('./assets/images/required.svg') no-repeat 98% 14%/7px;
@@ -177,30 +89,6 @@ export const tabInputsStyles = css`
       right: auto;
       padding-right: 15px;
       color: var(--gray-50);
-    }
-  }
-
-  etools-input[required]:not([disabled]),
-  paper-input.required:not([disabled]),
-  paper-input-container[required]:not([disabled]),
-  paper-input-container.required:not([disabled]),
-  datepicker-lite[required]:not([disabled]),
-  etools-dropdown[required]:not([disabled]),
-  etools-dropdown-multi[required]:not([disabled]),
-  etools-upload[required]:not([disabled]),
-  etools-currency[required]:not([disabled]),
-  etools-textarea[required]:not([disabled]) {
-    --paper-input-container-label: {
-      @apply --required-star-style;
-    }
-    --paper-input-container-label-floating: {
-      @apply --required-star-style;
-    }
-  }
-
-  paper-input.deleted {
-    --paper-input-container-input: {
-      color: #b0b0b0;
     }
   }
 
@@ -354,56 +242,18 @@ export const tabInputsStyles = css`
     padding-left: 12px;
   }
 
+  etools-dropdown,
+  etools-dropdown-multi,
+  etools-input,
+  etools-textarea,
+  datepicker-lite,
   etools-currency {
-    --etools-currency-container-input: {
-      line-height: 0;
-    }
-  }
-
-  etools-dropdown-multi[disabled],
-  etools-currency[disabled],
-  etools-dropdown[disabled],
-  etools-textarea[disabled],
-  paper-dropdown-menu[disabled],
-  paper-input[disabled],
-  datepicker-lite[disabled] {
-    --paper-input-container: {
-      opacity: 1 !important;
-    }
-    --paper-input-container-underline: {
-      border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
-      display: block !important;
-    }
-    --paper-input-container-underline-disabled: {
-      border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
-      display: block !important;
-    }
-    --paper-input-container-underline-focus: {
-      display: none;
-    }
-  }
-
-  etools-dropdown-multi[readonly],
-  etools-currency[readonly],
-  etools-dropdown[readonly],
-  etools-textarea[readonly],
-  paper-dropdown-menu[readonly],
-  paper-input[readonly],
-  datepicker-lite[readonly] {
-    --paper-input-container: {
-      opacity: 1 !important;
-    }
-    --paper-input-container-underline: {
-      border-bottom: none !important;
-      display: none !important;
-    }
-    --paper-input-container-underline-focus: {
-      display: none;
-    }
+    box-sizing: border-box;
+    padding: 0 12px;
+    outline: none !important;
   }
 
   .paper-label {
-    font-size: 12px;
     color: var(--secondary-text-color);
     padding-top: 6px;
   }

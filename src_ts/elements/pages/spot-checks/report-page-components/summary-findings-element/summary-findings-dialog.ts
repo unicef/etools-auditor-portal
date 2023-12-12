@@ -167,6 +167,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
     if (!this.validate()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addItemFromDialog();
   }
 

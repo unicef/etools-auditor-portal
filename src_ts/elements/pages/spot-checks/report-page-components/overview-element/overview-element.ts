@@ -34,8 +34,8 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
       ${sharedStyles}
 
       <etools-content-panel class="content-section clearfx" panel-title="Overview">
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <datepicker-lite
               id="dateFaceStartInput"
               label="${this.getLabel('face_form_start_date', this.optionsData)}"
@@ -50,7 +50,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <datepicker-lite
               id="dateFaceEndInput"
               .value="${this.data?.face_form_end_date}"
@@ -65,9 +65,10 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Total Value of Selected FACE Forms -->
             <etools-currency
+              class="w100"
               .value="${this.data?.total_value}"
               currency="$"
               label="${this.getLabel('total_value', this.optionsData)}"
@@ -79,10 +80,10 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <etools-currency
-              class="${this._setRequired('total_amount_tested', this.optionsData)}"
+              class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
               .value="${this.data?.total_amount_tested}"
               currency="$"
               label="${this.getLabel('total_amount_tested', this.optionsData)}"
@@ -98,9 +99,9 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </etools-currency>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <etools-currency
-              class="${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
+              class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
               .value="${this.data?.total_amount_of_ineligible_expenditure}"
               currency="$"
               label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"

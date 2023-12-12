@@ -327,7 +327,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   }
 
   openAddEditDialog() {
-    this.dialogOpened = true;
+    this.isAddDialogOpen = true;
     openDialog({
       dialog: this.dialogKey,
       dialogData: {
@@ -346,7 +346,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         copyDialog: this.copyDialog,
         originalEditedObj: this.originalEditedObj
       }
-    }).then(() => (this.dialogOpened = false));
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
   _requestPartner(partner) {
@@ -394,7 +394,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   }
 
   getActionsData() {
-    if (!this.dialogOpened) {
+    if (!this.isAddDialogOpen) {
       return null;
     }
     if (this.copyDialog) {
@@ -442,7 +442,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     const detail = event.detail;
     this.requestInProcess = false;
     if (detail && detail.success) {
-      this.dialogOpened = false;
+      this.isAddDialogOpen = false;
       this.closeEditDialog();
       if (event.detail.data) {
         this.dataItems = [...event.detail.data];

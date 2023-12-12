@@ -84,6 +84,7 @@ export class OtherRecommendationsDialog extends TableElementsMixin(CommonMethods
     if (!this.validate()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener.editedItem = cloneDeep(this.editedItem);
     this.opener._addItemFromDialog();
   }

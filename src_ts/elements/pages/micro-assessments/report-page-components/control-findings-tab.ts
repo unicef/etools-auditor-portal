@@ -21,7 +21,6 @@ import {GenericObject} from '@unicef-polymer/etools-utils/dist/types/global.type
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util.js';
-import {getBodyDialog} from '../../../utils/utils';
 
 /**
  * @LitEelement
@@ -112,9 +111,6 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
   @property({type: Array})
   dataItems!: GenericObject[];
 
-  @property({type: Array})
-  originalDataItems!: GenericObject[];
-
   @property({type: String})
   mainProperty = 'findings';
 
@@ -143,20 +139,20 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
   @property({type: Boolean})
   canBeChanged = false;
 
-  readonly dialogKey = 'control-findings-tab-dialog';
-
   connectedCallback() {
     super.connectedCallback();
+
+    this.dialogKey = 'control-findings-tab-dialog';
     this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
-    this.addEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
-    this.addEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
-    this.removeEventListener('show-add-dialog', this.openAddEditAttachDialog as any);
-    this.removeEventListener('show-edit-dialog', this.openAddEditAttachDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -165,13 +161,13 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
     if (changedProperties.has('dataItems')) {
       this.dataItemsChanged();
     }
-    if (changedProperties.has('dataItems')) {
+    if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject?.findings);
       this._checkNonField(this.errorObject?.findings);
     }
   }
 
-  openAddEditAttachDialog() {
+  openAddEditDialog() {
     openDialog({
       dialog: 'control-findings-tab-dialog',
       dialogData: {
@@ -185,6 +181,9 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
       if (confirmed) {
         this.dataItems = cloneDeep(response);
       }
+      setTimeout(() => {
+        this.isAddDialogOpen = false;
+      }, 1000);
     });
   }
 
@@ -200,6 +199,9 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
       if (confirmed) {
         this.removeItem();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 
@@ -216,14 +218,5 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
 
   dataItemsChanged() {
     this.canBeChanged = this._canBeChanged(this.optionsData);
-
-    if (!this.originalDataItems) {
-      this.originalDataItems = this.dataItems;
-    }
-
-    const dialogEl = getBodyDialog(this.dialogKey);
-    if (dialogEl) {
-      (dialogEl as any)._onClose();
-    }
   }
 }

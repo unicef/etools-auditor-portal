@@ -202,6 +202,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
     if (!this.validate()) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addItemFromDialog();
   }
 

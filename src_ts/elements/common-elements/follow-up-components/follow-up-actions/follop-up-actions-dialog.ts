@@ -44,12 +44,6 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
     return html`
       ${sharedStyles}
       <style>
-           etools-dropdown.fua-person {
-          --paper-listbox: {
-            max-height: 140px;
-            -ms-overflow-style: auto;
-          }
-        }
         .checkbox-container {
           padding-inline-start: 14px;
           padding-top: 14px;
@@ -406,6 +400,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
     if (!this.validate() || this.notTouched) {
       return;
     }
+    this.requestInProcess = true;
     this.opener._addActionPoint(this.editedItem);
   }
 

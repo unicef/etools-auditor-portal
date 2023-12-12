@@ -141,8 +141,8 @@ export class KeyInternalControlsDialog extends CommonMethodsMixin(LitElement) {
       this._onClose();
       return;
     }
-
-    this.opener._saveEditedArea();
+    this.requestInProcess = true;
+    this.opener._saveEditedArea(this.editedArea);
   }
 
   validateEditFields() {

@@ -52,9 +52,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
         .partner-loading:not([active]) {
           display: none !important;
         }
-        etools-dropdown,
-        etools-dropdown-multi {
-          --esmm-dropdown-menu-position: absolute;
+        .input-container {
+          display: flex;
         }
       </style>
 

@@ -117,23 +117,6 @@ export class EngagementStaffMembersTab extends connect(store)(
         etools-loading {
           --etools-loading-overlay-transparency: 0.4;
         }
-        paper-input.search-input {
-          --paper-input-container-color: rgba(255, 255, 255, 0.5);
-          --paper-input-container-focus-color: #fff;
-          --paper-input-container-input-color: #fff;
-          --paper-input-container-underline-focus-border-bottom: 1px solid #fff;
-          --paper-input-container-underline-border-bottom: none;
-          --paper-input-container-underline: {
-            display: none;
-          }
-        }
-        etools-input.search-input.filled {
-          --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-        }
-        etools-input.email {
-          --paper-input-error_-_position: position: relative !important;
-          --paper-input-error_-_white-space: normal;
-        }
         .white {
           color: #ffffff;
         }

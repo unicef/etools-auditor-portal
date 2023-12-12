@@ -195,11 +195,10 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   @property({type: Boolean})
   requestInProcess!: boolean;
 
-  @property({type: String})
-  dialogKey = 'key-internal-controls-weaknesses-dialog';
-
   connectedCallback() {
     super.connectedCallback();
+
+    this.dialogKey = 'key-internal-controls-weaknesses-dialog';
     this.editedBlueprint = cloneDeep(this.dataModel);
     this._initListeners();
   }
@@ -213,10 +212,9 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
     super.updated(changedProperties);
 
     if (changedProperties.has('subjectAreas')) {
-      this.closeDialog();
+      this.closeEditDialog();
     }
     if (changedProperties.has('errorObject')) {
-      this.resetDialogRequestInProcess();
       this._complexErrorHandler(this.errorObject?.key_internal_weakness);
     }
     if (changedProperties.has('optionsData')) {
@@ -234,22 +232,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   setRisk() {
     const riskOptions = getOptionsChoices(this.optionsData, 'key_internal_weakness.blueprints.risks.value') || [];
     this.riskOptions = riskOptions;
-  }
-
-  resetDialogRequestInProcess() {
-    // on save error (hide loading on dialog)
-    const dialogEl = getBodyDialog(this.dialogKey);
-    if (dialogEl) {
-      (dialogEl as any).requestInProcess = false;
-    }
-  }
-
-  closeDialog() {
-    // close dialog if opened on data changed (ex: after saving)
-    const dialogEl = getBodyDialog(this.dialogKey);
-    if (dialogEl) {
-      (dialogEl as any)._onClose();
-    }
   }
 
   _removeListeners() {

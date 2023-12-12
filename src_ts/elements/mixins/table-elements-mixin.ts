@@ -45,10 +45,10 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     requestInProcess = false;
 
     @property({type: Boolean})
-    addDialog = false;
+    isAddDialogOpen = false;
 
     @property({type: Boolean})
-    dialogOpened = false;
+    isConfirmDialogOpen = false;
 
     @property({type: Number})
     editedIndex!: number;
@@ -108,7 +108,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     getTabData() {
-      if (this.dialogOpened && !this.saveWithButton) {
+      if ((this.isAddDialogOpen || this.isConfirmDialogOpen) && !this.saveWithButton) {
         return this.getCurrentData();
       }
       if (!this.originalTableData || !this.dataItems) {
@@ -130,7 +130,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     getCurrentData() {
-      if (!this.dialogOpened) {
+      if (!this.isAddDialogOpen && !this.isConfirmDialogOpen) {
         return null;
       }
       return [cloneDeep(this.editedItem)];
@@ -188,8 +188,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.cancelBtnText = (this.addDialogTexts && this.addDialogTexts.cancelBtn) || 'Cancel';
       this.editedItem = {};
       this.editedIndex = NaN;
-      this.addDialog = true;
-      this.dialogOpened = true;
+      this.isAddDialogOpen = true;
       fireEvent(this, 'show-add-dialog');
     }
 
@@ -199,12 +198,13 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.cancelBtnText = (this.editDialogTexts && this.editDialogTexts.cancelBtn) || 'Cancel';
 
       this._setDialogData(index);
-      this.dialogOpened = true;
+      this.isAddDialogOpen = true;
       fireEvent(this, 'show-edit-dialog');
     }
 
     openDeleteDialog(index) {
       this._setDialogData(index);
+      this.isConfirmDialogOpen = true;
       fireEvent(this, 'show-confirm-dialog');
     }
 
@@ -214,24 +214,18 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.editedIndex = index;
     }
 
-    _addItemFromDialog(event) {
-      //* This if might be deprecated and unused
-      if (event && event.detail && event.detail.dialogName === 'deleteConfirm') {
-        this.removeItem();
-        return;
-      }
-
+    _addItemFromDialog() {
       if (!this.validate()) {
         return;
       }
+
       // @ts-ignore Defined in derived class when needed
       if (this.customValidation && !this.customValidation()) {
         return;
       }
-
-      if (!this.addDialog && isEqual(this.originalEditedObj, this.editedItem)) {
+      if (!this.isAddDialogOpen && isEqual(this.originalEditedObj, this.editedItem)) {
+        // nothing changed, close dialog
         this.closeEditDialog();
-        // @dci this.resetDialog();
         return;
       }
 
@@ -245,13 +239,14 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this._updateDataItemsWithoutSave();
 
       this.closeEditDialog();
-      // @dcithis.resetDialog();
     }
 
     closeEditDialog() {
       if (!this.dialogKey) {
         return;
       }
+
+      this.isAddDialogOpen = false;
       // close dialog if opened on data changed (ex: after saving)
       const dialogEl = getBodyDialog(this.dialogKey);
       if (dialogEl) {
@@ -269,7 +264,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!this.dataItems) {
         this.dataItems = [];
       }
-      if (!this.addDialog && !isNaN(this.editedIndex)) {
+      if (!this.isAddDialogOpen && !isNaN(this.editedIndex)) {
         // if is edit popup
         this.dataItems.splice(this.editedIndex, 1, item);
       } else {
@@ -283,18 +278,10 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (opened) {
         return;
       }
-      const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-
-      Array.prototype.forEach.call(elements, (element) => {
-        element.invalid = false;
-        element.value = '';
-        element.selected = '';
-      });
-
       this.dialogTitle = '';
       this.confirmBtnText = '';
       this.cancelBtnText = '';
-      this.addDialog = false;
+      this.isAddDialogOpen = false;
       this.deleteDialog = false;
       this.editedItem = cloneDeep(this.itemModel);
     }
@@ -323,7 +310,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!errorData) {
         return;
       }
-      const refactoredData = this.dialogOpened ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
+      const refactoredData = this.isAddDialogOpen ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
       this.errors = refactoredData;
     }
 

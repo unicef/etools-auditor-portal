@@ -19,6 +19,8 @@ import {getBodyDialog} from '../utils/utils';
  */
 function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class CommonMethodsMixinClass extends baseClass {
+    [x: string]: any;
+
     @property({type: Boolean})
     requestInProcess!: boolean;
 
@@ -42,9 +44,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     @property({type: Object})
     optionsData!: AnyObject;
-
-    @property({type: String})
-    dialogKey = '';
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -83,10 +82,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return required ? 'required' : false;
     }
 
-    _resetDialogOpenedFlag(event) {
-      this[event.currentTarget.getAttribute('openFlag')] = false;
-    }
-
     _errorHandler(errorData) {
       if (!errorData || !Object.keys(errorData).length) {
         return false;
@@ -94,12 +89,8 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
-      if (this.dialogKey) {
-        const dialogEl = getBodyDialog(this.dialogKey);
-        if (dialogEl) {
-          (dialogEl as any).requestInProcess = false;
-        }
-      }
+
+      this.closeDialogLoading();
       this.errors = clone(refactorErrorObject(errorData));
       if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
@@ -107,6 +98,7 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     closeDialogLoading(dialogKey = this.dialogKey) {
+      // dialogKey is defined in TableElementsMixin
       if (!dialogKey) {
         return;
       }
@@ -133,6 +125,8 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!errorData) {
         return false;
       }
+
+      this.closeDialogLoading();
 
       const data = refactorErrorObject(errorData);
       const nonField = checkNonField(errorData);

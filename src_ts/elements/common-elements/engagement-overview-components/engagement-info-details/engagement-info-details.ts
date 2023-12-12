@@ -76,16 +76,14 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
         }
 
         etools-info-tooltip {
-          --etools-tooltip-trigger-icon-margin-left: -2px;
-          --etools-tooltip-trigger-icon-margin-top: 12px;
-          --etools-tooltip-trigger-icon-color: var(--gray-50);
-          --etools-tooltip-trigger-icon-cursor: pointer;
+          width: 100%;
         }
 
         .join-audit {
           padding-left: 12px;
-          margin-top: 24px;
+          padding-bottom: 8px;
           box-sizing: border-box;
+          align-self: self-end;
         }
 
         .row-h.float {
@@ -101,26 +99,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
         .row-h.float .input-container {
           margin-bottom: 8px;
+          display: flex;
         }
 
         .pad-lr {
           padding: 0 12px;
-        }
-
-        etools-dropdown,
-        etools-dropdown-multi {
-          align-items: baseline;
-          --esmm-dropdown-menu-position: absolute;
-        }
-
-        etools-dropdown-multi {
-          --paper-listbox: {
-            max-height: 250px;
-          }
-        }
-
-        datepicker-lite {
-          --paper-input-container_-_width: 100%;
         }
 
         .year-of-audit {
@@ -974,8 +957,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
   getEngagementData() {
     const data: any = {};
-    const agreementId = get(this, 'data.agreement.id');
-    const originalAgreementId = get(this, 'originalData.agreement.id');
+    const agreementId = String(get(this, 'data.agreement.id'));
+    const originalAgreementId = String(get(this, 'originalData.agreement.id'));
 
     if (this.originalData.start_date !== this.data.start_date) {
       data.start_date = this.data.start_date;
@@ -987,7 +970,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       data.partner_contacted_at = this.data.partner_contacted_at;
     }
 
-    if ((!originalAgreementId && agreementId) || originalAgreementId !== agreementId) {
+    if ((!originalAgreementId && agreementId) || (originalAgreementId !== agreementId)) {
       data.agreement = this.data.agreement.id;
     }
 

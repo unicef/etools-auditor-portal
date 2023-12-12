@@ -91,11 +91,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         div[list-item] {
           overflow: visible !important;
         }
-        etools-dropdown#riskAssessmentDropdown {
-          --paper-listbox: {
-            max-height: 140px;
-          }
-        }
       </style>
 
       <etools-content-panel

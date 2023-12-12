@@ -206,18 +206,6 @@ export class KeyInternalControlsWeaknessesDialog extends CommonMethodsMixin(LitE
     return valid;
   }
 
-  resetDialog(opened) {
-    if (opened) {
-      return;
-    }
-    this.editedBlueprint = {risks: []};
-    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-    elements.forEach((element: any) => {
-      element.invalid = false;
-      element.value = '';
-    });
-  }
-
   _onClose() {
     fireEvent(this, 'dialog-closed', {confirmed: false});
   }

@@ -379,14 +379,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     this.hideAddAttachments = this.isTabReadonly || this._isNewEngagement();
   }
 
-  _resetDialog(dialogOpened) {
-    if (!dialogOpened) {
-      this.originalEditedObj = null;
-    }
-    this.errors = {};
-    this.resetDialog(dialogOpened);
-  }
-
   openAddEditAttachDialog() {
     openDialog({
       dialog: this.dialogKey,
@@ -417,6 +409,9 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       if (confirmed) {
         this._deleteAttachment();
       }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
   }
 
@@ -441,7 +436,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     detail = detail || event.detail;
     this.requestInProcess = false;
     if (detail?.success) {
-      this.dialogOpened = false;
+      this.isAddDialogOpen = false;
     }
   }
 
@@ -459,7 +454,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     const refactoredData = refactorErrorObject(errorData[mainProperty]);
     const nonField = checkNonField(errorData[mainProperty]);
 
-    if (this.dialogOpened && typeof refactoredData[0] === 'object') {
+    if (this.isAddDialogOpen && typeof refactoredData[0] === 'object') {
       this.errors = refactoredData[0];
     }
     if (typeof errorData[mainProperty] === 'string') {
@@ -469,7 +464,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       fireEvent(this, 'toast', {text: `Attachments: ${nonField}`});
     }
 
-    if (!this.dialogOpened) {
+    if (!this.isAddDialogOpen) {
       const filesErrors = this.getFilesErrors(refactoredData);
 
       filesErrors.forEach((fileError: any) => {
@@ -584,10 +579,10 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     this._getLinkedAttachments(); // refresh the list
   }
 
-  async _openDeleteLinkDialog(id) {
+  _openDeleteLinkDialog(id) {
     this.linkToDeleteId = id;
 
-    const confirmed = await openDialog({
+    openDialog({
       dialog: 'are-you-sure',
       dialogData: {
         content: 'Are you sure you want to delete the shared document?',
@@ -595,11 +590,13 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         cancelBtnText: 'Cancel'
       }
     }).then(({confirmed}) => {
-      return confirmed;
+      if (confirmed) {
+        this._removeLink(id);
+      }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
     });
-    if (confirmed) {
-      this._removeLink(id);
-    }
   }
 
   _removeLink(id) {

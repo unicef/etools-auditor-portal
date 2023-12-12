@@ -94,6 +94,7 @@ export class ShareDocumentsDialog extends CommonMethodsMixin(
   }
 
   saveSharedRequest() {
+    this.requestInProcess = true;
     this.opener._saveSharedDocsRequest(this.shareParams);
   }
 
