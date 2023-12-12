@@ -74,16 +74,31 @@ export class EngagementStaffMembersTab extends connect(store)(
           height: 48px;
           color: #fff;
           overflow: hidden;
-          width: 22%;
+          flex: 1;
         }
         .search-input-container .search-input {
-          width: 5%;
           float: right;
           box-sizing: border-box;
           min-width: 46px;
-          margin-top: -13px;
+          margin-top: -2px;
           transition: 0.35s;
           cursor: pointer;
+
+        }
+        .search-input-container .search-input,
+        .search-input-container .search-input:focus {
+          --sl-input-color: var(--light-secondary-text-color);
+          --primary-color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(form-control-input)::after {
+          --secondary-text-color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(input):focus {
+          --primary-color: var(--light-primary-text-color);
+           color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(input)::placeholder {
+          color: var(--light-primary-text-color);
         }
         .search-input-container .search-input[focused] {
           width: 100%;
@@ -166,9 +181,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                   }
                 }}"
               >
-                <sl-tooltip content="Search">
-                  <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
-                </sl-tooltip>
+                <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
               </etools-input>
             </div>
             <sl-switch
