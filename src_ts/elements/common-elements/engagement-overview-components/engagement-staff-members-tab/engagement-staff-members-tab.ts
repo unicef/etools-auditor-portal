@@ -299,7 +299,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Object})
   listQueries: GenericObject = {
     page: 1,
-    page_size: 10,
+    page_size: 25,
     search: ''
   };
 
@@ -527,7 +527,7 @@ export class EngagementStaffMembersTab extends connect(store)(
 
   resetList() {
     this.dataItems = [];
-    this.listQueries = {page: 1, page_size: 10, search: ''};
+    this.listQueries = {page: 1, page_size: 25, search: ''};
     this.searchString = '';
     this.engagementStaffs = {};
     this.datalength = 0;

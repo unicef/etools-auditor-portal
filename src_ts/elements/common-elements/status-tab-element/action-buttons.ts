@@ -139,6 +139,7 @@ export class ActionButtons extends LitElement {
     if (event.detail.confirmed) {
       this.fireActionActivated('submit');
     }
+    this.submitConfirmationDialog.opened = false;
   }
 
   fireActionActivated(action: string) {

@@ -22,7 +22,7 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
       loadingSource: 'engagements-list'
     });
     this.isStaffSc = false;
-    this.prevQueryStringObj = {ordering: 'reference_number', page_size: 10, page: 1};
+    this.prevQueryStringObj = {ordering: 'reference_number', page_size: 25, page: 1};
     super.connectedCallback();
   }
 

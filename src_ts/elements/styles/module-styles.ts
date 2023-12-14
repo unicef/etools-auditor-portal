@@ -133,7 +133,8 @@ export const moduleStyles = css`
   etools-data-table-row::part(edt-list-row-wrapper) {
     height: 48px;
   }
-  .editable-row:hover .hover-block {
+  .editable-row:hover .hover-block,
+  .editable-row:hover .hover-block:focus {
     background-color: transparent;
   }
   .rdc-title {

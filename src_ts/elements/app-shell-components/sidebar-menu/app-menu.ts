@@ -5,7 +5,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import {navMenuStyles} from './styles/nav-menu-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {BASE_PATH} from '../../config/config';
+import {BASE_PATH, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from '../../config/config';
 
 /**
  * @polymer
@@ -47,7 +47,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
             menu-name="engagements"
             href="${BASE_PATH}engagements/list"
           >
-            <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Engagements">
+            <sl-tooltip placement="right" hoist ?disabled="${!this.smallMenu}" content="Engagements">
               <etools-icon id="iconEngagements" name="av:playlist-add-check"></etools-icon>
             </sl-tooltip>
             <div class="name">Engagements</div>
@@ -132,7 +132,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
   selectedOption!: string;
 
   @property({type: Boolean, reflect: true, attribute: 'small-menu'})
-  smallMenu!: boolean;
+  smallMenu = false;
 
   @property({type: Boolean})
   showSscPage = false;
@@ -152,10 +152,11 @@ export class AppMenu extends MatomoMixin(LitElement) {
     }
   }
 
-  _toggleSmallMenu(e: Event): void {
-    e.stopImmediatePropagation();
+  _toggleSmallMenu(): void {
     this.smallMenu = !this.smallMenu;
-    fireEvent(this, 'toggle-small-menu');
+    const localStorageVal: number = this.smallMenu ? 1 : 0;
+    localStorage.setItem(SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY, String(localStorageVal));
+    fireEvent(this, 'toggle-small-menu', {value: this.smallMenu});
   }
 
   _pageChanged() {

@@ -60,9 +60,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .errorMessage="${this.errors?.date_of_field_visit}"
               @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              .date="${this.prepareDate(this.data.date_of_field_visit)}"
               fire-date-has-changed
-              property-name="date_of_field_visit"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_field_visit', e.detail.date);
               }}"
@@ -91,7 +89,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               selected-date-display-format="D MMM YYYY"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_draft_report_to_ip"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_draft_report_to_ip', e.detail.date);
               }}"
@@ -121,7 +118,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .minDate="${this.minDate(this.data?.date_of_draft_report_to_ip)}"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_comments_by_ip"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_comments_by_ip', e.detail.date);
               }}"
@@ -153,7 +149,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .minDate="${this.minDate(this.data.date_of_comments_by_ip)}"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_draft_report_to_unicef"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_draft_report_to_unicef', e.detail.date);
               }}"
@@ -183,7 +178,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .minDate="${this.minDate(this.data.date_of_draft_report_to_unicef)}"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_comments_by_unicef"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_comments_by_unicef', e.detail.date);
               }}"
@@ -277,6 +271,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     if (this.data[field] !== value) {
       this.data[field] = value;
       this.checkDateValues();
+      this.data = cloneDeep(this.data);
       store.dispatch(updateCurrentEngagement(this.data));
     }
   }

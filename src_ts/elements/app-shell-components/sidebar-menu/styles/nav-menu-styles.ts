@@ -24,7 +24,7 @@ export const navMenuStyles = html`
       overflow-x: visible;
     }
 
-    @media (max-height: 600px) {
+    @media (max-height: 400px) {
       :host([small-menu]) {
         overflow-x: hidden;
       }
@@ -40,7 +40,7 @@ export const navMenuStyles = html`
 
     .menu-header {
       justify-content: space-between;
-      background-color: #4c6f80;
+      background-color: var(--primary-color);
       color: white;
       min-height: 60px;
       padding: 0 16px;

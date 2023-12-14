@@ -44,6 +44,14 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
     return html`
       ${sharedStyles}
       <style>
+        :host .copy-warning {
+          position: relative;
+          margin-bottom: 10px;
+          padding: 20px 24px;
+          background-color: #ededee;
+          color: #212121;
+          font-size: 15px;
+        }
         .checkbox-container {
           padding-inline-start: 14px;
           padding-top: 14px;
@@ -66,12 +74,12 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                 ?disable-confirm-btn="${this.requestInProcess}"
                 @confirm-btn-clicked="${this._addActionPoint}"
                 @close="${this._onClose}">
-            ${
-              this.notTouched
-                ? html`<div class="copy-warning">It is required to change at least one of the fields below.</div>`
-                : ``
-            }
                   <div class="container">
+                  ${
+                    this.notTouched
+                      ? html`<div class="copy-warning">It is required to change at least one of the fields below.</div>`
+                      : ``
+                  }
                     <div class="layout-horizontal">
                         <div class="col col-6">
                             <!-- Partner -->
@@ -295,7 +303,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                       this.editedApBase,
                                       this.requestInProcess
                                     )}"
-                                    @sl-changed="${(e: any) => (this.editedItem.high_priority = e.target.checked)}">
+                                    @sl-change="${(e: any) => (this.editedItem.high_priority = e.target.checked)}">
                                     This action point is high priority
                             </etools-checkbox>
                         </div>
@@ -349,7 +357,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
   copyDialog!: boolean;
 
   @property({type: Boolean})
-  notTouched!: boolean;
+  notTouched = false;
 
   @property({type: Number})
   selectedPartnerIdAux!: number | null;

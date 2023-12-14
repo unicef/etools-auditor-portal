@@ -282,7 +282,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     if (isFirstAcess) {
       clearQueries();
       setTimeout(() => {
-        console.log('setDefaultEngagement...');
         this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
       });
 
