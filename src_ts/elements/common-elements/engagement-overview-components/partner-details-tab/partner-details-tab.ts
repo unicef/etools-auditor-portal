@@ -153,7 +153,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
               dynamic-align
               @etools-selected-item-changed="${(event: CustomEvent) => {
                 if (this.authorizedOfficer) {
-                  this.authorizedOfficer.id = event.detail.selectedItem?.id;
+                  this.authorizedOfficer = event.detail.selectedItem;
                 }
               }}"
               trigger-value-change-event

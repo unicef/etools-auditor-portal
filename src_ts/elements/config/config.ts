@@ -33,6 +33,7 @@ const STAGING_DOMAIN = 'etools-staging';
 const DEV_DOMAIN = 'etools-dev';
 const DEMO_DOMAIN = 'etools-demo';
 const LOCAL_DOMAIN = 'localhost';
+export const SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY = 'etoolsAppSmallMenuIsActive';
 
 export const BASE_PATH = '/ap/';
 export const BASE_URL = '/' + getBasePath().replace(window.location.origin, '').slice(1, -1) + '/';

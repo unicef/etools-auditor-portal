@@ -19,6 +19,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEmpty from 'lodash-es/isEmpty';
 import pickBy from 'lodash-es/pickBy';
 import famEndpoints from '../../config/endpoints';
+import {EtoolsUpload} from '@unicef-polymer/etools-unicef/src/etools-upload/etools-upload';
 
 @customElement('file-attachment-doc-dialog')
 export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
@@ -74,6 +75,7 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
 
           <div class="layout-horizontal row-padding-v">
             <etools-upload
+              id="uploadFile"
               label="Upload File"
               .fileUrl="${this.editedItem.attachment}"
               .uploadEndpoint="${this.uploadEndpoint}"
@@ -153,6 +155,11 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
     if (!this.editedItem.attachment) {
       this.errors.file = 'File is not selected';
       this.errors = {...this.errors};
+      const uploadEl = this.shadowRoot?.querySelector('#uploadFile') as EtoolsUpload;
+      if (uploadEl) {
+        uploadEl._filename = null;
+        uploadEl.resetStatus();
+      }
       valid = false;
     }
 
@@ -193,9 +200,10 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
 
     if (e.detail.success) {
       const uploadResponse = e.detail.success;
-      this.editedItem.attachment = uploadResponse.id;
+      this.editedItem.attachment = uploadResponse?.id || null;
       this.editedItem.filename = uploadResponse.filename;
     } else if (e.detail.error && e.detail.error.error) {
+      this.editedItem.attachment = null;
       fireEvent(this, 'toast', {text: e.detail.error.error.message});
     }
   }

@@ -1,6 +1,7 @@
 import {LitElement} from 'lit';
-import {property, query} from 'lit/decorators.js';
+import {property} from 'lit/decorators.js';
 import {Constructor} from '@unicef-polymer/etools-types';
+import {SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from '../../../config/config';
 
 /**
  * App menu functionality mixin
@@ -13,9 +14,7 @@ export function AppMenuMixin<T extends Constructor<LitElement>>(baseClass: T) {
     smallMenu = false;
 
     @property({type: Boolean})
-    drawerOpened = true;
-
-    @query('#drawer') private drawer!: LitElement;
+    drawerOpened = false;
 
     public connectedCallback() {
       super.connectedCallback();
@@ -29,53 +28,39 @@ export function AppMenuMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     private _initMenuListeners(): void {
-      this._toggleSmallMenu = this._toggleSmallMenu.bind(this);
+      this._toggleMenu = this._toggleMenu.bind(this);
 
-      this.addEventListener('toggle-small-menu', this._toggleSmallMenu);
-      this.addEventListener('drawer', this.onDrawerToggle);
+      this.addEventListener('toggle-small-menu', this._toggleMenu as any);
       this.addEventListener('change-drawer-state', this.changeDrawerState);
     }
 
     private _removeMenuListeners(): void {
-      this.removeEventListener('toggle-small-menu', this._toggleSmallMenu);
-      this.removeEventListener('drawer', this.onDrawerToggle);
+      this.removeEventListener('toggle-small-menu', this._toggleMenu as any);
       this.removeEventListener('change-drawer-state', this.changeDrawerState);
     }
 
     private _initMenuSize(): void {
-      this.smallMenu = this._isSmallMenuActive();
-    }
-
-    private _isSmallMenuActive(): boolean {
-      /**
-       * localStorage value must be 0 or 1
-       */
-      const menuTypeStoredVal: string | null = localStorage.getItem('etoolsAppSmallMenuIsActive');
+      const menuTypeStoredVal: string | null = localStorage.getItem(SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY);
       if (!menuTypeStoredVal) {
-        return false;
+        this.smallMenu = false;
+      } else {
+        this.smallMenu = !!parseInt(menuTypeStoredVal, 10);
       }
-      return !!parseInt(menuTypeStoredVal, 10);
     }
 
     public changeDrawerState() {
       this.drawerOpened = !this.drawerOpened;
     }
 
-    public onDrawerToggle() {
-      const drawerOpened = (this.drawer as any).opened;
-      if (this.drawerOpened !== drawerOpened) {
-        this.drawerOpened = drawerOpened;
-      }
-    }
-    private _toggleSmallMenu(e: Event): void {
-      e.stopImmediatePropagation();
-      this.smallMenu = !this.smallMenu;
-      this._smallMenuValueChanged(this.smallMenu);
-    }
-
-    private _smallMenuValueChanged(newVal: boolean) {
-      const localStorageVal: number = newVal ? 1 : 0;
-      localStorage.setItem('etoolsAppSmallMenuIsActive', String(localStorageVal));
+    // public onDrawerToggle() {
+    //   const drawerOpened = (this.drawer as any).opened;
+    //   if (this.drawerOpened !== drawerOpened) {
+    //     this.drawerOpened = drawerOpened;
+    //   }
+    // }
+    private _toggleMenu(e: CustomEvent): void {
+      // e.stopImmediatePropagation();
+      this.smallMenu = e.detail.value; // !this.smallMenu;
     }
   }
 

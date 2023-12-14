@@ -42,6 +42,7 @@ import {store, RootState} from './redux/store';
 import {handleUrlChange} from './redux/actions/app.js';
 import {setStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {connect} from 'pwa-helpers/connect-mixin.js';
+import {installMediaQueryWatcher} from 'pwa-helpers/media-query.js';
 import {installRouter} from 'pwa-helpers/router';
 import {getCurrentUser} from './elements/data-elements/user-data.js';
 import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types.js';
@@ -70,7 +71,7 @@ declare const dayjs_plugin_utc: any;
 dayjs.extend(dayjs_plugin_utc);
 window.EtoolsLanguage = 'en';
 
-setBasePath('/ap/');
+setBasePath(BASE_PATH);
 initializeIcons(
   [
     EtoolsIconSet.communication,
@@ -106,7 +107,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
 
       <app-drawer-layout
         id="layout"
-        responsive-width="1200px"
+        responsive-width="850px"
         fullbleed
         .narrow="${this.narrow}"
         ?small-menu="${this.smallMenu}"
@@ -219,6 +220,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   public connectedCallback() {
     super.connectedCallback();
 
+    installMediaQueryWatcher(`(min-width: 460px)`, () => fireEvent(this, 'change-drawer-state'));
+
     this.checkAppVersion();
     setTimeout(() => {
       window.EtoolsEsmmFitIntoEl = this._getContentContainer();
@@ -228,6 +231,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, loadingSource: 'initialisation'});
 
     this.addEventListener('404', this._pageNotFound);
+    this.addEventListener('change-drawer-state', this.changeDrawerState);
 
     installRouter((location) =>
       store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
@@ -236,13 +240,18 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     this.loadinitialData();
   }
 
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('change-drawer-state', this.changeDrawerState);
+  }
+
   loadinitialData() {
     getCurrentUser().then((user?: EtoolsUser) => {
       if (user) {
         // @ts-ignore
         Promise.allSettled([
-          getPartners(),
-          getUsers(),
+          user.is_unicef_user ? getPartners() : [],
+          user.is_unicef_user ? getUsers() : [],
           getSections(),
           getOffices(),
           getStaffUsers(),
@@ -347,10 +356,14 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   }
 
   _pageNotFound(event?) {
-    this.page = 'not-found';
     const message = event && event.detail && event.detail.message ? `${event.detail.message}` : 'Oops you hit a 404!';
-
     fireEvent(this, 'toast', {text: message});
+    this.goToPageNotFound();
+  }
+
+  goToPageNotFound() {
+    history.pushState(window.history.state, '', 'not-found');
+    window.dispatchEvent(new CustomEvent('popstate'));
   }
 
   checkAppVersion() {

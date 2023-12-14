@@ -216,7 +216,6 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
       this.resetEngagementDataIfNeeded();
       return;
     }
-
     this.setEngagementDataFromRedux(state);
 
     if (state.app.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {

@@ -45,7 +45,7 @@
   --title-toolbar-secondary-text-color : #C7CED2;
   --subtitle-background-color: #eeeeee;
   --toolbar-height: 60px;
-  --side-bar-scrolling: hidden;
+  --side-bar-scrolling: visible;
 
   --primary-color-hover: #027ac9;
   --default-btn-bg-color: rgba(0, 0, 0, 0.45);

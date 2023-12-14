@@ -61,14 +61,6 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
         }
-        :host .copy-warning {
-          position: relative;
-          margin-bottom: 10px;
-          padding: 20px 24px;
-          background-color: #ededee;
-          color: #212121;
-          font-size: 15px;
-        }
         div.action-complete {
           padding: 10px 0 9px 20px;
         }
@@ -141,10 +133,10 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
             >${getHeadingLabel(this.optionsData, 'category', 'Action Point Category')}</etools-data-table-column
           >
           <etools-data-table-column class="col-3">Assignee (Section / Office)</etools-data-table-column>
-          <etools-data-table-column class="col-2" field="status" sortable
+          <etools-data-table-column class="col-1" field="status" sortable
             >${getHeadingLabel(this.optionsData, 'status', 'Status')}</etools-data-table-column
           >
-          <etools-data-table-column class="col-1" field="due_date" sortable
+          <etools-data-table-column class="col-2" field="due_date" sortable
             >${getHeadingLabel(this.optionsData, 'due_date', 'Due Date')}</etools-data-table-column
           >
           <etools-data-table-column class="col-1" field="priority" sortable
@@ -163,8 +155,8 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                 </span>
                 <span class="col-data col-3 truncate">${item.ap_category?.display_name || '-'}</span>
                 <span class="col-data col-3 truncate">${item.computed_field}</span>
-                <span class="col-data col-2 truncate caps">${item.status}</span>
-                <span class="col-data col-1 truncate">${this.prettyDate(String(item.due_date), '') || '-'}</span>
+                <span class="col-data col-1 truncate caps">${item.status}</span>
+                <span class="col-data col-2 truncate">${this.prettyDate(String(item.due_date), '') || '-'}</span>
                 <span class="col-data col-1 truncate caps">${item.priority}</span>
                 <div class="hover-block">
                   <etools-icon-button
@@ -454,6 +446,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   }
 
   _openAddDialog() {
+    this.copyDialog = false;
     this.originalEditedObj = {};
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
       this.editedItem[field] = {id: null};
@@ -464,6 +457,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   }
 
   _openEditDialog(index) {
+    this.copyDialog = false;
     this.editedApBase = {};
     fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 

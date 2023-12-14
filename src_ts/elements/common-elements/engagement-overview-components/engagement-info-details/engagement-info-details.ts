@@ -81,7 +81,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
         .join-audit {
           padding-left: 12px;
-          padding-bottom: 8px;
+          padding-bottom: 12px;
           box-sizing: border-box;
           align-self: self-end;
         }
@@ -175,6 +175,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
           <div class="input-container" ?hidden="${this._hideField('po_item', this.optionsData)}">
             <!-- PO Item Number -->
             <etools-dropdown
+              id="ddlPOItem"
               class="w100 validate-field ${this._setRequired('po_item', this.optionsData)}"
               .selected="${this.data.po_item}"
               label="${this.getLabel('po_item', this.optionsData)}"
@@ -390,7 +391,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                   <etools-checkbox
                     ?checked="${this.data.joint_audit}"
                     ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
-                    @sl-changed="${(e: any) => {
+                    @sl-change="${(e: any) => {
                       this.data.joint_audit = e.target.checked;
                     }}"
                   >
@@ -576,8 +577,22 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
   ];
 
+  private _data!: GenericObject;
+
   @property({type: Object})
-  data!: any;
+  set data(data: GenericObject) {
+    const idChanged = this._data?.id !== data?.id;
+    // when engagement changed, use a clone of it
+    this._data = idChanged ? cloneDeep(data) : data;
+    if (idChanged) {
+      // needed when we load an engagement to set visible fields
+      this.onEngagementTypeChanged(false);
+    }
+  }
+
+  get data() {
+    return this._data;
+  }
 
   @property({type: Object})
   originalData: any = {};
@@ -707,10 +722,12 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return true;
   }
 
-  onEngagementTypeChanged() {
+  onEngagementTypeChanged(updateEngagement = true) {
     this._setShowInput(this.data.engagement_type);
     this._setAdditionalInput(this.data.engagement_type);
-    store.dispatch(updateCurrentEngagement(this.data));
+    if (updateEngagement) {
+      store.dispatch(updateCurrentEngagement(this.data));
+    }
   }
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
@@ -974,6 +991,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       data.agreement = this.data.agreement.id;
     }
 
+    if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+      this.data.total_value = null;
+    }
     if (this.originalData.total_value !== this.data.total_value) {
       data.total_value = this.data.total_value;
     }

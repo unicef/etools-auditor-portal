@@ -150,7 +150,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.errorObject = state.engagement.errorObject || {};
       }
 
-      this._checkAvailableTab(this.engagement, this.engagementOptions, this.apOptions, this.tab);
+      if (this.user) {
+        this._checkAvailableTab(this.engagement, this.engagementOptions, this.apOptions, this.tab);
+      }
     }
 
     updated(changedProperties: PropertyValues): void {
@@ -172,10 +174,19 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         getEngagementAttachmentOptions(id),
         getEngagementReportAttachmentsOptions(id),
         getActionPointOptions(id)
-      ]).then((response: any[]) => {
-        store.dispatch(setEngagementData(this.formatResponse(response)));
-        fireEvent(this, 'global-loading', {active: false});
-      });
+      ])
+        .then((response: any[]) => {
+          // if engagement not found redirect to not-found page
+          if (response[0].status !== 'fulfilled') {
+            fireEvent(this, '404');
+            return;
+          }
+          store.dispatch(setEngagementData(this.formatResponse(response)));
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => fireEvent(this, 'global-loading', {active: false}));
     }
 
     formatResponse(response: any[]) {
