@@ -666,6 +666,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Boolean})
   poUpdating!: boolean;
 
+  @property({type: String})
+  routeDetailsPath!: string;
+
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
@@ -681,6 +684,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
     if (state.user?.data && !isJsonStrMatch(this.user, state.user.data)) {
       this.user = cloneDeep(state.user.data);
+    }
+    if (!isJsonStrMatch(this.routeDetailsPath, state.app.routeDetails?.path)) {
+      this.routeDetailsPath = state.app.routeDetails?.path;
+      this.cleanUpStoredValues();
     }
   }
 
@@ -720,6 +727,12 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       return false;
     }
     return true;
+  }
+
+  cleanUpStoredValues() {
+    this.usersNotifiedIDs = [];
+    this.officeIDs = [];
+    this.sectionIDs = [];
   }
 
   onEngagementTypeChanged(updateEngagement = true) {

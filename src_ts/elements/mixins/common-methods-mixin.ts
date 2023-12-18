@@ -181,6 +181,15 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return get(options, `GET.${path}.max_length`);
     }
 
+    getNumericPlaceholderText(path, options: AnyObject) {
+      if (readonlyPermission(path, options)) {
+        return '0';
+      }
+
+      const label = this.getLabel(path, options);
+      return `Enter ${label}`;
+    }
+
     getPlaceholderText(path, options: AnyObject, datepicker?) {
       if (readonlyPermission(path, options)) {
         return '–';

@@ -61,6 +61,9 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
+        .cancellation-tab {
+          --etools-icon-font-size: 70px;
+        }
       </style>
 
       <update-engagement
