@@ -135,6 +135,12 @@ export class EngagementStaffMembersTab extends connect(store)(
         .white {
           color: #ffffff;
         }
+        #toggleActive::part(control){
+          background-color: var(--sl-color-neutral-400) !important;
+        }
+        #toggleActive[checked]::part(control){
+          background-color: #eeeeee !important;
+        }
         .panel-btns-container {
           display: flex;
           flex-direction: row;

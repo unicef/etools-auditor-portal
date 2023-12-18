@@ -54,6 +54,9 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
+        .cancellation-tab {
+          --etools-icon-font-size: 70px;
+        }
       </style>
 
       <update-engagement

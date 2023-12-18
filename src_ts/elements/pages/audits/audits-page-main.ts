@@ -59,6 +59,9 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
+        .cancellation-tab {
+          --etools-icon-font-size: 70px;
+        }
       </style>
 
       <update-engagement

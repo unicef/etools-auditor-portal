@@ -93,7 +93,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 .value="${this.editedItem.financial_findings}"
                 currency="$"
                 label="${this.getLabel('financial_findings', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('financial_findings', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('financial_findings', this.optionsData)}"
                 ?required="${this._setRequired('financial_findings', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 ?invalid="${this.errors.financial_findings}"
@@ -115,7 +115,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 .value="${this.editedItem.audited_expenditure_local}"
                 .currency="${this.currency}"
                 label="${this.getLocalLabel('audited_expenditure_local', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('audited_expenditure_local', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('audited_expenditure_local', this.optionsData)}"
                 ?required="${this._setRequired('audited_expenditure_local', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 ?invalid="${this.errors.audited_expenditure_local}"
@@ -136,7 +136,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 .value="${this.editedItem.financial_findings_local}"
                 .currency="${this.currency}"
                 label="${this.getLocalLabel('financial_findings_local', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('financial_findings_local', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('financial_findings_local', this.optionsData)}"
                 ?required="${this._setRequired('financial_findings_local', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
                 ?invalid="${this.errors.financial_findings_local}"
@@ -156,7 +156,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 .value="${this.editedItem.percent_of_audited_expenditure}"
                 currency=""
                 label="${this.getLabel('percent_of_audited_expenditure', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('percent_of_audited_expenditure', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('percent_of_audited_expenditure', this.optionsData)}"
                 readonly
               >
               </etools-currency>
@@ -192,7 +192,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <etools-input
                 .value="${this.editedItem.number_of_financial_findings}"
                 label="${this.getLabel('number_of_financial_findings', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('number_of_financial_findings', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('number_of_financial_findings', this.optionsData)}"
                 readonly
               >
               </etools-input>
@@ -203,7 +203,10 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <etools-input
                 .value="${this.editedItem.key_internal_weakness?.high_risk_count}"
                 label="${this.getLabel('key_internal_weakness.high_risk_count', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('key_internal_weakness.high_risk_count', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText(
+                  'key_internal_weakness.high_risk_count',
+                  this.optionsData
+                )}"
                 readonly
               >
               </etools-input>
@@ -214,7 +217,10 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <etools-input
                 .value="${this.editedItem.key_internal_weakness?.medium_risk_count}"
                 label="${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('key_internal_weakness.medium_risk_count', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText(
+                  'key_internal_weakness.medium_risk_count',
+                  this.optionsData
+                )}"
                 readonly
               >
               </etools-input>
@@ -225,7 +231,10 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <etools-input
                 .value="${this.editedItem.key_internal_weakness?.low_risk_count}"
                 label="${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('key_internal_weakness.low_risk_count', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText(
+                  'key_internal_weakness.low_risk_count',
+                  this.optionsData
+                )}"
                 readonly
               >
               </etools-input>
