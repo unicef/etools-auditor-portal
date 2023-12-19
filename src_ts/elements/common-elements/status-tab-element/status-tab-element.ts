@@ -1,6 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';
@@ -25,7 +26,8 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
 
   render() {
     return html`
-      <etools-content-panel panel-title="Status">
+      ${sharedStyles}
+      <etools-content-panel panel-title="Status" list>
         <div class="status-list" id="statusList">
           <div class="cancelled-status" id="cancelledStatus" ?hidden="${!this.cancelled}">
             <div class="divider cancelled">
