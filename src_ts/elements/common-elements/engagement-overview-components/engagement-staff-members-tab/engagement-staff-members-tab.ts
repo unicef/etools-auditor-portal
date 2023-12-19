@@ -201,6 +201,7 @@ export class EngagementStaffMembersTab extends connect(store)(
             <div class="add-button-container">
               <a
                 class="white"
+                ?hidden="${!this.engagement.agreement?.auditor_firm?.organization_id}"
                 href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
@@ -432,7 +433,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   _getAMPLink(user: EtoolsUser, organizationId: number) {
-    if (!user) {
+    if (!user || !organizationId) {
       return '';
     }
     let url = `/amp/users/`;
