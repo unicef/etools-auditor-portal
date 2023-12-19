@@ -1003,9 +1003,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if ((!originalAgreementId && agreementId) || originalAgreementId !== agreementId) {
       data.agreement = this.data.agreement.id;
     }
-
-    if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
-      this.data.total_value = null;
+    if (this.showInput) {
+      if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+        this.data.total_value = null;
+      }
     }
     if (this.originalData.total_value !== this.data.total_value) {
       data.total_value = this.data.total_value;
