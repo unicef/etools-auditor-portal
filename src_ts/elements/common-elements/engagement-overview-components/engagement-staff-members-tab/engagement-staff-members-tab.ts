@@ -195,6 +195,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           align-items: center;
           justify-content: flex-end;
           column-gap: 30px;
+          line-height: 48px;
         }
         paper-toggle-button.white {
           --paper-toggle-button-label-color: #ffffff;
@@ -252,6 +253,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
             <div class="add-button-container">
               <a
                 class="white"
+                hidden$="[[!organizationId]]"
                 href="[[_getAMPLink(engagement.agreement.auditor_firm.organization_id)]]"
                 target="_blank"
               >
@@ -543,6 +545,9 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   _getAMPLink(organizationId: number) {
+    if (!organizationId) {
+      return '';
+    }
     const user = getUserData();
     let url = `/amp/users/`;
     if (user && user.is_unicef_user) {
