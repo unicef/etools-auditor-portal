@@ -733,6 +733,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     this.usersNotifiedIDs = [];
     this.officeIDs = [];
     this.sectionIDs = [];
+    this.orderNumber = null;
   }
 
   onEngagementTypeChanged(updateEngagement = true) {
