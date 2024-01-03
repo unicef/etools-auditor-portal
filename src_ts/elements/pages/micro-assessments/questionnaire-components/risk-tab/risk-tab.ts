@@ -71,7 +71,8 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
             <etools-data-table-column class="question">Question</etools-data-table-column>
             <etools-data-table-column class="w160px">Risk Assessment</etools-data-table-column>
           </etools-data-table-header>
-          ${repeat(this.questionnaire?.blueprints || [],
+          ${repeat(
+            this.questionnaire?.blueprints || [],
             (item: any, index) => html`
               <etools-data-table-row>
                 <div slot="row-data" class="layout-horizontal editable-row">
