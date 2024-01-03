@@ -1,5 +1,7 @@
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import {unsafeHTML} from 'lit/directives/unsafe-html.js';
+import {repeat} from 'lit/directives/repeat.js';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
@@ -69,11 +71,11 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
             <etools-data-table-column class="question">Question</etools-data-table-column>
             <etools-data-table-column class="w160px">Risk Assessment</etools-data-table-column>
           </etools-data-table-header>
-          ${(this.questionnaire?.blueprints || []).map(
-            (item, index) => html`
+          ${repeat(this.questionnaire?.blueprints || [],
+            (item: any, index) => html`
               <etools-data-table-row>
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="question">${item.header}</span>
+                  <span class="question">${unsafeHTML(item.header)}</span>
                   <span class="w160px">
                     ${this.editMode
                       ? html` <etools-dropdown
@@ -121,7 +123,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                 (item, blueprintIndex) => html`
                   <etools-data-table-row>
                     <div slot="row-data" class="layout-horizontal editable-row">
-                      <span class="question">${item.header}</span>
+                      <span class="question">${unsafeHTML(item.header)}</span>
                       <span class="w160px">
                         ${this.editMode
                           ? html` <etools-dropdown
