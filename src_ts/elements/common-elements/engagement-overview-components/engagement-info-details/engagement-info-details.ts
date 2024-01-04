@@ -667,7 +667,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   poUpdating!: boolean;
 
   @property({type: String})
-  routeDetailsPath!: string;
+  detailsRouteName!: string;
 
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
@@ -679,15 +679,16 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   stateChanged(state: RootState) {
+    if (!isJsonStrMatch(this.detailsRouteName, state.app.routeDetails?.routeName)) {
+      this.detailsRouteName = state.app.routeDetails?.routeName;
+      // prevent controls to show old values
+      this.cleanUpStoredValues();
+    }
     if (state.commonData.loadedTimestamp) {
       this.reduxCommonData = state.commonData;
     }
     if (state.user?.data && !isJsonStrMatch(this.user, state.user.data)) {
       this.user = cloneDeep(state.user.data);
-    }
-    if (!isJsonStrMatch(this.routeDetailsPath, state.app.routeDetails?.path)) {
-      this.routeDetailsPath = state.app.routeDetails?.path;
-      this.cleanUpStoredValues();
     }
   }
 
@@ -737,7 +738,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   onEngagementTypeChanged(updateEngagement = true) {
-    this._setShowInput(this.data.engagement_type);
+    this._setShowInput(this.data.engagement_type, updateEngagement);
     this._setAdditionalInput(this.data.engagement_type);
     if (updateEngagement) {
       store.dispatch(updateCurrentEngagement(this.data));
@@ -1004,6 +1005,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if ((!originalAgreementId && agreementId) || originalAgreementId !== agreementId) {
       data.agreement = this.data.agreement.id;
     }
+
     if (this.showInput) {
       if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
         this.data.total_value = null;
@@ -1068,8 +1070,16 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
   }
 
-  _setShowInput(type: string) {
+  _setShowInput(type: string, resetValues: boolean) {
     this.showInput = !!type && type !== 'ma';
+    if (!this.showInput && resetValues) {
+      // reset values
+      this.data.total_value = 0;
+      this.data.start_date = undefined;
+      this.data.end_date = undefined;
+      this.sectionIDs = [];
+      this.officeIDs = [];
+    }
   }
 
   _setAdditionalInput(type: string) {

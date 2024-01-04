@@ -183,7 +183,7 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
 
   getDataFromDialog() {
     const blueprintRisk = {
-      value: this.riskAssessmentDropdown.selected,
+      value: this.editedItem.risk?.value,
       extra: (this.editedItem.risk && this.editedItem.risk.extra) || {}
     };
     const data = {

@@ -29,7 +29,7 @@ export const StaffScFiltersHelper = new FiltersHelper(selectedValueTypeByFilterK
 export function getStaffScFilters() {
   return [
     {
-      filterName: 'Search partner or auditor',
+      filterName: 'Search reference number, partner or auditor',
       filterKey: StaffScFilterKeys.search,
       type: EtoolsFilterTypes.Search,
       selectedValue: '',

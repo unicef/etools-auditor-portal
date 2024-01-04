@@ -65,6 +65,9 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         section {
           position: relative;
         }
+        etools-filters::part(filter-search) {
+          min-width: 370px !important;
+        }
       </style>
 
       <pages-header-element
