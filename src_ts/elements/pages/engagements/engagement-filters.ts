@@ -35,7 +35,7 @@ export const EngagementsFiltersHelper = new FiltersHelper(selectedValueTypeByFil
 export function getEngagementFilters() {
   return [
     {
-      filterName: 'Search partner or auditor',
+      filterName: 'Search reference number, partner or auditor',
       filterKey: EngagementFilterKeys.search,
       type: EtoolsFilterTypes.Search,
       selectedValue: '',
