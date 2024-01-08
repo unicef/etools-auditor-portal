@@ -28,19 +28,20 @@ export class EngagementCancelDialog extends CommonMethodsMixin(LitElement) {
         no-padding
         keep-dialog-open
         size="md"
-        dialog-title="Cancellation of Engagement"
+        dialog-title="${this.dialogTitle}"
         ok-btn-text="Continue"
-        @confirm-btn-clicked="${this._cancelEngagement}"
+        @confirm-btn-clicked="${this._cancelOrSendBackEngagement}"
         @close="${this._onClose}"
       >
         <div class="container">
           <div class="layout-horizontal">
             <div class="col-12">
               <etools-textarea
-                id="cancellationReasonInput"
+                id="reasonInput"
                 class="required"
-                label="Cancellation Reason"
-                placeholder="Enter reason of cancellation"
+                .value="${this.reasonText}"
+                label="${this.inputLabel}"
+                placeholder="${this.inputPlaceholder}"
                 required
                 max-rows="4"
                 error-message="This field is required."
@@ -54,8 +55,22 @@ export class EngagementCancelDialog extends CommonMethodsMixin(LitElement) {
     `;
   }
 
-  _cancelEngagement() {
-    const input = this.shadowRoot?.querySelector('#cancellationReasonInput') as EtoolsTextarea;
+  private dialogTitle!: string;
+  private inputLabel!: string;
+  private inputPlaceholder!: string;
+  private reasonText!: string;
+
+  set dialogData(data: any) {
+    const {action, reasonText}: any = data;
+    const isCancelAction = action === 'cancel';
+    this.dialogTitle = isCancelAction ? 'Cancellation of Engagement' : 'Send Back Engagement';
+    this.inputLabel = isCancelAction ? 'Cancellation Reason' : 'Send Back Reason';
+    this.inputPlaceholder = isCancelAction ? 'Enter reason of cancellation' : 'Enter reason of send back';
+    this.reasonText = reasonText || '';
+  }
+
+  _cancelOrSendBackEngagement() {
+    const input = this.shadowRoot?.querySelector('#reasonInput') as EtoolsTextarea;
     if (!input || !input.validate()) {
       return;
     }

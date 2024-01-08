@@ -163,6 +163,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                         .engagement="${this.engagement}"
                         .errorObject="${this.errorObject}"
                         .optionsData="${this.engagementOptions}"
+                        ?showSendBackComments="${this._showSendBackComments(this.engagement)}"
                       >
                       </sa-report-page-main>
                     </div>`
@@ -321,12 +322,16 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
     return true;
   }
 
-  _openCancelDialog() {
+  _openCancelOrSendBackDialog(action: string) {
     openDialog({
-      dialog: 'engagement-cancel-dialog'
+      dialog: 'engagement-cancel-dialog',
+      dialogData: {
+        action: action,
+        reasonText: action === 'send_back' ? this.engagement.send_back_comment : ''
+      }
     }).then(({confirmed, response}) => {
       if (confirmed) {
-        this._cancelEngagement(response);
+        this._cancelOrSendBackEngagement(action, response);
       }
     });
   }

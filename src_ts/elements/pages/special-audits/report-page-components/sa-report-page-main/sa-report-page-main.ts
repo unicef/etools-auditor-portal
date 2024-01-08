@@ -1,6 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../../common-elements/engagement-report-components/send-back-comment/send-back-comment';
 // eslint-disable-next-line
 import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
@@ -9,6 +10,7 @@ import {SpecificProcedure} from '../../../../common-elements/engagement-report-c
 // eslint-disable-next-line
 import '../other-recommendations/other-recommendations';
 // eslint-disable-next-line
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {OtherRecommendations} from '../other-recommendations/other-recommendations';
 import {GenericObject} from '@unicef-polymer/etools-types';
 
@@ -17,11 +19,16 @@ export class SaReportPageMain extends LitElement {
   render() {
     // language=HTML
     return html`
+      ${sharedStyles}
       <style>
         .mb-24 {
           margin-bottom: 24px;
         }
       </style>
+      <send-back-comments
+        ?hidden="${!this.showSendBackComments}"
+        .comments="${this.engagement.send_back_comment}"
+      ></send-back-comments>
 
       <assign-engagement
         id="assignEngagement"
@@ -64,6 +71,9 @@ export class SaReportPageMain extends LitElement {
 
   @property({type: Object})
   errorObject: GenericObject = {};
+
+  @property({type: Boolean})
+  showSendBackComments = false;
 
   validate(forSave) {
     const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).validate(forSave);
