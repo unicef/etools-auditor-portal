@@ -145,6 +145,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                         .engagement="${this.engagement}"
                         .errorObject="${this.errorObject}"
                         .engagementOptions="${this.engagementOptions}"
+                        ?showSendBackComments="${this._showSendBackComments(this.engagement)}"
                       >
                       </ma-report-page-main>
                     </div>`
@@ -284,12 +285,16 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
     }
   }
 
-  _openCancelDialog() {
+  _openCancelOrSendBackDialog(action: string) {
     openDialog({
-      dialog: 'engagement-cancel-dialog'
+      dialog: 'engagement-cancel-dialog',
+      dialogData: {
+        action: action,
+        reasonText: action === 'send_back' ? this.engagement.send_back_comment : ''
+      }
     }).then(({confirmed, response}) => {
       if (confirmed) {
-        this._cancelEngagement(response);
+        this._cancelOrSendBackEngagement(action, response);
       }
     });
   }

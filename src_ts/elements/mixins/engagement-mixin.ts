@@ -271,7 +271,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.engagementFileTypes = getOptionsChoices(attachmentOptions, 'file_type');
     }
 
-    _openCancelDialog() {
+    _openCancelOrSendBackDialog(_action: string) {
       // overridden in the classes
     }
 
@@ -301,7 +301,10 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
           this._finalizeReport();
           break;
         case 'cancel':
-          this._openCancelDialog();
+          this._openCancelOrSendBackDialog('cancel');
+          break;
+        case 'send_back':
+          this._openCancelOrSendBackDialog('send_back');
           break;
         default:
           throw new Error(`Unknown event type: ${details.type}`);
@@ -348,19 +351,33 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       });
     }
 
-    _cancelEngagement(cancelComment: string) {
+    _cancelOrSendBackEngagement(action: string, comment: string) {
+      // action can be 'cancel' or 'send_back'
+
       const type = this.getLongEngType(this.engagement.engagement_type);
 
       this.updatedEngagement = {
         engagement_type: type,
         id: this.engagement.id,
-        data: {cancel_comment: cancelComment},
-        cancel: 'cancel/'
+        data: action === 'cancel' ? {cancel_comment: comment} : {send_back_comment: comment},
+        cancel: action === 'cancel' ? 'cancel/' : null,
+        send_back: action === 'send_back' ? 'send_back/' : null
       };
 
       if (this.tab === 'report') {
         this.tab = 'overview';
       }
+    }
+
+    _sendBackEngagement(sendBackComment: string) {
+      const type = this.getLongEngType(this.engagement.engagement_type);
+
+      this.updatedEngagement = {
+        engagement_type: type,
+        id: this.engagement.id,
+        data: {send_back_comment: sendBackComment},
+        cancel: 'send_back/'
+      };
     }
 
     getLongEngType(type) {
@@ -521,6 +538,10 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         }, 300);
       }
       return showFollowUp;
+    }
+
+    _showSendBackComments(engagement: AnyObject) {
+      return Boolean(engagement && engagement.send_back_comment && engagement.status === 'comments_received_by_unicef');
     }
 
     _showCancellationReason(engagement) {

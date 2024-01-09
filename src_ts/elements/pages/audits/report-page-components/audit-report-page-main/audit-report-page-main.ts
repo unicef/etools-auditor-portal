@@ -3,6 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import {GenericObject} from '../../../../../types/global';
 
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../../common-elements/engagement-report-components/send-back-comment/send-back-comment';
 // eslint-disable-next-line
 import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../findings-summary/findings-summary';
@@ -14,6 +15,7 @@ import {AssessmentOfControls} from '../assessment-of-controls/assessment-of-cont
 import '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 import {KeyInternalControlsWeaknesses} from '../key-internal-controls-weaknesses/key-internal-controls-weaknesses';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 /**
  * @LitEelement
@@ -24,11 +26,17 @@ export class AuditReportPageMain extends LitElement {
   render() {
     // language=HTML
     return html`
+      ${sharedStyles}
       <style>
         .mb-24 {
           margin-bottom: 24px;
         }
       </style>
+
+      <send-back-comments
+        ?hidden="${!this.showSendBackComments}"
+        .comments="${this.engagement.send_back_comment}"
+      ></send-back-comments>
 
       <assign-engagement
         id="assignEngagement"
@@ -89,6 +97,9 @@ export class AuditReportPageMain extends LitElement {
 
   @property({type: Object})
   optionsData!: AnyObject;
+
+  @property({type: Boolean})
+  showSendBackComments = false;
 
   validate(forSave) {
     return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).validate(forSave);

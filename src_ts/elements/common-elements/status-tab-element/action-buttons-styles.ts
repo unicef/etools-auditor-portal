@@ -32,5 +32,9 @@ export const ActionButtonsStyles = html`
     sl-menu-item {
       text-transform: uppercase;
     }
+    etools-icon {
+      --etools-icon-font-size: 20px;
+      vertical-align: sub;
+    }
   </style>
 `;

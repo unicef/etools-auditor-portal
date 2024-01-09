@@ -62,7 +62,8 @@ export class ActionButtons extends LitElement {
     save: 'save',
     submit: 'assignment-turned-in',
     finalize: 'assignment-turned-in',
-    create: 'assignment-turned-in'
+    create: 'assignment-turned-in',
+    send_back: 'av:skipPrevious'
   };
 
   @property({type: Boolean})
@@ -106,7 +107,7 @@ export class ActionButtons extends LitElement {
     if (!item) {
       return '';
     }
-    const text = item.display_name || item.replace('_', ' ');
+    const text = (item.display_name || item.replace('_', ' ')).replace('_', ' ');
 
     if (!text) {
       throw new Error('Can not get button text!');
