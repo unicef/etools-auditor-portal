@@ -71,7 +71,8 @@ export class EngagementCancelDialog extends CommonMethodsMixin(LitElement) {
 
   _cancelOrSendBackEngagement() {
     const input = this.shadowRoot?.querySelector('#reasonInput') as EtoolsTextarea;
-    if (!input || !input.validate()) {
+    if (!input || !input.validate() || !input.value?.trim()) {
+      input.invalid = true;
       return;
     }
     this.requestInProcess = true;
