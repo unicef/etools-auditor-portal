@@ -35,6 +35,8 @@ import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import cloneDeep from 'lodash-es/cloneDeep';
+import {getObjectsIDs} from '../../../utils/utils';
+import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
 
 /**
  * @customElement
@@ -459,7 +461,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.sectionOptions}"
                     option-label="name"
                     option-value="id"
-                    .selectedValues="${cloneDeep(this.sectionIDs)}"
+                    .selectedValues="${getObjectsIDs(this.data?.sections)}"
                     ?required="${this._setRequired('sections', this.optionsData)}"
                     ?readonly="${this.isReadOnly('sections', this.optionsData)}"
                     ?invalid="${this.errors.sections}"
@@ -469,7 +471,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      this.selectedItemsChanged(detail, 'sectionIDs', 'id', this);
+                      if (!isJsonStrMatch(this.data.sections, detail.selectedItems)) {
+                        this.data.sections = detail.selectedItems;
+                        this.requestUpdate();
+                      }
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -483,7 +488,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.officeOptions}"
                     option-label="name"
                     option-value="id"
-                    .selectedValues="${cloneDeep(this.officeIDs)}"
+                    .selectedValues="${getObjectsIDs(this.data?.offices)}"
                     ?required="${this._setRequired('offices', this.optionsData)}"
                     ?readonly="${this.isReadOnly('offices', this.optionsData)}"
                     ?invalid="${this.errors.offices}"
@@ -493,7 +498,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      this.selectedItemsChanged(detail, 'officeIDs', 'id', this);
+                      if (!isJsonStrMatch(this.data.offices, detail.selectedItems)) {
+                        this.data.offices = detail.selectedItems;
+                        this.requestUpdate();
+                      }
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -506,19 +514,22 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               label="${this.getLabel('users_notified', this.optionsData)}"
               placeholder="${this.getPlaceholderText('users_notified', this.optionsData)}"
               .options="${this.usersNotifiedOptions}"
-              load-data-method="${this.loadUsersDropdownOptions}"
+              .loadDataMethod="${this.loadUsersDropdownOptions}"
               preserve-search-on-close
               option-label="name"
               option-value="id"
               ?hidden="${this.isReadOnly('users_notified', this.optionsData)}"
-              .selectedValues="${cloneDeep(this.usersNotifiedIDs)}"
+              .selectedValues="${getObjectsIDs(this.data?.users_notified)}"
               ?required="${this._setRequired('users_notified', this.optionsData)}"
               ?invalid="${this.errors.users_notified}"
               .errorMessage="${this.errors.users_notified}"
               @focus="${(event: any) => this._resetFieldError(event)}"
               trigger-value-change-event
               @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                this.selectedItemsChanged(detail, 'usersNotifiedIDs', 'id', this);
+                if (!isJsonStrMatch(this.data.users_notified, detail.selectedItems)) {
+                  this.data.users_notified = detail.selectedItems;
+                  this.requestUpdate();
+                }
               }}"
             >
             </etools-dropdown-multi>
@@ -587,6 +598,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (idChanged) {
       // needed when we load an engagement to set visible fields
       this.onEngagementTypeChanged(false);
+      waitForCondition(() => !!this.user).then(() => {
+        this._prepareData();
+      });
     }
   }
 
@@ -643,9 +657,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   officeOptions!: GenericObject[];
 
   @property({type: Array})
-  officeIDs: number[] = [];
-
-  @property({type: Array})
   users!: GenericObject[];
 
   @property({type: Object})
@@ -660,14 +671,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Array})
   usersNotifiedOptions: GenericObject[] = [];
 
-  @property({type: Array})
-  usersNotifiedIDs: any[] = [];
-
   @property({type: Boolean})
   poUpdating!: boolean;
 
   @property({type: String})
-  detailsRouteName!: string;
+  detailsRoutePath!: string;
 
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
@@ -679,8 +687,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   stateChanged(state: RootState) {
-    if (!isJsonStrMatch(this.detailsRouteName, state.app.routeDetails?.routeName)) {
-      this.detailsRouteName = state.app.routeDetails?.routeName;
+    if (!isJsonStrMatch(this.detailsRoutePath, state.app.routeDetails?.path)) {
+      this.detailsRoutePath = state.app.routeDetails?.path;
       // prevent controls to show old values
       this.cleanUpStoredValues();
     }
@@ -705,12 +713,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
     }
-    if (
-      (changedProperties.has('data') && !isJsonStrMatch(this.data, changedProperties.get('data'))) ||
-      changedProperties.has('user')
-    ) {
-      this._prepareData();
-    }
     if (changedProperties.has('optionsData')) {
       this._setEngagementTypes(this.optionsData);
       this._setSharedIpWith(this.optionsData);
@@ -731,9 +733,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   cleanUpStoredValues() {
-    this.usersNotifiedIDs = [];
-    this.officeIDs = [];
-    this.sectionIDs = [];
+    this.data = {};
     this.orderNumber = null;
   }
 
@@ -774,7 +774,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       }
     }).then((resp: GenericObject) => {
       this.users = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.setUsersNotifiedOptionsAndIDs();
+      this.setUsersNotifiedOptions();
       return resp;
     });
   }
@@ -812,32 +812,23 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
     const savedSections = this.data.sections || [];
     this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData?.sections) || [];
-    const sectionIDs = savedSections.map((section) => section.id);
-    this.sectionIDs = sectionIDs;
 
     const savedOffices = this.data.offices || [];
     this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData?.offices) || [];
-    const officeIDs = savedOffices.map((office) => office.id);
-    this.officeIDs = officeIDs;
 
     if (!this.users) {
       this.users = this.reduxCommonData?.users || [];
     }
-    this.setUsersNotifiedOptionsAndIDs(true);
+    this.setUsersNotifiedOptions();
 
     this.setYearOfAuditOptions(this.data.year_of_audit);
   }
 
-  setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
+  setUsersNotifiedOptions() {
     const availableUsers = [...this.users];
     const notifiedUsers = this.data.users_notified || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
     this.usersNotifiedOptions = availableUsers;
-    if (setSavedUsersIDs) {
-      // on the first call(after `data` is set), need to set usersNotifiedIDs (the IDs of the already saved users)
-      const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
-      this.usersNotifiedIDs = usersNotifiedIDs;
-    }
   }
 
   populateUsersNotifiedDropDown() {
@@ -1032,8 +1023,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
 
     const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
-    if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
-      data.users_notified = this.usersNotifiedIDs;
+    const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
+    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
+      data.users_notified = usersNotifiedIDs;
     }
 
     const originalSharedIpWith = this.originalData?.shared_ip_with || [];
@@ -1043,13 +1035,15 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
 
     const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
-    if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
-      data.offices = this.officeIDs;
+    const officeIDs = (this.data?.offices || []).map((office) => +office.id);
+    if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
+      data.offices = officeIDs;
     }
 
     const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
-    if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
-      data.sections = this.sectionIDs;
+    const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
+    if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
+      data.sections = sectionIDs;
     }
 
     return data;
@@ -1077,8 +1071,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       this.data.total_value = 0;
       this.data.start_date = undefined;
       this.data.end_date = undefined;
-      this.sectionIDs = [];
-      this.officeIDs = [];
+      this.data.sections = [];
+      this.data.offices = [];
     }
   }
 

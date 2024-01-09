@@ -83,3 +83,7 @@ export const _showDialogSpinner = (requestInProcess: boolean, uploadInProgress: 
 export const getBodyDialog = (dialogKey: string) => {
   return document.body.querySelector(dialogKey);
 };
+
+export const getObjectsIDs = (data: AnyObject[]) => {
+  return (data || []).map((item: any) => item.id);
+};
