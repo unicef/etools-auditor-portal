@@ -1,6 +1,5 @@
 import {LitElement, html} from 'lit';
 import {property} from 'lit/decorators.js';
-import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
 
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer-layout';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
@@ -209,13 +208,6 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
 
   @property({type: Object})
   reduxRouteDetails?: RouteDetails;
-
-  constructor() {
-    super();
-    // Gesture events like tap and track generated from touch will not be
-    // preventable, allowing for better scrolling performance.
-    setPassiveTouchGestures(true);
-  }
 
   public connectedCallback() {
     super.connectedCallback();

@@ -23,8 +23,7 @@
     "format": "npm run format:eslint",
     "rd:init": "relative-deps init",
     "rd:add": "relative-deps add",
-    "rd:reload": "relative-deps",
-    "prepare": "relative-deps"
+    "rd:reload": "relative-deps"
   },
   "dependencies": {
     "@types/lodash-es": "^4.17.7",
@@ -63,7 +62,6 @@
     "rollup-plugin-serve": "^2.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-workbox": "^8.0.1",
-    "@polymer/decorators": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
     "@typescript-eslint/typescript-estree": "^5.6.0",
@@ -78,8 +76,6 @@
     "husky": "^4.3.8",
     "lint-staged": "^10.2.10",
     "pixelmatch": "^4.0.2",
-    "polymer-cli": "^1.9.11",
-    "polyserve": "^0.27.0",
     "prettier": "^2.5.1",
     "typescript": "^4.5.3",
     "ua-parser-js": ">=1.0.33",
