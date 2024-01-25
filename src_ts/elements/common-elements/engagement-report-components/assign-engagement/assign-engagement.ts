@@ -6,7 +6,6 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 import isEmpty from 'lodash-es/isEmpty';
 import pickBy from 'lodash-es/pickBy';
-declare const dayjs: any;
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -25,6 +24,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import cloneDeep from 'lodash-es/cloneDeep';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import dayjs from 'dayjs';
 
 /**
  * @LitElement

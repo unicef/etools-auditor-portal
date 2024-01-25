@@ -63,14 +63,13 @@ Can be accessed at ./LICENSE.txt
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="preconnect" crossorigin="anonymous" href="https://fonts.googleapis.com">
     <link rel="preconnect" crossorigin="anonymous" href="https://fonts.gstatic.com">
-     <link
-      rel="stylesheet"
-      type="text/css"
-      crossorigin="anonymous"
-      href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,300,300italic,400italic,500,500italic,700,700italic"
-    />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/themes/light.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/app-theme.css" />
+    
+    <link rel="preload" as="style" crossorigin="anonymous" href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,300,300italic,400italic,500,500italic,700,700italic&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,300,300italic,400italic,500,500italic,700,700italic&display=swap"></noscript>
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/themes/light.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/themes/light.css"></noscript>
+    <link rel="preload" href="assets/css/app-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/app-theme.css"></noscript>
 
     <script>
       if ('serviceWorker' in navigator) {
@@ -144,6 +143,9 @@ Can be accessed at ./LICENSE.txt
         --sl-input-label-font-size-small: 12px;
       }
     </style>
+
+    <link rel="preload" as="image" href="./assets/images/etools-logo-color-white.svg" />
+    <link rel="preload" as="image" href="./assets/images/loading.svg" />
   </head>
 
   <body>
@@ -160,12 +162,6 @@ Can be accessed at ./LICENSE.txt
     <noscript>
       Please enable JavaScript to view this website.
     </noscript>
-    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-    <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="./node_modules/web-animations-js/web-animations-next-lite.min.js"></script>
-    <script src="./node_modules/dayjs/dayjs.min.js"></script>
-    <script src="./node_modules/dayjs/plugin/utc.js"></script>
-
     <script type="module" src="./src/app-shell.js"></script>
   </body>
 </html>

@@ -55,8 +55,7 @@ import {addAllowedActions} from './elements/mixins/permission-controller.js';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util.js';
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import {setBasePath} from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import {EtoolsIconSet, initializeIcons} from '@unicef-polymer/etools-unicef/src/etools-icons/etools-icons';
-import {apIcons} from './elements/styles/ap-icons';
+import {initializeIcons} from '@unicef-polymer/etools-unicef/src/etools-icons/etools-icons';
 
 setStore(store as any);
 store.addReducers({
@@ -65,23 +64,10 @@ store.addReducers({
   engagement
 });
 
-declare const dayjs: any;
-declare const dayjs_plugin_utc: any;
-dayjs.extend(dayjs_plugin_utc);
 window.EtoolsLanguage = 'en';
 
 setBasePath(BASE_PATH);
-initializeIcons(
-  [
-    EtoolsIconSet.communication,
-    EtoolsIconSet.device,
-    EtoolsIconSet.social,
-    EtoolsIconSet.av,
-    EtoolsIconSet.image,
-    EtoolsIconSet.maps
-  ],
-  apIcons
-);
+initializeIcons();
 /**
  * @customElement
  * @LitElement
@@ -135,46 +121,28 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
           </app-header>
 
           <main role="main" class="main-content">
-            <engagements-page-main
-              name="engagements"
-              id="engagements"
-              ?hidden="${!this.isActivePage(this.page, 'engagements')}"
-            >
-            </engagements-page-main>
-
-            <staff-sc-page-main name="staff-sc" id="staff-sc" ?hidden="${!this.isActivePage(this.page, 'staff-sc')}">
-            </staff-sc-page-main>
-
-            <audits-page-main name="audits" id="audits" ?hidden="${!this.isActivePage(this.page, 'audits')}">
-            </audits-page-main>
-
-            <special-audits-page-main
-              name="special-audits"
-              id="special-audits"
-              ?hidden="${!this.isActivePage(this.page, 'special-audits')}"
-            >
-            </special-audits-page-main>
-
-            <micro-assessments-page-main
-              name="micro-assessments"
-              id="micro-assessments"
-              ?hidden="${!this.isActivePage(this.page, 'micro-assessments')}"
-            >
-            </micro-assessments-page-main>
-
-            <spot-checks-page-main
-              name="spot-checks"
-              id="spot-checks"
-              ?hidden="${!this.isActivePage(this.page, 'spot-checks|staff-spot-checks')}"
-            >
-            </spot-checks-page-main>
-
-            <not-found-page-view
-              name="not-found"
-              id="not-found"
-              ?hidden="${!this.isActivePage(this.page, 'not-found')}"
-            >
-            </not-found-page-view>
+            ${this.isActivePage(this.page, 'engagements')
+              ? html`<engagements-page-main name="engagements" id="engagements"> </engagements-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'staff-sc')
+              ? html` <staff-sc-page-main name="staff-sc" id="staff-sc"> </staff-sc-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'audits')
+              ? html`<audits-page-main name="audits" id="audits"> </audits-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'special-audits')
+              ? html` <special-audits-page-main name="special-audits" id="special-audits"> </special-audits-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'micro-assessments')
+              ? html` <micro-assessments-page-main name="micro-assessments" id="micro-assessments">
+                </micro-assessments-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'spot-checks|staff-spot-checks')
+              ? html` <spot-checks-page-main name="spot-checks" id="spot-checks"> </spot-checks-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'not-found')
+              ? html`<not-found-page-view name="not-found" id="not-found"> </not-found-page-view>`
+              : html``}
           </main>
           <page-footer></page-footer>
         </app-header-layout>

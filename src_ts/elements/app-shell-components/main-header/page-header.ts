@@ -183,7 +183,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         <div class="titlebar layout-horizontal align-items-center">
           <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
-          <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" />
+          <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" alt="Etools" />
           <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
         </div>
         <div class="layout-horizontal align-items-center">
@@ -207,6 +207,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
             title="Refresh"
             id="pageRefresh"
             name="refresh"
+            label="refresh"
             tracker="Refresh"
             @click="${this.refreshBtnclicked}"
           >

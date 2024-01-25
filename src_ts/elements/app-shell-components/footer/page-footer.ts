@@ -57,7 +57,7 @@ export class PageFooter extends LitElement {
       <footer>
         <div id="footer-content" class="layout-horizontal">
           <span id="unicef-logo" class="layout-horizontal layout-inline">
-            <img src="${BASE_PATH}assets/images/UNICEF_logo.png" alt="UNICEF logo" />
+            <img src="${BASE_PATH}assets/images/UNICEF_logo.webp" alt="UNICEF logo" />
           </span>
           <!-- TODO: modify span to a with proper href values after footer pages are ready -->
           <!--   <span class="footer-link">Contact</span>

@@ -7,11 +7,11 @@ import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
-declare const dayjs: any;
 import '../insert-html/insert-html';
 import './action-buttons';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import get from 'lodash-es/get';
+import dayjs from 'dayjs';
 
 /**
  * main menu
