@@ -6,6 +6,7 @@ import terser from '@rollup/plugin-terser';
 import path from 'path';
 import {generateSW} from 'rollup-plugin-workbox';
 import {workboxConfig} from './workbox-config.js';
+import commonjs from '@rollup/plugin-commonjs';
 
 // Files to remove before doing new src
 const deleteConfig = {
@@ -43,6 +44,7 @@ const config = {
   ...defaultConfig,
   plugins: [
     del(deleteConfig),
+    commonjs(),
     ...defaultConfig.plugins,
     license(licenseConfig),
     terser(terserConfig),

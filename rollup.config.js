@@ -1,7 +1,6 @@
 import esbuild from 'rollup-plugin-esbuild';
 import resolve from '@rollup/plugin-node-resolve';
 import path from 'path';
-import commonjs from '@rollup/plugin-commonjs';
 
 const importMetaUrlCurrentModulePlugin = () => {
   return {
@@ -28,7 +27,7 @@ const config = {
     if (warning.code === 'THIS_IS_UNDEFINED') return;
     warn(warning);
   },
-  plugins: [importMetaUrlCurrentModulePlugin(), resolve(), commonjs(), esbuild()],
+  plugins: [importMetaUrlCurrentModulePlugin(), resolve(), esbuild()],
   preserveEntrySignatures: false
 };
 
