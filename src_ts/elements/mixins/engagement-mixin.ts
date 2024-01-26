@@ -353,6 +353,11 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _cancelOrSendBackEngagement(action: string, comment: string) {
       // action can be 'cancel' or 'send_back'
+      fireEvent(this, 'global-loading', {
+        message: 'Processing action...',
+        active: true,
+        loadingSource: 'processingAction'
+      });
 
       const type = this.getLongEngType(this.engagement.engagement_type);
 
@@ -397,6 +402,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!this.engagement) {
         return Promise.reject(new Error('You need engagement object'));
       }
+
+      fireEvent(this, 'global-loading', {
+        message: 'Processing action...',
+        active: true,
+        loadingSource: 'processingAction'
+      });
 
       // Check basic info
       let [data, engagementId] = this._getBasicInfo({});

@@ -118,10 +118,14 @@ export class UpdateEngagement extends LitElement {
       getEngagementAttachmentOptions(this.updatedEngagementData.id),
       getEngagementReportAttachmentsOptions(this.updatedEngagementData.id),
       getActionPointOptions(this.updatedEngagementData.id)
-    ]).then((response: any[]) => {
-      this._handleOptionsResponse(this.formatResponse(response));
-      fireEvent(this, 'global-loading', {active: false});
-    });
+    ])
+      .then((response: any[]) => {
+        this._handleOptionsResponse(this.formatResponse(response));
+      })
+      .finally(() => {
+        fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+        fireEvent(this, 'global-loading', {active: false});
+      });
   }
 
   _handleOptionsResponse(data) {
