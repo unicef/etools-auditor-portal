@@ -93,6 +93,7 @@ export class UpdateEngagement extends LitElement {
       this.quietAdding = false;
       fireEvent(this, 'quiet-adding-changed', String(this.quietAdding).toLowerCase());
     }
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
   }
 
   _finishPostResponse() {
