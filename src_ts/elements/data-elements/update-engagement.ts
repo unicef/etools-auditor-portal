@@ -144,6 +144,8 @@ export class UpdateEngagement extends LitElement {
   }
 
   _handleError(error) {
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+
     if (this.requestOptions.method === 'PATCH') {
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
     } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('submit')) {
