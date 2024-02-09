@@ -50,7 +50,7 @@ export class KicwRisk extends LitElement {
         .col-data {
           display: inline-block;
           overflow: hidden;
-          font-size: 13px;
+          font-size: var(--etools-font-size-13, 13px);
           text-overflow: ellipsis;
           padding-right: 16px;
           padding-left: 1px;

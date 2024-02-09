@@ -441,7 +441,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   getTableStyle() {
     return html`<style>
       .dateLabel {
-        font-size: 11px;
+        font-size: var(--etools-font-size-11, 11px);
         color: var(--dark-secondary-text-color);
       }
       td[data-label='Reference Number'],

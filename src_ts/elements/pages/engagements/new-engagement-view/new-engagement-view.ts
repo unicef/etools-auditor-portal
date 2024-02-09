@@ -78,7 +78,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
         }
 
         .tab-selector etools-tabs-lit {
-          font-size: 14px;
+          font-size: var(--etools-font-size-14, 14px);
           font-weight: bold;
           text-transform: uppercase;
         }

@@ -48,7 +48,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
           height: 58px;
           padding: 16px calc(2% + 120px) 16px 2%;
           box-sizing: border-box;
-          font-size: 17px;
+          font-size: var(--etools-font-size-17, 17px);
         }
         .result-element .text {
           width: 100%;

@@ -37,7 +37,7 @@ export const riskTabStyles = css`
     height: 58px;
     padding: 16px calc(2% + 120px) 16px 2%;
     box-sizing: border-box;
-    font-size: 17px;
+    font-size: var(--etools-font-size-17, 17px);
   }
   .tab-container .risk-result-container .result-element .text {
     width: 100%;
