@@ -62,7 +62,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
           margin-bottom: 0 !important;
         }
         .cancellation-tab {
-          --etools-icon-font-size: 70px;
+          --etools-icon-font-size: var(--etools-font-size-70, 70px);
         }
       </style>
 

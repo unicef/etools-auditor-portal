@@ -34,7 +34,7 @@ export const mainPageStyles = css`
   }
 
   .tab-selector etools-tabs-lit {
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
     font-weight: bold;
   }
 
@@ -67,7 +67,7 @@ export const mainPageStyles = css`
     line-height: 48px;
     background-color: var(--gray-08);
     color: var(--gray-28);
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
     font-weight: 600;
   }
 
@@ -83,7 +83,7 @@ export const mainPageStyles = css`
 
   etools-content-panel.cancellation-tab .cancellation-title {
     font-weight: 500;
-    font-size: 19px;
+    font-size: var(--etools-font-size-19, 19px);
     text-transform: uppercase;
     color: var(--module-warning);
     margin: 15px 0 26px;
@@ -91,7 +91,7 @@ export const mainPageStyles = css`
   }
 
   etools-content-panel.cancellation-tab .cancellation-text {
-    font-size: 17px;
+    font-size: var(--etools-font-size-17, 17px);
     white-space: pre-wrap;
     color: var(--gray-darkest);
     padding-left: 80px;

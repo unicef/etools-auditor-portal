@@ -50,7 +50,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
           padding: 20px 24px;
           background-color: #ededee;
           color: #212121;
-          font-size: 15px;
+          font-size: var(--etools-font-size-15, 15px);
         }
         .checkbox-container {
           padding-inline-start: 14px;

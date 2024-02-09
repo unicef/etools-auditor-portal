@@ -55,7 +55,7 @@ export class SendBackComments extends LitElement {
 
         .title {
           font-weight: 500;
-          font-size: 14px;
+          font-size: var(--etools-font-size-14, 14px);
           margin-bottom: 15px;
         }
 

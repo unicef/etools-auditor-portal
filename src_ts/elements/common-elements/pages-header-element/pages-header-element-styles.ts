@@ -46,7 +46,7 @@ export const pagesHeaderElementStyles = css`
   }
 
   .side-heading span.title {
-    font-size: 24px;
+    font-size: var(--etools-font-size-24, 24px);
     padding-left: 48px;
     width: 100%;
     white-space: nowrap;
@@ -57,7 +57,7 @@ export const pagesHeaderElementStyles = css`
   .side-heading .grey-buttons {
     color: var(--gray-mid);
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
   }
 
   .side-heading .grey-buttons etools-icon {
@@ -78,7 +78,7 @@ export const pagesHeaderElementStyles = css`
   }
 
   .side-heading .add-btn {
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
     margin: 11px 4px 12px 18px;
     background-color: var(--primary-color);
   }

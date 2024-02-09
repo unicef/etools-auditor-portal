@@ -78,7 +78,7 @@ export const tabInputsStyles = css`
 
   .static-text {
     padding: 8px 12px;
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
   }
 
   :host > * {
@@ -226,7 +226,7 @@ export const tabInputsStyles = css`
     background-color: var(--gray-light);
     text-align: center;
     color: #ffffff;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
   }
 
   etools-currency {
@@ -263,7 +263,7 @@ export const tabInputsStyles = css`
     padding-top: 4px;
     padding-bottom: 6px;
     min-width: 0;
-    font-size: 16px;
+    font-size: var(--etools-font-size-16, 16px);
     display: flex;
     flex-wrap: wrap;
   }

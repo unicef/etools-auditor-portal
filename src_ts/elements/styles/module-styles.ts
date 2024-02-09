@@ -142,11 +142,11 @@ export const moduleStyles = css`
     width: 100%;
     color: var(--secondary-text-color);
     font-weight: 500;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
     margin-bottom: 6px;
   }
   .row-details-content {
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
   }
 
   div[slot='panel-btns'] .panel-button {
@@ -172,7 +172,7 @@ export const moduleStyles = css`
   .col-data.truncate {
     display: inline-block;
     overflow: hidden;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
     text-overflow: ellipsis;
     padding-right: 16px;
     padding-left: 1px;

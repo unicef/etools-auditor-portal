@@ -4,6 +4,7 @@ import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import '@unicef-polymer/etools-unicef/src/etools-app-selector/etools-app-selector';
 import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-accesibility/etools-accesibility';
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
@@ -61,7 +62,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
 
         .titlebar {
           flex: 1;
-          font-size: 28px;
+          font-size: var(--etools-font-size-28, 28px);
           font-weight: 300;
         }
 
@@ -110,7 +111,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         .envWarning {
           color: var(--nonprod-text-warn-color);
           font-weight: 700;
-          font-size: 18px;
+          font-size: var(--etools-font-size-18, 18px);
           line-height: 20px;
         }
 
@@ -130,7 +131,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
         @media (max-width: 920px) {
           .envWarning {
-            font-size: 14px;
+            font-size: var(--etools-font-size-14, 14px);
             line-height: 16px;
           }
           .titlebar img {
@@ -166,7 +167,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
             display: none;
           }
           .envWarning {
-            font-size: 10px;
+            font-size: var(--etools-font-size-10, 10px);
             margin-inline-start: 2px;
           }
           #refresh {
@@ -212,6 +213,8 @@ export class PageHeader extends MatomoMixin(LitElement) {
             @click="${this.refreshBtnclicked}"
           >
           </etools-icon-button>
+
+          <etools-accesibility></etools-accesibility>
         </div>
       </app-toolbar>
     `;

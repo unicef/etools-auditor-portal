@@ -120,7 +120,7 @@ export const StatusTabElementStyles = css`
   .status-container .status-icon .icon-wrapper span {
     height: 24px;
     line-height: 24px;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
   }
 
   .status-container .status {
@@ -129,13 +129,13 @@ export const StatusTabElementStyles = css`
     margin-bottom: 15px;
     box-sizing: border-box;
     text-transform: capitalize;
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
     color: var(--gray-mid);
   }
 
   .status-container .status .status-date {
     color: var(--gray-mid);
-    font-size: 12px;
+    font-size: var(--etools-font-size-12, 12px);
     font-weight: 400;
     white-space: nowrap;
   }

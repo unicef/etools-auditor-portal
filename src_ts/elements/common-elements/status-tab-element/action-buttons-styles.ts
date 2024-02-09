@@ -33,7 +33,7 @@ export const ActionButtonsStyles = html`
       text-transform: uppercase;
     }
     etools-icon {
-      --etools-icon-font-size: 20px;
+      --etools-icon-font-size: var(--etools-font-size-20, 20px);
       vertical-align: sub;
     }
   </style>
