@@ -15,7 +15,7 @@ import {GenericObject} from '../../../../../types/global';
 import '../risk-tab/risk-tab';
 import '../../../../common-elements/insert-html/insert-html';
 import {AnyObject} from '@unicef-polymer/etools-types';
-import { unsafeHTML } from 'lit/directives/unsafe-html';
+import {unsafeHTML} from 'lit/directives/unsafe-html';
 
 /**
  * @LitEelement
