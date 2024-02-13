@@ -8,7 +8,7 @@ import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-pa
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getOptionsChoices} from '../../../mixins/permission-controller';
+import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
@@ -186,10 +186,10 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
     if (!this.optionsData || forSave) {
       return true;
     }
-    // const required = isRequired('overall_risk_assessment.blueprints.risk', this.optionsData);
-    // if (!required) {
-    //   return true;
-    // }
+    const required = isRequired('overall_risk_assessment.blueprints.risk', this.optionsData);
+    if (!required) {
+      return true;
+    }
 
     const riskValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
     const commentsValid = (this.shadowRoot!.querySelector('#briefJustification') as EtoolsTextarea).validate();

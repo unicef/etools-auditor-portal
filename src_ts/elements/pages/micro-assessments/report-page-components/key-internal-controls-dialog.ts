@@ -146,7 +146,9 @@ export class KeyInternalControlsDialog extends CommonMethodsMixin(LitElement) {
   }
 
   validateEditFields() {
-    const valueValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
+    const valueValid = this.editedArea?.blueprints[0]?.risk?.value?.value >= 0;
+    // validate() will return true because it has a value of -1 ,
+    // (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
     const extraValid = (this.shadowRoot!.querySelector('#briefJustification') as EtoolsDropdownEl).validate();
 
     const errors = {
