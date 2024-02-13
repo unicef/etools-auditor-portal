@@ -504,6 +504,8 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
   _handleOptionResponse(detail) {
     fireEvent(this, 'global-loading', {type: 'get-ap-options'});
     if (detail) {
+      const allowed_actions = (detail.actions.allowed_FSM_transitions as any) || [];
+      detail.actions.allowed_actions = (detail.actions.allowed_actions || []).concat(allowed_actions);
       this.editedApBase = detail;
     }
     const itemIndex = this._selectedAPIndex;

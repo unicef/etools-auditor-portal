@@ -64,6 +64,9 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
           border: 1px solid rgba(0, 0, 0, 0.54);
           padding: 6px 13px;
         }
+        .action-complete {
+          padding-inline-start: 16px;
+        }
         </style>
         <etools-dialog no-padding keep-dialog-open size="md"
                 keep-dialog-open

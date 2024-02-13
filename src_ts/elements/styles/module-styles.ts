@@ -131,7 +131,10 @@ export const moduleStyles = css`
     --list-divider-color: var(--dark-divider-color);
   }
   etools-data-table-row::part(edt-list-row-wrapper) {
-    height: 48px;
+    min-height: 24px;
+  }
+  etools-data-table-row *[slot='row-data'] .col-data {
+    line-height: 16px;
   }
   .editable-row:hover .hover-block,
   .editable-row:hover .hover-block:focus {
