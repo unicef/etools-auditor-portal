@@ -238,7 +238,7 @@ export const tabInputsStyles = css`
     padding-left: 0;
   }
   etools-content-panel:not([list])::part(ecp-content) {
-    padding: 8px 12px;
+    padding: 16px 12px;
     padding-left: 12px;
   }
 
@@ -254,7 +254,8 @@ export const tabInputsStyles = css`
   }
 
   .paper-label {
-    color: var(--secondary-text-color);
+    color: var(--sl-input-label-color);
+    font-size: var(--etools-font-size-12, 12px);
     padding-top: 6px;
   }
 

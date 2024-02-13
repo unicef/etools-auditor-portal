@@ -124,7 +124,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         .editable-row {
           margin-top: 0;
           margin-bottom: 0;
-          padding: 12px 0;
+          padding: 4px 0;
         }
         .editable-row etools-icon-button {
           --iron-icon-fill-color: var(--gray-mid);
@@ -147,6 +147,9 @@ export class EngagementStaffMembersTab extends connect(store)(
           align-items: center;
           justify-content: flex-end;
           column-gap: 30px;
+        }
+        sl-switch {
+          --sl-input-label-color: #ffffff;
         }
       </style>
 
