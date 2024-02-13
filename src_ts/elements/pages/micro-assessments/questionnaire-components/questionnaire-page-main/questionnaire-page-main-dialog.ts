@@ -15,6 +15,7 @@ import {GenericObject} from '../../../../../types/global';
 import '../risk-tab/risk-tab';
 import '../../../../common-elements/insert-html/insert-html';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import { unsafeHTML } from 'lit/directives/unsafe-html';
 
 /**
  * @LitEelement
@@ -45,7 +46,7 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
           <div class="layout-horizontal">
             <div class="form-title">
               <div class="text" id="questionHeader">
-                ${html`${this.editedItem?.header}`}
+                ${unsafeHTML(this.editedItem?.header)}
               </div>
             </div>
           </div>
