@@ -64,7 +64,7 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
                   option-label="display_name"
                   option-value="value"
                   ?disabled="${this.requestInProcess}"
-                  errorMessage="This field is required"
+                  error-message="This field is required"
                   @focus="${this._resetFieldError}"
                   required
                   trigger-value-change-event

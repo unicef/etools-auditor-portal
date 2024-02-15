@@ -59,6 +59,9 @@ export class KicwRisk extends LitElement {
         .truncate {
           white-space: nowrap;
         }
+        .editable-row {
+          align-items: flex-start !important;
+        }
       </style>
 
       <etools-data-table-header no-collapse no-title>
@@ -75,9 +78,9 @@ export class KicwRisk extends LitElement {
             <div slot="row-data" class="layout-horizontal editable-row">
               <span class="col-data col-1">${getTableRowIndexText(index)}</span>
               <span class="col-data col-2">${item.value_display}</span>
-              <span class="col-data col-3 truncate">${item.extra.key_control_observation}</span>
-              <span class="col-data col-3 truncate">${item.extra.recommendation}</span>
-              <span class="col-data col-3 truncate">${item.extra.ip_response}</span>
+              <span class="col-data col-3">${item.extra.key_control_observation}</span>
+              <span class="col-data col-3">${item.extra.recommendation}</span>
+              <span class="col-data col-3">${item.extra.ip_response}</span>
               <div class="hover-block" ?hidden="${!this.isEditable}">
                 <etools-icon-button name="create" @click="${() => this.editRisk(index)}"></etools-icon-button>
                 <etools-icon-button name="delete" @click="${() => this.removeRisk(index)}"></etools-icon-button>
