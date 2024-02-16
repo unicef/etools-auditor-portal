@@ -27,7 +27,6 @@ import isObject from 'lodash-es/isObject';
 import isNil from 'lodash-es/isNil';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
-import {getBodyDialog} from '../../../../utils/utils';
 
 /**
  * @customElement
