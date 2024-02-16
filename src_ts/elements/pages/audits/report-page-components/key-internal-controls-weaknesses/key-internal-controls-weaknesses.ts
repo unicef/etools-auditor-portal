@@ -319,10 +319,6 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   }
 
   getKeyInternalWeaknessData() {
-    if (!getBodyDialog(this.dialogKey)) {
-      return null;
-    }
-
     const blueprint = cloneDeep(this.editedBlueprint) as any;
 
     if (blueprint.risks[0] && isObject(blueprint.risks[0].value)) {
