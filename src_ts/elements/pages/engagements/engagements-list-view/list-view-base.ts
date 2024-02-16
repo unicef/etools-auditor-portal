@@ -380,6 +380,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   }
 
   filtersChange(e: CustomEvent) {
+    this.filtersInitialized = !!this.filters?.length;
     if (this.filtersInitialized) {
       this.updateCurrentParams({...e.detail, page: 1}, true);
     }
