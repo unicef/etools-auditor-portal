@@ -6,12 +6,16 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
 import {ListViewBase} from './list-view-base';
 import {connect} from 'pwa-helpers/connect-mixin';
+import {property} from 'lit/decorators.js';
 
 /**
  * @customElement
  */
 @customElement('staff-sc-list-view')
 export class EngagementsListView extends connect(store)(ListViewBase) {
+  @property({type: String})
+  prevQueryObjKey = 'staffPrevQueryObjKey';
+
   connectedCallback() {
     /**
      * Disable loading message for main list elements load,
@@ -22,7 +26,9 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
       loadingSource: 'engagements-list'
     });
     this.isStaffSc = true;
-    this.prevQueryStringObj = {ordering: 'reference_number', page_size: 25, page: 1};
+    if (!this.prevQueryStringObj) {
+      this.prevQueryStringObj = {ordering: 'reference_number', page_size: 10, page: 1};
+    }
     this.addBtnText = 'Add New Staff Spot Checks';
     super.connectedCallback();
   }

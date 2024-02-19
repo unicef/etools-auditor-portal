@@ -35,6 +35,7 @@ import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {updateFiltersSelectedValues} from '@unicef-polymer/etools-unicef/src/etools-filters/filters';
 import omit from 'lodash-es/omit';
+import {getDataFromSessionStorage, setDataOnSessionStorage} from '../../../utils/utils';
 
 /**
  * @customElement
@@ -194,8 +195,16 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   @property({type: String})
   endpointName = '';
 
-  @property({type: Object})
-  prevQueryStringObj!: GenericObject;
+  @property({type: String})
+  prevQueryObjKey!: string;
+
+  set prevQueryStringObj(val: GenericObject) {
+    setDataOnSessionStorage(this.prevQueryObjKey, val);
+  }
+
+  get prevQueryStringObj() {
+    return getDataFromSessionStorage(this.prevQueryObjKey);
+  }
 
   private routeDetails!: RouteDetails | null;
 
@@ -234,8 +243,9 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
     if (reset) {
       currentParams = pick(currentParams, ['ordering', 'page_size', 'page']);
     }
-    this.prevQueryStringObj = cloneDeep({...currentParams, ...paramsToUpdate});
-    const stringParams: string = buildUrlQueryString(this.prevQueryStringObj);
+    const newQueryObj = cloneDeep({...currentParams, ...paramsToUpdate});
+    this.prevQueryStringObj = newQueryObj;
+    const stringParams: string = buildUrlQueryString(newQueryObj);
     EtoolsRouter.replaceAppLocation(`${this.isStaffSc ? 'staff-sc' : 'engagements'}/list?${stringParams}`);
   }
 

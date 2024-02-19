@@ -87,3 +87,19 @@ export const getBodyDialog = (dialogKey: string) => {
 export const getObjectsIDs = (data: AnyObject[]) => {
   return (data || []).map((item: any) => item.id);
 };
+
+export const setDataOnSessionStorage = (key: string, data: any): void => {
+  sessionStorage.setItem(key, JSON.stringify(data));
+};
+
+export const getDataFromSessionStorage = (key: string): any => {
+  const data = sessionStorage.getItem(key);
+  if (data) {
+    try {
+      return JSON.parse(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return null;
+};
