@@ -147,6 +147,7 @@ export class EngagementStaffMembersTab extends connect(store)(
           align-items: center;
           justify-content: flex-end;
           column-gap: 30px;
+          line-height: 48px;
         }
         sl-switch {
           --sl-input-label-color: #ffffff;
