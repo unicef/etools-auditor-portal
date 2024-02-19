@@ -73,4 +73,3 @@ workflows:
                 - staging
                 - develop
                 - migrate-to-lit
-                - shoelace-migration
