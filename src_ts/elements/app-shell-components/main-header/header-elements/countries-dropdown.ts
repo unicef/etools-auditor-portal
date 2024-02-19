@@ -57,7 +57,9 @@ export class CountriesDropdown extends LitElement {
         @etools-selected-item-changed="${this._countrySelected}"
         .shownOptionsLimit="${250}"
         hide-search
-        auto-width
+        min-width="160px"
+        placement="bottom-end"
+        .syncWidth="${false}"
       ></etools-dropdown>
     `;
   }

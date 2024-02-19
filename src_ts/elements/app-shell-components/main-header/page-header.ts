@@ -32,14 +32,11 @@ export class PageHeader extends MatomoMixin(LitElement) {
       ${HeaderStyles}
       <style>
         app-toolbar {
-          padding-inline-end: 16px;
-          padding-inline-start: 0px;
-          height: 60px;
+          padding: 0px;
           background-color: ${this.headerColor};
-        }
-
-        .titlebar {
-          color: var(--header-color);
+          flex-wrap: wrap;
+          height: 100%;
+          justify-content: space-between;
         }
 
         countries-dropdown {
@@ -60,18 +57,6 @@ export class PageHeader extends MatomoMixin(LitElement) {
           color: var(--light-secondary-text-color);
         }
 
-        .titlebar {
-          flex: 1;
-          font-size: var(--etools-font-size-28, 28px);
-          font-weight: 300;
-        }
-
-        .titlebar img {
-          width: 34px;
-          margin-inline-end: 8px;
-          margin-inline-start: 12px;
-        }
-
         .content-align {
           display: flex;
           flex-direction: row;
@@ -81,12 +66,13 @@ export class PageHeader extends MatomoMixin(LitElement) {
         #app-logo {
           height: 32px;
           width: auto;
+          padding: 0px 10px 0px 20px;
         }
 
         .dropdowns {
-          padding-top: 3px;
+          padding-block-start: 6px;
           display: flex;
-          margin-inline-end: 5px;
+          margin-inline-end: 20px;
         }
 
         .header {
@@ -109,10 +95,13 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
 
         .envWarning {
-          color: var(--nonprod-text-warn-color);
+          color: #000;
+          background-color: #ffffff;
           font-weight: 700;
-          font-size: var(--etools-font-size-18, 18px);
-          line-height: 20px;
+          padding: 5px 10px;
+          font-size: var(--etools-font-size-14, 14px);
+          line-height: 1;
+          border-radius: 10px;
         }
 
         etools-profile-dropdown {
@@ -134,10 +123,6 @@ export class PageHeader extends MatomoMixin(LitElement) {
             font-size: var(--etools-font-size-14, 14px);
             line-height: 16px;
           }
-          .titlebar img {
-            margin-inline-end: 8px;
-            margin-inline-start: 12px;
-          }
         }
         @media (max-width: 768px) {
           #app-logo {
@@ -148,12 +133,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           }
           etools-app-selector {
             width: 42px;
-          }
-          .titlebar img {
-            margin-inline-end: 8px;
-            margin-inline-start: 12px;
-          }
-
+          }     
           etools-profile-dropdown {
             margin-inline-start: 0px;
             width: 40px;
@@ -174,18 +154,15 @@ export class PageHeader extends MatomoMixin(LitElement) {
             width: 24px;
             padding: 0px;
           }
-          app-toolbar {
-            padding-inline-end: 4px;
-          }
         }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
-        <div class="titlebar layout-horizontal align-items-center">
+      <app-toolbar id="toolbar" sticky class="content-align">
+        <div class="layout-horizontal align-items-center">
           <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
           <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" alt="Etools" />
-          <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
+          <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">${this.environment}</div>
         </div>
         <div class="layout-horizontal align-items-center">
           <div class="dropdowns">

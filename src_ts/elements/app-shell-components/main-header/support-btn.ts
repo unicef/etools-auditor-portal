@@ -37,12 +37,10 @@ export class SupportBtn extends MatomoMixin(LitElement) {
   render() {
     return html`
       <a
-        href="https://unicef.service-now.com/cc?id=sc_cat_item&sys_id=c8e43760db622450f65a2aea4b9619ad&sysparm_category=99c51053db0a6f40f65a2aea4b9619af"
-        target="_blank"
-      >
-        <!--    the etools-button fixes the cursor pointer issue when hovering over the icon label    -->
-        <etools-icon name="communication:textsms"></etools-icon>
-        <span class="support-text">Support</span>
+          href="https://unicef.service-now.com/cc?id=sc_cat_item&sys_id=c8e43760db622450f65a2aea4b9619ad&sysparm_category=99c51053db0a6f40f65a2aea4b9619af"
+          target="_blank"
+        >
+          <etools-icon name="communication:textsms"></etools-icon>
       </a>
     `;
   }

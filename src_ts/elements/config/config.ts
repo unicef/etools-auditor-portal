@@ -32,6 +32,7 @@ const PROD_DOMAIN = 'etools.unicef.org';
 const STAGING_DOMAIN = 'etools-staging';
 const DEV_DOMAIN = 'etools-dev';
 const DEMO_DOMAIN = 'etools-demo';
+const TESTING_DOMAIN = 'etools-test';
 const LOCAL_DOMAIN = 'localhost';
 export const SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY = 'etoolsAppSmallMenuIsActive';
 
@@ -46,13 +47,16 @@ export const isProductionServer = () => {
 export const checkEnvironment = () => {
   const location = window.location.href;
   if (location.indexOf(STAGING_DOMAIN) > -1) {
-    return 'STAGING';
+    return 'STAGE';
   }
   if (location.indexOf(DEMO_DOMAIN) > -1) {
     return 'DEMO';
-  }
+  }  
   if (location.indexOf(DEV_DOMAIN) > -1) {
-    return 'DEVELOPMENT';
+    return 'DEV';
+  }
+  if (location.indexOf(TESTING_DOMAIN) > -1) {
+    return 'TEST';
   }
   if (location.indexOf(LOCAL_DOMAIN) > -1) {
     return 'LOCAL';
