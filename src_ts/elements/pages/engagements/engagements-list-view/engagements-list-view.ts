@@ -1,4 +1,4 @@
-import {customElement} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 import {EtoolsFilter} from '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 import {EngagementFilterKeys, getEngagementFilters, EngagementsFiltersHelper} from '../engagement-filters';
@@ -12,6 +12,9 @@ import {ListViewBase} from './list-view-base';
  */
 @customElement('engagements-list-view')
 export class EngagementsListView extends connect(store)(ListViewBase) {
+  @property({type: String})
+  prevQueryObjKey = 'engPrevQueryObjKey';
+
   connectedCallback() {
     /**
      * Disable loading message for main list elements load,
@@ -22,7 +25,9 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
       loadingSource: 'engagements-list'
     });
     this.isStaffSc = false;
-    this.prevQueryStringObj = {ordering: 'reference_number', page_size: 25, page: 1};
+    if (!this.prevQueryStringObj) {
+      this.prevQueryStringObj = {ordering: 'reference_number', page_size: 10, page: 1};
+    }
     super.connectedCallback();
   }
 
