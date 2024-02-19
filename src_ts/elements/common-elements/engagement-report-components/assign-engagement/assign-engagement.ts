@@ -1,12 +1,11 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-
-import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 import isEmpty from 'lodash-es/isEmpty';
 import pickBy from 'lodash-es/pickBy';
-declare const dayjs: any;
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -25,6 +24,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import cloneDeep from 'lodash-es/cloneDeep';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import dayjs from 'dayjs';
 
 /**
  * @LitElement
@@ -60,9 +60,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .errorMessage="${this.errors?.date_of_field_visit}"
               @focus="${this._resetFieldError}"
               selected-date-display-format="D MMM YYYY"
-              .date="${this.prepareDate(this.data.date_of_field_visit)}"
               fire-date-has-changed
-              property-name="date_of_field_visit"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_field_visit', e.detail.date);
               }}"
@@ -91,7 +89,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               selected-date-display-format="D MMM YYYY"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_draft_report_to_ip"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_draft_report_to_ip', e.detail.date);
               }}"
@@ -121,7 +118,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .minDate="${this.minDate(this.data?.date_of_draft_report_to_ip)}"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_comments_by_ip"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_comments_by_ip', e.detail.date);
               }}"
@@ -153,7 +149,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .minDate="${this.minDate(this.data.date_of_comments_by_ip)}"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_draft_report_to_unicef"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_draft_report_to_unicef', e.detail.date);
               }}"
@@ -183,7 +178,6 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
               .minDate="${this.minDate(this.data.date_of_draft_report_to_unicef)}"
               .maxDate="${this.maxDate}"
               fire-date-has-changed
-              property-name="date_of_comments_by_unicef"
               @date-has-changed="${(e: CustomEvent) => {
                 this.onDataChanged('date_of_comments_by_unicef', e.detail.date);
               }}"
@@ -277,6 +271,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     if (this.data[field] !== value) {
       this.data[field] = value;
       this.checkDateValues();
+      this.data = cloneDeep(this.data);
       store.dispatch(updateCurrentEngagement(this.data));
     }
   }

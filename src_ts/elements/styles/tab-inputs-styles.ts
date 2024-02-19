@@ -1,11 +1,11 @@
-import {css} from 'lit-element';
+import {css} from 'lit';
 
 export const tabInputsStyles = css`
   *[hidden] {
     display: none !important;
   }
 
-  paper-icon-button[hidden] {
+  etools-icon-button[hidden] {
     display: inline-block !important;
     visibility: hidden;
   }
@@ -78,95 +78,7 @@ export const tabInputsStyles = css`
 
   .static-text {
     padding: 8px 12px;
-    font-size: 14px;
-  }
-
-  etools-dialog paper-textarea {
-    --paper-input-container-input: {
-      display: block;
-    }
-    --iron-autogrow-textarea: {
-      overflow: auto;
-      padding: 0;
-      max-height: 96px;
-    }
-  }
-
-  etools-dropdown,
-  etools-dropdown-multi,
-  paper-input,
-  paper-textarea,
-  paper-dropdown-menu,
-  datepicker-lite,
-  etools-currency-amount-input {
-    box-sizing: border-box;
-    padding: 0 12px;
-    outline: none !important;
-
-    --paper-input-container-input-color: var(--gray-dark, rgba(0, 0, 0, 0.87));
-
-    --paper-input-container-underline: {
-      border-bottom: 1px solid var(--gray-mid, rgba(0, 0, 0, 0.54));
-    }
-
-    --paper-input-container-input: {
-      font-size: 15px;
-      box-sizing: border-box;
-    }
-
-    --paper-input-container-label: {
-      color: var(--gray-50);
-    }
-    --paper-input-container-label-floating: {
-      color: var(--gray-50);
-    }
-    --paper-input-container-invalid-color: var(--module-error);
-
-    --paper-input-container-disabled: {
-      color: var(--gray-light);
-      opacity: 1;
-    }
-    --paper-input-char-counter: {
-      color: var(--gray-light);
-    }
-
-    --paper-input-prefix: {
-      margin-right: 10px;
-      color: var(--gray-mid);
-    }
-
-    --paper-input-error: {
-      overflow: hidden;
-    }
-
-    --etools-currency-container-label-floating: {
-      -webkit-transform: none;
-      -moz-transform: none;
-      -ms-transform: none;
-      -o-transform: none;
-      transform: none;
-      top: -21px;
-      width: 100%;
-      font-size: 12px;
-    }
-  }
-
-  paper-textarea {
-    --paper-input-container-input: {
-      white-space: normal;
-      display: block !important;
-    }
-
-    --iron-autogrow-textarea: {
-      overflow: hidden;
-      padding: 0;
-    }
-  }
-
-  etools-currency-amount-input {
-    --etools-currency-container-label: {
-      color: var(--gray-50);
-    }
+    font-size: var(--etools-font-size-14, 14px);
   }
 
   :host > * {
@@ -177,30 +89,6 @@ export const tabInputsStyles = css`
       right: auto;
       padding-right: 15px;
       color: var(--gray-50);
-    }
-  }
-
-  paper-input[required]:not([disabled]),
-  paper-input.required:not([disabled]),
-  paper-input-container[required]:not([disabled]),
-  paper-input-container.required:not([disabled]),
-  datepicker-lite[required]:not([disabled]),
-  etools-dropdown[required]:not([disabled]),
-  etools-dropdown-multi[required]:not([disabled]),
-  etools-upload[required]:not([disabled]),
-  etools-currency-amount-input[required]:not([disabled]),
-  paper-textarea[required]:not([disabled]) {
-    --paper-input-container-label: {
-      @apply --required-star-style;
-    }
-    --paper-input-container-label-floating: {
-      @apply --required-star-style;
-    }
-  }
-
-  paper-input.deleted {
-    --paper-input-container-input: {
-      color: #b0b0b0;
     }
   }
 
@@ -338,10 +226,10 @@ export const tabInputsStyles = css`
     background-color: var(--gray-light);
     text-align: center;
     color: #ffffff;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
   }
 
-  etools-currency-amount-input {
+  etools-currency {
     padding: 0 12px;
     box-sizing: border-box;
   }
@@ -350,61 +238,24 @@ export const tabInputsStyles = css`
     padding-left: 0;
   }
   etools-content-panel:not([list])::part(ecp-content) {
-    padding: 8px 12px;
+    padding: 16px 12px;
     padding-left: 12px;
   }
 
-  etools-currency-amount-input {
-    --etools-currency-container-input: {
-      line-height: 0;
-    }
-  }
-
-  etools-dropdown-multi[disabled],
-  etools-currency-amount-input[disabled],
-  etools-dropdown[disabled],
-  paper-textarea[disabled],
-  paper-dropdown-menu[disabled],
-  paper-input[disabled],
-  datepicker-lite[disabled] {
-    --paper-input-container: {
-      opacity: 1 !important;
-    }
-    --paper-input-container-underline: {
-      border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
-      display: block !important;
-    }
-    --paper-input-container-underline-disabled: {
-      border-bottom: 1px dashed var(--gray-20, rgba(0, 0, 0, 0.2));
-      display: block !important;
-    }
-    --paper-input-container-underline-focus: {
-      display: none;
-    }
-  }
-
-  etools-dropdown-multi[readonly],
-  etools-currency-amount-input[readonly],
-  etools-dropdown[readonly],
-  paper-textarea[readonly],
-  paper-dropdown-menu[readonly],
-  paper-input[readonly],
-  datepicker-lite[readonly] {
-    --paper-input-container: {
-      opacity: 1 !important;
-    }
-    --paper-input-container-underline: {
-      border-bottom: none !important;
-      display: none !important;
-    }
-    --paper-input-container-underline-focus: {
-      display: none;
-    }
+  etools-dropdown,
+  etools-dropdown-multi,
+  etools-input,
+  etools-textarea,
+  datepicker-lite,
+  etools-currency {
+    box-sizing: border-box;
+    padding: 0 12px;
+    outline: none !important;
   }
 
   .paper-label {
-    font-size: 12px;
-    color: var(--secondary-text-color);
+    color: var(--sl-input-label-color);
+    font-size: var(--etools-font-size-12, 12px);
     padding-top: 6px;
   }
 
@@ -413,7 +264,7 @@ export const tabInputsStyles = css`
     padding-top: 4px;
     padding-bottom: 6px;
     min-width: 0;
-    font-size: 16px;
+    font-size: var(--etools-font-size-16, 16px);
     display: flex;
     flex-wrap: wrap;
   }
@@ -430,7 +281,7 @@ export const tabInputsStyles = css`
   .editable-row:hover .hover-block {
     background-color: transparent;
   }
-  .editable-row .hover-block paper-icon-button {
+  .editable-row .hover-block etools-icon-button {
     --iron-icon-fill-color: var(--gray-mid);
   }
   .editable-row {

@@ -1,7 +1,8 @@
-import {LitElement} from 'lit-element';
+import {LitElement} from 'lit';
 import {Constructor} from '@unicef-polymer/etools-types';
-
-declare const dayjs: any;
+import dayjs from 'dayjs';
+import dayJsUtc from 'dayjs/plugin/utc.js';
+dayjs.extend(dayJsUtc);
 /**
  * @polymer
  * @mixinFunction

@@ -1,4 +1,4 @@
-import {css} from 'lit-element';
+import {css} from 'lit';
 
 export const mainPageStyles = css`
   :host {
@@ -6,16 +6,6 @@ export const mainPageStyles = css`
     display: block;
 
     --ecp-header-bg: var(--primary-color);
-  }
-
-  paper-tabs {
-    --paper-tab-content-unselected: {
-      color: var(--gray-mid);
-    }
-  }
-
-  paper-tab.iron-selected {
-    color: var(--primary-color);
   }
 
   .view-container {
@@ -43,12 +33,12 @@ export const mainPageStyles = css`
     box-shadow: 1px -3px 9px 0 #000000;
   }
 
-  .tab-selector paper-tabs {
-    font-size: 14px;
+  .tab-selector etools-tabs-lit {
+    font-size: var(--etools-font-size-14, 14px);
     font-weight: bold;
   }
 
-  .tab-selector paper-tabs span {
+  .tab-selector etools-tabs-lit span {
     text-transform: uppercase;
   }
 
@@ -77,7 +67,7 @@ export const mainPageStyles = css`
     line-height: 48px;
     background-color: var(--gray-08);
     color: var(--gray-28);
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
     font-weight: 600;
   }
 
@@ -93,7 +83,7 @@ export const mainPageStyles = css`
 
   etools-content-panel.cancellation-tab .cancellation-title {
     font-weight: 500;
-    font-size: 19px;
+    font-size: var(--etools-font-size-19, 19px);
     text-transform: uppercase;
     color: var(--module-warning);
     margin: 15px 0 26px;
@@ -101,7 +91,7 @@ export const mainPageStyles = css`
   }
 
   etools-content-panel.cancellation-tab .cancellation-text {
-    font-size: 17px;
+    font-size: var(--etools-font-size-17, 17px);
     white-space: pre-wrap;
     color: var(--gray-darkest);
     padding-left: 80px;
@@ -121,15 +111,8 @@ export const mainPageStyles = css`
     opacity: 1;
   }
 
-  div[slot='panel-btns'].bookmark iron-icon {
+  div[slot='panel-btns'].bookmark etools-icon {
     width: 70px !important;
     height: 70px !important;
-  }
-
-  paper-tab {
-    margin-right: 10px;
-    --paper-tab-content: {
-      width: auto;
-    }
   }
 `;

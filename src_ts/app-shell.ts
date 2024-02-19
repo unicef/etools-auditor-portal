@@ -1,24 +1,20 @@
-import '@webcomponents/shadycss/entrypoints/apply-shim.js';
-import {LitElement, html, property} from 'lit-element';
-import {setPassiveTouchGestures} from '@polymer/polymer/lib/utils/settings.js';
+import {LitElement, html} from 'lit';
+import {property} from 'lit/decorators.js';
 
-import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
-import '@polymer/app-layout/app-drawer/app-drawer.js';
-import '@polymer/app-layout/app-header-layout/app-header-layout.js';
-import '@polymer/app-layout/app-header/app-header.js';
-import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer-layout';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header-layout';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
 import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
-import {createDynamicDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
-import '@polymer/iron-pages/iron-pages';
+import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import get from 'lodash-es/get';
-import LoadingMixin from '@unicef-polymer/etools-loading/etools-loading-mixin';
+import {LoadingMixin} from '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading-mixin';
 
 import './elements/app-shell-components/sidebar-menu/app-menu.js';
 import './elements/app-shell-components/main-header/page-header.js';
 import './elements/app-shell-components/footer/page-footer.js';
 
-import './elements/styles/app-theme.js';
 import {
   getPartners,
   getUsers,
@@ -34,17 +30,18 @@ import {
 } from './redux/actions/common-data';
 import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer.js';
+import {AppDrawer} from '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
 import {BASE_PATH} from './elements/config/config';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import '@unicef-polymer/etools-toasts/src/etools-toasts';
+import '@unicef-polymer/etools-unicef/src/etools-toasts/etools-toasts';
 import './elements/utils/routes.js';
 import {store, RootState} from './redux/store';
 import {handleUrlChange} from './redux/actions/app.js';
 import {setStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {connect} from 'pwa-helpers/connect-mixin.js';
+import {installMediaQueryWatcher} from 'pwa-helpers/media-query.js';
 import {installRouter} from 'pwa-helpers/router';
 import {getCurrentUser} from './elements/data-elements/user-data.js';
 import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types.js';
@@ -57,6 +54,9 @@ import {RouteDetails} from '@unicef-polymer/etools-types';
 import {addAllowedActions} from './elements/mixins/permission-controller.js';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util.js';
 import cloneDeep from 'lodash-es/cloneDeep.js';
+import {setBasePath} from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+import {initializeIcons} from '@unicef-polymer/etools-unicef/src/etools-icons/etools-icons';
+
 setStore(store as any);
 store.addReducers({
   user,
@@ -64,11 +64,10 @@ store.addReducers({
   engagement
 });
 
-declare const dayjs: any;
-declare const dayjs_plugin_utc: any;
-dayjs.extend(dayjs_plugin_utc);
 window.EtoolsLanguage = 'en';
 
+setBasePath(BASE_PATH);
+initializeIcons();
 /**
  * @customElement
  * @LitElement
@@ -93,7 +92,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
 
       <app-drawer-layout
         id="layout"
-        responsive-width="1200px"
+        responsive-width="850px"
         fullbleed
         .narrow="${this.narrow}"
         ?small-menu="${this.smallMenu}"
@@ -103,7 +102,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
           id="drawer"
           slot="drawer"
           transition-duration="350"
-          @click="${this.onDrawerClick}"
+          @app-drawer-transitioned="${this.onDrawerToggle}"
+          ?opened="${this.drawerOpened}"
           ?swipe-open="${this.narrow}"
           ?small-menu="${this.smallMenu}"
         >
@@ -112,45 +112,37 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
             ?small-menu="${this.smallMenu}"
             ?showSscPage="${this.showSscPage}"
           ></app-menu>
-          <iron-overlay-backdrop id="drawerOverlay"></iron-overlay-backdrop>
         </app-drawer>
 
         <!-- Main content -->
         <app-header-layout id="appHeadLayout" fullbleed has-scrolling-region>
-          <iron-overlay-backdrop id="appHeaderOverlay"></iron-overlay-backdrop>
           <app-header slot="header" fixed shadow>
             <page-header id="pageheader" .user="${this.user}"></page-header>
           </app-header>
 
           <main role="main" class="main-content">
-              <engagements-page-main name="engagements" id="engagements"
-                ?hidden="${!this.isActivePage(this.page, 'engagements')}">
-              </engagements-page-main>
-
-              <staff-sc-page-main name="staff-sc" id="staff-sc"
-                ?hidden="${!this.isActivePage(this.page, 'staff-sc')}">
-              </staff-sc-page-main>
-
-              <audits-page-main name="audits" id="audits"
-                 ?hidden="${!this.isActivePage(this.page, 'audits')}">
-              </audits-page-main>
-
-              <special-audits-page-main name="special-audits" id="special-audits"
-                 ?hidden="${!this.isActivePage(this.page, 'special-audits')}">
-              </special-audits-page-main>
-
-              <micro-assessments-page-main name="micro-assessments" id="micro-assessments"
-                ?hidden="${!this.isActivePage(this.page, 'micro-assessments')}">
-              </micro-assessments-page-main>
-
-              <spot-checks-page-main name="spot-checks" id="spot-checks"
-                 ?hidden="${!this.isActivePage(this.page, 'spot-checks|staff-spot-checks')}">
-              </spot-checks-page-main>
-
-              <not-found-page-view name="not-found" id="not-found"
-               ?hidden="${!this.isActivePage(this.page, 'not-found')}">
-              </not-found-page-view>
-            </iron-pages>
+            ${this.isActivePage(this.page, 'engagements')
+              ? html`<engagements-page-main name="engagements" id="engagements"> </engagements-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'staff-sc')
+              ? html` <staff-sc-page-main name="staff-sc" id="staff-sc"> </staff-sc-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'audits')
+              ? html`<audits-page-main name="audits" id="audits"> </audits-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'special-audits')
+              ? html` <special-audits-page-main name="special-audits" id="special-audits"> </special-audits-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'micro-assessments')
+              ? html` <micro-assessments-page-main name="micro-assessments" id="micro-assessments">
+                </micro-assessments-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'spot-checks|staff-spot-checks')
+              ? html` <spot-checks-page-main name="spot-checks" id="spot-checks"> </spot-checks-page-main>`
+              : html``}
+            ${this.isActivePage(this.page, 'not-found')
+              ? html`<not-found-page-view name="not-found" id="not-found"> </not-found-page-view>`
+              : html``}
           </main>
           <page-footer></page-footer>
         </app-header-layout>
@@ -185,15 +177,10 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   @property({type: Object})
   reduxRouteDetails?: RouteDetails;
 
-  constructor() {
-    super();
-    // Gesture events like tap and track generated from touch will not be
-    // preventable, allowing for better scrolling performance.
-    setPassiveTouchGestures(true);
-  }
-
   public connectedCallback() {
     super.connectedCallback();
+
+    installMediaQueryWatcher(`(min-width: 460px)`, () => fireEvent(this, 'change-drawer-state'));
 
     this.checkAppVersion();
     setTimeout(() => {
@@ -204,9 +191,8 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, loadingSource: 'initialisation'});
 
     this.addEventListener('404', this._pageNotFound);
+    this.addEventListener('change-drawer-state', this.changeDrawerState);
 
-    this.addEventListener('iron-overlay-opened', this._dialogOpening);
-    this.addEventListener('iron-overlay-closed', this._dialogClosing);
     installRouter((location) =>
       store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
     );
@@ -214,13 +200,18 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     this.loadinitialData();
   }
 
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('change-drawer-state', this.changeDrawerState);
+  }
+
   loadinitialData() {
     getCurrentUser().then((user?: EtoolsUser) => {
       if (user) {
         // @ts-ignore
         Promise.allSettled([
-          getPartners(),
-          getUsers(),
+          user.is_unicef_user ? getPartners() : [],
+          user.is_unicef_user ? getUsers() : [],
           getSections(),
           getOffices(),
           getStaffUsers(),
@@ -304,60 +295,13 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     return appHeadLayout.shadowRoot.querySelector('#contentContainer');
   }
 
-  _dialogOpening(event) {
-    const dialogOverlay = document.querySelector('iron-overlay-backdrop.opened');
-    if (!dialogOverlay) {
-      return;
-    }
-
-    dialogOverlay.classList.remove('opened');
-
-    const zIndex = (dialogOverlay as any).style.zIndex;
-    const targetShadowRoot = event.target.shadowRoot;
-    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
-    const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
-    const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
-
-    drawerOverlay.style.zIndex = zIndex;
-    appHeaderOverlay.style.zIndex = zIndex;
-    toolBarOverlay.style.zIndex = zIndex;
-
-    drawerOverlay.classList.add('opened');
-    appHeaderOverlay.classList.add('opened');
-    toolBarOverlay.classList.add('opened');
-  }
-  _dialogClosing(event) {
-    // chrome
-    const paths = event.composedPath() || [];
-    if (paths.length && paths[0].tagName.toLowerCase().indexOf('dropdown') > -1) {
-      return;
-    }
-    // edge
-    if (event.__target && event.__target.is && event.__target.is.toLowerCase().indexOf('dropdown') > -1) {
-      return;
-    }
-
-    const targetShadowRoot = event.target.shadowRoot;
-    const appHeaderOverlay = targetShadowRoot.querySelector('#appHeaderOverlay');
-    const toolBarOverlay = targetShadowRoot.querySelector('#pageheader').shadowRoot.querySelector('#toolBarOverlay');
-    const drawerOverlay = targetShadowRoot.querySelector('#drawerOverlay');
-
-    drawerOverlay.style.zIndex = '';
-    appHeaderOverlay.style.zIndex = '';
-    toolBarOverlay.style.zIndex = '';
-
-    drawerOverlay.classList.remove('opened');
-    appHeaderOverlay.classList.remove('opened');
-    toolBarOverlay.classList.remove('opened');
-  }
-
   allowPageChange() {
     const urlSpaceRegex = new RegExp(`^${BASE_PATH}`);
     return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 
   onDrawerClick(e) {
-    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawerElement;
+    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawer;
     if (e.target === appDrawer && appDrawer.opened) {
       appDrawer.close();
     }
@@ -372,10 +316,14 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   }
 
   _pageNotFound(event?) {
-    this.page = 'not-found';
     const message = event && event.detail && event.detail.message ? `${event.detail.message}` : 'Oops you hit a 404!';
-
     fireEvent(this, 'toast', {text: message});
+    this.goToPageNotFound();
+  }
+
+  goToPageNotFound() {
+    history.pushState(window.history.state, '', 'not-found');
+    window.dispatchEvent(new CustomEvent('popstate'));
   }
 
   checkAppVersion() {

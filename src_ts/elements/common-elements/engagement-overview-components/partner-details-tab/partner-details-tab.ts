@@ -1,16 +1,14 @@
-import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
-
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input-container.js';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
-import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 
 import findIndex from 'lodash-es/findIndex';
 import get from 'lodash-es/get';
@@ -54,9 +52,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
         .partner-loading:not([active]) {
           display: none !important;
         }
-        etools-dropdown,
-        etools-dropdown-multi {
-          --esmm-dropdown-menu-position: absolute;
+        .input-container {
+          display: flex;
         }
       </style>
 
@@ -67,11 +64,11 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
           <div class="input-container">
             <!-- Partner -->
             ${this.isReadOnly('partner', this.optionsData)
-              ? html`<paper-input
+              ? html`<etools-input
                   label="${this.getLabel('partner', this.optionsData)}"
                   .value="${this.partner?.name}"
                   readonly
-                ></paper-input>`
+                ></etools-input>`
               : html`<etools-dropdown
                   id="partner"
                   class="${this._setRequired('partner', this.optionsData)} ${this._setReadonlyClass(
@@ -99,40 +96,40 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
           </div>
           <div class="input-container input-container-m">
             <!-- Partner Address -->
-            <paper-input
+            <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this._setPartnerAddress(this.partner)}"
               label="Partner Address"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
         </div>
 
         <div class="row-h group">
           <div class="input-container">
             <!-- Partner Phone Number -->
-            <paper-input
+            <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this.partner?.phone_number}"
               label="${this.getLabel('partner.phone_number', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container">
             <!-- Partner E-mail Address -->
-            <paper-input
+            <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
               .value="${this.partner?.email}"
               label="${this.getLabel('partner.email', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container">
@@ -156,7 +153,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
               dynamic-align
               @etools-selected-item-changed="${(event: CustomEvent) => {
                 if (this.authorizedOfficer) {
-                  this.authorizedOfficer.id = event.detail.selectedItem?.id;
+                  this.authorizedOfficer = event.detail.selectedItem;
                 }
               }}"
               trigger-value-change-event
@@ -315,7 +312,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
 
   validateActivePd() {
     // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
-    const activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
+    const activePdInput = this.shadowRoot?.querySelector('#activePd') as EtoolsDropdownMultiEl;
     const partnerType = this.engagement.partner?.partner_type;
     const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
 
@@ -329,7 +326,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   }
 
   validatePartner() {
-    const partnerEl = this.shadowRoot!.querySelector('#partner') as EtoolsDropdownEl;
+    const partnerEl = this.shadowRoot?.querySelector('#partner') as EtoolsDropdownEl;
     if (!partnerEl || !partnerEl.required) {
       if (partnerEl) {
         partnerEl.invalid = false;

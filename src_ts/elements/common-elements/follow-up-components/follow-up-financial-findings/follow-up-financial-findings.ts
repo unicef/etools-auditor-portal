@@ -1,12 +1,12 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/paper-input/paper-textarea.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import pickBy from 'lodash-es/pickBy';
 import each from 'lodash-es/each';
 
@@ -41,12 +41,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           margin-bottom: 24px;
           display: block;
         }
-        paper-input {
-          --paper-input-prefix: {
-            margin-right: 5px;
-            color: var(--gray-mid);
-          }
-        }
       </style>
 
       <etools-content-panel panel-title="Financial Findings">
@@ -74,25 +68,25 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           ${this.showFields(this.engagement.engagement_type, 'audit')
             ? html`<div class="col col-4">
                   <!-- Audited expenditure (USD)-->
-                  <etools-currency-amount-input
+                  <etools-currency
                     .value="${this.engagement.audited_expenditure}"
                     currency="$"
                     label="${this.getLabel('audited_expenditure', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
-                  </etools-currency-amount-input>
+                  </etools-currency>
                 </div>
                 <div class="col col-4">
                   <!-- Financial Findings (USD)-->
-                  <etools-currency-amount-input
+                  <etools-currency
                     .value="${this.engagement.financial_findings}"
                     currency="$"
                     label="${this.getLabel('financial_findings', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
-                  </etools-currency-amount-input>
+                  </etools-currency>
                 </div>`
             : ``}
 
@@ -100,33 +94,33 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           ${this.showFields(this.engagement.engagement_type, 'sc')
             ? html`<div class="col col-4">
                   <!-- Total amount tested-->
-                  <etools-currency-amount-input
+                  <etools-currency
                     .value="${this.engagement.total_amount_tested}"
                     currency="$"
                     label="${this.getLabel('total_amount_tested', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
-                  </etools-currency-amount-input>
+                  </etools-currency>
                 </div>
 
                 <div class="col col-4">
                   <!-- Total amount of ineligible expenditure-->
-                  <etools-currency-amount-input
+                  <etools-currency
                     .value="${this.engagement.total_amount_of_ineligible_expenditure}"
                     currency="$"
                     label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
-                  </etools-currency-amount-input>
+                  </etools-currency>
                 </div>`
             : ``}
 
           <!--  -->
           <div class="col col-4">
             <!--Amount refunded -->
-            <etools-currency-amount-input
+            <etools-currency
               class="${this._setRequired('amount_refunded', this.optionsData)}
                                     validate-input"
               .value="${this.engagement.amount_refunded}"
@@ -142,14 +136,14 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               }}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
         <div class="layout-horizontal">
           <div class="col col-4">
             <!--Additional supporting documentation provided -->
-            <etools-currency-amount-input
+            <etools-currency
               class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
                                         validate-input"
               .value="${this.engagement.additional_supporting_documentation_provided}"
@@ -165,12 +159,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               }}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4">
             <!-- Justification provided and accepted -->
-            <etools-currency-amount-input
+            <etools-currency
               class="${this._setRequired('justification_provided_and_accepted', this.optionsData)}
                                     validate-input"
               .value="${this.engagement.justification_provided_and_accepted}"
@@ -186,12 +180,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               }}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
           <div class="col col-4">
             <!--Write off required -->
-            <etools-currency-amount-input
+            <etools-currency
               class="${this._setRequired('write_off_required', this.optionsData)}
                                       validate-input"
               .value="${this.engagement.write_off_required}"
@@ -206,14 +200,14 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                 this.numberChanged(detail, 'write_off_required', this.engagement)}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
         <div class="layout-horizontal">
           <div class="col col-4">
             <!-- Pending Unsupported Amount -->
-            <paper-input
+            <etools-input
               .value="${this.setUnsupportedAmount(
                 this.engagement,
                 this.engagement.additional_supporting_documentation_provided,
@@ -226,14 +220,14 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               readonly
             >
               <div prefix>$</div>
-            </paper-input>
+            </etools-input>
           </div>
         </div>
 
         <div class="layout-horizontal">
           <div class="col col-12">
             <!-- explanation_for_additional_information -->
-            <paper-textarea
+            <etools-textarea
               class="w100 validate-input ${this._setRequired(
                 'explanation_for_additional_information',
                 this.optionsData
@@ -251,7 +245,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               @value-changed="${({detail}: CustomEvent) =>
                 this.valueChanged(detail, 'explanation_for_additional_information', this.engagement)}"
             >
-            </paper-textarea>
+            </etools-textarea>
           </div>
         </div>
       </etools-content-panel>

@@ -1,6 +1,7 @@
-import {LitElement, html, property, customElement} from 'lit-element';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -30,6 +31,7 @@ export class KicwRisk extends LitElement {
           position: relative;
           display: block;
           background: transparent;
+          width: 100%;
         }
         .hover-icons {
           background-color: #eee;
@@ -48,7 +50,7 @@ export class KicwRisk extends LitElement {
         .col-data {
           display: inline-block;
           overflow: hidden;
-          font-size: 13px;
+          font-size: var(--etools-font-size-13, 13px);
           text-overflow: ellipsis;
           padding-right: 16px;
           padding-left: 1px;
@@ -56,6 +58,9 @@ export class KicwRisk extends LitElement {
         }
         .truncate {
           white-space: nowrap;
+        }
+        .editable-row {
+          align-items: flex-start !important;
         }
       </style>
 
@@ -73,12 +78,12 @@ export class KicwRisk extends LitElement {
             <div slot="row-data" class="layout-horizontal editable-row">
               <span class="col-data col-1">${getTableRowIndexText(index)}</span>
               <span class="col-data col-2">${item.value_display}</span>
-              <span class="col-data col-3 truncate">${item.extra.key_control_observation}</span>
-              <span class="col-data col-3 truncate">${item.extra.recommendation}</span>
-              <span class="col-data col-3 truncate">${item.extra.ip_response}</span>
+              <span class="col-data col-3">${item.extra.key_control_observation}</span>
+              <span class="col-data col-3">${item.extra.recommendation}</span>
+              <span class="col-data col-3">${item.extra.ip_response}</span>
               <div class="hover-block" ?hidden="${!this.isEditable}">
-                <paper-icon-button icon="create" @click="${() => this.editRisk(index)}"></paper-icon-button>
-                <paper-icon-button icon="delete" @click="${() => this.removeRisk(index)}"></paper-icon-button>
+                <etools-icon-button name="create" @click="${() => this.editRisk(index)}"></etools-icon-button>
+                <etools-icon-button name="delete" @click="${() => this.removeRisk(index)}"></etools-icon-button>
               </div>
             </div>
           </etools-data-table-row>

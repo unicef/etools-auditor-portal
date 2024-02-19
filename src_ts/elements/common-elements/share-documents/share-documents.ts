@@ -1,9 +1,11 @@
-import {LitElement, html, customElement, property, PropertyValues} from 'lit-element';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {PaperCheckboxElement} from '@polymer/paper-checkbox/paper-checkbox';
-import '@unicef-polymer/etools-data-table/etools-data-table.js';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsCheckbox} from '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {GenericObject} from '../../../types/global';
 import clone from 'lodash-es/clone';
 import remove from 'lodash-es/remove';
@@ -15,13 +17,13 @@ import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../redux/store';
 import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
-import get from 'lodash-es/get';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 
 /**
  * @LitElement
@@ -30,7 +32,7 @@ import get from 'lodash-es/get';
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('share-documents')
-export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement))) {
+export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement)))) {
   static get styles() {
     return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
   }
@@ -38,6 +40,7 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
     return html`
       ${sharedStyles}
       <style>
+        ${dataTableStylesLit}
         :host {
           overflow: hidden;
         }
@@ -64,13 +67,14 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
           text-overflow: ellipsis;
           padding-right: 10px;
         }
-        .row-data > paper-checkbox {
+        .row-data > etools-checkbox {
           padding-right: 14px;
         }
         a {
           padding-left: 5px;
           color: #09f;
           text-decoration: none;
+          line-height: 15px;
         }
         .repeatable-item-container.list-items {
           padding: 0;
@@ -117,12 +121,12 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
                   (item) => html` <etools-data-table-row no-collapse>
                     <div slot="row-data" class="layout-horizontal row-data">
                       <span class="col-data col-3">
-                        <paper-checkbox @tap="${(e) => this._toggleChecked(e, item.id)}"></paper-checkbox>
+                        <etools-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></etools-checkbox>
                         <span class="pd"> ${this._getReferenceNumber(item.agreement_reference_number)} </span>
                       </span>
                       <span class="col-data col-3">${item.file_type}</span>
                       <span class="col-data col-4 wrap-text">
-                        <iron-icon icon="icons:attachment" class="download-icon"> </iron-icon>
+                        <etools-icon name="attachment" class="download-icon"> </etools-icon>
                         <a href="${item.file_link}" title="${item.filename}" target="_blank">${item.filename} </a>
                       </span>
                       <span class="col-data col-2">
@@ -171,10 +175,18 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
 
     if (changedProperties.has('partnerName')) {
       this._handlePartnerChanged(this.partnerName);
-      this._getFileTypesFromRedux();
     }
     if (changedProperties.has('selectedFiletype')) {
       this._filterByFileType(this.selectedFiletype);
+    }
+  }
+
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp && !this.fileTypes) {
+      const fileTypes = (state.commonData.staticDropdown.attachment_types || [])
+        .filter((val) => !isEmpty(val))
+        .map((typeStr) => ({label: typeStr, value: typeStr}));
+      this.fileTypes = uniqBy(fileTypes, 'label');
     }
   }
 
@@ -201,19 +213,12 @@ export class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(DateMi
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching documents for ${partner}: ${err}`}));
   }
 
-  _getFileTypesFromRedux() {
-    const fileTypes = (get(getStore().getState(), 'commonData.staticDropdown.attachment_types') || [])
-      .filter((val) => !isEmpty(val))
-      .map((typeStr) => ({label: typeStr, value: typeStr}));
-    this.fileTypes = uniqBy(fileTypes, 'label');
-  }
-
   _getReferenceNumber(refNumber) {
     return refNumber || 'n/a';
   }
 
   _toggleChecked(e, id) {
-    const isChecked = (e.target as PaperCheckboxElement).checked;
+    const isChecked = (e.target as EtoolsCheckbox).checked;
     if (isChecked) {
       this.selectedAttachments.push({attachment: id});
     } else {

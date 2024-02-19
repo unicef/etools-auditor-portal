@@ -1,17 +1,17 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input-container.js';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
-import '@unicef-polymer/etools-info-tooltip/etools-info-tooltip.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
+import '@unicef-polymer/etools-unicef/src/etools-info-tooltip/etools-info-tooltip';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
@@ -19,14 +19,14 @@ import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 
 import get from 'lodash-es/get';
-import {PaperInputElement} from '@polymer/paper-input/paper-input.js';
+import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
 import '../../../data-elements/get-agreement-data';
 import '../../../data-elements/update-agreement-data';
 import famEndpoints from '../../../config/endpoints';
-import {sendRequest} from '@unicef-polymer/etools-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import clone from 'lodash-es/clone';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {connect} from 'pwa-helpers/connect-mixin';
@@ -35,6 +35,8 @@ import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import cloneDeep from 'lodash-es/cloneDeep';
+import {getObjectsIDs} from '../../../utils/utils';
+import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
 
 /**
  * @customElement
@@ -76,16 +78,14 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
         }
 
         etools-info-tooltip {
-          --etools-tooltip-trigger-icon-margin-left: -2px;
-          --etools-tooltip-trigger-icon-margin-top: 12px;
-          --etools-tooltip-trigger-icon-color: var(--gray-50);
-          --etools-tooltip-trigger-icon-cursor: pointer;
+          width: 100%;
         }
 
         .join-audit {
           padding-left: 12px;
-          margin-top: 24px;
+          padding-bottom: 12px;
           box-sizing: border-box;
+          align-self: self-end;
         }
 
         .row-h.float {
@@ -101,26 +101,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
         .row-h.float .input-container {
           margin-bottom: 8px;
+          display: flex;
         }
 
         .pad-lr {
           padding: 0 12px;
-        }
-
-        etools-dropdown,
-        etools-dropdown-multi {
-          align-items: baseline;
-          --esmm-dropdown-menu-position: absolute;
-        }
-
-        etools-dropdown-multi {
-          --paper-listbox: {
-            max-height: 250px;
-          }
-        }
-
-        datepicker-lite {
-          --paper-input-container_-_width: 100%;
         }
 
         .year-of-audit {
@@ -150,7 +135,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
         <div class="row-h group  float">
           <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Purchase Order -->
-            <paper-input
+            <etools-input
               id="purchaseOrder"
               class="w100 ${this._setRequired('agreement', this.optionsData)}"
               field="agreement"
@@ -170,7 +155,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 this.valueChanged(detail, 'order_number', this.data.agreement);
               }}"
             >
-            </paper-input>
+            </etools-input>
 
             <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="po-loading">
             </etools-loading>
@@ -178,7 +163,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
           <div class="input-container">
             <!-- Auditor -->
-            <paper-input
+            <etools-input
               id="auditorInput"
               class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
               .value="${this.data.agreement?.auditor_firm?.name}"
@@ -186,12 +171,13 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container" ?hidden="${this._hideField('po_item', this.optionsData)}">
             <!-- PO Item Number -->
             <etools-dropdown
+              id="ddlPOItem"
               class="w100 validate-field ${this._setRequired('po_item', this.optionsData)}"
               .selected="${this.data.po_item}"
               label="${this.getLabel('po_item', this.optionsData)}"
@@ -228,7 +214,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 this.data.agreement?.contract_start_date,
                 'readonly'
               )}"
-              icon="date-range"
+              name="date-range"
             >
             </datepicker-lite>
           </div>
@@ -375,7 +361,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 </div>
                 <div class="input-container" ?hidden="${this._hideField('total_value', this.optionsData)}">
                   <!-- Total Value of Selected FACE Forms -->
-                  <etools-currency-amount-input
+                  <etools-currency
                     class="w100 validate-field
                                 ${this._isAdditionalFieldRequired(
                       'total_value',
@@ -398,21 +384,21 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     @focus="${(event: any) => this._resetFieldError(event)}"
                     @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
                   >
-                  </etools-currency-amount-input>
+                  </etools-currency>
                 </div>`
             : ``}
           ${this.showJoinAudit
             ? html` <!-- Joint Audit -->
                 <div class="input-container join-audit" style="width:16.66%">
-                  <paper-checkbox
+                  <etools-checkbox
                     ?checked="${this.data.joint_audit}"
                     ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
-                    @checked-changed="${(e: CustomEvent) => {
-                      this.data.joint_audit = e.detail.value;
+                    @sl-change="${(e: any) => {
+                      this.data.joint_audit = e.target.checked;
                     }}"
                   >
                     ${this.getLabel('joint_audit', this.optionsData)}
-                  </paper-checkbox>
+                  </etools-checkbox>
                 </div>
                 <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
                   <!-- Year of Audit -->
@@ -475,7 +461,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.sectionOptions}"
                     option-label="name"
                     option-value="id"
-                    .selectedValues="${cloneDeep(this.sectionIDs)}"
+                    .selectedValues="${getObjectsIDs(this.data?.sections)}"
                     ?required="${this._setRequired('sections', this.optionsData)}"
                     ?readonly="${this.isReadOnly('sections', this.optionsData)}"
                     ?invalid="${this.errors.sections}"
@@ -485,7 +471,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      this.selectedItemsChanged(detail, 'sectionIDs', 'id', this);
+                      if (!isJsonStrMatch(this.data.sections, detail.selectedItems)) {
+                        this.data.sections = detail.selectedItems;
+                        this.requestUpdate();
+                      }
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -499,7 +488,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     .options="${this.officeOptions}"
                     option-label="name"
                     option-value="id"
-                    .selectedValues="${cloneDeep(this.officeIDs)}"
+                    .selectedValues="${getObjectsIDs(this.data?.offices)}"
                     ?required="${this._setRequired('offices', this.optionsData)}"
                     ?readonly="${this.isReadOnly('offices', this.optionsData)}"
                     ?invalid="${this.errors.offices}"
@@ -509,7 +498,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     hide-search
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      this.selectedItemsChanged(detail, 'officeIDs', 'id', this);
+                      if (!isJsonStrMatch(this.data.offices, detail.selectedItems)) {
+                        this.data.offices = detail.selectedItems;
+                        this.requestUpdate();
+                      }
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -522,19 +514,22 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               label="${this.getLabel('users_notified', this.optionsData)}"
               placeholder="${this.getPlaceholderText('users_notified', this.optionsData)}"
               .options="${this.usersNotifiedOptions}"
-              load-data-method="${this.loadUsersDropdownOptions}"
+              .loadDataMethod="${this.loadUsersDropdownOptions}"
               preserve-search-on-close
               option-label="name"
               option-value="id"
               ?hidden="${this.isReadOnly('users_notified', this.optionsData)}"
-              .selectedValues="${cloneDeep(this.usersNotifiedIDs)}"
+              .selectedValues="${getObjectsIDs(this.data?.users_notified)}"
               ?required="${this._setRequired('users_notified', this.optionsData)}"
               ?invalid="${this.errors.users_notified}"
               .errorMessage="${this.errors.users_notified}"
               @focus="${(event: any) => this._resetFieldError(event)}"
               trigger-value-change-event
               @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                this.selectedItemsChanged(detail, 'usersNotifiedIDs', 'id', this);
+                if (!isJsonStrMatch(this.data.users_notified, detail.selectedItems)) {
+                  this.data.users_notified = detail.selectedItems;
+                  this.requestUpdate();
+                }
               }}"
             >
             </etools-dropdown-multi>
@@ -593,8 +588,25 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
   ];
 
+  private _data!: GenericObject;
+
   @property({type: Object})
-  data!: any;
+  set data(data: GenericObject) {
+    const idChanged = this._data?.id !== data?.id;
+    // when engagement changed, use a clone of it
+    this._data = idChanged ? cloneDeep(data) : data;
+    if (idChanged) {
+      // needed when we load an engagement to set visible fields
+      this.onEngagementTypeChanged(false);
+      waitForCondition(() => !!this.user).then(() => {
+        this._prepareData();
+      });
+    }
+  }
+
+  get data() {
+    return this._data;
+  }
 
   @property({type: Object})
   originalData: any = {};
@@ -645,9 +657,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   officeOptions!: GenericObject[];
 
   @property({type: Array})
-  officeIDs: number[] = [];
-
-  @property({type: Array})
   users!: GenericObject[];
 
   @property({type: Object})
@@ -662,11 +671,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Array})
   usersNotifiedOptions: GenericObject[] = [];
 
-  @property({type: Array})
-  usersNotifiedIDs: any[] = [];
-
   @property({type: Boolean})
   poUpdating!: boolean;
+
+  @property({type: String})
+  detailsRoutePath!: string;
 
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
@@ -678,6 +687,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   stateChanged(state: RootState) {
+    if (!isJsonStrMatch(this.detailsRoutePath, state.app.routeDetails?.path)) {
+      this.detailsRoutePath = state.app.routeDetails?.path;
+      // prevent controls to show old values
+      this.cleanUpStoredValues();
+    }
     if (state.commonData.loadedTimestamp) {
       this.reduxCommonData = state.commonData;
     }
@@ -689,7 +703,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   firstUpdated(changedProperties: PropertyValues): void {
     super.firstUpdated(changedProperties);
 
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
     purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
   }
 
@@ -698,12 +712,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject);
-    }
-    if (
-      (changedProperties.has('data') && !isJsonStrMatch(this.data, changedProperties.get('data'))) ||
-      changedProperties.has('user')
-    ) {
-      this._prepareData();
     }
     if (changedProperties.has('optionsData')) {
       this._setEngagementTypes(this.optionsData);
@@ -724,10 +732,17 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return true;
   }
 
-  onEngagementTypeChanged() {
-    this._setShowInput(this.data.engagement_type);
+  cleanUpStoredValues() {
+    this.data = {};
+    this.orderNumber = null;
+  }
+
+  onEngagementTypeChanged(updateEngagement = true) {
+    this._setShowInput(this.data.engagement_type, updateEngagement);
     this._setAdditionalInput(this.data.engagement_type);
-    store.dispatch(updateCurrentEngagement(this.data));
+    if (updateEngagement) {
+      store.dispatch(updateCurrentEngagement(this.data));
+    }
   }
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
@@ -759,7 +774,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       }
     }).then((resp: GenericObject) => {
       this.users = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.setUsersNotifiedOptionsAndIDs();
+      this.setUsersNotifiedOptions();
       return resp;
     });
   }
@@ -796,33 +811,24 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     const userIsFirmStaffAuditor = !this.user.is_unicef_user;
 
     const savedSections = this.data.sections || [];
-    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData.sections) || [];
-    const sectionIDs = savedSections.map((section) => section.id);
-    this.sectionIDs = sectionIDs;
+    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData?.sections) || [];
 
     const savedOffices = this.data.offices || [];
-    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData.offices) || [];
-    const officeIDs = savedOffices.map((office) => office.id);
-    this.officeIDs = officeIDs;
+    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData?.offices) || [];
 
     if (!this.users) {
-      this.users = this.reduxCommonData.users || [];
+      this.users = this.reduxCommonData?.users || [];
     }
-    this.setUsersNotifiedOptionsAndIDs(true);
+    this.setUsersNotifiedOptions();
 
     this.setYearOfAuditOptions(this.data.year_of_audit);
   }
 
-  setUsersNotifiedOptionsAndIDs(setSavedUsersIDs = false) {
+  setUsersNotifiedOptions() {
     const availableUsers = [...this.users];
     const notifiedUsers = this.data.users_notified || [];
     this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
     this.usersNotifiedOptions = availableUsers;
-    if (setSavedUsersIDs) {
-      // on the first call(after `data` is set), need to set usersNotifiedIDs (the IDs of the already saved users)
-      const usersNotifiedIDs = notifiedUsers.map((user) => user.id);
-      this.usersNotifiedIDs = usersNotifiedIDs;
-    }
   }
 
   populateUsersNotifiedDropDown() {
@@ -835,7 +841,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   validate() {
-    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
     const orderValid = orderField && orderField.validate();
 
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
@@ -849,10 +855,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       }
     });
 
-    const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as PaperInputElement;
-    const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as PaperInputElement;
-    const startValue = periodStart ? Date.parse(periodStart.value!) : 0;
-    const endValue = periodEnd ? Date.parse(periodEnd.value!) : 0;
+    const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as EtoolsInput;
+    const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as EtoolsInput;
+    const startValue = periodStart ? Date.parse(periodStart.value! as string) : 0;
+    const endValue = periodEnd ? Date.parse(periodEnd.value! as string) : 0;
 
     if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
       periodEnd.errorMessage = 'This date should be after Period Start Date';
@@ -925,7 +931,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
     this.requestInProcess = false;
 
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as PaperInputElement;
+    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
     purchaseOrderEl.validate();
   }
 
@@ -974,8 +980,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
   getEngagementData() {
     const data: any = {};
-    const agreementId = get(this, 'data.agreement.id');
-    const originalAgreementId = get(this, 'originalData.agreement.id');
+    const agreementId = String(get(this, 'data.agreement.id'));
+    const originalAgreementId = String(get(this, 'originalData.agreement.id'));
 
     if (this.originalData.start_date !== this.data.start_date) {
       data.start_date = this.data.start_date;
@@ -991,6 +997,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       data.agreement = this.data.agreement.id;
     }
 
+    if (this.showInput) {
+      if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+        this.data.total_value = null;
+      }
+    }
     if (this.originalData.total_value !== this.data.total_value) {
       data.total_value = this.data.total_value;
     }
@@ -1012,8 +1023,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
 
     const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
-    if (this.collectionChanged(originalUsersNotifiedIDs, this.usersNotifiedIDs)) {
-      data.users_notified = this.usersNotifiedIDs;
+    const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
+    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
+      data.users_notified = usersNotifiedIDs;
     }
 
     const originalSharedIpWith = this.originalData?.shared_ip_with || [];
@@ -1023,13 +1035,15 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
 
     const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
-    if (this.collectionChanged(originalOfficeIDs, this.officeIDs)) {
-      data.offices = this.officeIDs;
+    const officeIDs = (this.data?.offices || []).map((office) => +office.id);
+    if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
+      data.offices = officeIDs;
     }
 
     const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
-    if (this.collectionChanged(originalSectionIDs, this.sectionIDs)) {
-      data.sections = this.sectionIDs;
+    const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
+    if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
+      data.sections = sectionIDs;
     }
 
     return data;
@@ -1050,8 +1064,16 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
   }
 
-  _setShowInput(type: string) {
+  _setShowInput(type: string, resetValues: boolean) {
     this.showInput = !!type && type !== 'ma';
+    if (!this.showInput && resetValues) {
+      // reset values
+      this.data.total_value = 0;
+      this.data.start_date = undefined;
+      this.data.end_date = undefined;
+      this.data.sections = [];
+      this.data.offices = [];
+    }
   }
 
   _setAdditionalInput(type: string) {

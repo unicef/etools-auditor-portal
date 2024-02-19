@@ -1,16 +1,13 @@
-import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
-
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/paper-toggle-button/paper-toggle-button.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -26,8 +23,9 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '../../../data-elements/get-staff-members-list';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
-import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
-import '@unicef-polymer/etools-data-table/etools-data-table.js';
+import SlSwitch from '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
@@ -49,6 +47,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   render() {
     return html`
       <style>
+        ${dataTableStylesLit}
         :host {
           position: relative;
           display: block;
@@ -75,16 +74,31 @@ export class EngagementStaffMembersTab extends connect(store)(
           height: 48px;
           color: #fff;
           overflow: hidden;
-          width: 22%;
+          flex: 1;
         }
         .search-input-container .search-input {
-          width: 5%;
           float: right;
           box-sizing: border-box;
           min-width: 46px;
-          margin-top: -13px;
+          margin-top: -2px;
           transition: 0.35s;
           cursor: pointer;
+
+        }
+        .search-input-container .search-input,
+        .search-input-container .search-input:focus {
+          --sl-input-color: var(--light-secondary-text-color);
+          --primary-color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(form-control-input)::after {
+          --secondary-text-color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(input):focus {
+          --primary-color: var(--light-primary-text-color);
+           color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(input)::placeholder {
+          color: var(--light-primary-text-color);
         }
         .search-input-container .search-input[focused] {
           width: 100%;
@@ -92,7 +106,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         .search-input-container .search-input:not(.empty) {
           width: 100% !important;
         }
-        .search-input-container .search-input iron-icon {
+        .search-input-container .search-input etools-icon {
           top: -1px;
           color: #fff;
         }
@@ -101,7 +115,7 @@ export class EngagementStaffMembersTab extends connect(store)(
           margin-bottom: -7px;
           padding-bottom: 0;
         }
-        .checkbox {
+        .etools-checkbox {
           margin-left: 15px;
         }
         etools-content-panel::part(ecp-content) {
@@ -110,33 +124,22 @@ export class EngagementStaffMembersTab extends connect(store)(
         .editable-row {
           margin-top: 0;
           margin-bottom: 0;
-          padding: 12px 0;
+          padding: 4px 0;
         }
-        .editable-row paper-icon-button {
+        .editable-row etools-icon-button {
           --iron-icon-fill-color: var(--gray-mid);
         }
         etools-loading {
           --etools-loading-overlay-transparency: 0.4;
         }
-        paper-input.search-input {
-          --paper-input-container-color: rgba(255, 255, 255, 0.5);
-          --paper-input-container-focus-color: #fff;
-          --paper-input-container-input-color: #fff;
-          --paper-input-container-underline-focus-border-bottom: 1px solid #fff;
-          --paper-input-container-underline-border-bottom: none;
-          --paper-input-container-underline: {
-            display: none;
-          }
-        }
-        paper-input.search-input.filled {
-          --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-        }
-        paper-input.email {
-          --paper-input-error_-_position: position: relative !important;
-          --paper-input-error_-_white-space: normal;
-        }
         .white {
           color: #ffffff;
+        }
+        #toggleActive::part(control){
+          background-color: var(--sl-color-neutral-400) !important;
+        }
+        #toggleActive[checked]::part(control){
+          background-color: #eeeeee !important;
         }
         .panel-btns-container {
           display: flex;
@@ -145,14 +148,8 @@ export class EngagementStaffMembersTab extends connect(store)(
           justify-content: flex-end;
           column-gap: 30px;
         }
-        paper-toggle-button.white {
-          --paper-toggle-button-label-color: #ffffff;
-          --paper-toggle-button-checked-bar-color: #ffffff !important;
-          --paper-toggle-button-checked-button-color: #ffffff;
-          --paper-toggle-button-checked-ink-color: #ffffff;
-          --paper-toggle-button-unchecked-button-color: #bfbfbf;
-          --paper-toggle-button-unchecked-bar-color: #bfbfbf !important;
-          --paper-toggle-button-unchecked-ink-color: #bfbfbf;
+        sl-switch {
+          --sl-input-label-color: #ffffff;
         }
       </style>
 
@@ -181,7 +178,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         <div slot="panel-btns">
           <div class="panel-btns-container">
             <div class="search-input-container" ?hidden="${!this._showPagination(this.datalength)}">
-              <paper-input
+              <etools-input
                 id="searchInput"
                 class="search-input  ${this._getSearchInputClass(this.searchString)}"
                 placeholder="Search"
@@ -193,27 +190,28 @@ export class EngagementStaffMembersTab extends connect(store)(
                   }
                 }}"
               >
-                <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
-              </paper-input>
-              <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
+                <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
+              </etools-input>
             </div>
-            <paper-toggle-button
+            <sl-switch
               class="white"
               id="toggleActive"
               ?checked="${this.showInactive}"
-              @change="${this.onShowInactiveChanged}"
+              @sl-change="${this.onShowInactiveChanged}"
             >
               Show Inactive
-            </paper-toggle-button>
+            </sl-switch>
             <div class="add-button-container">
               <a
                 class="white"
+                ?hidden="${!this.engagement.agreement?.auditor_firm?.organization_id}"
                 href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
-                <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
+               <sl-tooltip content="Access Management Portal">
+                <etools-icon id="information-icon" name="open-in-new"></etools-icon>
+               </sl-tooltip>
               </a>
-              <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
             </div>
           </div>
         </div>
@@ -244,7 +242,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                 <div slot="row-data" class="layout-horizontal editable-row">
                   ${this.showHasAccess
                     ? html` <span class="col-data col-1" ?hidden="${!this.showHasAccess}">
-                        <paper-checkbox
+                        <etools-checkbox
                           class="checkbox"
                           ?checked="${item.hasAccess}"
                           ?disabled="${this._isCheckboxReadonly(
@@ -254,7 +252,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                           )}"
                           @click="${(e) => this._isActive(e, item)}"
                         >
-                        </paper-checkbox>
+                        </etools-checkbox>
                       </span>`
                     : ``}
                   <span class="col-data col-2 wrap-text">${item.user.profile.job_title || '–'}</span>
@@ -265,7 +263,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                   <span class="col-data col-2 wrap-text">${item.user.profile.phone_number || '–'}</span>
                   <span class="col-data col-2 wrap-text">${item.user.email}</span>
                   <span class="col-data col-1 wrap-text center-align"
-                    >${this.computeStaffMembActiveColumn(item) || html`<iron-icon icon="check"></iron-icon>`}</span
+                    >${this.computeStaffMembActiveColumn(item) || html`<etools-icon name="check"></etools-icon>`}</span
                   >
                 </div>
               </etools-data-table-row>`
@@ -420,7 +418,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   onShowInactiveChanged(e: CustomEvent) {
-    this.showInactive = Boolean((e.target as PaperToggleButtonElement).checked);
+    this.showInactive = Boolean((e.target as SlSwitch).checked);
   }
 
   _isVisible(active: boolean, showInactive: boolean) {
@@ -438,7 +436,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   _getAMPLink(user: EtoolsUser, organizationId: number) {
-    if (!user) {
+    if (!user || !organizationId) {
       return '';
     }
     let url = `/amp/users/`;

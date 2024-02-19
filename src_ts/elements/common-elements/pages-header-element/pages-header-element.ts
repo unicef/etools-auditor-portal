@@ -1,15 +1,16 @@
-import {LitElement, property, html, customElement} from 'lit-element';
-import '@polymer/paper-menu-button/paper-menu-button';
-import '@polymer/paper-button/paper-button';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-listbox/paper-listbox';
-import '@polymer/paper-item/paper-item';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {GenericObject} from '../../../types/global';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
 import {pagesHeaderElementStyles} from './pages-header-element-styles';
-import {PaperListboxElement} from '@polymer/paper-listbox/paper-listbox';
 
 /**
  * @polymer
@@ -23,61 +24,60 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        etools-button[variant='primary']::part(suffix) {
+          width: 8px;
+        }
+      </style>
       <div class="header-wrapper">
         <div class="side-heading horizontal layout center">
           <span class="flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
           <div class="layout horizontal side-heading-button-holder">
             <div class="export-buttons" ?hidden="${!this.exportLinks || !this.exportLinks.length}">
-              <paper-menu-button
-                id="dropdown"
-                ?hidden="${!this._isDropDown(this.exportLinks)}"
-                @tap="${this._toggleOpened}"
-                horizontal-align="right"
-              >
-                <paper-button class="grey-buttons" slot="dropdown-trigger" class="dropdown-trigger">
-                  <iron-icon icon="file-download"></iron-icon>
+              <sl-dropdown id="pdExportMenuBtn" ?hidden="${!this._isDropDown(this.exportLinks)}" close-on-activate>
+                <etools-button slot="trigger" variant="text" class="neutral" caret>
+                  <etools-icon name="file-download" slot="prefix"></etools-icon>
                   Export
-                </paper-button>
-
-                <paper-listbox id="dropdownMenu" slot="dropdown-content" class="dropdown-content" class="mw-150">
+                </etools-button>
+                <sl-menu>
                   ${this.exportLinks?.map(
                     (item) =>
                       html`
-                        <paper-item tracker="Export ${item.name}" url="${item.url}" @tap="${this.exportData}">
-                          ${item.name}</paper-item
+                        <sl-menu-item tracker="Export ${item.name}" url="${item.url}" @click="${this.exportData}">
+                          ${item.name}</sl-menu-item
                         >
                       `
                   )}
-                </paper-listbox>
-              </paper-menu-button>
-
-              <paper-button
-                class="grey-buttons"
+                </sl-menu>
+              </sl-dropdown>
+              <etools-button
+                class="neutral"
+                variant="text"
                 ?hidden="${this._isDropDown(this.exportLinks)}"
                 tracker="Export"
-                @tap="${this.exportData}"
+                @click="${this.exportData}"
               >
-                <iron-icon icon="file-download"></iron-icon>
+                <etools-icon name="file-download"></etools-icon>
                 Export
-              </paper-button>
+              </etools-button>
             </div>
 
-            <paper-button ?hidden="${this.hidePrintButton}" class="grey-buttons" on-click="print">
-              <iron-icon icon="print"></iron-icon>
+            <etools-button ?hidden="${this.hidePrintButton}" class="neutral" variant="text" on-click="print">
+              <etools-icon name="print"></etools-icon>
               Print
-            </paper-button>
+            </etools-button>
 
-            <paper-button
-              class="add-btn"
-              raised
+            <etools-button
+              variant="primary"
               ?hidden="${this.hideAddButton || typeof this.hideAddButton === 'undefined'}"
               tracker="Add New Engagement"
-              @tap="${this.addNewTap}"
+              @click="${this.trackAnalytics}"
+              tracker="Agreements export"
+              href="${this.link}"
             >
-              <a href="${this.link}" class="btn-link" ?hidden="${!this._showLink(this.link)}"></a>
-              <iron-icon icon="add"></iron-icon>
-              <span>${this.btnText}</span>
-            </paper-button>
+              <etools-icon slot="prefix" name="add"></etools-icon>
+              ${this.btnText}
+            </etools-button>
           </div>
         </div>
 
@@ -113,10 +113,6 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
   @property({type: Array})
   exportLinks: GenericObject[] = [];
 
-  addNewTap(e) {
-    this.trackAnalytics(e);
-  }
-
   _showLink(link) {
     return !!link;
   }
@@ -143,10 +139,5 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
 
   _isDropDown(exportLinks) {
     return exportLinks && (exportLinks.length > 1 || (exportLinks[0] && exportLinks[0].useDropdown));
-  }
-
-  _toggleOpened() {
-    const dropdownMenu = this.shadowRoot!.querySelector('#dropdownMenu') as PaperListboxElement;
-    dropdownMenu.select(-1);
   }
 }

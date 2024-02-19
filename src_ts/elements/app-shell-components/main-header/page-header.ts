@@ -1,9 +1,10 @@
-import {LitElement, html, property, customElement} from 'lit-element';
-import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
-import '@unicef-polymer/etools-app-selector';
-import '@unicef-polymer/etools-profile-dropdown';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-app-selector/etools-app-selector';
+import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-accesibility/etools-accesibility';
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
@@ -31,19 +32,20 @@ export class PageHeader extends MatomoMixin(LitElement) {
       ${HeaderStyles}
       <style>
         app-toolbar {
-          padding: 0 16px 0 0;
-          height: 60px;
+          padding: 0px;
           background-color: ${this.headerColor};
+          flex-wrap: wrap;
+          height: 100%;
+          justify-content: space-between;
         }
 
-        .titlebar {
-          color: var(--header-color);
+        countries-dropdown {
+          --countries-dropdown-color: var(--light-secondary-text-color);
         }
 
-        support-btn,
-        #pageRefresh {
+        etools-profile-dropdown,
+        #refresh {
           color: var(--light-secondary-text-color);
-          margin-left: 8px;
         }
 
         #menuButton {
@@ -51,66 +53,147 @@ export class PageHeader extends MatomoMixin(LitElement) {
           color: var(--light-secondary-text-color);
         }
 
-        .titlebar {
-          flex: 1;
-          font-size: 28px;
-          font-weight: 300;
+        #pageRefresh::part(base) {
+          color: var(--light-secondary-text-color);
         }
 
-        .titlebar img {
-          width: 34px;
-          margin: 0 8px 0 24px;
+        .content-align {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
         }
 
         #app-logo {
           height: 32px;
           width: auto;
+          padding: 0px 10px 0px 20px;
+        }
+
+        .dropdowns {
+          padding-block-start: 6px;
+          display: flex;
+          margin-inline-end: 20px;
+        }
+
+        .header {
+          flex-wrap: wrap;
+          height: 100%;
+          justify-content: space-between;
+        }
+
+        .nav-menu-button {
+          min-width: 70px;
+        }
+
+        .header__item {
+          display: flex;
+          align-items: center;
+        }
+
+        .header__right-group {
+          justify-content: space-evenly;
         }
 
         .envWarning {
-          color: var(--nonprod-text-warn-color);
+          color: #000;
+          background-color: #ffffff;
           font-weight: 700;
-          font-size: 18px;
+          padding: 5px 10px;
+          font-size: var(--etools-font-size-14, 14px);
+          line-height: 1;
+          border-radius: 10px;
         }
 
-        @media (min-width: 1200px) {
+        etools-profile-dropdown {
+          margin-inline-start: 16px;
+        }
+
+        support-btn {
+          color: var(--header-color);
+          margin-left: 10px;
+        }
+
+        @media (min-width: 850px) {
           #menuButton {
             display: none;
           }
         }
+        @media (max-width: 920px) {
+          .envWarning {
+            font-size: var(--etools-font-size-14, 14px);
+            line-height: 16px;
+          }
+        }
+        @media (max-width: 768px) {
+          #app-logo {
+            width: 90px;
+          }
+          .envLong {
+            display: none;
+          }
+          etools-app-selector {
+            width: 42px;
+          }
+          etools-profile-dropdown {
+            margin-inline-start: 0px;
+            width: 40px;
+          }
+        }
+        @media (max-width: 576px) {
+          etools-app-selector {
+            --app-selector-button-padding: 18px 8px;
+          }
+          #app-logo {
+            display: none;
+          }
+          .envWarning {
+            font-size: var(--etools-font-size-10, 10px);
+            margin-inline-start: 2px;
+          }
+          #refresh {
+            width: 24px;
+            padding: 0px;
+          }
+        }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="layout-horizontal align-items-center">
-        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
-        <div class="titlebar layout-horizontal align-items-center">
-          <paper-icon-button id="menuButton" icon="menu" @click="${this.menuBtnClicked}"></paper-icon-button>
+      <app-toolbar id="toolbar" sticky class="content-align">
+        <div class="layout-horizontal align-items-center">
+          <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
-          <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" />
-          <div class="envWarning" .hidden="${!this.environment}">- ${this.environment} TESTING ENVIRONMENT</div>
+          <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" alt="Etools" />
+          <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">
+            ${this.environment}
+          </div>
         </div>
         <div class="layout-horizontal align-items-center">
-          <countries-dropdown
-            id="countries"
-            .countries="${this.user?.countries_available}"
-            .currentCountry="${this.user?.country}"
-          >
-          </countries-dropdown>
+          <div class="dropdowns">
+            <countries-dropdown
+              id="countries"
+              .countries="${this.user?.countries_available}"
+              .currentCountry="${this.user?.country}"
+            >
+            </countries-dropdown>
 
-          <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+            <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+          </div>
 
           <support-btn title="Support"></support-btn>
 
           <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">
           </etools-profile-dropdown>
 
-          <paper-icon-button
+          <etools-icon-button
             title="Refresh"
             id="pageRefresh"
-            icon="refresh"
+            name="refresh"
+            label="refresh"
             tracker="Refresh"
             @click="${this.refreshBtnclicked}"
           >
-          </paper-icon-button>
+          </etools-icon-button>
+
+          <etools-accesibility></etools-accesibility>
         </div>
       </app-toolbar>
     `;

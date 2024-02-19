@@ -1,6 +1,6 @@
-import {LitElement, html, property, customElement} from 'lit-element';
-import '@polymer/paper-tabs/paper-tabs';
-import '@polymer/iron-pages/iron-pages';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-modules-common/dist/layout/etools-tabs';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
@@ -32,9 +32,10 @@ import {RootState, store} from '../../../../redux/store';
 import {connect} from 'pwa-helpers/connect-mixin';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
-import {RouteDetails} from '@unicef-polymer/etools-types';
+import {AnyObject, RouteDetails} from '@unicef-polymer/etools-types';
 import {setEngagementData, updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {isActiveTab} from '../../../utils/utils';
 /**
  * @customElement
  * @LitElement
@@ -76,8 +77,8 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
           box-shadow: 1px -3px 9px 0 #000000;
         }
 
-        .tab-selector paper-tabs {
-          font-size: 14px;
+        .tab-selector etools-tabs-lit {
+          font-size: var(--etools-font-size-14, 14px);
           font-weight: bold;
           text-transform: uppercase;
         }
@@ -99,82 +100,75 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       </pages-header-element>
 
       <div class="tab-selector">
-        <paper-tabs
-          attr-for-selected="name"
-          noink=""
-          bottom-item=""
+        <etools-tabs-lit
+          border-bottom
           role="tablist"
-          tabindex="0"
-          .selected="${this.tab}"
-          @selected-changed="${(e: CustomEvent) => {
-            if (this.tab !== e.detail.value) {
-              this._tabChanged(e.detail.value, this.tab);
-              this.tab = e.detail.value;
+          .tabs="${this.tabsList}"
+          .activeTab="${this.tab}"
+          @sl-tab-show="${(e: CustomEvent) => {
+            if (this.tab !== e.detail.name) {
+              this._tabChanged(e.detail.name, this.tab);
+              this.tab = e.detail.name;
             }
           }}"
-        >
-          <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
-          <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-        </paper-tabs>
+        ></etools-tabs-lit>
       </div>
 
       <div class="view-container">
         <div id="pageContent">
-          <iron-pages id="info-tabs" .selected="${this.tab}" attr-for-selected="name">
-            <div name="overview">
-              <engagement-info-details
-                .errorObject="${this.errorObject}"
-                .data="${this.engagement}"
-                id="engagementDetails"
-                .optionsData="${this.engagementOptions}"
-                ?isStaffSc="${this.isStaffSc}"
-              >
-              </engagement-info-details>
+          <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+            <engagement-info-details
+              .errorObject="${this.errorObject}"
+              .data="${this.engagement}"
+              id="engagementDetails"
+              .optionsData="${this.engagementOptions}"
+              ?isStaffSc="${this.isStaffSc}"
+            >
+            </engagement-info-details>
 
-              <partner-details-tab
-                id="partnerDetails"
-                .errorObject="${this.errorObject}"
-                .engagement="${this.engagement}"
-                .optionsData="${this.engagementOptions}"
-              >
-              </partner-details-tab>
+            <partner-details-tab
+              id="partnerDetails"
+              .errorObject="${this.errorObject}"
+              .engagement="${this.engagement}"
+              .optionsData="${this.engagementOptions}"
+            >
+            </partner-details-tab>
 
-              <specific-procedure
-                id="specificProcedures"
-                ?hidden="${!this.isSpecialAudit(this.engagement?.engagement_type)}"
-                class="mb-15"
-                without-finding-column
-                .errorObject="${this.errorObject}"
-                save-with-button
-                .dataItems="${this.engagement.specific_procedures}"
-                .optionsData="${this.engagementOptions}"
-                @data-items-changed="${({detail}) => {
-                  this.engagement.specific_procedures = detail || [];
-                  store.dispatch(updateCurrentEngagement(this.engagement));
-                }}"
-              >
-              </specific-procedure>
+            <specific-procedure
+              id="specificProcedures"
+              ?hidden="${!this.isSpecialAudit(this.engagement?.engagement_type)}"
+              class="mb-15"
+              without-finding-column
+              .errorObject="${this.errorObject}"
+              save-with-button
+              .dataItems="${this.engagement.specific_procedures}"
+              .optionsData="${this.engagementOptions}"
+              @data-items-changed="${({detail}) => {
+                this.engagement.specific_procedures = detail || [];
+                store.dispatch(updateCurrentEngagement(this.engagement));
+              }}"
+            >
+            </specific-procedure>
 
-              <engagement-staff-members-tab
-                id="staffMembers"
-                .errorObject="${this.errorObject}"
-                save-with-button
-                .engagement="${this.engagement}"
-                .optionsData="${this.engagementOptions}"
-              >
-              </engagement-staff-members-tab>
-            </div>
+            <engagement-staff-members-tab
+              id="staffMembers"
+              .errorObject="${this.errorObject}"
+              save-with-button
+              .engagement="${this.engagement}"
+              .optionsData="${this.engagementOptions}"
+            >
+            </engagement-staff-members-tab>
+          </div>
 
-            <div name="attachments">
-              <file-attachments-tab
-                id="engagement_attachments"
-                .engagement="${this.engagement}"
-                .optionsData="${this.attachmentOptions}"
-                error-property="engagement_attachments"
-              >
-              </file-attachments-tab>
-            </div>
-          </iron-pages>
+          <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
+            <file-attachments-tab
+              id="engagement_attachments"
+              .engagement="${this.engagement}"
+              .optionsData="${this.attachmentOptions}"
+              error-property="engagement_attachments"
+            >
+            </file-attachments-tab>
+          </div>
         </div>
 
         <div id="sidebar">
@@ -216,7 +210,10 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   };
 
   @property({type: Array})
-  tabsList: string[] = ['overview', 'attachments'];
+  tabsList: AnyObject[] = [
+    {tab: 'overview', tabLabel: 'Engagement Overview'},
+    {tab: 'attachments', tabLabel: 'Attachments'}
+  ];
 
   @property({type: Object})
   queryParams: GenericObject = {};
@@ -285,7 +282,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
     if (isFirstAcess) {
       clearQueries();
       setTimeout(() => {
-        console.log('setDefaultEngagement...');
         this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
       });
 

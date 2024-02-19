@@ -1,4 +1,5 @@
-import {LitElement, PropertyValues, property} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 import cloneDeep from 'lodash-es/cloneDeep';
 import assign from 'lodash-es/assign';
 import isObject from 'lodash-es/isObject';
@@ -149,7 +150,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.errorObject = state.engagement.errorObject || {};
       }
 
-      this._checkAvailableTab(this.engagement, this.engagementOptions, this.apOptions, this.tab);
+      if (this.user) {
+        this._checkAvailableTab(this.engagement, this.engagementOptions, this.apOptions, this.tab);
+      }
     }
 
     updated(changedProperties: PropertyValues): void {
@@ -157,9 +160,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
       if (changedProperties.has('errorObject')) {
         this._errorOccurred(this.errorObject);
-      }
-      if (changedProperties.has('dialogOpened')) {
-        this.resetInputDialog(this.dialogOpened);
       }
     }
 
@@ -174,10 +174,19 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         getEngagementAttachmentOptions(id),
         getEngagementReportAttachmentsOptions(id),
         getActionPointOptions(id)
-      ]).then((response: any[]) => {
-        store.dispatch(setEngagementData(this.formatResponse(response)));
-        fireEvent(this, 'global-loading', {active: false});
-      });
+      ])
+        .then((response: any[]) => {
+          // if engagement not found redirect to not-found page
+          if (response[0].status !== 'fulfilled') {
+            fireEvent(this, '404');
+            return;
+          }
+          store.dispatch(setEngagementData(this.formatResponse(response)));
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => fireEvent(this, 'global-loading', {active: false}));
     }
 
     formatResponse(response: any[]) {
@@ -206,10 +215,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         this.errorObject = {};
         this.routeDetails = undefined;
       }
-    }
-
-    _resetDialogOpenedFlag(event) {
-      this[event.currentTarget.getAttribute('openFlag')] = false;
     }
 
     _engagementStatusUpdated(e: CustomEvent) {
@@ -266,16 +271,8 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       this.engagementFileTypes = getOptionsChoices(attachmentOptions, 'file_type');
     }
 
-    _openCancelDialog() {
-      this.dialogOpened = true;
-    }
-
-    resetInputDialog(opened) {
-      const input = this.getElement('#cancellationReasonInput');
-      if (!opened && input) {
-        input.value = '';
-        this._resetFieldError({target: input});
-      }
+    _openCancelOrSendBackDialog(_action: string) {
+      // overridden in the classes
     }
 
     _resetFieldError(event) {
@@ -304,7 +301,10 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
           this._finalizeReport();
           break;
         case 'cancel':
-          this._openCancelDialog();
+          this._openCancelOrSendBackDialog('cancel');
+          break;
+        case 'send_back':
+          this._openCancelOrSendBackDialog('send_back');
           break;
         default:
           throw new Error(`Unknown event type: ${details.type}`);
@@ -351,31 +351,38 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       });
     }
 
-    _cancelEngagement() {
-      if (!this.dialogOpened) {
-        return;
-      }
-      const input = this.getElement('#cancellationReasonInput');
-
-      if (!input) {
-        throw new Error('Can not find input!');
-      }
-      if (!input.validate()) {
-        return;
-      }
+    _cancelOrSendBackEngagement(action: string, comment: string) {
+      // action can be 'cancel' or 'send_back'
+      fireEvent(this, 'global-loading', {
+        message: 'Processing action...',
+        active: true,
+        loadingSource: 'processingAction'
+      });
 
       const type = this.getLongEngType(this.engagement.engagement_type);
 
       this.updatedEngagement = {
         engagement_type: type,
         id: this.engagement.id,
-        data: {cancel_comment: input.value},
-        cancel: 'cancel/'
+        data: action === 'cancel' ? {cancel_comment: comment} : {send_back_comment: comment},
+        cancel: action === 'cancel' ? 'cancel/' : null,
+        send_back: action === 'send_back' ? 'send_back/' : null
       };
-      this.dialogOpened = false;
+
       if (this.tab === 'report') {
         this.tab = 'overview';
       }
+    }
+
+    _sendBackEngagement(sendBackComment: string) {
+      const type = this.getLongEngType(this.engagement.engagement_type);
+
+      this.updatedEngagement = {
+        engagement_type: type,
+        id: this.engagement.id,
+        data: {send_back_comment: sendBackComment},
+        cancel: 'send_back/'
+      };
     }
 
     getLongEngType(type) {
@@ -395,6 +402,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!this.engagement) {
         return Promise.reject(new Error('You need engagement object'));
       }
+
+      fireEvent(this, 'global-loading', {
+        message: 'Processing action...',
+        active: true,
+        loadingSource: 'processingAction'
+      });
 
       // Check basic info
       let [data, engagementId] = this._getBasicInfo({});
@@ -536,6 +549,10 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         }, 300);
       }
       return showFollowUp;
+    }
+
+    _showSendBackComments(engagement: AnyObject) {
+      return Boolean(engagement && engagement.send_back_comment && engagement.status === 'comments_received_by_unicef');
     }
 
     _showCancellationReason(engagement) {

@@ -1,4 +1,5 @@
-import {LitElement, html, property, PropertyValues} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {buildQueryString, updateQueries} from '../../../mixins/query-params-controller';
@@ -11,15 +12,15 @@ import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
-import '@unicef-polymer/etools-table/etools-table';
-import {EtoolsTableColumnType} from '@unicef-polymer/etools-table';
+import '@unicef-polymer/etools-unicef/src/etools-table/etools-table';
+import {EtoolsTableColumnType} from '@unicef-polymer/etools-unicef/src/etools-table/etools-table.js';
 import {
   EtoolsPaginator,
   defaultPaginator,
   getPaginatorWithBackend
-} from '@unicef-polymer/etools-table/pagination/etools-pagination';
-import '@unicef-polymer/etools-filters/src/etools-filters';
-import {EtoolsFilter} from '@unicef-polymer/etools-filters/src/etools-filters';
+} from '@unicef-polymer/etools-unicef/src/etools-table/pagination/etools-pagination';
+import '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
+import {EtoolsFilter} from '@unicef-polymer/etools-unicef/src/etools-filters/etools-filters';
 import {getLabelFromOptions, getOptionsChoices} from '../../../mixins/permission-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
@@ -29,11 +30,12 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import {connect} from 'pwa-helpers/connect-mixin';
 import pick from 'lodash-es/pick';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
-import {sendRequest} from '@unicef-polymer/etools-ajax';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
-import {updateFiltersSelectedValues} from '@unicef-polymer/etools-filters/src/filters';
+import {updateFiltersSelectedValues} from '@unicef-polymer/etools-unicef/src/etools-filters/filters';
 import omit from 'lodash-es/omit';
+import {getDataFromSessionStorage, setDataOnSessionStorage} from '../../../utils/utils';
 
 /**
  * @customElement
@@ -53,7 +55,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
           display: block;
         }
 
-        paper-input.vendor-number-input {
+        etools-input.vendor-number-input {
           max-width: 45%;
           margin-top: 6px !important;
         }
@@ -63,6 +65,9 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         }
         section {
           position: relative;
+        }
+        etools-filters::part(filter-search) {
+          min-width: 370px !important;
         }
       </style>
 
@@ -190,8 +195,16 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   @property({type: String})
   endpointName = '';
 
-  @property({type: Object})
-  prevQueryStringObj!: GenericObject;
+  @property({type: String})
+  prevQueryObjKey!: string;
+
+  set prevQueryStringObj(val: GenericObject) {
+    setDataOnSessionStorage(this.prevQueryObjKey, val);
+  }
+
+  get prevQueryStringObj() {
+    return getDataFromSessionStorage(this.prevQueryObjKey);
+  }
 
   private routeDetails!: RouteDetails | null;
 
@@ -230,8 +243,9 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
     if (reset) {
       currentParams = pick(currentParams, ['ordering', 'page_size', 'page']);
     }
-    this.prevQueryStringObj = cloneDeep({...currentParams, ...paramsToUpdate});
-    const stringParams: string = buildUrlQueryString(this.prevQueryStringObj);
+    const newQueryObj = cloneDeep({...currentParams, ...paramsToUpdate});
+    this.prevQueryStringObj = newQueryObj;
+    const stringParams: string = buildUrlQueryString(newQueryObj);
     EtoolsRouter.replaceAppLocation(`${this.isStaffSc ? 'staff-sc' : 'engagements'}/list?${stringParams}`);
   }
 
@@ -376,6 +390,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   }
 
   filtersChange(e: CustomEvent) {
+    this.filtersInitialized = !!this.filters?.length;
     if (this.filtersInitialized) {
       this.updateCurrentParams({...e.detail, page: 1}, true);
     }
@@ -437,7 +452,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   getTableStyle() {
     return html`<style>
       .dateLabel {
-        font-size: 11px;
+        font-size: var(--etools-font-size-11, 11px);
         color: var(--dark-secondary-text-color);
       }
       td[data-label='Reference Number'],

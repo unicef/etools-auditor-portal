@@ -1,5 +1,5 @@
-import {LitElement, html, customElement, property, PropertyValues} from 'lit-element';
-
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 /**
  * main menu
  * @LitElement

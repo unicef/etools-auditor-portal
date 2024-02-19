@@ -1,14 +1,17 @@
-import {LitElement, html, PropertyValues, property, customElement} from 'lit-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {StatusTabElementStyles} from './status-tab-element-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import each from 'lodash-es/each';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 import {GenericObject} from '../../../types/global';
-declare const dayjs: any;
 import '../insert-html/insert-html';
 import './action-buttons';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import get from 'lodash-es/get';
+import dayjs from 'dayjs';
 
 /**
  * main menu
@@ -23,7 +26,8 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
 
   render() {
     return html`
-      <etools-content-panel panel-title="Status">
+      ${sharedStyles}
+      <etools-content-panel panel-title="Status" list>
         <div class="status-list" id="statusList">
           <div class="cancelled-status" id="cancelledStatus" ?hidden="${!this.cancelled}">
             <div class="divider cancelled">
@@ -33,7 +37,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-container cancelled">
               <div class="status-icon">
                 <span class="icon-wrapper">
-                  <iron-icon icon="cancel"></iron-icon>
+                  <etools-icon name="cancel"></etools-icon>
                 </span>
               </div>
 
@@ -50,7 +54,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(1, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 
@@ -70,7 +74,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(2, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 
@@ -90,7 +94,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(3, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 
@@ -110,7 +114,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(4, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 
@@ -130,7 +134,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(5, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 
@@ -150,7 +154,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(6, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 
@@ -170,7 +174,7 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
             <div class="status-icon">
               <span class="icon-wrapper">
                 <span class="status-nr">${this._refactorStatusNumber(7, this.engagementData.status)}</span>
-                <iron-icon icon="check"></iron-icon>
+                <etools-icon name="check"></etools-icon>
               </span>
             </div>
 

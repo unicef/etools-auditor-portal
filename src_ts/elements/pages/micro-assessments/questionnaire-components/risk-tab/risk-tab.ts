@@ -1,8 +1,13 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-tooltip/paper-tooltip';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {unsafeHTML} from 'lit/directives/unsafe-html.js';
+import {repeat} from 'lit/directives/repeat.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {riskTabStyles} from './risk-tab-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
@@ -30,10 +35,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     return html`
       ${sharedStyles}
       <style>
-        etools-dropdown {
-          --esmm-dropdown-menu-position: absolute !important;
-        }
-        etools-data-table-row::part(edt-list-row-wrapper) {
+        ${dataTableStylesLit} etools-data-table-row::part(edt-list-row-wrapper) {
           height: auto !important;
           min-height: 40px;
           padding-top: 5px;
@@ -42,6 +44,9 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
         etools-data-table-row *[slot='row-data'] {
           margin-top: 0px !important;
           margin-bottom: 0px !important;
+        }
+        etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
         }
         .question {
           width: calc(100% - 160px);
@@ -66,11 +71,12 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
             <etools-data-table-column class="question">Question</etools-data-table-column>
             <etools-data-table-column class="w160px">Risk Assessment</etools-data-table-column>
           </etools-data-table-header>
-          ${(this.questionnaire?.blueprints || []).map(
-            (item, index) => html`
+          ${repeat(
+            this.questionnaire?.blueprints || [],
+            (item: any, index) => html`
               <etools-data-table-row>
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="question">${item.header}</span>
+                  <span class="question">${unsafeHTML(item.header)}</span>
                   <span class="w160px">
                     ${this.editMode
                       ? html` <etools-dropdown
@@ -97,10 +103,10 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                   </span>
 
                   <div class="hover-block" ?hidden="${!this.editMode}">
-                    <paper-icon-button
-                      icon="create"
+                    <etools-icon-button
+                      name="create"
                       @click="${(e: CustomEvent) => this.openEditDialog(e, item)}"
-                    ></paper-icon-button>
+                    ></etools-icon-button>
                   </div>
                 </div>
                 <div slot="row-data-details">
@@ -118,7 +124,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                 (item, blueprintIndex) => html`
                   <etools-data-table-row>
                     <div slot="row-data" class="layout-horizontal editable-row">
-                      <span class="question">${item.header}</span>
+                      <span class="question">${unsafeHTML(item.header)}</span>
                       <span class="w160px">
                         ${this.editMode
                           ? html` <etools-dropdown
@@ -146,11 +152,11 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
                       </span>
 
                       <div class="hover-block" ?hidden="${!this.editMode}">
-                        <paper-icon-button
-                          icon="create"
+                        <etools-icon-button
+                          name="create"
                           category-id="${category.id}"
                           @click="${(e: CustomEvent) => this.openEditDialog(e, item)}"
-                        ></paper-icon-button>
+                        ></etools-icon-button>
                       </div>
                     </div>
                     <div slot="row-data-details">
@@ -201,34 +207,6 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
     high: 'High',
     moderate: 'Moderate'
   };
-
-  @property({type: Array})
-  columns = [
-    {
-      size: 100,
-      class: 'pr-45',
-      label: 'Question',
-      name: 'header',
-      html: true
-    },
-    {
-      size: '160px',
-      label: 'Risk Assessment',
-      name: 'value',
-      property: 'risk.value',
-      custom: true,
-      doNotHide: true
-    }
-  ];
-
-  @property({type: Array})
-  details = [
-    {
-      label: 'Comments',
-      path: 'risk.extra.comments',
-      size: 100
-    }
-  ];
 
   @property({type: Array})
   categoryHeader = [

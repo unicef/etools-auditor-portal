@@ -24,6 +24,7 @@ export interface CommonDataState {
     location_types: [];
     partner_file_types: [];
     partner_types: [];
+    attachment_types: [];
   };
   filterAuditors: [];
   filterPartners: [];
@@ -53,7 +54,8 @@ const INITIAL_COMMON_DATA: CommonDataState = {
     local_curency: null,
     location_types: [],
     partner_file_types: [],
-    partner_types: []
+    partner_types: [],
+    attachment_types: []
   },
   filterAuditors: [],
   filterPartners: [],

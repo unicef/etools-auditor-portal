@@ -1,7 +1,8 @@
-import {LitElement, html, property, customElement, PropertyValues, query} from 'lit-element';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
@@ -11,17 +12,16 @@ import each from 'lodash-es/each';
 import isString from 'lodash-es/isString';
 import isEmpty from 'lodash-es/isEmpty';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
-import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
 import {GenericObject} from '../../../../../types/global';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
+import './questionnaire-page-main-dialog.js';
 import '../risk-tab/risk-tab';
 import {checkNonField} from '../../../../mixins/error-handler';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import '../../../../common-elements/insert-html/insert-html';
 import get from 'lodash-es/get';
-import {AnyObject} from '@unicef-polymer/etools-types';
 import cloneDeep from 'lodash-es/cloneDeep';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @LitEelement
@@ -48,7 +48,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
           height: 58px;
           padding: 16px calc(2% + 120px) 16px 2%;
           box-sizing: border-box;
-          font-size: 17px;
+          font-size: var(--etools-font-size-17, 17px);
         }
         .result-element .text {
           width: 100%;
@@ -91,12 +91,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         div[list-item] {
           overflow: visible !important;
         }
-        etools-dropdown#riskAssessmentDropdown {
-          --paper-listbox: {
-            max-height: 140px;
-          }
-        }
-
       </style>
 
       <etools-content-panel
@@ -120,87 +114,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         >
         </risk-tab>`
       )}
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        .opened="${this.dialogOpened}"
-        dialog-title="Edit Question"
-        ok-btn-text="Save"
-        ?show-spinner="${this.requestInProcess}"
-        ?disable-confirm-btn="${this.requestInProcess}"
-        @confirm-btn-clicked="${this._addItemFromDialog}"
-        openFlag="dialogOpened"
-        @close="${this._resetDialogOpenedFlag}"
-      >
-        <div class="container">
-          <div class="layout-horizontal">
-            <div class="form-title">
-              <div class="text" id="questionHeader">
-                ${html`${this.editedItem?.header}`}
-              </div>
-            </div>
-          </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-6">
-                <!-- Risk Assessment -->
-                <etools-dropdown
-                  id="riskAssessmentDropdown"
-                  required validate-input"
-                  .selected="${this.editedItem?.risk?.value}"
-                  label="Risk Assessment"
-                  placeholder="Select Risk Assessment"
-                  .options="${this.riskOptions}"
-                  option-label="display_name"
-                  option-value="value"
-                  ?disabled="${this.requestInProcess}"
-                  errorMessage="This field is required"
-                  @focus="${this._resetFieldError}"
-                  required
-                  trigger-value-change-event
-                  @etools-selected-item-changed="${this._setSelectedRiskRatingEntity}"
-                  hide-search
-                >
-                </etools-dropdown>
-              </div>
-            </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-12">
-                <!-- Comments -->
-                <paper-textarea
-                  id="riskAssessmentComments"
-                  class="w100 validate-input"
-                  .value="${this.editedItem?.risk?.extra?.comments}"
-                  label="Comments"
-                  placeholder="Enter Comments"
-                  ?disabled="${this.requestInProcess}"
-                  max-rows="4"
-                  error-message="This field is required"
-                  @focus="${this._resetFieldError}"
-                  @value-changed="${({detail}: CustomEvent) => {
-                    if (!this.editedItem) {
-                      return;
-                    }
-                    if (!this.editedItem.risk) {
-                      this.editedItem.risk = {};
-                    }
-                    if (!this.editedItem.risk.extra) {
-                      this.editedItem.risk = {extra: {comments: ''}};
-                    }
-                    this.editedItem.risk.extra.comments = detail.value;
-                  }}}"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-          </div>
-        </div>
-       </div>
-      </etools-dialog>
     `;
   }
 
@@ -238,9 +151,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   @property({type: String})
   riskAssessment = '';
 
-  @property({type: Object})
-  editedItem!: AnyObject;
-
   @property({type: Boolean})
   dialogOpened = false;
 
@@ -250,17 +160,13 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   @property({type: Array})
   riskOptions!: GenericObject[];
 
-  @query('#riskAssessmentDropdown')
-  riskAssessmentDropdown!: EtoolsDropdownEl;
-
   @property({type: Boolean})
   editMode = false;
 
+  @property({type: Object})
+  dataFromDialog!: GenericObject | null;
+
   private currentRequests: GenericObject = {};
-  private tabId!: string;
-  private categoryId!: string;
-  private originalComments!: string;
-  private originalRiskValue!: string;
 
   connectedCallback() {
     super.connectedCallback();
@@ -279,15 +185,18 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
     if (changedProperties.has('data') || changedProperties.has('optionsData')) {
       this.dataChanged(this.data);
     }
     if (changedProperties.has('errorObject')) {
       this.savingError(this.errorObject);
     }
+  }
+
+  triggerSaveFromDialog(dataFromDialog: GenericObject) {
+    this.requestInProcess = true;
+    this.dataFromDialog = dataFromDialog;
+    fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }
 
   dataChanged(data) {
@@ -313,10 +222,14 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     if (!this.requestsCount()) {
       this.questionnaire = data;
     }
-    if (this.dialogOpened && this.requestInProcess) {
+
+    if (this.requestInProcess) {
+      const dialogEl = document.body.querySelector('questionnaire-page-main-dialog');
+      // reset dialog Loading if dialog opened
+      if (dialogEl) {
+        (dialogEl as any)._onClose();
+      }
       this.requestInProcess = false;
-      this.dialogOpened = false;
-      this.resetDialog();
     }
   }
 
@@ -358,25 +271,23 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     if (!item) {
       throw Error('Can not find user data');
     }
-
-    this.tabId = event.detail.tabId;
-    this.categoryId = event.detail.childId;
-    this.editedItem = cloneDeep(item);
-    this.originalComments = item.risk && item.risk.extra && item.risk.extra.comments;
-    this.originalRiskValue = item.risk ? item.risk.value : '';
-    this.dialogOpened = true;
-  }
-
-  _setSelectedRiskRatingEntity(event) {
-    const selectedItem = event.detail.selectedItem;
-    if (!selectedItem) {
-      return;
-    }
-    if (!this.editedItem.risk) {
-      this.editedItem.risk = {};
-    }
-    this.editedItem.risk.value = selectedItem.value;
-    this.editedItem.risk.display_name = selectedItem.display_name;
+    this.dataFromDialog = null;
+    openDialog({
+      dialog: 'questionnaire-page-main-dialog',
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: cloneDeep(item),
+        originalComments: item.risk && item.risk.extra && item.risk.extra.comments,
+        originalRiskValue: item.risk ? item.risk.value : '',
+        dataFromDialog: this.dataFromDialog,
+        riskOptions: this.riskOptions,
+        tabId: event.detail.tabId,
+        categoryId: event.detail.childId
+      }
+    }).then(() => {
+      this.dataFromDialog = null;
+    });
   }
 
   _riskValueChanged(event) {
@@ -389,34 +300,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }
 
-  _addItemFromDialog() {
-    if (!this.dialogOpened || !this.validate()) {
-      return;
-    }
-
-    if (
-      this.originalComments === this.editedItem.risk.extra.comments &&
-      this.riskAssessmentDropdown.selected &&
-      this.originalRiskValue === this.editedItem.risk.value
-    ) {
-      this.dialogOpened = false;
-      this.resetDialog();
-      return;
-    }
-    this.requestInProcess = true;
-    fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
-  }
-
-  validate() {
-    const riskValid = this.riskAssessmentDropdown.validate();
-    const commentsValid = (
-      this.shadowRoot!.querySelector('#riskAssessmentComments') as PaperTextareaElement
-    ).validate();
-
-    return riskValid && commentsValid;
-  }
-
-  validateComplited() {
+  validateCompleted() {
     if (!this.questionnaire || !this.questionnaire.children || !this.questionnaire.children.length) {
       return false;
     }
@@ -432,44 +316,10 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   }
 
   getQuestionnaireData() {
-    if (this.dialogOpened) {
-      return this.getDataFromDialog() || null;
+    if (this.dataFromDialog) {
+      return this.dataFromDialog;
     }
     return (this.changedData && this.changedData.shift()) || null;
-  }
-
-  getDataFromDialog() {
-    const blueprintRisk = {
-      value: this.riskAssessmentDropdown.selected,
-      extra: (this.editedItem.risk && this.editedItem.risk.extra) || {}
-    };
-    const data = {
-      id: this.editedItem.id,
-      risk: blueprintRisk
-    };
-
-    let risk;
-    if (this.categoryId) {
-      const child = {
-        id: +this.categoryId,
-        blueprints: [data]
-      };
-      risk = {
-        id: +this.tabId,
-        children: [child]
-      };
-    } else {
-      risk = {
-        id: +this.tabId,
-        blueprints: [data]
-      };
-    }
-
-    if (risk) {
-      return {
-        children: [risk]
-      };
-    }
   }
 
   getElements(className) {
@@ -485,21 +335,13 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
     return ratingString ? `- ${rating.toUpperCase()}` : '';
   }
 
-  resetDialog(opened?) {
-    if (opened) {
-      return;
+  savingError(errorObj) {
+    const dialogEl = document.body.querySelector('questionnaire-page-main-dialog');
+    // reset dialog Loading if dialog opened
+    if (dialogEl) {
+      (dialogEl as any).requestInProcess = false;
     }
 
-    this.editedItem = {};
-    this.riskAssessmentDropdown.invalid = false;
-    this.riskAssessmentDropdown.selected = null;
-
-    const riskAssessmentComments = this.shadowRoot!.querySelector('#riskAssessmentComments') as PaperTextareaElement;
-    riskAssessmentComments.invalid = false;
-    riskAssessmentComments.value = '';
-  }
-
-  savingError(errorObj) {
     if (this.requestInProcess) {
       this.requestInProcess = false;
       fireEvent(this, 'toast', {text: 'Can not save data'});

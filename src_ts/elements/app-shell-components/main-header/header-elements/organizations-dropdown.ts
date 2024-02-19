@@ -1,12 +1,12 @@
-import {LitElement, html, customElement, property, query, PropertyValues} from 'lit-element';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import EtoolsPageRefreshMixinLit from '@unicef-polymer/etools-behaviors/etools-page-refresh-mixin-lit.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property, query} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {BASE_PATH} from '../../../config/config';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 
 /**
  * @polymer
@@ -14,11 +14,12 @@ import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown'
  * @appliesMixin EtoolsPageRefreshMixin
  */
 @customElement('organizations-dropdown')
-export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement) {
+export class OrganizationsDropdown extends LitElement {
   render() {
     return html`
       ${HeaderStyles}
       <etools-dropdown
+        transparent
         id="organizationSelector"
         class="${this.checkMustSelectOrganization(this.user)}"
         .selected="${this.currentOrganizationId}"
@@ -31,6 +32,9 @@ export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement)
         allow-outside-scroll
         no-label-float
         hide-search
+        min-width="180px"
+        placement="bottom-end"
+        .syncWidth="${false}"
       >
       </etools-dropdown>
     `;
@@ -46,17 +50,6 @@ export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement)
   user!: any;
 
   @query('#organizationSelector') organizationSelectorDropdown!: EtoolsDropdownEl;
-
-  public connectedCallback() {
-    super.connectedCallback();
-
-    setTimeout(() => {
-      const fitInto = document.querySelector('app-shell')!.shadowRoot!.querySelector('#appHeadLayout');
-      if (fitInto && this.organizationSelectorDropdown) {
-        this.organizationSelectorDropdown.fitInto = fitInto;
-      }
-    }, 500);
-  }
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
@@ -114,9 +107,10 @@ export class OrganizationsDropdown extends EtoolsPageRefreshMixinLit(LitElement)
   }
 
   _handleResponse() {
-    this.refreshInProgress = true;
-    this.clearDexieDbs();
-    this.refreshInProgress = false;
+    // @dci check below, these were from EtoolsPageRefreshMixinLit (removed)
+    // this.refreshInProgress = true;
+    // this.clearDexieDbs();
+    // this.refreshInProgress = false;
     window.location.href = `${window.location.origin}${BASE_PATH}`;
   }
 }

@@ -1,10 +1,11 @@
-import {LitElement, PropertyValues, property, customElement} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 
 /**
  * main menu

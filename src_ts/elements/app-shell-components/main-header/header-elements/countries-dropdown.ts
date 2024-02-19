@@ -1,11 +1,11 @@
-import {LitElement, html, customElement, property} from 'lit-element';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown.js';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import famEndpoints from '../../../config/endpoints';
 import {HeaderStyles} from './header-styles';
 import {GenericObject} from '../../../../types/global';
 import {BASE_PATH} from '../../../config/config';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {DexieRefresh} from '@unicef-polymer/etools-utils/dist/singleton/dexie-refresh';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
@@ -20,7 +20,31 @@ export class CountriesDropdown extends LitElement {
   render() {
     return html`
       ${HeaderStyles}
+      <style>
+        *[hidden] {
+          display: none !important;
+        }
+
+        :host {
+          display: block;
+        }
+
+        :host(:hover) {
+          cursor: pointer;
+        }
+
+        etools-dropdown {
+          --sl-input-color: var(--light-secondary-text-color);
+        }
+
+        @media (max-width: 768px) {
+          etools-dropdown {
+            width: 130px;
+          }
+        }
+      </style>
       <etools-dropdown
+        transparent
         id="countrySelector"
         class="w100"
         .selected="${this.currentCountry?.id}"
@@ -33,7 +57,9 @@ export class CountriesDropdown extends LitElement {
         @etools-selected-item-changed="${this._countrySelected}"
         .shownOptionsLimit="${250}"
         hide-search
-        auto-width
+        min-width="160px"
+        placement="bottom-end"
+        .syncWidth="${false}"
       ></etools-dropdown>
     `;
   }
@@ -43,15 +69,6 @@ export class CountriesDropdown extends LitElement {
 
   @property({type: Object})
   currentCountry!: GenericObject;
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    setTimeout(() => {
-      const fitInto = document.querySelector('app-shell')!.shadowRoot!.querySelector('#appHeadLayout');
-      (this.shadowRoot?.querySelector('#countrySelector') as EtoolsDropdownEl).fitInto = fitInto;
-    }, 0);
-  }
 
   _countrySelected(e) {
     if (!e.detail.selectedItem) {

@@ -1,4 +1,4 @@
-import {html} from 'lit-element';
+import {html} from 'lit';
 
 // language=HTML
 export const fileAttachmentsTabStyles = html`
@@ -18,41 +18,7 @@ export const fileAttachmentsTabStyles = html`
     }
 
     #fileType {
-      --paper-listbox: {
-        max-height: 600px;
-        -ms-overflow-style: auto;
-      }
       margin-top: 2px;
-    }
-
-    paper-input-container {
-      margin: 0 12px;
-      --paper-input-container-focus-color: var(--primary-color);
-      --paper-input-container: {
-        color: var(--gray-50) !important;
-        font-size: 13px;
-        opacity: 1 !important;
-      }
-      --paper-input-container-underline: {
-        display: none !important;
-      }
-      --paper-input-container-underline-focus: {
-        display: none;
-      }
-      --paper-input-container-underline-disabled: {
-        display: block !important;
-        border-bottom: 1px dashed var(--gray-20) !important;
-      }
-    }
-
-    paper-input {
-      --paper-input-container-underline: {
-        border-bottom: 1px solid var(--gray-20) !important;
-      }
-      --paper-input-container-underline-disabled: {
-        display: block !important;
-        border-bottom: 1px dashed var(--gray-20) !important;
-      }
     }
 
     etools-content-panel::part(ecp-content) {
@@ -89,7 +55,7 @@ export const fileAttachmentsTabStyles = html`
       cursor: pointer;
     }
 
-    .delete-icon iron-icon {
+    .delete-icon etools-icon {
       --iron-icon-width: 20px;
       --iron-icon-height: 20px;
       --iron-icon-fill-color: var(--gray-50);
@@ -103,7 +69,7 @@ export const fileAttachmentsTabStyles = html`
     .attachment {
       margin-inline-end: 8px;
     }
-    iron-icon {
+    etools-icon {
       color: var(--dark-icon-color);
     }
     icons-actions {
@@ -124,8 +90,10 @@ export const fileAttachmentsTabStyles = html`
     etools-data-table-header {
       --list-header-wrapper-column-height: 48px;
     }
-    paper-icon-button[icon='add-box'] {
-      color: var(--primary-text-color);
+    etools-content-panel div[slot='panel-btns'] .panel-button {
+      color: #ffffff;
+    }
+    etools-icon-button[name='add-box'] {
       margin-inline-start: 20px;
     }
   </style>

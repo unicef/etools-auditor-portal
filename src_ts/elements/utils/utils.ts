@@ -67,3 +67,39 @@ export const setUsersFullName = (users: AnyObject[]) => {
   );
   return users;
 };
+
+export const isActiveTab = (tab: string, expectedTab: string): boolean => {
+  return tab === expectedTab;
+};
+
+export const _showDialogSpinner = (requestInProcess: boolean, uploadInProgress: boolean) => {
+  // When the upload is in progress do not show the dialog spinner
+  if (uploadInProgress) {
+    return false;
+  }
+  return requestInProcess;
+};
+
+export const getBodyDialog = (dialogKey: string) => {
+  return document.body.querySelector(dialogKey);
+};
+
+export const getObjectsIDs = (data: AnyObject[]) => {
+  return (data || []).map((item: any) => item.id);
+};
+
+export const setDataOnSessionStorage = (key: string, data: any): void => {
+  sessionStorage.setItem(key, JSON.stringify(data));
+};
+
+export const getDataFromSessionStorage = (key: string): any => {
+  const data = sessionStorage.getItem(key);
+  if (data) {
+    try {
+      return JSON.parse(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return null;
+};

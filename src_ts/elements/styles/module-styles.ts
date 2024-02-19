@@ -1,4 +1,4 @@
-import {css} from 'lit-element';
+import {css} from 'lit';
 
 // language=HTML
 export const moduleStyles = css`
@@ -40,7 +40,6 @@ export const moduleStyles = css`
     --module-submitted: rgba(206, 188, 6, 0.6);
     --module-sent: rgba(30, 134, 191, 0.45);
     --module-completed: rgba(141, 198, 63, 1);
-    --paper-button_-_color: #fff;
   }
 
   *[hidden] {
@@ -52,50 +51,8 @@ export const moduleStyles = css`
   }
 
   /* TABS */
-  paper-tabs {
-    --paper-tabs-selection-bar-color: var(--primary-color);
-  }
-
-  paper-tab {
-    --paper-tab-content: {
-      text-transform: none;
-      font-size: 14px;
-      font-weight: 500;
-      width: 140px;
-    }
-  }
-
-  etools-dialog::part(ed-scrollable) {
-    max-height: 50vh !important;
-    --etools-dialog-content_-_max-height: 50vh !important;
-  }
-
   .container {
     padding: 16px 16px;
-  }
-
-  /* PAPER-TOGGLE-BUTTON */
-  paper-toggle-button {
-    --paper-toggle-button-checked-button-color: var(--primary-color);
-    --paper-toggle-button-checked-bar-color: rgba(0, 174, 239, 0.5);
-    --paper-toggle-button-unchecked-button-color: rgba(241, 241, 241, 1);
-    --paper-toggle-button-unchecked-bar-color: rgba(31, 31, 31, 0.26);
-  }
-
-  /* CHECKBOX */
-  paper-checkbox {
-    --paper-checkbox-unchecked-color: var(--gray-mid);
-    --paper-checkbox-checked-color: var(--primary-color);
-    --paper-checkbox-label: {
-      color: var(--gray-dark);
-      font-size: 16px;
-    }
-    --paper-checkbox-margin: 0;
-  }
-
-  paper-radio-button {
-    --paper-radio-button-unchecked-color: var(--gray-mid);
-    --paper-radio-button-checked-color: var(--primary-color);
   }
 
   etools-dropdown,
@@ -115,11 +72,6 @@ export const moduleStyles = css`
     box-sizing: border-box;
     width: 100%;
   }
-  datepicker-lite {
-    --paper-input-prefix: {
-      color: var(--gray-mid);
-    }
-  }
   etools-content-panel {
     position: relative;
   }
@@ -137,6 +89,13 @@ export const moduleStyles = css`
     left: 13px;
     width: 45px;
     height: 45px;
+  }
+
+  etools-content-panel div[slot='panel-btns'] .panel-button {
+    color: #ffffff;
+  }
+  etools-content-panel div[slot='panel-btns'] {
+    position: relative;
   }
   .pl-30 {
     padding-left: 30px;
@@ -160,7 +119,7 @@ export const moduleStyles = css`
     padding: 4px 0px;
   }
 
-  .wrap-text iron-icon {
+  .wrap-text etools-icon {
     flex-shrink: 0;
     width: 16px;
   }
@@ -172,9 +131,13 @@ export const moduleStyles = css`
     --list-divider-color: var(--dark-divider-color);
   }
   etools-data-table-row::part(edt-list-row-wrapper) {
-    height: 48px;
+    min-height: 24px;
   }
-  .editable-row:hover .hover-block {
+  etools-data-table-row *[slot='row-data'] .col-data {
+    line-height: 16px;
+  }
+  .editable-row:hover .hover-block,
+  .editable-row:hover .hover-block:focus {
     background-color: transparent;
   }
   .rdc-title {
@@ -182,14 +145,11 @@ export const moduleStyles = css`
     width: 100%;
     color: var(--secondary-text-color);
     font-weight: 500;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
     margin-bottom: 6px;
   }
   .row-details-content {
-    font-size: 14px;
-  }
-  datepicker-lite {
-    --paper-input-container_-_width: 100%;
+    font-size: var(--etools-font-size-14, 14px);
   }
 
   div[slot='panel-btns'] .panel-button {
@@ -215,7 +175,7 @@ export const moduleStyles = css`
   .col-data.truncate {
     display: inline-block;
     overflow: hidden;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
     text-overflow: ellipsis;
     padding-right: 16px;
     padding-left: 1px;
@@ -226,6 +186,9 @@ export const moduleStyles = css`
   }
   .caps::first-letter {
     text-transform: uppercase;
+  }
+  .editable-row:hover .hover-block {
+    background-color: transparent;
   }
 
   .f1 {

@@ -1,8 +1,9 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@polymer/paper-input/paper-input';
-import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 
 import DateMixin from '../../../../mixins/date-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
@@ -33,8 +34,8 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
       ${sharedStyles}
 
       <etools-content-panel class="content-section clearfx" panel-title="Overview">
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <datepicker-lite
               id="dateFaceStartInput"
               label="${this.getLabel('face_form_start_date', this.optionsData)}"
@@ -49,7 +50,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <datepicker-lite
               id="dateFaceEndInput"
               .value="${this.data?.face_form_end_date}"
@@ -64,9 +65,10 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Total Value of Selected FACE Forms -->
-            <etools-currency-amount-input
+            <etools-currency
+              class="w100"
               .value="${this.data?.total_value}"
               currency="$"
               label="${this.getLabel('total_value', this.optionsData)}"
@@ -74,14 +76,14 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               readonly
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container">
-            <etools-currency-amount-input
-              class="${this._setRequired('total_amount_tested', this.optionsData)}"
+        <div class="layout-horizontal">
+          <div class="col col-4">
+            <etools-currency
+              class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
               .value="${this.data?.total_amount_tested}"
               currency="$"
               label="${this.getLabel('total_amount_tested', this.optionsData)}"
@@ -94,12 +96,12 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                 this.numberChanged(detail, 'total_amount_tested', this.data)}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
-          <div class="input-container">
-            <etools-currency-amount-input
-              class="${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
+          <div class="col col-4">
+            <etools-currency
+              class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
               .value="${this.data?.total_amount_of_ineligible_expenditure}"
               currency="$"
               label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
@@ -112,7 +114,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                 this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data)}"
               @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
       </etools-content-panel>

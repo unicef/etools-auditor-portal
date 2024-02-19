@@ -1,4 +1,5 @@
-import {LitElement, html, customElement} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement} from 'lit/decorators.js';
 import {BASE_PATH} from '../../config/config';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 
@@ -34,7 +35,7 @@ export class PageFooter extends LitElement {
 
         #unicef-logo img {
           height: 28px;
-          width: 118px;
+          width: 115px;
         }
 
         .footer-link {
@@ -56,7 +57,7 @@ export class PageFooter extends LitElement {
       <footer>
         <div id="footer-content" class="layout-horizontal">
           <span id="unicef-logo" class="layout-horizontal layout-inline">
-            <img src="${BASE_PATH}assets/images/UNICEF_logo.png" alt="UNICEF logo" />
+            <img src="${BASE_PATH}assets/images/UNICEF_logo.webp" alt="UNICEF logo" />
           </span>
           <!-- TODO: modify span to a with proper href values after footer pages are ready -->
           <!--   <span class="footer-link">Contact</span>

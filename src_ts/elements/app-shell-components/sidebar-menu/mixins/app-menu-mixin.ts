@@ -1,7 +1,7 @@
-import {LitElement, Constructor, property} from 'lit-element';
-import {AppDrawerElement} from '@polymer/app-layout/app-drawer/app-drawer';
-import {AppDrawerLayoutElement} from '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
-import {AppHeaderLayoutElement} from '@polymer/app-layout/app-header-layout/app-header-layout.js';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
+import {Constructor} from '@unicef-polymer/etools-types';
+import {SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from '../../../config/config';
 
 /**
  * App menu functionality mixin
@@ -12,6 +12,9 @@ export function AppMenuMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class AppMenuClass extends baseClass {
     @property({type: Boolean})
     smallMenu = false;
+
+    @property({type: Boolean})
+    drawerOpened = false;
 
     public connectedCallback() {
       super.connectedCallback();
@@ -25,77 +28,39 @@ export function AppMenuMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     private _initMenuListeners(): void {
-      this._toggleSmallMenu = this._toggleSmallMenu.bind(this);
-      this._resizeMainLayout = this._resizeMainLayout.bind(this);
-      this._toggleDrawer = this._toggleDrawer.bind(this);
+      this._toggleMenu = this._toggleMenu.bind(this);
 
-      this.addEventListener('toggle-small-menu', this._toggleSmallMenu);
-      this.addEventListener('resize-main-layout', this._resizeMainLayout);
-      this.addEventListener('drawer', this._toggleDrawer);
+      this.addEventListener('toggle-small-menu', this._toggleMenu as any);
+      this.addEventListener('change-drawer-state', this.changeDrawerState);
     }
 
     private _removeMenuListeners(): void {
-      this.removeEventListener('toggle-small-menu', this._toggleSmallMenu);
-      this.removeEventListener('resize-main-layout', this._resizeMainLayout);
-      this.removeEventListener('drawer', this._toggleDrawer);
+      this.removeEventListener('toggle-small-menu', this._toggleMenu as any);
+      this.removeEventListener('change-drawer-state', this.changeDrawerState);
     }
 
     private _initMenuSize(): void {
-      this.smallMenu = this._isSmallMenuActive();
-    }
-
-    private _isSmallMenuActive(): boolean {
-      /**
-       * localStorage value must be 0 or 1
-       */
-      const menuTypeStoredVal: string | null = localStorage.getItem('etoolsAppSmallMenuIsActive');
+      const menuTypeStoredVal: string | null = localStorage.getItem(SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY);
       if (!menuTypeStoredVal) {
-        return false;
-      }
-      return !!parseInt(menuTypeStoredVal, 10);
-    }
-
-    private _toggleSmallMenu(e: Event): void {
-      e.stopImmediatePropagation();
-      this.smallMenu = !this.smallMenu;
-      this._smallMenuValueChanged(this.smallMenu);
-    }
-
-    protected _resizeMainLayout(e: Event) {
-      e.stopImmediatePropagation();
-      this._updateDrawerStyles();
-      this._notifyLayoutResize();
-    }
-
-    private _smallMenuValueChanged(newVal: boolean) {
-      const localStorageVal: number = newVal ? 1 : 0;
-      localStorage.setItem('etoolsAppSmallMenuIsActive', String(localStorageVal));
-    }
-
-    private _updateDrawerStyles(): void {
-      const drawerLayout: AppDrawerLayoutElement | null = this.shadowRoot!.querySelector('#layout');
-      if (drawerLayout) {
-        drawerLayout.updateStyles();
-      }
-      const drawer: AppDrawerElement | null = this.shadowRoot!.querySelector('#drawer');
-      if (drawer) {
-        drawer.updateStyles();
+        this.smallMenu = false;
+      } else {
+        this.smallMenu = !!parseInt(menuTypeStoredVal, 10);
       }
     }
 
-    private _notifyLayoutResize(): void {
-      const drawerLayout: AppDrawerLayoutElement | null = this.shadowRoot!.querySelector('#layout');
-      if (drawerLayout) {
-        drawerLayout.notifyResize();
-      }
-      const headerLayout: AppHeaderLayoutElement | null = this.shadowRoot!.querySelector('#appHeadLayout');
-      if (headerLayout) {
-        headerLayout.notifyResize();
-      }
+    public changeDrawerState() {
+      this.drawerOpened = !this.drawerOpened;
     }
 
-    _toggleDrawer(): void {
-      (this.shadowRoot!.querySelector('#drawer') as AppDrawerElement).toggle();
+    // public onDrawerToggle() {
+    //   const drawerOpened = (this.drawer as any).opened;
+    //   if (this.drawerOpened !== drawerOpened) {
+    //     this.drawerOpened = drawerOpened;
+    //   }
+    // }
+    private _toggleMenu(e: CustomEvent): void {
+      // e.stopImmediatePropagation();
+      this.smallMenu = e.detail.value; // !this.smallMenu;
     }
   }
 

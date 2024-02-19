@@ -1,9 +1,10 @@
-import {LitElement, PropertyValues, property, customElement} from 'lit-element';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
 import {addAllowedActions} from '../mixins/permission-controller';
 import {GenericObject} from '@unicef-polymer/etools-types';
-import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {RequestConfig, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {
   getActionPointOptions,
@@ -36,7 +37,7 @@ export class UpdateEngagement extends LitElement {
   forceOptionsUpdate!: boolean;
 
   @property({type: Object})
-  requestOptions!: EtoolsRequestConfig;
+  requestOptions!: RequestConfig;
 
   @property({type: Object})
   postData!: GenericObject;
@@ -75,7 +76,7 @@ export class UpdateEngagement extends LitElement {
     fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     fireEvent(this, 'global-loading', {type: 'update-permissions'});
 
-    let action;
+    let action = 'saved';
     if (this.requestOptions.method === 'PATCH') {
       action = 'saved';
     } else if (data.status === 'report_submitted') {
@@ -92,6 +93,7 @@ export class UpdateEngagement extends LitElement {
       this.quietAdding = false;
       fireEvent(this, 'quiet-adding-changed', String(this.quietAdding).toLowerCase());
     }
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
   }
 
   _finishPostResponse() {
@@ -105,6 +107,8 @@ export class UpdateEngagement extends LitElement {
       fireEvent(this, 'global-loading', {type: 'finalize-engagement', saved: true});
     } else if (~this.actionUrl.indexOf('cancel')) {
       fireEvent(this, 'global-loading', {type: 'cancel-engagement'});
+    } else if (~this.actionUrl.indexOf('send_back')) {
+      fireEvent(this, 'global-loading', {type: 'send-back-engagement'});
     } else {
       fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     }
@@ -115,10 +119,14 @@ export class UpdateEngagement extends LitElement {
       getEngagementAttachmentOptions(this.updatedEngagementData.id),
       getEngagementReportAttachmentsOptions(this.updatedEngagementData.id),
       getActionPointOptions(this.updatedEngagementData.id)
-    ]).then((response: any[]) => {
-      this._handleOptionsResponse(this.formatResponse(response));
-      fireEvent(this, 'global-loading', {active: false});
-    });
+    ])
+      .then((response: any[]) => {
+        this._handleOptionsResponse(this.formatResponse(response));
+      })
+      .finally(() => {
+        fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+        fireEvent(this, 'global-loading', {active: false});
+      });
   }
 
   _handleOptionsResponse(data) {
@@ -136,6 +144,8 @@ export class UpdateEngagement extends LitElement {
   }
 
   _handleError(error) {
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+
     if (this.requestOptions.method === 'PATCH') {
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
     } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('submit')) {
@@ -144,6 +154,8 @@ export class UpdateEngagement extends LitElement {
       fireEvent(this, 'global-loading', {type: 'finalize-engagement'});
     } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('cancel')) {
       fireEvent(this, 'global-loading', {type: 'cancel-engagement'});
+    } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('send_back')) {
+      fireEvent(this, 'global-loading', {type: 'send-back-engagement'});
     }
 
     this.actionUrl = '';
@@ -242,6 +254,26 @@ export class UpdateEngagement extends LitElement {
       const url =
         getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url +
         engagementInfo.cancel;
+      this.actionUrl = url;
+      this.postData = engagementInfo.data;
+      this.requestOptions = {
+        method: 'POST',
+        endpoint: {
+          url
+        },
+        body: this.postData
+      };
+      this._performUpdate();
+    } else if (engagementInfo.send_back) {
+      // Run finalizing
+      fireEvent(this, 'global-loading', {
+        type: 'send-back-engagement',
+        active: true,
+        message: 'Send Back engagement...'
+      });
+      const url =
+        getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url +
+        engagementInfo.send_back;
       this.actionUrl = url;
       this.postData = engagementInfo.data;
       this.requestOptions = {

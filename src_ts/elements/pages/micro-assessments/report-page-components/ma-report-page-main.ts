@@ -1,7 +1,10 @@
-import {LitElement, html, property, customElement} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import EngagementMixin from '../../../mixins/engagement-mixin';
 import {GenericObject} from '../../../../types/global';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../common-elements/engagement-report-components/send-back-comment/send-back-comment';
 import './primary-risk-element';
 import './key-internal-controls-tab';
 import './control-findings-tab';
@@ -15,6 +18,12 @@ import './control-findings-tab';
 export class MaReportPageMain extends EngagementMixin(LitElement) {
   render() {
     return html`
+      ${sharedStyles}
+      <send-back-comments
+        ?hidden="${!this.showSendBackComments}"
+        .comments="${this.engagement.send_back_comment}"
+      ></send-back-comments>
+
       <assign-engagement
         id="assignEngagement"
         .data="${this.engagement}"
@@ -64,6 +73,9 @@ export class MaReportPageMain extends EngagementMixin(LitElement) {
 
   @property({type: Object})
   primaryArea!: GenericObject;
+
+  @property({type: Boolean})
+  showSendBackComments = false;
 
   validate(forSave) {
     const assignTabValid = this.getElement('#assignEngagement').validate(forSave);

@@ -1,11 +1,13 @@
-import {LitElement, html, property, customElement, PropertyValues} from 'lit-element';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-tooltip/paper-tooltip';
-import '@polymer/paper-input/paper-textarea';
-
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import './assessment-of-controls-dialog.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
@@ -19,6 +21,8 @@ import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {checkNonField} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
@@ -36,6 +40,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
     return html`
       ${sharedStyles}
       <style>
+        ${dataTableStylesLit}
         .repeatable-item-container[without-line] {
           min-width: 0 !important;
           margin-bottom: 0 !important;
@@ -52,8 +57,11 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
         .mt-30 {
           margin-top: 30px
         }
-        .pr-55 {
-          padding-inline-end: 55px !important;
+        etools-data-table-row *[slot="row-data-details"]{
+          flex-direction: column;
+        }
+        etools-data-table-row *[slot="row-data"] {
+          max-width: calc(100% - 40px);
         }
       </style>
 
@@ -70,8 +78,11 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
         </div>
         <div slot="panel-btns">
           <div ?hidden="${!this._canBeChanged(this.optionsData)}">
-            <paper-icon-button class="panel-button" @click="${this.openAddDialog}" icon="add-box"> </paper-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${
+                this.openAddDialog
+              }" name="add-box"> </etools-icon-button>
+            </sl-tooltip>
           </div>
         </div>
 
@@ -83,10 +94,10 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           (item, index) => html`
             <etools-data-table-row>
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-12 truncate pr-55">${item.audit_observation}</span>
+                <span class="col-data col-12 truncate">${item.audit_observation}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                  <paper-icon-button icon="create" @click="${() => this.openEditDialog(index)}"></paper-icon-button>
-                  <paper-icon-button icon="delete" @click="${() => this.openDeleteDialog(index)}"></paper-icon-button>
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
               </div>
               <div slot="row-data-details">
@@ -108,106 +119,6 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
             </div>
           </etools-data-table-row>
         </div>
-
-        <etools-dialog
-          theme="confirmation"
-          size="md"
-          keep-dialog-open
-          .opened="${this.confirmDialogOpened}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          @confirm-btn-clicked="${this.removeItem}"
-          ok-btn-text="Delete"
-          openFlag="confirmDialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          ${this.deleteTitle}
-        </etools-dialog>
-
-        <etools-dialog
-          no-padding
-          keep-dialog-open
-          size="md"
-          .opened="${this.dialogOpened}"
-          .dialogTitle="${this.dialogTitle}"
-          .okBtnText="${this.confirmBtnText}"
-          ?show-spinner="${this.requestInProcess}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          @confirm-btn-clicked="${this._addItemFromDialog}"
-          openFlag="dialogOpened"
-          @close="${this._resetDialogOpenedFlag}"
-        >
-          <div class="container">
-            <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- Recommendation -->
-                  <paper-textarea
-                    class="w100 ${this._setRequired(
-                      'key_internal_controls.recommendation',
-                      this.optionsData
-                    )} validate-input"
-                    .value="${this.editedItem.recommendation}"
-                    label="${this.getLabel('key_internal_controls.recommendation', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('key_internal_controls.recommendation', this.optionsData)}"
-                    ?required="${this._setRequired('key_internal_controls.recommendation', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.recommendation}"
-                    .errorMessage="${this.errors.recommendation}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'recommendation', this.editedItem)}""
-                  >
-                  </paper-textarea>
-                </div>
-              </div>
-
-              <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- Audit Observation -->
-                  <paper-textarea
-                    class="w100 ${this._setRequired(
-                      'key_internal_controls.audit_observation',
-                      this.optionsData
-                    )} validate-input"
-                    .value="${this.editedItem.audit_observation}"
-                    label="${this.getLabel('key_internal_controls.audit_observation', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText(
-                      'key_internal_controls.audit_observation',
-                      this.optionsData
-                    )}"
-                    ?required="${this._setRequired('key_internal_controls.audit_observation', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.audit_observation}"
-                    .errorMessage="${this.errors.audit_observation}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'audit_observation', this.editedItem)}""
-                  >
-                  </paper-textarea>
-                </div>
-              </div>
-
-               <div class="layout-horizontal">
-                <div class="col col-12">
-                  <!-- IP Response -->
-                  <paper-textarea
-                    class="w100 ${this._setRequired('key_internal_controls.ip_response', this.optionsData)}
-                                          validate-input"
-                    .value="${this.editedItem.ip_response}"
-                    label="${this.getLabel('key_internal_controls.ip_response', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('key_internal_controls.ip_response', this.optionsData)}"
-                    ?required="${this._setRequired('key_internal_controls.ip_response', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.ip_response}"
-                    .errorMessage="${this.errors.ip_response}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'ip_response', this.editedItem)}""
-                  >
-                  </paper-textarea>
-                </div>
-              </div>
-            </div>
-        </etools-dialog>
       </etools-content-panel>
     `;
   }
@@ -237,19 +148,67 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this assessment?';
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.dialogKey = 'assessment-of-controls-dialog';
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
-    if (changedProperties.has('dialogOpened')) {
-      this.resetDialog(this.dialogOpened);
-    }
-    if (changedProperties.has('confirmDialogOpened')) {
-      this.resetDialog(this.confirmDialogOpened);
-    }
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject.key_internal_controls);
       this._checkNonField(this.errorObject.key_internal_controls);
     }
+  }
+
+  openAddEditDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        editedIndex: this.editedIndex,
+        dataItems: this.dataItems,
+        originalEditedObj: this.originalEditedObj,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    });
+    // .then(({confirmed, response}) => {
+    //   if (confirmed) {
+    //     this.dataItems = cloneDeep(response);
+    //   }
+    // });
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
+    });
   }
 
   _checkNonField(error) {

@@ -1,4 +1,5 @@
-import {LitElement, Constructor, property} from 'lit-element';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
 import clone from 'lodash-es/clone';
 import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
@@ -8,8 +9,9 @@ import {readonlyPermission, isRequired, getOptionsChoices, getCollection} from '
 import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
-import {AnyObject} from '@unicef-polymer/etools-types';
+import {AnyObject, Constructor} from '@unicef-polymer/etools-types';
 import get from 'lodash-es/get';
+import {getBodyDialog} from '../utils/utils';
 
 /**
  * @polymer
@@ -17,6 +19,8 @@ import get from 'lodash-es/get';
  */
 function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class CommonMethodsMixinClass extends baseClass {
+    [x: string]: any;
+
     @property({type: Boolean})
     requestInProcess!: boolean;
 
@@ -34,9 +38,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     @property({type: String})
     errorBaseText!: string;
-
-    @property({type: Boolean})
-    confirmDialogOpened = false;
 
     @property({type: Object})
     engagementData!: AnyObject;
@@ -81,10 +82,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return required ? 'required' : false;
     }
 
-    _resetDialogOpenedFlag(event) {
-      this[event.currentTarget.getAttribute('openFlag')] = false;
-    }
-
     _errorHandler(errorData) {
       if (!errorData || !Object.keys(errorData).length) {
         return false;
@@ -92,9 +89,34 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
+
+      this.closeDialogLoading();
       this.errors = clone(refactorErrorObject(errorData));
       if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
+      }
+    }
+
+    closeDialogLoading(dialogKey = this.dialogKey) {
+      // dialogKey is defined in TableElementsMixin
+      if (!dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(dialogKey);
+      if (dialogEl) {
+        (dialogEl as any).requestInProcess = false;
+      }
+    }
+
+    closeEditDialog(dialogKey = this.dialogKey) {
+      if (!dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(dialogKey);
+      if (dialogEl) {
+        (dialogEl as any)._onClose();
       }
     }
 
@@ -103,6 +125,8 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!errorData) {
         return false;
       }
+
+      this.closeDialogLoading();
 
       const data = refactorErrorObject(errorData);
       const nonField = checkNonField(errorData);
@@ -115,17 +139,6 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
       if (nonField) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${nonField}`});
-      }
-    }
-
-    _dataChanged() {
-      if (this.dialogOpened) {
-        this.requestInProcess = false;
-        this.dialogOpened = false;
-      }
-      if (this.confirmDialogOpened) {
-        this.requestInProcess = false;
-        this.confirmDialogOpened = false;
       }
     }
 
@@ -166,6 +179,15 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         return '';
       }
       return get(options, `GET.${path}.max_length`);
+    }
+
+    getNumericPlaceholderText(path, options: AnyObject) {
+      if (readonlyPermission(path, options)) {
+        return '0';
+      }
+
+      const label = this.getLabel(path, options);
+      return `Enter ${label}`;
     }
 
     getPlaceholderText(path, options: AnyObject, datepicker?) {
@@ -211,6 +233,16 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     isAuditOrSpecialAudit(type: string) {
       return ['audit', 'sa'].includes(type);
+    }
+
+    getFileNameFromURL(url: string) {
+      if (!url) {
+        return '';
+      }
+      const urlSplit = url.split('?');
+      if (urlSplit.length) {
+        return urlSplit.shift()!.split('/').pop();
+      }
     }
 
     isJSONObj(str) {

@@ -1,10 +1,12 @@
-import {LitElement, html, property, customElement} from 'lit-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../../common-elements/engagement-report-components/send-back-comment/send-back-comment';
 import '../overview-element/overview-element';
 import '../summary-findings-element/summary-findings-element';
 import '../internal-controls/internal-controls';
 import {GenericObject} from '../../../../../types/global';
-
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import concat from 'lodash-es/concat';
 import isNull from 'lodash-es/isNull';
 // eslint-disable-next-line
@@ -21,6 +23,12 @@ export class ScReportPageMain extends LitElement {
   render() {
     // language=HTML
     return html`
+      ${sharedStyles}
+      <send-back-comments
+        ?hidden="${!this.showSendBackComments}"
+        .comments="${this.engagement.send_back_comment}"
+      ></send-back-comments>
+
       <assign-engagement
         id="assignEngagement"
         .data="${this.engagement}"
@@ -94,6 +102,9 @@ export class ScReportPageMain extends LitElement {
 
   @property({type: Object})
   errorObject: GenericObject = {};
+
+  @property({type: Boolean})
+  showSendBackComments = false;
 
   validate(forSave) {
     const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagement).validate(forSave);

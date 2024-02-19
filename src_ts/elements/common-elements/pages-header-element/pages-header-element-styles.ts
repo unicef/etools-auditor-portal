@@ -1,4 +1,4 @@
-import {css} from 'lit-element';
+import {css} from 'lit';
 
 // language=HTML
 export const pagesHeaderElementStyles = css`
@@ -24,7 +24,7 @@ export const pagesHeaderElementStyles = css`
     padding: 12px 9px;
   }
 
-  .export-buttons > paper-button {
+  .export-buttons > etools-button {
     height: 36px;
   }
 
@@ -46,7 +46,7 @@ export const pagesHeaderElementStyles = css`
   }
 
   .side-heading span.title {
-    font-size: 24px;
+    font-size: var(--etools-font-size-24, 24px);
     padding-left: 48px;
     width: 100%;
     white-space: nowrap;
@@ -57,14 +57,14 @@ export const pagesHeaderElementStyles = css`
   .side-heading .grey-buttons {
     color: var(--gray-mid);
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
   }
 
-  .side-heading .grey-buttons iron-icon {
+  .side-heading .grey-buttons etools-icon {
     margin-right: 8px;
   }
 
-  .side-heading paper-button.add-btn {
+  .side-heading etools-button.add-btn {
     background-color: var(--primary-color);
     color: white;
     height: 36px;
@@ -73,12 +73,12 @@ export const pagesHeaderElementStyles = css`
     padding-right: 15px;
   }
 
-  .side-heading paper-button.add-btn span {
+  .side-heading etools-button.add-btn span {
     margin-left: 4px;
   }
 
   .side-heading .add-btn {
-    font-size: 14px;
+    font-size: var(--etools-font-size-14, 14px);
     margin: 11px 4px 12px 18px;
     background-color: var(--primary-color);
   }

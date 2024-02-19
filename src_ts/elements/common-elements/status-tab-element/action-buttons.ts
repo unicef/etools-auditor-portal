@@ -1,14 +1,16 @@
-import {LitElement, html, property, customElement} from 'lit-element';
-import '@polymer/paper-button/paper-button';
-import '@polymer/paper-menu-button/paper-menu-button';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/paper-icon-button/paper-icon-button';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button-group';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
-import {ConfigObj, createDynamicDialog, removeDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
-import EtoolsDialog from '@unicef-polymer/etools-dialog';
+import {createDynamicDialog, removeDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
+import EtoolsDialog from '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
 /**
  * main menu
@@ -24,28 +26,30 @@ export class ActionButtons extends LitElement {
   render() {
     return html`
       ${ActionButtonsStyles}
-      <paper-button
-        class="main-action status-tab-button ${this.withActionsMenu(this.actions.length)}"
-        raised
-        @click="${this._btnClicked}"
-      >
-        <span class="main-action text">${this._setButtonText(this.actions[0])}</span>
+      <etools-button-group>
+        <etools-button id="primary" variant="primary" @click="${this._handlePrimaryClick}">
+          ${this._setButtonText(this.actions[0])}
+        </etools-button>
         ${this._showOtherActions(this.actions.length)
-          ? html`<paper-menu-button class="option-button" dynamic-align close-on-activate>
-              <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
-              <div slot="dropdown-content">
+          ? html`<sl-dropdown
+              id="splitBtn"
+              placement="bottom-end"
+              @click="${(event: MouseEvent) => event.stopImmediatePropagation()}"
+            >
+              <etools-button slot="trigger" variant="primary" caret></etools-button>
+              <sl-menu>
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
                   .map(
-                    (item: any) => html`<div class="other-options" action-code="${this._setActionCode(item)}">
-                      <iron-icon icon="${this._setIcon(item, this.icons)}" class="option-icon"></iron-icon>
+                    (item: any) => html`<sl-menu-item @click="${() => this._handleSecondaryClick(item)}">
+                      <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
                       <span>${this._setButtonText(item)}</span>
-                    </div>`
+                    </sl-menu-item>`
                   )}
-              </div>
-            </paper-menu-button>`
+              </sl-menu>
+            </sl-dropdown>`
           : ``}
-      </paper-button>
+      </etools-button-group>
     `;
   }
 
@@ -58,7 +62,8 @@ export class ActionButtons extends LitElement {
     save: 'save',
     submit: 'assignment-turned-in',
     finalize: 'assignment-turned-in',
-    create: 'assignment-turned-in'
+    create: 'assignment-turned-in',
+    send_back: 'av:skipPrevious'
   };
 
   @property({type: Boolean})
@@ -81,7 +86,7 @@ export class ActionButtons extends LitElement {
     const dialogContent = document.createElement('span');
     dialogContent.innerText = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
                                You will not be able to make any further changes to the report.`;
-    const dialogConfig: ConfigObj = {
+    const dialogConfig = {
       title: 'Submit',
       size: 'md',
       okBtnText: 'Yes',
@@ -102,7 +107,7 @@ export class ActionButtons extends LitElement {
     if (!item) {
       return '';
     }
-    const text = item.display_name || item.replace('_', ' ');
+    const text = (item.display_name || item.replace('_', ' ')).replace('_', ' ');
 
     if (!text) {
       throw new Error('Can not get button text!');
@@ -111,25 +116,18 @@ export class ActionButtons extends LitElement {
     return text.toUpperCase();
   }
 
-  _btnClicked(event) {
-    if (!event || !event.target) {
-      return;
+  _handlePrimaryClick() {
+    const action = this.actions[0].code || this.actions[0];
+    if (action === 'submit') {
+      this.showSubmitConfirmation();
+    } else {
+      this.fireActionActivated(action);
     }
-    const target = event.target.classList.contains('other-options')
-      ? event.target
-      : event.target.parentElement || event.target;
-    const isMainAction = event.target.classList.contains('main-action');
+  }
 
-    const action = isMainAction
-      ? this.actions[0].code || this.actions[0]
-      : target && target.getAttribute('action-code');
-
+  _handleSecondaryClick(item: any) {
+    const action = item.code;
     if (action) {
-      const paperMenuBtn = this.shadowRoot!.querySelector('paper-button')!.querySelector('paper-menu-button');
-      if (paperMenuBtn && paperMenuBtn.opened) {
-        paperMenuBtn.close();
-      }
-
       if (action === 'submit') {
         this.showSubmitConfirmation();
       } else {
@@ -142,6 +140,7 @@ export class ActionButtons extends LitElement {
     if (event.detail.confirmed) {
       this.fireActionActivated('submit');
     }
+    this.submitConfirmationDialog.opened = false;
   }
 
   fireActionActivated(action: string) {
@@ -170,9 +169,5 @@ export class ActionButtons extends LitElement {
       return '';
     }
     return icons[item.code || item] || '';
-  }
-
-  _setActionCode(item) {
-    return item && (item.code || item);
   }
 }

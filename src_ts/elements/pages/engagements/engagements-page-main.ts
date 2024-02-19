@@ -1,5 +1,5 @@
-import {LitElement, html, property, customElement} from 'lit-element';
-import '@polymer/iron-pages/iron-pages';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {GenericObject} from '../../../types/global';
 import {isValidCollection} from '../../mixins/permission-controller';
 import './engagements-list-view/engagements-list-view';
