@@ -133,7 +133,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           }
           etools-app-selector {
             width: 42px;
-          }     
+          }
           etools-profile-dropdown {
             margin-inline-start: 0px;
             width: 40px;
@@ -162,7 +162,9 @@ export class PageHeader extends MatomoMixin(LitElement) {
           <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
           <img id="app-logo" src="${BASE_PATH}assets/images/etools_logo.svg" alt="Etools" />
-          <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">${this.environment}</div>
+          <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">
+            ${this.environment}
+          </div>
         </div>
         <div class="layout-horizontal align-items-center">
           <div class="dropdowns">

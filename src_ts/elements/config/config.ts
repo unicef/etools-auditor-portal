@@ -51,7 +51,7 @@ export const checkEnvironment = () => {
   }
   if (location.indexOf(DEMO_DOMAIN) > -1) {
     return 'DEMO';
-  }  
+  }
   if (location.indexOf(DEV_DOMAIN) > -1) {
     return 'DEV';
   }
