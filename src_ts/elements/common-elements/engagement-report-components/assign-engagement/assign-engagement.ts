@@ -259,7 +259,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject);
+      this._errorHandler(this.errorObject, this.errorObject);
     }
   }
 

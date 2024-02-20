@@ -5,6 +5,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -97,7 +98,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         @attachments-request-error="${(e) => (this.errors = e.detail.data)}"
       >
       </update-attachments>
-
       <etools-content-panel class="content-section clearfix" .panelTitle="${this.tabTitle}" list>
         <div slot="panel-btns">
           <div class="layout-horizontal">
@@ -120,6 +120,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
             </div>
           </div>
         </div>
+        <etools-loading .active="${this.requestInProcess}" loading-text=""></etools-loading>
 
         <etools-data-table-header no-collapse no-title>
           <etools-data-table-column class="col-2"

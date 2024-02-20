@@ -259,6 +259,6 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
     if (this.dialogOpened) {
       return;
     }
-    this._errorHandler(errorData);
+    this._errorHandler(errorData, errorData);
   }
 }

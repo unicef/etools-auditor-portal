@@ -150,6 +150,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
 
   connectedCallback() {
     super.connectedCallback();
+
     this.dialogKey = 'assessment-of-controls-dialog';
     this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
     this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
@@ -167,7 +168,7 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject.key_internal_controls);
+      this._errorHandler(this.errorObject.key_internal_controls, this.errorObject);
       this._checkNonField(this.errorObject.key_internal_controls);
     }
   }

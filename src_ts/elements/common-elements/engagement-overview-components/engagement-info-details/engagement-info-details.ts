@@ -711,7 +711,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject);
+      this._errorHandler(this.errorObject, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
       this._setEngagementTypes(this.optionsData);

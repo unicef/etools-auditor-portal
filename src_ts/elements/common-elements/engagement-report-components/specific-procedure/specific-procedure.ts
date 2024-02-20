@@ -159,7 +159,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject?.specific_procedures);
+      this._errorHandler(this.errorObject?.specific_procedures, this.errorObject);
       this._checkNonField(this.errorObject?.specific_procedures);
     }
   }

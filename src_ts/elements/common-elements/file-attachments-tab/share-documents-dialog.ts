@@ -53,7 +53,6 @@ export class ShareDocumentsDialog extends CommonMethodsMixin(
         id="share-documents"
         ok-btn-text="Share"
         @confirm-btn-clicked="${this.saveSharedRequest}"
-        ?show-spinner="${this.requestInProcess}"
         ?disableConfirmBtn="${this.requestInProcess || !this.shareParams?.attachments?.length}"
         @close="${this._onClose}"
       >
@@ -94,7 +93,6 @@ export class ShareDocumentsDialog extends CommonMethodsMixin(
   }
 
   saveSharedRequest() {
-    this.requestInProcess = true;
     this.opener._saveSharedDocsRequest(this.shareParams);
   }
 
