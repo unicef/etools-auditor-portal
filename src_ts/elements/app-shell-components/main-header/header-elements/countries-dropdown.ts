@@ -35,6 +35,7 @@ export class CountriesDropdown extends LitElement {
 
         etools-dropdown {
           --sl-input-color: var(--light-secondary-text-color);
+          --sl-input-placeholder-color: var(--light-secondary-text-color);
         }
 
         @media (max-width: 768px) {

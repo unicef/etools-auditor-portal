@@ -42,14 +42,9 @@ export const HeaderStyles = html`
       padding: 4px;
     }
 
-    etools-dropdown::part(display-input)::placeholder {
-      color: var(--sl-input-color);
+    etools-dropdown {
+      --sl-input-placeholder-color: var(--light-secondary-text-color);
       opacity: 1;
-    }
-
-    etools-dropdown::part(display-input)::-ms-input-placeholder {
-      /* Edge 12-18 */
-      color: var(--sl-input-color);
     }
 
     @media (max-width: 768px) {

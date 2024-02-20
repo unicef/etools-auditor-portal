@@ -75,12 +75,10 @@ export class PageHeader extends MatomoMixin(LitElement) {
           margin-inline-end: 20px;
         }
 
-        .header {
-          flex-wrap: wrap;
-          height: 100%;
-          justify-content: space-between;
+        etools-accesibility {
+          margin-inline-end: 10px;
         }
-
+        
         .nav-menu-button {
           min-width: 70px;
         }
@@ -104,13 +102,8 @@ export class PageHeader extends MatomoMixin(LitElement) {
           border-radius: 10px;
         }
 
-        etools-profile-dropdown {
-          margin-inline-start: 16px;
-        }
-
         support-btn {
           color: var(--header-color);
-          margin-left: 10px;
         }
 
         @media (min-width: 850px) {
