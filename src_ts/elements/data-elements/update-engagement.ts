@@ -5,6 +5,7 @@ import {getEndpoint} from '../config/endpoints-controller';
 import {addAllowedActions} from '../mixins/permission-controller';
 import {GenericObject} from '@unicef-polymer/etools-types';
 import {RequestConfig, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
+import {formatServerErrorAsText} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-error-parser';
 import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {
   getActionPointOptions,
@@ -159,18 +160,24 @@ export class UpdateEngagement extends LitElement {
     }
 
     this.actionUrl = '';
+    let serverErrorText = '';
 
     let {status, response} = (error || {}) as any;
-    if (typeof response === 'string') {
-      try {
+    try {
+      if (typeof response === 'string') {
         response = JSON.parse(response);
-      } catch (e) {
-        response = {};
+      } else {
+        serverErrorText = formatServerErrorAsText(response);
       }
+    } catch (e) {
+      response = {};
     }
 
     if (status === 400) {
       this.errorObject = response;
+      if (serverErrorText) {
+        fireEvent(this, 'toast', {text: serverErrorText});
+      }
     } else if (status === 413) {
       this.errorObject = {};
       fireEvent(this, 'toast', {text: `Error: Exceeded the maximum size of uploaded file.`});

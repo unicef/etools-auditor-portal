@@ -260,7 +260,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject);
+      this._errorHandler(this.errorObject, this.errorObject);
     }
   }
 

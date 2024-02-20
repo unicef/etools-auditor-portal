@@ -214,7 +214,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
 
     if (changedProperties.has('errorObject')) {
       this._checkNonField(this.errorObject.financial_finding_set);
-      this._errorHandler(this.errorObject.financial_finding_set);
+      this._errorHandler(this.errorObject.financial_finding_set, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
       this.setChoices(this.optionsData);

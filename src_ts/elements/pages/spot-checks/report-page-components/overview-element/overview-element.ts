@@ -151,7 +151,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject);
+      this._errorHandler(this.errorObject, this.errorObject);
     }
   }
 

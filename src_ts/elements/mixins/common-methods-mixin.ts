@@ -82,16 +82,20 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return required ? 'required' : false;
     }
 
-    _errorHandler(errorData) {
-      if (!errorData || !Object.keys(errorData).length) {
+    _errorHandler(componentError, allErrors) {
+      if (!allErrors || !Object.keys(allErrors).length) {
         return false;
       }
+      // hide requestInProcess if has error, even if they are not coming form the current control
       if (this.requestInProcess) {
         this.requestInProcess = false;
       }
-
       this.closeDialogLoading();
-      this.errors = clone(refactorErrorObject(errorData));
+
+      if (!componentError || !Object.keys(componentError).length) {
+        return false;
+      }
+      this.errors = clone(refactorErrorObject(componentError));
       if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }

@@ -141,7 +141,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject?.other_recommendations);
+      this._errorHandler(this.errorObject?.other_recommendations, this.errorObject);
       this._checkNonField(this.errorObject?.other_recommendations);
     }
   }

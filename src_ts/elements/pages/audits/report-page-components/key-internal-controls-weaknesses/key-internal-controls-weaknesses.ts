@@ -27,6 +27,7 @@ import isObject from 'lodash-es/isObject';
 import isNil from 'lodash-es/isNil';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @customElement
@@ -318,6 +319,10 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   }
 
   getKeyInternalWeaknessData() {
+    if (isJsonStrMatch(this.editedBlueprint, cloneDeep(this.dataModel))) {
+      return null;
+    }
+
     const blueprint = cloneDeep(this.editedBlueprint) as any;
 
     if (blueprint.risks[0] && isObject(blueprint.risks[0].value)) {

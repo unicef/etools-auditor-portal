@@ -162,7 +162,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
       this.dataItemsChanged();
     }
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject?.findings);
+      this._errorHandler(this.errorObject?.findings, this.errorObject);
       this._checkNonField(this.errorObject?.findings);
     }
   }
