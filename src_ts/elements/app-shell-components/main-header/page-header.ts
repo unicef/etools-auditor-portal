@@ -78,7 +78,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         etools-accesibility {
           margin-inline-end: 10px;
         }
-        
+
         .nav-menu-button {
           min-width: 70px;
         }
@@ -104,6 +104,10 @@ export class PageHeader extends MatomoMixin(LitElement) {
 
         support-btn {
           color: var(--header-color);
+        }
+
+        #pageRefresh {
+          margin-inline-end: 10px;
         }
 
         @media (min-width: 850px) {
