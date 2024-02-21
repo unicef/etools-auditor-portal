@@ -1,23 +1,31 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 
-class GetActionPoints extends PolymerElement {
-  @property({type: Number, notify: true, observer: '_engagementIdChanged'})
+/**
+ * @customElement
+ */
+@customElement('get-action-points')
+export class GetActionPoints extends LitElement {
+  @property({type: Number})
   engagementId!: number;
 
-  @property({type: Array, notify: true})
-  actionPoints!: [];
-
   _handleResponse(data) {
-    this.actionPoints = (data.length && data) || [];
-    fireEvent(this, 'ap-loaded', {success: true});
+    fireEvent(this, 'ap-loaded', {success: true, data: data || []});
   }
 
   _handleError() {
     fireEvent(this, 'ap-loaded');
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('engagementId')) {
+      this._engagementIdChanged(this.engagementId);
+    }
   }
 
   _engagementIdChanged(engagementId) {
@@ -42,4 +50,3 @@ class GetActionPoints extends PolymerElement {
       .catch(() => this._handleError());
   }
 }
-window.customElements.define('get-action-points', GetActionPoints);

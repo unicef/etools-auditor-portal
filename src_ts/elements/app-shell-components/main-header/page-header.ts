@@ -1,44 +1,50 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/iron-overlay-behavior/iron-overlay-backdrop';
-import '@unicef-polymer/etools-app-selector';
-import '@unicef-polymer/etools-profile-dropdown';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-app-selector/etools-app-selector';
+import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-accesibility/etools-accesibility';
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {HeaderStyles} from '../main-header/header-elements/header-styles';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
-import {isProductionServer, checkEnvironment} from '../../config/config';
-import {property} from '@polymer/decorators';
+import {isProductionServer, checkEnvironment, BASE_PATH} from '../../config/config';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * page header element
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin GestureEventListeners
  */
-class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
-  public static get template() {
-    // main template
-    // language=HTML
+@customElement('page-header')
+export class PageHeader extends MatomoMixin(LitElement) {
+  static get styles() {
+    return [gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
+      ${HeaderStyles}
       <style>
         app-toolbar {
-          padding: 0 16px 0 0;
-          height: 60px;
-          background-color: var(--header-bg-color);
+          padding: 0px;
+          background-color: ${this.headerColor};
+          flex-wrap: wrap;
+          height: 100%;
+          justify-content: space-between;
         }
 
-        .titlebar {
-          color: var(--header-color);
+        countries-dropdown {
+          --countries-dropdown-color: var(--light-secondary-text-color);
         }
 
-        support-btn,
-        paper-icon-button#refresh {
+        etools-profile-dropdown,
+        #refresh {
           color: var(--light-secondary-text-color);
         }
 
@@ -47,77 +53,145 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
           color: var(--light-secondary-text-color);
         }
 
-        .titlebar {
-          @apply --layout-flex;
-          font-size: 28px;
-          font-weight: 300;
-        }
-
-        .titlebar img {
-          width: 34px;
-          margin: 0 8px 0 24px;
+        #pageRefresh::part(base) {
+          color: var(--light-secondary-text-color);
         }
 
         .content-align {
-          @apply --layout-horizontal;
-          @apply --layout-center;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
         }
 
         #app-logo {
           height: 32px;
           width: auto;
+          margin: 0px 10px 0px 20px;
+        }
+
+        .dropdowns {
+          padding-block-start: 6px;
+          display: flex;
+          margin-inline-end: 20px;
+        }
+
+        etools-accesibility {
+          margin-inline-end: 10px;
+          display: none;
+        }
+
+        .nav-menu-button {
+          min-width: 70px;
+        }
+
+        .header__item {
+          display: flex;
+          align-items: center;
+        }
+
+        .header__right-group {
+          justify-content: space-evenly;
         }
 
         .envWarning {
-          color: var(--nonprod-text-warn-color);
+          color: #000;
+          background-color: #ffffff;
           font-weight: 700;
-          font-size: 18px;
+          padding: 5px 10px;
+          font-size: var(--etools-font-size-14, 14px);
+          line-height: 1;
+          border-radius: 10px;
         }
 
-        @media (min-width: 1200px) {
+        support-btn {
+          color: var(--header-color);
+        }
+
+        #pageRefresh {
+          margin-inline-end: 10px;
+        }
+
+        @media (min-width: 850px) {
           #menuButton {
             display: none;
+          }
+        }
+        @media (max-width: 920px) {
+          .envWarning {
+            font-size: var(--etools-font-size-14, 14px);
+            line-height: 16px;
+          }
+        }
+        @media (max-width: 768px) {
+          #app-logo {
+            width: 90px;
+          }
+          .envLong {
+            display: none;
+          }
+          etools-app-selector {
+            width: 42px;
+          }
+          etools-profile-dropdown {
+            margin-inline-start: 0px;
+            width: 40px;
+          }
+        }
+        @media (max-width: 576px) {
+          etools-app-selector {
+            --app-selector-button-padding: 18px 8px;
+          }
+          #app-logo {
+            display: none;
+          }
+          .envWarning {
+            font-size: var(--etools-font-size-10, 10px);
+            margin-inline-start: 2px;
+          }
+          #refresh {
+            width: 24px;
+            padding: 0px;
           }
         }
       </style>
 
       <app-toolbar id="toolbar" sticky class="content-align">
-        <iron-overlay-backdrop id="toolBarOverlay"></iron-overlay-backdrop>
-        <paper-icon-button id="menuButton" icon="menu" on-tap="menuBtnClicked"></paper-icon-button>
-
-        <div class="titlebar content-align">
-          <etools-app-selector id="selector" user="[[user]]"></etools-app-selector>
-          <img id="app-logo" src$="[[rootPath]]/../assets/images/etools_logo.svg" />
-
-          <template is="dom-if" if="[[environment]]">
-            <div class="envWarning">- [[environment]] TESTING ENVIRONMENT</div>
-          </template>
+        <div class="layout-horizontal align-items-center">
+          <etools-icon-button id="menuButton" name="menu" @click="${this.menuBtnClicked}"></etools-icon-button>
+          <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
+          <img id="app-logo" src="${BASE_PATH}assets/images/etools-logo-color-white.svg" alt="Etools" />
+          <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">
+            ${this.environment}
+          </div>
         </div>
+        <div class="layout-horizontal align-items-center">
+          <div class="dropdowns">
+            <countries-dropdown
+              id="countries"
+              .countries="${this.user?.countries_available}"
+              .currentCountry="${this.user?.country}"
+            >
+            </countries-dropdown>
 
-        <div class="content-align">
-          <countries-dropdown
-            id="countries"
-            countries="[[user.countries_available]]"
-            country-id="[[user.country.id]]"
-          ></countries-dropdown>
-
-          <organizations-dropdown user="[[user]]"></organizations-dropdown>
+            <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+          </div>
 
           <support-btn title="Support"></support-btn>
 
-          <etools-profile-dropdown
-            title="Profile and Sign out"
-            profile="[[user]]"
-            on-sign-out="_signOut"
-          ></etools-profile-dropdown>
+          <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">
+          </etools-profile-dropdown>
 
-          <paper-icon-button
+          <etools-icon-button
             title="Refresh"
-            id="refresh"
-            icon="refresh"
+            id="pageRefresh"
+            name="refresh"
+            label="refresh"
             tracker="Refresh"
-            on-tap="refreshBtnclicked"
-          ></paper-icon-button>
+            @click="${this.refreshBtnclicked}"
+          >
+          </etools-icon-button>
+
+          <etools-accesibility></etools-accesibility>
         </div>
       </app-toolbar>
     `;
@@ -128,6 +202,9 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
 
   @property({type: String})
   environment: string | null = checkEnvironment();
+
+  @property({type: String})
+  headerColor = 'var(--header-bg-color)';
 
   public connectedCallback() {
     super.connectedCallback();
@@ -141,7 +218,7 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
   public _setBgColor() {
     // If not production environment, changing header color to red
     if (!isProductionServer()) {
-      this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
+      this.headerColor = 'var(--nonprod-header-color)';
     }
   }
 
@@ -166,5 +243,3 @@ class PageHeader extends GestureEventListeners(MatomoMixin(PolymerElement)) {
     localStorage.clear();
   }
 }
-
-window.customElements.define('page-header', PageHeader);

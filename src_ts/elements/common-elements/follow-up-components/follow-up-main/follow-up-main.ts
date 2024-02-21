@@ -1,30 +1,31 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {GenericObject} from '../../../../types/global';
 
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/paper-input/paper-input.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/paper-input/paper-textarea.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '../follow-up-actions/follow-up-actions';
 import '../follow-up-financial-findings/follow-up-financial-findings';
-import FollowUpFinancialFindings from '../follow-up-financial-findings/follow-up-financial-findings';
+import {FollowUpFinancialFindings} from '../follow-up-financial-findings/follow-up-financial-findings';
 // eslint-disable-next-line
 import '../../../pages/spot-checks/report-page-components/summary-findings-element/summary-findings-element';
 import '../../../pages/audits/report-page-components/financial-findings/financial-findings';
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
 /**
- * @polymer
+ * @LitElement
  * @customElement
  */
-class FollowUpMain extends PolymerElement {
-  static get template() {
+@customElement('follow-up-main')
+export class FollowUpMain extends LitElement {
+  render() {
     return html`
       <style>
         :host {
@@ -32,48 +33,62 @@ class FollowUpMain extends PolymerElement {
           display: block;
         }
       </style>
+
       <follow-up-actions
-        engagement-id="[[engagement.id]]"
-        partner-data="[[engagement.partner]]"
-        base-engagement-path="{{permissionBase}}"
+        .engagementId="${this.engagement.id}"
+        .partnerData="${this.engagement.partner}"
+        .optionsData="${this.apOptionsData}"
       >
       </follow-up-actions>
 
-      <template is="dom-if" if="[[showFindings(engagement.engagement_type)]]" restamp>
-        <follow-up-financial-findings
-          id="followUpFF"
-          engagement="[[engagement]]"
-          original-data="[[originalData]]"
-          error-object="{{errorObject}}"
-          base-permission-path="{{permissionBase}}"
-        >
-        </follow-up-financial-findings>
-      </template>
-
-      <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'sc')}}" restamp>
-        <summary-findings-element
-          id="followUpFindingsHighPriority"
-          data-items="{{engagement.findings}}"
-          error-object="{{errorObject}}"
-          original-data="[[originalData.findings]]"
-          priority="{{priorities.high}}"
-          base-permission-path="{{permissionBase}}"
-        >
-        </summary-findings-element>
-      </template>
-
-      <template is="dom-if" if="{{_showCard(engagement.engagement_type, 'audit')}}" restamp>
-        <financial-findings
-          id="financialFindings"
-          class="mb-24"
-          error-object="{{errorObject}}"
-          data-items="{{engagement.financial_finding_set}}"
-          base-permission-path="{{permissionBase}}"
-        >
-        </financial-findings>
-      </template>
+      ${this.showFindings(this.engagement?.engagement_type)
+        ? html` <follow-up-financial-findings
+            id="followUpFF"
+            .engagement="${this.engagement}"
+            .originalData="${this.originalData}"
+            .errorObject="${this.errorObject}"
+            .optionsData="${this.optionsData}"
+          >
+          </follow-up-financial-findings>`
+        : ``}
+      ${this._showCard(this.engagement?.engagement_type, 'sc')
+        ? html`<summary-findings-element
+            id="followUpFindingsHighPriority"
+            .dataItems="${this.engagement.findings}"
+            .errorObject="${this.errorObject}"
+            .originalData="${this.originalData.findings}"
+            .priority="${this.priorities.high}"
+            .optionsData="${this.apOptionsData}"
+          >
+          </summary-findings-element>`
+        : ``}
+      ${this._showCard(this.engagement?.engagement_type, 'audit')
+        ? html`<financial-findings
+            id="financialFindings"
+            class="mb-24"
+            .errorObject="${this.errorObject}"
+            .dataItems="${this.engagement.financial_finding_set}"
+            .optionsData="${this.optionsData}"
+          >
+          </financial-findings>`
+        : ``}
     `;
   }
+
+  @property({type: Object})
+  engagement: GenericObject = {};
+
+  @property({type: Object})
+  originalData!: GenericObject;
+
+  @property({type: Object})
+  optionsData!: AnyObject;
+
+  @property({type: Object})
+  apOptionsData!: AnyObject;
+
+  @property({type: Object})
+  errorObject: GenericObject = {};
 
   @property({type: Object})
   priorities: GenericObject = {
@@ -108,4 +123,3 @@ class FollowUpMain extends PolymerElement {
     return !!type && validType === type;
   }
 }
-window.customElements.define('follow-up-main', FollowUpMain);

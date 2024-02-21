@@ -1,17 +1,13 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-
-import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/paper-input/paper-textarea.js';
-import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '../../list-tab-elements/list-header/list-header';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@polymer/paper-tooltip/paper-tooltip';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
 import find from 'lodash-es/find';
@@ -21,74 +17,59 @@ import isEmpty from 'lodash-es/isEmpty';
 import isEqual from 'lodash-es/isEqual';
 import isObject from 'lodash-es/isObject';
 import isArray from 'lodash-es/isArray';
-import every from 'lodash-es/every';
 import omit from 'lodash-es/omit';
 import each from 'lodash-es/each';
-import {property} from '@polymer/decorators';
-
+import './follop-up-actions-dialog';
 import '../../../data-elements/get-action-points';
 import '../../../data-elements/update-action-points';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
-import {getStaticData} from '../../../mixins/static-data-controller';
 import DateMixin from '../../../mixins/date-mixin';
-import {
-  collectionExists,
-  addToCollection,
-  updateCollection,
-  getChoices,
-  readonlyPermission,
-  actionAllowed
-} from '../../../mixins/permission-controller';
+import {getHeadingLabel, getOptionsChoices, readonlyPermission} from '../../../mixins/permission-controller';
 import {checkNonField} from '../../../mixins/error-handler';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
-import clone from 'lodash-es/clone';
-import famEndpoints from '../../../config/endpoints';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types';
+import {RootState, store} from '../../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin DateMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
-  static get template() {
+@customElement('follow-up-actions')
+export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement)))) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
-        :host .repeatable-item-container[without-line] {
-          min-width: 0 !important;
-          margin-bottom: 0 !important;
-          overflow: auto;
-        }
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
-        }
-        :host .copy-warning {
-          position: relative;
-          margin-bottom: 10px;
-          padding: 20px 24px;
-          background-color: #ededee;
-          color: #212121;
-          font-size: 15px;
         }
         div.action-complete {
           padding: 10px 0 9px 20px;
         }
-        div.action-complete paper-button {
+        div.action-complete etools-button {
           height: 38px;
           font-weight: 500;
           padding-right: 0;
         }
-        div.action-complete iron-icon {
+        div.action-complete etools-icon {
           width: 20px;
           color: var(--gray-mid);
           margin-left: 5px;
@@ -100,347 +81,114 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-        etools-dropdown.fua-category {
-          --paper-listbox: {
-                max-height: 340px;
-                -ms-overflow-style: auto;
-            };
-        }
-        etools-dropdown.fua-person {
-          --paper-listbox: {
-                max-height: 140px;
-                -ms-overflow-style: auto;
-            };
-        }
-        .checkbox-container {
-          padding-left: 12px;
-          box-sizing: border-box;
-          height: 34px;
-          padding-top: 6px;
-        }
-        .input-container paper-button {
-          height: 34px;
-          color: rgba(0, 0, 0, .54);
-          font-weight: 500;
-          z-index: 5;
-          border: 1px solid rgba(0, 0, 0, .54);
-          padding: 6px 13px;
-        }
-        paper-tooltip {
-          --paper-tooltip: {
-            font-size: 12px;
-          }
-        }
         datepicker-lite::part(dp-calendar) {
           position: fixed;
         }
+        .launch-icon {
+          --iron-icon-height: 16px;
+          --iron-icon-width: 16px;
+        }
       </style>
 
-        <get-action-points engagement-id="[[engagementId]]" action-points="{{dataItems}}"></get-action-points>
-        <update-action-points engagement-id="[[engagementId]]"
-                              request-in-process="{{requestInProcess}}"
-                              request-data="{{requestData}}"
-                              errors="{{errors}}"
-                              action-points="{{dataItems}}"></update-action-points>
-        <get-partner-data on-partner-loaded="setFullPartner" partner-id="{{partnerId}}"></get-partner-data>
+      <get-action-points
+        .engagementId="${this.engagementId}"
+        @ap-loaded="${({detail}: CustomEvent) => {
+          if (detail?.success) {
+            this.dataItems = detail.data;
+          }
+        }}"
+      ></get-action-points>
 
-        <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
-            <div slot="panel-btns">
-                <div hidden$="[[!canBeChanged]]">
-                    <paper-icon-button
-                            class="panel-button"
-                            on-tap="_openAddDialog"
-                            icon="add-box">
-                    </paper-icon-button>
-                    <paper-tooltip offset="0">Add</paper-tooltip>
+      <update-action-points
+        .engagementId="${this.engagementId}"
+        .requestData="${this.requestData}"
+        .errors="${this.errors}"
+        .actionPoints="${this.dataItems}"
+        @ap-request-completed="${this._apRequestCompleted}"
+      >
+      </update-action-points>
+      <get-partner-data
+        .partnerId="${this.partnerId}"
+        @partner-loaded="${({detail}) => {
+          this.fullPartner = detail;
+        }}"
+      >
+      </get-partner-data>
+
+      <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
+        <div slot="panel-btns">
+          <div ?hidden="${!this.canBeChanged}">
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${this._openAddDialog}" name="add-box">
+              </etools-icon-button>
+            </sl-tooltip>
+          </div>
+        </div>
+
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-2" field="reference_number" sortable
+            >${getHeadingLabel(this.optionsData, 'reference_number', 'Reference Number #')}</etools-data-table-column
+          >
+          <etools-data-table-column class="col-3" field="ap_category.display_name" sortable
+            >${getHeadingLabel(this.optionsData, 'category', 'Action Point Category')}</etools-data-table-column
+          >
+          <etools-data-table-column class="col-3">Assignee (Section / Office)</etools-data-table-column>
+          <etools-data-table-column class="col-1" field="status" sortable
+            >${getHeadingLabel(this.optionsData, 'status', 'Status')}</etools-data-table-column
+          >
+          <etools-data-table-column class="col-2" field="due_date" sortable
+            >${getHeadingLabel(this.optionsData, 'due_date', 'Due Date')}</etools-data-table-column
+          >
+          <etools-data-table-column class="col-1" field="priority" sortable
+            >${getHeadingLabel(this.optionsData, 'high_priority', 'Priority')}</etools-data-table-column
+          >
+        </etools-data-table-header>
+
+        ${(this.itemsToDisplay || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-2 truncate">
+                  <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">
+                    ${item.reference_number} <etools-icon class="launch-icon" name="launch"></etools-icon>
+                  </a>
+                </span>
+                <span class="col-data col-3 truncate">${item.ap_category?.display_name || '-'}</span>
+                <span class="col-data col-3 truncate">${item.computed_field}</span>
+                <span class="col-data col-1 truncate caps">${item.status}</span>
+                <span class="col-data col-2 truncate">${this.prettyDate(String(item.due_date), '') || '-'}</span>
+                <span class="col-data col-1 truncate caps">${item.priority}</span>
+                <div class="hover-block">
+                  <etools-icon-button
+                    name="content-copy"
+                    @click="${() => this._openCopyDialog(index)}"
+                  ></etools-icon-button>
+                  <etools-icon-button
+                    name="create"
+                    ?hidden="${!this.canBeEdited(item.status)}"
+                    @click="${() => this._openEditDialog(index)}"
+                  ></etools-icon-button>
                 </div>
-            </div>
-
-            <list-header data="[[columns]]"
-                         order-by="{{orderBy}}"
-                         no-additional
-                         base-permission-path="[[basePermissionPath]]"></list-header>
-
-            <template is="dom-repeat" items="[[itemsToDisplay]]" filter="_showItems">
-                <list-element
-                        class="list-element"
-                        data="[[item]]"
-                        base-permission-path="[[basePermissionPath]]"
-                        headings="[[columns]]"
-                        no-additional
-                        no-animation>
-                    <div slot="checkbox" class="checkbox">
-                        <paper-checkbox
-                                disabled="disabled"
-                                checked="{{item.high_priority}}"
-                                label="">
-                        </paper-checkbox>
-                    </div>
-                    <div slot="hover" class="edit-icon-slot">
-                        <paper-tooltip for="copy" offset="0" position="top" animation-delay="0">
-                          Copy Action Point
-                        </paper-tooltip>
-                        <paper-icon-button
-                           id="copy"
-                            icon="icons:content-copy"
-                            class="edit-icon"
-                            on-tap="_openCopyDialog"></paper-icon-button>
-                        <paper-icon-button
-                            icon="icons:create"
-                            class="edit-icon"
-                            on-tap="_openEditDialog"
-                            hidden$="[[!canBeEdited(item.status)]]"></paper-icon-button>
-                    </div>
-                </list-element>
-            </template>
-
-            <template is="dom-if" if="[[!dataItems.length]]">
-                <list-element
-                        class="list-element"
-                        data="[[itemModel]]"
-                        headings="[[columns]]"
-                        no-additional
-                        no-animation>
-                    <div slot="checkbox" class="checkbox">
-                        <span>–</span>
-                    </div>
-                </list-element>
-            </template>
-        </etools-content-panel>
-
-        <etools-dialog no-padding keep-dialog-open size="md"
-                opened="{{dialogOpened}}"
-                dialog-title="[[dialogTitle]]"
-                ok-btn-text="[[confirmBtnText]]"
-                hide-confirm-btn="[[!confirmBtnText]]"
-                show-spinner="{{requestInProcess}}"
-                disable-confirm-btn="{{requestInProcess}}"
-                on-confirm-btn-clicked="_addActionPoint"
-                openFlag="dialogOpened"
-                on-close="_resetDialogOpenedFlag">
-            <template is="dom-if" if="[[notTouched]]">
-                <div class="copy-warning">
-                    It is required to change at least one of the fields below.
-                </div>
-            </template>
-
-            <div class="row-h repeatable-item-container" without-line>
-                <div class="repeatable-item-content">
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
-                            <!-- Partner -->
-                            <etools-dropdown
-                                    class$="[[_setRequired('partner', editedApBase)]]
-                                              validate-input fua-person"
-                                    selected="[[selectedPartnerId]]"
-                                    label="[[getLabel('partner', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('partner', editedApBase, 'select')]]"
-                                    options="[[partners]]"
-                                    option-label="name"
-                                    option-value="id"
-                                    required$="[[_setRequired('partner', editedApBase)]]"
-                                    readonly$="{{isReadOnly('partner', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.partner}}"
-                                    error-message="{{errors.partner}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </etools-dropdown>
-                        </div>
-                        <div class="input-container input-container-ms">
-                            <!-- PD/SSFA -->
-                            <etools-dropdown
-                                    class$="[[_setRequired('intervention', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.intervention.id}}"
-                                    label="[[getLabel('intervention', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('intervention', editedApBase, 'select')]]"
-                                    options="[[fullPartner.interventions]]"
-                                    option-label="title"
-                                    option-value="id"
-                                    required$="[[_setRequired('intervention', editedApBase)]]"
-                                    readonly$="{{isReadOnly('intervention', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.intervention}}"
-                                    error-message="{{errors.intervention}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </etools-dropdown>
-                        </div>
-                    </div>
-                </div>
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
-                            <!-- Category -->
-                            <etools-dropdown
-                                    class$="[[_setRequired('category', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.category}}"
-                                    label="[[getLabel('category', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('category', editedApBase, 'select')]]"
-                                    options="[[categories]]"
-                                    option-label="display_name"
-                                    option-value="value"
-                                    required$="[[_setRequired('category', editedApBase)]]"
-                                    readonly$="{{isReadOnly('category', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.category}}"
-                                    error-message="{{errors.category}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </etools-dropdown>
-                        </div>
-                    </div>
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-l">
-                            <!-- Description -->
-                            <paper-textarea
-                                    class$="validate-input {{_setRequired('description', editedApBase)}}"
-                                    value="{{editedItem.description}}"
-                                    allowed-pattern="[\d\s]"
-                                    label="[[getLabel('description', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('description', editedApBase)]]"
-                                    required$="{{_setRequired('description', editedApBase)}}"
-                                    readonly$="{{isReadOnly('description', editedApBase, requestInProcess)}}"
-                                    max-rows="4"
-                                    invalid="{{errors.description}}"
-                                    error-message="{{errors.description}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </paper-textarea>
-                        </div>
-                    </div>
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
-                            <!-- Assigned To -->
-
-                            <etools-dropdown
-                                    class$="[[_setRequired('assigned_to', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.assigned_to.id}}"
-                                    label="[[getLabel('assigned_to', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('assigned_to', editedApBase, 'select')]]"
-                                    options="[[users]]"
-                                    option-label="name"
-                                    option-value="id"
-                                    load-data-method="[[loadUsersDropdownOptions]]"
-                                    preserve-search-on-close
-                                    required$="[[_setRequired('assigned_to', editedApBase)]]"
-                                    readonly$="{{isReadOnly('assigned_to', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.assigned_to}}"
-                                    error-message="{{errors.assigned_to}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </etools-dropdown>
-                        </div>
-
-                        <div class="input-container input-container-ms">
-                            <!-- Sections -->
-
-                            <etools-dropdown
-                                    class$="[[_setRequired('section', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.section.id}}"
-                                    label="[[getLabel('section', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('section', editedApBase, 'select')]]"
-                                    options="[[sections]]"
-                                    option-label="name"
-                                    option-value="id"
-                                    required$="[[_setRequired('section', editedApBase)]]"
-                                    readonly$="{{isReadOnly('section', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.section}}"
-                                    error-message="{{errors.section}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </etools-dropdown>
-                        </div>
-                    </div>
-
-                    <div class="row-h group">
-                        <div class="input-container input-container-ms">
-                            <!-- Offices -->
-
-                            <etools-dropdown
-                                    class$="[[_setRequired('office', editedApBase)]]
-                                            validate-input fua-person"
-                                    selected="{{editedItem.office.id}}"
-                                    label="[[getLabel('office', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('office', editedApBase, 'select')]]"
-                                    options="[[offices]]"
-                                    option-label="name"
-                                    option-value="id"
-                                    required$="[[_setRequired('office', editedApBase)]]"
-                                    readonly$="{{isReadOnly('office', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.office}}"
-                                    error-message="{{errors.office}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError">
-                            </etools-dropdown>
-                        </div>
-
-                        <div class="input-container input-container-40">
-                            <!-- Due Date -->
-                            <datepicker-lite
-                                    id="deadlineAction"
-                                    class$="[[_setRequired('due_date', editedApBase)]]
-                                            validate-input"
-                                    value="[[editedItem.due_date]]"
-                                    label="[[getLabel('due_date', editedApBase)]]"
-                                    placeholder="[[getPlaceholderText('due_date', editedApBase, 'select')]]"
-                                    required$="[[_setRequired('due_date', editedApBase)]]"
-                                    readonly$="{{isReadOnly('due_date', editedApBase, requestInProcess)}}"
-                                    invalid="{{errors.due_date}}"
-                                    error-message="{{errors.due_date}}"
-                                    on-focus="_resetFieldError"
-                                    on-tap="_resetFieldError"
-                                    selected-date-display-format="D MMM YYYY"
-                                    fire-date-has-changed
-                                    on-date-has-changed="dueDateHasChanged"
-                                    >
-                            </datepicker-lite>
-                        </div>
-                    </div>
-
-                    <div class="row-h group">
-                        <!-- High Priority -->
-                        <div class="input-container checkbox-container input-container-l">
-                            <paper-checkbox
-                                    checked="{{editedItem.high_priority}}"
-                                    disabled$="{{isReadOnly('high_priority', editedApBase, requestInProcess)}}">
-                                    This action point is high priority
-                            </paper-checkbox>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-complete" hidden$="[[!_allowComplete(editedApBase)]]">
-                <paper-button>
-                    <a href$="[[editedItem.url]]" target="_blank">Go To action points to complete
-                        <iron-icon icon="icons:launch"></iron-icon>
-                    </a>
-                </paper-button>
-            </div>
-        </etools-dialog>
-
-            `;
-  }
-  static get observers() {
-    return [
-      '_resetDialog(dialogOpened)',
-      '_errorHandler(errorObject)',
-      '_checkNonField(errorObject)',
-      'setPermissionPath(baseEngagementPath)',
-      'updateStyles(editedApBase)',
-      '_addComputedField(dataItems.*)',
-      '_orderChanged(orderBy, columns, dataItems.*)',
-      '_requestPartner(partnerData, selectedPartnerId, partners)'
-    ];
+              </div>
+            </etools-data-table-row>
+          `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${this.itemsToDisplay?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row">
+            <span class="col-data col-2">–</span>
+            <span class="col-data col-3">–</span>
+            <span class="col-data col-3">–</span>
+            <span class="col-data col-1">–</span>
+            <span class="col-data col-2">–</span>
+            <span class="col-data col-1">–</span>
+          </div>
+        </etools-data-table-row>
+      </etools-content-panel>
+    `;
   }
 
   @property({type: Array})
-  dataItems!: [];
+  dataItems!: GenericObject[];
 
   @property({type: Object})
   itemModel: GenericObject = {
@@ -460,62 +208,6 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     'due_date',
     'high_priority',
     'intervention'
-  ];
-
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 18,
-      label: 'Reference Number #',
-      name: 'reference_number',
-      link: '*ap_link*',
-      ordered: 'desc',
-      path: 'reference_number',
-      target: '_blank',
-      class: 'with-icon',
-      orderBy: 'id'
-    },
-    {
-      size: 32,
-      label: 'Action Point Category',
-      labelPath: 'category',
-      path: 'ap_category.display_name',
-      name: 'category'
-    },
-    {
-      size: 20,
-      label: 'Assignee (Section / Office)',
-      htmlLabel: 'Assignee<br/>(Section / Office)',
-      path: 'computed_field',
-      html: true,
-      class: 'no-order'
-    },
-    {
-      size: 10,
-      label: 'Status',
-      labelPath: 'status',
-      align: 'center',
-      property: 'status',
-      path: 'status',
-      class: 'caps',
-      name: 'status'
-    },
-    {
-      size: 10,
-      label: 'Due Date',
-      labelPath: 'due_date',
-      path: 'due_date',
-      name: 'date',
-      align: 'center'
-    },
-    {
-      size: 10,
-      label: 'Priority',
-      labelPath: 'high_priority',
-      path: 'priority',
-      align: 'center',
-      name: 'high_priority'
-    }
   ];
 
   @property({type: Object})
@@ -539,10 +231,16 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Array})
   offices: GenericObject[] = [];
 
+  @property({type: Object})
+  partnerData!: GenericObject;
+
+  @property({type: Array})
+  partners!: GenericObject[];
+
   @property({type: String})
   orderBy = '-reference_number';
 
-  @property({type: Boolean, computed: '_checkNotTouched(copyDialog, editedItem.*)'})
+  @property({type: Boolean})
   notTouched = false;
 
   @property({type: Object})
@@ -554,8 +252,8 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Boolean})
   copyDialog!: boolean;
 
-  @property({type: String})
-  editedApBase!: string;
+  @property({type: Object})
+  editedApBase!: AnyObject;
 
   @property({type: Array})
   itemsToDisplay!: GenericObject[];
@@ -575,101 +273,83 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   @property({type: Number})
   selectedPartnerId!: number | null;
 
-  @property({type: Object})
-  fullPartner!: any;
+  @property({type: Number})
+  selectedPartnerIdAux!: number | null;
 
   @property({type: Object})
-  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+  fullPartner!: any;
 
   public connectedCallback() {
     super.connectedCallback();
 
-    this.set('users', getStaticData('users') || []);
-
-    this.set('offices', getStaticData('offices') || []);
-    this.set('sections', getStaticData('sections') || []);
-    this.set('partners', getStaticData('partners') || []);
-
-    if (!collectionExists('edited_ap_options')) {
-      addToCollection('edited_ap_options', {});
-    }
-
-    this._requestCompleted = this._requestCompleted.bind(this);
-    this.addEventListener('ap-request-completed', this._requestCompleted as any);
-    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+    this.dialogKey = 'follow-up-actions-dialog';
+    this.addEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
-  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
-    const endpoint = clone(famEndpoints.users);
-    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
-    sendRequest({
-      method: 'GET',
-      endpoint: {
-        url: endpoint.url
-      }
-    }).then((resp: GenericObject) => {
-      const data = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.handleUsersNoLongerAssignedToCurrentCountry(
-        data,
-        this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
-      );
-      this.set('users', data);
-    });
-  }
-
-  public disconnectedCallback() {
+  disconnectedCallback() {
     super.disconnectedCallback();
-
-    this.removeEventListener('ap-request-completed', this._requestCompleted as any);
+    this.removeEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
-  _allowComplete(editedApBase) {
-    return actionAllowed(editedApBase, 'complete');
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp) {
+      this.users = [...state.commonData.users];
+      this.offices = [...state.commonData.offices];
+      this.sections = [...state.commonData.sections];
+      this.partners = [...state.commonData.partners];
+    }
   }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('optionsData')) {
+      this.setPermissionPath(this.optionsData);
+    }
+    if (changedProperties.has('dataItems')) {
+      this._addComputedField();
+    }
+    if (changedProperties.has('partnerData')) {
+      this._requestPartner(this.partnerData);
+    }
+  }
+
+  openAddEditDialog() {
+    this.isAddDialogOpen = true;
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        editedItem: this.editedItem,
+        editedApBase: this.editedApBase,
+        users: this.users,
+        sections: this.sections,
+        offices: this.offices,
+        categories: this.categories,
+        partners: this.partners,
+        interventions: this.fullPartner?.interventions || [],
+        selectedPartnerIdAux: this.selectedPartnerIdAux,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText,
+        copyDialog: this.copyDialog,
+        originalEditedObj: this.originalEditedObj
+      }
+    }).then(() => (this.isAddDialogOpen = false));
+  }
+
   _requestPartner(partner) {
     const id = (partner && +partner.id) || null;
     this.partnerId = id;
     this.selectedPartnerId = id;
   }
 
-  _resetDialog(dialogOpened) {
-    if (dialogOpened) {
-      return;
-    }
-    this.copyDialog = false;
-    this.originalEditedObj = {};
-    this.resetDialog(dialogOpened);
-    // For consecutive dialog open
-    const aux = this.selectedPartnerId;
-    this.selectedPartnerId = null;
-    this.selectedPartnerId = aux;
-  }
-
-  _orderChanged(newOrder, columns) {
-    if (!newOrder || !(columns instanceof Array)) {
-      return false;
-    }
-
-    let direction = 'asc';
-    let name = newOrder;
-    let orderBy;
-
-    if (name.startsWith('-')) {
-      direction = 'desc';
-      name = name.slice(1);
-    }
-
-    columns.forEach((column, index) => {
-      if (column.name === name) {
-        this.set(`columns.${index}.ordered`, direction);
-        orderBy = column.orderBy || name;
-      } else {
-        this.set(`columns.${index}.ordered`, false);
-      }
-    });
-
-    const sorted = sortBy(this.dataItems, (item) => item[orderBy]);
-    this.itemsToDisplay = direction === 'asc' ? sorted : sorted.reverse();
+  _sortOrderChanged(e: CustomEvent) {
+    const sorted = sortBy(this.dataItems, (item) => item[e.detail.field]);
+    this.itemsToDisplay = e.detail.direction === 'asc' ? sorted : sorted.reverse();
   }
 
   _addComputedField() {
@@ -678,16 +358,20 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       const assignedTo = get(item, 'assigned_to.name', '--');
       const section = get(item, 'section.name', '--');
       const office = get(item, 'office.name', '--');
-      item.computed_field = `<b>${assignedTo}</b> <br>(${section} / ${office})`;
+      item.computed_field = html`<b>${assignedTo}</b> <br /><span class="truncate"
+          >(${section} / ${office})<span></span
+        ></span>`;
       item.ap_category = find(this.categories, (category) => category.value === item.category);
       return item;
     });
   }
 
-  setPermissionPath(basePath) {
-    this.basePermissionPath = basePath ? `${basePath}_ap` : '';
-    this.set('categories', getChoices(`${this.basePermissionPath}.category`) || []);
-    this.canBeChanged = !readonlyPermission(`${this.basePermissionPath}.POST`);
+  setPermissionPath(optionsData) {
+    if (!optionsData) {
+      return;
+    }
+    this.categories = getOptionsChoices(optionsData, 'category') || [];
+    this.canBeChanged = !readonlyPermission('POST', this.optionsData);
   }
 
   _checkNonField(error) {
@@ -702,7 +386,7 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   }
 
   getActionsData() {
-    if (!this.dialogOpened) {
+    if (!this.isAddDialogOpen) {
       return null;
     }
     if (this.copyDialog) {
@@ -731,47 +415,54 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
     return isEmpty(data) ? null : data;
   }
 
-  _addActionPoint() {
-    if (!this.validate() || this.notTouched) {
-      return;
-    }
-
+  _addActionPoint(editedItem: GenericObject) {
     this.requestInProcess = true;
+    this.editedItem = cloneDeep(editedItem);
     const apData = this.getActionsData();
     if (apData) {
       const method = apData.id ? 'PATCH' : 'POST';
       this.requestData = {method, apData};
     } else {
-      this._requestCompleted({detail: {success: true}});
+      this._apRequestCompleted({detail: {success: true}});
     }
   }
 
-  _requestCompleted(event) {
+  _apRequestCompleted(event) {
     if (!event || !event.detail) {
       return;
     }
     const detail = event.detail;
     this.requestInProcess = false;
     if (detail && detail.success) {
-      this.dialogOpened = false;
+      this.isAddDialogOpen = false;
+      this._closeEditDialog();
+      if (event.detail.data) {
+        this.dataItems = [...event.detail.data];
+      }
+    } else {
+      this.closeDialogLoading();
+      this.errors = event.detail.errors;
     }
   }
 
   _openAddDialog() {
+    this.copyDialog = false;
     this.originalEditedObj = {};
     each(['assigned_to', 'office', 'section', 'intervention'], (field) => {
       this.editedItem[field] = {id: null};
     });
-    this.editedApBase = this.basePermissionPath;
+    this.editedApBase = {...this.optionsData};
+    this.selectedPartnerIdAux = this.selectedPartnerId;
     this.openAddDialog();
   }
 
-  _openEditDialog(event) {
-    this.editedApBase = '';
+  _openEditDialog(index) {
+    this.copyDialog = false;
+    this.editedApBase = {};
     fireEvent(this, 'global-loading', {type: 'get-ap-options', active: true, message: 'Loading data...'});
 
-    const index = this._getIndex(event);
     this._selectedAPIndex = index;
+    this.selectedPartnerIdAux = this.selectedPartnerId;
 
     const id = get(this, `dataItems.${index}.id`);
     const apBaseUrl = getEndpoint('engagementInfo', {id: this.engagementId, type: 'engagements'}).url;
@@ -792,50 +483,35 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
       .catch(this._handleOptionResponse.bind(this));
   }
 
-  _openCopyDialog(event) {
+  _openCopyDialog(index) {
     this.dialogTitle = (this.copyDialogTexts && this.copyDialogTexts.title) || 'Add New Item';
     this.confirmBtnText = 'Save';
     this.cancelBtnText = 'Cancel';
-    const index = this._getIndex(event);
     const data = cloneDeep(omit(this.dataItems[index], ['id']));
     this.editedItem = data;
     this.originalEditedObj = cloneDeep(data);
-    this.editedApBase = this.basePermissionPath;
-
+    this.editedApBase = this.optionsData;
+    this.selectedPartnerIdAux = this.selectedPartnerId;
     this.copyDialog = true;
     this.handleUsersNoLongerAssignedToCurrentCountry(
       this.users,
       this.editedItem.assigned_to ? [this.editedItem.assigned_to] : []
     );
     this.users = [...this.users];
-    this.dialogOpened = true;
-  }
-
-  _checkNotTouched(copyDialog) {
-    if (!copyDialog || isEmpty(this.originalEditedObj)) {
-      return false;
-    }
-    return every(this.originalEditedObj, (value, key) => {
-      const isObj = isObject(value);
-      if (isObj) {
-        return !(value as AnyObject).id || +(value as AnyObject).id === +get(this, `editedItem.${key}.id`);
-      } else {
-        return value === this.editedItem[key];
-      }
-    });
+    this.openAddEditDialog();
   }
 
   _handleOptionResponse(detail) {
     fireEvent(this, 'global-loading', {type: 'get-ap-options'});
-    if (detail && detail.actions) {
-      updateCollection('edited_ap_options', detail.actions);
+    if (detail) {
+      const allowed_actions = (detail.actions.allowed_FSM_transitions as any) || [];
+      detail.actions.allowed_actions = (detail.actions.allowed_actions || []).concat(allowed_actions);
+      this.editedApBase = detail;
     }
-    this.editedApBase = 'edited_ap_options';
     const itemIndex = this._selectedAPIndex;
     this._selectedAPIndex = null;
-
-    if (collectionExists('edited_ap_options.PUT')) {
-      this.openEditDialog({itemIndex});
+    if (get(this.editedApBase, 'actions.PUT')) {
+      this.openEditDialog(itemIndex);
     } else {
       this.dialogTitle = String(get(this, 'viewDialogTexts.title') || '');
       this.confirmBtnText = '';
@@ -854,13 +530,4 @@ class FollowUpActions extends CommonMethodsMixin(TableElementsMixin(DateMixin(Po
   canBeEdited(status) {
     return status !== 'completed';
   }
-  dueDateHasChanged(e: CustomEvent) {
-    this.editedItem.due_date = e.detail.date;
-  }
-
-  setFullPartner(event: any) {
-    this.fullPartner = event.detail;
-  }
 }
-window.customElements.define('follow-up-actions', FollowUpActions);
-export default FollowUpActions;

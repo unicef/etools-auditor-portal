@@ -1,6 +1,6 @@
-import {html} from '@polymer/polymer/polymer-element';
+import {css} from 'lit';
 
-export const StatusTabElementStyles = html` <style>
+export const StatusTabElementStyles = css`
   :host {
     display: block;
   }
@@ -20,17 +20,17 @@ export const StatusTabElementStyles = html` <style>
     text-align: center;
     box-sizing: border-box;
   }
-  .status-buttons paper-button {
+  .status-buttons etools-button {
     height: 35px;
     color: #ffffff;
     background-color: var(--primary-color);
   }
 
-  .status-buttons paper-button.with-actions {
+  .status-buttons etools-button.with-actions {
     padding-right: 0;
   }
 
-  .status-buttons paper-button span {
+  .status-buttons etools-button span {
     padding: 0 29px;
   }
 
@@ -86,17 +86,18 @@ export const StatusTabElementStyles = html` <style>
 
   .status-container {
     position: relative;
-    @apply --layout-horizontal;
-    @apply --layout-center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   .status-container .status-icon,
   .status-container .status {
-    @apply --layout-vertical;
-    @apply --layout-center-justified;
-    @apply --layout-warp;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
-  .status-container iron-icon {
+  .status-container etools-icon {
     display: inline-block !important;
   }
 
@@ -109,20 +110,17 @@ export const StatusTabElementStyles = html` <style>
     -moz-border-radius: 50%;
     border-radius: 50%;
     color: #ffffff;
+    display: block;
   }
 
-  .status-container .status-icon .icon-wrapper iron-icon {
-    --iron-icon-height: 16px;
-    --iron-icon-width: 16px;
-    width: 16px;
-    height: 16px;
+  .status-container .status-icon .icon-wrapper etools-icon {
     color: #fff;
   }
 
   .status-container .status-icon .icon-wrapper span {
     height: 24px;
     line-height: 24px;
-    font-size: 13px;
+    font-size: var(--etools-font-size-13, 13px);
   }
 
   .status-container .status {
@@ -131,12 +129,13 @@ export const StatusTabElementStyles = html` <style>
     margin-bottom: 15px;
     box-sizing: border-box;
     text-transform: capitalize;
+    font-size: var(--etools-font-size-14, 14px);
     color: var(--gray-mid);
   }
 
   .status-container .status .status-date {
     color: var(--gray-mid);
-    font-size: 12px;
+    font-size: var(--etools-font-size-12, 12px);
     font-weight: 400;
     white-space: nowrap;
   }
@@ -155,8 +154,8 @@ export const StatusTabElementStyles = html` <style>
   .status-container.completed .status-icon .icon-wrapper {
     background: var(--module-success);
   }
-  .status-container.active .status-icon .icon-wrapper iron-icon,
-  .status-container.completed .status-icon .icon-wrapper iron-icon {
+  .status-container.active .status-icon .icon-wrapper etools-icon,
+  .status-container.completed .status-icon .icon-wrapper etools-icon {
     --iron-icon-height: 100%;
     --iron-icon-width: 100%;
   }
@@ -169,13 +168,13 @@ export const StatusTabElementStyles = html` <style>
     color: inherit;
     font-weight: bold;
   }
-  .status-container.pending iron-icon {
+  .status-container.pending etools-icon {
     display: none !important;
   }
   .status-container.active.first .status-icon .icon-wrapper {
     background-color: var(--primary-color);
   }
-  .status-container.active.first iron-icon {
+  .status-container.active.first etools-icon {
     display: none !important;
   }
   .status-container.active.first .status-icon .icon-wrapper .status-nr {
@@ -184,7 +183,7 @@ export const StatusTabElementStyles = html` <style>
   .status-container.cancelled .status-icon .icon-wrapper {
     background: transparent;
   }
-  .status-container.cancelled .status-icon .icon-wrapper iron-icon {
+  .status-container.cancelled .status-icon .icon-wrapper etools-icon {
     width: 25px;
     height: 25px;
     color: var(--gray-darkest);
@@ -195,7 +194,8 @@ export const StatusTabElementStyles = html` <style>
   }
 
   .divider {
-    @apply --layout-vertical;
+    display: flex;
+    flex-direction: row;
     width: 100%;
   }
   .divider .status-divider {
@@ -203,4 +203,4 @@ export const StatusTabElementStyles = html` <style>
     width: 11px;
     border-right: 1px solid var(--gray-mid);
   }
-</style>`;
+`;

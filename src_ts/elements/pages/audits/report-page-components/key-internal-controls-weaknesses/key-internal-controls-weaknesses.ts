@@ -1,42 +1,50 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-input/paper-textarea';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
-import {moduleStyles} from '../../../../styles/module-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
+import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
 import '../kicw-risk/kicw-risk';
-import {getChoices} from '../../../../mixins/permission-controller';
+import './key-internal-controls-weaknesses-dialog';
+import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isObject from 'lodash-es/isObject';
-import isEqual from 'lodash-es/isEqual';
 import isNil from 'lodash-es/isNil';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @customElement
  * @polymer
  * @appliesMixin CommonMethodsMixin
  */
-class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+@customElement('key-internal-controls-weaknesses')
+export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
           margin: 20px 0;
@@ -85,7 +93,7 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('key_internal_weakness', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('key_internal_weakness', this.optionsData)}"
         list
       >
         <div class="header-content">
@@ -93,150 +101,40 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
             We have reviewed the implementation of applicable key internal controls and noted the following weaknesses:
           </div>
         </div>
-        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"> </list-header>
 
-        <template is="dom-repeat" items="[[subjectAreas.blueprints]]">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            headings="[[columns]]"
-            details="[[details]]"
-            has-collapse
-            no-animation
-          >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:add-box" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-            </div>
-            <div class="collapse-container" slot="custom-details">
-              <kicw-risk
-                risks-data="[[item.risks]]"
-                blueprint-id="[[item.id]]"
-                is-editable="[[_canBeChanged(basePermissionPath)]]"
+        <etools-data-table-header no-title>
+          <etools-data-table-column class="col-9">Subject area</etools-data-table-column>
+          <etools-data-table-column class="col-3">Risks Count</etools-data-table-column>
+        </etools-data-table-header>
+
+        ${(this.subjectAreas?.blueprints || []).map(
+          (item, index) => html`
+            <etools-data-table-row>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-9">${item.header}</span>
+                <span class="col-data col-3">${item.risks.length}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                  <etools-icon-button name="add-box" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                </div>
+              </div>
+              <div slot="row-data-details">
+                <kicw-risk
+                .risksData="${item.risks}"
+                .blueprintId="${item.id}"
+                ?isEditable="${this._canBeChanged(this.optionsData)}"
               ></kicw-risk>
-            </div>
-          </list-element>
-        </template>
-
-        <template is="dom-if" if="[[!subjectAreas.blueprints.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-        </template>
-      </etools-content-panel>
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        opened="{{confirmDialogOpened}}"
-        on-confirm-btn-clicked="_deleteArea"
-        disable-confirm-btn="{{requestInProcess}}"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        [[dialogTexts.dialogTitle]]
-      </etools-dialog>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        opened="{{dialogOpened}}"
-        dialog-title="[[dialogTexts.dialogTitle]]"
-        ok-btn-text="[[dialogTexts.confirmBtn]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_saveEditedArea"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Risk Assessment -->
-                <etools-dropdown
-                  id="riskRatingInput"
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.value',
-                                                basePermissionPath)}} validate-input"
-                  selected="{{editedBlueprint.risks.0.value}}"
-                  label="Risk rating"
-                  placeholder="Select Risk rating"
-                  options="[[riskOptions]]"
-                  option-label="display_name"
-                  option-value="value"
-                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.value',
-                                                basePermissionPath)]]"
-                  disabled="{{requestInProcess}}"
-                  invalid="{{errors.blueprints.0.risks.value}}"
-                  error-message="{{errors.blueprints.0.risks.value}}"
-                  on-focus="_resetFieldError"
-                  hide-search
-                >
-                </etools-dropdown>
+                </div>
               </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <paper-textarea
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}} validate-input"
-                  value="{{editedBlueprint.risks.0.extra.key_control_observation}}"
-                  label="Key control observation"
-                  placeholder="Enter Observation"
-                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)]]"
-                  disabled="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.blueprints.0.risks.extra}}"
-                  error-message="{{errors.blueprints.0.risks.extra}}"
-                  on-focus="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <paper-textarea
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}} validate-input"
-                  value="{{editedBlueprint.risks.0.extra.recommendation}}"
-                  label="Recommendation"
-                  placeholder="Enter Recommendation"
-                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)]]"
-                  disabled="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.blueprints.0.risks.extra}}"
-                  error-message="{{errors.blueprints.0.risks.extra}}"
-                  on-focus="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <paper-textarea
-                  class$="{{_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)}} validate-input"
-                  value="{{editedBlueprint.risks.0.extra.ip_response}}"
-                  label="IP Response"
-                  placeholder="Enter Response"
-                  required$="[[_setRequired('key_internal_weakness.blueprints.risks.extra',
-                                                basePermissionPath)]]"
-                  disabled="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.blueprints.0.risks.extra}}"
-                  error-message="{{errors.blueprints.0.risks.extra}}"
-                  on-focus="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
+            </etools-data-table-row>
+          `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.blueprints?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+            <span class="col-data col-9">–</span>
+            <span class="col-data col-3">–</span>
           </div>
-        </div>
-      </etools-dialog>
+        </etools-data-table-row>
+      </etools-content-panel>
     `;
   }
 
@@ -251,20 +149,6 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
       }
     ]
   };
-
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 70,
-      label: 'Subject area',
-      path: 'header'
-    },
-    {
-      size: 30,
-      label: 'Risks Count',
-      path: 'risks.length'
-    }
-  ];
 
   @property({type: Array})
   details: any[] = [true];
@@ -297,10 +181,10 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
   };
 
   @property({type: Object})
-  originalData!: GenericObject;
+  editedBlueprint!: GenericObject | null;
 
   @property({type: Object})
-  editedBlueprint!: GenericObject;
+  errorObject!: GenericObject;
 
   @property({type: Array})
   riskOptions!: GenericObject[];
@@ -309,30 +193,35 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
   dialogOpened!: boolean;
 
   @property({type: Boolean})
-  confirmDialogOpened!: boolean;
-
-  @property({type: Boolean})
   requestInProcess!: boolean;
-
-  @property({type: String})
-  basePermissionPath!: string;
-
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      'updateStyles(requestInProcess, dialogOpened)',
-      '_dataChanged(subjectAreas)',
-      '_complexErrorHandler(errorObject.key_internal_weakness)'
-    ];
-  }
 
   connectedCallback() {
     super.connectedCallback();
-    const riskOptions = getChoices(`${this.basePermissionPath}.key_internal_weakness.blueprints.risks.value`) || [];
-    this.set('riskOptions', riskOptions);
+
+    this.dialogKey = 'key-internal-controls-weaknesses-dialog';
     this.editedBlueprint = cloneDeep(this.dataModel);
     this._initListeners();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._removeListeners();
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('subjectAreas')) {
+      this.closeEditDialog();
+      // reset editedBlueprint after dialog close
+      this.editedBlueprint = cloneDeep(this.dataModel);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject?.key_internal_weakness);
+    }
+    if (changedProperties.has('optionsData')) {
+      this.setRisk();
+    }
   }
 
   _initListeners() {
@@ -342,9 +231,9 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
     this.addEventListener('kicw-risk-delete', this.openDeleteDialog as any);
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._removeListeners();
+  setRisk() {
+    const riskOptions = getOptionsChoices(this.optionsData, 'key_internal_weakness.blueprints.risks.value') || [];
+    this.riskOptions = riskOptions;
   }
 
   _removeListeners() {
@@ -365,37 +254,36 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
     return -1;
   }
 
-  _canBeChanged(basePermissionPath) {
-    return !this.isReadOnly('key_internal_weakness', basePermissionPath);
+  _canBeChanged(optionsData) {
+    return !this.isReadOnly('key_internal_weakness', optionsData);
   }
 
   openEditDialog(event) {
-    if (!event || !event.detail) {
-      return;
-    }
-    const data = event.detail;
+    // called from here with index and from kicw-risk with detail
+    const data = event.detail ? event.detail : this.subjectAreas?.blueprints[event];
     if (data.blueprint) {
       const blueprint = data.blueprint;
       const risk = blueprint.risks[0];
-
       risk.value = this._getRisValueData(risk);
 
-      this.set('editedBlueprint', blueprint);
+      this.editedBlueprint = blueprint;
       this.dialogTexts = this.editDialogTexts;
     } else {
-      const index = this.subjectAreas.blueprints.indexOf(event && event.model && event.model.item);
-      if ((!index && index !== 0) || !~index) {
-        throw new Error('Can not find data');
-      }
-
-      const blueprint = this.subjectAreas.blueprints[index];
-      this.set('editedBlueprint', cloneDeep(this.dataModel));
-      this.editedBlueprint.id = blueprint.id;
+      this.editedBlueprint = cloneDeep(this.dataModel);
+      this.editedBlueprint.id = data.id;
       this.dialogTexts = this.addDialogTexts;
     }
 
-    this.originalData = cloneDeep(this.editedBlueprint);
-    this.dialogOpened = true;
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedBlueprint: this.editedBlueprint,
+        dialogTexts: this.dialogTexts,
+        riskOptions: this.riskOptions
+      }
+    });
   }
 
   openDeleteDialog(event) {
@@ -404,38 +292,40 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
     }
     const data = event.detail;
     this.dialogTexts = this.deleteDialogTexts;
-    this.set('editedBlueprint', data.blueprint);
-    this.confirmDialogOpened = true;
-  }
+    this.editedBlueprint = cloneDeep(data.blueprint);
 
-  _saveEditedArea() {
-    if (!this.validate()) {
-      return;
-    }
-
-    if (isEqual(this.originalData, this.editedBlueprint)) {
-      this.dialogOpened = false;
-      this.resetDialog(this.dialogOpened);
-      return;
-    }
-
-    this._triggerSaveEngagement();
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.dialogTexts?.dialogTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this._deleteArea();
+      }
+    });
   }
 
   _deleteArea() {
     this._triggerSaveEngagement();
   }
 
-  _triggerSaveEngagement() {
+  _triggerSaveEngagement(editedBlueprint?: GenericObject) {
+    if (editedBlueprint) {
+      this.editedBlueprint = cloneDeep(editedBlueprint);
+    }
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
   }
 
   getKeyInternalWeaknessData() {
-    if (!this.dialogOpened && !this.confirmDialogOpened) {
+    if (isJsonStrMatch(this.editedBlueprint, cloneDeep(this.dataModel))) {
       return null;
     }
-    const blueprint = cloneDeep(this.editedBlueprint);
+
+    const blueprint = cloneDeep(this.editedBlueprint) as any;
 
     if (blueprint.risks[0] && isObject(blueprint.risks[0].value)) {
       blueprint.risks[0].value = blueprint.risks[0].value.value;
@@ -445,34 +335,4 @@ class KeyInternalControlsWeaknesses extends CommonMethodsMixin(PolymerElement) {
       blueprints: [blueprint]
     };
   }
-
-  resetDialog(opened) {
-    if (opened) {
-      return;
-    }
-    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-    elements.forEach((element: any) => {
-      element.invalid = false;
-      element.value = '';
-    });
-  }
-
-  validate() {
-    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-    let valid = true;
-
-    elements.forEach((element: any) => {
-      if (element.required && !element.validate()) {
-        element.invalid = 'This field is required';
-        element.errorMessage = 'This field is required';
-        valid = false;
-      }
-    });
-
-    return valid;
-  }
 }
-
-window.customElements.define('key-internal-controls-weaknesses', KeyInternalControlsWeaknesses);
-
-export {KeyInternalControlsWeaknesses as KeyInternalControlsWeaknessesEl};

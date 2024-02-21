@@ -30,13 +30,7 @@
     ],
     "@typescript-eslint/no-object-literal-type-assertion": "off",
     "brace-style": "off",
-    "new-cap": [
-      "error",
-      {
-        "capIsNewExceptions": ["Polymer", "GestureEventListeners"],
-        "capIsNewExceptionPattern": "^Etools..|..Mixin$"
-      }
-    ],
+    "new-cap": "off",
     "no-var": "off",
     "require-jsdoc": "off",
     "valid-jsdoc": "off",

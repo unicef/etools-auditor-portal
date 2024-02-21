@@ -1,40 +1,55 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/paper-button/paper-button';
-import '@polymer/paper-menu-button/paper-menu-button';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/paper-icon-button/paper-icon-button';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
+import '@unicef-polymer/etools-unicef/src/etools-button/etools-button-group';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import {moduleStyles} from '../../styles/module-styles';
 import {ActionButtonsStyles} from './action-buttons-styles';
-import {property} from '@polymer/decorators';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
-import {ConfigObj, createDynamicDialog, removeDialog} from '@unicef-polymer/etools-dialog/dynamic-dialog';
-import EtoolsDialog from '@unicef-polymer/etools-dialog';
+import {createDynamicDialog, removeDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
+import EtoolsDialog from '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
-class ActionButtons extends PolymerElement {
-  static get template() {
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('action-buttons')
+export class ActionButtons extends LitElement {
+  static get styles() {
+    return [moduleStyles];
+  }
+
+  render() {
     return html`
-      ${moduleStyles} ${ActionButtonsStyles}
-      <paper-button
-        class$="main-action status-tab-button {{withActionsMenu(actions.length)}}"
-        raised
-        on-tap="_btnClicked"
-      >
-        <span class="main-action text">[[_setButtonText(actions.0)]]</span>
-        <template is="dom-if" if="{{_showOtherActions(actions.length)}}">
-          <paper-menu-button class="option-button" dynamic-align opened="{{statusBtnMenuOpened}}">
-            <paper-icon-button slot="dropdown-trigger" class="option-button" icon="expand-more"></paper-icon-button>
-            <div slot="dropdown-content">
-              <template class="other-btns-template" is="dom-repeat" items="[[actions]]" filter="_filterActions">
-                <div class="other-options" on-click="closeMenu" action-code$="[[_setActionCode(item)]]">
-                  <iron-icon icon="[[_setIcon(item, icons)]]" class="option-icon"></iron-icon>
-                  <span>{{_setButtonText(item)}}</span>
-                </div>
-              </template>
-            </div>
-          </paper-menu-button>
-        </template>
-      </paper-button>
+      ${ActionButtonsStyles}
+      <etools-button-group>
+        <etools-button id="primary" variant="primary" @click="${this._handlePrimaryClick}">
+          ${this._setButtonText(this.actions[0])}
+        </etools-button>
+        ${this._showOtherActions(this.actions.length)
+          ? html`<sl-dropdown
+              id="splitBtn"
+              placement="bottom-end"
+              @click="${(event: MouseEvent) => event.stopImmediatePropagation()}"
+            >
+              <etools-button slot="trigger" variant="primary" caret></etools-button>
+              <sl-menu>
+                ${(this.actions || [])
+                  .filter((x) => this._filterActions(x))
+                  .map(
+                    (item: any) => html`<sl-menu-item @click="${() => this._handleSecondaryClick(item)}">
+                      <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
+                      <span>${this._setButtonText(item)}</span>
+                    </sl-menu-item>`
+                  )}
+              </sl-menu>
+            </sl-dropdown>`
+          : ``}
+      </etools-button-group>
     `;
   }
 
@@ -47,7 +62,8 @@ class ActionButtons extends PolymerElement {
     save: 'save',
     submit: 'assignment-turned-in',
     finalize: 'assignment-turned-in',
-    create: 'assignment-turned-in'
+    create: 'assignment-turned-in',
+    send_back: 'av:skipPrevious'
   };
 
   @property({type: Boolean})
@@ -70,7 +86,7 @@ class ActionButtons extends PolymerElement {
     const dialogContent = document.createElement('span');
     dialogContent.innerText = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
                                You will not be able to make any further changes to the report.`;
-    const dialogConfig: ConfigObj = {
+    const dialogConfig = {
       title: 'Submit',
       size: 'md',
       okBtnText: 'Yes',
@@ -84,13 +100,14 @@ class ActionButtons extends PolymerElement {
 
   closeMenu() {
     this.statusBtnMenuOpened = false;
+    this.requestUpdate();
   }
 
   _setButtonText(item) {
     if (!item) {
       return '';
     }
-    const text = item.display_name || item.replace('_', ' ');
+    const text = (item.display_name || item.replace('_', ' ')).replace('_', ' ');
 
     if (!text) {
       throw new Error('Can not get button text!');
@@ -99,19 +116,17 @@ class ActionButtons extends PolymerElement {
     return text.toUpperCase();
   }
 
-  _btnClicked(event) {
-    if (!event || !event.target) {
-      return;
+  _handlePrimaryClick() {
+    const action = this.actions[0].code || this.actions[0];
+    if (action === 'submit') {
+      this.showSubmitConfirmation();
+    } else {
+      this.fireActionActivated(action);
     }
-    const target = event.target.classList.contains('other-options')
-      ? event.target
-      : event.target.parentElement || event.target;
-    const isMainAction = event.target.classList.contains('main-action');
+  }
 
-    const action = isMainAction
-      ? this.actions[0].code || this.actions[0]
-      : target && target.getAttribute('action-code');
-
+  _handleSecondaryClick(item: any) {
+    const action = item.code;
     if (action) {
       if (action === 'submit') {
         this.showSubmitConfirmation();
@@ -125,6 +140,7 @@ class ActionButtons extends PolymerElement {
     if (event.detail.confirmed) {
       this.fireActionActivated('submit');
     }
+    this.submitConfirmationDialog.opened = false;
   }
 
   fireActionActivated(action: string) {
@@ -154,10 +170,4 @@ class ActionButtons extends PolymerElement {
     }
     return icons[item.code || item] || '';
   }
-
-  _setActionCode(item) {
-    return item && (item.code || item);
-  }
 }
-
-window.customElements.define('action-buttons', ActionButtons);

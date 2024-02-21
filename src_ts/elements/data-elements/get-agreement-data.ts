@@ -1,16 +1,28 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {GenericObject} from '../../types/global';
 
-class GetAgreementData extends PolymerElement {
-  @property({type: Number, notify: true, observer: '_orderNumberChanged'})
+/**
+ * @customElement
+ */
+@customElement('get-agreement-data')
+export class GetAgreementData extends LitElement {
+  @property({type: Number})
   orderNumber!: number;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   agreement!: GenericObject;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('orderNumber')) {
+      this._orderNumberChanged(this.orderNumber, changedProperties.get('orderNumber'));
+    }
+  }
 
   _handleResponse(data) {
     this.agreement = data;
@@ -36,4 +48,3 @@ class GetAgreementData extends PolymerElement {
       });
   }
 }
-window.customElements.define('get-agreement-data', GetAgreementData);

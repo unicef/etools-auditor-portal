@@ -1,52 +1,53 @@
-import {html, PolymerElement} from '@polymer/polymer';
-
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/paper-toggle-button/paper-toggle-button.js';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-
-import isUndefined from 'lodash-es/isUndefined';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isString from 'lodash-es/isString';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
-import {getUserData} from '../../../mixins/user-controller';
+import {debounce} from '@unicef-polymer/etools-utils/dist/debouncer.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
+import PaginationMixin from '@unicef-polymer/etools-modules-common/dist/mixins/pagination-mixin';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '../../../data-elements/get-staff-members-list';
-import '../../list-tab-elements/list-header/list-header';
-import '../../list-tab-elements/list-element/list-element';
-import '../../list-tab-elements/list-pagination/list-pagination';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
-import {getStaffCollectionName} from '../../../data-elements/get-staff-members-list';
-import {PaperToggleButtonElement} from '@polymer/paper-toggle-button/paper-toggle-button.js';
+import SlSwitch from '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
+import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
-  static get template() {
+@customElement('engagement-staff-members-tab')
+export class EngagementStaffMembersTab extends connect(store)(
+  PaginationMixin(TableElementsMixin(CommonMethodsMixin(LitElement)))
+) {
+  static get styles() {
+    return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
+  }
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
       <style>
+        ${dataTableStylesLit}
         :host {
           position: relative;
           display: block;
@@ -73,16 +74,31 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           height: 48px;
           color: #fff;
           overflow: hidden;
-          width: 22%;
+          flex: 1;
         }
         .search-input-container .search-input {
-          width: 5%;
           float: right;
           box-sizing: border-box;
           min-width: 46px;
-          margin-top: -13px;
+          margin-top: -2px;
           transition: 0.35s;
           cursor: pointer;
+
+        }
+        .search-input-container .search-input,
+        .search-input-container .search-input:focus {
+          --sl-input-color: var(--light-secondary-text-color);
+          --primary-color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(form-control-input)::after {
+          --secondary-text-color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(input):focus {
+          --primary-color: var(--light-primary-text-color);
+           color: var(--light-primary-text-color);
+        }
+        .search-input-container .search-input::part(input)::placeholder {
+          color: var(--light-primary-text-color);
         }
         .search-input-container .search-input[focused] {
           width: 100%;
@@ -90,104 +106,40 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
         .search-input-container .search-input:not(.empty) {
           width: 100% !important;
         }
-        .search-input-container .search-input iron-icon {
+        .search-input-container .search-input etools-icon {
           top: -1px;
           color: #fff;
-        }
-        .edit-icon {
-          padding: 5px;
-          width: 33px;
-          height: 33px;
-          color: var(--gray-mid);
-        }
-        .edit-icon-slot {
-          overflow: visible !important;
-          display: flex;
-          align-items: center;
-          height: 100%;
-        }
-        .check-icon {
-          margin-left: -3%;
-        }
-        .form-title {
-          position: relative;
-          width: 100%;
-          line-height: 40px;
-          color: var(--primary-color);
-          font-weight: 600;
-          box-sizing: border-box;
-          margin: 10px 0 0 !important;
-          padding: 0 !important;
-        }
-        .form-title .text {
-          background-color: var(--gray-06);
-          border-radius: 3px;
-          margin: 0 24px;
-          padding: 0 24px;
-        }
-        .line {
-          width: 'calc(100% - 48px)';
-          margin-left: 24px;
-          box-sizing: border-box;
-          margin-bottom: 0 !important;
-          border-bottom: 1px solid var(--gray-border);
-        }
-        .notify-box {
-          padding-left: 12px;
-          box-sizing: border-box;
-        }
-        .confirm-backdrop[opened] {
-          position: fixed;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 104;
-        }
-        .confirm-text {
-          padding: 5px 86px 0 23px !important;
-        }
-        .repeatable-item-container {
-          margin-bottom: 0 !important;
         }
         .panel-content {
           position: relative;
           margin-bottom: -7px;
           padding-bottom: 0;
         }
-        .checkbox {
-          overflow: visible !important;
-          line-height: 48px;
+        .etools-checkbox {
+          margin-left: 15px;
         }
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-        list-pagination {
-          --list-pagination-styles-margin-bottom: -8px;
+        .editable-row {
+          margin-top: 0;
+          margin-bottom: 0;
+          padding: 4px 0;
+        }
+        .editable-row etools-icon-button {
+          --iron-icon-fill-color: var(--gray-mid);
         }
         etools-loading {
           --etools-loading-overlay-transparency: 0.4;
         }
-        paper-input.search-input {
-          --paper-input-container-color: rgba(255, 255, 255, 0.5);
-          --paper-input-container-focus-color: #fff;
-          --paper-input-container-input-color: #fff;
-          --paper-input-container-underline-focus-border-bottom: 1px solid #fff;
-          --paper-input-container-underline-border-bottom: none;
-          --paper-input-container-underline: {
-            display: none;
-          }
-        }
-        paper-input.search-input.filled {
-          --paper-input-container-underline-border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-        }
-        paper-input.email {
-          --paper-input-error_-_position: position: relative !important;
-          --paper-input-error_-_white-space: normal;
-        }
         .white {
           color: #ffffff;
+        }
+        #toggleActive::part(control){
+          background-color: var(--sl-color-neutral-400) !important;
+        }
+        #toggleActive[checked]::part(control){
+          background-color: #eeeeee !important;
         }
         .panel-btns-container {
           display: flex;
@@ -195,216 +147,171 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
           align-items: center;
           justify-content: flex-end;
           column-gap: 30px;
+          line-height: 48px;
         }
-        paper-toggle-button.white {
-          --paper-toggle-button-label-color: #ffffff;
-          --paper-toggle-button-checked-bar-color: #ffffff !important;
-          --paper-toggle-button-checked-button-color: #ffffff;
-          --paper-toggle-button-checked-ink-color: #ffffff;
-          --paper-toggle-button-unchecked-button-color: #bfbfbf;
-          --paper-toggle-button-unchecked-bar-color: #bfbfbf !important;
-          --paper-toggle-button-unchecked-ink-color: #bfbfbf;
+        sl-switch {
+          --sl-input-label-color: #ffffff;
         }
       </style>
 
       <!--requests-->
       <get-staff-members-list
-        organisation-id="[[organizationId]]"
-        queries="[[listQueries]]"
-        page-type="[[pageType]]"
-        on-data-loaded="listLoaded"
-        on-loading-state-changed="listLoadingStateChanged"
+        .organizationId="${this.organizationId}"
+        .queries="${this.listQueries}"
+        .pageType="${this.pageType}"
+        @data-loaded="${this.listLoaded}"
+        @loading-state-changed="${this.listLoadingStateChanged}"
       >
       </get-staff-members-list>
 
       <!--end requests-->
 
       <etools-content-panel
-        panel-title="[[getLabel('staff_members', basePermissionPath)]] ([[_staffLength(datalength,
-                            dataItems.length, searchQuery)]])"
+        panel-title="${this._getTitle(
+          'staff_members',
+          this.optionsData,
+          this.datalength,
+          this.dataItems.length,
+          this.listQueries?.search
+        )}"
         list
       >
         <div slot="panel-btns">
           <div class="panel-btns-container">
-            <div class="search-input-container" hidden$="[[!_showPagination(datalength)]]">
-              <paper-input
+            <div class="search-input-container" ?hidden="${!this._showPagination(this.datalength)}">
+              <etools-input
                 id="searchInput"
-                class$="search-input [[_getSearchInputClass(searchString)]]"
-                value="[[searchString]]"
+                class="search-input  ${this._getSearchInputClass(this.searchString)}"
                 placeholder="Search"
-                on-blur="searchBlur"
-                on-input="_searchChanged"
-                data-value-path="target.value"
-                data-field-path="searchString"
+                .value="${this.searchString}"
+                @value-changed="${({detail}) => {
+                  if (detail.value !== this.searchString) {
+                    this.searchString = detail.value;
+                    this._searchChanged(this.searchString);
+                  }
+                }}"
               >
-                <iron-icon id="searchIcon" icon="search" class="panel-button" slot="prefix"></iron-icon>
-              </paper-input>
-              <paper-tooltip for="searchIcon" offset="0">Search</paper-tooltip>
+                <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
+              </etools-input>
             </div>
-            <paper-toggle-button
+            <sl-switch
               class="white"
               id="toggleActive"
-              checked="[[showInactive]]"
-              on-change="onShowInactiveChanged"
+              ?checked="${this.showInactive}"
+              @sl-change="${this.onShowInactiveChanged}"
             >
               Show Inactive
-            </paper-toggle-button>
+            </sl-switch>
             <div class="add-button-container">
               <a
                 class="white"
-                href="[[_getAMPLink(engagement.agreement.auditor_firm.organization_id)]]"
+                ?hidden="${!this.engagement.agreement?.auditor_firm?.organization_id}"
+                href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                 target="_blank"
               >
-                <iron-icon id="information-icon" icon="icons:open-in-new"></iron-icon>
+               <sl-tooltip content="Access Management Portal">
+                <etools-icon id="information-icon" name="open-in-new"></etools-icon>
+               </sl-tooltip>
               </a>
-              <paper-tooltip offset="0">Access Management Portal</paper-tooltip>
             </div>
           </div>
         </div>
 
         <div class="panel-content group">
-          <etools-loading active="[[listLoading]]" loading-text="Loading list data..." class="loading">
+          <etools-loading .active="${this.listLoading}" loading-text="Loading list data..." class="loading">
           </etools-loading>
 
-          <list-header no-additional no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]">
-          </list-header>
+          <etools-data-table-header no-collapse no-title>
+          ${
+            this.showHasAccess
+              ? html`<etools-data-table-column class="col-1">Has Access</etools-data-table-column>`
+              : ``
+          }
+            <etools-data-table-column class="col-2">Position</etools-data-table-column>
+            <etools-data-table-column class="${
+              this.showHasAccess ? 'col-2' : 'col-3'
+            }">First Name</etools-data-table-column>
+            <etools-data-table-column class="col-2">Last Name</etools-data-table-column>
+            <etools-data-table-column class="col-2">Phone Number</etools-data-table-column>
+            <etools-data-table-column class="col-2">E-mail Address</etools-data-table-column>
+            <etools-data-table-column class="col-1 center-align">Active</etools-data-table-column>
+          </etools-data-table-header>
+          ${(this.dataItems || [])
+            .filter((x) => this._isVisible(x.has_active_realm, this.showInactive))
+            .map(
+              (item) => html` <etools-data-table-row no-collapse>
+                <div slot="row-data" class="layout-horizontal editable-row">
+                  ${this.showHasAccess
+                    ? html` <span class="col-data col-1" ?hidden="${!this.showHasAccess}">
+                        <etools-checkbox
+                          class="checkbox"
+                          ?checked="${item.hasAccess}"
+                          ?disabled="${this._isCheckboxReadonly(
+                            item.hasAccess,
+                            this.engagementStaffs,
+                            this.saveWithButton
+                          )}"
+                          @click="${(e) => this._isActive(e, item)}"
+                        >
+                        </etools-checkbox>
+                      </span>`
+                    : ``}
+                  <span class="col-data col-2 wrap-text">${item.user.profile.job_title || '–'}</span>
+                  <span class="col-data ${this.showHasAccess ? 'col-2' : 'col-3'} wrap-text"
+                    >${item.user.first_name}</span
+                  >
+                  <span class="col-data col-2 wrap-text">${item.user.last_name}</span>
+                  <span class="col-data col-2 wrap-text">${item.user.profile.phone_number || '–'}</span>
+                  <span class="col-data col-2 wrap-text">${item.user.email}</span>
+                  <span class="col-data col-1 wrap-text center-align"
+                    >${this.computeStaffMembActiveColumn(item) || html`<etools-icon name="check"></etools-icon>`}</span
+                  >
+                </div>
+              </etools-data-table-row>`
+            )}
+          <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+            <div slot="row-data" class="layout-horizontal editable-row">
+              ${this.showHasAccess ? html`<etools-data-table-column class="col-1">–</etools-data-table-column>` : ``}
+              <span class="col-data col-2">–</span>
+              <span class="${this.showHasAccess ? 'col-2' : 'col-3'}">–</span>
+              <span class="col-data col-2">–</span>
+              <span class="col-data col-2">–</span>
+              <span class="col-data col-2">–</span>
+              <span class="col-1 center-align">–</span>
+            </div>
+          </etools-data-table-row>
+        ${
+          this._showPagination(this.datalength)
+            ? html`<etools-data-table-footer
+                .pageSize="${this.paginator.page_size}"
+                .pageNumber="${this.paginator.page}"
+                .totalResults="${this.paginator.count}"
+                .visibleRange="${this.paginator.visible_range}"
+                @page-size-changed="${this.pageSizeChange}"
+                @page-number-changed="${this.pageNumberChange}"
+              >
+              </etools-data-table-footer>`
+            : ``
+        }
 
-          <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-            <list-element
-              class="list-element"
-              data="[[item]]"
-              no-additional
-              headings="[[columns]]"
-              no-animation
-              hidden$="[[!_isVisible(item.has_active_realm, showInactive)]]"
-            >
-              <div slot="checkbox" class="checkbox">
-                <paper-checkbox
-                  disabled="[[_isCheckboxReadonly(item.hasAccess, engagementStaffs, saveWithButton)]]"
-                  on-tap="_isActive"
-                  checked="[[item.hasAccess]]"
-                  label=""
-                >
-                </paper-checkbox>
-              </div>
-            </list-element>
-          </template>
-
-          <template is="dom-if" if="[[!dataItems.length]]">
-            <list-element class="list-element" data="[[emptyObj]]" no-additional headings="[[columns]]" no-animation>
-            </list-element>
-          </template>
-
-          <list-pagination
-            page-size="[[listSize]]"
-            page-number="[[listPage]]"
-            datalength="[[_staffLength(datalength, dataItems.length, searchQuery)]]"
-            without-queries
-            hidden$="[[!_showPagination(datalength)]]"
-            showing-results="[[showingResults]]"
-            on-pagination-changed="updatePagination"
-          >
-          </list-pagination>
-        </div>
       </etools-content-panel>
     `;
-  }
-
-  static get observers() {
-    return [
-      'changePermission(basePermissionPath)',
-      '_handleUpdateError(errorObject.staff_members)',
-      '_organizationChanged(engagement.agreement.auditor_firm.id, basePermissionPath)',
-      '_organizationChanged(engagement.agreement.auditor_firm.id)',
-      '_queriesChanged(listSize, listPage, searchQuery)',
-      '_staffMembersListChanged(dataItems, engagementStaffs)',
-      '_selectedStaffsChanged(engagement.staff_members, basePermissionPath)',
-      'updateStyles(emailChecking, staffsBase, addDialog)'
-    ];
   }
 
   @property({type: String})
   mainProperty = 'staff_members';
 
-  @property({type: String})
-  staffsBase = '';
-
-  @property({type: Array, observer: '_dataItemsChanged'})
-  dataItems: any[] = [];
-
-  @property({type: Object})
-  itemModel: GenericObject = {
-    user: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      profile: {
-        job_title: '',
-        phone_number: ''
-      }
-    },
-    hasAccess: true
-  };
+  @property({type: Boolean})
+  showHasAccess = false;
 
   @property({type: Array})
-  columns: any[] = [
-    {
-      size: 10,
-      label: 'Has Access',
-      name: 'hasAccess',
-      align: 'center',
-      property: 'hasAccess',
-      checkbox: true
-    },
-    {
-      size: 16,
-      label: 'Position',
-      labelPath: 'staff_members.user.profile.job_title',
-      name: 'user.profile.job_title',
-      customCss: 'wrap-text'
-    },
-    {
-      size: 16,
-      label: 'First Name',
-      labelPath: 'staff_members.user.first_name',
-      name: 'user.first_name',
-      customCss: 'wrap-text'
-    },
-    {
-      size: 16,
-      label: 'Last Name',
-      labelPath: 'staff_members.user.last_name',
-      name: 'user.last_name',
-      customCss: 'wrap-text'
-    },
-    {
-      size: 16,
-      label: 'Phone Number',
-      labelPath: 'staff_members.user.profile.phone_number',
-      name: 'user.profile.phone_number',
-      customCss: 'wrap-text'
-    },
-    {
-      size: 16,
-      label: 'E-mail Address',
-      labelPath: 'staff_members.user.email',
-      name: 'user.email',
-      customCss: 'wrap-text'
-    },
-    {
-      size: 10,
-      label: 'Active',
-      path: 'computed_field',
-      name: 'has_active_realm',
-      customCss: 'wrap-text',
-      html: true
-    }
-  ];
+  dataItems: any[] = [];
 
   @property({type: Object})
   listQueries: GenericObject = {
     page: 1,
-    page_size: 10
+    page_size: 10,
+    search: ''
   };
 
   @property({type: Object})
@@ -413,56 +320,23 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   @property({type: Boolean})
   listLoading = false;
 
-  @property({
-    type: String,
-    computed: '_calcShowingResults(datalength, listSize, listPage, searchQuery, ' + 'dataItems.length)'
-  })
-  showingResults!: string;
-
   @property({type: Number})
   datalength = 0;
 
   @property({type: String})
-  searchQuery = '';
-
-  @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this Audit Staff Team Member?';
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'save-with-button'})
   saveWithButton = false;
-
-  @property({type: String})
-  newEmail: string | null = '';
 
   @property({type: Object})
   engagement!: GenericObject;
 
   @property({type: Number})
-  listSize!: number;
-
-  @property({type: Number})
-  lastSize!: number;
-
-  @property({type: Number})
-  listPage!: number;
-
-  @property({type: Number})
   organizationId!: number;
-
-  @property({type: String})
-  basePermissionPath = '';
-
-  @property({type: Boolean})
-  emailChecking!: boolean;
 
   @property({type: Boolean})
   showInactive!: boolean;
-
-  @property({type: Object})
-  newData!: GenericObject;
-
-  @property({type: Object})
-  lastSearchQuery!: GenericObject;
 
   @property({type: String})
   pageType = '';
@@ -470,38 +344,47 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   @property({type: String})
   searchString = '';
 
-  private _newRequestDebouncer!: Debouncer;
+  @property({type: Object})
+  user!: EtoolsUser;
 
   connectedCallback() {
     super.connectedCallback();
-    this.listSize = 10;
-    this.listPage = 1;
+
+    this._searchChanged = debounce(this._searchChanged.bind(this), 400) as any;
   }
 
-  changePermission(basePermissionPath) {
-    if (!basePermissionPath) {
+  stateChanged(state: RootState) {
+    if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
+      this.user = state.user.data;
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('optionsData')) {
+      this.setPermission(this.optionsData);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._handleUpdateError(this.errorObject?.staff_members);
+    }
+    if (changedProperties.has('engagement') || changedProperties.has('optionsData')) {
+      this._organizationChanged(this.engagement.agreement?.auditor_firm?.id);
+      this._selectedStaffsChanged(this.engagement.staff_members);
+    }
+    if (changedProperties.has('dataItems') || changedProperties.has('engagementStaffs')) {
+      this._staffMembersListChanged(this.dataItems, this.engagementStaffs);
+    }
+    if (changedProperties.has('dataItems')) {
+      this._dataItemsChanged(this.dataItems);
+    }
+  }
+
+  setPermission(optionsData: AnyObject) {
+    if (!optionsData) {
       return;
     }
-    const editObj = this.columns && this.columns[0];
-    if (this._canBeChanged() && editObj && editObj.name !== 'hasAccess') {
-      each(this.columns, (_value, index) => {
-        this.set(`columns.${index}.size`, 16);
-      });
-      this.set(`columns.${this.columns.length - 1}.size`, 10);
-      this.unshift('columns', {
-        size: 10,
-        label: 'Has Access',
-        name: 'hasAccess',
-        property: 'hasAccess',
-        checkbox: true
-      });
-    } else if (!this._canBeChanged() && editObj && editObj.name === 'hasAccess') {
-      this.shift('columns');
-      each(this.columns, (_value, index) => {
-        this.set(`columns.${index}.size`, 18);
-      });
-      this.set(`columns.${this.columns.length - 1}.size`, 10);
-    }
+    this.showHasAccess = this._canBeChanged(optionsData);
   }
 
   listLoadingStateChanged(event: CustomEvent): void {
@@ -510,22 +393,33 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
 
   listLoaded(event: CustomEvent): void {
     const data = event.detail;
-    this.staffsBase = getStaffCollectionName(this.organizationId);
-    this.dataItems = data.results;
-    this.computeStaffMembActiveColumn();
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
+    this.paginator = {...this.paginator, count: data.count};
+    this.dataItems = data.results;
   }
 
-  computeStaffMembActiveColumn() {
-    this.dataItems?.map((item: any) => {
-      item.computed_field = !item.user.is_active ? 'Inactive' : !item.has_active_realm ? 'No Access' : `&#10003;`;
-    });
+  pageSizeChange(e: CustomEvent) {
+    this.paginator = {...this.paginator, page_size: e.detail.value};
+    this.updateListQueries();
+  }
+
+  pageNumberChange(e: CustomEvent) {
+    this.paginator = {...this.paginator, page: e.detail.value};
+    this.updateListQueries();
+  }
+
+  updateListQueries() {
+    this.listQueries = {...this.listQueries, page: this.paginator.page, page_size: this.paginator.page_size};
+  }
+
+  computeStaffMembActiveColumn(item) {
+    return !item.user.is_active ? 'Inactive' : !item.has_active_realm ? 'No Access' : null;
   }
 
   onShowInactiveChanged(e: CustomEvent) {
-    this.showInactive = Boolean((e.target as PaperToggleButtonElement).checked);
+    this.showInactive = Boolean((e.target as SlSwitch).checked);
   }
 
   _isVisible(active: boolean, showInactive: boolean) {
@@ -533,7 +427,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   _organizationChanged(id) {
-    if (!this._canBeChanged() || !this.basePermissionPath) {
+    if (!this.optionsData || !this._canBeChanged(this.optionsData)) {
       return;
     }
     if (!id) {
@@ -542,38 +436,15 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     this.organizationId = +id;
   }
 
-  _getAMPLink(organizationId: number) {
-    const user = getUserData();
+  _getAMPLink(user: EtoolsUser, organizationId: number) {
+    if (!user || !organizationId) {
+      return '';
+    }
     let url = `/amp/users/`;
-    if (user && user.is_unicef_user) {
+    if (this.user && this.user.is_unicef_user) {
       url += `list?organization_type=audit&organization_id=${organizationId}`;
     }
     return url;
-  }
-
-  _queriesChanged(listSize, listPage, searchQuery) {
-    if (!listPage || !listSize) {
-      return;
-    }
-
-    if (
-      ((this.lastSize && this.lastSize !== listSize) ||
-        (!isUndefined(this.lastSearchQuery) && this.lastSearchQuery !== searchQuery)) &&
-      this.listPage !== 1
-    ) {
-      this.lastSearchQuery = searchQuery;
-      this.lastSize = listSize;
-      this.listPage = 1;
-      return;
-    }
-    this.lastSize = listSize;
-    this.lastSearchQuery = searchQuery;
-
-    this.set('listQueries', {
-      page_size: listSize,
-      page: listPage,
-      search: searchQuery || ''
-    });
   }
 
   _staffMembersListChanged(data, staffs) {
@@ -586,65 +457,48 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     if (!this.originalTableData) {
       this._dataItemsChanged(this.dataItems);
     }
-    this.computeStaffMembActiveColumn();
   }
 
   _selectedStaffsChanged(data) {
     if (!data) {
       return;
     }
-    if (!this._canBeChanged()) {
-      this.set('dataItems', cloneDeep(data));
+    if (!this._canBeChanged(this.optionsData)) {
+      this.dataItems = cloneDeep(data);
       return;
     }
     if (!this.engagementStaffs) {
-      this.set('engagementStaffs', {});
+      this.engagementStaffs = {};
     }
     each(data, (staff) => {
       this.engagementStaffs[staff.user.email] = staff.id;
     });
     if (this.dataItems) {
       each(this.dataItems, (staff: GenericObject, index) => {
-        this.set(`dataItems.${index}.hasAccess`, !!this.engagementStaffs[staff.user.email]);
+        this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
       });
     }
   }
 
-  _calcShowingResults(datalength, listSize, listPage, searchQuery, itemsLength) {
-    let last = listSize * listPage;
-    let first = last - listSize + 1;
-    const length = searchQuery ? itemsLength : datalength;
-
-    if (last > length) {
-      last = length;
-    }
-    if (first > length) {
-      first = 0;
-    }
-    return `${first}-${last} of ${length}`;
-  }
-
-  updatePagination(event: CustomEvent): void {
-    this.listPage = event.detail.pageNumber;
-    this.listSize = event.detail.pageSize;
-  }
-
-  _isActive(event) {
-    const item = event && event.model && event.model.item;
+  _isActive(event, item) {
     if (!item) {
       throw new Error('Can not get item model!');
     }
     item.hasAccess = event.target.checked;
 
-    const me = getUserData() || {};
+    const me = this.user || {};
     const updateOptions = get(item, 'user.email') === me.email;
 
     this.manageEngagementStaff(item);
     this._updateEngagement(true, updateOptions);
   }
 
-  _showPagination(dataItems) {
-    return !!(+dataItems && +dataItems > 10);
+  _showPagination(dataItemsCount) {
+    return !!(+dataItemsCount && +dataItemsCount > 10);
+  }
+
+  _getTitle(path, basePermission, length, length2, search) {
+    return `${this.getLabel(path, basePermission)} (${this._staffLength(length, length2, search)})`;
   }
 
   _staffLength(length, length2, search) {
@@ -671,7 +525,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     const nonField = checkNonField(errorData);
     const error = refactorErrorObject(errorData);
 
-    this.set('errors', error);
+    this.errors = error;
     this.requestInProcess = false;
     if (isString(error)) {
       const text = ~error.indexOf('required') ? 'Please select at least one staff member.' : error;
@@ -683,17 +537,15 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
   }
 
   resetList() {
-    this.set('dataItems', []);
-    this.set('listPage', 1);
-    this.set('searchQuery', '');
-    this.set('searchString', '');
-    this.set('engagementStaffs', {});
-    this.set('datalength', 0);
-    this.updateStyles();
+    this.dataItems = [];
+    this.listQueries = {page: 1, page_size: 10, search: ''};
+    this.searchString = '';
+    this.engagementStaffs = {};
+    this.datalength = 0;
   }
 
   getTabData() {
-    if (!this._canBeChanged()) {
+    if (!this._canBeChanged(this.optionsData)) {
       return null;
     }
     const staffs: any[] = [];
@@ -702,7 +554,7 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     });
 
     let dataChanged = false;
-    if (this.engagement.staff_members.length !== staffs.length) {
+    if ((this.engagement.staff_members?.length || 0) !== staffs.length) {
       dataChanged = true;
     } else {
       each(this.engagement.staff_members, (staff) => {
@@ -715,32 +567,16 @@ class EngagementStaffMembersTab extends TableElementsMixin(CommonMethodsMixin(Po
     return dataChanged ? staffs : null;
   }
 
-  _getSearchInputClass(searchString) {
-    if (searchString) {
-      return 'filled';
-    }
-    return 'empty';
-  }
-
-  searchBlur() {
-    this.updateStyles();
-  }
-
-  _searchChanged(e: any) {
-    this._setField(e);
-    setTimeout(() => {
-      const value = (this.shadowRoot?.querySelector('#searchInput') as any).value || '';
-
-      if (value.length - 1) {
-        this._newRequestDebouncer = Debouncer.debounce(this._newRequestDebouncer, timeOut.after(500), () => {
-          this.set('searchQuery', value);
-        });
-      }
-    });
+  _searchChanged(searchString) {
+    this.paginator = {...this.paginator, page: 1};
+    this.listQueries = {...this.listQueries, search: searchString, page: 1};
   }
 
   _isCheckboxReadonly(checked, staffs, buttonSave) {
     return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
   }
+
+  _getSearchInputClass(searchString) {
+    return searchString ? 'filled' : 'empty';
+  }
 }
-window.customElements.define('engagement-staff-members-tab', EngagementStaffMembersTab);

@@ -1,81 +1,24 @@
 import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
-import {GenericObject} from '../../types/global';
-import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 
-const _permissionCollection: {
-  edited_ap_options?: {allowed_actions: []};
-  new_engagement?: {POST: GenericObject; GET: GenericObject; allowed_actions: []};
-  new_staff_sc?: {POST: GenericObject; GET: GenericObject; title: string; allowed_actions: []};
-  [key: string]: any;
-} = {};
-
-export function addToCollection(collectionName, data, title?) {
-  // check arguments
-  if (!collectionName || !data) {
-    EtoolsLogger.warn('collectionName and data arguments must be provided!');
-    return false;
+export function addAllowedActions(options: AnyObject) {
+  if (!options || !options.actions) {
+    return options;
   }
-  if (typeof collectionName !== 'string') {
-    EtoolsLogger.warn('collectionName must be a string');
-    return false;
-  }
-  if (typeof data !== 'object' || typeof data.forEach === 'function') {
-    EtoolsLogger.warn('data must be an object');
-    return false;
-  }
-
-  // check existance
-  if (_permissionCollection[collectionName]) {
-    return false;
-  }
-
-  _permissionCollection[collectionName] = data;
-  if (title) {
-    _permissionCollection[collectionName].title = title;
-  }
-  _manageActions(collectionName);
-
-  return true;
-}
-
-export function updateCollection(collectionName, data, title?) {
-  if (!_permissionCollection[collectionName]) {
-    EtoolsLogger.warn(`Collection ${collectionName} does not exist!`);
-    return false;
-  }
-  if (typeof data !== 'object' || typeof data.forEach === 'function') {
-    EtoolsLogger.warn('data must be an object');
-    return false;
-  }
-
-  _permissionCollection[collectionName] = data;
-  if (title) {
-    _permissionCollection[collectionName].title = title;
-  }
-  _manageActions(collectionName);
-  return true;
-}
-
-function _manageActions(collectionName) {
-  const collection = _permissionCollection[collectionName];
-  if (!collection) {
-    EtoolsLogger.warn(`Collection ${collectionName} does not exist!`);
-    return false;
-  }
-
-  const allowed_actions = (collection.allowed_FSM_transitions as any) || [];
+  const permissions = options.actions;
+  const allowed_actions = (permissions.allowed_FSM_transitions as any) || [];
 
   const actions: any[] = [];
-  if (isValidCollection(collection.PUT)) {
+  if (isValidCollection(permissions.PUT)) {
     actions.push(_createAction('save', allowed_actions[0]));
   }
-  if (isValidCollection(collection.POST)) {
+  if (isValidCollection(permissions.POST)) {
     actions.push(_createAction('create', allowed_actions[0]));
   }
 
-  collection.allowed_actions = actions.concat(allowed_actions);
-  return true;
+  permissions.allowed_actions = actions.concat(allowed_actions);
+  return options;
 }
 
 function _createAction(action, existedAction) {
@@ -88,99 +31,104 @@ function _createAction(action, existedAction) {
   };
 }
 
-export function getFieldAttribute(path: string, attribute: string, actionType?: string) {
-  if (!path || !attribute) {
-    throw new Error('path and attribute arguments must be provided');
-  }
-  if (typeof path !== 'string') {
-    throw new Error('path argument must be a string');
-  }
-  if (typeof attribute !== 'string') {
-    throw new Error('attribute argument must be a string');
-  }
-
-  let value = getCollection(path, actionType);
-
-  if (value) {
-    value = value[attribute];
-  }
-
-  return value === undefined ? null : value;
+export function readonlyPermission(path: string, optionsData: AnyObject) {
+  return !collectionExists(path, optionsData, 'POST') && !collectionExists(path, optionsData, 'PUT');
 }
 
-export function readonlyPermission(path) {
-  // isReadonly
-  return !collectionExists(path, 'POST') && !collectionExists(path, 'PUT');
+export function getHeadingLabel(options: AnyObject, labelPath, defaultLabel) {
+  if (!options || !labelPath) {
+    return defaultLabel || '';
+  }
+  const actions = options.actions ? options.actions : options;
+  const label = get(actions, `GET.${labelPath}.label`);
+
+  return label && typeof label === 'string' ? label : defaultLabel || '';
 }
 
-export function isRequired(path) {
-  return getFieldAttribute(path, 'required', 'POST') || getFieldAttribute(path, 'required', 'PUT');
+export function isRequired(path: string, permissions: AnyObject) {
+  return (
+    getCollection(`${path}.required`, permissions, 'POST') || getCollection(`${path}.required`, permissions, 'PUT')
+  );
 }
 
-export function collectionExists(path, actionType?) {
+export function collectionExists(path: string, optionsData: AnyObject, actionType?: string) {
   if (!path) {
     throw new Error('path argument must be provided');
   }
   if (typeof path !== 'string') {
     throw new Error('path argument must be a string');
   }
-
-  return !!getCollection(path, actionType);
+  return !!getCollection(path, optionsData, actionType);
 }
 
-export function getChoices(path: string) {
-  return getFieldAttribute(path, 'choices', 'GET') || getFieldAttribute(path, 'choices', 'POST');
+export function getLabelFromOptions(optionsData, labelPath, defaultLabel) {
+  if (!optionsData || !labelPath) {
+    return defaultLabel || '';
+  }
+  const actions = get(optionsData, 'actions') || {};
+  let labelFound = get(actions, `GET.${labelPath}`);
+  if (!labelFound) {
+    labelFound = getCollection(labelPath, actions, 'GET');
+  }
+  if (labelFound) {
+    if (typeof labelFound === 'string') {
+      return labelFound;
+    }
+    if (labelFound.label) {
+      return labelFound.label;
+    }
+  }
+  return defaultLabel || '';
 }
 
-export function getCollection(path: string, actionType?: string): any {
+export function getOptionsChoices(optionsData: AnyObject, path: string) {
+  const actions = get(optionsData, 'actions') || optionsData;
+  let choices = get(actions, `GET.${path}.choices`) || get(actions, `POST.${path}.choices`);
+  if (!choices) {
+    choices = getCollection(`${path}.choices`, actions);
+  }
+  return choices || [];
+}
+
+export function getCollection(path: string, options: AnyObject, actionType?: string) {
   const pathArr = path.split('.');
 
-  let value = _permissionCollection;
-
+  let value = get(options, 'actions') || options || {};
   while (pathArr.length) {
     const key = pathArr.shift()!;
-    if (value[key]) {
+    if (typeof value[key] !== 'undefined') {
       value = value[key];
     } else {
       const action = actionType
         ? value[actionType]
-        : isValidCollection(value.POST) || isValidCollection(value.PUT) || isValidCollection(value.GET);
+        : isValidCollection(value.GET) || isValidCollection(value.POST) || isValidCollection(value.PUT);
 
       value = action || value.child || value.children;
       pathArr.unshift(key);
     }
-
     if (!value) {
       break;
     }
   }
-
   return value;
 }
 
-export function isValidCollection(collection) {
-  const testedCollection = omit(collection, 'allowed_actions');
-  const actions = get(collection, 'allowed_actions', []);
-  if (collection && (Object.keys(testedCollection).length || actions.length)) {
-    return collection;
+export function isValidCollection(options: AnyObject) {
+  const testedCollection = omit(options, 'allowed_actions');
+  const actions = get(options, 'allowed_actions', []);
+  if (options && (Object.keys(testedCollection).length || actions.length)) {
+    return options;
   } else {
     return false;
   }
 }
 
-export function actionAllowed(collection, action) {
-  if (!action || !collection) {
+export function actionAllowed(options: AnyObject, action: string) {
+  if (!action || !options) {
     return false;
   }
-  if (typeof collection !== 'string') {
-    throw new Error('collection argument must be a string');
-  }
-  if (typeof action !== 'string') {
-    throw new Error('action argument must be a string');
-  }
-  collection = _permissionCollection[collection];
 
-  let actions = collection && collection.allowed_actions;
+  let actions = options.actions && options.actions.allowed_actions;
 
   if (!actions || !actions.length) {
     return false;
@@ -204,14 +152,10 @@ export function actionAllowed(collection, action) {
 //   return !(collection && collection.allowed_actions && collection.allowed_actions.length);
 // }
 
-export function getActions(collection) {
-  if (!collection) {
+export function getActions(options: AnyObject) {
+  if (!options) {
     return null;
   }
-  if (typeof collection !== 'string') {
-    throw new Error('Collection argument must be a string');
-  }
-  collection = _permissionCollection[collection];
 
-  return (collection && collection.allowed_actions) || null;
+  return (options && options.allowed_actions) || null;
 }

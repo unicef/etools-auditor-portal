@@ -1,11 +1,13 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/paper-input/paper-textarea';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 
@@ -18,17 +20,21 @@ import isEqual from 'lodash-es/isEqual';
  * @mixinFunction
  * @appliesMixin CommonMethodsMixin
  */
-class InternalControls extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
-    // language=HTML
+@customElement('internal-controls')
+export class InternalControls extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
 
       <etools-content-panel
         class="content-section clearfx"
-        panel-title="[[getLabel('internal_controls', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('internal_controls', this.optionsData)}"
       >
-        <div class="row-h" group>
+        <div class="layout-horizontal">
           <div class="static-text">
             Inquire of IP management whether there have been any changes to internal controls since the prior micro
             assessment from the current programme cycle.<br />
@@ -37,44 +43,50 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
           </div>
         </div>
 
-        <div class="row-h group">
-          <paper-textarea
-            class$="[[_setRequired('internalControls', basePermissionPath)]]"
-            value="{{data}}"
-            label="Document any changes identified"
-            always-float-label
-            placeholder="Enter comments"
-            required$="[[_setRequired('internal_controls', basePermissionPath)]]"
-            readonly$="[[isReadOnly('internal_controls', basePermissionPath)]]"
-            invalid="{{_checkInvalid(errors.internal_controls)}}"
-            error-message="{{errors.internal_controls}}"
-            on-focus="_resetFieldError"
-            on-tap="_resetFieldError"
-          >
-          </paper-textarea>
+        <div class="layout-horizontal">
+          <div class="col col-12">
+            <etools-textarea
+              class="w100 ${this._setRequired('internalControls', this.optionsData)}"
+              .value="${this.data}"
+              label="Document any changes identified"
+              always-float-label
+              placeholder="Enter comments"
+              ?required="${this._setRequired('internal_controls', this.optionsData)}"
+              ?readonly="${this.isReadOnly('internal_controls', this.optionsData)}"
+              ?invalid="${this._checkInvalid(this.errors?.internal_controls)}"
+              .errorMessage="${this.errors?.internal_controls}"
+              @value-changed="${({detail}: CustomEvent) => (this.data = detail.value)}"
+              @focus="${this._resetFieldError}"
+            >
+            </etools-textarea>
+          </div>
         </div>
       </etools-content-panel>
     `;
   }
 
-  static get observers() {
-    return ['updateStyles(basePermissionPath)', '_errorHandler(errorObject)'];
-  }
-
-  @property({type: Object, notify: true})
+  @property({type: Object})
   data: GenericObject | null = {};
 
   @property({type: Object})
   originalData: GenericObject = {};
 
-  @property({type: Array})
-  errors!: any[];
+  @property({type: Object})
+  errors!: GenericObject;
 
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Internal controls',
     fields: ['internal_controls']
   };
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject, this.errorObject);
+    }
+  }
 
   getInternalControlsData() {
     let data: GenericObject | null = null;
@@ -88,6 +100,3 @@ class InternalControls extends CommonMethodsMixin(PolymerElement) {
     return !!value;
   }
 }
-
-window.customElements.define('internal-controls', InternalControls);
-export {InternalControls as InternalControlsElement};

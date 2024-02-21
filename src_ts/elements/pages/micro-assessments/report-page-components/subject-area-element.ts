@@ -1,10 +1,14 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import '../../../common-elements/list-tab-elements/list-element/list-element';
-import '@polymer/paper-icon-button/paper-icon-button';
+import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices} from '../../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
+import {getOptionsChoices} from '../../../mixins/permission-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import get from 'lodash-es/get';
@@ -13,67 +17,75 @@ import {GenericObject} from '../../../../types/global';
 import isEqual from 'lodash-es/isEqual';
 import isNumber from 'lodash-es/isNumber';
 
-class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin CommonMethodsMixinLit
+ */
+@customElement('subject-area-element')
+export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles}
+      ${sharedStyles}
       <style>
-        :host {
-          position: relative;
-          display: block;
-        }
-        .edit-icon-slot {
-          overflow: visible !important;
-          display: flex;
-          align-items: center;
-          height: 100%;
+        ${dataTableStylesLit} etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
         }
       </style>
-
-      <list-element
-        id="listElement"
-        class="list-element"
-        data="{{areaData}}"
-        base-permission-path="[[basePermissionPath]]"
-        headings="[[headings]]"
-        details="[[details]]"
-        has-collapse
-        no-animation
-      >
-        <div slot="hover" class="edit-icon-slot" hidden$="[[!editMode]]">
-          <paper-icon-button icon="create" class="edit-icon" on-tap="openEditDialog"> </paper-icon-button>
+      <etools-data-table-row>
+        <div slot="row-data" class="layout-horizontal editable-row">
+          <span class="col-data col-8">${this.areaData?.header}</span>
+          <span class="col-data col-4">${this.areaData?.risk.value_display}</span>
+          <div class="hover-block" ?hidden="${!this.canBeChanged}">
+            <etools-icon-button name="create" @click="${this.openEditDialog}"></etools-icon-button>
+          </div>
         </div>
-      </list-element>
+        <div slot="row-data-details">
+          <div class="row-details-content col-12">
+            <span class="rdc-title">Brief Justification for Rating (main internal control gaps)</span>
+            <span>${this.areaData?.risk.extra.comments || '–'}</span>
+          </div>
+        </div>
+      </etools-data-table-row>
     `;
   }
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   area!: GenericObject;
 
   @property({type: Object})
   originalData!: GenericObject;
 
-  @property({type: String})
-  basePermissionPath!: string;
+  @property({type: Boolean})
+  canBeChanged!: boolean;
 
-  @property({type: Array})
-  headings!: [];
+  @property({type: Number})
+  index!: number;
 
   @property({type: Object})
   riskOptions!: GenericObject;
 
-  @property({type: Array})
-  areaData!: any[];
+  @property({type: Object})
+  areaData!: GenericObject;
 
-  static get observers() {
-    return ['_setAreaData(area, riskOptions)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('optionsData')) {
+      this.setRiskOptions();
+    }
+    if (changedProperties.has('area') || changedProperties.has('riskOptions')) {
+      this._setAreaData(this.area, this.riskOptions);
+    }
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
-    this.set('riskOptions', riskOptions);
+  setRiskOptions() {
+    const riskOptions = getOptionsChoices(this.optionsData, 'test_subject_areas.blueprints.risk.value') || [];
+    this.riskOptions = riskOptions;
   }
 
   _setAreaData(data, riskOptions) {
@@ -98,7 +110,7 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
   }
 
   openEditDialog() {
-    fireEvent(this, 'open-edit-dialog', {data: this.area});
+    fireEvent(this, 'open-edit-dialog', this.index);
   }
 
   getRiskData() {
@@ -132,5 +144,3 @@ class SubjectAreaElement extends CommonMethodsMixin(PolymerElement) {
     return !!this.area.blueprints[0].risk.value && this.area.blueprints[0].risk.extra !== null;
   }
 }
-
-window.customElements.define('subject-area-element', SubjectAreaElement);

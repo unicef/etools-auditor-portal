@@ -1,14 +1,16 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html} from 'lit';
+import {customElement} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import '@polymer/paper-styles/element-styles/paper-material-styles';
-import {sharedStyles} from '../../styles/shared-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {BASE_PATH} from '../../../elements/config/config';
 
-class NotFoundPageView extends PolymerElement {
-  static get template() {
+@customElement('not-found-page-view')
+export class NotFoundPageView extends LitElement {
+  render() {
     // language=HTML
     return html`
       ${sharedStyles}
-      <style include="paper-material-styles">
+      <style>
         :host {
           display: block;
         }
@@ -25,7 +27,7 @@ class NotFoundPageView extends PolymerElement {
 
       <div id="pageContent">
         <div class="paper-material" elevation="1">
-          404 <a href$="[[rootPath]]engagements/list" class="link">Head back home.</a>
+          404 <a href="${BASE_PATH}engagements/list" class="link">Head back home.</a>
         </div>
       </div>
     `;
@@ -35,5 +37,3 @@ class NotFoundPageView extends PolymerElement {
     fireEvent(this, 'drawer');
   }
 }
-
-window.customElements.define('not-found-page-view', NotFoundPageView);

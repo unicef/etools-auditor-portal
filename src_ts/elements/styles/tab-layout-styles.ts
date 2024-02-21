@@ -1,12 +1,10 @@
-import {html} from '@polymer/polymer/polymer-element';
+import {css} from 'lit';
 
 // language=HTML
-export const tabLayoutStyles = html`
-  <style>
-    :host {
-      position: relative;
-      display: block;
-      margin-bottom: 24px;
-    }
-  </style>
+export const tabLayoutStyles = css`
+  :host {
+    position: relative;
+    display: block;
+    margin-bottom: 24px;
+  }
 `;

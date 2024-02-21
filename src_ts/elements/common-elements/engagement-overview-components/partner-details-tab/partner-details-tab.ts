@@ -1,41 +1,47 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/polymer/lib/elements/dom-if';
-
-import '@unicef-polymer/etools-loading/etools-loading.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown';
-import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-dropdown/etools-dropdown-multi.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 
 import findIndex from 'lodash-es/findIndex';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
-import {property} from '@polymer/decorators';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {readonlyPermission} from '../../../mixins/permission-controller';
-import {getStaticData} from '../../../mixins/static-data-controller';
 
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '../../../data-elements/get-partner-data';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 
 /**
- * @polymer
+ * main menu
+ * @LitElement
  * @customElement
- * @appliesMixin CommonMethodsMixin
  */
-class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+@customElement('partner-details-tab')
+export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElement)) {
+  static get styles() {
+    return [moduleStyles, tabLayoutStyles, tabInputsStyles];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         .partner-loading {
           position: absolute;
@@ -46,159 +52,147 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
         .partner-loading:not([active]) {
           display: none !important;
         }
-        etools-dropdown,
-        etools-dropdown-multi {
-          --esmm-dropdown-menu-position: absolute;
+        .input-container {
+          display: flex;
         }
       </style>
 
-      <get-partner-data partner-id="[[partnerId]]" on-partner-loaded="_partnerLoaded"></get-partner-data>
+      <get-partner-data .partnerId="${this.partnerId}" @partner-loaded="${this._partnerLoaded}"></get-partner-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
         <div class="row-h group">
           <div class="input-container">
             <!-- Partner -->
-            <template is="dom-if" if="[[isReadOnly('partner', basePermissionPath)]]">
-              <paper-input
-                label="[[getLabel('partner', basePermissionPath)]]"
-                value="[[partner.name]]"
-                readonly
-              ></paper-input>
-            </template>
-            <template is="dom-if" if="[[!isReadOnly('partner', basePermissionPath)]]">
-              <etools-dropdown
-                id="partner"
-                class$="[[_setRequired('partner', basePermissionPath)]]
-                                    [[_setReadonlyClass(requestInProcess, basePermissionPath)]]"
-                selected="[[engagement.partner.id]]"
-                label="[[getLabel('partner', basePermissionPath)]]"
-                placeholder="[[getPlaceholderText('partner', basePermissionPath, 'dropdown')]]"
-                options="[[partners]]"
-                option-label="name"
-                option-value="id"
-                required$="[[_setRequired('partner', basePermissionPath)]]"
-                invalid="[[errors.partner]]"
-                error-message="[[errors.partner]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                trigger-value-change-event
-                on-etools-selected-item-changed="_requestPartner"
-                dynamic-align
-              >
-              </etools-dropdown>
-            </template>
-            <etools-loading active="[[requestInProcess]]" no-overlay loading-text="" class="partner-loading">
+            ${this.isReadOnly('partner', this.optionsData)
+              ? html`<etools-input
+                  label="${this.getLabel('partner', this.optionsData)}"
+                  .value="${this.partner?.name}"
+                  readonly
+                ></etools-input>`
+              : html`<etools-dropdown
+                  id="partner"
+                  class="${this._setRequired('partner', this.optionsData)} ${this._setReadonlyClass(
+                    this.requestInProcess,
+                    this.optionsData
+                  )}"
+                  .selected="${this.engagement.partner?.id}"
+                  label="${this.getLabel('partner', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('partner', this.optionsData, 'dropdown')}"
+                  .options="${this.partners}"
+                  option-label="name"
+                  option-value="id"
+                  ?required="${this._setRequired('partner', this.optionsData)}"
+                  ?invalid="${this.errors.partner}"
+                  .errorMessage="${this.errors.partner}"
+                  @focus="${this._resetFieldError}"
+                  trigger-value-change-event
+                  @etools-selected-item-changed="${this._requestPartner}"
+                  dynamic-align
+                >
+                </etools-dropdown>`}
+
+            <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="partner-loading">
             </etools-loading>
           </div>
           <div class="input-container input-container-m">
             <!-- Partner Address -->
-            <paper-input
-              class$="[[_setReadonlyFieldClass(partner)]]"
-              value="[[_setPartnerAddress(partner)]]"
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this._setPartnerAddress(this.partner)}"
               label="Partner Address"
-              placeholder="[[getReadonlyPlaceholder(partner)]]"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
         </div>
 
         <div class="row-h group">
           <div class="input-container">
             <!-- Partner Phone Number -->
-            <paper-input
-              class$="[[_setReadonlyFieldClass(partner)]]"
-              value="[[partner.phone_number]]"
-              label="[[getLabel('partner.phone_number', basePermissionPath)]]"
-              placeholder="[[getReadonlyPlaceholder(partner)]]"
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this.partner?.phone_number}"
+              label="${this.getLabel('partner.phone_number', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container">
             <!-- Partner E-mail Address -->
-            <paper-input
-              class$="[[_setReadonlyFieldClass(partner)]]"
-              value="[[partner.email]]"
-              label="[[getLabel('partner.email', basePermissionPath)]]"
-              placeholder="[[getReadonlyPlaceholder(partner)]]"
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this.partner?.email}"
+              label="${this.getLabel('partner.email', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
-            </paper-input>
+            </etools-input>
           </div>
 
           <div class="input-container">
             <!-- Partner  Officers-->
             <etools-dropdown
               id="authorizedOfficer"
-              class$="[[_setRequired('authorized_officers', basePermissionPath)]]
-                                [[_setPlaceholderColor(partner)]]"
-              selected="[[authorizedOfficer.id]]"
-              label="[[getLabel('authorized_officers', basePermissionPath)]]"
-              placeholder="[[getReadonlyPlaceholder(partner)]]"
-              options="[[partner.partnerOfficers]]"
+              class="${this._setRequired('authorized_officers', this.optionsData)} ${this._setPlaceholderColor(
+                this.partner
+              )}"
+              .selected="${this.authorizedOfficer?.id}"
+              label="${this.getLabel('authorized_officers', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              .options="${this.partner?.partnerOfficers}"
               option-label="fullName"
               option-value="id"
-              required="[[_setRequired('authorized_officers', basePermissionPath)]]"
-              invalid="[[_checkInvalid(errors.authorized_officers)]]"
-              readonly$="[[isOfficersReadonly(basePermissionPath, requestInProcess, partner)]]"
-              error-message="[[errors.authorized_officers]"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              ?required="${this._setRequired('authorized_officers', this.optionsData)}"
+              ?invalid="${this._checkInvalid(this.errors.authorized_officers)}"
+              ?readonly="${this.isOfficersReadonly(this.optionsData, this.requestInProcess, this.partner)}"
+              .errorMessage="${this.errors.authorized_officers}"
+              @focus="${this._resetFieldError}"
               dynamic-align
-              data-value-path="detail.selectedItem"
-              data-field-path="authorizedOfficer"
-              on-etools-selected-item-changed="_setField"
+              @etools-selected-item-changed="${(event: CustomEvent) => {
+                if (this.authorizedOfficer) {
+                  this.authorizedOfficer = event.detail.selectedItem;
+                }
+              }}"
               trigger-value-change-event
             >
             </etools-dropdown>
           </div>
         </div>
 
-        <template is="dom-if" if="[[_showActivePd(partner.partner_type, specialPartnerTypes)]]">
-          <div class="row-h group">
-            <div class="input-container input-container-l">
-              <!-- Active PD -->
-              <etools-dropdown-multi
-                id="activePd"
-                class$="[[_setPlaceholderColor(partner)]]"
-                selected-values="[[activePdIds]]"
-                label="[[getLabel('active_pd', basePermissionPath)]]"
-                placeholder="[[activePdPlaceholder(basePermissionPath, partner)]]"
-                options="[[partner.interventions]]"
-                option-label="number"
-                option-value="id"
-                readonly$="[[isPdReadonly(basePermissionPath, requestInProcess, partner)]]"
-                invalid="[[errors.active_pd]]"
-                error-message="[[errors.active_pd]]"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                dynamic-align
-                trigger-value-change-event
-                data-value-path="target.selectedValues"
-                data-field-path="activePdIds"
-                on-etools-selected-items-changed="_setField"
-              >
-              </etools-dropdown-multi>
-            </div>
-          </div>
-        </template>
+        ${this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
+          ? html` <div class="row-h group">
+              <div class="input-container input-container-l">
+                <!-- Active PD -->
+                <etools-dropdown-multi
+                  id="activePd"
+                  class="${this._setPlaceholderColor(this.partner)}"
+                  .selectedValues="${this.activePdIds}"
+                  label="${this.getLabel('active_pd', this.optionsData)}"
+                  placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
+                  .options="${this.partner?.interventions}"
+                  option-label="number"
+                  option-value="id"
+                  ?readonly="${this.isPdReadonly(this.optionsData, this.requestInProcess, this.partner)}"
+                  ?invalid="${this.errors.active_pd}"
+                  .errorMessage="${this.errors.active_pd}"
+                  @focus="${this._resetFieldError}"
+                  dynamic-align
+                  trigger-value-change-event
+                  @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                    const newIds = detail.selectedItems.map((i: any) => i.id);
+                    this.activePdIds = newIds;
+                  }}"
+                >
+                </etools-dropdown-multi>
+              </div>
+            </div>`
+          : ``}
       </etools-content-panel>
     `;
   }
-  static get observers() {
-    return [
-      '_engagementChanged(engagement, basePermissionPath)',
-      '_errorHandler(errorObject)',
-      '_setActivePd(engagement, partner.interventions, partnerId)',
-      'updateStyles(basePermissionPath, requestInProcess, partner, engagement.engagement_type)',
-      'setOfficers(partner, engagement, basePermissionPath)'
-    ];
-  }
-
-  @property({type: String, observer: '_basePathChanged'})
-  basePermissionPath!: string;
 
   @property({type: Array})
   partners!: [];
@@ -213,6 +207,12 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   errors: GenericObject = {};
 
   @property({type: Object})
+  errorObject!: GenericObject;
+
+  @property({type: Object})
+  originalData!: GenericObject;
+
+  @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Partner Details',
     fields: ['authorized_officers', 'active_pd', 'partner']
@@ -225,18 +225,43 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   activePdIds!: any[];
 
   @property({type: Object})
-  authorizedOfficer!: GenericObject;
+  authorizedOfficer: GenericObject | null = null;
+
+  _engagement!: AnyObject;
+
+  set engagement(engagement: AnyObject) {
+    const isInitialSet = !this._engagement;
+    this._engagement = engagement;
+    if (isInitialSet) {
+      this._engagementChanged(this.engagement);
+    }
+  }
 
   @property({type: Object})
-  engagement!: GenericObject;
+  get engagement() {
+    return this._engagement;
+  }
 
-  @property({type: Object})
-  partnerId!: GenericObject;
+  @property({type: String})
+  partnerId!: string | null;
 
   connectedCallback() {
     super.connectedCallback();
-    this.set('partners', getStaticData('partners'));
     this._initListeners();
+  }
+
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.partners, state.commonData.partners)) {
+      this.partners = [...state.commonData.partners];
+    }
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject, this.errorObject);
+    }
   }
 
   _initListeners() {
@@ -245,17 +270,19 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   _partnerLoaded(event: CustomEvent) {
     if (event.detail) {
-      this.set('partner', event.detail);
+      this.partner = event.detail;
     }
-    this.set('partnerId', null);
-    this.set('errors', {});
+    this.setOfficers(this.partner, this.engagement);
+    this._setActivePd(this.engagement, this.partner?.interventions);
+    this.partnerId = null;
+    this.errors = {};
     this.requestInProcess = false;
     this.validatePartner();
   }
 
   setOfficers(partner, engagement) {
     if (!partner || !partner.id) {
-      this.set('authorizedOfficer', null);
+      this.authorizedOfficer = null;
       return;
     }
     const engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0];
@@ -264,8 +291,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;
     }
 
-    if (this.isReadOnly('partner', this.basePermissionPath) && engagementOfficer) {
-      this.set('partner.partnerOfficers', [engagementOfficer]);
+    if (this.isReadOnly('partner', this.optionsData) && engagementOfficer) {
+      this.partner.partnerOfficers = [engagementOfficer];
       this.authorizedOfficer = engagementOfficer;
     } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
       const officerIndex = !!(
@@ -285,8 +312,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   validateActivePd() {
     // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
-    const activePdInput = this.shadowRoot!.querySelector('#activePd') as EtoolsDropdownMultiEl;
-    const partnerType = this.get('engagement.partner.partner_type');
+    const activePdInput = this.shadowRoot?.querySelector('#activePd') as EtoolsDropdownMultiEl;
+    const partnerType = this.engagement.partner?.partner_type;
     const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
 
     if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
@@ -299,7 +326,7 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   validatePartner() {
-    const partnerEl = this.shadowRoot!.querySelector('#partner') as EtoolsDropdownEl;
+    const partnerEl = this.shadowRoot?.querySelector('#partner') as EtoolsDropdownEl;
     if (!partnerEl || !partnerEl.required) {
       if (partnerEl) {
         partnerEl.invalid = false;
@@ -307,11 +334,11 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       return true;
     }
     if (!this.engagement?.partner?.id) {
-      this.set('errors.partner', 'Partner is required');
+      this.errors = {...this.errors, partner: 'Partner is required'};
       partnerEl.invalid = true;
       return false;
     } else if (!this.partner.id) {
-      this.set('errors.partner', 'Can not find partner data');
+      this.errors = {...this.errors, partner: 'Can not find partner data'};
       partnerEl.invalid = true;
       return false;
     } else {
@@ -321,11 +348,11 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   resetValidationErrors() {
-    this.set('errors', {});
+    this.errors = {};
   }
 
-  _setReadonlyClass(inProcess, basePermissionPath) {
-    return inProcess || this.isReadOnly('partner', basePermissionPath) ? 'readonly' : '';
+  _setReadonlyClass(inProcess, optionsData) {
+    return inProcess || this.isReadOnly('partner', optionsData) ? 'readonly' : '';
   }
 
   _showActivePd(partnerType, types) {
@@ -333,8 +360,8 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   _setActivePd(engagement, partnerInterv) {
-    if (!partnerInterv || !engagement) {
-      this.set('activePdIds', []);
+    if (!engagement || !partnerInterv) {
+      this.activePdIds = [];
       return;
     }
     // let partnerType = this.get('engagement.partner.partner_type');
@@ -347,20 +374,17 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     //   return false;
     // }
 
-    const originalPartnerId = this.get('originalData.partner.id');
-    const partnerId = this.get('partner.id');
+    const originalPartnerId = this.originalData?.partner?.id;
+    const partnerId = this.partner.id;
 
     if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
-      this.set('activePdIds', []);
+      this.activePdIds = [];
       this.validateActivePd();
       return false;
     }
 
-    const activePd = this.get('engagement.active_pd') || [];
-    this.set(
-      'activePdIds',
-      activePd.map((pd) => pd.id)
-    );
+    const activePd = this.engagement.active_pd || [];
+    this.activePdIds = activePd.map((pd) => pd.id);
     this.validateActivePd();
     return true;
   }
@@ -370,10 +394,9 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       return;
     }
 
-    this.set('partner', {});
-    this.set('activePdIds', null);
-    this.set('authorizedOfficer', null);
-
+    this.partner = {};
+    this.activePdIds = [];
+    this.authorizedOfficer = null;
     const selectedPartner = event && event.detail && event.detail.selectedItem;
 
     const partnerId = (selectedPartner && selectedPartner.id) || +id;
@@ -381,12 +404,13 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
       return;
     }
 
-    if (this.isReadOnly('partner', this.basePermissionPath)) {
+    if (this.isReadOnly('partner', this.optionsData)) {
       this.partner = this.engagement.partner;
-      this.set('partner.interventions', this.engagement.active_pd);
+      this.partner.interventions = this.engagement.active_pd;
       return;
     } else {
-      this.set('engagement.partner', selectedPartner);
+      this.engagement.partner = selectedPartner;
+      store.dispatch(updateCurrentEngagement(this.engagement));
     }
 
     this.requestInProcess = true;
@@ -396,11 +420,13 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
 
   _engagementChanged(engagement) {
     if (!engagement || !engagement.partner) {
-      this.set('partner', {});
-      this.set('activePdIds', null);
+      this.partner = {};
+      this.activePdIds = [];
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
+    this._setActivePd(this.engagement, this.partner?.interventions);
+    this.setOfficers(this.partner, this.engagement);
   }
 
   getPartnerData() {
@@ -409,10 +435,10 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     }
 
     const data = {} as any;
-    const originalPartnerId = this.get('originalData.partner.id');
-    const partnerId = this.get('engagement.partner.id');
-    const partnerType = this.get('engagement.partner.partner_type');
-    let originalActivePd = this.get('originalData.active_pd') || [];
+    const originalPartnerId = this.originalData?.partner?.id;
+    const partnerId = this.engagement?.partner?.id;
+    const partnerType = this.engagement?.partner?.partner_type;
+    let originalActivePd = this.originalData?.active_pd || [];
     const activePdIds = (this.activePdIds || []).map((id) => +id);
 
     originalActivePd = originalActivePd.map((pd) => +pd.id);
@@ -433,32 +459,32 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   getAuthorizedOfficer() {
-    if (this.isReadOnly('partner', this.basePermissionPath) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
+    if (this.isReadOnly('partner', this.optionsData) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
       return null;
     }
     const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
     return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
   }
 
-  isPdReadonly(basePermissionPath, requestInProcess, partner) {
-    return this.isReadOnly('active_pd', basePermissionPath, requestInProcess) || !partner.id;
+  isPdReadonly(permissions: AnyObject, requestInProcess, partner) {
+    return this.isReadOnly('active_pd', permissions, requestInProcess) || !partner.id;
   }
 
-  activePdPlaceholder(basePermissionPath, partner) {
+  activePdPlaceholder(permissions: AnyObject, partner) {
     if (!partner || !partner.id) {
       return '–';
     }
-    return readonlyPermission(`${basePermissionPath}.active_pd`) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
-    // return this.getPlaceholderText('active_pd', basePermissionPath, 'selector');
+    return readonlyPermission('active_pd', permissions) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
+    // return this.getPlaceholderText('active_pd', permissions, 'selector');
   }
 
   _setPlaceholderColor(partner) {
     return !partner || !partner.id ? 'no-data-fetched' : '';
   }
 
-  isOfficersReadonly(basePermissionPath, requestInProcess, partner) {
+  isOfficersReadonly(permissions: AnyObject, requestInProcess, partner) {
     return (
-      this.isReadOnly('authorized_officers', basePermissionPath, requestInProcess) ||
+      this.isReadOnly('authorized_officers', permissions, requestInProcess) ||
       !partner ||
       !partner.partnerOfficers ||
       !partner.partnerOfficers.length ||
@@ -478,6 +504,3 @@ class PartnerDetailsTab extends CommonMethodsMixin(PolymerElement) {
     return !!value;
   }
 }
-window.customElements.define('partner-details-tab', PartnerDetailsTab);
-
-export {PartnerDetailsTab as PartnerDetailsTabEl};
