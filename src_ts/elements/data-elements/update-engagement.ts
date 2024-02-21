@@ -5,7 +5,6 @@ import {getEndpoint} from '../config/endpoints-controller';
 import {addAllowedActions} from '../mixins/permission-controller';
 import {GenericObject} from '@unicef-polymer/etools-types';
 import {RequestConfig, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
-import {formatServerErrorAsText} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-error-parser';
 import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
 import {
   getActionPointOptions,
@@ -166,8 +165,14 @@ export class UpdateEngagement extends LitElement {
     try {
       if (typeof response === 'string') {
         response = JSON.parse(response);
-      } else {
-        serverErrorText = formatServerErrorAsText(response);
+      } else if (this._errorObjIsNested(response)) {
+        const msgArr = [];
+        this.getMesageFromNestedObj(response, msgArr);
+        if (msgArr && msgArr.length) {
+          serverErrorText = msgArr.slice(0, -1).join('.') + ': ' + msgArr[msgArr.length - 1];
+        } else {
+          serverErrorText = 'An error occured. Please try again';
+        }
       }
     } catch (e) {
       response = {};
@@ -191,6 +196,24 @@ export class UpdateEngagement extends LitElement {
       this.quietAdding = false;
       fireEvent(this, 'quiet-adding-changed', String(this.quietAdding).toLowerCase());
     }
+  }
+
+  getMesageFromNestedObj(obj: GenericObject, arr: any[]) {
+    Object.keys(obj).forEach((key) => {
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        arr.push(key);
+        this.getMesageFromNestedObj(obj[key], arr);
+      } else {
+        arr.push(obj[key]);
+      }
+    });
+  }
+
+  _errorObjIsNested(obj) {
+    if (typeof obj !== 'object') {
+      return false;
+    }
+    return Object.keys(obj || {}).some((prop) => typeof obj[prop] !== 'string');
   }
 
   _handleOptionsError() {

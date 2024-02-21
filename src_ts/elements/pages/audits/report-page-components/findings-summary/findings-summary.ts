@@ -330,6 +330,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       this.data.percent_of_audited_expenditure = Number(this.data.percent_of_audited_expenditure).toFixed(2);
     }
     this.dataItems = [this.data];
+    // reset editem item
+    this.editedItem = cloneDeep(this.itemModel);
   }
 
   getFindingsSummaryData() {
