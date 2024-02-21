@@ -77,6 +77,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
 
         etools-accesibility {
           margin-inline-end: 10px;
+          display: none;
         }
 
         .nav-menu-button {
