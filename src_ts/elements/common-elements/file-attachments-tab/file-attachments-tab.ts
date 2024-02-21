@@ -324,7 +324,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
     if (changedProperties.has('errorObject')) {
       this.filesTabErrorHandler(this.errorObject);
-    }
+    }       
     if (changedProperties.has('isUnicefUser') || changedProperties.has('engagement')) {
       this._shouldHideShare(this.isUnicefUser, this.engagement?.id);
     }
@@ -556,7 +556,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
         this.requestInProcess = false;
         this.shareDialogOpened = false;
-        this._closeEditDialog();
+        this.closeEditDialog(this.sharedDialogKey);
         this._getLinkedAttachments(); // refresh the list
       })
       .catch(this._handleShareError.bind(this));
