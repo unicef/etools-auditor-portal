@@ -435,7 +435,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
     this.requestInProcess = false;
     if (detail && detail.success) {
       this.isAddDialogOpen = false;
-      this.closeEditDialog();
+      this._closeEditDialog();
       if (event.detail.data) {
         this.dataItems = [...event.detail.data];
       }

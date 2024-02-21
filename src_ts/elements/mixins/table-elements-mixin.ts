@@ -9,6 +9,7 @@ import {readonlyPermission} from './permission-controller';
 import {refactorErrorObject} from './error-handler';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import {getBodyDialog} from '../utils/utils';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @polymer
@@ -80,9 +81,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Boolean})
     deleteDialog!: boolean;
 
-    @property({type: Boolean})
-    dataIsInitialized = false;
-
     @property({type: String})
     dialogKey = '';
 
@@ -100,11 +98,11 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _dataItemsChanged(data) {
-      if (!this.dataIsInitialized) {
-        this.dataIsInitialized = true;
+      if (!isJsonStrMatch(this.originalTableData, data || [])) {
         this.originalTableData = cloneDeep(data || []);
       }
-      this.closeEditDialog();
+
+      this._closeEditDialog();
     }
 
     getTabData() {
@@ -225,7 +223,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
       if (!this.isAddDialogOpen && isEqual(this.originalEditedObj, this.editedItem)) {
         // nothing changed, close dialog
-        this.closeEditDialog();
+        this._closeEditDialog();
         return;
       }
 
@@ -238,10 +236,10 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       // Perform save outside dialog (by clicking the Save btn in the status component)
       this._updateDataItemsWithoutSave();
 
-      this.closeEditDialog();
+      this._closeEditDialog();
     }
 
-    closeEditDialog() {
+    _closeEditDialog() {
       if (!this.dialogKey) {
         return;
       }
@@ -250,6 +248,8 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       // close dialog if opened on data changed (ex: after saving)
       const dialogEl = getBodyDialog(this.dialogKey);
       if (dialogEl) {
+        this.isAddDialogOpen = false;
+        this.isConfirmDialogOpen = false;
         (dialogEl as any)._onClose();
       }
     }

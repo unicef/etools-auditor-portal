@@ -556,7 +556,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
         this.requestInProcess = false;
         this.shareDialogOpened = false;
-        this.closeEditDialog(this.sharedDialogKey);
+        this._closeEditDialog();
         this._getLinkedAttachments(); // refresh the list
       })
       .catch(this._handleShareError.bind(this));

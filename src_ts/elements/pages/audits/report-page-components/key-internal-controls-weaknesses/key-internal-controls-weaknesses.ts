@@ -213,6 +213,8 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
 
     if (changedProperties.has('subjectAreas')) {
       this.closeEditDialog();
+      // reset editedBlueprint after dialog close
+      this.editedBlueprint = cloneDeep(this.dataModel);
     }
     if (changedProperties.has('errorObject')) {
       this._complexErrorHandler(this.errorObject?.key_internal_weakness);
