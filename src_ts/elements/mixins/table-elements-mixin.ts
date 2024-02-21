@@ -1,20 +1,23 @@
-import {Constructor, GenericObject} from '../../types/global';
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
+import {Constructor, GenericObject} from '@unicef-polymer/etools-types';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {readonlyPermission} from './permission-controller';
 import {refactorErrorObject} from './error-handler';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {getBodyDialog} from '../utils/utils';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @polymer
  * @mixinFunction
  */
-function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class TableElementsMixinClass extends baseClass {
-    @property({observer: TableElementsMixinClass.prototype._dataItemsChanged, type: Array})
+    @property({type: Array})
     dataItems: any[] = [];
 
     @property({type: Object})
@@ -36,22 +39,17 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     errors: GenericObject = {};
 
-    // TODO: polymer 3 migration - check if this observer is needed
-    @property({type: Boolean, observer: 'updateStyles'})
+    @property({type: Boolean})
     canBeRemoved = false;
 
-    // TODO: polymer 3 migration - check if this observer is needed
-    @property({type: Boolean, observer: 'updateStyles'})
+    @property({type: Boolean})
     requestInProcess = false;
 
     @property({type: Boolean})
-    confirmDialogOpened = false;
+    isAddDialogOpen = false;
 
     @property({type: Boolean})
-    addDialog = false;
-
-    @property({type: Boolean})
-    dialogOpened = false;
+    isConfirmDialogOpen = false;
 
     @property({type: Number})
     editedIndex!: number;
@@ -63,16 +61,13 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     originalTableData!: [];
 
     @property({type: String})
-    dialogTitle!: string;
+    dialogTitle = '';
 
     @property({type: String})
     confirmBtnText!: string;
 
     @property({type: String})
     cancelBtnText!: string;
-
-    @property({type: String})
-    basePermissionPath!: string;
 
     @property({type: Object})
     addDialogTexts!: GenericObject;
@@ -86,25 +81,32 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Boolean})
     deleteDialog!: boolean;
 
+    @property({type: String})
+    dialogKey = '';
+
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
     }
 
-    _dataItemsChanged(data) {
-      this.originalTableData = cloneDeep(data);
-      if (this.dialogOpened) {
-        this.requestInProcess = false;
-        this.dialogOpened = false;
-      }
-      if (this.confirmDialogOpened) {
-        this.requestInProcess = false;
-        this.confirmDialogOpened = false;
+    updated(changedProperties: PropertyValues): void {
+      super.updated(changedProperties);
+
+      if (changedProperties.has('dataItems')) {
+        this._dataItemsChanged(this.dataItems);
       }
     }
 
+    _dataItemsChanged(data) {
+      if (!isJsonStrMatch(this.originalTableData, data || [])) {
+        this.originalTableData = cloneDeep(data || []);
+      }
+
+      this._closeEditDialog();
+    }
+
     getTabData() {
-      if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
+      if ((this.isAddDialogOpen || this.isConfirmDialogOpen) && !this.saveWithButton) {
         return this.getCurrentData();
       }
       if (!this.originalTableData || !this.dataItems) {
@@ -126,19 +128,14 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     }
 
     getCurrentData() {
-      if (!this.dialogOpened && !this.confirmDialogOpened) {
+      if (!this.isAddDialogOpen && !this.isConfirmDialogOpen) {
         return null;
       }
       return [cloneDeep(this.editedItem)];
     }
 
-    _canBeChanged(basePath?) {
-      const path = basePath || this.basePermissionPath;
-      if (!path) {
-        return true;
-      }
-
-      let readOnly = readonlyPermission(`${path}.${this.mainProperty}`);
+    _canBeChanged(options: AnyObject) {
+      let readOnly = readonlyPermission(this.mainProperty, options);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -164,6 +161,21 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return valid;
     }
 
+    _getFileData(fileData?) {
+      if (!fileData && !this.editedItem) {
+        return {};
+      }
+      const {id, attachment, file_type} = fileData || this.editedItem;
+      const data: GenericObject = {attachment};
+
+      if (id) {
+        data.id = id;
+      }
+      data.file_type = file_type;
+
+      return data;
+    }
+
     _resetFieldError(e: Event) {
       (e.target! as any).invalid = false;
     }
@@ -172,41 +184,26 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       this.dialogTitle = (this.addDialogTexts && this.addDialogTexts.title) || 'Add New Item';
       this.confirmBtnText = (this.addDialogTexts && this.addDialogTexts.confirmBtn) || 'Add';
       this.cancelBtnText = (this.addDialogTexts && this.addDialogTexts.cancelBtn) || 'Cancel';
-      this.addDialog = true;
-      this.dialogOpened = true;
+      this.editedItem = {};
+      this.editedIndex = NaN;
+      this.isAddDialogOpen = true;
+      fireEvent(this, 'show-add-dialog');
     }
 
-    openEditDialog(event = {}) {
-      let index = (event as GenericObject).itemIndex; // TODO is event.itemIndex ever valid?
-      if (isNaN(index) || !~index) {
-        index = this._getIndex(event);
-      }
-
+    openEditDialog(index) {
       this.dialogTitle = (this.editDialogTexts && this.editDialogTexts.title) || 'Edit Item';
       this.confirmBtnText = (this.editDialogTexts && this.editDialogTexts.confirmBtn) || 'Save';
       this.cancelBtnText = (this.editDialogTexts && this.editDialogTexts.cancelBtn) || 'Cancel';
 
       this._setDialogData(index);
-      this.dialogOpened = true;
+      this.isAddDialogOpen = true;
+      fireEvent(this, 'show-edit-dialog');
     }
 
-    openDeleteDialog(event) {
-      const index = this._getIndex(event);
-
+    openDeleteDialog(index) {
       this._setDialogData(index);
-
-      this.confirmDialogOpened = true;
-    }
-
-    _getIndex(event) {
-      const item = event && event.model && event.model.item;
-      const index = this.dataItems && this.dataItems.indexOf(item);
-
-      if ((!index && index !== 0) || index < 0) {
-        throw Error('Can not find user data');
-      }
-
-      return index;
+      this.isConfirmDialogOpen = true;
+      fireEvent(this, 'show-confirm-dialog');
     }
 
     _setDialogData(index) {
@@ -215,29 +212,23 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       this.editedIndex = index;
     }
 
-    _addItemFromDialog(event) {
-      //* This if might be deprecated and unused
-      if (event && event.detail && event.detail.dialogName === 'deleteConfirm') {
-        this.removeItem();
-        return;
-      }
-
+    _addItemFromDialog() {
       if (!this.validate()) {
         return;
       }
+
       // @ts-ignore Defined in derived class when needed
       if (this.customValidation && !this.customValidation()) {
         return;
       }
-
-      if (!this.addDialog && isEqual(this.originalEditedObj, this.editedItem)) {
-        this.dialogOpened = false;
-        this.resetDialog();
+      if (!this.isAddDialogOpen && isEqual(this.originalEditedObj, this.editedItem)) {
+        // nothing changed, close dialog
+        this._closeEditDialog();
         return;
       }
 
       // Perform save on confirm btn clicked in dialog
-      if (!this.saveWithButton && this.dialogOpened) {
+      if (!this.saveWithButton) {
         this._triggerSaveEngagement();
         return;
       }
@@ -245,8 +236,22 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       // Perform save outside dialog (by clicking the Save btn in the status component)
       this._updateDataItemsWithoutSave();
 
-      this.dialogOpened = false;
-      this.resetDialog();
+      this._closeEditDialog();
+    }
+
+    _closeEditDialog() {
+      if (!this.dialogKey) {
+        return;
+      }
+
+      this.isAddDialogOpen = false;
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(this.dialogKey);
+      if (dialogEl) {
+        this.isAddDialogOpen = false;
+        this.isConfirmDialogOpen = false;
+        (dialogEl as any)._onClose();
+      }
     }
 
     _triggerSaveEngagement() {
@@ -256,31 +261,27 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     _updateDataItemsWithoutSave() {
       const item = cloneDeep(this.editedItem);
-      if (!this.addDialog && !isNaN(this.editedIndex)) {
+      if (!this.dataItems) {
+        this.dataItems = [];
+      }
+      if (!this.isAddDialogOpen && !isNaN(this.editedIndex)) {
         // if is edit popup
-        this.splice('dataItems', this.editedIndex, 1, item);
+        this.dataItems.splice(this.editedIndex, 1, item);
       } else {
         // if is creation popup
-        this.push('dataItems', item);
+        this.dataItems.push(item);
       }
+      fireEvent(this, 'data-items-changed', this.dataItems);
     }
 
     resetDialog(opened?: boolean) {
       if (opened) {
         return;
       }
-      const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-
-      Array.prototype.forEach.call(elements, (element) => {
-        element.invalid = false;
-        element.value = '';
-        element.selected = '';
-      });
-
       this.dialogTitle = '';
       this.confirmBtnText = '';
       this.cancelBtnText = '';
-      this.addDialog = false;
+      this.isAddDialogOpen = false;
       this.deleteDialog = false;
       this.editedItem = cloneDeep(this.itemModel);
     }
@@ -291,12 +292,12 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
     removeItem() {
       if (this.editedItem && this.editedItem.id !== undefined) {
-        this.set('editedItem._delete', true);
+        this.editedItem._delete = true;
         this._triggerSaveEngagement();
       } else {
-        this.splice('dataItems', this.editedIndex, 1);
+        this.dataItems.splice(this.editedIndex, 1);
+        fireEvent(this, 'data-items-changed', this.dataItems);
         this.resetDialog();
-        this.confirmDialogOpened = false;
       }
     }
 
@@ -304,17 +305,13 @@ function TableElementsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return item && !item._delete;
     }
 
-    _openDeleteConfirmation() {
-      this.confirmDialogOpened = true;
-    }
-
     _errorHandler(errorData) {
       this.requestInProcess = false;
       if (!errorData) {
         return;
       }
-      const refactoredData = this.dialogOpened ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
-      this.set('errors', refactoredData);
+      const refactoredData = this.isAddDialogOpen ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
+      this.errors = refactoredData;
     }
 
     deleteCanceled(event) {

@@ -1,60 +1,62 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/app-route/app-route';
-import '@polymer/paper-tabs/paper-tabs';
-import '@polymer/iron-pages/iron-pages';
-import {property} from '@polymer/decorators/lib/decorators';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-modules-common/dist/layout/etools-tabs';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import assign from 'lodash-es/assign';
-import includes from 'lodash-es/includes';
-import isUndefined from 'lodash-es/isUndefined';
-import LastCreatedMixin from '../../../mixins/last-created-mixin';
 import EngagementMixin from '../../../mixins/engagement-mixin';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {clearQueries} from '../../../mixins/query-params-controller';
 import '../../../mixins/permission-controller';
-import {sharedStyles} from '../../../styles/shared-styles';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {mainPageStyles} from '../../../styles/main-page-styles';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
-import {FileAttachmentsTabEl} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
+import {FileAttachmentsTab} from '../../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../../common-elements/status-tab-element/status-tab-element';
 import '../../../common-elements/pages-header-element/pages-header-element';
 import '../../../data-elements/add-new-engagement';
 import '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 // eslint-disable-next-line
-import {EngagementInfoDetailsEl} from '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
+import {EngagementInfoDetails} from '../../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 // eslint-disable-next-line
-import {PartnerDetailsTabEl} from '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
+import {PartnerDetailsTab} from '../../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
 import '../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
-import {BASE_PATH} from '../../../config/config';
-import {navigateToUrl} from '../../../utils/navigate-helper';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {RootState, store} from '../../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {AnyObject, RouteDetails} from '@unicef-polymer/etools-types';
+import {setEngagementData, updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
+import {isActiveTab} from '../../../utils/utils';
 /**
  * @customElement
- * @polymer
+ * @LitElement
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin EngagementMixin
  * @appliesMixin LastCreatedMixin
  */
-class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMixin(PolymerElement))) {
-  static get template() {
-    // language=HTML
+
+@customElement('new-engagement-view')
+export class NewEngagementView extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
+  static get styles() {
+    return [moduleStyles, gridLayoutStylesLit, mainPageStyles, tabInputsStyles];
+  }
+
+  render() {
     return html`
-      ${sharedStyles} ${moduleStyles} ${mainPageStyles}
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
           display: block;
-
-          --paper-tab-content-unselected: {
-            color: var(--gray-light);
-          }
-
           --ecp-header-bg: var(--primary-color);
         }
 
@@ -75,9 +77,8 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
           box-shadow: 1px -3px 9px 0 #000000;
         }
 
-        .tab-selector paper-tabs {
-          color: var(--primary-color);
-          font-size: 14px;
+        .tab-selector etools-tabs-lit {
+          font-size: var(--etools-font-size-14, 14px);
           font-weight: bold;
           text-transform: uppercase;
         }
@@ -87,114 +88,113 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
         }
       </style>
 
-      <app-route route="{{route}}" pattern="/:tab" data="{{routeData}}"> </app-route>
-
       <add-new-engagement
-        endpoint-name="[[endpointName]]"
-        new-engagement-data="{{newEngagementData}}"
-        error-object="{{errorObject}}"
+        .endpointName="${this.endpointName}"
+        .newEngagementData="${this.newEngagementData}"
+        @engagement-created="${this._engagementCreated}"
+        .errorObject="${this.errorObject}"
       >
       </add-new-engagement>
 
-      <pages-header-element hide-print-button page-title="[[pageTitle]]" engagement="[[engagement]]">
+      <pages-header-element hide-print-button .pageTitle="${this.pageTitle}" .engagement="${this.engagement}">
       </pages-header-element>
 
       <div class="tab-selector">
-        <paper-tabs
-          attr-for-selected="name"
-          noink=""
-          bottom-item=""
+        <etools-tabs-lit
           role="tablist"
-          tabindex="0"
-          selected="{{routeData.tab}}"
-        >
-          <paper-tab name="overview"><span class="tab-content">Engagement Overview</span></paper-tab>
-          <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-        </paper-tabs>
+          .tabs="${this.tabsList}"
+          .activeTab="${this.tab}"
+          @sl-tab-show="${(e: CustomEvent) => {
+            if (this.tab !== e.detail.name) {
+              this._tabChanged(e.detail.name, this.tab);
+              this.tab = e.detail.name;
+            }
+          }}"
+        ></etools-tabs-lit>
       </div>
 
       <div class="view-container">
         <div id="pageContent">
-          <iron-pages id="info-tabs" selected="{{routeData.tab}}" attr-for-selected="name">
-            <div name="overview">
-              <engagement-info-details
-                error-object="{{errorObject}}"
-                data="{{engagement}}"
-                id="engagementDetails"
-                base-permission-path="[[basePermissionPath]]"
-                is-staff-sc="[[isStaffSc]]"
-              >
-              </engagement-info-details>
+          <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+            <engagement-info-details
+              .errorObject="${this.errorObject}"
+              .data="${this.engagement}"
+              id="engagementDetails"
+              .optionsData="${this.engagementOptions}"
+              ?isStaffSc="${this.isStaffSc}"
+            >
+            </engagement-info-details>
 
-              <partner-details-tab
-                id="partnerDetails"
-                error-object="{{errorObject}}"
-                engagement="{{engagement}}"
-                base-permission-path="[[basePermissionPath]]"
-              >
-              </partner-details-tab>
+            <partner-details-tab
+              id="partnerDetails"
+              .errorObject="${this.errorObject}"
+              .engagement="${this.engagement}"
+              .optionsData="${this.engagementOptions}"
+            >
+            </partner-details-tab>
 
-              <template is="dom-if" if="[[isSpecialAudit(engagement.engagement_type)]]" restamp>
-                <specific-procedure
-                  id="specificProcedures"
-                  class="mb-15"
-                  without-finding-column
-                  error-object="{{errorObject}}"
-                  save-with-button
-                  data-items="{{engagement.specific_procedures}}"
-                  base-permission-path="[[basePermissionPath]]"
-                >
-                </specific-procedure>
-              </template>
+            <specific-procedure
+              id="specificProcedures"
+              ?hidden="${!this.isSpecialAudit(this.engagement?.engagement_type)}"
+              class="mb-15"
+              without-finding-column
+              .errorObject="${this.errorObject}"
+              save-with-button
+              .dataItems="${this.engagement.specific_procedures}"
+              .optionsData="${this.engagementOptions}"
+              @data-items-changed="${({detail}) => {
+                this.engagement.specific_procedures = detail || [];
+                store.dispatch(updateCurrentEngagement(this.engagement));
+              }}"
+            >
+            </specific-procedure>
 
-              <engagement-staff-members-tab
-                id="staffMembers"
-                error-object="{{errorObject}}"
-                save-with-button
-                engagement="[[engagement]]"
-                base-permission-path="[[basePermissionPath]]"
-              >
-              </engagement-staff-members-tab>
-            </div>
+            <engagement-staff-members-tab
+              id="staffMembers"
+              .errorObject="${this.errorObject}"
+              save-with-button
+              .engagement="${this.engagement}"
+              .optionsData="${this.engagementOptions}"
+            >
+            </engagement-staff-members-tab>
+          </div>
 
-            <div name="attachments">
-              <file-attachments-tab
-                id="engagement_attachments"
-                base-id="[[engagement.id]]"
-                data-base-path="[[basePermissionPath]]"
-                error-property="engagement_attachments"
-                path-postfix="attachments"
-              >
-              </file-attachments-tab>
-            </div>
-          </iron-pages>
+          <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
+            <file-attachments-tab
+              id="engagement_attachments"
+              .engagement="${this.engagement}"
+              .optionsData="${this.attachmentOptions}"
+              error-property="engagement_attachments"
+            >
+            </file-attachments-tab>
+          </div>
         </div>
 
         <div id="sidebar">
-          <status-tab-element engagement-data="[[engagement]]" permission-base="new_engagement"></status-tab-element>
+          <status-tab-element
+            .engagementData="${this.engagement}"
+            .optionsData="${this.engagementOptions}"
+          ></status-tab-element>
         </div>
       </div>
     `;
   }
 
-  @property({type: Object})
-  route!: GenericObject;
+  @property({type: String})
+  endpointName!: string;
 
   @property({type: Object})
   newEngagementData!: GenericObject;
-
-  @property({type: Object})
-  routeData!: GenericObject;
 
   @property({type: Object})
   engagement: GenericObject = {
     id: null,
     status: '',
     staff_members: [],
-    engagement_type: '',
+    engagement_type: null,
     engagement_type_details: {},
     engagement_attachments: [],
-    agreement: {},
+    agreement: {order_number: undefined},
     date_of_field_visit: null,
     date_of_draft_report_to_ip: null,
     date_of_comments_by_ip: null,
@@ -209,22 +209,25 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
   };
 
   @property({type: Array})
-  tabsList: string[] = ['overview', 'attachments'];
+  tabsList: AnyObject[] = [
+    {tab: 'overview', tabLabel: 'Engagement Overview'},
+    {tab: 'attachments', tabLabel: 'Attachments'}
+  ];
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   queryParams: GenericObject = {};
 
-  @property({type: String})
+  @property({type: Object})
+  prevRouteDetails!: RouteDetails;
+
+  @property({type: String, attribute: 'page-title'})
   pageTitle = '';
 
   @property({type: Boolean})
-  isStaffSc = false;
+  isStaffSc!: boolean;
 
   @property({type: Object})
   auditFirm: GenericObject = {};
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   links: {[key: string]: string} = {
     ma: 'micro-assessments',
@@ -233,38 +236,61 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     sa: 'special-audits'
   };
 
-  static get observers() {
-    return ['_pageChanged(page, isStaffSc, auditFirm)'];
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._engagementCreated = this._engagementCreated.bind(this);
-    this.addEventListener('engagement-created', this._engagementCreated);
-    this._routeConfig();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.removeEventListener('engagement-created', this._engagementCreated);
-  }
-
-  _routeConfig() {
-    if (!this.route || !~this.route.prefix.indexOf('new')) {
+  stateChanged(state: RootState) {
+    if (!get(state, 'app.routeDetails.path') || !state.app.routeDetails.path.includes('new')) {
+      this.prevRouteDetails = state.app.routeDetails;
       return;
     }
 
-    const currentTab = this.routeData && this.routeData.tab;
-    if (currentTab === '' || isUndefined(currentTab)) {
-      this.set('route.path', '/overview');
-    } else if (!includes(this.tabsList, currentTab)) {
-      fireEvent(this, '404');
+    if (this.initializeOnFirstAccess(state.app.routeDetails)) {
+      return;
     }
-    clearQueries();
+    if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
+      this.user = state.user.data;
+    }
+    if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
+      this.engagementFromRedux = cloneDeep(state.engagement.data);
+      this.engagement = cloneDeep(this.engagementFromRedux);
+    }
+    if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.routeDetails = state.app.routeDetails;
+      this.tab = this.routeDetails.subRouteName || 'overview';
+      // this.onRouteChanged(this.routeDetails, this.tab);
+    }
+    const optionsToUse = this.isStaffSc
+      ? state.commonData?.new_staff_scOptions
+      : state.commonData?.new_engagementOptions;
+    if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.engagementOptions, optionsToUse)) {
+      this.engagementOptions = cloneDeep(optionsToUse);
+    }
+    if (
+      state.commonData.loadedTimestamp &&
+      !isJsonStrMatch(this.attachmentOptions, state.commonData?.new_attachOptions)
+    ) {
+      this.attachmentOptions = cloneDeep(state.commonData?.new_attachOptions);
+    }
+    if (!isJsonStrMatch(this.errorObject, state.engagement.errorObject)) {
+      this.errorObject = state.engagement.errorObject || {};
+    }
+  }
+
+  initializeOnFirstAccess(currentRouteDetails: RouteDetails) {
+    this.isStaffSc = currentRouteDetails.routeName === 'staff-sc';
+    const isFirstAcess = !this.prevRouteDetails?.path.includes('new') && currentRouteDetails?.path?.includes('new');
+    this.prevRouteDetails = currentRouteDetails;
+    if (isFirstAcess) {
+      clearQueries();
+      setTimeout(() => {
+        this.setDefaultEngagement(this.isStaffSc, this.auditFirm);
+      });
+
+      return true;
+    }
+    return false;
   }
 
   _saveNewEngagement() {
-    if (!this._validateBasicInfo('routeData.tab')) {
+    if (!this._validateBasicInfo(this.tab)) {
       return;
     }
 
@@ -277,7 +303,6 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     if (!this.isSpecialAudit(this.engagement.engagement_type)) {
       return data;
     }
-
     const specificProcedures = this.getElement('#specificProcedures');
     const specificProceduresData = specificProcedures && specificProcedures.getTabData();
     if (specificProceduresData) {
@@ -294,7 +319,6 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     if (event.detail.success && event.detail.data) {
       // save response data before redirecting
       const engagement = event.detail.data;
-      this._setLastEngagementData(engagement);
       this.engagement.id = engagement.id;
 
       this._finishEngagementCreation();
@@ -302,14 +326,10 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
   }
 
   _finishEngagementCreation() {
-    this.reloadEngagementsList();
-
     // redirect
-    const engagementType = get(this, 'engagement.engagement_type');
+    const engagementType = this.engagement.engagement_type;
     const link = !engagementType && this.isStaffSc ? 'staff-spot-checks' : this.links[String(engagementType)];
-    const path = `/${BASE_PATH}/${link}/${this.engagement.id}/overview`;
-    navigateToUrl(path);
-
+    EtoolsRouter.updateAppLocation(`${link}/${this.engagement.id}/overview`);
     // reset data
     this.engagement = {
       status: '',
@@ -320,47 +340,63 @@ class NewEngagementView extends EngagementMixin(LastCreatedMixin(CommonMethodsMi
     fireEvent(this, 'global-loading', {type: 'create-engagement'});
   }
 
-  reloadEngagementsList() {
-    this.set('requestQueries.reload', true);
+  setDefaultEngagement(isStaffSc, auditFirm) {
+    const engagement: GenericObject<any> = {
+      id: null,
+      status: '',
+      staff_members: [],
+      engagement_type: null,
+      engagement_type_details: {},
+      engagement_attachments: [],
+      agreement: {order_number: ''},
+      date_of_field_visit: null,
+      date_of_draft_report_to_ip: null,
+      date_of_comments_by_ip: null,
+      date_of_draft_report_to_unicef: null,
+      date_of_comments_by_unicef: null,
+      partner_contacted_at: null,
+      specific_procedures: [],
+      users_notified: [],
+      offices: [],
+      sections: [],
+      shared_ip_with: [],
+      partner: {}
+    };
+
+    if (isStaffSc) {
+      engagement.agreement.auditor_firm = auditFirm;
+      engagement.engagement_type = 'sc';
+      engagement.engagement_type_details = {value: 'sc', label: 'Spot Check'};
+    }
+
+    this.engagement = cloneDeep(engagement);
+    const engData = {data: engagement, options: {}, attachmentOptions: {}, reportAttachmentOptions: {}, apOptions: {}};
+
+    store.dispatch(setEngagementData(engData));
+
+    const engagementAttachments = this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTab;
+    if (engagementAttachments) {
+      engagementAttachments.resetData();
+    }
+    const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetails;
+    if (engagementDetails) {
+      engagementDetails.resetValidationErrors();
+      // engagementDetails.resetAgreement();
+    }
+    const partnerDetails = this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTab;
+    if (partnerDetails) {
+      partnerDetails.resetValidationErrors();
+    }
+
+    this.stopLoading(isStaffSc);
   }
 
-  _pageChanged(page, isStaffSc, auditFirm) {
-    if (page === 'new' || page === 'list') {
-      this.set('engagement', {
-        id: null,
-        status: '',
-        staff_members: [],
-        engagement_type: '',
-        engagement_type_details: {},
-        engagement_attachments: [],
-        agreement: {},
-        date_of_field_visit: null,
-        date_of_draft_report_to_ip: null,
-        date_of_comments_by_ip: null,
-        date_of_draft_report_to_unicef: null,
-        date_of_comments_by_unicef: null,
-        partner_contacted_at: null,
-        specific_procedures: [],
-        users_notified: [],
-        offices: [],
-        sections: [],
-        shared_ip_with: []
+  stopLoading(isStaffSc: boolean) {
+    setTimeout(() => {
+      fireEvent(this, 'global-loading', {
+        active: false,
+        loadingSource: isStaffSc ? 'staff-sc' : 'engagements'
       });
-
-      (this.shadowRoot!.querySelector('#engagement_attachments') as FileAttachmentsTabEl).resetData();
-      const engagementDetails = this.shadowRoot!.querySelector('#engagementDetails') as EngagementInfoDetailsEl;
-      engagementDetails.resetValidationErrors();
-      engagementDetails.resetAgreement();
-      engagementDetails.resetType();
-      (this.shadowRoot!.querySelector('#partnerDetails') as PartnerDetailsTabEl).resetValidationErrors();
-    }
-
-    if (page === 'new' && isStaffSc) {
-      this.set('engagement.agreement.auditor_firm', auditFirm);
-      this.set('engagement.engagement_type', 'sc');
-      this.set('engagement.engagement_type_details', {value: 'sc', label: 'Spot Check'});
-    }
+    }, 200);
   }
 }
-
-window.customElements.define('new-engagement-view', NewEngagementView);

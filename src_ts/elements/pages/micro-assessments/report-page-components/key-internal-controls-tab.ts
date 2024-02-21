@@ -1,149 +1,84 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {KeyInternalControlsTabStyles} from './key-internal-controls-tab-styles';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '../../../common-elements/list-tab-elements/list-header/list-header';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import './subject-area-element';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '@polymer/paper-input/paper-textarea';
+import './key-internal-controls-dialog';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices, isRequired} from '../../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
-import isEqual from 'lodash-es/isEqual';
+import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import pick from 'lodash-es/pick';
 import {GenericObject} from '../../../../types/global';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
-class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin CommonMethodsMixinLit
+ */
+@customElement('key-internal-controls-tab')
+export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit, KeyInternalControlsTabStyles];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles} ${KeyInternalControlsTabStyles}
+      ${sharedStyles}
       <style>
-        etools-dropdown#riskAssessmentInput {
-          --paper-listbox: {
-            max-height: 140px;
-          }
-        }
-        .input-container {
+        ${dataTableStylesLit} .input-container {
           padding-top: 2px;
         }
+        .editable-row:hover .hover-block {
+          background-color: transparent;
+        }
       </style>
-      <etools-content-panel panel-title="[[subjectAreas.header]]" list>
-        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
+      <etools-content-panel .panelTitle="${this.subjectAreas.header}" list>
+        <etools-data-table-header no-title>
+          <etools-data-table-column class="col-8">Subject area</etools-data-table-column>
+          <etools-data-table-column class="col-4">Risk Assessment</etools-data-table-column>
+        </etools-data-table-header>
 
-        <template is="dom-repeat" items="[[subjectAreas.children]]">
-          <subject-area-element
-            class="area-element"
-            base-permission-path="{{basePermissionPath}}"
-            area="{{item}}"
-            details="[[details]]"
-            edit-mode="[[canBeChanged]]"
-            headings="[[columns]]"
-          >
-          </subject-area-element>
-        </template>
-      </etools-content-panel>
-
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        opened="{{dialogOpened}}"
-        dialog-title="Edit Subject Area - {{editedArea.blueprints.0.header}}"
-        ok-btn-text="Save"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_saveEditedArea"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-ms">
-                <!-- Risk Assessment -->
-                <etools-dropdown
-                  id="riskAssessmentInput"
-                  class="validate-input required"
-                  selected="{{editedArea.blueprints.0.risk.value.value}}"
-                  label="Risk Assessment"
-                  placeholder="Select Risk Assessment"
-                  options="[[riskOptions]]"
-                  option-label="display_name"
-                  option-value="value"
-                  required
-                  disabled="{{requestInProcess}}"
-                  invalid="{{errors.children.0.blueprints.0.risk.value}}"
-                  error-message="{{errors.children.0.blueprints.0.risk.value}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  hide-search
-                >
-                </etools-dropdown>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Brief Justification -->
-                <paper-textarea
-                  id="briefJustification"
-                  class="validate-input required"
-                  value="{{editedArea.blueprints.0.risk.extra.comments}}"
-                  label="Brief Justification for Rating (main internal control gaps)"
-                  placeholder="Enter Brief Justification"
-                  required
-                  disabled="{{requestInProcess}}"
-                  max-rows="4"
-                  error-message="{{errors.children.0.blueprints.0.risk.extra}}"
-                  invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
+        ${(this.subjectAreas?.children || []).map(
+          (item, index) => html`
+            <subject-area-element
+              class="area-element"
+              .optionsData="${this.optionsData}"
+              .area="${item}"
+              .index="${index}"
+              .canBeChanged="${this.canBeChanged}"
+            >
+            </subject-area-element>
+          `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.children?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+            <span class="col-data col-8">–</span>
+            <span class="col-data col-4">–</span>
           </div>
-        </div>
-      </etools-dialog>
+        </etools-data-table-row>
+      </etools-content-panel>
     `;
   }
 
   @property({type: Array})
-  columns = [
-    {
-      size: 70,
-      label: 'Subject area',
-      path: 'header'
-    },
-    {
-      size: 30,
-      label: 'Risk Assessment',
-      path: 'risk.value.display_name'
-    }
-  ];
+  riskOptions!: any[];
 
-  @property({type: Array})
-  details = [
-    {
-      label: 'Brief Justification for Rating (main internal control gaps)',
-      path: 'risk.extra.comments',
-      size: 100
-    }
-  ];
-
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   dialogOpened!: boolean;
 
   @property({type: String})
   errorBaseText = 'Test Subject Areas: ';
-
-  @property({type: String})
-  basePermissionPath!: string;
 
   @property({type: Boolean})
   requestInProcess!: boolean;
@@ -152,40 +87,52 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   saveWithButton!: boolean;
 
   @property({type: Object})
-  editedArea!: GenericObject;
+  editedArea!: GenericObject | null;
 
   @property({type: Object})
   subjectAreas!: GenericObject;
+
+  @property({type: Object})
+  originalSubjectAreas!: GenericObject;
+
+  @property({type: Object})
+  errorObject!: GenericObject;
 
   @property({type: Number})
   editedAreaIndex!: number;
 
   @property({type: Object})
-  originalEditedObj!: GenericObject;
+  originalEditedObj!: GenericObject | null;
 
   @property({type: Boolean})
   canBeChanged = false;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'updateStyles(requestInProcess)',
-      '_dataChanged(subjectAreas)',
-      'dataChanged(subjectAreas)',
-      '_complexErrorHandler(errorObject.test_subject_areas)'
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
-
-    const riskOptions = getChoices(`${this.basePermissionPath}.test_subject_areas.blueprints.risk.value`) || [];
-    this.set('riskOptions', riskOptions);
+    this.dialogKey = 'key-internal-controls-dialog';
     this.addEventListener('open-edit-dialog', this.openEditDialog);
   }
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('subjectAreas')) {
+      this.dataChanged();
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject.test_subject_areas);
+    }
+    if (changedProperties.has('optionsData')) {
+      const riskOptions = getOptionsChoices(this.optionsData, 'test_subject_areas.blueprints.risk.value') || [];
+      this.riskOptions = riskOptions;
+      this.canBeChanged = !this.isReadOnly('test_subject_areas', this.optionsData);
+    }
+  }
+
   dataChanged() {
-    this.canBeChanged = !this.isReadOnly('test_subject_areas', this.basePermissionPath);
+    this.originalSubjectAreas = cloneDeep(this.subjectAreas);
+    this.requestInProcess = false;
+    this.closeEditDialog();
   }
 
   getRiskData() {
@@ -209,7 +156,7 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
     if (!this.dialogOpened) {
       return null;
     }
-    const blueprint = pick(this.editedArea.blueprints[0], ['id', 'risk']);
+    const blueprint = pick(this.editedArea?.blueprints[0], ['id', 'risk']);
     blueprint.risk = {
       value: blueprint.risk.value.value,
       extra: {comments: (blueprint.risk.extra && blueprint.risk.extra.comments) || ''}
@@ -217,40 +164,17 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
 
     return [
       {
-        id: this.editedArea.id,
+        id: this.editedArea?.id,
         blueprints: [blueprint]
       }
     ];
   }
 
-  validateEditFields() {
-    const valueValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
-    const extraValid = (this.shadowRoot!.querySelector('#briefJustification') as EtoolsDropdownEl).validate();
-
-    const errors = {
-      children: [
-        {
-          blueprints: [
-            {
-              risk: {
-                value: !valueValid ? 'Please, select Risk Assessment' : false,
-                extra: !extraValid ? 'Please, enter Brief Justification' : false
-              }
-            }
-          ]
-        }
-      ]
-    };
-    this.set('errors', errors);
-
-    return valueValid && extraValid;
-  }
-
   validate(forSave) {
-    if (!this.basePermissionPath || forSave) {
+    if (!this.optionsData || forSave) {
       return true;
     }
-    const required = isRequired(`${this.basePermissionPath}.test_subject_areas`);
+    const required = isRequired('test_subject_areas', this.optionsData);
     if (!required) {
       return true;
     }
@@ -268,55 +192,39 @@ class KeyInternalControlsTab extends CommonMethodsMixin(PolymerElement) {
   }
 
   openEditDialog(event) {
-    const index = this.subjectAreas.children.indexOf(event && event.detail && event.detail.data);
-    if ((!index && index !== 0) || !~index) {
-      throw new Error('Can not find data');
-    }
+    const index = event.detail;
     const data = this.subjectAreas.children[index];
     this.editedArea = cloneDeep(data);
 
-    if (this.editedArea.blueprints[0] && !this.editedArea.blueprints[0].risk.value) {
-      this.editedArea.blueprints[0].risk.value = {value: -1, display_name: ''};
+    if (this.editedArea!.blueprints[0] && !this.editedArea!.blueprints[0].risk.value) {
+      this.editedArea!.blueprints[0].risk.value = {value: -1, display_name: ''};
     }
 
     this.originalEditedObj = cloneDeep(this.editedArea);
     this.editedAreaIndex = index;
+
     this.dialogOpened = true;
-  }
-
-  _saveEditedArea() {
-    if (!this.validateEditFields()) {
-      return;
-    }
-
-    if (isEqual(this.originalEditedObj, this.editedArea)) {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedArea: this.editedArea,
+        riskOptions: this.riskOptions
+      }
+    }).then(() => {
       this.dialogOpened = false;
-      this.resetDialog(this.dialogOpened);
-      return;
-    }
-
-    if (this.dialogOpened && !this.saveWithButton) {
-      this.requestInProcess = true;
-      fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
-      return;
-    }
-
-    const data = cloneDeep(this.editedArea);
-    data.changed = true;
-    this.splice('subjectAreas.children', this.editedAreaIndex, 1, data);
-    this.dialogOpened = false;
-  }
-
-  resetDialog(opened) {
-    if (opened) {
-      return;
-    }
-    const elements = this.shadowRoot!.querySelectorAll('.validate-input');
-
-    Array.prototype.forEach.call(elements, (element) => {
-      element.invalid = false;
-      element.value = '';
     });
   }
+
+  _saveEditedArea(editedArea: GenericObject) {
+    this.editedArea = cloneDeep(editedArea);
+    this.requestInProcess = true;
+    fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
+    // @dci ? was ever getting here ???
+    // const data = cloneDeep(this.editedArea);
+    // data!.changed = true;
+    // this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
+    // this.dialogOpened = false;
+  }
 }
-window.customElements.define('key-internal-controls-tab', KeyInternalControlsTab);

@@ -1,25 +1,28 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/paper-input/paper-input';
-import '@polymer/paper-input/paper-textarea';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/paper-tooltip/paper-tooltip';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import './summary-findings-dialog';
 
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import DateMixin from '../../../../mixins/date-mixin';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
-import {getStaticData} from '../../../../mixins/static-data-controller';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {GenericObject} from '../../../../../types/global';
 
 import find from 'lodash-es/find';
@@ -28,21 +31,32 @@ import isObject from 'lodash-es/isObject';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isEqualWith from 'lodash-es/isEqualWith';
 import cloneWith from 'lodash-es/cloneWith';
+import {getHeadingLabel, getOptionsChoices} from '../../../../mixins/permission-controller';
+import {getTableRowIndexText} from '../../../../utils/utils';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
- * @polymer
+ * @LitEelement
  * @mixinFunction
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  * @appliesMixin DateMixin
  */
-class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateMixin(PolymerElement))) {
-  static get template() {
-    // language=HTML
+@customElement('summary-findings-element')
+export class SummaryFindingsElement extends CommonMethodsMixin(
+  TableElementsMixin(DateMixin(ModelChangedMixin(LitElement)))
+) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           .repeatable-item-container[without-line] {
             min-width: 0 !important;
             margin-bottom: 0 !important;
@@ -56,183 +70,99 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-
         datepicker-lite::part(dp-calendar) {
           position: fixed;
+        }
+        .mt-30 {
+          margin-top: 30px;
+        }
+        etools-content-panel.high::part(ecp-header) {
+          background-color: var(--module-warning) !important;
+        }
+        etools-dropdown,
+        etools-dropdown-multi {
+          --esmm-external-wrapper: {
+            max-width: 100%;
+          }
+        }
+        etools-data-table-row *[slot='row-data-details'] {
+          flex-direction: column;
         }
       </style>
 
       <etools-content-panel
         list
-        class="content-section clearfix"
-        panel-title="Summary of [[priority.display_name]] Priority Findings and Recommendations"
+        class="content-section clearfix ${this.itemModel?.priority || ''}"
+        panel-title="Summary of ${this.priority?.display_name} Priority Findings and Recommendations"
       >
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+          <div ?hidden="${!this._canBeChanged(this.optionsData)}">
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+              </etools-icon-button>
+            </sl-tooltip>
           </div>
         </div>
 
-        <list-header no-ordered data="[[columns]]" base-permission-path="[[basePermissionPath]]"></list-header>
+        <etools-data-table-header no-title>
+          <etools-data-table-column class="col-3">Finding Number</etools-data-table-column>
+          <etools-data-table-column class="col-6">
+            ${getHeadingLabel(this.optionsData, 'findings.category_of_observation', 'Subject Area')}
+          </etools-data-table-column>
+          <etools-data-table-column class="col-3">
+            ${getHeadingLabel(this.optionsData, 'findings.deadline_of_action', 'Deadline of Action')}
+          </etools-data-table-column>
+        </etools-data-table-header>
 
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showFindings">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            details="[[details]]"
-            has-collapse
-            no-animation
-          >
-            <div slot="custom">[[getCategoryDisplayName(item.category_of_observation, '--')]]</div>
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+        ${(this.dataItems || []).map(
+          (item, index) =>
+            html`
+              <etools-data-table-row>
+                <div slot="row-data" class="layout-horizontal editable-row">
+                  <span class="col-data col-3">${getTableRowIndexText(index)}</span>
+                  <span class="col-data col-6">${this.getCategoryDisplayName(item.category_of_observation, '--')}</span>
+                  <span class="col-data col-3">${item.deadline_of_action}</span>
+                  <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                    <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                    <etools-icon-button
+                      name="delete"
+                      @click="${() => this.openDeleteDialog(index)}"
+                    ></etools-icon-button>
+                  </div>
+                </div>
 
-        <template is="dom-if" if="[[!_getLength(dataItems, dataItems.length)]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-animation> </list-element>
-        </template>
+                <div slot="row-data-details">
+                  <div class="row-details-content col-12">
+                    <span class="rdc-title">
+                      ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
+                    </span>
+                    <span>${item.recommendation}</span>
+                  </div>
+                  <div class="row-details-content col-12 mt-30">
+                    <span class="rdc-title">
+                      ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
+                    </span>
+                    <span>${item.agreed_action_by_ip}</span>
+                  </div>
+                </div>
+              </etools-data-table-row>
+            `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${(this.dataItems || []).some((item) => this._showFindings(item))}">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+            <span class="col-data col-3">–</span>
+            <span class="col-data col-6">–</span>
+            <span class="col-data col-3">–</span>
+          </div>
+        </etools-data-table-row>
       </etools-content-panel>
-
-      <etools-dialog
-        theme="confirmation"
-        id="delete-summary-findings"
-        size="md"
-        opened="{{confirmDialogOpened}}"
-        keep-dialog-open
-        on-confirm-btn-clicked="removeItem"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        Are you sure you want to delete this attachment?
-      </etools-dialog>
-
-      <etools-dialog
-        size="md"
-        no-padding
-        id="summary-findings"
-        dialog-title="[[dialogTitle]]"
-        keep-dialog-open
-        opened="{{dialogOpened}}"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Category of Observation -->
-                <etools-dropdown
-                  class="validate-input"
-                  label="[[getLabel('findings.category_of_observation',
-                                                    basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('findings.category_of_observation',
-                                                            basePermissionPath)]]"
-                  options="[[categoryOfObservation]]"
-                  option-label="display_name"
-                  option-value="value"
-                  selected="{{editedItem.category_of_observation}}"
-                  trigger-value-change-event
-                  required$="[[_setRequired('findings.category_of_observation',
-                                                        basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
-                  invalid="{{errors.category_of_observation}}"
-                  error-message="{{errors.category_of_observation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                  hide-search
-                >
-                </etools-dropdown>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Recommendation -->
-                <paper-textarea
-                  class$="{{_setRequired('findings.recommendation', basePermissionPath)}} fixed-width validate-input"
-                  value="{{editedItem.recommendation}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('findings.recommendation', basePermissionPath)]]"
-                  always-float-label
-                  placeholder="[[getPlaceholderText('findings.recommendation', basePermissionPath)]]"
-                  required$="[[_setRequired('findings.recommendation', basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.recommendation}}"
-                  error-message="{{errors.recommendation}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Agreed Action by IP -->
-                <paper-textarea
-                  class$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]
-                                fixed-width validate-input"
-                  value="{{editedItem.agreed_action_by_ip}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('findings.agreed_action_by_ip', basePermissionPath)]]"
-                  always-float-label
-                  placeholder="[[getPlaceholderText('findings.agreed_action_by_ip',
-                                                basePermissionPath)]]"
-                  required$="[[_setRequired('findings.agreed_action_by_ip', basePermissionPath)]]"
-                  disabled$="{{requestInProcess}}"
-                  max-rows="4"
-                  invalid="{{errors.agreed_action_by_ip}}"
-                  error-message="{{errors.agreed_action_by_ip}}"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
-              </div>
-            </div>
-
-            <div class="row-h group">
-              <div class="input-container input-container-l">
-                <!-- Deadline of Action -->
-                <datepicker-lite
-                  id="deadlineActionSelector"
-                  selected-date-display-format="D MMM YYYY"
-                  placeholder="[[getPlaceholderText('findings.deadline_of_action',
-                                                    basePermissionPath)]]"
-                  label="[[getLabel('findings.deadline_of_action', basePermissionPath)]]"
-                  value="[[editedItem.deadline_of_action]]"
-                  error-message="{{errors.deadline_of_action}}"
-                  required$="[[_setRequired('findings.deadline_of_action', basePermissionPath)]]"
-                  readonly$="{{requestInProcess}}"
-                  fire-date-has-changed
-                  property-name="deadline_of_action"
-                  on-date-has-changed="deadlineDateHasChanged"
-                >
-                </datepicker-lite>
-              </div>
-            </div>
-          </div>
-        </div>
-      </etools-dialog>
     `;
   }
 
   @property({type: Array})
   categoryOfObservation: any[] = [];
 
-  @property({type: Array, notify: true})
+  @property({type: Array})
   dataItems: any[] = [];
 
   @property({type: String})
@@ -240,46 +170,6 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
 
   @property({type: Object})
   itemModel: GenericObject = {};
-
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 25,
-      name: 'finding',
-      label: 'Finding Number'
-    },
-    {
-      size: 50,
-      label: 'Subject Area',
-      labelPath: 'findings.category_of_observation',
-      custom: true,
-      property: 'category_of_observation',
-      doNotHide: false
-    },
-    {
-      size: 25,
-      name: 'date',
-      label: 'Deadline of Action',
-      labelPath: 'findings.deadline_of_action',
-      path: 'deadline_of_action'
-    }
-  ];
-
-  @property({type: Array})
-  details: GenericObject[] = [
-    {
-      label: 'Recommendation',
-      labelPath: 'findings.recommendation',
-      path: 'recommendation',
-      size: 100
-    },
-    {
-      label: 'Agreed Action by IP',
-      labelPath: 'findings.agreed_action_by_ip',
-      path: 'agreed_action_by_ip',
-      size: 100
-    }
-  ];
 
   @property({type: Object})
   addDialogTexts: GenericObject = {title: 'Add New Finding'};
@@ -290,7 +180,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   @property({type: Object})
   priority: GenericObject = {};
 
-  @property({type: String, computed: 'getErrorBaseText(priority)'})
+  @property({type: String})
   errorBaseText!: string;
 
   @property({type: String})
@@ -299,28 +189,84 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   @property({type: Object})
   originalData!: GenericObject;
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_setPriority(itemModel, priority)',
-      '_complexErrorHandler(errorObject.findings)'
-    ];
-  }
+  @property({type: Object})
+  errorObject!: GenericObject;
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('dialog-confirmed', this._addItemFromDialog);
-    this.addEventListener('delete-confirmed', this.removeItem);
-    this.categoryOfObservation = getStaticData('category_of_observation');
-    this.set('errors.deadline_of_action', false);
+    this.dialogKey = 'summary-findings-dialog';
+
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
+    this.errors.deadline_of_action = false;
   }
 
-  getErrorBaseText(priority) {
-    if (!priority) {
-      return '';
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('itemModel') || changedProperties.has('priority')) {
+      this._setPriority(this.itemModel, this.priority);
     }
-    return `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
+    if (changedProperties.has('priority')) {
+      this.setErrorBaseText(this.priority);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject.findings);
+    }
+    if (changedProperties.has('optionsData')) {
+      this.setCategoryOfObservation(this.optionsData);
+    }
+  }
+
+  openAddEditDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText,
+        categoryOfObservation: this.categoryOfObservation
+      }
+    }).then(() => (this.isAddDialogOpen = false));
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
+    });
+  }
+
+  setCategoryOfObservation(options: AnyObject) {
+    this.categoryOfObservation = options ? getOptionsChoices(options, 'findings.category_of_observation') : [];
+  }
+
+  setErrorBaseText(priority) {
+    if (!priority) {
+      this.errorBaseText = '';
+    }
+    this.errorBaseText = `Summary of ${this.priority.display_name} Priority Findings and Recommendations: `;
   }
 
   getCategoryDisplayName(value, emptyValue) {
@@ -328,20 +274,8 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
     return categoryOfObservation ? categoryOfObservation.display_name : emptyValue || '';
   }
 
-  _getLength(dataItems) {
-    if (!dataItems) {
-      return;
-    }
-    return dataItems.filter((item) => {
-      return item.priority === this.priority.value;
-    }).length;
-  }
-
   _setPriority(itemModel, priority) {
     itemModel.priority = priority.value;
-    if (priority.value === 'high') {
-      this.updateStyles({'--ecp-header-bg': 'var(--module-warning)'});
-    }
   }
 
   _showFindings(item) {
@@ -349,7 +283,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   }
 
   getFindingsData() {
-    if ((this.dialogOpened || this.confirmDialogOpened) && !this.saveWithButton) {
+    if ((this.isAddDialogOpen || this.isConfirmDialogOpen) && !this.saveWithButton) {
       return this.getCurrentData();
     }
     const data: any[] = [];
@@ -378,7 +312,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
           (changedObj.agreed_action_by_ip && changedObj.agreed_action_by_ip !== originalObj.agreed_action_by_ip)
         );
       };
-      if (!isEqualWith(dataItem, this.originalData[index], compareItems)) {
+      if (!isEqualWith(dataItem, this.originalData[index] || {}, compareItems)) {
         data.push(dataItem);
       }
     });
@@ -386,7 +320,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
   }
 
   getCurrentData() {
-    if (!this.dialogOpened && !this.confirmDialogOpened) {
+    if (!this.isAddDialogOpen && !this.isConfirmDialogOpen) {
       return null;
     }
     if (!this.validate()) {
@@ -398,13 +332,7 @@ class SummaryFindingsElement extends CommonMethodsMixin(TableElementsMixin(DateM
       }
       return item;
     });
+    data.priority = this.priority.value;
     return [data];
   }
-
-  deadlineDateHasChanged(e: CustomEvent) {
-    this.editedItem.deadline_of_action = e.detail.date;
-  }
 }
-
-window.customElements.define('summary-findings-element', SummaryFindingsElement);
-export {SummaryFindingsElement};

@@ -1,26 +1,27 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-input-container.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
-
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import './specific-procedure-dialog.js';
 import {GenericObject} from '../../../../types/global';
 import isString from 'lodash-es/isString';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import '@polymer/paper-input/paper-textarea';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {checkNonField} from '../../../mixins/error-handler';
+import {getHeadingLabel} from '../../../mixins/permission-controller';
+import {getTableRowIndexText} from '../../../utils/utils';
+import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -28,10 +29,15 @@ import {checkNonField} from '../../../mixins/error-handler';
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerElement)) {
-  static get template() {
+@customElement('specific-procedure')
+export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host .repeatable-item-container[without-line] {
           min-width: 0 !important;
@@ -40,7 +46,7 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
         :host .confirm-text {
           padding: 5px 86px 0 23px !important;
         }
-        :host paper-icon-button[hidden] {
+        :host etools-icon-button[hidden] {
           display: none !important;
         }
         etools-content-panel::part(ecp-content) {
@@ -50,185 +56,71 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('specific_procedures', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('specific_procedures', this.optionsData)}"
         list
       >
         <div slot="panel-btns">
-          <div hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+          <div ?hidden="${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)}">
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+              </etools-icon-button>
+            </sl-tooltip>
           </div>
         </div>
 
-        <list-header
-          id="list-header"
-          no-ordered
-          no-additional
-          data="[[columns]]"
-          base-permission-path="[[basePermissionPath]]"
-        >
-        </list-header>
-
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            no-additional
-            multiline
-            no-animation
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-2">Procedure</etools-data-table-column>
+          <etools-data-table-column class="${this.withoutFindingColumn ? 'col-10' : 'col-5'}"
+            >${getHeadingLabel(
+              this.optionsData,
+              'specific_procedures.description',
+              'Description'
+            )}</etools-data-table-column
           >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button
-                icon="icons:create"
-                class="edit-icon"
-                hidden$="[[_hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab)]]"
-                on-tap="openEditDialog"
-              ></paper-icon-button>
-              <paper-icon-button
-                icon="icons:delete"
-                class="edit-icon"
-                hidden$="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]"
-                on-tap="openDeleteDialog"
-              ></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+          <etools-data-table-column class="col-5" ?hidden="${this.withoutFindingColumn}">
+            ${getHeadingLabel(this.optionsData, 'specific_procedures.finding', 'Finding')}
+          </etools-data-table-column>
+        </etools-data-table-header>
 
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-additional no-animation>
-          </list-element>
-        </template>
-      </etools-content-panel>
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        opened="{{confirmDialogOpened}}"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-        on-close="_removeItem"
-        ok-btn-text="Delete"
-      >
-        [[deleteTitle]]
-      </etools-dialog>
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        opened="{{dialogOpened}}"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-      >
-        <div class="row-h repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <template is="dom-if" if="[[canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
-              <div class="row-h group">
-                <div class="input-container input-container-l">
-                  <!-- Description -->
-                  <paper-textarea
-                    class$="fixed-width validate-input
-                                            [[_setRequired('specific_procedures.description', basePermissionPath)]]"
-                    value="{{editedItem.description}}"
-                    allowed-pattern="[ds]"
-                    label="[[getLabel('specific_procedures.description', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('specific_procedures.description',
-                                                    basePermissionPath)]]"
-                    required$="[[_setRequired('specific_procedures.description',
-                                                    basePermissionPath)]]"
-                    readonly$="[[requestInProcess]]"
-                    max-rows="4"
-                    invalid="[[_checkInvalid(errors.0.description)]]"
-                    error-message="[[errors.0.description]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
-                  >
-                  </paper-textarea>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-2">${getTableRowIndexText(index)}</span>
+                <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">${item.description}</span>
+                <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}">${item.finding}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                  <etools-icon-button
+                    name="create"
+                    ?hidden="${this._hideEditIcon(this.optionsData, this.withoutFindingColumn, this.readonlyTab)}"
+                    @click="${() => this.openEditDialog(index)}"
+                  ></etools-icon-button>
+                  <etools-icon-button
+                    name="delete"
+                    ?hidden="${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)}"
+                    @click="${() => this.openDeleteDialog(index)}"
+                  ></etools-icon-button>
                 </div>
               </div>
-            </template>
-
-            <template is="dom-if" if="[[!canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn)]]" restamp>
-              <div class="row-h group">
-                <div class="input-container input-container-l">
-                  <!-- Finding -->
-                  <paper-textarea
-                    class$="fixed-width validate-input
-                                              [[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                    value="{{editedItem.finding}}"
-                    allowed-pattern="[ds]"
-                    label="[[getLabel('specific_procedures.finding', basePermissionPath)]]"
-                    placeholder="[[getPlaceholderText('specific_procedures.finding',
-                                                    basePermissionPath)]]"
-                    required$="[[_setRequired('specific_procedures.finding', basePermissionPath)]]"
-                    readonly$="[[requestInProcess]]"
-                    max-rows="4"
-                    invalid="[[_checkInvalid(errors.0.finding)]]"
-                    error-message="[[errors.0.finding]]"
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
-                  >
-                  </paper-textarea>
-                </div>
-              </div>
-            </template>
+            </etools-data-table-row>
+          `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row">
+            <span class="col-data col-2">–</span>
+            <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">–</span>
+            <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}">–</span>
           </div>
-        </div>
-      </etools-dialog>
+        </etools-data-table-row>
+      </etools-content-panel>
     `;
   }
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      '_errorHandler(errorObject.specific_procedures)',
-      '_checkNonField(errorObject.specific_procedures)',
-      '_manageColumns(withoutFindingColumn, columns)'
-    ];
-  }
-
-  @property({type: Object})
-  findingColumn: GenericObject = {
-    size: 40,
-    label: 'Finding',
-    labelPath: 'specific_procedures.finding',
-    path: 'finding'
-  };
-
-  @property({type: Array, notify: true})
-  dataItems!: [];
 
   @property({type: String})
   mainProperty = 'specific_procedures';
 
   @property({type: Object})
   itemModel: GenericObject = {description: '', finding: ''};
-
-  @property({type: Array})
-  columns = [
-    {
-      size: 20,
-      name: 'finding',
-      label: 'Procedure'
-    },
-    {
-      size: 40,
-      label: 'Description',
-      labelPath: 'specific_procedures.description',
-      path: 'description'
-    },
-    {
-      size: 40,
-      label: 'Finding',
-      labelPath: 'specific_procedures.finding',
-      path: 'finding'
-    }
-  ];
 
   @property({type: Object})
   addDialogTexts: GenericObject = {title: 'Add New Procedure'};
@@ -239,17 +131,44 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this finding?';
 
-  @property({type: Boolean, reflectToAttribute: true})
+  @property({type: Boolean, attribute: 'without-finding-column'})
   withoutFindingColumn = false;
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'save-with-button'})
+  saveWithButton = false;
+
+  @property({type: Boolean, attribute: 'readonly-tab'})
   readonlyTab = false;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.dialogKey = 'specific-procedure-dialog';
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject?.specific_procedures, this.errorObject);
+      this._checkNonField(this.errorObject?.specific_procedures);
+    }
+  }
 
   _checkNonField(error) {
     if (
       !error ||
-      (!this._canBeChanged(this.basePermissionPath) &&
-        this._hideEditIcon(this.basePermissionPath, this.withoutFindingColumn, this.readonlyTab))
+      (!this._canBeChanged(this.optionsData) &&
+        this._hideEditIcon(this.optionsData, this.withoutFindingColumn, this.readonlyTab))
     ) {
       return;
     }
@@ -260,34 +179,49 @@ class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(PolymerEle
     }
   }
 
-  _manageColumns(removeFinding, columns) {
-    if (removeFinding && columns.length === 3) {
-      this.splice('columns', 2, 1);
-    } else if (!removeFinding && columns.length === 2) {
-      this.splice('columns', 2, 0, this.findingColumn);
-    }
+  _hideEditIcon(permissions: AnyObject, withoutFindingColumn, readonlyTab) {
+    return withoutFindingColumn || readonlyTab || !this._canBeChanged(permissions);
   }
 
-  _hideEditIcon(basePermissionPath, withoutFindingColumn, readonlyTab) {
-    return withoutFindingColumn || readonlyTab || !this._canBeChanged(basePermissionPath);
+  canAddSP(permissions: AnyObject, readonlyTab, withoutFindingColumn) {
+    return this._canBeChanged(permissions) && !readonlyTab && withoutFindingColumn;
   }
 
-  canAddSP(basePermissionPath, readonlyTab, withoutFindingColumn) {
-    return this._canBeChanged(basePermissionPath) && !readonlyTab && withoutFindingColumn;
+  openAddEditDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        withoutFindingColumn: this.withoutFindingColumn,
+        readonlyTab: this.readonlyTab,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        originalEditedObj: this.originalEditedObj,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    }).then(() => (this.isAddDialogOpen = false));
   }
 
-  _removeItem(event) {
-    this.confirmDialogOpened = false;
-    if (this.deleteCanceled(event)) {
-      return;
-    }
-    this.removeItem();
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
+    });
   }
 
   _checkInvalid(value) {
     return !!value;
   }
 }
-window.customElements.define('specific-procedure', SpecificProcedure);
-
-export {SpecificProcedure as SpecificProcedureEl};

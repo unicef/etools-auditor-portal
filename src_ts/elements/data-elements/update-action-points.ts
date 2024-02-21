@@ -1,26 +1,35 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import findIndex from 'lodash-es/findIndex';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {GenericObject} from '../../types/global.js';
 
-class UpdateActionPoints extends PolymerElement {
-  @property({type: String, observer: '_dataChanged'})
+/**
+ * @customElement
+ */
+@customElement('update-action-points')
+export class UpdateActionPoints extends LitElement {
+  @property({type: String})
   requestData!: string;
 
-  @property({type: Array, notify: true})
-  actionPoints!: [];
+  @property({type: Array})
+  actionPoints!: any[];
 
-  @property({type: Boolean, notify: true})
-  requestInProcess!: boolean;
-
-  @property({type: Object, notify: true})
+  @property({type: Object})
   errors!: GenericObject;
 
   @property({type: Number})
   engagementId!: number;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('requestData')) {
+      this._dataChanged(this.requestData);
+    }
+  }
 
   _dataChanged(data = {}) {
     const {method, apData, complete} = data as any;
@@ -59,12 +68,12 @@ class UpdateActionPoints extends PolymerElement {
     const index = findIndex(this.actionPoints, (item: any) => item.id === detail.id);
 
     if (~index) {
-      this.splice('actionPoints', index, 1, detail);
+      this.actionPoints.splice(index, 1, detail);
     } else {
-      this.push('actionPoints', detail);
+      this.actionPoints.push(detail);
     }
 
-    fireEvent(this, 'ap-request-completed', {success: true});
+    fireEvent(this, 'ap-request-completed', {success: true, data: this.actionPoints});
   }
 
   _handleError(error) {
@@ -78,8 +87,7 @@ class UpdateActionPoints extends PolymerElement {
       }
     }
 
-    this.set('errors', response);
-    fireEvent(this, 'ap-request-completed');
+    this.errors = response;
+    fireEvent(this, 'ap-request-completed', {success: false, errors: this.errors});
   }
 }
-window.customElements.define('update-action-points', UpdateActionPoints);

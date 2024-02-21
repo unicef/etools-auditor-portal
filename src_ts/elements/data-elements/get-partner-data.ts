@@ -1,47 +1,50 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import clone from 'lodash-es/clone';
 import {getEndpoint} from '../config/endpoints-controller';
-import {getStaticData, setStaticData} from '../mixins/static-data-controller';
 import {GenericObject} from '../../types/global';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 
-class GetPartnerData extends PolymerElement {
-  @property({type: Number, observer: '_partnerIdChanged'})
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('get-partner-data')
+export class GetPartnerData extends LitElement {
+  @property({type: Number})
   partnerId!: number | null;
 
-  @property({type: Object})
-  lastData!: GenericObject;
+  @property({type: Array})
+  cachedPartners: GenericObject[] = [];
 
-  @property({type: Boolean})
-  lastError?: boolean;
+  lastLoadedPartner!: GenericObject;
 
-  @property({type: Number})
-  lastNumber?: number;
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('partnerId')) {
+      this._partnerIdChanged(this.partnerId);
+    }
+  }
 
   _handleResponse(detail) {
     if (!detail || !detail.id) {
       this._handleError();
       return;
     }
-    this.lastData = clone(detail);
-    const officers = getStaticData(`officers_${detail.id}`);
-    if (officers) {
-      this.lastData.partnerOfficers = officers;
-      this.finishRequest();
-    } else {
-      sendRequest({
-        endpoint: {url: getEndpoint('authorizedOfficers', {id: detail.id}).url}
+    this.lastLoadedPartner = detail;
+    sendRequest({
+      endpoint: {url: getEndpoint('authorizedOfficers', {id: detail.id}).url}
+    })
+      .then((resp) => {
+        this._handleOfficersResponse(resp);
       })
-        .then((resp) => {
-          this._handleOfficersResponse(resp);
-        })
-        .catch(() => {
-          this._handleOfficersError();
-        });
-    }
+      .catch(() => {
+        this._handleOfficersError();
+      });
   }
 
   _handleOfficersResponse(detail) {
@@ -55,60 +58,44 @@ class GetPartnerData extends PolymerElement {
         }${partnerOfficer.first_name} ${partnerOfficer.last_name}`;
         return partnerOfficer;
       });
-      setStaticData(`officers_${this.lastData.id}`, prefixedPartnerOfficers);
-      this.lastData.partnerOfficers = prefixedPartnerOfficers;
-      this.finishRequest();
+      this.lastLoadedPartner.partnerOfficers = prefixedPartnerOfficers;
+      this.cachedPartners.push(clone(this.lastLoadedPartner));
+      this.finishRequest(clone(this.lastLoadedPartner));
     }
   }
 
-  finishRequest() {
-    const partner = clone(this.lastData);
+  finishRequest(partner: GenericObject) {
     fireEvent(this, 'partner-loaded', partner);
-
-    const partnerDataId = `partner_${partner.id}`;
-    const savedPartner = getStaticData(partnerDataId);
-    if (!savedPartner) {
-      setStaticData(partnerDataId, partner);
-    }
-  }
-
-  _handleOfficersError() {
-    EtoolsLogger.error('Can not load partner officers!');
-    this.finishRequest();
-  }
-
-  _handleError() {
-    this.lastError = true;
-    fireEvent(this, 'partner-loaded');
   }
 
   _partnerIdChanged(partnerId) {
     if (!partnerId) {
       return;
     }
-    if (partnerId === this.lastNumber) {
-      const detail = clone(this.lastData);
-      this.lastError ? this._handleError() : this._handleResponse(detail);
+    this.lastLoadedPartner = {};
+    const cachedPartner = this.cachedPartners.find((partner) => String(partner.id) === String(partnerId));
+    if (cachedPartner) {
+      this.finishRequest(clone(cachedPartner));
       return;
     }
 
-    this.lastError = false;
-    this.lastNumber = partnerId;
-
-    const partner = getStaticData(`partner_${partnerId}`);
-    if (partner) {
-      this._handleResponse(partner);
-    } else {
-      sendRequest({
-        endpoint: {url: getEndpoint('partnerInfo', {id: partnerId}).url}
+    sendRequest({
+      endpoint: {url: getEndpoint('partnerInfo', {id: partnerId}).url}
+    })
+      .then((resp) => {
+        this._handleResponse(resp);
       })
-        .then((resp) => {
-          this._handleResponse(resp);
-        })
-        .catch(() => {
-          this._handleError();
-        });
-    }
+      .catch(() => {
+        this._handleError();
+      });
+  }
+
+  _handleOfficersError() {
+    EtoolsLogger.error('Can not load partner officers!');
+    this.finishRequest(clone(this.lastLoadedPartner));
+  }
+
+  _handleError() {
+    fireEvent(this, 'partner-loaded');
   }
 }
-window.customElements.define('get-partner-data', GetPartnerData);

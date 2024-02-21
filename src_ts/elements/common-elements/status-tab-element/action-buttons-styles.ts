@@ -1,78 +1,40 @@
-import {html} from '@polymer/polymer';
+import {html} from 'lit';
 
 export const ActionButtonsStyles = html`
   <style>
     :host {
-      position: relative;
-      display: block;
-      text-align: center;
+      display: flex;
+    }
+    *[hidden] {
+      display: none;
+    }
+    etools-button {
+      margin-inline: 0px !important;
+      --sl-spacing-medium: 0;
+    }
+    etools-button-group {
+      --etools-button-group-color: var(--sl-color-primary-600);
+    }
+    etools-button[slot='trigger'] {
+      width: 45px;
+      min-width: 45px;
+      border-inline-start: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    etools-button#primary {
+      flex: 1;
+    }
+    etools-button#primary::part(label) {
+      display: flex;
       width: 100%;
+      justify-content: center;
     }
-    .main-action.text {
-      font-weight: 500;
-    }
-    paper-button {
-      --paper-button_-_color: #fff;
-      height: 34px;
-      color: #fff;
-      background-color: var(--primary-color);
-      margin: 0;
-      width: 100%;
-    }
-    paper-button span {
-      padding: 0 29px;
-    }
-    paper-button.with-menu {
-      padding-right: calc(0.57em + 41px);
-    }
-    paper-menu-button {
-      padding: 0;
-      border-left: solid 1px rgba(255, 255, 255, 0.5);
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 34px;
-      overflow: hidden;
-    }
-    paper-menu-button paper-icon-button {
-      top: -2px;
-    }
-    .dropdown-content {
-      padding: 6px 0;
-    }
-    .other-title {
-      cursor: default;
-      padding: 10px 20px;
+
+    sl-menu-item {
       text-transform: uppercase;
-      color: var(--gray-mid);
-      white-space: nowrap;
-      font-weight: 500;
     }
-    .other-options {
-      min-width: 150px;
-      text-align: left;
-      padding: 13px;
-      color: var(--gray-dark);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-    .other-options:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-    .other-options .option-icon {
-      width: 22px;
-      height: 22px;
-      margin-right: 15px;
-      margin-left: 5px;
-      color: var(--gray-mid);
-      vertical-align: top;
-    }
-    .other-options span {
-      vertical-align: top;
-      margin-top: 1px;
-      padding: 0;
-      display: inline-block;
-      height: 22px;
+    etools-icon {
+      --etools-icon-font-size: var(--etools-font-size-20, 20px);
+      vertical-align: sub;
     }
   </style>
 `;

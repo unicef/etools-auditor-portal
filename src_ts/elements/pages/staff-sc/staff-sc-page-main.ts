@@ -1,167 +1,90 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import '@polymer/iron-pages/iron-pages';
-import '@polymer/app-route/app-route';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {pageLayoutStyles} from '../../styles/page-layout-styles';
-import {sharedStyles} from '../../styles/shared-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
-import '../engagements/engagements-list-view/engagements-list-view';
+import '../engagements/engagements-list-view/staff-sc-list-view';
 import '../engagements/new-engagement-view/new-engagement-view';
-import {clearQueries, updateQueries} from '../../mixins/query-params-controller';
-import {actionAllowed} from '../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
+import {isValidCollection} from '../../mixins/permission-controller';
 import {getEndpoint} from '../../config/endpoints-controller';
 
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {Debouncer} from '@polymer/polymer/lib/utils/debounce';
-import {timeOut} from '@polymer/polymer/lib/utils/async';
-import isUndefined from 'lodash-es/isUndefined';
-import isEqual from 'lodash-es/isEqual';
-import clone from 'lodash-es/clone';
-import isEmpty from 'lodash-es/isEmpty';
 import {GenericObject} from '../../../types/global';
 import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
-import {FilterTypes} from '../../common-elements/search-and-filter-element/search-and-filter';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../redux/store';
+import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
+import get from 'lodash-es/get';
+import {pageIsNotCurrentlyActive} from '../../utils/utils';
 
-class StaffScPageMain extends PolymerElement {
-  static get template() {
+/**
+ * @customElement
+ * @LitElement
+ */
+@customElement('staff-sc-page-main')
+export class StaffScPageMain extends connect(store)(LitElement) {
+  static get styles() {
+    return [pageLayoutStyles, moduleStyles];
+  }
+
+  render() {
     return html`
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
           display: block;
         }
       </style>
-      ${pageLayoutStyles} ${sharedStyles} ${moduleStyles}
-      <app-route route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"> </app-route>
-      <iron-pages id="categoryPages" selected="{{view}}" attr-for-selected="name" role="main">
-        <engagements-list-view
-          name="list"
-          id="listPage"
-          query-params="{{queryParams}}"
-          base-route="[[baseRoute]]"
-          has-collapse
-          request-queries="[[partnersListQueries]]"
-          base-permission-path="new_engagement"
-          filters="[[filters]]"
-          add-btn-text="Add New Staff Spot Checks"
-          new-btn-link="{{newBtnLink}}"
-          endpoint-name="{{endpointName}}"
-          is-staff-sc
-        >
-        </engagements-list-view>
 
-        <template is="dom-if" if="[[allowNew]]" restamp>
-          <new-engagement-view
+      <staff-sc-list-view
+        name="list"
+        id="listPage"
+        has-collapse
+        ?hidden="${!this.isActivePage(this.activePath, 'list')}"
+        .endpointName="${this.endpointName}"
+        add-btn-text="Add New Staff Spot Checks"
+        .newBtnLink="${this.newBtnLink}"
+        is-staff-sc
+      >
+      </staff-sc-list-view>
+
+      ${this.allowNew
+        ? html` <new-engagement-view
             name="new"
             id="creationPage"
-            page="{{routeData.view}}"
-            query-params="{{queryParams}}"
-            route="{{subroute}}"
-            request-queries="{{partnersListQueries}}"
-            base-permission-path="new_staff_sc"
-            partner="{{partnerDetails}}"
-            audit-firm="[[auditFirm]]"
+            ?hidden="${!this.isActivePage(this.activePath, 'new')}"
+            .auditFirm="${this.auditFirm}"
             page-title="Add New Staff Spot Check"
-            endpoint-name="{{endpointName}}"
-            is-staff-sc
+            isStaffSc
+            .requestQueries="${this.partnersListQueries}"
+            .partner="${this.partnerDetails}"
+            .endpointName="${this.endpointName}"
           >
-          </new-engagement-view>
-        </template>
-      </iron-pages>
+          </new-engagement-view>`
+        : ''}
     `;
   }
-
-  @property({type: Object, notify: true, observer: '_queryParamsChanged'})
-  queryParams!: GenericObject;
-
-  @property({type: String})
-  baseRoute!: string;
 
   @property({type: Number})
   initiation = 0;
 
-  @property({type: String})
-  newBtnLink = `/${BASE_PATH}/staff-sc/new/overview`;
+  @property({type: Object})
+  partnerDetails: GenericObject = {};
 
-  @property({type: Array})
-  filters = [
-    {
-      type: FilterTypes.DropdownMulti,
-      name: 'partner',
-      label: 'Partner',
-      query: 'partner__in',
-      optionValue: 'id',
-      optionLabel: 'name',
-      selection: []
-    },
-    {
-      type: FilterTypes.DropdownMulti,
-      name: 'status',
-      label: 'Status',
-      query: 'status__in',
-      hideSearch: true,
-      optionValue: 'value',
-      optionLabel: 'display_name',
-      selection: []
-    },
-    {
-      type: FilterTypes.DropdownMulti,
-      name: 'unicef user',
-      label: 'Unicef User',
-      query: 'staff_members__user__in',
-      optionValue: 'id',
-      optionLabel: 'full_name',
-      selection: []
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'date IP was contacted before',
-      label: 'Date IP was contacted before',
-      query: 'partner_contacted_at__lte',
-      hideSearch: true
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'date IP was contacted after',
-      label: 'Date IP was contacted after',
-      query: 'partner_contacted_at__gte',
-      hideSearch: true
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'draft report issued to ip before',
-      label: 'Draft Report Issued to IP before',
-      query: 'date_of_draft_report_to_ip__lte',
-      hideSearch: true
-    },
-    {
-      type: FilterTypes.Date,
-      name: 'draft report issued to ip after',
-      label: 'Draft Report Issued to IP after',
-      query: 'date_of_draft_report_to_ip__gte',
-      hideSearch: true
-    }
-  ];
+  @property({type: String})
+  newBtnLink = `${BASE_PATH}staff-sc/new/overview`;
 
   @property({type: String})
   endpointName = 'staffSCList';
 
   @property({type: Object})
-  route!: GenericObject;
-
-  @property({type: Object})
-  routeData!: GenericObject;
-
-  @property({type: Object})
   partnersListQueries!: GenericObject;
 
   @property({type: String})
-  view!: string;
-
-  @property({type: String})
-  lastView!: string | null;
+  activePath!: string;
 
   @property({type: Object})
   lastParams!: GenericObject;
@@ -170,17 +93,13 @@ class StaffScPageMain extends PolymerElement {
   auditFirm: GenericObject = {};
 
   @property({type: Boolean})
-  allowNew = false;
+  allowNew!: boolean;
 
-  static get observers() {
-    return ['_routeConfig(routeData.view, selectedPage)'];
-  }
-
-  private _updateEngagementsFiltersDebouncer!: Debouncer;
+  @property({type: Object})
+  reduxRouteDetails?: EtoolsRouteDetails;
 
   connectedCallback() {
     super.connectedCallback();
-    this.allowNew = actionAllowed('new_staff_sc', 'create');
     sendRequest({
       endpoint: {url: getEndpoint('auditFirms').url + '?unicef_users_allowed=true'}
     })
@@ -192,102 +111,21 @@ class StaffScPageMain extends PolymerElement {
       });
   }
 
-  _routeConfig(view, selectedPage) {
-    if (!this.route || !~this.route.prefix.indexOf('/staff-sc') || selectedPage !== 'staff-sc') {
-      this.resetLastView();
+  stateChanged(state: RootState) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'staff-sc')) {
       return;
     }
-
-    if (view === this.lastView) {
-      return;
+    if (typeof this.allowNew === 'undefined' && state.commonData.loadedTimestamp) {
+      this.allowNew = !!isValidCollection(state.commonData.new_staff_scOptions.actions?.POST);
     }
-    if (view === 'list') {
-      const queries = this._configListParams(this.initiation++);
-      this._setEngagementsListQueries(queries);
-      this._fireUpdateEngagementsFilters();
-      this.view = 'list';
-    } else if (view === 'new' && actionAllowed('new_staff_sc', 'create')) {
-      clearQueries();
-      this.view = 'new';
-    } else if (view === '' || isUndefined(view)) {
-      this.set('route.path', '/list');
-    } else {
-      clearQueries();
-      fireEvent(this, '404');
-    }
-
-    if (view !== this.lastView) {
-      fireEvent(this, `close-toasts`);
-    }
-    this.lastView = view;
-  }
-
-  resetLastView() {
-    if (this.lastView) {
-      this.lastView = null;
+    if (state.app.routeDetails && !isJsonStrMatch(state.app.routeDetails, this.reduxRouteDetails)) {
+      this.reduxRouteDetails = state.app.routeDetails;
+      this.activePath = this.reduxRouteDetails.path;
     }
   }
 
-  _fireUpdateEngagementsFilters() {
-    this._updateEngagementsFiltersDebouncer = Debouncer.debounce(
-      this._updateEngagementsFiltersDebouncer,
-      timeOut.after(100),
-      () => {
-        document.dispatchEvent(new CustomEvent('update-engagements-filters'));
-      }
-    );
-  }
-
-  _configListParams(noNotify?) {
-    const queries = this.route.__queryParams || {};
-    const queriesUpdates: GenericObject = clone(queries);
-
-    if (!queries.page_size) {
-      queriesUpdates.page_size = '10';
-    }
-    if (!queries.ordering) {
-      queriesUpdates.ordering = 'reference_number';
-    }
-    if (!queries.page) {
-      queriesUpdates.page = '1';
-    }
-
-    const page = +queries.page;
-    if (
-      isNaN(page) ||
-      (this.lastParams &&
-        (queries.page_size !== this.lastParams.page_size || queries.ordering !== this.lastParams.ordering))
-    ) {
-      queriesUpdates.page = '1';
-    }
-
-    if (!this.lastParams || !isEqual(this.lastParams, queries)) {
-      this.lastParams = clone(queries);
-    }
-
-    updateQueries(queriesUpdates, null, noNotify);
-    return queriesUpdates;
-  }
-
-  _queryParamsChanged() {
-    if (!this.route) {
-      return;
-    }
-    if (!~this.route.prefix.indexOf('/staff-sc') || !this.routeData) {
-      return;
-    }
-    if (this.routeData.view === 'list') {
-      const queries = this._configListParams();
-      this._setEngagementsListQueries(queries);
-    } else if (!isNaN(+this.routeData.view)) {
-      clearQueries();
-    }
-  }
-
-  _setEngagementsListQueries(queries) {
-    if (!isEmpty(queries) && (!this.partnersListQueries || !isEqual(this.partnersListQueries, queries))) {
-      this.partnersListQueries = queries;
-    }
+  isActivePage(activePath: string, expected: string) {
+    return activePath.indexOf(expected) > -1;
   }
 
   _auditFirmLoaded({results}) {
@@ -298,5 +136,3 @@ class StaffScPageMain extends PolymerElement {
     }
   }
 }
-
-window.customElements.define('staff-sc-page-main', StaffScPageMain);
