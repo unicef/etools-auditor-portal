@@ -90,7 +90,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
 
             <div class="tab-selector">
               <etools-tabs-lit
-                border-bottom
                 .tabs="${this.tabsList}"
                 .activeTab="${this.tab}"
                 @sl-tab-show="${(e: CustomEvent) => {

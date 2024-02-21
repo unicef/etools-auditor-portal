@@ -86,7 +86,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
 
             <div class="tab-selector">
               <etools-tabs-lit
-                border-bottom
                 .tabs="${this.tabsList}"
                 .activeTab="${this.tab}"
                 @sl-tab-show="${(e: CustomEvent) => {

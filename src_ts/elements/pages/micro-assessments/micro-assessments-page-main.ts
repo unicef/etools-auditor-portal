@@ -83,7 +83,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
 
             <div class="tab-selector">
               <etools-tabs-lit
-                border-bottom
                 .tabs="${this.tabsList}"
                 .activeTab="${this.tab}"
                 @sl-tab-show="${(e: CustomEvent) => {

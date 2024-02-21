@@ -101,7 +101,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
 
       <div class="tab-selector">
         <etools-tabs-lit
-          border-bottom
           role="tablist"
           .tabs="${this.tabsList}"
           .activeTab="${this.tab}"
