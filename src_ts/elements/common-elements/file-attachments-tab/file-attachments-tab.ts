@@ -324,7 +324,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
 
     if (changedProperties.has('errorObject')) {
       this.filesTabErrorHandler(this.errorObject);
-    }       
+    }
     if (changedProperties.has('isUnicefUser') || changedProperties.has('engagement')) {
       this._shouldHideShare(this.isUnicefUser, this.engagement?.id);
     }
