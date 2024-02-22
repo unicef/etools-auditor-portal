@@ -130,7 +130,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 .errorMessage="${this.errors.audited_expenditure_local}"
                 @value-changed="${({detail}: CustomEvent) => {
                   detail.value = detail.value || 0;
-                  this.numberChanged(detail, 'audited_expenditure_local', this.editedItem)
+                  this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
                 }}"
                 @blur="${this.customValidation}"
                 @focus="${this._resetFieldError}"
@@ -154,7 +154,8 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 .errorMessage="${this.errors.financial_findings_local}"
                 @value-changed="${({detail}: CustomEvent) => {
                   detail.value = detail.value || 0;
-                  this.numberChanged(detail, 'financial_findings_local', this.editedItem)}}"
+                  this.numberChanged(detail, 'financial_findings_local', this.editedItem);
+                }}"
                 @blur="${this.customValidation}"
                 @focus="${this._resetFieldError}"
               >

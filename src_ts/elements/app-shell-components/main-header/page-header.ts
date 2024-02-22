@@ -158,7 +158,12 @@ export class PageHeader extends MatomoMixin(LitElement) {
 
       <app-toolbar id="toolbar" sticky class="content-align">
         <div class="layout-horizontal align-items-center">
-          <etools-icon-button id="menuButton" name="menu" class="nav-menu-button" @click="${this.menuBtnClicked}"></etools-icon-button>
+          <etools-icon-button
+            id="menuButton"
+            name="menu"
+            class="nav-menu-button"
+            @click="${this.menuBtnClicked}"
+          ></etools-icon-button>
           <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
           <img id="app-logo" src="${BASE_PATH}assets/images/etools-logo-color-white.svg" alt="Etools" />
           <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">

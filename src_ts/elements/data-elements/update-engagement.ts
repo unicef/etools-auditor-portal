@@ -16,7 +16,6 @@ import {
 } from '../../redux/actions/engagement';
 import {getValueFromResponse} from '../utils/utils';
 import {EngagementState} from '../../redux/reducers/engagement';
-import { isJsonStrMatch } from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * main menu
@@ -204,18 +203,17 @@ export class UpdateEngagement extends LitElement {
     Object.keys(obj).forEach((key) => {
       if (Array.isArray(obj[key])) {
         arr.push(`${key}: ${Array.from(obj[key]).join(', ')}`);
-      }
-      else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        if(typeof index === 'undefined') {
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        if (typeof index === 'undefined') {
           arr.push(key);
           index = arr.length - 1;
         } else {
-          arr[index-1] += `.${key}`;
+          arr[index - 1] += `.${key}`;
         }
         this.getMesageFromNestedObj(obj[key], arr, index);
       } else {
         if (typeof index !== 'undefined') {
-          arr[index-1] += `: ${obj[key]}`;
+          arr[index - 1] += `: ${obj[key]}`;
         }
       }
     });

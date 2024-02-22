@@ -48,138 +48,139 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-      <div class="container">
-        <div class="layout-horizontal">
-          <div class="col col-6">
-            <!-- Title -->
-            <etools-dropdown
-              id="titleOptionsDropDown"
-              class="w100 ${this._setRequired('financial_finding_set.title', this.optionsData)} validate-input"
-              label="${this.getLabel('financial_finding_set.title', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('financial_finding_set.title', this.optionsData)}"
-              .options="${this.titleOptions}"
-              option-label="display_name"
-              option-value="value"
-              .selected="${this.editedItem.title}"
-              ?required="${this._setRequired('financial_finding_set.title', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              ?invalid="${this.errors.title}"
-              .errorMessage="${this.errors.title}"
-              @focus="${this._resetFieldError}"
-              trigger-value-change-event
-              @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                this.selectedItemChanged(detail, 'title', 'value', this.editedItem)}"
-              hide-search
-            >
-            </etools-dropdown>
-          </div>
-        </div>
-
-        <div class="layout-horizontal">
-          <div class="col col-6">
-            <!-- Amount (local) -->
-            <etools-currency
-              class="w100 ${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
-              .value="${this.editedItem.local_amount}"
-              currency=""
-              label="${this.getLabel('financial_finding_set.local_amount', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('financial_finding_set.local_amount', this.optionsData)}"
-              ?required="${this._setRequired('financial_finding_set.local_amount', this.optionsData)}"
-              ?readonly="${this.requestInProcess}"
-              ?invalid="${this.errors.local_amount}"
-              .errorMessage="${this.errors.local_amount}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'local_amount', this.editedItem)}"
-            >
-            </etools-currency>
+        <div class="container">
+          <div class="layout-horizontal">
+            <div class="col col-6">
+              <!-- Title -->
+              <etools-dropdown
+                id="titleOptionsDropDown"
+                class="w100 ${this._setRequired('financial_finding_set.title', this.optionsData)} validate-input"
+                label="${this.getLabel('financial_finding_set.title', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.title', this.optionsData)}"
+                .options="${this.titleOptions}"
+                option-label="display_name"
+                option-value="value"
+                .selected="${this.editedItem.title}"
+                ?required="${this._setRequired('financial_finding_set.title', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors.title}"
+                .errorMessage="${this.errors.title}"
+                @focus="${this._resetFieldError}"
+                trigger-value-change-event
+                @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                  this.selectedItemChanged(detail, 'title', 'value', this.editedItem)}"
+                hide-search
+              >
+              </etools-dropdown>
+            </div>
           </div>
 
-          <div class="col col-6">
-            <!-- Amount USD -->
-            <etools-currency
-              class="w100 ${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
-              .value="${this.editedItem.amount}"
-              currency="$"
-              label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.optionsData)}"
-              ?required="${this._setRequired('financial_finding_set.amount', this.optionsData)}"
-              ?readonly="${this.requestInProcess}"
-              ?invalid="${this.errors.amount}"
-              .errorMessage="${this.errors.amount}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'amount', this.editedItem)}"
-            >
-            </etools-currency>
-          </div>
-        </div>
+          <div class="layout-horizontal">
+            <div class="col col-6">
+              <!-- Amount (local) -->
+              <etools-currency
+                class="w100 ${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
+                .value="${this.editedItem.local_amount}"
+                currency=""
+                label="${this.getLabel('financial_finding_set.local_amount', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.local_amount', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.local_amount', this.optionsData)}"
+                ?readonly="${this.requestInProcess}"
+                ?invalid="${this.errors.local_amount}"
+                .errorMessage="${this.errors.local_amount}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.numberChanged(detail, 'local_amount', this.editedItem)}"
+              >
+              </etools-currency>
+            </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <!-- Description -->
-            <etools-textarea
-              class="w100 ${this._setRequired('financial_finding_set.description', this.optionsData)}
+            <div class="col col-6">
+              <!-- Amount USD -->
+              <etools-currency
+                class="w100 ${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
+                .value="${this.editedItem.amount}"
+                currency="$"
+                label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.amount', this.optionsData)}"
+                ?readonly="${this.requestInProcess}"
+                ?invalid="${this.errors.amount}"
+                .errorMessage="${this.errors.amount}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'amount', this.editedItem)}"
+              >
+              </etools-currency>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Description -->
+              <etools-textarea
+                class="w100 ${this._setRequired('financial_finding_set.description', this.optionsData)}
                             fixed-width validate-input"
-              .value="${this.editedItem.description}"
-              allowed-pattern="[\\d\\s]"
-              label="${this.getLabel('financial_finding_set.description', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('financial_finding_set.description', this.optionsData)}"
-              ?required="${this._setRequired('financial_finding_set.description', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this.errors.description}"
-              .errorMessage="${this.errors.description}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'description', this.editedItem)}"
-            >
-            </etools-textarea>
+                .value="${this.editedItem.description}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('financial_finding_set.description', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.description', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.description', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors.description}"
+                .errorMessage="${this.errors.description}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'description', this.editedItem)}"
+              >
+              </etools-textarea>
+            </div>
           </div>
-        </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <!-- Recommendation -->
-            <etools-textarea
-              class="w100 ${this._setRequired('financial_finding_set.recommendation', this.optionsData)}
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Recommendation -->
+              <etools-textarea
+                class="w100 ${this._setRequired('financial_finding_set.recommendation', this.optionsData)}
                             fixed-width validate-input"
-              .value="${this.editedItem.recommendation}"
-              allowed-pattern="[\\d\\s]"
-              label="${this.getLabel('financial_finding_set.recommendation', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('financial_finding_set.recommendation', this.optionsData)}"
-              ?required="${this._setRequired('financial_finding_set.recommendation', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this.errors.recommendation}"
-              .errorMessage="${this.errors.recommendation}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) =>
-                this.valueChanged(detail, 'recommendation', this.editedItem)}"
-            >
-            </etools-textarea>
+                .value="${this.editedItem.recommendation}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('financial_finding_set.recommendation', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.recommendation', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.recommendation', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors.recommendation}"
+                .errorMessage="${this.errors.recommendation}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.valueChanged(detail, 'recommendation', this.editedItem)}"
+              >
+              </etools-textarea>
+            </div>
           </div>
-        </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <!-- IP comments -->
-            <etools-textarea
-              class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- IP comments -->
+              <etools-textarea
+                class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}
                             fixed-width validate-input"
-              .value="${this.editedItem.ip_comments}"
-              allowed-pattern="[\\d\\s]"
-              label="${this.getLabel('financial_finding_set.ip_comments', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('financial_finding_set.ip_comments', this.optionsData)}"
-              ?required="${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this.errors.ip_comments}"
-              .errorMessage="${this.errors.ip_comments}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'ip_comments', this.editedItem)}"
-            >
-            </etools-textarea>
+                .value="${this.editedItem.ip_comments}"
+                allowed-pattern="[\\d\\s]"
+                label="${this.getLabel('financial_finding_set.ip_comments', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('financial_finding_set.ip_comments', this.optionsData)}"
+                ?required="${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors.ip_comments}"
+                .errorMessage="${this.errors.ip_comments}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'ip_comments', this.editedItem)}"
+              >
+              </etools-textarea>
+            </div>
           </div>
         </div>
-       </div>
       </etools-dialog>
     `;
   }

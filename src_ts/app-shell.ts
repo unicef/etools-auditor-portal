@@ -182,7 +182,6 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   @property({type: Object})
   reduxRouteDetails?: RouteDetails;
 
-
   @query('#drawer') private drawer!: AppDrawer;
 
   constructor() {
@@ -195,14 +194,14 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
       this.smallMenu = !!parseInt(menuTypeStoredVal, 10);
     }
   }
-  
+
   public connectedCallback() {
     super.connectedCallback();
 
     this.addEventListener('change-drawer-state', this.changeDrawerState);
     this.addEventListener('toggle-small-menu', this.toggleMenu as any);
     installMediaQueryWatcher(`(min-width: 460px)`, () => fireEvent(this, 'change-drawer-state'));
-    
+
     setTimeout(() => {
       window.EtoolsEsmmFitIntoEl = this._getContentContainer();
       this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl as any;
@@ -211,7 +210,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, loadingSource: 'initialisation'});
 
     this.addEventListener('404', this._pageNotFound);
-    
+
     installRouter((location) =>
       store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
     );
