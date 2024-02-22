@@ -146,7 +146,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
 
         ${(this.itemsToDisplay || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse>
+            <etools-data-table-row no-collapse secondary-bg-on-hover>
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span class="col-data col-2 truncate">
                   <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">

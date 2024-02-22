@@ -118,7 +118,7 @@ export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMeth
             !this.attachmentsList || !this.attachmentsList.length
               ? html`<span class="modal-pad">There are no attachments for this partner. </span>`
               : html` ${this.attachmentsList.map(
-                  (item) => html` <etools-data-table-row no-collapse>
+                  (item) => html` <etools-data-table-row no-collapse secondary-bg-on-hover>
                     <div slot="row-data" class="layout-horizontal row-data">
                       <span class="col-data col-3">
                         <etools-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></etools-checkbox>
