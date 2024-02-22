@@ -31,7 +31,7 @@ export class AssessmentOfControlsDialog extends CommonMethodsMixin(TableElements
       <etools-dialog
           no-padding
           keep-dialog-open
-          size="md"
+          size="lg"
           dialog-title="${this.dialogTitle}"
           .okBtnText="${this.confirmBtnText}"
           ?show-spinner="${this.requestInProcess}"

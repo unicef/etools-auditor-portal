@@ -271,7 +271,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         // if is creation popup
         this.dataItems.push(item);
       }
-      fireEvent(this, 'data-items-changed', this.dataItems);
+      // fireEvent(this, 'data-items-changed', this.dataItems);
     }
 
     resetDialog(opened?: boolean) {

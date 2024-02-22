@@ -37,10 +37,13 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
         .layout-horizontal {
           flex-flow: wrap;
         }
+        .col:not(:first-of-type) {
+          padding-inline-start: 0px !important;
+        }
       </style>
       <etools-dialog
         id="findings-summary"
-        size="md"
+        size="lg"
         no-padding
         keep-dialog-open
         @confirm-btn-clicked="${this.onSave}"
@@ -66,16 +69,18 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <!-- Audited expenditure (USD) -->
               <etools-currency
                 id="audited-expenditure"
-                class="${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
+                class="w100 ${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
                 .value="${this.editedItem.audited_expenditure}"
                 currency="$"
                 label="${this.getLabel('audited_expenditure', this.optionsData)}"
                 placeholder="${this.getPlaceholderText('audited_expenditure', this.optionsData)}"
                 ?required="${this._setRequired('audited_expenditure', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
+                .wrapTextInReadonly="${false}"
                 ?invalid="${this.errors.audited_expenditure}"
                 .errorMessage="${this.errors.audited_expenditure}"
                 @value-changed="${({detail}: CustomEvent) => {
+                  detail.value = detail.value || 0;
                   this.numberChanged(detail, 'audited_expenditure', this.editedItem);
                   this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
                 }}"
@@ -89,16 +94,18 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <!-- Financial findings (USD) -->
               <etools-currency
                 id="financial-findings"
-                class="${this._setRequired('financial_findings', this.optionsData)} validate-input"
+                class="w100 ${this._setRequired('financial_findings', this.optionsData)} validate-input"
                 .value="${this.editedItem.financial_findings}"
                 currency="$"
                 label="${this.getLabel('financial_findings', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText('financial_findings', this.optionsData)}"
                 ?required="${this._setRequired('financial_findings', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
+                .wrapTextInReadonly="${false}"
                 ?invalid="${this.errors.financial_findings}"
                 .errorMessage="${this.errors.financial_findings}"
                 @value-changed="${({detail}: CustomEvent) => {
+                  detail.value = detail.value || 0;
                   this.numberChanged(detail, 'financial_findings', this.editedItem);
                   this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
                 }}"
@@ -111,17 +118,20 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <!-- Audited expenditure (Local) -->
               <etools-currency
                 id="audited-expenditure-local"
-                class="validate-input ${this._setRequired('audited_expenditure_local', this.optionsData)}"
+                class="w100 validate-input ${this._setRequired('audited_expenditure_local', this.optionsData)}"
                 .value="${this.editedItem.audited_expenditure_local}"
                 .currency="${this.currency}"
                 label="${this.getLocalLabel('audited_expenditure_local', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText('audited_expenditure_local', this.optionsData)}"
                 ?required="${this._setRequired('audited_expenditure_local', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
+                .wrapTextInReadonly="${false}"
                 ?invalid="${this.errors.audited_expenditure_local}"
                 .errorMessage="${this.errors.audited_expenditure_local}"
-                @value-changed="${({detail}: CustomEvent) =>
-                  this.numberChanged(detail, 'audited_expenditure_local', this.editedItem)}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  detail.value = detail.value || 0;
+                  this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
+                }}"
                 @blur="${this.customValidation}"
                 @focus="${this._resetFieldError}"
               >
@@ -132,17 +142,20 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <!-- Financial findings (Local) -->
               <etools-currency
                 id="financial-findings-local"
-                class="validate-input ${this._setRequired('financial_findings_local', this.optionsData)}"
+                class="w100 validate-input ${this._setRequired('financial_findings_local', this.optionsData)}"
                 .value="${this.editedItem.financial_findings_local}"
                 .currency="${this.currency}"
                 label="${this.getLocalLabel('financial_findings_local', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText('financial_findings_local', this.optionsData)}"
                 ?required="${this._setRequired('financial_findings_local', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
+                .wrapTextInReadonly="${false}"
                 ?invalid="${this.errors.financial_findings_local}"
                 .errorMessage="${this.errors.financial_findings_local}"
-                @value-changed="${({detail}: CustomEvent) =>
-                  this.numberChanged(detail, 'financial_findings_local', this.editedItem)}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  detail.value = detail.value || 0;
+                  this.numberChanged(detail, 'financial_findings_local', this.editedItem);
+                }}"
                 @blur="${this.customValidation}"
                 @focus="${this._resetFieldError}"
               >
@@ -152,7 +165,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             <div class="col col-4">
               <!-- % of audited expenditure -->
               <etools-currency
-                class="validate-input"
+                class="w100 validate-input"
                 .value="${this.editedItem.percent_of_audited_expenditure}"
                 currency=""
                 label="${this.getLabel('percent_of_audited_expenditure', this.optionsData)}"
@@ -166,7 +179,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               <!-- Audit opinion -->
               <etools-dropdown
                 id="auditOpinionDropDown"
-                class="validate-input ${this._setRequired('audit_opinion', this.optionsData)}"
+                class="w100 validate-input ${this._setRequired('audit_opinion', this.optionsData)}"
                 .selected="${this.editedItem.audit_opinion}"
                 label="${this.getLabel('audit_opinion', this.optionsData)}"
                 placeholder="${this.getPlaceholderText('audit_opinion', this.optionsData)}"
@@ -190,6 +203,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             <div class="col col-4">
               <!-- Number of financial findings -->
               <etools-input
+                class="w100"
                 .value="${this.editedItem.number_of_financial_findings}"
                 label="${this.getLabel('number_of_financial_findings', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText('number_of_financial_findings', this.optionsData)}"
@@ -201,6 +215,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             <div class="col col-4">
               <!-- High risk -->
               <etools-input
+                class="w100"
                 .value="${this.editedItem.key_internal_weakness?.high_risk_count}"
                 label="${this.getLabel('key_internal_weakness.high_risk_count', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText(
@@ -215,6 +230,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             <div class="col col-4">
               <!-- Medium risk -->
               <etools-input
+                class="w100"
                 .value="${this.editedItem.key_internal_weakness?.medium_risk_count}"
                 label="${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText(
@@ -229,6 +245,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             <div class="col col-4">
               <!-- Low risk -->
               <etools-input
+                class="w100"
                 .value="${this.editedItem.key_internal_weakness?.low_risk_count}"
                 label="${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText(

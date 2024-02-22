@@ -57,6 +57,7 @@ export class UpdateEngagement extends LitElement {
   }
 
   _handleResponse(data) {
+    data.loadedTimestamp = new Date().getTime();
     getStore().dispatch(updateCurrentEngagement(data));
     if (this.requestOptions.method === 'POST' || this.forceOptionsUpdate) {
       this.lastData = data;
@@ -169,7 +170,7 @@ export class UpdateEngagement extends LitElement {
         const msgArr = [];
         this.getMesageFromNestedObj(response, msgArr);
         if (msgArr && msgArr.length) {
-          serverErrorText = msgArr.slice(0, -1).join('.') + ': ' + msgArr[msgArr.length - 1];
+          serverErrorText = msgArr.join('\n');
         } else {
           serverErrorText = 'An error occured. Please try again';
         }
@@ -198,13 +199,22 @@ export class UpdateEngagement extends LitElement {
     }
   }
 
-  getMesageFromNestedObj(obj: GenericObject, arr: any[]) {
+  getMesageFromNestedObj(obj: GenericObject, arr: any[], index?: number) {
     Object.keys(obj).forEach((key) => {
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        arr.push(key);
-        this.getMesageFromNestedObj(obj[key], arr);
+      if (Array.isArray(obj[key])) {
+        arr.push(`${key}: ${Array.from(obj[key]).join(', ')}`);
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        if (typeof index === 'undefined') {
+          arr.push(key);
+          index = arr.length - 1;
+        } else {
+          arr[index - 1] += `.${key}`;
+        }
+        this.getMesageFromNestedObj(obj[key], arr, index);
       } else {
-        arr.push(obj[key]);
+        if (typeof index !== 'undefined') {
+          arr[index - 1] += `: ${obj[key]}`;
+        }
       }
     });
   }

@@ -42,111 +42,113 @@ export class KeyInternalControlsWeaknessesDialog extends CommonMethodsMixin(LitE
         @confirm-btn-clicked="${this._saveEditedArea}"
         @close="${this._onClose}"
       >
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <!-- Risk Assessment -->
-            <etools-dropdown
-              id="riskRatingInput"
-              class="${this._setRequired(
-                'key_internal_weakness.blueprints.risks.value',
-                this.optionsData
-              )} validate-input"
-              .selected="${this.editedBlueprint?.risks[0]?.value}"
-              label="Risk rating"
-              placeholder="Select Risk rating"
-              .options="${this.riskOptions}"
-              option-label="display_name"
-              option-value="value"
-              ?required="${this._setRequired('key_internal_weakness.blueprints.risks.value', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              ?invalid="${this.errors?.blueprints[0]?.risks.value}"
-              .errorMessage="${this.errors?.blueprints[0]?.risks.value}"
-              @focus="${this._resetFieldError}"
-              trigger-value-change-event
-              @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                if (detail.selectedItem) {
-                  this.editedBlueprint.risks[0].value = detail.selectedItem.value;
+        <div class="container">
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <!-- Risk Assessment -->
+              <etools-dropdown
+                id="riskRatingInput"
+                class="${this._setRequired(
+                  'key_internal_weakness.blueprints.risks.value',
+                  this.optionsData
+                )} validate-input"
+                .selected="${this.editedBlueprint?.risks[0]?.value}"
+                label="Risk rating"
+                placeholder="Select Risk rating"
+                .options="${this.riskOptions}"
+                option-label="display_name"
+                option-value="value"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.value', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors?.blueprints[0]?.risks.value}"
+                .errorMessage="${this.errors?.blueprints[0]?.risks.value}"
+                @focus="${this._resetFieldError}"
+                trigger-value-change-event
+                @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                  if (detail.selectedItem) {
+                    this.editedBlueprint.risks[0].value = detail.selectedItem.value;
+                    this.editedBlueprint = {...this.editedBlueprint};
+                  }
+                }}"
+                hide-search
+              >
+              </etools-dropdown>
+            </div>
+          </div>
+
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <etools-textarea
+                class="${this._setRequired(
+                  'key_internal_weakness.blueprints.risks.extra',
+                  this.optionsData
+                )} validate-input w100"
+                .value="${this.editedBlueprint?.risks[0]?.extra.key_control_observation}"
+                label="Key control observation"
+                placeholder="Enter Observation"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
+                .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  this.editedBlueprint.risks[0].extra.key_control_observation = detail.value;
                   this.editedBlueprint = {...this.editedBlueprint};
-                }
-              }}"
-              hide-search
-            >
-            </etools-dropdown>
+                }}"
+                @focus="${this._resetFieldError}"
+              >
+              </etools-textarea>
+            </div>
           </div>
-        </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <etools-textarea
-              class="${this._setRequired(
-                'key_internal_weakness.blueprints.risks.extra',
-                this.optionsData
-              )} validate-input w100"
-              .value="${this.editedBlueprint?.risks[0]?.extra.key_control_observation}"
-              label="Key control observation"
-              placeholder="Enter Observation"
-              ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
-              .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
-              @value-changed="${({detail}: CustomEvent) => {
-                this.editedBlueprint.risks[0].extra.key_control_observation = detail.value;
-                this.editedBlueprint = {...this.editedBlueprint};
-              }}"
-              @focus="${this._resetFieldError}"
-            >
-            </etools-textarea>
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <etools-textarea
+                class="${this._setRequired(
+                  'key_internal_weakness.blueprints.risks.extra',
+                  this.optionsData
+                )} validate-input w100"
+                .value="${this.editedBlueprint?.risks[0]?.extra.recommendation}"
+                label="Recommendation"
+                placeholder="Enter Recommendation"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
+                .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  this.editedBlueprint.risks[0].extra.recommendation = detail.value;
+                  this.editedBlueprint = {...this.editedBlueprint};
+                }}"
+              >
+              </etools-textarea>
+            </div>
           </div>
-        </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <etools-textarea
-              class="${this._setRequired(
-                'key_internal_weakness.blueprints.risks.extra',
-                this.optionsData
-              )} validate-input w100"
-              .value="${this.editedBlueprint?.risks[0]?.extra.recommendation}"
-              label="Recommendation"
-              placeholder="Enter Recommendation"
-              ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
-              .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => {
-                this.editedBlueprint.risks[0].extra.recommendation = detail.value;
-                this.editedBlueprint = {...this.editedBlueprint};
-              }}"
-            >
-            </etools-textarea>
-          </div>
-        </div>
-
-        <div class="layout-horizontal">
-          <div class="col col-12">
-            <etools-textarea
-              class="${this._setRequired(
-                'key_internal_weakness.blueprints.risks.extra',
-                this.optionsData
-              )} validate-input w100"
-              .value="${this.editedBlueprint?.risks[0]?.extra.ip_response}"
-              label="IP Response"
-              placeholder="Enter Response"
-              ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
-              ?disabled="${this.requestInProcess}"
-              max-rows="4"
-              ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
-              .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
-              @focus="${this._resetFieldError}"
-              @value-changed="${({detail}: CustomEvent) => {
-                this.editedBlueprint.risks[0].extra.ip_response = detail?.value;
-                this.editedBlueprint = {...this.editedBlueprint};
-              }}"
-            >
-            </etools-textarea>
+          <div class="layout-horizontal">
+            <div class="col col-12">
+              <etools-textarea
+                class="${this._setRequired(
+                  'key_internal_weakness.blueprints.risks.extra',
+                  this.optionsData
+                )} validate-input w100"
+                .value="${this.editedBlueprint?.risks[0]?.extra.ip_response}"
+                label="IP Response"
+                placeholder="Enter Response"
+                ?required="${this._setRequired('key_internal_weakness.blueprints.risks.extra', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                max-rows="4"
+                ?invalid="${this.errors?.blueprints[0]?.risks.extra}"
+                .errorMessage="${this.errors?.blueprints[0]?.risks.extra}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  this.editedBlueprint.risks[0].extra.ip_response = detail?.value;
+                  this.editedBlueprint = {...this.editedBlueprint};
+                }}"
+              >
+              </etools-textarea>
+            </div>
           </div>
         </div>
       </etools-dialog>
