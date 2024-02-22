@@ -74,7 +74,7 @@ export class KicwRisk extends LitElement {
 
       ${(this.risksData || []).map(
         (item, index) => html`
-          <etools-data-table-row no-collapse>
+          <etools-data-table-row no-collapse secondary-bg-on-hover>
             <div slot="row-data" class="layout-horizontal editable-row">
               <span class="col-data col-1">${getTableRowIndexText(index)}</span>
               <span class="col-data col-2">${item.value_display}</span>
