@@ -48,6 +48,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
+      <div class="container">
         <div class="layout-horizontal">
           <div class="col col-6">
             <!-- Title -->
@@ -178,6 +179,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
             </etools-textarea>
           </div>
         </div>
+       </div>
       </etools-dialog>
     `;
   }

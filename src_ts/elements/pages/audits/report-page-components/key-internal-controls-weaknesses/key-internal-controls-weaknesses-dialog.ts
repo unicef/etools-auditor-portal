@@ -42,6 +42,7 @@ export class KeyInternalControlsWeaknessesDialog extends CommonMethodsMixin(LitE
         @confirm-btn-clicked="${this._saveEditedArea}"
         @close="${this._onClose}"
       >
+      <div class="container">
         <div class="layout-horizontal">
           <div class="col col-12">
             <!-- Risk Assessment -->
@@ -149,6 +150,7 @@ export class KeyInternalControlsWeaknessesDialog extends CommonMethodsMixin(LitE
             </etools-textarea>
           </div>
         </div>
+       </div>
       </etools-dialog>
     `;
   }

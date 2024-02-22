@@ -1,5 +1,5 @@
 import {LitElement, html} from 'lit';
-import {property} from 'lit/decorators.js';
+import {property, query} from 'lit/decorators.js';
 
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer-layout';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
@@ -28,12 +28,11 @@ import {
   getFilterPartners,
   getNewAttachOptions
 } from './redux/actions/common-data';
-import {AppMenuMixin} from './elements/app-shell-components/sidebar-menu/mixins/app-menu-mixin.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawer} from '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import {BASE_PATH} from './elements/config/config';
+import {BASE_PATH, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
 import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-toasts/etools-toasts';
 import './elements/utils/routes.js';
@@ -72,7 +71,7 @@ initializeIcons();
  * @customElement
  * @LitElement
  */
-class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
+class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   static get styles() {
     return [gridLayoutStylesLit];
   }
@@ -156,6 +155,12 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   @property({type: Boolean, reflect: true})
   narrow = false;
 
+  @property({type: Boolean})
+  smallMenu = false;
+
+  @property({type: Boolean})
+  drawerOpened = false;
+
   @property({type: String})
   currentToastMessage!: string;
 
@@ -177,12 +182,27 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
   @property({type: Object})
   reduxRouteDetails?: RouteDetails;
 
+
+  @query('#drawer') private drawer!: AppDrawer;
+
+  constructor() {
+    super();
+
+    const menuTypeStoredVal: string | null = localStorage.getItem(SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY);
+    if (!menuTypeStoredVal) {
+      this.smallMenu = false;
+    } else {
+      this.smallMenu = !!parseInt(menuTypeStoredVal, 10);
+    }
+  }
+  
   public connectedCallback() {
     super.connectedCallback();
 
+    this.addEventListener('change-drawer-state', this.changeDrawerState);
+    this.addEventListener('toggle-small-menu', this.toggleMenu as any);
     installMediaQueryWatcher(`(min-width: 460px)`, () => fireEvent(this, 'change-drawer-state'));
-
-    this.checkAppVersion();
+    
     setTimeout(() => {
       window.EtoolsEsmmFitIntoEl = this._getContentContainer();
       this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl as any;
@@ -191,8 +211,7 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     fireEvent(this, 'global-loading', {message: 'Loading...', active: true, loadingSource: 'initialisation'});
 
     this.addEventListener('404', this._pageNotFound);
-    this.addEventListener('change-drawer-state', this.changeDrawerState);
-
+    
     installRouter((location) =>
       store.dispatch(handleUrlChange(decodeURIComponent(location.pathname + location.search)))
     );
@@ -300,12 +319,20 @@ class AppShell extends connect(store)(LoadingMixin(AppMenuMixin(LitElement))) {
     return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 
-  onDrawerClick(e) {
-    const appDrawer = this.shadowRoot!.querySelector('#drawer') as AppDrawer;
-    if (e.target === appDrawer && appDrawer.opened) {
-      appDrawer.close();
+  public onDrawerToggle() {
+    if (this.drawerOpened !== this.drawer.opened) {
+      this.drawerOpened = this.drawer.opened;
     }
   }
+
+  public changeDrawerState() {
+    this.drawerOpened = !this.drawerOpened;
+  }
+
+  private toggleMenu(e: CustomEvent): void {
+    this.smallMenu = e.detail.value;
+  }
+
   _checkSSCPage(user) {
     if (!user) {
       return;
