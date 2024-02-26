@@ -96,5 +96,8 @@ export const fileAttachmentsTabStyles = html`
     etools-icon-button[name='add-box'] {
       margin-inline-start: 20px;
     }
+    .container {
+      padding-block-start: 0px !important;
+    }
   </style>
 `;

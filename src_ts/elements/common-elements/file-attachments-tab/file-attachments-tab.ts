@@ -120,7 +120,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
             </div>
           </div>
         </div>
-        <etools-loading .active="${this.requestInProcess}" loading-text=""></etools-loading>
+        <etools-loading .active="${this.requestInProcess}" loading-text="Loading data"></etools-loading>
 
         <etools-data-table-header no-collapse no-title>
           <etools-data-table-column class="col-2"
@@ -321,7 +321,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     if (changedProperties.has('engagement')) {
       this._handleLinksInDetailsView(this.engagement);
     }
-
     if (changedProperties.has('errorObject')) {
       this.filesTabErrorHandler(this.errorObject);
     }
@@ -348,9 +347,9 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
     sendRequest(options)
       .then((res) => {
         this.linkedAttachments = uniqBy(res, 'attachment');
-        this.requestInProcess = false;
       })
-      .catch(this.filesTabErrorHandler.bind(this));
+      .catch(this.filesTabErrorHandler.bind(this))
+      .finally(() => (this.requestInProcess = false));
   }
 
   _onPermissionsLoaded(optionsData: AnyObject) {
@@ -447,9 +446,15 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
   }
 
   filesTabErrorHandler(errorData) {
-    const mainProperty = this.errorProperty;
     this.requestInProcess = false;
-    if (!errorData || !errorData[mainProperty]) {
+
+    if (!errorData || !Object.keys(errorData).length) {
+      return;
+    }
+    this.closeDialogLoading();
+
+    const mainProperty = this.errorProperty;
+    if (!errorData[mainProperty]) {
       return;
     }
     const refactoredData = refactorErrorObject(errorData[mainProperty]);
@@ -523,7 +528,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       dialogData: {
         opener: this,
         partnerName: this.engagement?.partner?.name,
-        shareParams: this.shareParams,
         optionsData: this.optionsData
       }
     });
@@ -538,7 +542,6 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
       });
       return;
     }
-
     const options = Object.assign(
       {endpoint: this.auditLinksOptions},
       {
@@ -553,13 +556,15 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         fireEvent(this, 'toast', {
           text: 'Documents shared successfully.'
         });
-
-        this.requestInProcess = false;
         this.shareDialogOpened = false;
         this.closeEditDialog(this.sharedDialogKey);
         this._getLinkedAttachments(); // refresh the list
       })
-      .catch(this._handleShareError.bind(this));
+      .catch(this._handleShareError.bind(this))
+      .finally(() => {
+        this.shareParams = [];
+        this.requestInProcess = false;
+      });
   }
 
   _handleShareError(err) {

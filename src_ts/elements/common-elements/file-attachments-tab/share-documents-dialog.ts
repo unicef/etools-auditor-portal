@@ -80,11 +80,11 @@ export class ShareDocumentsDialog extends CommonMethodsMixin(
   partnerName!: string;
 
   set dialogData(data: any) {
-    const {shareParams, opener, partnerName, optionsData}: any = data;
+    const {opener, partnerName, optionsData}: any = data;
     this.opener = opener;
-    this.shareParams = shareParams;
     this.partnerName = partnerName;
     this.optionsData = optionsData;
+    this.shareParams = [];
   }
 
   connectedCallback() {
