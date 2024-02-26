@@ -120,7 +120,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
       this.dataChanged();
     }
     if (changedProperties.has('errorObject')) {
-      this._complexErrorHandler(this.errorObject.test_subject_areas);
+      this._complexErrorHandler(this.errorObject.test_subject_areas, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
       const riskOptions = getOptionsChoices(this.optionsData, 'test_subject_areas.blueprints.risk.value') || [];

@@ -168,7 +168,7 @@ export class UpdateEngagement extends LitElement {
         response = JSON.parse(response);
       } else if (this._errorObjIsNested(response)) {
         const msgArr = [];
-        this.getMesageFromNestedObj(response, msgArr);
+        this.getMesageFromError(response, msgArr);
         if (msgArr && msgArr.length) {
           serverErrorText = msgArr.join('\n');
         } else {
@@ -188,7 +188,7 @@ export class UpdateEngagement extends LitElement {
       this.errorObject = {};
       fireEvent(this, 'toast', {text: `Error: Exceeded the maximum size of uploaded file.`});
     } else {
-      this.errorObject = {};
+      this.errorObject = Object.keys(response || {}).length ? response : {error: ''};
       fireEvent(this, 'toast', {text: 'Can not save engagement data. Please try again later!'});
     }
     fireEvent(this, 'error-changed', this.errorObject);
@@ -199,7 +199,7 @@ export class UpdateEngagement extends LitElement {
     }
   }
 
-  getMesageFromNestedObj(obj: GenericObject, arr: any[], index?: number) {
+  getMesageFromError(obj: GenericObject, arr: any[], index?: number) {
     Object.keys(obj).forEach((key) => {
       if (Array.isArray(obj[key])) {
         arr.push(`${key}: ${Array.from(obj[key]).join(', ')}`);
@@ -210,7 +210,7 @@ export class UpdateEngagement extends LitElement {
         } else {
           arr[index - 1] += `.${key}`;
         }
-        this.getMesageFromNestedObj(obj[key], arr, index);
+        this.getMesageFromError(obj[key], arr, index);
       } else {
         if (typeof index !== 'undefined') {
           arr[index - 1] += `: ${obj[key]}`;
