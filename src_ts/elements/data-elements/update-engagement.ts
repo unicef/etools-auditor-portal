@@ -166,7 +166,7 @@ export class UpdateEngagement extends LitElement {
     try {
       if (typeof response === 'string') {
         response = JSON.parse(response);
-      } else if (this._errorObjIsNested(response)) {
+      } else {
         const msgArr = [];
         this.getMesageFromError(response, msgArr);
         if (msgArr && msgArr.length) {
@@ -203,6 +203,8 @@ export class UpdateEngagement extends LitElement {
     Object.keys(obj).forEach((key) => {
       if (Array.isArray(obj[key])) {
         arr.push(`${key}: ${Array.from(obj[key]).join(', ')}`);
+      } else if (typeof obj[key] === 'string') {
+        arr.push(`${key}: ${obj[key]}`);
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
         if (typeof index === 'undefined') {
           arr.push(key);
