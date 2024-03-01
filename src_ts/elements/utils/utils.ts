@@ -105,5 +105,5 @@ export const getDataFromSessionStorage = (key: string): any => {
 };
 
 export const capitalizeFirstLetter = (key: string): string => {
-  return key ? (key.charAt(0).toUpperCase() + key.slice(1)) : key;
-}
+  return key ? key.charAt(0).toUpperCase() + key.slice(1) : key;
+};

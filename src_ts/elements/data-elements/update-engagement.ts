@@ -202,8 +202,17 @@ export class UpdateEngagement extends LitElement {
   }
 
   toastWillBeDisplayedInsideComponent(obj: GenericObject) {
-    const errProperties = ['engagement_attachments', 'report_attachments', 'specific_procedures', 'staff_members',
-    'key_internal_controls', 'financial_finding_set', 'financial_findings', 'findings', 'other_recommendations'];
+    const errProperties = [
+      'engagement_attachments',
+      'report_attachments',
+      'specific_procedures',
+      'staff_members',
+      'key_internal_controls',
+      'financial_finding_set',
+      'financial_findings',
+      'findings',
+      'other_recommendations'
+    ];
     if (typeof obj === 'object' && Object.keys(obj).some((key) => errProperties.includes(key))) {
       // toast will be displayed inside the component, avoid to duplicate it here
       return true;
@@ -213,13 +222,16 @@ export class UpdateEngagement extends LitElement {
 
   getMsgKey(key: string) {
     if (typeof key === 'string') {
-      const arrKey = key.split('_').map((x: string) => capitalizeFirstLetter(x)).join(' ');
+      const arrKey = key
+        .split('_')
+        .map((x: string) => capitalizeFirstLetter(x))
+        .join(' ');
       return arrKey;
     }
     return key;
   }
 
-  getMesageFromError(obj: GenericObject, arr: any[], index?: number) { 
+  getMesageFromError(obj: GenericObject, arr: any[], index?: number) {
     Object.keys(obj).forEach((key) => {
       if (Array.isArray(obj[key])) {
         arr.push(`${this.getMsgKey(key)}: ${Array.from(obj[key]).join(', ')}`);
