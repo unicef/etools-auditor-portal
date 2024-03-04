@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {KeyInternalControlsTabStyles} from './key-internal-controls-tab-styles';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
@@ -27,7 +27,7 @@ import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 @customElement('key-internal-controls-dialog')
 export class KeyInternalControlsDialog extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit, KeyInternalControlsTabStyles];
+    return [tabInputsStyles, moduleStyles, layoutStyles, KeyInternalControlsTabStyles];
   }
 
   render() {
@@ -45,8 +45,8 @@ export class KeyInternalControlsDialog extends CommonMethodsMixin(LitElement) {
         @close="${this._onClose}"
       >
       <div class="container">
-         <div class="layout-horizontal">
-            <div class="col col-6">
+         <div class="row">
+            <div class="col-12 col-md-6 input-container">
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskAssessmentInput"
@@ -75,10 +75,7 @@ export class KeyInternalControlsDialog extends CommonMethodsMixin(LitElement) {
                 >
                 </etools-dropdown>
               </div>
-            </div>
-
-            <div class="layout-horizontal">
-              <div class="col col-12">
+              <div class="col-12 input-container">
                 <!-- Brief Justification -->
                 <etools-textarea
                   id="briefJustification"

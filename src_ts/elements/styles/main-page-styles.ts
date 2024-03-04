@@ -11,8 +11,7 @@ export const mainPageStyles = css`
   .view-container {
     position: relative;
     width: 100%;
-    display: flex;
-    padding: 25px 265px 25px 25px;
+    padding: 25px 25px 25px 25px;
     box-sizing: border-box;
   }
 
@@ -48,14 +47,11 @@ export const mainPageStyles = css`
 
   #pageContent {
     position: relative;
+    margin-bottom: 24px;
     width: 100%;
   }
 
   #sidebar {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    width: 215px;
     margin-bottom: 24px;
   }
 

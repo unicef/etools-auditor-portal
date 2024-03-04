@@ -2,7 +2,7 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
@@ -25,7 +25,7 @@ import isNumber from 'lodash-es/isNumber';
 @customElement('subject-area-element')
 export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -36,10 +36,16 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
           flex-direction: column;
         }
       </style>
-      <etools-data-table-row>
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
+      <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
         <div slot="row-data" class="layout-horizontal editable-row">
-          <span class="col-data col-8">${this.areaData?.header}</span>
-          <span class="col-data col-4">${this.areaData?.risk.value_display}</span>
+          <span class="col-data col-8" data-col-header-label="Subject area">${this.areaData?.header}</span>
+          <span class="col-data col-4" data-col-header-label="Risk Assessment">${this.areaData?.risk.value_display}</span>
           <div class="hover-block" ?hidden="${!this.canBeChanged}">
             <etools-icon-button name="create" @click="${this.openEditDialog}"></etools-icon-button>
           </div>
@@ -71,6 +77,9 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
 
   @property({type: Object})
   areaData!: GenericObject;
+
+  @property({type: Boolean})
+  lowResolutionLayout = false;
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);

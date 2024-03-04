@@ -2,7 +2,7 @@ import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
@@ -28,7 +28,7 @@ import isEmpty from 'lodash-es/isEmpty';
 @customElement('primary-risk-element')
 export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -46,8 +46,8 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
       </style>
 
       <etools-content-panel .panelTitle="${this.riskData.header}" class="overal-risks">
-        <div class="layout-horizontal">
-          <div class="col col-4">
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-12 input-container">
             <!-- Risk Assessment -->
 
             <etools-dropdown
@@ -72,10 +72,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
             >
             </etools-dropdown>
           </div>
-        </div>
-
-        <div class="layout-horizontal">
-          <div class="col col-12">
+          <div class="col-12 input-container">
             <!-- Brief Justification -->
             <etools-textarea
               id="briefJustification"

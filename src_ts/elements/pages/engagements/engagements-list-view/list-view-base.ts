@@ -7,7 +7,7 @@ import {getEndpoint} from '../../../config/endpoints-controller';
 import {pageLayoutStyles} from '../../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {elevationStyles} from '@unicef-polymer/etools-modules-common/dist/styles/elevation-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../common-elements/pages-header-element/pages-header-element';
@@ -42,7 +42,7 @@ import {getDataFromSessionStorage, setDataOnSessionStorage} from '../../../utils
  */
 export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement)) {
   static get styles() {
-    return [pageLayoutStyles, moduleStyles, gridLayoutStylesLit, elevationStyles];
+    return [pageLayoutStyles, moduleStyles, layoutStyles, elevationStyles];
   }
 
   render() {

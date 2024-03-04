@@ -9,7 +9,7 @@ import './other-recommendations-dialog';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
@@ -21,6 +21,7 @@ import {getHeadingLabel} from '../../../../mixins/permission-controller';
 import {getTableRowIndexText} from '../../../../utils/utils';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 
 /**
  * @polymer
@@ -31,14 +32,14 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('other-recommendations')
 export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           .repeatable-item-container[without-line] {
             min-width: 0 !important;
             margin-bottom: 0 !important;
@@ -53,7 +54,12 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
           padding: 0;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('other_recommendations', this.optionsData)}"
@@ -68,7 +74,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
           </div>
         </div>
 
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-3">Recommendation Number</etools-data-table-column>
           <etools-data-table-column class="col-9"
             >${getHeadingLabel(
@@ -81,10 +87,20 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse secondary-bg-on-hover>
+            <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-3">${getTableRowIndexText(index)}</span>
-                <span class="col-data col-9">${item.description}</span>
+                <span class="col-data col-3" data-col-header-label="Recommendation Number"
+                  >${getTableRowIndexText(index)}</span
+                >
+                <span
+                  class="col-data col-9"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'other_recommendations.description',
+                    'Description'
+                  )}"
+                  >${item.description}</span
+                >
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
@@ -95,8 +111,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
         )}
         <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
           <div slot="row-data" class="layout-horizontal editable-row">
-            <span class="col-data col-3">–</span>
-            <span class="col-data col-9">–</span>
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

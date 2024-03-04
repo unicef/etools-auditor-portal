@@ -10,7 +10,7 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {clearQueries} from '../../../mixins/query-params-controller';
 import '../../../mixins/permission-controller';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {mainPageStyles} from '../../../styles/main-page-styles';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
@@ -47,7 +47,7 @@ import {isActiveTab} from '../../../utils/utils';
 @customElement('new-engagement-view')
 export class NewEngagementView extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, gridLayoutStylesLit, mainPageStyles, tabInputsStyles];
+    return [moduleStyles, layoutStyles, mainPageStyles, tabInputsStyles];
   }
 
   render() {
@@ -113,8 +113,8 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
         ></etools-tabs-lit>
       </div>
 
-      <div class="view-container">
-        <div id="pageContent">
+      <div class="view-container row">
+        <div id="pageContent" class="col-md-8 col-lg-10 col-12">
           <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
             <engagement-info-details
               .errorObject="${this.errorObject}"
@@ -170,7 +170,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
           </div>
         </div>
 
-        <div id="sidebar">
+        <div id="sidebar" class=" col-md-4 col-lg-2 col-12">
           <status-tab-element
             .engagementData="${this.engagement}"
             .optionsData="${this.engagementOptions}"

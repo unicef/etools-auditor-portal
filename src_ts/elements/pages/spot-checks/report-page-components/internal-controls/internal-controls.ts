@@ -6,7 +6,7 @@ import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-pa
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
@@ -23,7 +23,7 @@ import isEqual from 'lodash-es/isEqual';
 @customElement('internal-controls')
 export class InternalControls extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -43,8 +43,8 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
           </div>
         </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-12">
+        <div class="row">
+          <div class="col-12 input-container">
             <etools-textarea
               class="w100 ${this._setRequired('internalControls', this.optionsData)}"
               .value="${this.data}"

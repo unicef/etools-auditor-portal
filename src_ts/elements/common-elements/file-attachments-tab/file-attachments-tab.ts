@@ -6,6 +6,7 @@ import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-button/etools-button';
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
+import '@unicef-polymer/etools-unicef/src/etools-media-query/etools-media-query.js';
 
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -13,16 +14,16 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-upload';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../styles/tab-layout-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {fileAttachmentsTabStyles} from './file-attachments-tab-styles';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import '../../data-elements/get-attachments';
 import '../../data-elements/update-attachments';
 import './share-documents-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
-import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import DateMixin from '../../mixins/date-mixin';
 
 import EngagementMixin from '../../mixins/engagement-mixin';
@@ -56,7 +57,7 @@ import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 @customElement('file-attachments-tab')
 export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(EngagementMixin(DateMixin(LitElement)))) {
   static get styles() {
-    return [moduleStyles, tabLayoutStyles, tabInputsStyles, gridLayoutStylesLit];
+    return [moduleStyles, tabLayoutStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {
@@ -72,10 +73,18 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         etools-icon-button[name='add-box'] {
           margin-inline-start: 0px;
         }
-        etools-data-table-row::part(edt-list-row-wrapper) {
-          height: 48px;
+        @media (min-width: 767px) {
+          etools-data-table-row::part(edt-list-row-wrapper) {
+            height: 48px;
+          }
         }
       </style>
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <get-attachments
         .baseId="${this.engagement?.id}"
         .attachments="${this.dataItems}"
@@ -122,7 +131,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         </div>
         <etools-loading .active="${this.requestInProcess}" loading-text=""></etools-loading>
 
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-2"
             >${getHeadingLabel(this.optionsData, 'created', 'Created')}</etools-data-table-column
           >
@@ -138,11 +147,22 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         </etools-data-table-header>
         ${this.dataItems.map(
           (item, index) => html`
-            <etools-data-table-row no-collapse secondary-bg-on-hover>
+            <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2">${this.prettyDate(String(item.created), '') || '-'}</span>
-                <span class="col-data col-2">${this._getAttachmentType(item)}</span>
-                <span class="col-data col-5 wrap-text">
+                <span
+                  class="col-data col-2"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'created', 'Created')}"
+                  >${this.prettyDate(String(item.created), '') || '-'}</span
+                >
+                <span
+                  class="col-data col-2"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'file_type', 'Document Type')}"
+                  >${this._getAttachmentType(item)}</span
+                >
+                <span
+                  class="col-data col-5 wrap-text"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'file', ' File Attachment')}"
+                >
                   <etools-icon name="attachment" class="download-icon"> </etools-icon>
                   <a
                     href="${item.attachment}"
@@ -152,7 +172,10 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
                     >${this.getFileNameFromURL(item.attachment)}
                   </a>
                 </span>
-                <span class="col-data col-3 center-align">
+                <span
+                  class="col-data col-3 ${!this.lowResolutionLayout ? 'center-align' : ''}"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'tpm_activities.date', 'Source')}"
+                >
                   <span>FAM</span>
                 </span>
                 <div class="hover-block" ?hidden="${this.isTabReadonly}">
@@ -166,17 +189,34 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         ${this.isReportTab
           ? ``
           : this.linkedAttachments.map(
-              (item, _index) => html` <etools-data-table-row no-collapse>
+              (item, _index) => html` <etools-data-table-row
+                no-collapse
+                .lowResolutionLayout="${this.lowResolutionLayout}"
+              >
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="col-data col-2">${this.prettyDate(String(item.created), '') || '-'}</span>
-                  <span class="col-data col-2">${item.file_type}</span>
-                  <span class="col-data col-5 wrap-text">
+                  <span
+                    class="col-data col-2"
+                    data-col-header-label="${getHeadingLabel(this.optionsData, 'created', 'Created')}"
+                    >${this.prettyDate(String(item.created), '') || '-'}</span
+                  >
+                  <span
+                    class="col-data col-2"
+                    data-col-header-label="${getHeadingLabel(this.optionsData, 'file_type', 'Document Type')}"
+                    >${item.file_type}</span
+                  >
+                  <span
+                    class="col-data col-5 wrap-text"
+                    data-col-header-label="${getHeadingLabel(this.optionsData, 'file', ' File Attachment')}"
+                  >
                     <etools-icon name="attachment" class="download-icon"> </etools-icon>
                     <a href="${item.url}" class="truncate" title="${item.filename}" target="_blank"
                       >${item.filename}
                     </a>
                   </span>
-                  <span class="col-data col-3 center-align">
+                  <span
+                    class="col-data col-3 ${!this.lowResolutionLayout ? 'center-align' : ''}"
+                    data-col-header-label="${getHeadingLabel(this.optionsData, 'tpm_activities.date', 'Source')}"
+                  >
                     <span>PMP</span>
                   </span>
                   <div class="hover-block" ?hidden="${this.isTabReadonly}">
@@ -197,10 +237,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
           ?hidden="${this._isNewEngagement() || this.dataItems?.length || this.linkedAttachments?.length}"
         >
           <div slot="row-data" class="layout-horizontal editable-row">
-            <span class="col-data col-2">–</span>
-            <span class="col-data col-2">–</span>
-            <span class="col-data col-5">–</span>
-            <span class="col-data col-3 center-align">–</span>
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

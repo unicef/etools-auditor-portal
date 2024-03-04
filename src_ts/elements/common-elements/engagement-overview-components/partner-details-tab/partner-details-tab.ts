@@ -27,6 +27,7 @@ import {connect} from 'pwa-helpers/connect-mixin';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * main menu
@@ -36,7 +37,7 @@ import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 @customElement('partner-details-tab')
 export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElement)) {
   static get styles() {
-    return [moduleStyles, tabLayoutStyles, tabInputsStyles];
+    return [moduleStyles, tabLayoutStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {
@@ -60,8 +61,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
       <get-partner-data .partnerId="${this.partnerId}" @partner-loaded="${this._partnerLoaded}"></get-partner-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="row">
+          <div class="col-12 col-lg-4 col-md-4 input-container">
             <!-- Partner -->
             ${this.isReadOnly('partner', this.optionsData)
               ? html`<etools-input
@@ -94,7 +95,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="partner-loading">
             </etools-loading>
           </div>
-          <div class="input-container input-container-m">
+          <div class="col-md-8 col-12 input-container">
             <!-- Partner Address -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
@@ -105,10 +106,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             >
             </etools-input>
           </div>
-        </div>
-
-        <div class="row-h group">
-          <div class="input-container">
+          <div class="col-12 col-lg-4 col-md-4 input-container">
             <!-- Partner Phone Number -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
@@ -120,7 +118,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             </etools-input>
           </div>
 
-          <div class="input-container">
+          <div class="col-12 col-lg-4 col-md-8 input-container">
             <!-- Partner E-mail Address -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
@@ -132,7 +130,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             </etools-input>
           </div>
 
-          <div class="input-container">
+          <div class="col-12 col-lg-4 col-md-6 input-container">
             <!-- Partner  Officers-->
             <etools-dropdown
               id="authorizedOfficer"
@@ -160,11 +158,8 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             >
             </etools-dropdown>
           </div>
-        </div>
-
-        ${this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
-          ? html` <div class="row-h group">
-              <div class="input-container input-container-l">
+          ${this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
+            ? html`<div class="col-12 input-container">
                 <!-- Active PD -->
                 <etools-dropdown-multi
                   id="activePd"
@@ -187,9 +182,9 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
                   }}"
                 >
                 </etools-dropdown-multi>
-              </div>
-            </div>`
-          : ``}
+              </div>`
+            : ``}
+        </div>
       </etools-content-panel>
     `;
   }

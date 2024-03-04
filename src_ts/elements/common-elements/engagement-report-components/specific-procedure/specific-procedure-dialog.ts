@@ -6,7 +6,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../mixins/table-elements-mixin';
@@ -22,7 +22,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 @customElement('specific-procedure-dialog')
 export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -41,8 +41,8 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
       >
         <div class="container">
           ${this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
-            ? html`<div class="layout-horizontal">
-                <div class="col col-12">
+            ? html`<div class="row">
+                <div class="col-12 input-container">
                   <!-- Description -->
                   <etools-textarea
                     class="w100 validate-input ${this._setRequired(
@@ -66,8 +66,8 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
               </div>`
             : ``}
           ${!this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
-            ? html` <div class="layout-horizontal">
-                <div class="col col-12">
+            ? html` <div class="row">
+                <div class="col-12 input-container">
                   <!-- Finding -->
                   <etools-textarea
                     class="w100 validate-input ${this._setRequired('specific_procedures.finding', this.optionsData)}"

@@ -38,13 +38,16 @@ export const pagesHeaderElementStyles = css`
   }
 
   .side-heading {
-    margin: 0;
+    margin: 0 !important;
     height: 80px;
     padding-top: 20px;
-    padding-right: 275px;
     box-sizing: border-box;
   }
-
+  @media (max-width: 768px) {
+    .side-heading {
+      height: auto;
+    }
+  }
   .side-heading span.title {
     font-size: var(--etools-font-size-24, 24px);
     padding-left: 48px;
@@ -84,9 +87,7 @@ export const pagesHeaderElementStyles = css`
   }
 
   .side-heading-button-holder {
-    position: absolute;
-    right: 45px;
-    top: 10px;
+    text-align: end;
   }
 
   .btn-link {

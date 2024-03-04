@@ -37,6 +37,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * @customElement
@@ -47,7 +48,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('special-audits-page-main')
 export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, mainPageStyles, tabInputsStyles];
+    return [moduleStyles, mainPageStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {
@@ -103,114 +104,116 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
             </div>
 
             <div class="view-container">
-              <div id="pageContent">
-                <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
-                  ${this._showCancellationReason(this.engagement)
-                    ? html`<etools-content-panel class="cancellation-tab" panel-title="">
-                        <div slot="panel-btns" class="bookmark">
-                          <etools-icon name="bookmark"></etools-icon>
-                        </div>
+              <div class="row">
+                <div id="pageContent" class="col-md-8 col-lg-10 col-12">
+                  <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+                    ${this._showCancellationReason(this.engagement)
+                      ? html`<etools-content-panel class="cancellation-tab" panel-title="">
+                          <div slot="panel-btns" class="bookmark">
+                            <etools-icon name="bookmark"></etools-icon>
+                          </div>
 
-                        <div class="cancellation-title">Cancellation Note</div>
-                        <div class="cancellation-text">${this.engagement.cancel_comment}</div>
-                      </etools-content-panel>`
+                          <div class="cancellation-title">Cancellation Note</div>
+                          <div class="cancellation-text">${this.engagement.cancel_comment}</div>
+                        </etools-content-panel>`
+                      : ``}
+
+                    <engagement-info-details
+                      id="engagementDetails"
+                      .data="${this.engagement}"
+                      .originalData="${this.originalData}"
+                      .errorObject="${this.errorObject}"
+                      .optionsData="${this.engagementOptions}"
+                    >
+                    </engagement-info-details>
+
+                    <partner-details-tab
+                      .originalData="${this.originalData}"
+                      id="partnerDetails"
+                      .engagement="${this.engagement}"
+                      .errorObject="${this.errorObject}"
+                      .optionsData="${this.engagementOptions}"
+                    >
+                    </partner-details-tab>
+
+                    <specific-procedure
+                      id="specificProcedures"
+                      class="mb-15"
+                      without-finding-column
+                      .errorObject="${this.errorObject}"
+                      .dataItems="${this.engagement.specific_procedures}"
+                      .optionsData="${this.engagementOptions}"
+                      readonly-tab
+                    >
+                    </specific-procedure>
+
+                    <engagement-staff-members-tab
+                      id="staffMembers"
+                      .engagement="${this.engagement}"
+                      .optionsData="${this.engagementOptions}"
+                      .errorObject="${this.errorObject}"
+                    >
+                    </engagement-staff-members-tab>
+                  </div>
+
+                  ${this._showReportTabs(this.engagementOptions, this.engagement)
+                    ? html`<div name="report" ?hidden="${!isActiveTab(this.tab, 'report')}">
+                        <sa-report-page-main
+                          id="report"
+                          .originalData="${this.originalData}"
+                          .engagement="${this.engagement}"
+                          .errorObject="${this.errorObject}"
+                          .optionsData="${this.engagementOptions}"
+                          ?showSendBackComments="${this._showSendBackComments(this.engagement)}"
+                        >
+                        </sa-report-page-main>
+                      </div>`
+                    : ``}
+                  ${this._showFollowUpTabs(this.apOptions)
+                    ? html`<div name="follow-up" ?hidden="${!isActiveTab(this.tab, 'follow-up')}">
+                        <follow-up-main
+                          id="follow-up"
+                          .originalData="${this.originalData}"
+                          .errorObject="${this.errorObject}"
+                          .engagement="${this.engagement}"
+                          .optionsData="${this.engagementOptions}"
+                          .apOptionsData="${this.apOptions}"
+                        >
+                        </follow-up-main>
+                      </div>`
                     : ``}
 
-                  <engagement-info-details
-                    id="engagementDetails"
-                    .data="${this.engagement}"
-                    .originalData="${this.originalData}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </engagement-info-details>
+                  <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
+                    <file-attachments-tab
+                      id="engagement_attachments"
+                      .optionsData="${this.attachmentOptions}"
+                      .engagement="${this.engagement}"
+                      .errorObject="${this.errorObject}"
+                      .isUnicefUser="${this.user?.is_unicef_user}"
+                      error-property="engagement_attachments"
+                      endpoint-name="attachments"
+                    >
+                    </file-attachments-tab>
 
-                  <partner-details-tab
-                    .originalData="${this.originalData}"
-                    id="partnerDetails"
-                    .engagement="${this.engagement}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </partner-details-tab>
-
-                  <specific-procedure
-                    id="specificProcedures"
-                    class="mb-15"
-                    without-finding-column
-                    .errorObject="${this.errorObject}"
-                    .dataItems="${this.engagement.specific_procedures}"
-                    .optionsData="${this.engagementOptions}"
-                    readonly-tab
-                  >
-                  </specific-procedure>
-
-                  <engagement-staff-members-tab
-                    id="staffMembers"
-                    .engagement="${this.engagement}"
-                    .optionsData="${this.engagementOptions}"
-                    .errorObject="${this.errorObject}"
-                  >
-                  </engagement-staff-members-tab>
+                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
+                      ? html`<file-attachments-tab
+                          id="report_attachments"
+                          is-report-tab="true"
+                          .optionsData="${this.reportAttachmentOptions}"
+                          .engagement="${this.engagement}"
+                          .errorObject="${this.errorObject}"
+                          error-property="report_attachments"
+                          endpoint-name="reportAttachments"
+                        >
+                        </file-attachments-tab>`
+                      : ``}
+                  </div>
                 </div>
 
-                ${this._showReportTabs(this.engagementOptions, this.engagement)
-                  ? html`<div name="report" ?hidden="${!isActiveTab(this.tab, 'report')}">
-                      <sa-report-page-main
-                        id="report"
-                        .originalData="${this.originalData}"
-                        .engagement="${this.engagement}"
-                        .errorObject="${this.errorObject}"
-                        .optionsData="${this.engagementOptions}"
-                        ?showSendBackComments="${this._showSendBackComments(this.engagement)}"
-                      >
-                      </sa-report-page-main>
-                    </div>`
-                  : ``}
-                ${this._showFollowUpTabs(this.apOptions)
-                  ? html`<div name="follow-up" ?hidden="${!isActiveTab(this.tab, 'follow-up')}">
-                      <follow-up-main
-                        id="follow-up"
-                        .originalData="${this.originalData}"
-                        .errorObject="${this.errorObject}"
-                        .engagement="${this.engagement}"
-                        .optionsData="${this.engagementOptions}"
-                        .apOptionsData="${this.apOptions}"
-                      >
-                      </follow-up-main>
-                    </div>`
-                  : ``}
-
-                <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
-                  <file-attachments-tab
-                    id="engagement_attachments"
-                    .optionsData="${this.attachmentOptions}"
-                    .engagement="${this.engagement}"
-                    .errorObject="${this.errorObject}"
-                    .isUnicefUser="${this.user?.is_unicef_user}"
-                    error-property="engagement_attachments"
-                    endpoint-name="attachments"
-                  >
-                  </file-attachments-tab>
-
-                  ${this.hasReportAccess(this.engagementOptions, this.engagement)
-                    ? html`<file-attachments-tab
-                        id="report_attachments"
-                        is-report-tab="true"
-                        .optionsData="${this.reportAttachmentOptions}"
-                        .engagement="${this.engagement}"
-                        .errorObject="${this.errorObject}"
-                        error-property="report_attachments"
-                        endpoint-name="reportAttachments"
-                      >
-                      </file-attachments-tab>`
-                    : ``}
+                <div id="sidebar" class=" col-md-4 col-lg-2 col-12">
+                  <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                  </status-tab-element>
                 </div>
-              </div>
-
-              <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
-                </status-tab-element>
               </div>
             </div>
           `

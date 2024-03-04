@@ -37,6 +37,7 @@ import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {getObjectsIDs} from '../../../utils/utils';
 import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * @customElement
@@ -45,7 +46,7 @@ import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
 @customElement('engagement-info-details')
 export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, tabLayoutStyles];
+    return [tabInputsStyles, moduleStyles, tabLayoutStyles, layoutStyles];
   }
 
   render() {
@@ -82,24 +83,13 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
         }
 
         .join-audit {
-          padding-left: 12px;
-          padding-bottom: 12px;
+          padding-inline-start: 27px !important;
           box-sizing: border-box;
-          align-self: self-end;
+          align-self: center;
+          margin-bottom: 8px;
         }
 
-        .row-h.float {
-          display: flex;
-          position: relative;
-          width: 100%;
-          flex-direction: row;
-          align-items: baseline;
-          justify-content: flex-start;
-          flex-wrap: wrap;
-          margin-bottom: 0;
-        }
-
-        .row-h.float .input-container {
+        .row .input-container {
           margin-bottom: 8px;
           display: flex;
         }
@@ -108,9 +98,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
           padding: 0 12px;
         }
 
-        .year-of-audit {
-          width: 16.66%;
-        }
         .year-of-audit.hide {
           visibility: hidden;
         }
@@ -132,8 +119,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       </update-agreement-data>
 
       <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
-        <div class="row-h group  float">
-          <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
+        <div class="row">
+          <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Purchase Order -->
             <etools-input
               id="purchaseOrder"
@@ -161,7 +148,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             </etools-loading>
           </div>
 
-          <div class="input-container">
+          <div class="col-12 col-lg-4 col-md-6 input-container">
             <!-- Auditor -->
             <etools-input
               id="auditorInput"
@@ -174,7 +161,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             </etools-input>
           </div>
 
-          <div class="input-container" ?hidden="${this._hideField('po_item', this.optionsData)}">
+          <div
+            class="col-12 col-lg-4 col-md-6 input-container"
+            ?hidden="${this._hideField('po_item', this.optionsData)}"
+          >
             <!-- PO Item Number -->
             <etools-dropdown
               id="ddlPOItem"
@@ -198,7 +188,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             </etools-dropdown>
           </div>
 
-          <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
+          <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- PO Date -->
             <datepicker-lite
               id="contractStartDateInput"
@@ -219,7 +209,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             </datepicker-lite>
           </div>
 
-          <div class="input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
+          <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Contract Expiry Date -->
             <datepicker-lite
               id="contractEndDateInput"
@@ -240,7 +230,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             <etools-loading .active="${this.poUpdating}" no-overlay loading-text="" class="po-loading"></etools-loading>
           </div>
 
-          <div class="input-container" ?hidden="${this._hideField('partner_contacted_at', this.optionsData)}">
+          <div
+            class="col-12 col-lg-4 col-md-6 input-container"
+            ?hidden="${this._hideField('partner_contacted_at', this.optionsData)}"
+          >
             <!-- Date Partner Was Contacted -->
             <datepicker-lite
               id="contactedDateInput"
@@ -263,7 +256,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col-12 col-lg-4 col-md-6 input-container">
             <etools-info-tooltip
               .hideTooltip="${this._hideTooltip(this.optionsData, this.showInput, this.data.engagement_type)}"
             >
@@ -302,7 +295,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
           </div>
 
           ${this.showInput
-            ? html`<div class="input-container" ?hidden="${this._hideField('start_date', this.optionsData)}">
+            ? html`<div
+                class="col-12 col-lg-4 col-md-6 input-container"
+                ?hidden="${this._hideField('start_date', this.optionsData)}"
+              >
                 <!-- Period Start Date -->
                 <datepicker-lite
                   id="periodStartDateInput"
@@ -331,7 +327,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               </div>`
             : ``}
           ${this.showInput
-            ? html` <div class="input-container" ?hidden="${this._hideField('end_date', this.optionsData)}">
+            ? html` <div
+                  class="col-12 col-lg-4 col-md-6 input-container"
+                  ?hidden="${this._hideField('end_date', this.optionsData)}"
+                >
                   <!-- Period End Date -->
                   <datepicker-lite
                     id="periodEndDateInput"
@@ -359,7 +358,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                   >
                   </datepicker-lite>
                 </div>
-                <div class="input-container" ?hidden="${this._hideField('total_value', this.optionsData)}">
+                <div
+                  class="col-12 col-lg-4 col-md-6 input-container"
+                  ?hidden="${this._hideField('total_value', this.optionsData)}"
+                >
                   <!-- Total Value of Selected FACE Forms -->
                   <etools-currency
                     class="w100 validate-field
@@ -389,7 +391,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             : ``}
           ${this.showJoinAudit
             ? html` <!-- Joint Audit -->
-                <div class="input-container join-audit" style="width:16.66%">
+                <div class="col-md-3 col-lg-2 col-12 join-audit">
                   <etools-checkbox
                     ?checked="${this.data.joint_audit}"
                     ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
@@ -400,7 +402,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     ${this.getLabel('joint_audit', this.optionsData)}
                   </etools-checkbox>
                 </div>
-                <div class="input-container" class="${this.getYearOfAuditStyle(this.data.engagement_type)}">
+                <div class="col-md-3 col-lg-2 col-12 ${this.getYearOfAuditStyle(this.data.engagement_type)}">
                   <!-- Year of Audit -->
                   <etools-dropdown
                     id="yearOfAudit"
@@ -426,7 +428,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             : ``}
           ${this.showAdditionalInput
             ? html` <!-- Shared Audit with-->
-                <div class="input-container" ?hidden="${this._hideField('shared_ip_with', this.optionsData)}">
+                <div
+                  class="col-12 col-lg-4 col-md-6 input-container"
+                  ?hidden="${this._hideField('shared_ip_with', this.optionsData)}"
+                >
                   <etools-dropdown-multi
                     id="sharedWith"
                     class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
@@ -453,7 +458,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             : ``}
           ${this.showInput
             ? html` <!-- Sections -->
-                <div class="input-container" ?hidden="${this._hideField('sections', this.optionsData)}">
+                <div
+                  class="col-12 col-lg-4 col-md-6 input-container"
+                  ?hidden="${this._hideField('sections', this.optionsData)}"
+                >
                   <etools-dropdown-multi
                     class="w100 validate-input ${this._setRequired('sections', this.optionsData)}"
                     label="${this.getLabel('sections', this.optionsData)}"
@@ -480,7 +488,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                   </etools-dropdown-multi>
                 </div>
                 <!-- Offices -->
-                <div class="input-container" ?hidden="${this._hideField('offices', this.optionsData)}">
+                <div
+                  class="col-12 col-lg-4 col-md-6 input-container"
+                  ?hidden="${this._hideField('offices', this.optionsData)}"
+                >
                   <etools-dropdown-multi
                     class="w100 validate-input ${this._setRequired('offices', this.optionsData)}"
                     label="${this.getLabel('offices', this.optionsData)}"
@@ -508,7 +519,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 </div>`
             : ``}
           <!-- Notified when completed -->
-          <div class="input-container" ?hidden="${this._hideField('users_notified', this.optionsData)}">
+          <div
+            class="col-12 col-lg-4 col-md-6 input-container"
+            ?hidden="${this._hideField('users_notified', this.optionsData)}"
+          >
             <etools-dropdown-multi
               class="w100 validate-input ${this._setRequired('users_notified', this.optionsData)}"
               label="${this.getLabel('users_notified', this.optionsData)}"

@@ -4,7 +4,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-upload';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../styles/tab-layout-styles';
 import {moduleStyles} from '../../styles/module-styles';
@@ -24,7 +24,7 @@ import {EtoolsUpload} from '@unicef-polymer/etools-unicef/src/etools-upload/etoo
 @customElement('file-attachment-doc-dialog')
 export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
   static get styles() {
-    return [moduleStyles, tabLayoutStyles, tabInputsStyles, gridLayoutStylesLit];
+    return [moduleStyles, tabLayoutStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {
@@ -45,8 +45,8 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
       >
         <div class="container">
           ${this.showFileTypes(this.optionsData)
-            ? html` <div class="layout-horizontal row-padding-v">
-                <div class="col col-6">
+            ? html` <div class="row row-padding-v">
+                <div class="col-12 col-md-6">
                   <etools-dropdown
                     id="fileType"
                     class="validate-input ${this._setRequired('file_type', this.optionsData)}"

@@ -12,7 +12,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.
 import '@unicef-polymer/etools-unicef/src/etools-upload/etools-upload';
 
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import '../share-documents/share-documents';
@@ -39,7 +39,7 @@ export class ShareDocumentsDialog extends CommonMethodsMixin(
   TableElementsMixin(EngagementMixin(DateMixin(LitElement)))
 ) {
   static get styles() {
-    return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
+    return [moduleStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {

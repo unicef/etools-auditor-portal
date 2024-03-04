@@ -8,8 +8,8 @@ import '@unicef-polymer/etools-unicef/src/etools-accesibility/etools-accesibilit
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import {HeaderStyles} from '../main-header/header-elements/header-styles';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {HeaderStyles} from './header-elements/header-styles';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {isProductionServer, checkEnvironment, BASE_PATH} from '../../config/config';
 import {GenericObject} from '../../../types/global';
@@ -24,7 +24,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 @customElement('page-header')
 export class PageHeader extends MatomoMixin(LitElement) {
   static get styles() {
-    return [gridLayoutStylesLit];
+    return [layoutStyles];
   }
 
   render() {
@@ -70,9 +70,9 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
 
         .dropdowns {
-          padding-block-start: 6px;
+          /*padding-block-start: 6px;*/
           display: flex;
-          margin-inline-end: 20px;
+          /*margin-inline-end: 20px;*/
         }
 
         etools-accesibility {
@@ -105,6 +105,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
 
         support-btn {
+          margin-inline-start: auto;
           color: var(--header-color);
         }
 
@@ -156,8 +157,8 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="content-align">
-        <div class="layout-horizontal align-items-center">
+      <app-toolbar id="toolbar" sticky class="content-align row">
+        <div class="layout-horizontal align-items-center col-lg-4 col-4">
           <etools-icon-button
             id="menuButton"
             name="menu"
@@ -170,18 +171,18 @@ export class PageHeader extends MatomoMixin(LitElement) {
             ${this.environment}
           </div>
         </div>
-        <div class="layout-horizontal align-items-center">
-          <div class="dropdowns">
-            <countries-dropdown
-              id="countries"
-              .countries="${this.user?.countries_available}"
-              .currentCountry="${this.user?.country}"
-            >
-            </countries-dropdown>
+        <div class="dropdowns layout-horizontal align-items-center col-lg-6 col-12">
+          <countries-dropdown
+            id="countries"
+            .countries="${this.user?.countries_available}"
+            .currentCountry="${this.user?.country}"
+          >
+          </countries-dropdown>
 
-            <organizations-dropdown .user="${this.user}"></organizations-dropdown>
-          </div>
+          <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+        </div>
 
+        <div class="layout-horizontal align-items-center col-lg-2 col-8">
           <support-btn title="Support"></support-btn>
 
           <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">

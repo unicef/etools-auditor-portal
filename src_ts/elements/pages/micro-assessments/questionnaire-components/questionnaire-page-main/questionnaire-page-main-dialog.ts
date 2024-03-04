@@ -5,7 +5,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -25,7 +25,7 @@ import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 @customElement('questionnaire-page-main-dialog')
 export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -51,8 +51,8 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
             </div>
           </div>
 
-          <div class="layout-horizontal">
-            <div class="col col-6">
+          <div class="row">
+            <div class="col-12 input-container col-md-6 col-lg-4">
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskAssessmentDropdown"
@@ -73,10 +73,7 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
                 >
                 </etools-dropdown>
               </div>
-            </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12 input-container">
                 <!-- Comments -->
                 <etools-textarea
                   id="riskAssessmentComments"
