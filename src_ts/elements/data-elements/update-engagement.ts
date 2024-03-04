@@ -210,8 +210,12 @@ export class UpdateEngagement extends LitElement {
       'key_internal_controls',
       'financial_finding_set',
       'financial_findings',
+      'audited_expenditure',
       'findings',
-      'other_recommendations'
+      'other_recommendations',
+      'internal_controls',
+      'total_amount_tested',
+      'total_amount_of_ineligible_expenditure'
     ];
     if (typeof obj === 'object' && Object.keys(obj).some((key) => errProperties.includes(key))) {
       // toast will be displayed inside the component, avoid to duplicate it here
