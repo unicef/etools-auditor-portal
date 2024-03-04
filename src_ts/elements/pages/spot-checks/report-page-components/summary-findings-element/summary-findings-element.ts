@@ -240,7 +240,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       this.setErrorBaseText(this.priority);
     }
     if (changedProperties.has('errorObject')) {
-      this._complexErrorHandler(this.errorObject.findings);
+      this._complexErrorHandler(this.errorObject.findings, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
       this.setCategoryOfObservation(this.optionsData);

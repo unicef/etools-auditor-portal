@@ -6,7 +6,6 @@ import isEqual from 'lodash-es/isEqual';
 import each from 'lodash-es/each';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {readonlyPermission} from './permission-controller';
-import {refactorErrorObject} from './error-handler';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import {getBodyDialog} from '../utils/utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
@@ -305,15 +304,6 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _showItems(item) {
       return item && !item._delete;
-    }
-
-    _errorHandler(errorData) {
-      this.requestInProcess = false;
-      if (!errorData) {
-        return;
-      }
-      const refactoredData = this.isAddDialogOpen ? refactorErrorObject(errorData)[0] : refactorErrorObject(errorData);
-      this.errors = refactoredData;
     }
 
     deleteCanceled(event) {

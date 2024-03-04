@@ -87,9 +87,8 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
         return false;
       }
       // hide requestInProcess if has error, even if they are not coming form the current control
-      if (this.requestInProcess) {
-        this.requestInProcess = false;
-      }
+      this.requestInProcess = false;
+
       this.closeDialogLoading();
 
       if (!componentError || !Object.keys(componentError).length) {
@@ -124,16 +123,21 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     }
 
-    _complexErrorHandler(errorData) {
+    _complexErrorHandler(componentError, allErrors) {
       this.requestInProcess = false;
-      if (!errorData) {
+
+      if (!allErrors || !Object.keys(allErrors).length) {
+        return false;
+      }
+      // hide requestInProcess if has error, even if they are not coming form the current control
+      this.closeDialogLoading();
+
+      if (!componentError || !Object.keys(componentError).length) {
         return false;
       }
 
-      this.closeDialogLoading();
-
-      const data = refactorErrorObject(errorData);
-      const nonField = checkNonField(errorData);
+      const data = refactorErrorObject(componentError);
+      const nonField = checkNonField(componentError);
 
       if (!this.dialogOpened && isString(data)) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${data}`});

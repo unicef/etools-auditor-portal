@@ -133,7 +133,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
       this._setValues(this.riskData);
     }
     if (changedProperties.has('errorObject')) {
-      this._complexErrorHandler(this.errorObject.overall_risk_assessment);
+      this._complexErrorHandler(this.errorObject.overall_risk_assessment, this.errorObject);
     }
   }
 

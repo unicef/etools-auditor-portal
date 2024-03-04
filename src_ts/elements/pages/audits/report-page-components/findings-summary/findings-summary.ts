@@ -400,10 +400,11 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
 
   fundingsSummaryErrHandler(errorData) {
     this.requestInProcess = false;
-    if (!errorData) {
+    if (!errorData || !Object.keys(errorData).length) {
       return;
     }
 
+    this.closeDialogLoading();
     const refactoredData = refactorErrorObject(errorData);
     let itemModelKeys = keys(this.itemModel) || [];
     itemModelKeys = itemModelKeys.filter((key) => {

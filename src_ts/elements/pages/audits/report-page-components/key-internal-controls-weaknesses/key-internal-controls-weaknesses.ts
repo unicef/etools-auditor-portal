@@ -223,7 +223,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
       this.editedBlueprint = cloneDeep(this.dataModel);
     }
     if (changedProperties.has('errorObject')) {
-      this._complexErrorHandler(this.errorObject?.key_internal_weakness);
+      this._complexErrorHandler(this.errorObject?.key_internal_weakness, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
       this.setRisk();

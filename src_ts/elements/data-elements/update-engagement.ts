@@ -14,7 +14,7 @@ import {
   updateCurrentEngagement,
   updateEngagementAllOptions
 } from '../../redux/actions/engagement';
-import {getValueFromResponse} from '../utils/utils';
+import {capitalizeFirstLetter, getValueFromResponse} from '../utils/utils';
 import {EngagementState} from '../../redux/reducers/engagement';
 
 /**
@@ -166,13 +166,15 @@ export class UpdateEngagement extends LitElement {
     try {
       if (typeof response === 'string') {
         response = JSON.parse(response);
-      } else if (this._errorObjIsNested(response)) {
-        const msgArr = [];
-        this.getMesageFromNestedObj(response, msgArr);
-        if (msgArr && msgArr.length) {
-          serverErrorText = msgArr.join('\n');
-        } else {
-          serverErrorText = 'An error occured. Please try again';
+      } else {
+        if (!this.toastWillBeDisplayedInsideComponent(response)) {
+          const msgArr = [];
+          this.getMesageFromError(response, msgArr);
+          if (msgArr && msgArr.length) {
+            serverErrorText = msgArr.join('\n');
+          } else {
+            serverErrorText = 'An error occured. Please try again';
+          }
         }
       }
     } catch (e) {
@@ -188,7 +190,7 @@ export class UpdateEngagement extends LitElement {
       this.errorObject = {};
       fireEvent(this, 'toast', {text: `Error: Exceeded the maximum size of uploaded file.`});
     } else {
-      this.errorObject = {};
+      this.errorObject = Object.keys(response || {}).length ? response : {error: ''};
       fireEvent(this, 'toast', {text: 'Can not save engagement data. Please try again later!'});
     }
     fireEvent(this, 'error-changed', this.errorObject);
@@ -199,10 +201,46 @@ export class UpdateEngagement extends LitElement {
     }
   }
 
-  getMesageFromNestedObj(obj: GenericObject, arr: any[], index?: number) {
+  toastWillBeDisplayedInsideComponent(obj: GenericObject) {
+    const errProperties = [
+      'engagement_attachments',
+      'report_attachments',
+      'specific_procedures',
+      'staff_members',
+      'key_internal_controls',
+      'financial_finding_set',
+      'financial_findings',
+      'audited_expenditure',
+      'findings',
+      'other_recommendations',
+      'internal_controls',
+      'total_amount_tested',
+      'total_amount_of_ineligible_expenditure'
+    ];
+    if (typeof obj === 'object' && Object.keys(obj).some((key) => errProperties.includes(key))) {
+      // toast will be displayed inside the component, avoid to duplicate it here
+      return true;
+    }
+    return false;
+  }
+
+  getMsgKey(key: string) {
+    if (typeof key === 'string') {
+      const arrKey = key
+        .split('_')
+        .map((x: string) => capitalizeFirstLetter(x))
+        .join(' ');
+      return arrKey;
+    }
+    return key;
+  }
+
+  getMesageFromError(obj: GenericObject, arr: any[], index?: number) {
     Object.keys(obj).forEach((key) => {
       if (Array.isArray(obj[key])) {
-        arr.push(`${key}: ${Array.from(obj[key]).join(', ')}`);
+        arr.push(`${this.getMsgKey(key)}: ${Array.from(obj[key]).join(', ')}`);
+      } else if (typeof obj[key] === 'string') {
+        arr.push(`${this.getMsgKey(key)}: ${obj[key]}`);
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
         if (typeof index === 'undefined') {
           arr.push(key);
@@ -210,7 +248,7 @@ export class UpdateEngagement extends LitElement {
         } else {
           arr[index - 1] += `.${key}`;
         }
-        this.getMesageFromNestedObj(obj[key], arr, index);
+        this.getMesageFromError(obj[key], arr, index);
       } else {
         if (typeof index !== 'undefined') {
           arr[index - 1] += `: ${obj[key]}`;
