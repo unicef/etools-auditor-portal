@@ -45,7 +45,9 @@ export class SubjectAreaElement extends CommonMethodsMixin(LitElement) {
       <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
         <div slot="row-data" class="layout-horizontal editable-row">
           <span class="col-data col-8" data-col-header-label="Subject area">${this.areaData?.header}</span>
-          <span class="col-data col-4" data-col-header-label="Risk Assessment">${this.areaData?.risk.value_display}</span>
+          <span class="col-data col-4" data-col-header-label="Risk Assessment"
+            >${this.areaData?.risk.value_display}</span
+          >
           <div class="hover-block" ?hidden="${!this.canBeChanged}">
             <etools-icon-button name="create" @click="${this.openEditDialog}"></etools-icon-button>
           </div>
