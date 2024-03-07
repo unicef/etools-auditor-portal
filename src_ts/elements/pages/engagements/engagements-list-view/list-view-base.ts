@@ -27,7 +27,7 @@ import {RootState, store} from '../../../../redux/store';
 import {RouteDetails, RouteQueryParams} from '@unicef-polymer/etools-types/dist/router.types';
 import {buildUrlQueryString, cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import pick from 'lodash-es/pick';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
